@@ -37,8 +37,8 @@ When given a set of items from a personality inventory, one goal is to combine t
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-16\cr
-Date: \tab 2007-5-1,\cr
+Version: \tab 1.0-18\cr
+Date: \tab 2007-5-8,\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -56,7 +56,8 @@ Useful data entry and descriptive statistics\cr
 \link{panel.cor.scale}           part of pairs.panels\cr
 \link{panel.hist}                part of pairs.panels\cr
 \link{multi.hist}             Histograms of multiple variables arranged in matrix form\cr
-\link{skew}                   Calculate skew for a vector, matrix, or data.frame\cr
+\link{skew}                   Calculate skew for a vector, each column of matrix, or data.frame\cr
+\link{kurtosi}                Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
 
 \link{error.crosses}          Two way error bars \cr
 \link{geometric.mean}        Find the geometric mean of a vector or columns of a data.frame \cr
@@ -79,13 +80,13 @@ Data reduction through cluster and factor analysis\cr
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \cr
-\link{alpha.scale}             Find coefficient alpha for a scale (see also \link{score.items}\cr
+\link{alpha.scale}             Find coefficient alpha for a scale (see also \link{score.items})\cr
 \link{correct.cor}            Correct a correlation matrix for unreliability\cr 
 \link{count.pairwise}        Count the number of complete cases when doing pair wise correlations\cr
 \link{cluster.cor}             find correlations of composite variables from larger matrix\cr
 \link{cluster.loadings}        find correlations of items with  composite variables from a larger matrix\cr
 \link{eigen.loadings}          Find the loadings when doing an eigen value decomposition\cr
-\link{factor.pa}              Do a principal Axis factor analysis
+\link{factor.pa}              Do a principal Axis factor analysis\cr
 \link{factor2cluster}         extract cluster definitions from factor loadings\cr
 \link{factor.congruence}      Factor congruence coefficient\cr
 \link{factor.fit}             How well does a factor model fit a correlation matrix\cr
@@ -108,7 +109,7 @@ Functions that are under development and not recommended for casual use \cr
 \link{irt.person.rasch}	      Item Response Theory estimates of theta (ability) using a Rasch like model\cr\cr
 
 }
-\note{Development versions of this package are maintained at the local repository \url{http://personality-project.org/r} along with further documentation.
+\note{Development versions of this package are maintained at the local repository \url{http://personality-project.org/r} along with further documentation.  Specify that you are downloading a source package.  
 
 
 Some functions require other packages. Specifically, omega and schmid require the GPArotation  package, and phi2poly and polychor.matrix requires John Fox's polychor package. 

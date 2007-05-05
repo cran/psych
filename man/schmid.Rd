@@ -11,16 +11,21 @@ schmid(model, nfactors = 3, pc = "pa",...)
 
 \arguments{
   \item{model}{ A correlation matrix }
-  \item{nfactors}{ Number of facdtors to extract }
+  \item{nfactors}{ Number of factors to extract }
   \item{pc}{ pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood }
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
 \details{Schmid Leiman orthogonalizations are typical in the ability domain, but are not seen as often in the non-cognitive personality domain.  S-L is one way of finding the loadings of items on the general factor for estimating omega. 
+
+A typical example would be in the study of anxiety and depression.  A general neuroticism factor (g) accounts for much of the variance, but smaller group factors of tense anxiety, panic disorder, depression, etc. also need to be considerd.
+
+An alternative model is to consider hierarchical cluster analysis (\code{\link{ICLUST}}). 
 }
 \value{
   
   \item{sl }{loadings on g + nfactors group factors, communalities, uniqueness}
   \item{orthog }{original orthogonal factor loadings}
+  \item{oblique}{oblique factor loadings}
   \item{fcor }{correlations among the transformed factors}
    \item{gload }{loadings of the lower order factors on g}
   ...

@@ -21,7 +21,9 @@ It is an interesting exercise to compare factor congruences with the correlation
 \value{A matrix of factor congruences.
 }
 
-\references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. Revelle, W. In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/})
+\references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
+\cr
+Revelle, W. (In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/})
 }
 \author{
  \email{revelle@northwestern.edu} \cr

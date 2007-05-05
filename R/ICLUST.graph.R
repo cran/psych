@@ -21,7 +21,7 @@ function(ic.results, out.file,min.size=1,short=FALSE,labels=NULL,
     clusters <- as.matrix(ic.results$clusters)
    #if(length(clusters)==length(var.labels) )  {clusters <- as.matrix(clusters)}
 	num <- nrow(results)
-    if (short) {var.labels <- paste("V",1:nrow,(var.labels),sep="")}
+    if (short) {var.labels <- paste("V",1:nrow,(var.labels),sep="")}   
    
   rank.direction <- match.arg(rank.direction)
   #first some basic setup parameters 

@@ -15,7 +15,7 @@ omega(m, nfactors, pc = "pa",...)
   \item{...}{Allows additional parameters to be passed through to the factor routines}
 }
 
-\details{Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 
+\details{``Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 
 interpretation with evidence regarding the internal structure of that scale. In particular, it is important to examine two related properties pertaining to the internal structure of such a scale. The first property relates to whether all the indicators forming the scale measure a latent variable in common. 
 
 The second internal structural property pertains to the proportion of variance in the scale scores (derived from summing or averaging the indicators) accounted for by this latent variable that is common to all the indicators (Cronbach, 1951; McDonald, 1999; Revelle, 1979). That is, if an effect indicator scale is primarily a measure of one latent variable common to all the indicators forming the scale, then that latent variable should account for the majority of the variance in the scale scores. Put differently, this variance ratio provides important information about the sampling fluctuations when estimating individuals' standing on a latent variable common to all the indicators arising from the sampling of indicators (i.e., when dealing with either Type 2 or Type 12 sampling, to use the terminology of Lord, 1956). That is, this variance proportion can be interpreted as the square of the correlation between the scale score and the latent variable common to all the indicators in the infinite universe of indicators of which the scale indicators are a subset. Put yet another way, this variance ratio is important both as reliability and a validity coefficient. This is a reliability issue as the larger this variance ratio is, the more accurately one can predict an individual's relative standing on the latent variable common to all the scale's indicators based on his or her 
@@ -36,9 +36,15 @@ Beta, an alternative to omega, is defined as the worst split half reliability.  
  
   \item(omega) {The omega coefficient}
   \item{alpha }{Cronbach's alpha}
-  \item{schmid }{The Schmid Leiman transformed factor matrix}
+  \item{schmid }{The Schmid Leiman transformed factor matrix and associated matrices}
+  \item{schmid$sl}{The g factor loadings as well as the residualized factors}
+  \item{schmid$orthog}{Varimax rotated solution of the original factors}
+  \item{schmid$oblique}{The oblimin transformed factors}
+  \item{schmid$fcor}{the correlation matrix of the oblique factors}
+  \item{schid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
 }
-\references{ \url{http://personality-project.org/r/r.omega.html} 
+\references{ \url{http://personality-project.org/r/r.omega.html} \cr
+
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
 
  Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
@@ -51,7 +57,7 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
 \note{ }
-\seealso{ \code{\link{ICLUST}},\code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }}
+\seealso{ \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }}
 \examples{
 \dontrun{
 test.data <- Harman74.cor$cov

@@ -2,7 +2,7 @@
 \alias{skew}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Calculate skew for a vector, matrix, or data.frame}
-\description{Find the skew for each variable in a data.frame or matrix.  Unlike skew in e1071, this reports a different skew for each variable.
+\description{Find the skew for each variable in a data.frame or matrix.  Unlike skew in e1071, this calculates a different skew for each variable.
 }
 \usage{
 skew(x, na.rm = TRUE)
@@ -18,15 +18,30 @@ skew(x, na.rm = TRUE)
 
 \author{ William Revelle}
 
-\seealso{\code{\link{describe}} }
+\seealso{\code{\link{describe}}, \code{\link{describe.by}}, \code{\link{kurtosi}}   }
 \examples{
-#round(skew(attitude),2)
+round(skew(attitude),2)
 ## The function is currently defined as
-function (x, na.rm = TRUE) {
-    if(length(dim(x))==0) {
-       if (na.rm)   { x <- x[!is.na(x)] }        #remove missing values  
-    sum((x - mean(x))^3)/(length(x) * sd(x)^3)  #calculate skew  for a vector
- } else { apply(x,2,function(x) sum((x - mean(x,na.rm=na.rm))^3,na.rm=na.rm)/( (length(x)-sum(is.na(x)) )* sd(x,na.rm=na.rm)^3)) }  }
+function (x, na.rm = TRUE) 
+{
+    if (length(dim(x)) == 0) {
+        if (na.rm) {
+            x <- x[!is.na(x)]
+        			}
+        sdx <- sd(x,na.rm=na.rm)
+        mx <- mean(x)
+        skewer <- sum((x - mx)^3)/(length(x) * sd(x)^3) 
+        } else {
+    
+    skewer <- rep(NA,dim(x)[2])
+    mx <- colMeans(x,na.rm=na.rm)
+    sdx <- sd(x,na.rm=na.rm)
+    for (i in 1:dim(x)[2]) {
+    skewer[i] <- sum((x[,i] - mx[i])^3,  na.rm = na.rm)/((length(x[,i]) - sum(is.na(x[,i]))) * sdx[i]^3)
+            }
+    }
+    return(skewer)
+}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

@@ -5,26 +5,25 @@
 \description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.  For well behaved matrices, maximum likelihood factor analysis (factanal) is probably preferred.  
 }
 \usage{
-factor.pa(r, nfactors, residuals = FALSE, rotate = "varimax", min.err = 0.001, digits = 2, max.iter = 50)
+factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax", min.err = 0.001, digits = 2, max.iter = 50)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
-  \item{nfactors}{ Number of factors to extract }
+  \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{residuals}{Should the residual matrix be shown }
   \item{rotate}{"none", "varimax", "promax" }
   \item{min.err}{Iterate until the change in communalities is less than min.err}
   \item{digits}{ How many digits of output should be returned}
   \item{max.iter}{Maximum number of iterations for convergence }
 }
-\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that nRn my be approximated by nFk kFn' where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most preferred (see factanal).  
+\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{nRn \approx nFk kFn'} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most preferred (see factanal).  
 
-Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until sum(diag(FF')) does not change (very much).
+Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until sum(diag(FF')) does not change (very much).  The current limit of max.iter =50 seems to work for most problems, but the Holzinger-Harmon 24 variable problem needs about 203 iterations to converge for a 5 factor solution.   
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge.  
 }
 \value{
-  ~Describe the value returned
   If it is a LIST, use
   \item{values }{Eigen values of the final solution}
   \item{loadings }{An item by factor loading matrix.  Suitable for use in other programs (e.g., GPA rotation or factor2cluster.}
@@ -49,7 +48,7 @@ round(factor.congruence(mle,pa),2)
 
 ## The function is currently defined as
 "factor.pa" <- 
-function(r,nfactors,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,max.iter=50) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,max.iter=50) {
     n <- dim(r)[1]
     if (n!=dim(r)[2]) r <- cor(r,use="pairwise") # if given a rectangular matrix, the find the correlations first
     if (!residuals) { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}

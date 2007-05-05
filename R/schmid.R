@@ -23,7 +23,7 @@ function (model, nfactors = 3, pc = "pa",...)
     primeload <- fload %*% Ig
     uniq2 <- 1 - uniq - primeload^2
     sm <- sqrt(uniq2)
-    schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fload, 
+    schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, 
         fcor = factr, gloading = gload)
 }
 

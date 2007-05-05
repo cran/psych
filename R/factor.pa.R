@@ -1,5 +1,5 @@
 "factor.pa" <- 
-function(r,nfactors,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,max.iter=50) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,max.iter=50) {
     n <- dim(r)[1]
     if (n!=dim(r)[2]) r <- cor(r,use="pairwise") # if given a rectangular matrix, the find the correlations first
     if (!residuals) { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}

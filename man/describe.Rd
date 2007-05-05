@@ -9,7 +9,7 @@ There are many summary statistics available in R; this function
   Range is most useful for the first pass in a data set, to check for coding errors. 
 }
 \usage{
-describe(x, digits = 2, na.rm = TRUE, skew = FALSE, ranges = TRUE)
+describe(x, digits = 2, na.rm = TRUE, skew = TRUE, ranges = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,9 +43,8 @@ In a typical study, one might read the data in from the clipboard (\code{\link{r
    minimum\cr
    maximum\cr
    skew\cr
+   kurtosis\cr
    standard error\cr
-   
- 
 }
 \author{ 
  
@@ -56,8 +55,17 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 \seealso{ \code{\link{describe.by}}, \code{\link{pairs.panels}}, \code{\link{read.clipboard}}, \code{\link{error.crosses}} }
 \examples{
 
+describe(attitude)
+#           var  n  mean    sd median   mad min max range  skew kurtosis   se
+#rating       1 30 64.63 12.17   65.5 10.38  40  85    45 -0.36    -0.77 2.22
+#complaints   2 30 66.60 13.31   65.0 14.83  37  90    53 -0.22    -0.68 2.43
+#privileges   3 30 53.13 12.24   51.5 10.38  30  83    53  0.38    -0.41 2.23
+#learning     4 30 56.37 11.74   56.5 14.83  34  75    41 -0.05    -1.22 2.14
+#raises       5 30 64.63 10.40   63.5 11.12  43  88    45  0.20    -0.60 1.90
+#critical     6 30 74.77  9.89   77.5  7.41  49  92    43 -0.87     0.17 1.81
+#advance      7 30 42.93 10.29   41.0  8.90  25  72    47  0.85     0.47 1.88
    
-#describe(attitude)   #attitude is taken from R data sets
+describe(attitude,skew=FALSE)   #attitude is taken from R data sets
 
 #           var  n  mean    sd median   mad min max range   se
 #rating       1 30 64.63 12.17   65.5 10.38  40  85    45 2.22
@@ -68,71 +76,63 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 #critical     6 30 74.77  9.89   77.5  7.41  49  92    43 1.81
 #advance      7 30 42.93 10.29   41.0  8.90  25  72    47 1.88
 
-#describe(attitude,skew=TRUE,range=TRUE)
 
-#           var  n  mean    sd median   mad min max range    skew   se
-#rating       1 30 64.63 12.17   65.5 10.38  40  85    45 -645.56 2.22
-#complaints   2 30 66.60 13.31   65.0 14.83  37  90    53 -508.49 2.43
-#privileges   3 30 53.13 12.24   51.5 10.38  30  83    53  694.44 2.23
-#learning     4 30 56.37 11.74   56.5 14.83  34  75    41  -87.36 2.14
-#raises       5 30 64.63 10.40   63.5 11.12  43  88    45  222.03 1.90
-#critical     6 30 74.77  9.89   77.5  7.41  49  92    43 -838.77 1.81
-#advance      7 30 42.93 10.29   41.0  8.90  25  72    47  926.20 1.88
+
 
 
 ## The function is currently defined as
-function (x, digits = 2,na.rm=TRUE,skew=FALSE,range=TRUE)
-#basic stats after dropping non-numeric data
-#somewhat faster if we don't do skews
-{    #first, define a local function
-    valid <- function(x) {  sum(!is.na(x))}
+function (x, digits = 2,na.rm=TRUE,skew=TRUE,ranges=TRUE)   #basic stats after dropping non-numeric data
+                                                 #much faster if we don't do skews
+{                         #first, define a local function
+    valid <- function(x) {sum(!is.na(x))}
    		 
-    if (is.vector(x) )          #do it for vectors or 
-    	{
-    	    stats = matrix(rep(NA,6),ncol=6)    #create a temporary array
-    
-			stats[1, 1] <-  mean(x, na.rm=na.rm )
-			stats[1, 2] <-  median(x,na.rm=na.rm  )
-			stats[1, 3] <-  min(x, na.rm=na.rm )
-			stats[1, 4] <-  max(x, na.rm=na.rm )
-			stats[1, 5] <-  skew(x,na.rm=na.rm  )
-			stats[1, 6] <-  valid(x )
-        
-    	}
+    if (is.vector(x) )  {        #do it for vectors or 
+    	    len  <- 1
+    	    stats = matrix(rep(NA,7),ncol=7)    #create a temporary array
+			stats[1, 1] <-  valid(x )			
+			stats[1, 2] <-  mean(x, na.rm=na.rm )
+			stats[1, 3] <-  median(x,na.rm=na.rm  )
+			stats[1, 4] <-  min(x, na.rm=na.rm )
+			stats[1, 5] <-  max(x, na.rm=na.rm )
+			stats[1, 6] <-  skew(x,na.rm=na.rm  )
+			stats[1,7] <-  mad(x,na.rm=na.rm) 
+			stats[1,8] <-  kurtosi(x,na.rm=na.rm) 
+			
+    	}   else  {
+    	len = dim(x)[2]     #do it for matrices or data.frames 
     	
-    	
-    else  {len = dim(x)[2]     #do it for matrices or data.frames
+   stats = matrix(rep(NA,len*8),ncol=8)    #create a temporary array
+   stats[,1] <- apply(x,2,valid)
+   stats[,2] <- colMeans(x, na.rm=na.rm )
+    if (skew) {stats[, 6] <-  skew(x,na.rm=na.rm  )
+               stats[,8] <- kurtosi(x,na.rm=na.rm)}
     
-    stats = matrix(rep(NA,len*6),ncol=6)    #create a temporary array
     for (i in 1:len) {
     	if (is.numeric(x[,i])) {   #just do this for numeric data
-			stats[i, 1] <-  mean(x[,i], na.rm=na.rm )
-		if (range) {
-			stats[i, 2] <-  median(x[,i],na.rm=na.rm  )	
-				stats[i, 3] <-  min(x[,i], na.rm=na.rm )
-				stats[i, 4] <-  max(x[,i], na.rm=na.rm )}
-		    if (skew) {stats[i, 5] <-  skew(x[,i],na.rm=na.rm  )}
-			stats[i, 6] <-  valid(x[,i] )
-        		}
-    	}
-    	}
-    if (range)
-    	{if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,6],mean=stats[,1],
-    	sd = sd(x,na.rm=TRUE), median = stats[, 
-        2],min= stats[,3],max=stats[,4], range=stats[,4]-stats[,3],skew = stats[, 5])}
+			
+		if (ranges) {
+			stats[i, 3] <-  median(x[,i],na.rm=na.rm  )	
+			stats[i,7] <- mad(x[,i], na.rm=na.rm)
+			stats[i, 4] <-  min(x[,i], na.rm=na.rm )
+			stats[i, 5] <-  max(x[,i], na.rm=na.rm )
+					} #ranges
+		   		 }#is.numeric
+        	}# i loop	
+    	} #else loop
+    if (ranges)
+    	{if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE), median = stats[, 
+        3],mad = stats[,7], min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8])}
          
-      	 else {temp <-  data.frame(var = seq(1:len),n = stats[,6],mean=stats[,1],
-      	 sd = sd(x,na.rm=TRUE), median = stats[, 
-        2],min= stats[,3],max=stats[,4], range=stats[,4]-stats[,3])}}
+      	 else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE), median = stats[, 
+        3],mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4])}}
         
-        else {if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,6],mean=stats[,1], 
-        sd = sd(x,na.rm=TRUE),skew = stats[, 5])}
-       else {temp <-  data.frame(var = seq(1:len),n = stats[,6],mean=stats[,1],
-       sd = sd(x,na.rm=TRUE))}}
+        else {if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE),skew = stats[, 6], kurtosis = stats[,8])}
+       else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE))}}
                 
     answer <-  round(data.frame(temp, se = temp$sd/sqrt(temp$n)),  digits)
      return(answer)
-  }
+}
+
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

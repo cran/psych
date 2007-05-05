@@ -12,7 +12,7 @@ output <- ICLUST.options$output
 num.var <- nrow(r.mat)
 keep.clustering <- TRUE          #used to determine when we are finished clustering
 results <- data.frame(matrix(rep(0,18*(num.var-1)),ncol=18))
-names(results) <- c("Item/Cluster", "Item/Cluster","similarity","correlation","alpha1","alpha2",
+names(results) <- c("Item/Cluster", "Item/Clust","similarity","correlation","alpha1","alpha2",
 "beta1","beta2","size1","size2","rbar1","rbar2","r1","r2","alpha","beta","rbar","size")
 rownames(results) <- paste("C",1:(num.var-1),sep="")
 

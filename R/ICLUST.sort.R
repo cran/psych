@@ -1,0 +1,37 @@
+"ICLUST.sort"<- function (ic.load,cut=0,labels=NULL,loading=TRUE) {
+     if(loading) {loadings <- ic.load$loadings} else {loadings <- ic.load}
+     nclust <- dim(loadings)[2]
+     nitems <- dim(loadings)[1]
+     loadings <- as.matrix(loadings)   #just in case there is just one cluster
+    if (length(labels)==0) {
+    var.labels <- rownames(loadings)} else {var.labels=labels}
+    if (length(var.labels)==0) {var.labels =paste('V',seq(1:nitems),sep='')} #unlabled variables
+
+   
+  loads <- data.frame(item=seq(1:nitems),content=var.labels,cluster=rep(0,nitems),loadings)
+ 
+  #first find the maximum for each row and assign it to that cluster
+   loads$cluster <- apply(abs(loadings),1,which.max)
+  for (i in 1:nitems) {if (abs(loadings[i,loads$cluster[i]]) < cut) {loads$cluster[i] <- nclust+1}} #assign the ones that missed the cut a location
+ 
+  ord <- sort(loads$cluster,index.return=TRUE)
+  loads[1:nitems,] <- loads[ord$ix,]
+  rownames(loads)[1:nitems] <- rownames(loads)[ord$ix]
+  
+  items <- c(table(loads$cluster),1)   #how many items are in each cluster?
+  if(length(items) < (nclust+1)) {items <- rep(0,(nclust+1))   #this is a rare case where some clusters don't have anything in them
+    for (i in 1:nclust+1) {items[i] <- sum(loads$cluster==i) }  }
+    
+  #now sort the loadings that have their highest loading on each cluster
+   first <- 1
+	for (i in 1:nclust) {
+	if(items[i]>0 ) {
+	last <- first + items[i]- 1
+	ord <- sort(abs(loads[first:last,i+3]),decreasing=TRUE,index.return=TRUE)
+   loads[first:last,] <- loads[ord$ix+first-1,]
+    rownames(loads)[first:last] <- rownames(loads)[ord$ix+first-1]
+    first <- first + items[i]}
+    }
+    if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
+ ICLUST.sort <- list(sorted=loads) }
+ 

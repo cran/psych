@@ -2,7 +2,7 @@
 \alias{principal}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Principal components analysis }
-\description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically just is doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. 
+\description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically just is doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
 principal(r, nfactors = 0, residuals = FALSE,rotate=FALSE, digits=2)

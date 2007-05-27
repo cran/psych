@@ -1,5 +1,5 @@
 "VSS.simulate" <-
-function(ncases,nvariables,nfactors,meanloading)     #generates a simple structure factor matrix
+function(ncases=1000,nvariables=16,nfactors=4,meanloading=.5)     #generates a simple structure factor matrix
                                                                     #with nfactors
 
 {                                                                   

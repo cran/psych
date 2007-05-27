@@ -19,8 +19,10 @@ kurtosi(x, na.rm = TRUE)
  
 }
 
+
 \author{William Revelle }
 
+\note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.}
 \seealso{  \code{\link{skew}}, \code{\link{describe}} }
 \examples{
 ##---- Should be DIRECTLY executable !! ----
@@ -35,21 +37,23 @@ function (x, na.rm = TRUE)
         if (na.rm) {
             x <- x[!is.na(x)]
         			}
-        
-        mx <- mean(x)
+       if (is.matrix(x) ) { mx <- colMeans(x,na.rm=na.rm)} else {mx <- mean(x,na.rm=na.rm)}
+       
          sdx <- sd(x,na.rm=na.rm)
         kurt <- sum((x - mx)^4)/(length(x) * sd(x)^4)  -3
         } else {
     
     kurt <- rep(NA,dim(x)[2])
-    mx <- colMeans(x,na.rm=na.rm)
-     sdx <- sd(x,na.rm=na.rm)
+  #  mx <- mean(x,na.rm=na.rm)
+  if (is.matrix(x) ) { mx <- colMeans(x,na.rm=na.rm)} else {mx <- mean(x,na.rm=na.rm)}
+       
+    sdx <- sd(x,na.rm=na.rm)
     for (i in 1:dim(x)[2]) {
     kurt[i] <- sum((x[,i] - mx[i])^4,  na.rm = na.rm)/((length(x[,i]) - sum(is.na(x[,i]))) * sdx[i]^4)  -3
             }
     }
     return(kurt)
-  }
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

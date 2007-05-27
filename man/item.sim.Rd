@@ -1,10 +1,12 @@
-\name{circ.sim}
+\name{item.sim}
+\alias{item.sim}
 \alias{circ.sim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Generate simulated data structures for circumplex or simple structure }
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating these data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }
 \usage{
+item.sim(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
 circ.sim(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
 }
 %- maybe also 'usage' for other objects documented here.

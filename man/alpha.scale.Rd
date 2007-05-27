@@ -17,9 +17,11 @@ alpha.scale(x, y)
 
 \value{ Coefficient alpha }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
-Perhaps because it is so easy to calculate, it is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is "lumpy") coefficients beta and omega are more appropriate estimates of the general factor saturation.
+Perhaps because it is so easy to calculate, it is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients beta and omega are more appropriate estimates of the general factor saturation.
 
-Alpha is a positive function of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, alpha is sensitive to differences in the item variances.  Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} will also score multiple scales and report more useful statistics. "Standardized" alpha is calculated from the inter-item covariances and will differ from raw alpha. Standardized alpha can be found by using \code{\link{cluster.cor}}. }
+Alpha is a positive function of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, alpha is sensitive to differences in the item variances.  Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} will also score multiple scales and report more useful statistics. ``Standardized" alpha is calculated from the inter-item correlations and will differ from raw alpha. Standardized alpha can be found by using \code{\link{cluster.cor}}. }
+
+
 \references{ \url{http://personality-project.org/revelle/syllabi/405.syllabus.html}}
 \author{
 

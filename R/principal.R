@@ -1,14 +1,15 @@
 "principal" <-
 function(r,nfactors=0,residuals=FALSE,rotate=FALSE,digits=2) {
-   n <- dim(r)[1]
+   n <- dim(r)[2]
   
-   if (n!=dim(r)[2]) r <- cor(r,use="pairwise") # if given a rectangular matrix, the find the correlations first
+   if (n!=dim(r)[1]) r <- cor(r,use="pairwise") # if given a rectangular matrix, then find the correlations first
     
     if (!residuals) { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
     eigens <- eigen(r)    #call the eigen value decomposition routine
     result$values <- round(eigens$values,digits)
-   if(nfactors >0) {loadings <- eigen.loadings(eigens)[,1:nfactors] } else {loadings <- eigen.loadings(eigens)
-   nfactors <- n}
+    loadings <- eigens$vectors %*% sqrt(diag(eigens$values))
+   if(nfactors >0) {loadings <- loadings[,1:nfactors]} else {nfactors <- n}
+
    	
    	if(nfactors >1) {
     	maxabs <- apply(apply(loadings,2,abs),2,which.max)
@@ -20,7 +21,7 @@ function(r,nfactors=0,residuals=FALSE,rotate=FALSE,digits=2) {
    			maxi <- max(loadings)
     		if (abs(mini) > maxi) {loadings <- -loadings }
     		loadings <- as.matrix(loadings)
-    	 }}
+    	 } }
     	
     colnames(loadings) <- paste("PC",1:nfactors,sep='')
     rownames(loadings) <- rownames(r)
@@ -36,3 +37,5 @@ function(r,nfactors=0,residuals=FALSE,rotate=FALSE,digits=2) {
     result$loadings <- round(loadings,digits)
     return(result)
    }
+  
+  #last modified May 23, 2007 

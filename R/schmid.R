@@ -1,12 +1,19 @@
+#corrected estimate of communality, May 21, 2007
 "schmid" <-
 function (model, nfactors = 3, pc = "pa",...) 
 {
+ #model is a correlation matrix, or if not, the correlation matrix is found
+      #nfactors is the number of factors to extract
+      require(GPArotation)
+      nvar <-dim(model)[2]
+      if(dim(model)[1] != dim(model)[2]) model <- cor(model,use="pairwise")
     if (pc=="pc") {
         fact <- principal(model, nfactors,...)
     } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,...) } else {
         fact <- factanal(x, covmat = model, factors = nfactors,...)
     }}
-       obminfact <- oblimin(loadings(fact))
+    orth.load <- loadings(fact)
+       obminfact <- oblimin(orth.load)
     rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     factr <- t(obminfact$Th) %*% (obminfact$Th)
@@ -14,8 +21,8 @@ function (model, nfactors = 3, pc = "pa",...)
     gload <- loadings(gfactor)
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g factor"
-    u2 <- 1 - diag(fload %*% t(fload))
-    h2 <- 1 - u2
+    u2 <- 1 - diag(orth.load %*% t(orth.load)) 
+    h2 <- 1 - u2                         
     uniq <- 1 - fload^2
     guniq <- 1 - gprimaryload^2
     Ig <- matrix(0, ncol = nfactors, nrow = nfactors)

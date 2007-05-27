@@ -15,7 +15,9 @@ factor.model(f)
 }
 \value{ A correlation or covariance matrix.
 }
-\references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. Revelle, W. In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/}) } 
+\references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. 
+\cr
+Revelle, W. In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/}) } 
 \author{ 
  \email{revelle@northwestern.edu } \cr
  \url{http://personality-project.org/revelle.html} \cr

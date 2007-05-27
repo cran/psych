@@ -26,9 +26,11 @@
     cor.scales <- cor(scores,use="pairwise")     #could do this as matrix operation, but why bother
     sum.item.var <- item.var %*% abskeys  
     num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
-    alpha.scale <- (var.scales - sum.item.var)*num.item/((num.item-1)*var.scales)
+   alpha.scale <- (var.scales - sum.item.var)*num.item/((num.item-1)*var.scales)
     colnames(alpha.scale) <- slabels
+  alpha.scale[is.nan(alpha.scale)] <- 1
    av.r <- alpha.scale/(num.item - alpha.scale*(num.item-1))  #alpha 1 = average r
+   
    item.cor <- cor(items,scores,use="pairwise")
    if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
    rownames(item.cor) <- ilabels

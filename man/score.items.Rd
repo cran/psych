@@ -28,8 +28,8 @@ Correlations between scales are attenuated by a lack of reliability.  Correcting
 }
 \value{ 
  \item{scores }{Sum or average scores for each subject on the k scales}
-  \item{alpha }{Cronbach's coefficient alpha.  A simple (but non-optimal) measure of the internal consistency of a test. See also beta and omega.}
-  \item{av.r}{The average correlation within a scale, also known as alpha 1 is a useful index of the internal consistency of a domain.}
+  \item{alpha }{Cronbach's coefficient alpha.  A simple (but non-optimal) measure of the internal consistency of a test. See also beta and omega. Set to 1 for scales of length 1. }
+  \item{av.r}{The average correlation within a scale, also known as alpha 1 is a useful index of the internal consistency of a domain. Set to 1 for scales with 1 item.}
   \item{n.items}{Number of items on each scale}
    \item{item.cor}{The correlation of each item with each scale.  Because this is not corrected for item overlap, it will overestimate the amount that an item correlates with the other items in a scale.}
   \item{cor}{The intercorrelation of all the scales}
@@ -75,6 +75,7 @@ function (keys,items,totals=TRUE,ilabels=NULL, missing=TRUE, min=NULL,max=NULL,d
     sum.item.var <- item.var \%*\% abskeys  
     num.item <- diag(t(abskeys) \%*\% abskeys) #how many items in each scale
     alpha.scale <- (var.scales - sum.item.var)*num.item/((num.item-1)*var.scales)
+     alpha.scale[is.nan(alpha.scale)] <- 1      #set to 1 for one item scales
     colnames(alpha.scale) <- slabels
    av.r <- alpha.scale/(num.item - alpha.scale*(num.item-1))  #alpha 1 = average r
    item.cor <- cor(items,scores,use="pairwise")

@@ -2,7 +2,7 @@
 \alias{skew}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Calculate skew for a vector, matrix, or data.frame}
-\description{Find the skew for each variable in a data.frame or matrix.  Unlike skew in e1071, this calculates a different skew for each variable.
+\description{Find the skew for each variable in a data.frame or matrix.  Unlike skew in e1071, this calculates a different skew for each variable or column of a data.frame/matrix.
 }
 \usage{
 skew(x, na.rm = TRUE)
@@ -15,10 +15,13 @@ skew(x, na.rm = TRUE)
 \details{given a matrix or data.frame x, find the skew for each column.
 }
 \value{if input is a matrix or data.frame, skew is a vector of skews}
+\author{William Revelle }
 
-\author{ William Revelle}
+\note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.}
 
 \seealso{\code{\link{describe}}, \code{\link{describe.by}}, \code{\link{kurtosi}}   }
+
+
 \examples{
 round(skew(attitude),2)
 ## The function is currently defined as

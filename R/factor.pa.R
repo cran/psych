@@ -13,9 +13,12 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,m
     while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
       {
         eigens <- eigen(r.mat)
-        loadings <- eigen.loadings(eigens)[,1:nfactors]
+        #loadings <- eigen.loadings(eigens)[,1:nfactors]
+         if(nfactors >1 ) {loadings <- eigens$vectors[,1:nfactors] %*% diag(sqrt(eigens$values[1:nfactors])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
-         new <- diag(loadings %*% t(loadings))
+         
+         new <- diag(model)
+         
          comm1 <- sum(new)
          diag(r.mat) <- new
          err <- abs(comm-comm1)
@@ -64,5 +67,4 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",min.err = .001,digits=2,m
     result$values <- round(eigens$values,digits)
     result$loadings <- round(loadings,digits)
     result$communality <- round(unlist(comm.list),digits)
- 
     return(result) }

@@ -19,7 +19,10 @@ schmid(model, nfactors = 3, pc = "pa",...)
 
 A typical example would be in the study of anxiety and depression.  A general neuroticism factor (g) accounts for much of the variance, but smaller group factors of tense anxiety, panic disorder, depression, etc. also need to be considerd.
 
-An alternative model is to consider hierarchical cluster analysis (\code{\link{ICLUST}}). 
+An alternative model is to consider hierarchical cluster analysis 
+
+Requires the GPArotation package.
+(\code{\link{ICLUST}}). 
 }
 \value{
   
@@ -35,9 +38,7 @@ An alternative model is to consider hierarchical cluster analysis (\code{\link{I
 
 \seealso{  \code{\link{omega}}, \code{\link{ICLUST}},\code{\link{VSS}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+
 
 ## The function is currently defined as
 function (model, nfactors = 3, pc = "pa",...) 

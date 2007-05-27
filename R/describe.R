@@ -21,7 +21,7 @@ function (x, digits = 2,na.rm=TRUE,skew=TRUE,ranges=TRUE)   #basic stats after d
     	
    stats = matrix(rep(NA,len*8),ncol=8)    #create a temporary array
    stats[,1] <- apply(x,2,valid)
-   stats[,2] <- colMeans(x, na.rm=na.rm )
+   if(is.matrix(x))  {stats[,2] <- colMeans(x, na.rm=na.rm )} else {stats[,2] <- mean(x,na.rm=na.rm)}
     if (skew) {stats[, 6] <-  skew(x,na.rm=na.rm  )
                stats[,8] <- kurtosi(x,na.rm=na.rm)}
     
@@ -30,7 +30,7 @@ function (x, digits = 2,na.rm=TRUE,skew=TRUE,ranges=TRUE)   #basic stats after d
 			
 		if (ranges) {
 			stats[i, 3] <-  median(x[,i],na.rm=na.rm  )	
-			stats[i,7] <- mad(x[,i], na.rm=na.rm)
+			stats[i,7] <-   mad(x[,i], na.rm=na.rm)
 			stats[i, 4] <-  min(x[,i], na.rm=na.rm )
 			stats[i, 5] <-  max(x[,i], na.rm=na.rm )
 					} #ranges

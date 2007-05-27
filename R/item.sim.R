@@ -1,6 +1,6 @@
-"circ.sim" <-
+"item.sim" <-
 function (nvar = 72 ,nsub = 500, 
-    circum = TRUE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
+    circum = FALSE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
 	{ 
 	avloading <- (xloading+yloading)/2
 	
@@ -12,7 +12,7 @@ function (nvar = 72 ,nsub = 500,
 	if (circum)  #make a vector of radians (the whole way around the circle) if circumplex
 	{radia <- seq(0,2*pi,len=nvar+1)  
       rad <- radia[which(radia<2*pi)]        #get rid of the last one
-     } else rad <- c(rep(0,nvar/4),rep(pi/2,nvar/4),rep(pi,nvar/4),rep(3*pi/2,nvar/4))  #simple structure  #simple structure 
+     } else   rad <- c(rep(0,nvar/4),rep(pi/2,nvar/4),rep(pi,nvar/4),rep(3*pi/2,nvar/4))  #simple structure 
         
 	error<- matrix(rnorm(nsub*(nvar)),nsub)    #create normal error scores
 

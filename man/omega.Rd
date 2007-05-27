@@ -9,7 +9,7 @@ omega(m, nfactors, pc = "pa",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{m}{A correlation matrix }
+  \item{m}{A correlation matrix or a data.frame/matrix of data }
   \item{nfactors}{Number of factors believed to be group factors}
   \item{pc}{  pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood .}
   \item{...}{Allows additional parameters to be passed through to the factor routines}
@@ -56,7 +56,7 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
  \url{http://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
-\note{ }
+\note{Requires the GPArotation package }
 \seealso{ \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }}
 \examples{
 \dontrun{

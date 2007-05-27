@@ -5,7 +5,7 @@
 \description{Simulation is one of most useful techniques in statistics and psychometrics.  Here we simulate a correlation matrix with a simple structure composed of a specified number of factors.  Each item is assumed to have complexity one.
 }
 \usage{
-VSS.simulate(ncases, nvariables, nfactors, meanloading)
+VSS.simulate(ncases=1000, nvariables=16, nfactors=4, meanloading=.5)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,7 +28,7 @@ vss <- VSS(simulated,rotate="varimax")
 VSS.plot(vss)
 }
 ## The function is currently defined as
-function(ncases,nvariables,nfactors,meanloading)    
+function(ncases=1000,nvariables=16,nfactors=4,meanloading=.5)    
 #generates a simple structure factor matrix
                                 #with nfactors
 

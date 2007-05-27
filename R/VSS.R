@@ -45,7 +45,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   vss.df <- data.frame(dof=rep(0,n),chisq=0,prob=0,sqresid=0,fit=0) #keep the basic results here 
  
   if (dim(x)[1]!=dim(x)[2]) x <- cor(x,use="pairwise") # if given a rectangular 
- 
+ if (n >  dim(x)[2]) {n <- dim(x)[2]}         #in cases where there are very few variables
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { 
    if(!(pc=="pc")) { if ( pc=="pa") {

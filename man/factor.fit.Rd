@@ -33,13 +33,6 @@ round(factor.fit(Harman74.cor$cov,fa3$loading),2)
 
 }
 
-## The function is currently defined as
-function (r,f) {
-     r2 <-sum( r*r)
-     rstar <- factor.residuals(r,f)
-     rstar2 <- sum(rstar*rstar)
-     fit<- 1- rstar2/r2
-     return(fit) }
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

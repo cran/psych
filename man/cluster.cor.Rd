@@ -63,31 +63,7 @@ cluster.cor(keys,r.mat)
 # first second 
 #     3      4 
 
-## The function is currently defined as
-function(keys,r.mat,correct=TRUE) { #function to extract clusters according to the key vector
-#default is to correct for attenuation and show this above the diagonal
-#find the correlation matrix of scales made up of items defined in a keys matrix
-#(e.g., extracted by factor2cluster) 
- #takes as input the keys matrix as well as a correlation matrix of all the items
- if(!is.matrix(keys)) keys <- as.matrix(keys) 
- #keys are sometimes a data frame - must be a matrix
- covar <- t(keys) \%*\% r.mat \%*\% keys    #matrix algebra is our friend
- var <- diag(covar)
- sd.inv <- 1/sqrt(var)
- ident.sd <- diag(sd.inv,ncol = length(sd.inv))
- cluster.correl <- ident.sd \%*\% covar  \%*\% ident.sd
- key.var <- diag(t(keys) \%*\% keys)
- key.alpha <- ((var-key.var)/var)*(key.var/(key.var-1))
- key.alpha[is.nan(key.alpha)] <- 1 #if only 1 variable to the cluster, then alpha is undefined
- key.alpha[!is.finite(key.alpha)] <- 1   
- colnames(cluster.correl) <- names(key.alpha)
- rownames(cluster.correl) <- names(key.alpha)
- if (correct) {cluster.corrected <- correct.cor(cluster.correl,t(key.alpha))
- return(list(cor=cluster.correl,sd=sqrt(var),corrected= cluster.corrected,size=key.var))
- }  #correct for attenuation
- else {
- return(list(cor=cluster.correl,sd=sqrt(var),alpha=key.alpha,size=key.var))}
- }
+
 }
 
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

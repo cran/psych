@@ -20,7 +20,8 @@ for (i in first:last) {
 	fa2 <- factor.pa(test.data,2)
 	fp <-    fa.parallel(test.data)
 	ic <-   ICLUST(test.data)
-	om <-  omega(test.data)
+	if(require(GPArotation)) {om <-  omega(test.data)} else {warning("Omega requires the GPArotation package to be loaded")
+	  om <- NULL}
 	fc <- factor.congruence(pc2,fa2)
 	vss2 <- VSS(test.data)
 	vsspc <- VSS(test.data,pc="pc")
@@ -41,10 +42,11 @@ for (i in first:last) {
   simple.par <- fa.parallel(simple)
   fa.simple <- factor.pa(simple,2)
   f4 <- VSS.simulate()
-  psych.d <- psycho.demo()
+ if (require(polycor)) { psych.d <- psycho.demo() } else {warning("psycho.demo requires the polycor package")
+         psych.d <- NULL}
   cong <- congeneric.sim()
   pairs.panels(cong)
-  fa.graph(factor.pa(item.sim(16),2))
+ if(require(Rgraphviz)) { fa.graph(factor.pa(item.sim(16),2)) } else {warning("fa.graph requires Rgraphviz") }
   out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}
 

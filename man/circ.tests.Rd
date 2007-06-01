@@ -9,13 +9,13 @@ circ.tests(loads, loading = TRUE, sorting = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{loads}{ A matrix of loadings \code{loads} here~~ }
-  \item{loading}{ Are these loadings or a correlation matrix \code{loading} here~~ }
-  \item{sorting}{ Should the variables be sorted \code{sorting} here~~ }
+  \item{loads}{ A matrix of loadings \code{loads} here }
+  \item{loading}{ Are these loadings or a correlation matrix \code{loading} }
+  \item{sorting}{ Should the variables be sorted \code{sorting} }
 }
-\details{A common model for representing psychological data is simple structure (Thurstone, 1947). According to one common interpretation, data are simple structured when items or scales have non-zero factor loadings on one and only one factor (Revelle & Rocklin, 1979). Despite the commonplace application of simple structure, some psychological models are defined by a lack of simple structure. Circumplexes (Guttman, 1954) are one kind of model in which simple structure is lacking.
+\details{``A common model for representing psychological data is simple structure (Thurstone, 1947). According to one common interpretation, data are simple structured when items or scales have non-zero factor loadings on one and only one factor (Revelle & Rocklin, 1979). Despite the commonplace application of simple structure, some psychological models are defined by a lack of simple structure. Circumplexes (Guttman, 1954) are one kind of model in which simple structure is lacking.
 
-A number of elementary requirements can be teased out of the idea of circumplex structure. First, circumplex structure implies minimally that variables are interrelated; random noise does not a circumplex make. Second, circumplex structure implies that the domain in question is optimally represented by two and only two dimensions. Third, circumplex structure implies that variables do not group or clump along the two axes, as in simple structure, but rather that there are always interstitial variables between any orthogonal pair of axes (Saucier, 1992). In the ideal case, this quality will be reflected in equal spacing of variables along the circumference of the circle (Gurtman, 1994; Wiggins, Steiger, & Gaelick, 1981). Fourth, circumplex structure implies that variables have a constant radius from the center of the circle, which implies that all variables have equal communality on the two circumplex dimensions (Fisher, 1997; Gurtman, 1994). Fifth, circumplex structure implies that all rotations are equally good representations of the domain (Conte & Plutchik, 1981; Larsen & Diener, 1992). (Acton and Revelle, 2004)
+``A number of elementary requirements can be teased out of the idea of circumplex structure. First, circumplex structure implies minimally that variables are interrelated; random noise does not a circumplex make. Second, circumplex structure implies that the domain in question is optimally represented by two and only two dimensions. Third, circumplex structure implies that variables do not group or clump along the two axes, as in simple structure, but rather that there are always interstitial variables between any orthogonal pair of axes (Saucier, 1992). In the ideal case, this quality will be reflected in equal spacing of variables along the circumference of the circle (Gurtman, 1994; Wiggins, Steiger, & Gaelick, 1981). Fourth, circumplex structure implies that variables have a constant radius from the center of the circle, which implies that all variables have equal communality on the two circumplex dimensions (Fisher, 1997; Gurtman, 1994). Fifth, circumplex structure implies that all rotations are equally good representations of the domain (Conte & Plutchik, 1981; Larsen & Diener, 1992). (Acton and Revelle, 2004)
 
 Acton and Revelle reviewed the effectiveness of 10 tests of circumplex structure and found that four did a particularly good job of discriminating circumplex structure from simple structure, or circumplexes from ellipsoidal structures. Unfortunately, their work was done in Pascal and is not easily available. Here we release R code to do the four most useful tests:
 
@@ -34,78 +34,24 @@ Acton and Revelle reviewed the effectiveness of 10 tests of circumplex structure
   \item{VT}{variance.test}
  
 }
-\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 \url{~http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
+\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
 \author{ William Revelle}
 \note{ Of the 10 criterion discussed in Acton and Revelle (2004), these tests operationalize the four most useful.
 
 }
 \seealso{  \code{\link{circ.simulation}}, \code{\link{circ.sim}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+circ.data <- circ.sim(24,500)
+circ.fa <- factor.pa(circ.data,2)
+#plot(circ.fa$loadings)
+ct <- circ.tests(circ.fa)
+#compare with non-circumplex data
+simp.data <- item.sim(24,500)
+simp.fa <- factor.pa(simp.data,2)
+#plot(simp.fa$loadings)
+st <- circ.tests(simp.fa)
+print(rbind(ct,st),digits=2)
 
-## The function is currently defined as
-function(loads,loading=TRUE,sorting=TRUE) {
-
-circ.gap <- function(loads,loading=TRUE,sorting=TRUE) {
-if (loading) {l <- loads$loadings} else { 
-       l <- loads}
-       l<- l[,1:2]
-    commun=rowSums(l*l) 
-    theta=sign(l[,2])*acos(l[,1]/sqrt(commun)) #vector angle in radians
-    if(sorting) {theta<- sort(theta)}
-    gaps <- diff(theta)
-    test <- var(gaps)
-    return(test)
-    }
-
-
-circ.fisher <- function(loads,loading=TRUE) {
-if (loading) {l <- loads$loadings} else { 
-       l <- loads}
-       l<- l[,1:2]
-   radius <- rowSums(l * l)
-   test <- sd(radius)/mean(radius)
-  return (test)
-  }
-  
-  
-  circ.rt <- function(loads,loading=TRUE) {
- if (loading) {l <- loads$loadings} else { 
-       l <- loads}
-       l<- l[,1:2]
-       qmc <- rep(0,10)
-       for (i in 0:9) {theta <- 5*i
-       	rl <- factor.rotate(l,theta,1,2)
-       	 l2 <- rl*rl
-       qmc[i] <- sum(apply(l2,1,var)) }
-       test <- sd(qmc)/mean(qmc)
- }
- 
- circ.v2 <- function(loads,loading=TRUE) {
-if (loading) {l <- loads$loadings} else { 
-       l <- loads}
-       l<- l[,1:2]
-   crit <- rep(0,10)
-       for (i in 0:9) {
-       		theta <- 5*i
-       		rl <- factor.rotate(l,theta,1,2)
-       	 	l2 <- rl*rl
-       	 	suml2 <- sum(l2)
-       		crit[i] <- var(l2[,1]/suml2)
-       }
-       test <- sd(crit)/mean(crit)
-  return (test)
-  }
- 
-
-   gap.test <- circ.gap(loads,loading,sorting)
-   fisher.test <- circ.fisher(loads,loading)
-   rotation.test <- circ.rt(loads,loading)
-   variance.test <- circ.v2(loads,loading)
-   circ.tests <- list(gaps=gap.test,fisher=fisher.test,RT=rotation.test,VT=variance.test)
-   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

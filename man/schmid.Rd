@@ -19,10 +19,9 @@ schmid(model, nfactors = 3, pc = "pa",...)
 
 A typical example would be in the study of anxiety and depression.  A general neuroticism factor (g) accounts for much of the variance, but smaller group factors of tense anxiety, panic disorder, depression, etc. also need to be considerd.
 
-An alternative model is to consider hierarchical cluster analysis 
+An alternative model is to consider hierarchical cluster analysis techniques such as \code{\link{ICLUST}}.
 
 Requires the GPArotation package.
-(\code{\link{ICLUST}}). 
 }
 \value{
   
@@ -36,38 +35,9 @@ Requires the GPArotation package.
 \references{\url{http://personality-project.org/r/r.omega.html} gives an example taken from Jensen and Weng, 1994 of a S-L transformation.}
 \author{ William Revelle}
 
-\seealso{  \code{\link{omega}}, \code{\link{ICLUST}},\code{\link{VSS}} }
+\seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
 
-
-## The function is currently defined as
-function (model, nfactors = 3, pc = "pa",...) 
-{
-    if (pc=="pc") {
-        fact <- principal(model, nfactors,...)
-    } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,...) } else {
-        fact <- factanal(x, covmat = model, factors = nfactors,...)
-    }}
-       obminfact <- oblimin(loadings(fact))
-    rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
-    fload <- obminfact$loadings
-    factr <- t(obminfact$Th) \%*\% (obminfact$Th)
-    gfactor <- factanal(x, covmat = factr, factors = 1)
-    gload <- loadings(gfactor)
-    gprimaryload <- fload \%*\% gload
-    colnames(gprimaryload) <- "g factor"
-    u2 <- 1 - diag(fload \%*\% t(fload))
-    h2 <- 1 - u2
-    uniq <- 1 - fload^2
-    guniq <- 1 - gprimaryload^2
-    Ig <- matrix(0, ncol = nfactors, nrow = nfactors)
-    diag(Ig) <- gload
-    primeload <- fload \%*\% Ig
-    uniq2 <- 1 - uniq - primeload^2
-    sm <- sqrt(uniq2)
-    schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fload, 
-        fcor = factr, gloading = gload)
-}
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

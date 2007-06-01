@@ -20,15 +20,11 @@ harmonic.mean(x)
 \note{Included as a simple demonstration of how to write a function}
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 x <- seq(1,5)
 x2 <- x^2
 harmonic.mean(x)
 harmonic.mean(x2)
-## The function is currently defined as
-function(x) { 1/(mean(1/x)) }
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

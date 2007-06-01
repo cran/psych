@@ -42,52 +42,7 @@ These loadings are particularly interpretable when sorted by absolute magnitude 
  clusters <- matrix(c(1,1,1,rep(0,24),1,1,1,1,rep(0,17)),ncol=2)
  cluster.loadings(clusters,r.mat)}
  
-## The function is currently defined as
-function (keys, r.mat, correct = TRUE, digits = 2) 
-{
-    if (!is.matrix(keys)) 
-        keys <- as.matrix(keys)
-    item.covar <- r.mat \%*\% keys
-    covar <- t(keys) \%*\% item.covar
-    var <- diag(covar)
-    sd.inv <- 1/sqrt(var)
-    key.count <- diag(t(keys) \%*\% keys)
-    if (correct) {
-        cluster.correct <- diag((key.count/(key.count - 1)))
-        for (i in 1:ncol(keys)) {
-            if (key.count[i] == 1) {
-                cluster.correct[i, i] <- 1
-            }
-            else {
-                item.covar[, i] <- item.covar[, i] - keys[, i]
-            }
-        }
-        correction.factor <- keys \%*\% cluster.correct
-        correction.factor[correction.factor < 1] <- 1
-        item.covar <- item.covar * correction.factor
-    }
-    ident.sd <- diag(sd.inv, ncol = length(sd.inv))
-    cluster.loading <- item.covar \%*\% ident.sd
-    cluster.correl <- ident.sd \%*\% covar \%*\% ident.sd
-    key.alpha <- ((var - key.count)/var) * (key.count/(key.count - 
-        1))
-    key.alpha[is.nan(key.alpha)] <- 1
-    key.alpha[!is.finite(key.alpha)] <- 1
-    colnames(cluster.loading) <- colnames(keys)
-    colnames(cluster.correl) <- colnames(keys)
-    rownames(cluster.correl) <- colnames(keys)
-    rownames(cluster.loading) <- rownames(r.mat)
-    if (ncol(keys) > 1) {
-        cluster.corrected <- correct.cor(cluster.correl, t(key.alpha))
-    }
-    else {
-        cluster.corrected <- cluster.correl
-    }
-    return(list(loadings = round(cluster.loading, digits), cor = round(cluster.correl, 
-        digits), corrected = round(cluster.corrected, digits), 
-        sd = round(sqrt(var), digits), alpha = round(key.alpha, 
-            digits), size = key.count))
-  }
+
 }
 \keyword{multivariate }% at least one, from doc/KEYWORDS
 \keyword{ cluster }% __ONLY ONE__ keyword per line

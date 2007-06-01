@@ -48,75 +48,9 @@ Maintainer: William Revelle  \email{  revelle@northwestern.edu           }
 }
 \seealso{ \code{\link{omega}}, \code{\link{ICLUST.rgraph}} }
 \examples{
-om24 <- omega(Harman74.cor$cov,4)  #run omega
-om24pn <- omega.graph(om24,sl=FALSE) #show the structure
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+if(require(GPArotation) ) {om24 <- omega(Harman74.cor$cov,4) } #run omega
+if(require(Rgraphviz) ){om24pn <- omega.graph(om24,sl=FALSE)} #show the structure
 
-## The function is currently defined as
-function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
-   size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction="RL", digits=2,title="Omega", ...){
-    require(Rgraphviz)
-    
-   if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else{factors <- as.matrix(om.results$schmid$oblique)}
-   rank.direction <- match.arg(rank.direction)
-  #first some basic setup parameters 
- 
-   num.var <- dim(factors)[1]   #how many variables?
-  if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
-  
-   vars <- paste("V",1:num.var,sep="")   
-   fact <- c("g",paste("F",1:num.factors,sep=""))
-   clust.graph <-  new("graphNEL",nodes=c(vars,fact),edgemode="directed")
-   graph.shape <- c(rep("box",num.var),rep("ellipse",num.factors+1))
-   graph.rank <- c(rep("sink",num.var),rep("",num.factors+1))
-   names(graph.shape) <- nodes(clust.graph)
-   names(graph.rank) <- nodes(clust.graph)
-   edge.label <- rep("",num.var*2)
-   edge.name <- rep("",num.var*2)
-   names(edge.label) <-  seq(1:num.var*2)  
-  #show the cluster structure with ellipses
-   if (sl) {
-   l <- matrix(factors[,2:(num.factors+1)],ncol=num.factors) } else { l <- factors }
-   m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max), 
-        ncol = 1)
-        
-  if (sl) { for (i in 1:num.var) {
-     clust.graph <- addEdge(fact[1], vars[i], clust.graph,1) } } else {
-        for (i in 1:num.factors) {clust.graph <- addEdge(fact[1], fact[i+1], clust.graph,1) } }
-   for (i in 1:num.var) {  clust.graph <- addEdge(fact[1+m1[i]], vars[i], clust.graph,1) }  
-
- if(FALSE) {      
-     edge.label[(i-1)*2+1] <- results[i,"r1"]
-     edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
-     clust.graph <- addEdge(row.names(results)[i], results[i,2], clust.graph,1)
-      edge.label[i*2] <- results[i,"r2"]
-      edge.name [i*2]  <- paste(row.names(results)[i],"~", results[i,2],sep="")
-     } 
-     
- nAttrs <- list()  #node attributes
- eAttrs <- list()  #edge attributes
-
-
- if (!is.null(labels)) {var.labels <- c(labels,fact)
-  names(var.labels) <-  nodes(clust.graph)
-  nAttrs$label <- var.labels
-  names(edge.label) <- edge.name
-  } 
-    names(edge.label) <- edge.name
- nAttrs$shape <- graph.shape
- nAttrs$rank <- graph.rank
- eAttrs$label <- edge.label
- attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir="RL", fontsize=10,bgcolor="white" ))
- obs.var <- subGraph(vars,clust.graph)
- cluster.vars <- subGraph(fact,clust.graph)
- observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="")))
- plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed) 
-if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
-return(clust.graph)
-   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

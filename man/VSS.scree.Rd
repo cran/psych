@@ -28,14 +28,7 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 #VSS.scree(attitude)
 #VSS.scree(cor(attitude)
 
-## The function is currently defined as
 
-function(rx,main="scree plot") {
- nvar <- dim(rx)[2]
- if (nvar <dim(rx)[1]) {rx <- cor(rx,use="pairwise")}
- values <-  eigen(rx)$values
-plot(values,type="b", main = main )
-abline(h=1) }
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

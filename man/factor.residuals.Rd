@@ -23,11 +23,6 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 
 \examples{
 
-
-## The function is currently defined as
-function(r, f) {
-   rstar<- r- factor.model(f)
-   return(rstar)}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

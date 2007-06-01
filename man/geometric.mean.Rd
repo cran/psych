@@ -22,15 +22,12 @@ geometric.mean(x)
 }
 \seealso{ \code{\link{harmonic.mean}}, \code{\link{mean}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+
 x <- seq(1,5)
 x2 <- x^2
 geometric.mean(x)
 geometric.mean(x2)
-## The function is currently defined as
-function(x) { exp(mean(log(x))) }
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

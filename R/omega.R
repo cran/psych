@@ -2,7 +2,7 @@
 function(m,nfactors=3,pc="pa",...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
-      require(GPArotation)
+      if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
       nvar <-dim(m)[2]
       if(dim(m)[1] != dim(m)[2]) m <- cor(m,use="pairwise")
       gf<-schmid(m,nfactors,pc,...)

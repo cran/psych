@@ -4,7 +4,7 @@ function (model, nfactors = 3, pc = "pa",...)
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
-      require(GPArotation)
+      if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) model <- cor(model,use="pairwise")
     if (pc=="pc") {

@@ -54,11 +54,11 @@ The program currently has three primary functions: cluster, loadings, and graphi
 
 Clustering 24 tests of mental ability
 
- A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order.  Note that the graphic is created using GraphViz in the dot language.  \code{\link{ICLUST.graph}} produces the dot code for Graphviz.  I have also tried doing this in Rgraphviz with less than wonderful results.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g.,OmniGraffle)
+ A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order.  Note that the graphic is created using GraphViz in the dot language.  \code{\link{ICLUST.graph}} produces the dot code for Graphviz.  Somewhat lower resolution graphs with fewer options are available in the \code{\link{ICLUST.rgraph}} function which requires Rgraphviz.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g.,OmniGraffle)
 
 Note that for this problem, with these parameters, the data formed one large cluster. (This is consistent with the Very Simple Structure (\code{\link{VSS}}) output as well, which shows a clear one factor solution for complexity 1 data.)  See below for an example with this same data set, but with more stringent parameter settings.  
 
-To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.html} . 
+To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.html} or use \code{\link{ICLUST.rgraph}} (requires Rgraphviz). 
 
 }
 \value{
@@ -82,7 +82,7 @@ See also  more extensive documentation at
  \url{http://personality-project.org/revelle.html}   }
         
 
-\seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega} }}
+\seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
 \examples{
 \dontrun{
@@ -299,42 +299,7 @@ ic.out    #shows the output on the console
 #[1] 24
 #
 #
-### The function is currently defined as
-function (r.mat,nclusters=1,alpha=3,beta=2,beta.size=4,alpha.size=3,correct=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST") {#should allow for raw data, correlation or covariances
- #ICLUST.options <- list(n.clus=1,alpha=3,beta=2,beta.size=4,alpha.size=3,correct=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2) 
-	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,reverse=reverse,beta.min=beta.min,output=output,digits=digits) 
-	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
-	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options)
-	load <- cluster.loadings(iclust.results$clusters,r.mat,digits=digits)
-	fits <- cluster.fit(r.mat,load$loadings,iclust.results$clusters,digits=digits)
-	sorted <- ICLUST.sort(ic.load=load$loadings,labels=labels,cut=cut) #sort the loadings
-	
-	#now, iterate the cluster solution to clean it up (if desired)
-	
-		clusters <- iclust.results$clusters
-		old.clusters <- clusters
-		old.fit <- fits$clusterfit
-		clusters <- factor2cluster(load$loadings,cut=cut,loading=FALSE)
-		load <- cluster.loadings(clusters,r.mat,digits=digits)
-		if (n.iterations > 0) {  #it is possible to iterate the solution to perhaps improve it 
-		for (steps in 1:n.iterations) {   #
-			load <- cluster.loadings(clusters,r.mat,digits=digits)
-			clusters <- factor2cluster(load$loadings,cut=cut,loading=FALSE)
-			if(dim(clusters)[2]!=dim(old.clusters)[2]) {change <- 999 
-			load <- cluster.loadings(clusters,r.mat,digits=digits) } else {
-			change <- sum(abs(clusters)-abs(old.clusters)) }  #how many items are changing?
-			fit <- cluster.fit(r.mat,load$loadings,clusters,digits=digits)
-		old.clusters <- clusters
-		print(paste("iterations ",steps," change in clusters ", change, "current fit " , fit$clusterfit))
-		if ((abs(change) < 1) | (fit$clusterfit <= old.fit)) {break}    #stop iterating if it gets worse or there is no change in cluster definitions
-		old.fit <- fit$cluster.fit
-					}
-		}
-	p.fit <- cluster.fit(r.mat,load$loadings,clusters,digits=digits)
-	p.sorted <- ICLUST.sort(ic.load=load$loadings,labels=labels,cut=cut)
-	purified <- cluster.cor(clusters,r.mat,digits=digits)
-	list(title=title,clusters=iclust.results$clusters,corrected=load$corrected,loadings=load$loadings,fit=fits,results=iclust.results$results,cor=load$cor,alpha=load$alpha,size=load$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
-}   
+   
 
 }
 \keyword{multivariate}% at least one, from doc/KEYWORDS

@@ -17,34 +17,16 @@ skew(x, na.rm = TRUE)
 \value{if input is a matrix or data.frame, skew is a vector of skews}
 \author{William Revelle }
 
-\note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.}
+\note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.
+
+}
 
 \seealso{\code{\link{describe}}, \code{\link{describe.by}}, \code{\link{kurtosi}}   }
 
 
 \examples{
 round(skew(attitude),2)
-## The function is currently defined as
-function (x, na.rm = TRUE) 
-{
-    if (length(dim(x)) == 0) {
-        if (na.rm) {
-            x <- x[!is.na(x)]
-        			}
-        sdx <- sd(x,na.rm=na.rm)
-        mx <- mean(x)
-        skewer <- sum((x - mx)^3)/(length(x) * sd(x)^3) 
-        } else {
-    
-    skewer <- rep(NA,dim(x)[2])
-    mx <- colMeans(x,na.rm=na.rm)
-    sdx <- sd(x,na.rm=na.rm)
-    for (i in 1:dim(x)[2]) {
-    skewer[i] <- sum((x[,i] - mx[i])^3,  na.rm = na.rm)/((length(x[,i]) - sum(is.na(x[,i]))) * sdx[i]^3)
-            }
-    }
-    return(skewer)
-}
+
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

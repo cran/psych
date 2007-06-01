@@ -4,7 +4,7 @@
 function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction="RL", digits=1,title="Factor Analysis", ...){
-    require(Rgraphviz)
+    	if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
     
 factors <- as.matrix(fa.results$loadings)
    rank.direction <- match.arg(rank.direction)

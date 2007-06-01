@@ -21,13 +21,6 @@ eigen.loadings(x)
  \url{http://personality-project.org/revelle.html}}
 \note{Useful for SAPA analyses}
 \examples{
-
-## The function is currently defined as
-"eigen.loadings" <- 
-function (x) { #convert eigen vectors to loadings by unnormalizing them
-               #used if using princomp or princ, not needed for principal
-    return(x$vectors \%*\% sqrt(diag(x$values)))
-    }
 }
     
 \keyword{ models }% at least one, from doc/KEYWORDS

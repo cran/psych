@@ -20,21 +20,9 @@ VSS.parallel(ncases, nvariables,scree=FALSE,rotate="none")
 \references{Very Simple Structure (VSS)}
 \author{ William Revelle}
 
-\seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}}
+\seealso{  \code{\link{fa.parallel}}, \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(ncases,nvariables,scree=FALSE,rotate="none")       #function call 
-{  
- simdata=matrix(rnorm(ncases*nvariables),nrow=ncases,ncol=nvariables)    #make up simulated data
- if(scree) {VSS.scree(simdata) 
- testsim <- simdata}  else {testsim <- VSS(simdata,8,rotate)}
- return(testsim)
- }
-
+#VSS.plot(VSS.parallel(200,24))
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

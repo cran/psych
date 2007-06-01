@@ -25,8 +25,6 @@ cors <- seq(-.9,.9,.1)
 round(fisherz(cors),2)
 }
 
-## The function is currently defined as
-function(rho)  {0.5*log((1+rho)/(1-rho)) }   #converts r to z  
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

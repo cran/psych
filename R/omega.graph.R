@@ -1,10 +1,12 @@
 #Created May 20, 2007
+#modified June 2 to clarify the Rgraphviz issue
 #take the output from omega and graph it
 "omega.graph" <-
 function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction="RL", digits=1,title="Omega", ...){
-    require(Rgraphviz)
+   
+     if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
     
    if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else{factors <- as.matrix(om.results$schmid$oblique)}
    rank.direction <- match.arg(rank.direction)

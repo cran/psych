@@ -14,6 +14,8 @@ correct.cor(x, y)
 }
 \details{Disattenuated correlations may be thought of as  correlations between the latent variables measured by a set of observed variables. That is, what would the correlation be between two (unreliable) variables be if both variables were measured perfectly reliably.
 
+This function is mainly used if importing correlations and reliabilities from somewhere else.  If the raw data are available, use \code{\link{score.items}}, or  \code{\link{cluster.loadings}} or \code{\link{cluster.cor}}.
+
 Examples of the output of this function are seen in \code{\link{cluster.loadings}} and \code{\link{cluster.cor}}
 }
 \value{Raw correlations below the diagonal, reliabilities on the diagonal, disattenuated above the diagonal.
@@ -46,20 +48,13 @@ cluster.loadings(clusters,cor(attitude))
 clusters <- matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2)
 cluster.cor(clusters,cor(attitude))
 #
+#best
+scores <- score.items(matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2),attitude)
+scores$corrected
 }
 
 
-## The function is currently defined as
-"correct.cor" <-
-function(x,y) { n=dim(x)[1]   
-        { diag(x) <- y 
-        if (n> 1)  {
-        for (i in 2:n) {
-           k=i-1
-           for (j in 1:k) {
-              x[j,i] <- x[j,i]/sqrt(y[i]*y[j])  }   #fix the upper triangular part of the matrix
-             }}
-           return(x)  }}
+
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ multivariate }% __ONLY ONE__ keyword per line

@@ -26,10 +26,6 @@ Revelle, W. In preparation) An Introduction to Psychometric Theory with applicat
 \examples{
 
 
-## The function is currently defined as
-function(f) { 
-    result<- f \%*\% t(f)
-    return (result)}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

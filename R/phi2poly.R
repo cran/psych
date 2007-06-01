@@ -1,6 +1,6 @@
 "phi2poly" <-
 function(ph,cp,cc) {
-	require(polycor)
+	if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package to use phi2poly")}
      #ph is the phi coefficient
      #cp is the selection ratio of the predictor
      #cc is the success rate of the criterion

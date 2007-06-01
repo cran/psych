@@ -20,9 +20,7 @@ x \%+\% y }
 \author{William Revelle}
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+
 x <- seq(1,4)
 z <- x \%+\% -t(x)
 x
@@ -33,23 +31,7 @@ z <- x \%+\% y
 x
 y
 z
-## The function is currently defined as
-"\%+\%" <- function(x,y) { 
- if(!is.matrix(x)) {
-	if(is.vector(x)) {x <- as.matrix(x)} else stop("x must be either a vector or a matrix")}
-if(!is.matrix(y)) {
-	if(is.vector(y)) {y <- as.matrix(y)} else stop("y must be either a vector or a matrix")}
-n.x <- dim(x)[1]
-n.y <- dim(y)[2]
-n.k <- dim(x)[2]
-if (n.k != dim(y)[1]) {warning("Matrices should be comparable")}
-#first find sum vectors
-x <- rowSums(x)
-y <- colSums(y)
-one <- as.vector(rep(1,n.y))  #to duplicate x n.y times
-one.y <- as.vector(rep(1,n.x)) #to duplicate y n.x times
-xy  <- x %*% t(one) + t(y %*% t(one.y) )  #sum the vectors in a rectangular array
-  return(xy) }
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

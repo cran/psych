@@ -41,20 +41,22 @@ When given a set of items from a personality inventory, one goal is to combine t
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-23\cr
-Date: \tab 2007-5-24,\cr
+Version: \tab 1.0-25\cr
+Date: \tab 2007--6-1\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
 
-\link{psych}       A package for personality, psychometric, and psychological research.\cr
-\cr
+
+\link{psych}        A package for personality, psychometric, and psychological research.\cr
+  \cr
 Useful data entry and descriptive statistics\cr
 
-\link{describe}                Basic descriptive statistics useful for psychometrics\cr
-\link{describe.by}             Find summary statistics by groups\cr
-\link{read.clipboard}          shortcut for reading from the clipboard\cr
-\link{read.clipboard.csv}      shortcut for reading comma delimited files from clipboard\cr
+\link{describe}                 Basic descriptive statistics useful for psychometrics\cr
+\link{describe.by}              Find summary statistics by groups\cr
+\link{read.clipboard}           shortcut for reading from the clipboard\cr
+\link{read.clipboard.csv}       shortcut for reading comma delimited files from clipboard\cr
+
 \link{pairs.panels}            SPLOM and correlations for a data matrix\cr
 \link{multi.hist}             Histograms of multiple variables arranged in matrix form\cr
 \link{skew}                   Calculate skew for a vector, each column of a matrix, or data.frame\cr
@@ -124,9 +126,21 @@ Functions that are under development and not recommended for casual use \cr
 \link{test.psych}             Run a test of the major functions on 5 different data sets.  Primarily for development purposes. Although the output can be used as a demo of the various functions.
 }
 \note{Development versions of this package are maintained at the local repository \url{http://personality-project.org/r} along with further documentation.  Specify that you are downloading a source package.  
+\cr
+Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph, fa.graph require Rgraphviz.  i.e.:
+\cr
 
+\tabular{ll}{
+function  \tab     requires\cr
+\link{omega}    \tab     GPArotation \cr
+\link{schmid}    \tab     GPArotation\cr
+\link{poly.mat}   \tab    polychor\cr
+\link{phi2poly}   \tab    polychor\cr
+\link{polychor.matrix}\tab polychor \cr
+\link{ICLUST.rgraph} \tab   Rgraphviz \cr
+\link{fa.graph}  \tab      Rgraphviz \cr
+}
 
-Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. 
 }
 
 }

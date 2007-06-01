@@ -1,5 +1,5 @@
 "VSS" <-
-function (x,n=8,rotate="none",diagonal=FALSE,pc="pa",n.obs=1000,...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=1000,...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
   #x is a data matrix
   #n is the maximum number of factors to extract  (default is 8)
   #rotate is a string "none" or "varimax" for type of rotation (default is "none"

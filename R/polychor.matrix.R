@@ -1,6 +1,6 @@
 "polychor.matrix" <-
 function(x,y=NULL) {
-	require(polycor)
+		if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package")}
  sizex <- dim(x)[2]
 if (((is.data.frame(y))|(is.matrix(y))))  sizey<-dim(y)[2] 
    else  sizey <- dim(x)[2]

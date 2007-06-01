@@ -6,7 +6,7 @@
 function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction="RL", digits=2,title="ICLUST", ...){
-    require(Rgraphviz)
+ if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
    clusters <- as.matrix(ic.results$clusters)  
    results <- ic.results$results 
   

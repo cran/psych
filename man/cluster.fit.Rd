@@ -41,24 +41,6 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
  fit
  
 
-## The function is currently defined as
-function (original, load, clusters, diagonal = FALSE, digits = 2) 
-{
-    sqoriginal <- original * original
-    totaloriginal <- sum(sqoriginal) - diagonal * sum(diag(sqoriginal))
-    model <- load \%*\% t(load)
-    residual <- original - model
-    sqresid <- residual * residual
-    totalresid <- sum(sqresid) - diagonal * sum(diag(sqresid))
-    fit <- 1 - totalresid/totaloriginal
-    model.1 <- (load * clusters) \%*\% t(load * clusters)
-    residual <- original - model.1
-    sqresid <- residual * residual
-    totalresid <- sum(sqresid) - diagonal * sum(diag(sqresid))
-    fit.1 <- 1 - totalresid/totaloriginal
-    cluster.fit <- list(clusterfit = round(fit.1, digits), factorfit = round(fit, 
-        digits))
-  }
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ cluster }% __ONLY ONE__ keyword per line

@@ -55,47 +55,7 @@ This is not an "official" way to do IRT, but is useful for basic item developmen
 \examples{
 
 
-## The function is currently defined as
-function(diff,items) {
-#
-#
-#the basic one parameter model
- irt <- function(x,diff,scores) {
-  fit <- -1*(log(scores/(1+exp(diff-x)) + (1-scores)/(1+exp(x-diff))))
-rowMeans(fit,na.rm=TRUE)
-  }
- #
- diff<- diff
- items <-items
- num <- dim(items)[1]
- fit <- matrix(NA,num,2)
- total <- rowMeans(items,na.rm=TRUE)
- count <- rowSums(!is.na(items))
- 
- for (i in 1:num) {
- 	
- 	if (count[i]>0)  {myfit <- optimize(irt,c(-4,4),diff=diff,scores=items[i,]) #how to do an apply?
-     		fit[i,1] <- myfit$minimum    
-     		fit[i,2] <- myfit$objective  #fit of optimizing program
-     		} else {
-         	fit[i,1] <- NA
-  			fit[i,2] <- NA 
-    			}    #end if else
-    }  #end loop 
-	irt.person.rasch <-data.frame(total,theta=fit[,1],fit=fit[,2],count)}
-	
-	
-irt.0p <- function(items,possible=20) {
-raw <- rowMeans(items,na.rm=TRUE) 
-ave <- raw
-valid <- rowSums(!is.na(items))
-ave[(!is.na(ave))&(ave<.0001)] <- 1/(possible+1)
-ave[(!is.na(ave))&(ave > .9999)] <-  (possible)/(possible+1)
-theta <- -log((1/ave) -1)
-irt.0p <- matrix(c(theta,raw,valid),ncol=3)
-colnames(irt.0p ) <- c("theta","raw","valid")
-return(irt.0p)
-}
+
 }
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line

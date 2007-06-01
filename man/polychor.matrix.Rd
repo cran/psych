@@ -20,51 +20,12 @@ Please do not use.
 
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
 }
 
 \author{ William Revelle}
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function(x,y=NULL) {
-	require(polycor)
- sizex <- dim(x)[2]
-if (((is.data.frame(y))|(is.matrix(y))))  sizey<-dim(y)[2] 
-   else  sizey <- dim(x)[2]
-        
- result<-matrix(1,nrow=sizey,ncol=sizex)   #create the output array
-
- xnames<- names(x)
- colnames(result)<- names(x)
-
-if (((is.data.frame(y))|(is.matrix(y))))  rownames(result) <- names(y)
-    else  rownames(result) <- names(x)
- 
-    
-if (!((is.data.frame(y))|(is.matrix(y)))) {     #default case returns a square matrix
-   for (i in 2: sizex ) {
-     for (j in 1:( i-1)) {
-      result[j,i]<-polychor(table(x[,j],x[,i]) )
-       result[i,j] <- result[j,i]
-       }
-      }
-      }
-     else {                   #if y is input, then return the rectangular array
-        for (i in 1: sizex ) {
-            for (j in 1:sizey) {
-                 result[j,i]<-polychor(table(x[,i],y[,j]) )
-                     }
-                } }
-   return (result) }
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

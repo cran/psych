@@ -64,36 +64,6 @@ print(mat.regress(test.data,c(1,2,3),c(4,5,10,12)),digits=2)
 #             0.239              0.148              0.034              0.101 
 #
 
-
-## The function is currently defined as
-function(m,x,y)  {
- #a function to extract subsets of variables (a and b) from a correlation matrix m
-  #and find the multiple correlation beta weights + R2 of the a set predicting the b set
-    
-    #first reorder the matrix to select the right variables
-         nm <- dim(m)[1]
-        t.mat <- matrix(0,ncol=nm,nrow=nm)
-        xy <- c(x,y)
-         numx <- length(x)
-     	numy <- length(y)
-        nxy <- numx+numy
-        for (i in 1:nxy) {
-     	t.mat[i,xy[i]] <- 1 }
-     	
-     	reorder <- t.mat \%*\% m \%*\% t(t.mat)
-     	a.matrix <- reorder[1:numx,1:numx]
-     	b.matrix <- reorder[1:numx,(numx+1):nxy]
-     	model.mat <- solve(a.matrix,b.matrix)       #solve the equation bY~aX
-     	if (length(y) >1 ) { rownames(model.mat) <- rownames(m)[x]
-     	 colnames(model.mat) <- colnames(m)[y]
-     	 
-     	R2 <- colSums(model.mat * b.matrix) }
-     	 else { R2 <- sum(model.mat * b.matrix)
-     	 names(model.mat) <- rownames(m)[x]
-     	 names(R2) <- colnames(m)[y]}
-     	mat.regress <- list(beta=model.mat,R2=R2)
-     	return(mat.regress)
-     	}
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{multivariate }% __ONLY ONE__ keyword per line

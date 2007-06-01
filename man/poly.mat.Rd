@@ -27,16 +27,7 @@ poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)
 
 
 
-## The function is currently defined as
-function(x,short=TRUE,std.err=FALSE,ML=FALSE) {
-require(polycor)  #John Fox's Polycor package
-xm <- as.matrix(x)   
-xm.cat <- matrix(as.factor(xm),ncol=dim(xm)[2])
-colnames(xm.cat) <- colnames(xm)
-r.het <- hetcor(xm.cat,std.err=std.err,ML=ML)
-colnames(r.het$correlations) <- colnames(xm)
-if(short) {return(r.het$correlations)} else {return(r.het)}
-  }
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

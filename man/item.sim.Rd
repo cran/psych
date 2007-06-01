@@ -38,43 +38,14 @@ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for 
 
 \seealso{  See Also the implementation in this to generate numerous simulations.  \code{\link{circ.simulation}},  \code{\link{circ.tests}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-circ.data <- circ.sim(nvar=8,nsub=200)
-round(cor(circ.data),2)
 
-## The function is currently defined as
-function (nvar = 72 ,nsub = 500, 
-    circum = TRUE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
-	{ 
-	avloading <- (xloading+yloading)/2
-	
-	errorweight <- sqrt(1-(avloading^2  + gloading^2))  #squared errors and true score weights add to 1
-    g <- rnorm(nsub) 
-	truex <- rnorm(nsub)* xloading  +xbias #generate normal true scores for x + xbias
-	truey <- rnorm(nsub) * yloading + ybias #generate normal true scores for y + ybias
+round(cor(circ.sim(nvar=8,nsub=200)),2)
+plot(factor.pa(circ.sim(16,500),2)$loadings) #circumplex structure
+#
+#
+plot(factor.pa(item.sim(16,500),2)$loadings) #simple structure
+#
 
-	if (circum)  #make a vector of radians (the whole way around the circle) if circumplex
-	{radia <- seq(0,2*pi,len=nvar+1)  
-      rad <- radia[which(radia<2*pi)]        #get rid of the last one
-     } else rad <- rep(seq(0,3*pi/2,len=4),nvar/4) #simple structure 
-        
-	error<- matrix(rnorm(nsub*(nvar)),nsub)    #create normal error scores
-
-	#true score matrix for each item reflects structure in radians
-	trueitem <- outer(truex, cos(rad)) + outer(truey,sin(rad)) 
-
-	item<- gloading * g +  trueitem  + errorweight*error   #observed item = true score + error score 
-    if (categorical) {
-        
-    	item = round(item)       #round all items to nearest integer value
-		item[(item<= low)] <- low     
-		item[(item>high) ] <- high   
-		}
-	if (truncate) {item[item < cutpoint] <- 0  }
-	return (item) 
-	}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

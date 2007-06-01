@@ -66,10 +66,6 @@ y
 #X5      6 7  0.23 1.12   0.19 1.27 -1.46 1.85  3.31 0.42
 
 
-## The function is currently defined as
-function (x,group,...) {               #data are x, grouping variable is group
-answer <- by(x,group,describe,...)
-return(answer)}
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

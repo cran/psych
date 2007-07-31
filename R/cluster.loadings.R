@@ -3,9 +3,10 @@ function (keys, r.mat, correct = TRUE,digits=2)
 {
     if (!is.matrix(keys)) {
         keys <- as.matrix(keys)}
-      
+    r.mat[is.na(r.mat)] <- -9999999 
     item.covar <- r.mat %*% keys          #item by cluster covariances
     covar <- t(keys) %*% item.covar  #variance/covariance of clusters
+   
     var <- diag(covar)
     sd.inv <- 1/sqrt(var)
     
@@ -28,6 +29,8 @@ function (keys, r.mat, correct = TRUE,digits=2)
     c.loading <-  item.covar %*% ident.sd
     c.correl <- ident.sd %*% covar %*% ident.sd
     
+     c.loading[abs(c.loading)  > 99999] <- NA
+      c.correl[abs(c.correl) > 99999] <- NA
     
    
     

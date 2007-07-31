@@ -1,5 +1,6 @@
 #Created May 20, 2007
 #modified June 2 to clarify the Rgraphviz issue
+#modified July 12 to fix label problem
 #take the output from omega and graph it
 "omega.graph" <-
 function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
@@ -15,7 +16,8 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    num.var <- dim(factors)[1]   #how many variables?
   if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
    gloading <- om.results$schmid$gloading
-   vars <- paste("V",1:num.var,sep="")   
+   vars <- paste("V",1:num.var,sep="")  
+   if (!is.null(labels)) {vars <- paste(labels,1:num.var,sep=" ")}
    fact <- c("g",paste("F",1:num.factors,sep=""))
    clust.graph <-  new("graphNEL",nodes=c(vars,fact),edgemode="directed")
    graph.shape <- c(rep("box",num.var),rep("ellipse",num.factors+1))
@@ -60,13 +62,15 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
  nAttrs <- list()  #node attributes
  eAttrs <- list()  #edge attributes
 
-
+if(FALSE) {
  if (!is.null(labels)) {var.labels <- c(labels,fact)
-  names(var.labels) <-  nodes(clust.graph)
-  nAttrs$label <- var.labels
-  names(edge.label) <- edge.name
-  } 
-    names(edge.label) <- edge.name
+  							names(var.labels) <-  nodes(clust.graph)
+ 							nAttrs$label <- var.labels
+  							names(edge.label) <- edge.name
+  						} 
+  					}
+				
+ names(edge.label) <- edge.name
  nAttrs$shape <- graph.shape
  nAttrs$rank <- graph.rank
  eAttrs$label <- edge.label

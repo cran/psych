@@ -26,7 +26,7 @@ factor2cluster(loads, loading = TRUE, cut = 0)
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           }
 }
 
-\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}} ,\code{\link{principal}}, \code{\link{ICLUST}} }
+\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}}, \code{\link{factor.pa}}, \code{\link{principal}}, \code{\link{ICLUST}} }
 \examples{
 
 \dontrun{

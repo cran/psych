@@ -1,5 +1,6 @@
-"VSS" <-
+"VSSem" <-
 function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=NULL,...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+#find the maximum likelihood goodness of fit criterion 
   #x is a data matrix
   #n is the maximum number of factors to extract  (default is 8)
   #rotate is a string "none" or "varimax" for type of rotation (default is "none"
@@ -40,6 +41,9 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   #now do the main Very Simple Structure  routine
 
   complexfit <- array(0,dim=c(n,n))        #store these separately for complex fits
+  complexchi <- array(0,dim=c(n,n))
+  complexchi2 <- array(0,dim=c(n,n))
+   complexdof <- array(0,dim=c(n,n))
   complexresid <-  array(0,dim=c(n,n))
   
   vss.df <- data.frame(dof=rep(0,n),chisq=0,prob=0,sqresid=0,fit=0) #keep the basic results here 
@@ -50,6 +54,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   if(is.null(n.obs)) {message("n.obs was not specified and was arbitrarily set to 1000.  This only affects the chi square values.")
         n.obs <- 1000}
  if (n >  dim(x)[2]) {n <- dim(x)[2]}         #in cases where there are very few variables
+ n.variables <- dim(x)[2]     
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { 
    if(!(pc=="pc")) { if ( pc=="pa") {
@@ -75,14 +80,14 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 		if((rotate=="promax") & (i>1))  {f <- promax(f$loadings)}
 	     }}
 		
- 	load <- as.matrix(f$loadings )                    #the loading matrix
-   	model <- load %*% t(load)                 #reproduce the correlation matrix by the factor law R=  FF'
+ 	load <- as.matrix(f$loadings )          #the loading matrix
+   	model <- load %*% t(load)               #reproduce the correlation matrix by the factor law R=  FF'
  	residual <- original-model              #find the residual  R* = R - FF'
  	sqresid <- residual*residual            #square the residuals
  	totalresid <- sum(sqresid)- diagonal * sum(diag(sqresid) )      #sum squared residuals - the main diagonal
  	fit <- 1-totalresid/totaloriginal       #fit is 1-sumsquared residuals/sumsquared original     (of off diagonal elements
  	
- 	if ((pc!="pc")) {
+ 	if ((pc!="pc")) {                       #factor.pa reports the same statistics as mle, although the fits are not as good
  			vss.df[i,1] <- f$dof                   #degrees of freedom from the factor analysis
  			vss.df[i,2] <- f$STATISTIC             #chi square from the factor analysis
  			vss.df[i,3] <- f$PVAL                  #probability value of this complete solution
@@ -106,12 +111,27 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   		simplefit <- 1-totalsimple/totaloriginal
   		complexresid[i,c] <-totalsimple
   		complexfit[i,c] <- simplefit
+  		
+  	#find the chi square value for this level of complexity  (see factor.pa for more details on code)	
+  		 diag(model) <- 1   
+    model.inv <- solve(model)
+    nfactors <- i 
+    m.inv.r <- model.inv %*% original
+    dof <-  n.variables * (n.variables-1)/2 - n.variables * c + (nfactors *(nfactors-1)/2)
+    objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n.variables 
+    if (!is.null(n.obs)) {STATISTIC <-  objective * (n.obs-1) -(2 * n.variables + 5)/6 -(2*nfactors)/3
+    	if (dof > 0) {PVAL <- pchisq(STATISTIC, dof, lower.tail = FALSE)} else PVAL <- NA}
+    complexchi[i,c]  <- STATISTIC
+    complexdof[i,c] <- dof
+    res1 <- residual
+    diag(res1) <- 1
+    complexchi2[i,c] <- -(n.obs - n.variables/3 -1.8) *log(det(res1))
   	 }
   	
 }     #end of i loop for number of factors
 
 
-vss.stats <- data.frame(vss.df,cfit=complexfit,cresidual=complexresid)
+vss.stats <- data.frame(vss.df,cfit=complexfit,chisq=complexchi,complexchi2,complexdof,cresidual=complexresid)
 return(vss.stats)
    
     }     #end of VSS function

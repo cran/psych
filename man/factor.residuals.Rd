@@ -12,7 +12,7 @@ factor.residuals(r, f)
   \item{r}{ A correlation matrix }
   \item{f}{ A factor model matrix }
 }
-\details{R* = R - F'F is the basic factor equation.
+\details{The basic factor equation is \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2}. Residuals are just  R* = R - F'F. 
 }
 \value{ rstar is the residual correlation matrix.
 }
@@ -21,6 +21,7 @@ factor.residuals(r, f)
 Maintainer: William Revelle <revelle@northwestern.edu>
 }
 
+\seealso{\code{\link{factor.pa}},  \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}}
 \examples{
 
 }

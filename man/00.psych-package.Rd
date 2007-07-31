@@ -30,7 +30,7 @@ When given a set of items from a personality inventory, one goal is to combine t
 
 2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations using a wrapper (\code{\link{poly.mat}}) for John Fox's hetcor function, the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}}, and \code{\link{fa.parallel}})  also address this question.  
 
-3) What are the best composites to form?  Although this may be answered using principal components  (\link{principal}) or factor analysis (\link{factor.pa}) and to show the results graphically (\link{fa.graph}), it is sometimes more useful to address this question using cluster analytic techniques.  Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at doing this.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  (As of May, 2007, Rgraphviz now work on the Intel-Mac and two graphic functions take advantage of this. Graphviz still produces cleaner output.)
+3) What are the best composites to form?  Although this may be answered using principal components  (\link{principal}) or factor analysis (\link{factor.pa}) and to show the results graphically (\link{fa.graph}), it is sometimes more useful to address this question using cluster analytic techniques. (Better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at doing this.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  (As of May, 2007, Rgraphviz now works on the Intel-Mac and two graphic functions take advantage of this. Graphviz still produces cleaner output.)
 
 4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{score.items}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}}. Functions to estimate all three of these are included in psych.  
 
@@ -41,8 +41,8 @@ When given a set of items from a personality inventory, one goal is to combine t
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-25\cr
-Date: \tab 2007--6-1\cr
+Version: \tab 1.0-27\cr
+Date: \tab 2007--7-31\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -127,7 +127,7 @@ Functions that are under development and not recommended for casual use \cr
 }
 \note{Development versions of this package are maintained at the local repository \url{http://personality-project.org/r} along with further documentation.  Specify that you are downloading a source package.  
 \cr
-Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph, fa.graph require Rgraphviz.  i.e.:
+Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph and fa.graph require Rgraphviz.  i.e.:
 \cr
 
 \tabular{ll}{

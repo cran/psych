@@ -2,10 +2,10 @@
 \alias{score.items}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Score item composite scales and find Cronbach's alpha as well as associated statistics }
-\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  Replace missing values with the item mean if desired. Will adjust scores for reverse scored items.
+\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.
 }
 \usage{
-score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE, min = NULL, max = NULL, digits = 2)
+score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="median",  min = NULL, max = NULL, digits = 2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,18 +13,21 @@ score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE, min = N
   \item{items}{ Matrix or dataframe of raw item scores }
   \item{totals}{ if TRUE (default) find total scores, if FALSE, find average scores }
   \item{ilabels}{ a vector of item labels  }
-  \item{missing}{TRUE: Replace missing values with the corresponding item mean. FALSE: do not score that subject  }
+  \item{missing}{TRUE: Replace missing values with the corresponding item median or mean. FALSE: do not score that subject  }
+  \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response.}
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data }
   \item{digits}{ Number of digits to report }
 }
-\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  
+\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for score.items is the average.  
 
 Various estimates of scale reliability include ``Cronbach's alpha", and the average interitem correlation.  For k = number of items in a scale, and av.r = average correlation between items in the scale, alpha = k * av.r/(1+ (k-1)*av.r).  Thus, alpha is an increasing function of test length as well as the test homeogeneity.  
 
-Alpha is a poor estimate of the general factor saturation of a test (see Zinbarg et al., 2005) for it can seriously overestimate the size of a general factor, and a better but not perfect estimate of total test reliability because it underestimates total reliability. None the less, it is a useful statistic to report. 
+Alpha is a poor estimate of the general factor saturation of a test (see Zinbarg et al., 2005) for it can seriously overestimate the size of a general factor, and a better but not perfect estimate of total test reliability because it underestimates total reliability. None the less, it is a useful statistic to report.  To estimate the omega cofficient, use the \code{\link{omega}} function. 
 
-Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.
+Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  
+
+By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  
 }
 \value{ 
  \item{scores }{Sum or average scores for each subject on the k scales}

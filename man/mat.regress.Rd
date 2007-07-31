@@ -26,20 +26,18 @@ mat.regress(m, x, y,digits=2)
   The output is a set of multiple correlations, one for each dependent variable in the y set. 
   
   A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using mat.regress.
+
+ Although the overall matrix can have missing correlations, the correlations in the subset of the matrix used for prediction must exist.
 }
 \value{
   
   \item{beta }{the beta weights for each variable in X for each variable in Y}
-  \item{R2 }{The multiple R2 for each equation}
+  \item{R}{The multiple R for each equation (the amount of change a unit in the predictor set leads to in the criterion set). }
+  \item{R2 }{The multiple R2 (\% variance acounted for) for each equation}
  
 }
-\references{ For an application of this procedure, see http://personality-project.org/revelle/publications/sapa.pdf }
 \author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University  \cr
-        Evanston, Illiniois  \cr
-
-
+       
 Maintainer: William Revelle <revelle@northwestern.edu> }
 
 
@@ -55,13 +53,18 @@ print(mat.regress(test.data,c(1,2,3),c(4,5,10,12)),digits=2)
 #print(mat.regress(test.data,c(1,2,3),c(4,5,10,12)),digits=2)
 #$beta
 #                 Flags GeneralInformation Addition CountingDots
-#VisualPerception 0.397               0.22    0.162        0.296
-#Cubes            0.064               0.18    0.056        0.049
-#PaperFormBoard   0.125               0.10   -0.158        0.005
+#VisualPerception  0.40               0.22     0.16         0.30
+#Cubes             0.06               0.18     0.06         0.05
+#PaperFormBoard    0.12               0.10    -0.16         0.00
+#
+#$R
+#             Flags GeneralInformation           Addition       CountingDots 
+#             0.49               0.38               0.18               0.32 
 #
 #$R2
 #             Flags GeneralInformation           Addition       CountingDots 
-#             0.239              0.148              0.034              0.101 
+#              0.24               0.15               0.03               0.10 
+#
 #
 
 }

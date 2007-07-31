@@ -1,14 +1,14 @@
 Package: psych
-Version: 1.0-25
-Date: 2007-06-01
+Version: 1.0-27
+Date: 2007-07-31
 Title: Procedures for Personality and Psychological Research
 Author: William Revelle <revelle@northwestern.edu>
 Maintainer: William Revelle <revelle@northwestern.edu>
 Description: A number of routines for personality, psychometrics and experimental
-        psychology, Functions are primarily for scale construction and
+        psychology.   Functions are primarily for scale construction and
         reliability analysis, although others are basic descriptive
-        stats, For more information, see the personality-project.org/r
+        stats.  For more information, see the personality-project.org/r.
 License: GPL version 2 or newer
 Suggests: polycor, GPArotation, MASS, Rgraphviz
 URL: http://personality-project.org/r, http://personality-project.org/r/psych.manual.pdf
-Packaged: Mon Jun  4 20:26:46 2007; hornik
+Packaged: Thu Aug  2 19:34:12 2007; hornik

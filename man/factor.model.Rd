@@ -25,7 +25,9 @@ Revelle, W. In preparation) An Introduction to Psychometric Theory with applicat
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega} }}
 \examples{
 
-
+f2 <- matrix(c(.9,.8,.7,rep(0,6),.6,.7,.8),ncol=2)
+mod <- factor.model(f2)
+round(mod,2)
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

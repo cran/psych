@@ -20,6 +20,8 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{mat.regress}}.
  
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
+ 
+ If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations.  
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}
@@ -28,7 +30,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
  \item{size}{How many items are in each cluster?}
  
 }
-\references{\url{http://personality-project.org/r/r.ICLUST.html}}
+
 \author{
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 

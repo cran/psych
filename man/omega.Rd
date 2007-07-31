@@ -5,13 +5,14 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors, pc = "pa",...)
+omega(m, nfactors, pc = "mle",key = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{A correlation matrix or a data.frame/matrix of data }
   \item{nfactors}{Number of factors believed to be group factors}
-  \item{pc}{  pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood .}
+  \item{pc}{  pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood.}
+  \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{...}{Allows additional parameters to be passed through to the factor routines}
 }
 
@@ -21,13 +22,14 @@ interpretation with evidence regarding the internal structure of that scale. In 
 The second internal structural property pertains to the proportion of variance in the scale scores (derived from summing or averaging the indicators) accounted for by this latent variable that is common to all the indicators (Cronbach, 1951; McDonald, 1999; Revelle, 1979). That is, if an effect indicator scale is primarily a measure of one latent variable common to all the indicators forming the scale, then that latent variable should account for the majority of the variance in the scale scores. Put differently, this variance ratio provides important information about the sampling fluctuations when estimating individuals' standing on a latent variable common to all the indicators arising from the sampling of indicators (i.e., when dealing with either Type 2 or Type 12 sampling, to use the terminology of Lord, 1956). That is, this variance proportion can be interpreted as the square of the correlation between the scale score and the latent variable common to all the indicators in the infinite universe of indicators of which the scale indicators are a subset. Put yet another way, this variance ratio is important both as reliability and a validity coefficient. This is a reliability issue as the larger this variance ratio is, the more accurately one can predict an individual's relative standing on the latent variable common to all the scale's indicators based on his or her 
 observed scale score. At the same time, this variance ratio also bears on the construct validity of the scale given that construct validity encompasses the internal structure of a scale." (Zinbarg, Yovel, Revelle, and McDonald, 2006).
 
-
 McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
 \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's Omega to Cronbach's alpha and Revelle's beta.  They conclude that omega is the best estimate. (See also Zinbarg et al., 2006)   
 
 One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a   Schmid-Leiman (\link{schmid}) transformation, and then find omega.  Here we present code to do that.  
 
 Omega differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
+
+Output from omega can be shown using the  \code{\link{omega.graph}} function.
 
 Beta, an alternative to omega, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
@@ -57,12 +59,14 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
 \note{Requires the GPArotation package }
-\seealso{ \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }}
+\seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
 \examples{
 \dontrun{
 test.data <- Harman74.cor$cov
 my.omega <- omega(test.data,3)       
 print(my.omega,digits=2)
+#
+jen.omega <- omega(make.hierarchical())
 }
 #produces this output
 

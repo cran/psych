@@ -5,7 +5,7 @@
 \description{Create a population hierarchical correlation matrix from a set of factor loadings and factor intercorrelations. Samples of size n may be then be drawn from this population.  Return either the sample data, sample correlations, or population correlations.  This is used to create sample data sets for instruction and demonstration.
 }
 \usage{
-make.hierarchical(gload, fload, n = 0, raw = FALSE)
+make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,10 +21,13 @@ Given a matrix of item factor loadings (fload) and of loadings of these factors 
 To create sample values, we use the \code{\link{mvrnorm}} function from MASS.
 
 The default is to return population correlation matrices. Sample correlation matrices are generated if n >0.  Raw data are returned if raw = TRUE.
+
+The default values for gload and fload create a data matrix discussed by Jensen and Weng, 1994.
 }
 \value{ a matrix of correlations or a data matrix
 }
-\references{ \url{http://personality-project.org/r/r.omega.html }}
+\references{ \url{http://personality-project.org/r/r.omega.html }
+\cr Jensen, A.R., Weng, L.J. (1994) What is a Good g? Intelligence, 18, 231-258.}
 \author{ William Revelle }
 
 \seealso{ \code{\link{omega}},   \code{\link{schmid}},  \code{\link{ICLUST}},  \code{\link{VSS}},  \code{\link{mvrnorm}} }

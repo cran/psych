@@ -17,15 +17,24 @@ for (i in first:last) {
    test.data <- datasets[[i]]
 	pc <-   principal(test.data)
 	pc2 <-    principal(test.data,2)
-	fa2 <- factor.pa(test.data,2)
-	fp <-    fa.parallel(test.data)
+	if(i < 3) {
+			fa2 <- factor.pa(test.data,2)
+			fp <-    fa.parallel(test.data)
+			vss2 <- VSS(test.data)
+			vsspc <- VSS(test.data)
+		} else {
+			fa2 <- factor.pa(test.data,2,n.obs=200)
+			fp <-    fa.parallel(test.data,n.obs=200)
+			vss2 <- VSS(test.data,n.obs=200)
+			vsspc <- VSS(test.data,n.obs=200)
+			}
+
+
 	ic <-   ICLUST(test.data)
 	if(require(GPArotation)) {om <-  omega(test.data)} else {warning("Omega requires the GPArotation package to be loaded")
 	  om <- NULL}
 	fc <- factor.congruence(pc2,fa2)
-	vss2 <- VSS(test.data)
-	vsspc <- VSS(test.data,pc="pc")
-	vss.scree <- VSS.scree(test.data)
+	
 	d <- describe(test.data)
 	
 	keys <- matrix(rep(0,dim(test.data)[2]*2),ncol=2)
@@ -33,7 +42,7 @@ for (i in first:last) {
 	keys[1:3,2] <- 1
 	if( dim(test.data)[1] != dim(test.data)[2]) {test.score <- score.items(keys,test.data)} else {test.score <- cluster.cor(keys,test.data)}
 	
-	out <- list(out,paste("test",i),pc,pc2,fa2,fp,ic,om,fc,vss2,vsspc,vss.scree,d,test.score)
+	out <- list(out,paste("test",i),pc,pc2,fa2,fp,ic,om,fc,vss2,vsspc,d,test.score)
   } #end loop
     #a few more tests
   

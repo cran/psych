@@ -23,6 +23,7 @@
  ICLUST.debug <- FALSE
 	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,reverse=reverse,beta.min=beta.min,output=output,digits=digits) 
 	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
+	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
 	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options)
 	loads <- cluster.loadings(iclust.results$clusters,r.mat,digits=digits)
 	

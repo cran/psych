@@ -4,11 +4,13 @@ function(keys,r.mat,correct=TRUE,digits=2) { #function to extract clusters accor
 				#find the correlation matrix of scales made up of items defined in a keys matrix (e.g., extracted by factor2cluster) 
                 #takes as input the keys matrix as well as a correlation matrix of all the items
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
+ r.mat[is.na(r.mat)] <- -9999999    #changes missing values to obviously incorrect values
  covar <- t(keys) %*% r.mat %*% keys    #matrix algebra is our friend
  var <- diag(covar)
  sd.inv <- 1/sqrt(var)
  ident.sd <- diag(sd.inv,ncol = length(sd.inv))
  cluster.correl <- ident.sd %*% covar  %*% ident.sd
+ cluster.correl[abs(cluster.correl)  > 1] <- NA    #happens only if item correlations were missing
  key.var <- diag(t(keys) %*% keys)
  key.alpha <- ((var-key.var)/var)*(key.var/(key.var-1))
  key.alpha[is.nan(key.alpha)] <- 1           #if only 1 variable to the cluster, then alpha is undefined

@@ -1,4 +1,4 @@
-#last modifies May 24, 2007 by William Revelle 
+#last modified July 31, 2007 by William Revelle 
 export(alpha.scale,
 cluster.cor,
 cluster.fit,
@@ -12,6 +12,7 @@ congeneric.sim,
 describe,
 describe.by,
 eigen.loadings,
+error.crosses,
 fa.parallel,
 fa.graph,
 factor.congruence,

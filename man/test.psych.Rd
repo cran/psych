@@ -13,7 +13,7 @@ test.psych(first=1,last=5,short=TRUE)
   \item{last}{last=5: test for datasets until last}
   \item{short}{short=TRUE - don't return any analyses}
 }
-\details{When modifying the psych package, it is useful to make sure that adding some code does not break something else.  This function tests the major functions on various standard data sets.  This function also shows off a number of the capabilities of the psych package.
+\details{When modifying the psych package, it is useful to make sure that adding some code does not break something else.  The test.psych function tests the major functions on various standard data sets.  It  also shows off a number of the capabilities of the psych package.
 }
 \value{
   \item{out }{if short=FALSE, then list of the output from all functions tested}
@@ -25,7 +25,7 @@ test.psych(first=1,last=5,short=TRUE)
 
 The datasets tested are part of the standard R data sets and represent some of the basic problems encountered.}
 
-\section{Warning }{Warning messages will be thrown by fa.parallel} 
+\section{Warning }{Warning messages will be thrown by fa.parallel and sometimes by factor.pa for random datasets.} 
 }
 
 \examples{

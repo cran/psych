@@ -1,4 +1,5 @@
 #corrected estimate of communality, May 21, 2007
+#removed "x" from factanal call, June 14, 2007
 "schmid" <-
 function (model, nfactors = 3, pc = "pa",...) 
 {
@@ -10,14 +11,14 @@ function (model, nfactors = 3, pc = "pa",...)
     if (pc=="pc") {
         fact <- principal(model, nfactors,...)
     } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,...) } else {
-        fact <- factanal(x, covmat = model, factors = nfactors,...)
+        fact <- factanal(covmat = model, factors = nfactors)
     }}
     orth.load <- loadings(fact)
        obminfact <- oblimin(orth.load)
     rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     factr <- t(obminfact$Th) %*% (obminfact$Th)
-    gfactor <- factanal(x, covmat = factr, factors = 1)
+    gfactor <- factanal( covmat = factr, factors = 1)
     gload <- loadings(gfactor)
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g factor"
@@ -33,4 +34,3 @@ function (model, nfactors = 3, pc = "pa",...)
     schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, 
         fcor = factr, gloading = gload)
 }
-

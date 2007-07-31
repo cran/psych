@@ -8,24 +8,22 @@
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.
 }
 \usage{
-pairs.panels(x, y, smooth = TRUE, scale = FALSE, digits = 2, ...)
+pairs.panels(x, smooth = TRUE, scale = FALSE, digits = 2, pch=20, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a data.frame or matrix}
-  \item{y}{an optional data.frame or matrix }
   \item{smooth}{TRUE draws loess smooths }
   \item{scale}{ TRUE scales the correlation font by the size of the absolute correlation. }
   \item{digits}{ the number of digits to show}
+  \item{pch}{The plot character (defaults to 20 which is a '.').}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs.  
 }
 \value{a scatter plot matrix (SPLOM) is drawn in the graphic window. The lower off diagonal draws scatter plots, the diagonal histograms, the upper off diagonal reports the Pearson correlation (with pairwise deletion).
 }
-\author{ 
- \email{  revelle@northwestern.edu } 
- }
+
 \seealso{  \code{\link{pairs}} }
 \examples{
 

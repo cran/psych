@@ -1,14 +1,21 @@
 "score.items"  <- 
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, min=NULL,max=NULL,digits=2) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE,impute="median",  min=NULL,max=NULL,digits=2) {
     keys <- as.matrix(keys)   #just in case they were not matrices to start with
     items <- as.matrix(items)
     item.means <- colMeans(items,na.rm=TRUE)
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
-    if(missing) { miss.rep <- rowSums(is.na(items))
+     miss.rep <- rowSums(is.na(items))
+    if(missing) {
+        miss <- which(is.na(items),arr.ind=TRUE)
+        if(impute=="mean") {
        item.means <- colMeans(items,na.rm=TRUE)
-            miss <- which(is.na(items),arr.ind=TRUE)
-           items[miss]<- item.means[miss[,2]]}       #replace missing values with means
+       items[miss]<- item.means[miss[,2]]} else {
+       item.med   <- apply(items,2,median,na.rm=TRUE)
+        items[miss]<- item.med[miss[,2]]}
+        }
+           
+                  #replace missing values with means
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
     n.subjects <- dim(items)[1]
@@ -44,7 +51,9 @@
                   }  else
                  {scores <- scores/num.item } }
     scale.cor <- correct.cor(cor.scales,t(alpha.scale))
-   if (missing){results <-list(scores=scores,missing = miss.rep,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits),cor = round(cor.scales,digits) ,corrected = round(scale.cor,digits))} else{  
+    
+   if (sum(miss.rep) >0) {results <-list(scores=scores,missing = miss.rep,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits),cor = round(cor.scales,digits) ,corrected = round(scale.cor,digits))} else{  
     results <- list(scores=scores,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits), cor = round(cor.scales,digits),corrected = round(scale.cor,digits))} 
  }
  #modified June 1 to add row names to items 
+ #modified June 22 to add median imputation

@@ -5,17 +5,19 @@
 \description{Given two sets of factor loadings, report their degree of congruence. 
 }
 \usage{
-factor.congruence(x, y, loading=TRUE)
+factor.congruence(x, y)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A matrix of factor loadings }
   \item{y}{ A second matrix of factor loadings }
-  \item{loading}{Is the input a loading matrix from a factor analysis or principal components, or is it just a matrix}
+
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
 
 It is an interesting exercise to compare factor congruences with the correlations of factor loadings.  Factor congruences are based upon the raw cross products, while correlations are based upon centered cross products.  
+
+Input may either be matrices or factor analysis output (which includes a loadings object), or a mixture of the two.
 
 }
 \value{A matrix of factor congruences.

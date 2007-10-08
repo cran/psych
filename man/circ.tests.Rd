@@ -56,4 +56,5 @@ print(rbind(ct,st),digits=2)
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ multivariate }
+\keyword{models}
 

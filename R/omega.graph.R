@@ -53,11 +53,10 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
                          edge.name[i+k] <- paste(fact[1+m1[i]],"~",vars[i],sep="")
                         }  
 
- if(FALSE) {      
-     edge.label[(i-1)*2+1] <- results[i,"r1"]
-     edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
+     
+#     edge.label[(i-1)*2+1] <- results[i,"r1"]
+#    edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
       
-     } 
      
  nAttrs <- list()  #node attributes
  eAttrs <- list()  #edge attributes

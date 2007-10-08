@@ -1,10 +1,9 @@
 "factor2cluster" <-
-function (loads,loading=TRUE,cut=.0) 
+function (loads,cut=.0) 
 {
-    if (loading) {l <- loads$loadings
-       colnames(l) <- colnames(loads$loading) } else { 
-       l <- loads
-       colnames(l) <- colnames(loads) }
+    
+     if (!is.matrix(loads) ) {l <-loads$loadings} else {l <- loads}
+  
     l <- as.matrix(l)
     nrows <- dim(l)[1]
     ncols <- dim(l)[2]

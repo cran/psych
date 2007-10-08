@@ -27,7 +27,7 @@ pairs.panels(x, smooth = TRUE, scale = FALSE, digits = 2, pch=20, ...)
 \seealso{  \code{\link{pairs}} }
 \examples{
 
-#pairs.panels(attitude)   #see the graphics window
+pairs.panels(attitude)   #see the graphics window
 
 
 }

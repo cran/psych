@@ -18,7 +18,7 @@ error.crosses(x, y, labels = NULL, pos = NULL, arrow.len = 0.2, ...)
 }
 \details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf})
 }
-}
+
 \author{ William Revelle \cr     
  \email{revelle@northwestern.edu}
 }

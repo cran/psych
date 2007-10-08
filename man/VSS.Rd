@@ -84,39 +84,15 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}}
 \examples{
-\dontrun{
+
 test.data <- Harman74.cor$cov
-my.vss <- VSS(test.data)         #suggests that 4 factor complexity two solution is optimal
+my.vss <- VSS(test.data)      
 print(my.vss[,1:12],digits =2) 
-VSS.plot(my.vss)                 #see graphic window for a plot
+VSS.plot(my.vss, title="VSS of 24 mental tests")
 
-#produces this output
-#  dof chisq     prob sqresid  fit cfit.1 cfit.2 cfit.3 cfit.4 cfit.5 cfit.6 cfit.7
-#1 252  4583  0.0e+00    17.2 0.79   0.79   0.00   0.00   0.00   0.00   0.00   0.00
-#2 229  3105  0.0e+00    12.9 0.84   0.75   0.84   0.00   0.00   0.00   0.00   0.00
-#4 186  1689 2.3e-240     8.0 0.90   0.66   0.87   0.90   0.90   0.00   0.00   0.00
-#5 166  1398 9.3e-194     7.3 0.91   0.68   0.86   0.90   0.91   0.91   0.00   0.00
-#6 147  1183 2.9e-161     6.5 0.92   0.53   0.83   0.88   0.91   0.92   0.92   0.00
-#7 129  1002 5.8e-135     5.7 0.93   0.47   0.78   0.88   0.91   0.92   0.93   0.93
-#8 112   803 5.3e-105     5.3 0.94   0.49   0.76   0.86   0.90   0.92   0.93   0.93
-
-#compare the above solution to a "varimax" rotated solution which suggests 1 factor (g)
-
-my.vss <- VSS(test.data,rotate="varimax")         #suggests that 1 factor complexity one solution is optimal
-print(my.vss[,1:14],digits =2) 
-VSS.plot(my.vss)                 #see graphic window for a plot
-
-#  dof chisq     prob sqresid  fit cfit.1 cfit.2 cfit.3 cfit.4 cfit.5 cfit.6 cfit.7 cfit.8 cresidual.1
-#1 252  4583  0.0e+00    17.2 0.79   0.79   0.00   0.00    0.0   0.00   0.00   0.00   0.00          17
-#2 229  3105  0.0e+00    12.9 0.84   0.54   0.84   0.00    0.0   0.00   0.00   0.00   0.00          38
-#3 207  2193  0.0e+00    10.1 0.88   0.46   0.79   0.88    0.0   0.00   0.00   0.00   0.00          45
-#4 186  1689 2.3e-240     8.0 0.90   0.42   0.73   0.87    0.9   0.00   0.00   0.00   0.00          48
-#5 166  1398 9.3e-194     7.3 0.91   0.40   0.70   0.86    0.9   0.91   0.00   0.00   0.00          50
-#6 147  1183 2.9e-161     6.5 0.92   0.39   0.69   0.86    0.9   0.92   0.92   0.00   0.00          51
-#7 129  1002 5.8e-135     5.7 0.93   0.39   0.70   0.84    0.9   0.92   0.93   0.93   0.00          50
-#8 112   803 5.3e-105     5.3 0.94   0.39   0.69   0.83    0.9   0.92   0.93   0.93   0.94          50
-}
-
+#now, some simulated data
+VSS.plot(VSS(circ.sim(nvar=24),pc="mle" ),title="VSS of 24 circumplex variables")
+VSS.plot(VSS(item.sim(nvar=24),pc="mle" ),title="VSS of 24 simple structure variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

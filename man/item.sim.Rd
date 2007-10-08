@@ -1,13 +1,15 @@
 \name{item.sim}
 \alias{item.sim}
+\alias{item.dichot}
 \alias{circ.sim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Generate simulated data structures for circumplex or simple structure }
-\description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating these data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
+\description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating simple structure and circumplex data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }
 \usage{
 item.sim(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
 circ.sim(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
+item.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,12 +22,14 @@ circ.sim(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, g
   \item{xbias}{To introduce skew, how far off center is the first dimension }
   \item{ybias}{To introduce skew on the second dimension}
   \item{categorical}{ continuous or categorical variables.  }
-  \item{low}{ values less than low are forced to low }
-  \item{high}{ values greater than high are forced to high }
+  \item{low}{ values less than low are forced to low (or 0 in item.dichot)}
+  \item{high}{ values greater than high are forced to high (or 1 in item.dichot) }
   \item{truncate}{Change all values less than cutpoint to cutpoint. }
   \item{cutpoint}{What is the cutpoint }
 }
 \details{This simulation was originally developed to compare the effect of skew on the measurement of affect (see Rafaeli and Revelle, 2005).  It has been extended to allow for a general simulation of affect or personality items with either a simple structure or a circumplex structure.  Items can be continuous normally distributed, or broken down into n categories (e.g, -2, -1, 0, 1, 2).  Items can be distorted by limiting them to these ranges, even though the items have a mean of (e.g., 1).  
+
+The addition of item.dichot allows for testing structures with dichotomous items of different difficulty (endorsement) levels.  Two factor data with either simple structure or circumplex structure are generated for two sets of items, one giving a score of 1 for all items greater than the low (easy) value, one giving a 1 for all items greater than the high (hard) value. The default values for low and high are 0.  That is, all items are assumed to have a 50 percent endorsement rate.  To examine the effect of item difficulty, low could be   -1, high  1. This will lead to item endorsements of .84 for the easy and .16 for the hard.  Within each set of difficulties, the first 1/4 are assigned to the first factor factor, the second to the second factor, the third to the first factor (but with negative loadings) and the fourth to the second factor (but with negative loadings).  
 }
 \value{
   A data matrix of (nsub) subjects by (nvar) variables.  
@@ -45,7 +49,7 @@ plot(factor.pa(circ.sim(16,500),2)$loadings) #circumplex structure
 #
 plot(factor.pa(item.sim(16,500),2)$loadings) #simple structure
 #
-
+cluster.plot(factor.pa(item.dichot(16,low=0,high=1),2))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

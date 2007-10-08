@@ -31,7 +31,7 @@ Some of the statistics reported are more appropriate for maximum likelihood fact
   \item{n.obs}{number of observations specified or found}
    \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
 
-  \item{loadings }{A standard loading matrix}
+  \item{loadings }{A standard loading matrix of class ``loadings"}
   \item{fit }{Fit of the model to the correlation matrix }
    \item{fit.off}{how well are the off diagonal elements reproduced?}
   \item{residual }{Residual matrix -- if requested}

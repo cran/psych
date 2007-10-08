@@ -5,12 +5,12 @@
 \description{The Very Simple Structure criterion ( \code{\link{VSS}}) for estimating the optimal number of factors is plotted as a function of the increasing complexity and increasing number of factors.  
 }
 \usage{
-VSS.plot(x, plottitle = "Very Simple Structure", line = FALSE)
+VSS.plot(x, title = "Very Simple Structure", line = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{output from VSS }
-  \item{plottitle}{any title }
+  \item{title}{any title }
   \item{line}{ connect different complexities }
 }
 \details{Item-factor models differ in their "complexity".  Complexity 1 means that all except the greatest (absolute) loading for an item are ignored. Basically a cluster model (e.g., \code{\link{ICLUST}}). Complexity 2 implies all except the greatest two, etc.  
@@ -33,9 +33,9 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 \seealso{  \code{\link{VSS}},  \code{\link{ICLUST}}, \code{\link{omega}}}
 
 \examples{
-#test.data <- Harman74.cor$cov
-#my.vss <- VSS(test.data)         #suggests that 4 factor complexity two solution is optimal
-#VSS.plot(my.vss)                 #see the graphics window
+test.data <- Harman74.cor$cov
+my.vss <- VSS(test.data)         #suggests that 4 factor complexity two solution is optimal
+VSS.plot(my.vss,title="VSS of Holzinger-Harmon problem")                 #see the graphics window
 
 
 }

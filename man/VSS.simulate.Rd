@@ -5,7 +5,7 @@
 \description{Simulation is one of most useful techniques in statistics and psychometrics.  Here we simulate a correlation matrix with a simple structure composed of a specified number of factors.  Each item is assumed to have complexity one.
 }
 \usage{
-VSS.simulate(ncases=1000, nvariables=16, nfactors=4, meanloading=.5)
+VSS.simulate(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,6 +13,8 @@ VSS.simulate(ncases=1000, nvariables=16, nfactors=4, meanloading=.5)
   \item{nvariables}{ Number of variables }
   \item{nfactors}{ Number of factors to generate }
   \item{meanloading}{with a mean loading }
+  \item{dichot}{dichot=FALSE give continuous variables, dichot=TRUE gives dichotomous variables}
+  \item{cut}{if dichotomous = TRUE, then items with values > cut are assigned 1, otherwise 0.}
 }
 
 \value{a ncases x nvariables  matrix 

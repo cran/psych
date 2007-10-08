@@ -22,11 +22,14 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
  
  If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations.  
+ 
+ Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{score.items}}.  They will differ substantially only if the items differ a great deal in their variances.   
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}
   \item{sd }{standard deviation of the cluster scores}
   \item{corrected }{raw correlations below the diagonal, alphas on diagonal, disattenuated above diagonal}
+  \item{alpha}{The (standardized) alpha reliability of each scale.}
  \item{size}{How many items are in each cluster?}
  
 }

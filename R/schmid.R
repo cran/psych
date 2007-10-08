@@ -1,7 +1,7 @@
 #corrected estimate of communality, May 21, 2007
 #removed "x" from factanal call, June 14, 2007
 "schmid" <-
-function (model, nfactors = 3, pc = "pa",...) 
+function (model, nfactors = 3, pc = "pa",digits=NULL,...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
@@ -31,6 +31,8 @@ function (model, nfactors = 3, pc = "pa",...)
     primeload <- fload %*% Ig
     uniq2 <- 1 - uniq - primeload^2
     sm <- sqrt(uniq2)
+    if (!is.null(digits)) {schmid <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),round( h2,digits), round(u2,digits)), orthog = round(fact$loadings,digits), oblique = round(fload,digits),
+        fcor = round(factr,digits), gloading = round(gload,digits) )} else {
     schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, 
-        fcor = factr, gloading = gload)
+        fcor = factr, gloading = gload)}
 }

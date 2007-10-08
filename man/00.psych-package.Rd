@@ -4,7 +4,7 @@
 \docType{package}
 \title{A package for personality, psychometric, and psychological research
 }
-\description{The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{describe}} and  \code{\link{pairs.panels}}  ) are useful for basic descriptive analyses.
+\description{The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic descriptive analyses.
 
 Psychometric applications include routines for Very Simple Structure (\code{\link{VSS}}), Item Cluster Analysis (\code{\link{ICLUST}}) and principal axes factor analysis (\code{\link{factor.pa}}), as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution and to graph both structures (\code{\link{omega.graph}}) and to calculate reliability coefficients alpha (\code{\link{score.items}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}).
 
@@ -26,23 +26,29 @@ The more important functions in the package are for the analysis of multivariate
 
 When given a set of items from a personality inventory, one goal is to combine these into higher level item composites. This leads to several questions:
 
-1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describe.by}} provides descriptive statistics, organized by a grouping variable.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items.
+1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describe.by}} provides descriptive statistics, organized by a grouping variable.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals.
 
 2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations using a wrapper (\code{\link{poly.mat}}) for John Fox's hetcor function, the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}}, and \code{\link{fa.parallel}})  also address this question.  
 
-3) What are the best composites to form?  Although this may be answered using principal components  (\link{principal}) or factor analysis (\link{factor.pa}) and to show the results graphically (\link{fa.graph}), it is sometimes more useful to address this question using cluster analytic techniques. (Better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at doing this.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  (As of May, 2007, Rgraphviz now works on the Intel-Mac and two graphic functions take advantage of this. Graphviz still produces cleaner output.)
+3) What are the best composites to form?  Although this may be answered using principal components  (\link{principal}) or factor analysis (\link{factor.pa}) and to show the results graphically (\link{fa.graph}), it is sometimes more useful to address this question using cluster analytic techniques. (Better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at doing this.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  
+
+Graphical organizations of cluster and factor analysis output can be done using  \code{\link{cluster.plot}} which plots items by cluster/factor loadings and assigns items to that dimension with the highest loading.  
 
 4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{score.items}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}}. Functions to estimate all three of these are included in psych.  
 
 5) For some applications, data matrices are synthetically combined from sampling different items for different people.  So called Synthetic Aperture Personality Assessement (SAPA) techniques allow the formation of large correlation or covariance matrices even though no one person has taken all of the items. To analyze such data sets, it is easy to form item composites based upon the covariance matrix of the items, rather than original data set.  These matrices may then be analyzed using a number of functions (e.g., \code{\link{cluster.cor}},   \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal} }, \code{\link{mat.regress}}, and \code{\link{factor2cluster}}.
 
-6) More typically, one has a raw data set to analyze. \code{\link{score.items}} will score data sets on multiple scales, reporting the scale scores, item-scale and scale-scale correlations, as well as coefficient alpha and alpha-1. Using a `keys' matrix, scales can have overlapping or independent items.
+6) More typically, one has a raw data set to analyze. \code{\link{score.items}} will score data sets on multiple scales, reporting the scale scores, item-scale and scale-scale correlations, as well as coefficient alpha and alpha-1. Using a `keys' matrix, scales can have overlapping or independent items. \code{\link{score.multiple.choice}} scores multiple choice items or converts multiple choice items to dichtomous (0/1) format for other functions. 
+
+An additional set of functions generate simulated data to meet certain structural properties.  \code{\link{item.sim}} creates simple structure data,  \code{\link{circ.sim}} will produce circumplex structured data,  \code{\link{item.dichot}} produces circumplex or simple structured data for dichotomous items.  These item structures are useful for understanding the effects of skew, differential item endorsement on factor and cluster analytic soutions.
+
+Three data sets are included: \code{\link{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link{iqitems}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. 
 
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-27\cr
-Date: \tab 2007--7-31\cr
+Version: \tab 1.0-33\cr
+Date: \tab 2007-10-08\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -143,7 +149,7 @@ function  \tab     requires\cr
 
 }
 
-}
+
 \author{William Revelle \cr
         Department of Psychology \cr
         Northwestern University \cr
@@ -156,7 +162,7 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 }
 \references{A general guide to personality theory and research may be found at the personality-project \url{http://personality-project.org}. See also the short guide to R at \url{http://personality-project.org/r}.
 In addition, see An Introduction to Psychometric Theory with applications in R (Revelle, in preparation) at \url{http://personality-project.org/r/book/}}
-}
+
 \keyword{package}% __ONLY ONE__ keyword per line
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line
@@ -165,4 +171,5 @@ In addition, see An Introduction to Psychometric Theory with applications in R (
 
 \examples{
 #See the separate man pages 
+test.psych()
 }

@@ -5,17 +5,18 @@
 \description{Given a factor or principal components loading matrix, assign each item to a cluster corresponding to the largest (signed) factor loading for that item.  Essentially, this is a Very Simple Structure approach to cluster definition that corresponds to what most people actually do: highlight the largest loading for each item and ignore the rest.
 }
 \usage{
-factor2cluster(loads, loading = TRUE, cut = 0)
+factor2cluster(loads, cut = 0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{loads}{either a matrix of loadings, or the result of a factor analysis/principal components analyis with a loading component }
-  \item{loading}{ TRUE if taking the output of a FA/PC or ICLUST, FALSE if just a matrix}
   \item{cut}{Extract items with absolute loadings > cut}
 }
 \details{A factor/principal components analysis loading matrix is converted to a cluster (-1,0,1) definition matrix where each item is assigned to one and only one cluster.  This is a fast way to extract items that will be unit weighted to form cluster composites.  Use this function in combination with cluster.cor to find the corrleations of these composite scores. 
 
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using mat.regress.
+ 
+ The input may be a matrix of item loadings, or the output from a factor analysis which includes a loadings matrix.
 }
 \value{a matrix of -1,0,1 cluster definitions for each item.
 }

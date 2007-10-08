@@ -168,3 +168,4 @@ print(ic.out,digits=2)
 
 \keyword{multivariate }%
 \keyword{cluster}% 
+\keyword{hplot}

@@ -42,7 +42,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, digits=2) {
      	               }}
      }}
    
-    
+    class(loadings) <- "loadings"
     model <- loadings %*% t(loadings)  
     result$communality <- diag(model)
     residual<- r - model
@@ -68,4 +68,4 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, digits=2) {
     return(result)
    }
   
-  #last modified June 15, 2007 
+  #last modified August 10, 2007 

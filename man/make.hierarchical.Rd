@@ -32,7 +32,7 @@ The default values for gload and fload create a data matrix discussed by Jensen 
 
 \seealso{ \code{\link{omega}},   \code{\link{schmid}},  \code{\link{ICLUST}},  \code{\link{VSS}},  \code{\link{mvrnorm}} }
 \examples{
-\dontrun{
+
 gload <-  gload<-matrix(c(.9,.8,.7),nrow=3)    # a higher order factor matrix
 fload <-matrix(c(                    #a lower order (oblique) factor matrix
            .8,0,0,
@@ -47,7 +47,6 @@ fload <-matrix(c(                    #a lower order (oblique) factor matrix
             
 jensen <- make.hierarchical(gload,fload)    #the test set used by omega
 round(jensen,2)     
-}
 
 
 }

@@ -56,27 +56,8 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 \examples{
 
 describe(attitude)
-#           var  n  mean    sd median   mad min max range  skew kurtosis   se
-#rating       1 30 64.63 12.17   65.5 10.38  40  85    45 -0.36    -0.77 2.22
-#complaints   2 30 66.60 13.31   65.0 14.83  37  90    53 -0.22    -0.68 2.43
-#privileges   3 30 53.13 12.24   51.5 10.38  30  83    53  0.38    -0.41 2.23
-#learning     4 30 56.37 11.74   56.5 14.83  34  75    41 -0.05    -1.22 2.14
-#raises       5 30 64.63 10.40   63.5 11.12  43  88    45  0.20    -0.60 1.90
-#critical     6 30 74.77  9.89   77.5  7.41  49  92    43 -0.87     0.17 1.81
-#advance      7 30 42.93 10.29   41.0  8.90  25  72    47  0.85     0.47 1.88
-   
+
 describe(attitude,skew=FALSE)   #attitude is taken from R data sets
-
-#           var  n  mean    sd median   mad min max range   se
-#rating       1 30 64.63 12.17   65.5 10.38  40  85    45 2.22
-#complaints   2 30 66.60 13.31   65.0 14.83  37  90    53 2.43
-#privileges   3 30 53.13 12.24   51.5 10.38  30  83    53 2.23
-#learning     4 30 56.37 11.74   56.5 14.83  34  75    41 2.14
-#raises       5 30 64.63 10.40   63.5 11.12  43  88    45 1.90
-#critical     6 30 74.77  9.89   77.5  7.41  49  92    43 1.81
-#advance      7 30 42.93 10.29   41.0  8.90  25  72    47 1.88
-
-
 
 
 
@@ -86,3 +67,4 @@ describe(attitude,skew=FALSE)   #attitude is taken from R data sets
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{univar}

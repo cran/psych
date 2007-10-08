@@ -32,7 +32,7 @@ The algorithm does not attempt to find the best (as defined by a maximum likelih
    \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
   \item{rotation}{which rotation was requested?}
   \item{n.obs}{number of observations specified or found}
-  \item{loadings}{An item by factor loading matrix.  Suitable for use in other programs (e.g., GPA rotation or factor2cluster.}
+  \item{loadings}{An item by factor loading matrix of class ``loadings"  Suitable for use in other programs (e.g., GPA rotation or factor2cluster.}
   \item{fit}{How well does the factor model reproduce the correlation matrix. (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
   \item{fit.off}{how well are the off diagonal elements reproduced?}
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters.  Let n=Number of items, nf = number of factors then

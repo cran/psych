@@ -1,7 +1,8 @@
 "factor.congruence" <-
-function (x,y,loading=TRUE) {
- if (loading) {x <- x$loadings
-      y <- y$loadings }
+function (x,y) {
+ 
+ if (!is.matrix(x)) {x <- x$loadings}
+   if (!is.matrix(y))  { y <- y$loadings }
       
   nx<- dim(x)[2]
   ny<- dim(y)[2]

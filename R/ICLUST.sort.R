@@ -1,8 +1,10 @@
-"ICLUST.sort"<- function (ic.load,cut=0,labels=NULL,loading=TRUE) {
-     if(loading) {loadings <- ic.load$loadings} else {loadings <- ic.load}
+"ICLUST.sort"<- function (ic.load,cut=0,labels=NULL,keys=FALSE) {
+     if(is.matrix(ic.load)) {loadings <- ic.load} else { loadings <- ic.load$loadings}
+    
      nclust <- dim(loadings)[2]
      nitems <- dim(loadings)[1]
      loadings <- as.matrix(loadings)   #just in case there is just one cluster
+     loadings <- unclass(loadings)  #to get around the problem of a real loading matrix
     if (length(labels)==0) {
     var.labels <- rownames(loadings)} else {var.labels=labels}
     if (length(var.labels)==0) {var.labels =paste('V',seq(1:nitems),sep='')} #unlabled variables
@@ -21,7 +23,7 @@
   items <- c(table(loads$cluster),1)   #how many items are in each cluster?
   if(length(items) < (nclust+1)) {items <- rep(0,(nclust+1))   #this is a rare case where some clusters don't have anything in them
     for (i in 1:nclust+1) {items[i] <- sum(loads$cluster==i) }  }
-    
+
   #now sort the loadings that have their highest loading on each cluster
    first <- 1
 	for (i in 1:nclust) {
@@ -33,5 +35,8 @@
     first <- first + items[i]}
     }
     if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
+      if(keys) {ICLUST.sort <- list(sorted=loads,clusters=factor2cluster(loadings))} else 
  ICLUST.sort <- list(sorted=loads) }
+ #revised August 8, 2007 to add cluster keying option and to allow us to work with factor analysis output
+ #revised Sept 15, 2007 to remove the "loadings" parameter
  

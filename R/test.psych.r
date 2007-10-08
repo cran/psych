@@ -24,9 +24,12 @@ for (i in first:last) {
 			vsspc <- VSS(test.data)
 		} else {
 			fa2 <- factor.pa(test.data,2,n.obs=200)
+			cluster.plot(fa2)
 			fp <-    fa.parallel(test.data,n.obs=200)
 			vss2 <- VSS(test.data,n.obs=200)
 			vsspc <- VSS(test.data,n.obs=200)
+			VSS.plot(vss2)
+
 			}
 
 
@@ -50,12 +53,24 @@ for (i in first:last) {
   circ <-  circ.sim(nvar=24)
   simple.par <- fa.parallel(simple)
   fa.simple <- factor.pa(simple,2)
+  fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE)
+  simple.scores <-  score.items(fa.simple.keys$clusters,simple)
+  pairs.panels(simple.scores$scores)
   f4 <- VSS.simulate()
- if (require(polycor)) { psych.d <- psycho.demo() } else {warning("psycho.demo requires the polycor package")
-         psych.d <- NULL}
+ if (!require(polycor)) { warning("psycho.demo requires the polycor package")
+         psych.d <- NULL  } else  {psych.d <- psycho.demo() } 
+       
   cong <- congeneric.sim()
+  cluster.plot(factor.pa(circ.sim(nvar=24),nf=2),title="two circumplex factors")
   pairs.panels(cong)
- if(require(Rgraphviz)) { fa.graph(factor.pa(item.sim(16),2)) } else {warning("fa.graph requires Rgraphviz") }
+ if(require(Rgraphviz)) { fa.graph(factor.pa(item.sim(16),2) ,title="Principal factor of a simple structure") 
+  	ic.out <- ICLUST(s4)
+   	ICLUST.rgraph(ic.out,title="ICLUST of 24 Mental abilities")  
+  	jen <-  omega(make.hierarchical())
+  	omega.graph(jen,title="Omega with Schmid Leihman")
+  	omega.graph(jen,sl=FALSE,title="Omega with hierarchical factors")
+ } else {warning("fa.graph, omega.graph, ICLUST.rgraph require Rgraphviz") }
+  
   out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}
 

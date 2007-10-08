@@ -63,6 +63,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, min.err = .
      		                             }
      	               }}
      }}
+    class(loadings) <- "loadings"
     if(nfactors<1) nfactors <- n
    
     residual<- r - model

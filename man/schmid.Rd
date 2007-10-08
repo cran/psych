@@ -6,13 +6,14 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, pc = "pa",...)
+schmid(model, nfactors = 3, pc = "pa",digits=NULL,...)
 }
 
 \arguments{
   \item{model}{ A correlation matrix }
   \item{nfactors}{ Number of factors to extract }
   \item{pc}{ pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood }
+  \item{digits}{if digits not equal NULL, rounds to digits}
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
 \details{Schmid Leiman orthogonalizations are typical in the ability domain, but are not seen as often in the non-cognitive personality domain.  S-L is one way of finding the loadings of items on the general factor for estimating omega. 
@@ -37,8 +38,8 @@ Requires the GPArotation package.
 
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
-
-
+s.jen <- schmid(make.hierarchical(),digits=2)  #create a hierarchical demo
+s.jen
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

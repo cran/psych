@@ -42,7 +42,7 @@ Additional output is drawn to main graphics screen. }
 
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}}
 \note{ Requires Rgraphviz}
-}
+
 
 \examples{
 test.data <- Harman74.cor$cov
@@ -52,3 +52,4 @@ if(require(Rgraphviz) ) {ICLUST.rgraph(ic.out) }
 }
 \keyword{ multivariate}
 \keyword{ cluster}% __ONLY ONE__ keyword per line
+\keyword{hplot}

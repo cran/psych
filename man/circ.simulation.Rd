@@ -11,7 +11,8 @@ circ.simulation(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))
   \item{samplesize}{a vector of sample sizes to simulate }
   \item{numberofvariables}{vector of the number of variables to simulate }
  }
-%- maybe also 'usage' for other objects documented here.
+ %
+
 \details{``A common model for representing psychological data is simple structure (Thurstone, 1947). According to one common interpretation, data are simple structured when items or scales have non-zero factor loadings on one and only one factor (Revelle & Rocklin, 1979). Despite the commonplace application of simple structure, some psychological models are defined by a lack of simple structure. Circumplexes (Guttman, 1954) are one kind of model in which simple structure is lacking.
 
 ``A number of elementary requirements can be teased out of the idea of circumplex structure. First, circumplex structure implies minimally that variables are interrelated; random noise does not a circumplex make. Second, circumplex structure implies that the domain in question is optimally represented by two and only two dimensions. Third, circumplex structure implies that variables do not group or clump along the two axes, as in simple structure, but rather that there are always interstitial variables between any orthogonal pair of axes (Saucier, 1992). In the ideal case, this quality will be reflected in equal spacing of variables along the circumference of the circle (Gurtman, 1994; Wiggins, Steiger, & Gaelick, 1981). Fourth, circumplex structure implies that variables have a constant radius from the center of the circle, which implies that all variables have equal communality on the two circumplex dimensions (Fisher, 1997; Gurtman, 1994). Fifth, circumplex structure implies that all rotations are equally good representations of the domain (Conte & Plutchik, 1981; Larsen & Diener, 1992)." (Acton and Revelle, 2004)
@@ -28,13 +29,13 @@ Acton and Revelle reviewed the effectiveness of 10 tests of circumplex structure
 	A test of equal Variance of squared factor loadings across arbitrary rotations.
 	
 Included in this set of functions are simple procedure to generate circumplex structured or simple structured data, the four test statistics, and a simple simulation showing the effectiveness of the four procedures.
-}
+} 
 \value{A data.frame with simulation results for circumplex, ellipsoid, and simple structure data sets for each of the four tests.}
-}
+
 \references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
 \author{ William Revelle}
-\note{The simulations default values are for sample sizes of 100,200, 400, and 800 cases, with 16, 32, 48 and 72 items.  }
-}
+\note{The simulations default values are for sample sizes of 100, 200, 400, and 800 cases, with 16, 32, 48 and 72 items.  }
+
 \seealso{See Also as \code{\link{circ.tests}}, \code{\link{circ.sim}} }
 \examples{
 
@@ -46,4 +47,5 @@ demo <- circ.simulation()
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{multivariate}
+\keyword{datagen}
 

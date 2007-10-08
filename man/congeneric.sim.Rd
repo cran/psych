@@ -27,7 +27,6 @@ The implied covariance matrix is just pattern \%*\% t(pattern).
 \references{}
 \author{ William Revelle }
 
-}
 \seealso{  \code{\link{item.sim}} }
 \examples{
 
@@ -40,3 +39,4 @@ The implied covariance matrix is just pattern \%*\% t(pattern).
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ multivariate}
+\keyword{datagen}

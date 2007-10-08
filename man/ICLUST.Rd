@@ -85,6 +85,9 @@ See also  more extensive documentation at
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
 \examples{
+test.data <- Harman74.cor$cov
+ic.out <- ICLUST(test.data)
+if(require(Rgraphviz) ) {ICLUST.rgraph(ic.out,title="ICLUST of 24 mental tests") }  
 \dontrun{
 test.data <- Harman74.cor$cov
 ic.out <- ICLUST(test.data)         #use all defaults

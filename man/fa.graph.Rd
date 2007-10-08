@@ -34,7 +34,6 @@ fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, s
 As of June 1, there is an occasionally strange result when using the simple=FALSE option in Sweave.   }
 
  
-}
 \seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}}
 \examples{
 
@@ -45,4 +44,5 @@ if(require(Rgraphviz)) {fa.graph(test.simple) }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ multivariate }
+\keyword{hplot}
 

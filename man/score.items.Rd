@@ -5,7 +5,7 @@
 \description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.
 }
 \usage{
-score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="median",  min = NULL, max = NULL, digits = 2)
+score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="median",  min = NULL, max = NULL, digits = 2,short=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,7 @@ score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data }
   \item{digits}{ Number of digits to report }
+  \item{short}{if short is TRUE, then just give the item and scale statistics and do not report the scores}
 }
 \details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for score.items is the average.  
 
@@ -42,13 +43,22 @@ By default, missing values are replaced with the corresponding median value for 
 \references{An introduction to psychometric theory with applications in R (in preparation).  \url{http://personality-project.org/r/book}}
 \author{ William Revelle }
 
-\seealso{ \code{\link{alpha.scale}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}} }
+\seealso{ \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha.scale}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}  for item/scale analysis}
 \examples{
 y <- attitude     #from the datasets package
 keys <- matrix(c(rep(1,7),rep(1,4),rep(0,7),rep(-1,3)),ncol=3)
 colnames(keys) <- c("first","second","third")
 x <- score.items(keys,y)
-#x    #to see the output 
+x  
+#  
+#see also the example including the bfi data set
+data(bfi)
+describe(bfi)
+keys <- matrix(c(-1,1,1,1,1,rep(0,25),1,1,1,-1,-1,rep(0,25),-1,-1,1,1,1,rep(0,25),1,1,1,1,1,rep(0,25),1,-1,1,1,-1),ncol=5)
+rownames(keys) <- colnames(bfi)
+colnames(keys) <- c("Agreeable","Conscientious","Extravert","Neurotic","Open")
+score.items(keys,bfi,short=TRUE,ilabels = colnames(bfi))
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -17,11 +17,10 @@ poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)
 \details{Typical personality and item data are integer values (0,1 for ability;  1,2, 3, 4 for attitude scales).  The normal correlation procedures will find Pearson correlations (cor).  The polycor and hetcor functions from John Fox's polychor package will find polychoric correlations for categorical data.  This wrapper function converts integer data to categorical data and then calls hetcor.
 }
 \value{A matrix of polychoric correlations (if short=TRUE), otherwise a list of various estimates (see hetcor).
-
 }
 \author{ William Revelle}
 \note{requires polycor}
-}
+
 
 \examples{
 

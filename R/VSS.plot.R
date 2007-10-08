@@ -1,5 +1,5 @@
 "VSS.plot" <-
-function(x,plottitle="Very Simple Structure",line=FALSE)
+function(x,title="Very Simple Structure",line=FALSE)
   {
   	n=dim(x)
   	symb=c(49,50,51,52)              #plotting sym
@@ -7,7 +7,7 @@ function(x,plottitle="Very Simple Structure",line=FALSE)
     if (line) lines(x$fit)
 	 
 
-	title(main=plottitle)
+	title(main=title)
 	x$cfit.2[1]<-NA
 	x$cfit.3[1]<-NA
 	x$cfit.3[2]<-NA

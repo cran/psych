@@ -17,8 +17,11 @@ function (gload=NULL,fload=NULL,n=0,raw=FALSE) {
   fcor <- gload %*% t(gload)           #the factor correlation matrix
   diag(fcor) <-1                       #put ones on the diagonal
   model <-  fload %*% fcor %*% t(fload) #the model correlation matrix for oblique factors
-  diag(model)<- 1                       # put ones along the diagonal 
+  diag(model)<- 1                       # put ones along the diagonal
+  nvar <- dim(fload)[1]
+  colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
   if(n>0) {
-  	model <- mvrnorm(n = n, Sigma=model, tol = 1e-6, empirical = FALSE)
+    mu <- rep(0,nvar)
+  	model <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
   	if (!raw ) { model <- cor(model) } }
   make.hierarchical <- model }

@@ -63,6 +63,7 @@
 	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,digits=digits)
 	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut)
 	purified <- cluster.cor(clusters,r.mat,digits=digits)
+	class(loads$loadings) <- "loading"
 	list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
 }   
 

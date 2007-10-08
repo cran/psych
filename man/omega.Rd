@@ -5,7 +5,7 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors, pc = "mle",key = NULL, ...)
+omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,6 +13,8 @@ omega(m, nfactors, pc = "mle",key = NULL, ...)
   \item{nfactors}{Number of factors believed to be group factors}
   \item{pc}{  pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood.}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
+  \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
+  \item{digits}{if specified, round the output to digits}
   \item{...}{Allows additional parameters to be passed through to the factor routines}
 }
 
@@ -29,10 +31,16 @@ One way to find omega is to do a factor analysis of the original data set, rotat
 
 Omega differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
 
+For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.
+
+
 Output from omega can be shown using the  \code{\link{omega.graph}} function.
 
 Beta, an alternative to omega, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
+The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}{omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}{omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h}{omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
+
+A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 }
 \value{
  
@@ -44,6 +52,7 @@ Beta, an alternative to omega, is defined as the worst split half reliability.  
   \item{schmid$oblique}{The oblimin transformed factors}
   \item{schmid$fcor}{the correlation matrix of the oblique factors}
   \item{schid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
+  \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
 }
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
 
@@ -66,90 +75,19 @@ test.data <- Harman74.cor$cov
 my.omega <- omega(test.data,3)       
 print(my.omega,digits=2)
 #
-jen.omega <- omega(make.hierarchical())
+
 }
-#produces this output
+#create 9 variables with a hierarchical structure
+jen.data <- make.hierarchical()
+#with correlations of
+jen.data
+#find omega 
+jen.omega <- omega(jen.data,digits=2)
+jen.omega
 
-
-#$omega
-#[1] 0.64
-#
-#$alpha
-#[1] 0.91
-#
-#$schmid
-#$schmid$sl
-#                       g factor Factor1 Factor2 Factor3    h2   u2
-#VisualPerception           0.53   0.018  0.4688 0.02089 0.494 0.51
-#Cubes                      0.34   0.022  0.3029 0.04544 0.209 0.79
-#PaperFormBoard             0.38   0.033  0.3971 0.18505 0.398 0.60
-#Flags                      0.43   0.109  0.3233 0.06148 0.261 0.74
-#GeneralInformation         0.57   0.564  0.0078 0.09900 0.606 0.39
-#PargraphComprehension      0.57   0.599  0.0244 0.02960 0.671 0.33
-#SentenceCompletion         0.56   0.624  0.0352 0.02783 0.730 0.27
-#WordClassification         0.56   0.394  0.1343 0.09255 0.341 0.66
-#WordMeaning                0.58   0.637  0.0135 0.06034 0.762 0.24
-#Addition                   0.35   0.047  0.0939 0.81706 0.858 0.14
-#Code                       0.44   0.061  0.1442 0.44377 0.300 0.70
-#CountingDots               0.37   0.100  0.1576 0.57732 0.491 0.51
-#StraightCurvedCapitals     0.50   0.036  0.2677 0.33168 0.301 0.70
-#WordRecognition            0.34   0.127  0.1506 0.10015 0.093 0.91
-#NumberRecognition          0.32   0.060  0.2005 0.07972 0.105 0.90
-#FigureRecognition          0.44   0.022  0.4080 0.00192 0.374 0.63
-#ObjectNumber               0.37   0.064  0.1769 0.22163 0.139 0.86
-#NumberFigure               0.43   0.076  0.3290 0.26170 0.339 0.66
-#FigureWord                 0.37   0.053  0.2431 0.10447 0.151 0.85
-#Deduction                  0.53   0.231  0.2814 0.00299 0.277 0.72
-#NumericalPuzzles           0.50   0.025  0.2877 0.30211 0.301 0.70
-#ProblemReasoning           0.52   0.222  0.2840 0.00067 0.272 0.73
-#SeriesCompletion           0.59   0.198  0.3304 0.07553 0.325 0.68
-#ArithmeticProblems         0.52   0.211  0.1106 0.40982 0.320 0.68
-#
-#$schmid$orthog
-#                       Factor1 Factor2  Factor3
-#VisualPerception         0.025   0.702 -0.02336
-#Cubes                    0.030   0.454 -0.05080
-#PaperFormBoard           0.045   0.595 -0.20689
-#Flags                    0.149   0.484 -0.06874
-#GeneralInformation       0.771  -0.012  0.11068
-#PargraphComprehension    0.817   0.037 -0.03310
-#SentenceCompletion       0.852  -0.053  0.03111
-#WordClassification       0.538   0.201  0.10348
-#WordMeaning              0.870   0.020 -0.06746
-#Addition                 0.065  -0.141  0.91350
-#Code                     0.083   0.216  0.49615
-#CountingDots            -0.136   0.236  0.64546
-#StraightCurvedCapitals   0.049   0.401  0.37082
-#WordRecognition          0.173   0.226  0.11197
-#NumberRecognition        0.082   0.300  0.08912
-#FigureRecognition       -0.029   0.611  0.00214
-#ObjectNumber             0.087   0.265  0.24779
-#NumberFigure            -0.104   0.493  0.29259
-#FigureWord               0.073   0.364  0.11681
-#Deduction                0.315   0.421 -0.00334
-#NumericalPuzzles         0.035   0.431  0.33777
-#ProblemReasoning         0.303   0.425 -0.00074
-#SeriesCompletion         0.270   0.495  0.08445
-#ArithmeticProblems       0.288   0.166  0.45820
-#
-#$schmid$fcor
-#     [,1] [,2] [,3]
-#[1,] 1.00 0.51 0.30
-#[2,] 0.51 1.00 0.33
-#[3,] 0.30 0.33 1.00
-#
-#$schmid$gloading
-#
-#Loadings:
-#     Factor1
-#[1,] 0.681  
-#[2,] 0.744  
-#[3,] 0.447  
-#
-#               Factor1
-#SS loadings      1.218
-#Proportion Var   0.406
-#
+#create 8 items with a two factor solution, showing the use of the flip option
+sim2 <- item.sim(8)
+omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

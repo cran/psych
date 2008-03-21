@@ -1,0 +1,1 @@
+"rescale" <-  function(x,mean=100,sd=15,df=TRUE) {if(df) {x <- data.frame(scale(x)*sd+mean)} else {x <- scale(x)*sd +mean}}

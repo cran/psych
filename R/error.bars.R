@@ -1,13 +1,18 @@
 "error.bars" <-
-function (x,ylab ="Dependent Variable",xlab="", ylim= NULL, ci=1.96, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,...)  # x   data frame with 
+function (x,ylab ="Dependent Variable",xlab="Independent Variable", main="95% confidence limits",ylim= NULL, ci=1.96, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,...)  # x   data frame with 
     {
     x.stats <- describe(x)
+    z <- dim(x)[2]
     min.x <- min(x.stats$mean)
     max.x <- max(x.stats$mean)
     max.se <- max(x.stats$se)
     if(is.null(ylim)) {ylim=c(min.x - 2*max.se,max.x+2*max.se)}
-    if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,...) } else {points(x.stats$mean,...) }
-     z <- dim(x)[2]
+    if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,axes=FALSE,main=main,...)
+     axis(1,1:z,colnames(x))
+     axis(2)
+     box()
+     } else {points(x.stats$mean,...) }
+    
     if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
    
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}

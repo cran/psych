@@ -23,6 +23,8 @@ A typical example would be in the study of anxiety and depression.  A general ne
 An alternative model is to consider hierarchical cluster analysis techniques such as \code{\link{ICLUST}}.
 
 Requires the GPArotation package.
+
+Although 3 factors are the minimum number necessary to define the solution uniquely, it is occasionally useful to allow for a two factor solution.  This is  done here by setting the general factor loadings between the two lower order factors as the sqrt(oblique correlations between the factors). A warning message is issued. 
 }
 \value{
   

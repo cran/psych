@@ -23,7 +23,8 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots")  {
 
    valuesx  <- eigen(rx)$values 
    ylabel  <- "eigen values of principal components"
-
+   ymax <- max(valuesx)
+   
    if (fa!="pc") {
    
    	fa.values.sim <- factor.pa(cor(simdata))$values
@@ -32,14 +33,14 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots")  {
    	}
     
 
-if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,xlab="Factor Number",pch=4) 
+if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) 
 	points(values.sim,type ="b",lty="dotted",pch=4)
 	if(is.null(n.obs)) {points(values.samp,type ="b",lty="dashed",pch=4)} }
 
 
 if (fa !="pc" ) { if (fa=="fa") {
              ylabel <-  "eigen values of principal factors"
-             plot(fa.valuesx,type="b", main = main,ylab=ylabel ,xlab="Factor Number",pch=4) 
+             plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) 
         	points(fa.values.sim,type ="b",lty="dotted",pch=2)
 	if(is.null(n.obs)) {points(fa.values.samp,type ="b",lty="dashed",pch=2)}} else
 	points(fa.valuesx,type ="b",lty="solid",pch=2)

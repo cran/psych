@@ -58,7 +58,7 @@ for (i in first:last) {
   pairs.panels(simple.scores$scores)
   f4 <- VSS.simulate()
  if (!require(polycor)) { warning("psycho.demo requires the polycor package")
-         psych.d <- NULL  } else  {psych.d <- psycho.demo() } 
+         psych.d <- NULL  } else  {psych.d <- phi.demo() } 
        
   cong <- congeneric.sim()
   cluster.plot(factor.pa(circ.sim(nvar=24),nf=2),title="two circumplex factors")

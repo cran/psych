@@ -5,7 +5,7 @@
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NULL, digits=2)
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NULL, scores=FALSE,missing=FALSE,impute="median",digits=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +14,9 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NULL, digits
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
   \item{rotate} {"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
-  \item{digits }{digits =2.    Accuracy of answers as well as display}
+  \item{scores}{If TRUE, estimate component scores}
+  \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
+  \item{impute}{"median" or "mean" values are used to replace missing values} \item{digits }{digits =2.    Accuracy of answers as well as display}
 }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 
@@ -23,6 +25,8 @@ There are a number of data reduction techniques including principal components a
 For a n x n correlation matrix, the n principal components completely reproduce the correlation matrix.  However, if just the first k principal components are extracted, this is the best k dimensional approximation of the matrix.
 
 Some of the statistics reported are more appropriate for maximum likelihood factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
+
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g.,\code{\link{score.items}} component scores can be estimated by regression.  This is done just to be parallel with the principal axis factor analysis function \code{\link{factor.pa}}
 }
 \value{
   
@@ -47,6 +51,7 @@ Some of the statistics reported are more appropriate for maximum likelihood fact
  
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  \item{phi}{If oblique rotations (using oblimin from the GPArotation package) are requested, what is the interfactor correlation.}
+ \item{scores}{If scores=TRUE, then estimates of the factor scores are reported }
 }
 
 \author{ William Revelle}

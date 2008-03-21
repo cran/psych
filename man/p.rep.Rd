@@ -68,4 +68,5 @@ p.rep.t(2.14,84,14) #effect of equal sample sizes (see Rosnow et al.)
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{models}
+\keyword{univar}
 

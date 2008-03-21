@@ -12,7 +12,7 @@ score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="
   \item{keys}{A matrix or dataframe of -1, 0, or 1 weights for each item on each scale }
   \item{items}{ Matrix or dataframe of raw item scores }
   \item{totals}{ if TRUE (default) find total scores, if FALSE, find average scores }
-  \item{ilabels}{ a vector of item labels  }
+  \item{ilabels}{ a vector of item labels. }
   \item{missing}{TRUE: Replace missing values with the corresponding item median or mean. FALSE: do not score that subject  }
   \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response.}
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
@@ -57,7 +57,7 @@ describe(bfi)
 keys <- matrix(c(-1,1,1,1,1,rep(0,25),1,1,1,-1,-1,rep(0,25),-1,-1,1,1,1,rep(0,25),1,1,1,1,1,rep(0,25),1,-1,1,1,-1),ncol=5)
 rownames(keys) <- colnames(bfi)
 colnames(keys) <- c("Agreeable","Conscientious","Extravert","Neurotic","Open")
-score.items(keys,bfi,short=TRUE,ilabels = colnames(bfi))
+score.items(keys,bfi,short=TRUE)
 
 
 }

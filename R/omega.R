@@ -19,7 +19,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=NULL,...) {
              colnames(m) <- rownames(m) <- m.names
       if ((nvar < 6) && (pc=="mle") ) {warning(paste("3 factors is too many for ",nvar," variables using mle.  Using pa instead",sep=""))
        pc <- "pa"} 
-       gf<-schmid(m,nfactors,pc,digits,...)
+       gf<-schmid(m,nfactors,pc,digits, ...)
 
       Vt <- sum(m)   #find the total variance in the scale
       Vitem <-sum(diag(m)) #

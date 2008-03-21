@@ -23,9 +23,7 @@ poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)
 
 
 \examples{
-
-
-
+round(phi.demo() ,2)  #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

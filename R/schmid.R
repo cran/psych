@@ -1,14 +1,15 @@
 #corrected estimate of communality, May 21, 2007
 #removed "x" from factanal call, June 14, 2007
+#added ability to do 2 factors by treating them with equal loadings Jan 2008
 "schmid" <-
-function (model, nfactors = 3, pc = "pa",digits=NULL,...) 
+function (model, nfactors = 3, pc = "pa",  digits=NULL,...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) model <- cor(model,use="pairwise")
-    if (pc=="pc") {
+     if (pc=="pc") {
         fact <- principal(model, nfactors,...)
     } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,...) } else {
         fact <- factanal(covmat = model, factors = nfactors)
@@ -18,8 +19,14 @@ function (model, nfactors = 3, pc = "pa",digits=NULL,...)
     rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     factr <- t(obminfact$Th) %*% (obminfact$Th)
-    gfactor <- factanal( covmat = factr, factors = 1)
-    gload <- loadings(gfactor)
+   if (nfactors>2) {
+       gfactor <- factanal( covmat = factr, factors = 1)
+       gload <- loadings(gfactor) } else {gload<- c(NA,NA)
+       gload[1] <- sqrt(abs(factr[1,2]))
+       gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2]))
+       
+              warning("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")}  
+
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g factor"
     u2 <- 1 - diag(orth.load %*% t(orth.load)) 

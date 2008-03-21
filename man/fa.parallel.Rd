@@ -14,7 +14,7 @@ fa.parallel(x, n.obs = NULL, fa="both", main = "Parallel Analysis Scree Plots")
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
  \item{main}{ a title for the analysis }
 }
-\details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Humphreys and Montanelli's ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and/or principal factor solution and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
+\details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Humphreys and Montanelli's ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and principal factor solution and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 }
 \value{
   A plot of the eigen values for the original data, a resampling of the  original data, and of a equivalent size matrix of random normal deviates.  If the data are a correlation matrix, specify the number of observations.  
@@ -26,11 +26,10 @@ fa.parallel(x, n.obs = NULL, fa="both", main = "Parallel Analysis Scree Plots")
 \seealso{ \code{\link{VSS}},\code{\link{VSS.plot}}, \code{\link{VSS.parallel}} }
 \examples{
 
-#not run
-#test.data <- Harman74.cor$cov 
-#fa.parallel(test.data,n.obs=200)
-#
-#fa.parallel(attitude) 
+test.data <- Harman74.cor$cov 
+fa.parallel(test.data,n.obs=200)
+
+fa.parallel(attitude) 
 #
 
 }

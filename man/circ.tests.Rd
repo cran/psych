@@ -26,6 +26,8 @@ Acton and Revelle reviewed the effectiveness of 10 tests of circumplex structure
 	3	A test of indifference to Rotation
 	
 	4	A test of equal Variance of squared factor loadings across arbitrary rotations.
+	
+To interpret the values of these various tests, it is useful to compare the particular solution to simulated solutions representing pure cases of circumplex and simple structure.  See the example output from \code{\link{circ.simulation}} and compare these plots with the results of the circ.test.
 }
 \value{A list of four items is returned.  These are the gap, fisher, rotation and variance test results.
   \item{gaps}{gap.test}

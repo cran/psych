@@ -6,18 +6,22 @@
 }
 \usage{
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NULL,
-min.err = 0.001, digits = 2, max.iter = 50)
+scores = FALSE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
   \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{residuals}{Should the residual matrix be shown }
-  \item{rotate} {"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
+  \item{rotate}{"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
+  \item{scores}{If TRUE, estimate factor scores}
+  \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
+  \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
   \item{digits}{ How many digits of output should be returned}
   \item{max.iter}{Maximum number of iterations for convergence }
+  \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
 }
 \details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}).  
 
@@ -26,6 +30,8 @@ Principal axes factor analysis has a long history in exploratory analysis and is
 Principal axes may be used in cases when maximum likelihood solutions fail to converge.  
 
 The algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
+
+Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression.  
 }
 \value{
   \item{values }{Eigen values of the final solution}

@@ -1,0 +1,29 @@
+Software and data sets to do classic and modern psychometrics, and to analyze personality  and experimental psychological data sets. 
+
+The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory.  
+
+Additional functions are added sporadically.
+
+History:
+
+October-November, 2007
+
+Introduced several new functions:
+
+headtail   (combines head and tail functions to produce the first N and last M rows of a matrix or dataframe)
+
+error.bars and 
+error.bars.by     plot means with error bars by a grouping variable
+
+omega       revised to allow for negatively keyed items.  Detects items that should be reversed.
+
+June-September, 2007
+
+score.multiple.choice   provides scores and item statistics for multiple choice items.
+
+circ.sim              modified to be more general item simulations
+circ.simulation
+item.sim
+
+polar                converts two dimensional factor loadings to polar coordinates.
+

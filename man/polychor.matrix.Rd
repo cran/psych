@@ -1,31 +1,44 @@
 \name{polychor.matrix}
 \alias{polychor.matrix}
+\alias{Yule2poly.matrix}
+\alias{phi2poly.matrix}
+\alias{Yule2phi.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Actually, what does this do? Convert a matrix of phi coefficients to a matrix of polycoric correlations }
-\description{Given a vector of a vector of frequencies, use John Fox's polycor function to convert these to polychoric correlations.   
+\title{Phi or Yule coefficient matrix  to polychoric coefficient matrix}
+\description{Given a matrix of phi or Yule correlation coefficients and a vector of marginals,  use John Fox's polycor function to convert these to polychoric correlations.   
 
-Not ready for public consumption.
+Some older correlation matrices were reported as matrices of Phi or of Yule correlations.  That is, correlations were found from the two by two table of counts:
+ \cr
+\tabular{lll}{
+\tab a \tab b \cr
+\tab c \tab d  \cr
+}
+Yule Q is (ad - bc)/(ad+bc). \cr
+
+With marginal frequencies of a+b, c+d, a+c, b+d.
+
+Given a square matrix of such correlations, and the proportions for each variable that are in the a + b cells, it is possible to reconvert each correlation into a two by two table and then estimate the corresponding polychoric correlation (using John Fox's polychor function. 
 }
 \usage{
-polychor.matrix(x, y = NULL)
+Yule2poly.matrix(x, v)
+phi2poly.matrix(x, v)
+Yule2phi.matrix(x, v)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{a matrix of phi coefficients }
-  \item{y}{perhaps  }
+  \item{x}{a matrix of phi or Yule  coefficients }
+  \item{v}{A vector of marginal frequencies  }
 }
-\details{This is a stub of a function to convert a matrix of phi coefficients with an accompanying vector of frequencies into polychoric correlations.  Clearly it is not there yet, but is included in the package as a stopgap.
-
-Please do not use.
+\details{These functions call \code{\link{Yule2poly}},  \code{\link{Yule2phi}} or \code{\link{phi2poly}} for each cell of the matrix. See those functions for more details.  See \code{\link{phi.demo}} for an example.
 
 }
-\value{
+\value{A matrix of correlations
 }
 
 \author{ William Revelle}
 
 \examples{
-
+round(phi.demo() ,2)  #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
-\keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ multivariate }% __ONLY ONE__ keyword per line

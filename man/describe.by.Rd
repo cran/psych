@@ -5,12 +5,13 @@
 \description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Just a wrapper for by and \code{\link{describe}}.
 }
 \usage{
-describe.by(x, group,...)
+describe.by(x, group,mat=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a data.frame or matrix  }
   \item{group}{a grouping variable}
+  \item{mat}{provide a matrix output rather than a list}
   \item{...}{parameters to be passed to describe}
 }
 \details{

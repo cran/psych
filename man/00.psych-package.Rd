@@ -1,22 +1,27 @@
-\name{00psych-package}
-\alias{psych-package}
+\name{psych}
 \alias{psych}
+\alias{psych-package}
+\alias{00.psych-package}
 \docType{package}
 \title{A package for personality, psychometric, and psychological research
 }
 \description{The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic descriptive analyses.
 
-Psychometric applications include routines for Very Simple Structure (\code{\link{VSS}}), Item Cluster Analysis (\code{\link{ICLUST}}) and principal axes factor analysis (\code{\link{factor.pa}}), as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution and to graph both structures (\code{\link{omega.graph}}) and to calculate reliability coefficients alpha (\code{\link{score.items}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}).
+Psychometric applications include routines for Very Simple Structure (\code{\link{VSS}}), Item Cluster Analysis (\code{\link{ICLUST}}) and principal axes factor analysis (\code{\link{factor.pa}}), as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution and to graph both structures (\code{\link{omega.graph}}) and to calculate reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}).
+
+The \code{\link{score.items}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
 
 Additional functions make for more convenient descriptions of item characteristics.  Functions under development include 1 and 2 parameter Item Response measures.
 
  A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple correlation from correlation matrices (\code{\link{mat.regress}}).
  
- The most recent development version of the package is always available for download as a source file from the repository at  \url{http://personality-project.org/r/src/contrib/}
+ Functions to generate simulate data with particular structures include \code{\link{circ.sim}}, \code{\link{item.sim}} and \code{\link{congeneric.sim}}.
+ 
+ The most recent development version of the package is always available for download as a \emph{source} file from the repository at  \url{http://personality-project.org/r/src/contrib/}.  
  
 }
-\details{ The psych package is a combination of multiple source files maintained at the \url{http://personality-project.org/r} repository: ``useful.r", VSS.r., ICLUST.r, omega.r, etc.``useful.r" is a set of routines for easy data entry (\code{\link{read.clipboard}}),
-simple descriptive statistics (\code{\link{describe}}), and splom plots combined with correlations (\code{\link{pairs.panels}}, adapted from the help files of pairs).
+\details{ The psych package was originally a combination of multiple source files maintained at the \url{http://personality-project.org/r} repository: ``useful.r", VSS.r., ICLUST.r, omega.r, etc.``useful.r" is a set of routines for easy data entry (\code{\link{read.clipboard}}),
+simple descriptive statistics (\code{\link{describe}}), and splom plots combined with correlations (\code{\link{pairs.panels}}, adapted from the help files of pairs).  It is now a single package.
 
 The \code{\link{VSS}} routines allow for testing the number of factors (\code{\link{VSS}}), showing plots (\code{\link{VSS.plot}}) of goodness of fit, and basic routines for estimating the number of factors/components to extract by examining the scree plot (\code{\link{VSS.scree}}) or comparing with the scree of an equivalent matrix of random numbers (\code{\link{VSS.parallel}}) . 
 
@@ -42,13 +47,15 @@ Graphical organizations of cluster and factor analysis output can be done using 
 
 An additional set of functions generate simulated data to meet certain structural properties.  \code{\link{item.sim}} creates simple structure data,  \code{\link{circ.sim}} will produce circumplex structured data,  \code{\link{item.dichot}} produces circumplex or simple structured data for dichotomous items.  These item structures are useful for understanding the effects of skew, differential item endorsement on factor and cluster analytic soutions.
 
-Three data sets are included: \code{\link{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link{iqitems}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. 
+When examining personality items, some people like to discuss them as representing items in a two dimensional space with a circumplex structure.  Tests of circumplex fit \code{\link{circ.tests}} have been developed.  When representing items in a circumplex, it is convenient to view them in \code{\link{polar}} coordinates. 
+
+Five data sets are included: \code{\link{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link{iqitems}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link{galton} }  Galton's data set of the heights of parents and their children. \code{\link{peas}} recreates the original Galton data set of the genetics of sweet peas.
 
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-33\cr
-Date: \tab 2007-10-08\cr
+Version: \tab 1.0-42 \cr
+Date: \tab 2008-3-21\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -60,17 +67,22 @@ Useful data entry and descriptive statistics\cr
 
 \link{describe}                 Basic descriptive statistics useful for psychometrics\cr
 \link{describe.by}              Find summary statistics by groups\cr
+\link{headtail}                 combines the head and tail functions for showing data sets\cr
 \link{read.clipboard}           shortcut for reading from the clipboard\cr
-\link{read.clipboard.csv}       shortcut for reading comma delimited files from clipboard\cr
-
+\link{read.clipboard.csv}       shortcut for reading comma delimited files from clipboard \cr
 \link{pairs.panels}            SPLOM and correlations for a data matrix\cr
-\link{multi.hist}             Histograms of multiple variables arranged in matrix form\cr
+\link{multi.hist}             Histograms and densities of multiple variables arranged in matrix form\cr
 \link{skew}                   Calculate skew for a vector, each column of a matrix, or data.frame\cr
 \link{kurtosi}                Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
-
-\link{error.crosses}          Two way error bars \cr
 \link{geometric.mean}        Find the geometric mean of a vector or columns of a data.frame \cr
 \link{harmonic.mean}         Find the harmonic mean of a vector or columns of a data.frame \cr
+\link{error.bars}             Plot means and error bars \cr
+\link{error.bars.by}            Plot means and error bars for separate groups\cr
+\link{error.crosses}          Two way error bars \cr
+\link{interp.median}           Find the interpolated median, quartiles, or general quantiles. \cr
+\link{table2df}                Convert a two dimensional table of counts to a matrix or data frame \cr
+\
+\cr
 \cr
 Data reduction through cluster and factor analysis\cr
 \cr
@@ -82,10 +94,11 @@ Data reduction through cluster and factor analysis\cr
 \link{ICLUST.graph}            Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}           Graph the output from ICLUST using rgraphviz \cr
 \link{poly.mat}                Find the polychoric correlations for items (uses J. Fox's hetcor \cr
-\link{omega}                   Calculate the omega estimate of factor saturation (requires the GPArotation  package\cr
-\link{omega.graph}             Draw a hierarchical or SL orthogonalized solution \cr 
-\link{schmid}                  Apply the Schmid Leiman transformation to a correlation matrix\cr\cr
-\link{score.items}    Combine items into multiple scales and find alpha\cr
+\link{omega}                   Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
+\link{omega.graph}             Draw a hierarchical or Schmid Leiman orthogonalized solution \cr 
+\link{schmid}                  Apply the Schmid Leiman transformation to a correlation matrix\cr
+\link{score.items}             Combine items into multiple scales and find alpha\cr
+\link{score.multiple.choice}   Combine items into multiple scales and find alpha and basic scale statistics\cr
 \link{VSS}                     Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
 \link{VSS.parallel}            Do a parallel analysis to determine the number of factors for a random matrix\cr
 \link{VSS.plot}                Plot VSS output\cr
@@ -101,7 +114,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{cluster.cor}             find correlations of composite variables from larger matrix\cr
 \link{cluster.loadings}        find correlations of items with  composite variables from a larger matrix\cr
 \link{eigen.loadings}          Find the loadings when doing an eigen value decomposition\cr
-\link{factor.pa}              Do a principal Axis factor analysis\cr
+\link{factor.pa}              Do a Principal Axis factor analysis and estimate factor scores\cr
 \link{factor2cluster}         extract cluster definitions from factor loadings\cr
 \link{factor.congruence}      Factor congruence coefficient\cr
 \link{factor.fit}             How well does a factor model fit a correlation matrix\cr
@@ -115,23 +128,45 @@ Functions for generating simulated data sets \cr
 \link{circ.sim}               Generate a two dimensional circumplex item structure \cr
 \link{item.sim}               Generate a two dimensional simple structrue with particular item characteristics \cr
 \link{congeneric.sim}         Generate a one factor congeneric reliability structure \cr
-\link{psycho.demo}             Create artificial data matrices for teaching purposes\cr
+\link{phi.demo}               Create artificial data matrices for teaching purposes\cr
 \cr
 Miscellaneous functions\cr
 \cr
 \link{fisherz}                 Apply the Fisher r to z transform\cr
-\link{paired.r}               Test for the difference of two paired correlations\cr
+\link{fisherz2r}                Apply the Fisher z to r transform\cr
+\link{paired.r}               Test for the difference of two paired or two independent correlations\cr
+\link{r.con}                    Confidence intervals for correlation coefficients \cr
+\link{r.test}                  Test of significance of r, differences between rs. \cr
+\link{phi}                     Find the phi coefficient of correlation from a 2 x 2 table \cr
+\link{phi.demo}                Demonstrate the problem of phi coefficients with varying cut points \cr
 \link{phi2poly}                Given a phi coefficient, what is the polychoric correlation\cr
-\link{poly.mat}         Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
-\link{polychor.matrix}         Use John Fox's polycor to create a matrix of correlations (not yet very useful)\cr
+\link{phi2poly.matrix}                Given a phi coefficient, what is the polychoric correlation\cr
+\link{polar}                   Convert 2 dimensional factor loadings to polar coordinates.\cr
+\link{poly.mat}                Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
+\link{polychor.matrix}         Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
+\link{Yule}                     Find the Yule Q coefficient of correlation \cr
+\link{Yule.inv}                 What is the two by two table that produces a Yule Q with set marginals? \cr
+\link{Yule2phi}                 What is the phi coefficient corresponding to a Yule Q with set marginals? \cr
+\link{Yule2phi.matrix}           Convert a matrix of Yule coefficients to a matrix of phi coefficients. \cr
+\link{Yule2phi.matrix}           Convert a matrix of Yule coefficients to a matrix of polychoric  coefficients. \cr
 \cr
 Functions that are under development and not recommended for casual use \cr
 \link{irt.item.diff.rasch}    IRT estimate of item difficulty with assumption that theta = 0\cr
 \link{irt.person.rasch}	      Item Response Theory estimates of theta (ability) using a Rasch like model\cr\cr
+\cr
+Data sets included in the psych package \cr
+\link{bfi}                   represents 25 personality items thought to represent five factors of personality \cr
+\link{iqitems}               14 multiple choice iq items \cr
+\link{sat.act}                Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
+\link{galton}                  Galton's data set of the heights of parents and their children \cr
+\link{heights}                 Galton's data set of the relationship between height and forearm (cubit) length \cr
+\link{cubits}                   Galton's data table of height and forearm length \cr
+\link{peas}                    Galton`s data set of the diameters of 700 parent and offspring sweet peas \cr
+
 
 \link{test.psych}             Run a test of the major functions on 5 different data sets.  Primarily for development purposes. Although the output can be used as a demo of the various functions.
 }
-\note{Development versions of this package are maintained at the local repository \url{http://personality-project.org/r} along with further documentation.  Specify that you are downloading a source package.  
+\note{Development versions (source code) of this package are maintained at the  repository \url{http://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
 \cr
 Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph and fa.graph require Rgraphviz.  i.e.:
 \cr

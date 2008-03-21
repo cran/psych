@@ -1,10 +1,19 @@
 "factor.pa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, min.err = .001,digits=2,max.iter=50) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE) {
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
-    		r <- cor(r,use="pairwise") # if given a rectangular matrix, the find the correlations first
+               if(scores) {x.matrix <- r
+                  if(missing) {
+        miss <- which(is.na(x.matrix),arr.ind=TRUE)
+        if(impute=="mean") {
+       item.means <- colMeans(x.matrix,na.rm=TRUE)   #replace missing values with means
+       x.matrix[miss]<- item.means[miss[,2]]} else {
+       item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
+        x.matrix[miss]<- item.med[miss[,2]]}
+        }}
+    		r <- cor(r,use="pairwise") # if given a rectangular matrix, then find the correlations first
            }
-     if(!is.matrix(r)) {r <- as.matrix(r)}
+     if(!is.matrix(r)) {  r <- as.matrix(r)}
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
 
     orig <- diag(r)
@@ -15,7 +24,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, min.err = .
     comm.list <- list()
     while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
       {
-        eigens <- eigen(r.mat)
+        eigens <- eigen(r.mat,symmetric=symmetric)
         #loadings <- eigen.loadings(eigens)[,1:nfactors]
          if(nfactors >1 ) {loadings <- eigens$vectors[,1:nfactors] %*% diag(sqrt(eigens$values[1:nfactors])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
@@ -31,7 +40,10 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, min.err = .
          if(i > max.iter) {warning("maximum iteration exceeded")
                 err <-0 }
        }
-
+       # a weird condition that happens with the Eysenck data
+       #making the matrix symmetric solves this problem
+      # if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
+      #loadings <- matrix(as.real(loadings),ncol=nfactors) } 
        #make each vector signed so that the maximum loading is positive
     if (nfactors >1) {
     		maxabs <- apply(apply(loadings,2,abs),2,which.max)
@@ -90,4 +102,18 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, min.err = .
     result$loadings <- round(loadings,digits)
     if (rotate =="oblimin") {result$phi <- phi}
     result$communality.iterations <- round(unlist(comm.list),digits)
+    result$uniquenesses <- 1 - result$communality
+    if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
+    result$factors <- nfactors 
+    class(result) <- "factanal"
     return(result) }
+    
+ 
+ 
+ "factor.scores" <- function(x,f) {
+     if(!is.matrix(f)) f <- loadings(f)
+     r <- cor(x,use="pairwise")   #find the correlation matrix from the data
+     w <- solve(r,f)   #these are the factor weights
+     scores <- scale(x) %*% w    #standardize the data before doing the regression
+     return(scores) }
+     #how to treat missing data?  see score.item

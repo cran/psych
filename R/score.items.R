@@ -40,7 +40,9 @@
    av.r <- alpha.scale/(num.item - alpha.scale*(num.item-1))  #alpha 1 = average r
    
    item.cor <- cor(items,scores,use="pairwise")    #this does not correct for item overlap
-   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
+   
+  if(is.null(ilabels)) {ilabels <- colnames(items) }
+  if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
    rownames(item.cor) <- ilabels
    correction <- (colSums(abs(keys)-(keys))/2)*(max+min) #correct for flipping
    scores <- scores  + matrix(rep(correction,n.subjects),byrow=TRUE,nrow=n.subjects)
@@ -62,3 +64,4 @@
  #modified June 22 to add median imputation
  #modified August 8 to add colnames to scores
  #modified Sept 23, 2007 to allow for short output
+ #modified December 10, 2007 to default to ilabels as colnames(items)

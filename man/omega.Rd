@@ -41,6 +41,9 @@ Beta, an alternative to omega, is defined as the worst split half reliability.  
 The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}{omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}{omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h}{omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
+
+Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  See Zinbarg et al., 2007. 
+
 }
 \value{
  
@@ -60,6 +63,7 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
 
  Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
 
+Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures containing two group factors:  Perils and prospects.  Applied Psychological Measurement. 31 (2), 135-157.
  
  Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{http://apm.sagepub.com/cgi/reprint/30/2/121}
 }

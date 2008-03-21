@@ -1,9 +1,19 @@
 "principal" <-
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, digits=2) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALSE,missing=FALSE,impute="median", digits=2) {
    n <- dim(r)[2]
   
    if (n!=dim(r)[1]) {
       n.obs <- dim(r)[1] 
+      if(scores) {x.matrix <- r
+    
+                  if(missing) {
+        miss <- which(is.na(x.matrix),arr.ind=TRUE)
+        if(impute=="mean") {
+       item.means <- colMeans(x.matrix,na.rm=TRUE)   #replace missing values with means
+       x.matrix[miss]<- item.means[miss[,2]]} else {
+       item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
+        x.matrix[miss]<- item.med[miss[,2]]}
+        }}
       r <- cor(r,use="pairwise") } # if given a rectangular matrix, then find the correlations first
     
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0,fit.off=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0,fit.off=0)}
@@ -45,6 +55,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, digits=2) {
     class(loadings) <- "loadings"
     model <- loadings %*% t(loadings)  
     result$communality <- diag(model)
+     result$uniquenesses <- 1 - result$communality
     residual<- r - model
     if (residuals) {result$residual <-residual}
     diag(model) <- 1   
@@ -65,7 +76,11 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, digits=2) {
     result$fit.off <- round(1-rstar.off/r2.off,digits)
     result$loadings <- round(loadings,digits)
     if (rotate =="oblimin") {result$phi <- phi}
+    result$factors <- nfactors 
+    class(result) <- "factanal"  
+    if(scores) {result$scores <- factor.scores(scale(x.matrix),loadings) }
     return(result)
    }
   
-  #last modified August 10, 2007 
+  # modified August 10, 2007
+  #last modified Feb 2, 2008 to calculate scores and become a factanal class

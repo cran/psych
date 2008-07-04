@@ -16,12 +16,14 @@ function(keys,r.mat,correct=TRUE,digits=2) { #function to extract clusters accor
  key.alpha <- ((var-key.var)/var)*(key.var/(key.var-1))
  key.alpha[is.nan(key.alpha)] <- 1           #if only 1 variable to the cluster, then alpha is undefined
  key.alpha[!is.finite(key.alpha)] <- 1   
+ key.av.r <- key.alpha/(key.var - key.alpha*(key.var-1))  #alpha 1 = average r
  colnames(cluster.correl) <- colnames(keys)
  rownames(cluster.correl) <- colnames(keys)
  if (correct) {cluster.corrected <- correct.cor(cluster.correl,t(key.alpha))
- return(list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),corrected= round(cluster.corrected,digits),alpha=round(key.alpha,digits),size=key.var))
+ return(list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),corrected= round(cluster.corrected,digits),alpha=round(key.alpha,digits),av.r = round(key.av.r,2),size=key.var))
  }  #correct for attenuation
  else {
- return(list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),alpha=round(key.alpha,digits),size=key.var))}
+ return(list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),alpha=round(key.alpha,digits),av.r = round(key.av.r,2),size=key.var))}
  }
 #revised August 21, 2007 to add a smidgen to 1.0 in the looking for NAs.
+#revised June 14, 2008 to add average.r

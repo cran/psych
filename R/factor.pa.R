@@ -1,5 +1,5 @@
 "factor.pa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE) {
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
                if(scores) {x.matrix <- r
@@ -12,12 +12,21 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
         x.matrix[miss]<- item.med[miss[,2]]}
         }}
     		r <- cor(r,use="pairwise") # if given a rectangular matrix, then find the correlations first
-           }
-     if(!is.matrix(r)) {  r <- as.matrix(r)}
+           } else {
+     				if(!is.matrix(r)) {  r <- as.matrix(r)}
+     				 sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
+                     r <- r/(sds %o% sds)  }  #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
 
-    orig <- diag(r)
+   
+   
     r.mat <- r
+     if(SMC) { 
+      if(nfactors < n/2) 
+        {diag(r.mat) <- smc(r) } } else {if (warnings) message("too many factors requested for this number of variables to use SMC, 1s used instead")}
+    orig <- diag(r)
+   
+   
     comm <- sum(diag(r.mat))
     err <- comm
      i <- 1
@@ -34,16 +43,18 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
          comm1 <- sum(new)
          diag(r.mat) <- new
          err <- abs(comm-comm1)
+         if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa, exiting")
+          break}
          comm <- comm1
          comm.list[[i]] <- comm1
          i <- i + 1
-         if(i > max.iter) {warning("maximum iteration exceeded")
+         if(i > max.iter) {message("maximum iteration exceeded")
                 err <-0 }
        }
        # a weird condition that happens with the Eysenck data
        #making the matrix symmetric solves this problem
-      # if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
-      #loadings <- matrix(as.real(loadings),ncol=nfactors) } 
+       if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
+       loadings <- matrix(as.real(loadings),ncol=nfactors) } 
        #make each vector signed so that the maximum loading is positive
     if (nfactors >1) {
     		maxabs <- apply(apply(loadings,2,abs),2,which.max)
@@ -62,7 +73,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
     
     model <- loadings %*% t(loadings)  
     result$communality <- round(diag(model),digits)
-    
+    result$uniquenesses <- round(diag(r-model),digits)
     if(rotate != "none") {if (nfactors > 1) {
     	if (rotate=="varimax") { 
    			loadings <- varimax(loadings)$loadings } else { 
@@ -95,14 +106,19 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
     diag(model) <- 1   
     model.inv <- solve(model)
     m.inv.r <- model.inv %*% r
+    if(is.null(n.obs)) {result$n.obs=NA
+    			
+    			result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
-    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * (n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3
-    	if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
+    result$criteria <- c("objective"=result$objective,NA,NA)
+    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
+           if (result$STATISTIC <0) {result$STATISTIC <- 0}  
+   			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
     result$loadings <- round(loadings,digits)
     if (rotate =="oblimin") {result$phi <- phi}
     result$communality.iterations <- round(unlist(comm.list),digits)
-    result$uniquenesses <- 1 - result$communality
+    
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
     class(result) <- "factanal"

@@ -1,5 +1,5 @@
 "VSS" <-
-function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=NULL,...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
   #x is a data matrix
   #n is the maximum number of factors to extract  (default is 8)
   #rotate is a string "none" or "varimax" for type of rotation (default is "none"
@@ -36,11 +36,29 @@ complexrow <- function(x,c)     #sweep out all except c loadings
    		{x[i,] <- complexrow(x[i,],c)}   #simplify each row of the loading matrix
  	return(x)
 	 }  
-    
+	 
+ map <- function(x,n) { 
+ nvar <- dim(x)[2]
+ min.partial <- rep(NA,n)
+ e <- eigen(x)
+ evect <- e$vectors
+ comp <- evect %*% diag(sqrt(e$values))
+ if( n >= nvar) {n1 <- nvar -1} else {n1 <- n}
+ for (i in 1:n1) {
+ c11.star <- x - comp[,1:i] %*% t(comp[,1:i]) 
+ d <- diag(1/sqrt(diag(c11.star)))
+ rstar <- d %*% c11.star %*% d
+ diag(rstar) <- 0
+ min.partial[i] <- sum(rstar * rstar)  /(nvar*(nvar-1))
+ }
+ return(min.partial)
+ }
+  if(dim(x)[2] < n) n <- dim(x)[2]  
   #now do the main Very Simple Structure  routine
 
   complexfit <- array(0,dim=c(n,n))        #store these separately for complex fits
   complexresid <-  array(0,dim=c(n,n))
+  
   
   vss.df <- data.frame(dof=rep(0,n),chisq=0,prob=0,sqresid=0,fit=0) #keep the basic results here 
  
@@ -49,11 +67,13 @@ complexrow <- function(x,c)     #sweep out all except c loadings
               # if given a rectangular 
   if(is.null(n.obs)) {message("n.obs was not specified and was arbitrarily set to 1000.  This only affects the chi square values.")
         n.obs <- 1000}
+        
+        map.values <- map(x,n)
  if (n >  dim(x)[2]) {n <- dim(x)[2]}         #in cases where there are very few variables
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { 
    if(!(pc=="pc")) { if ( pc=="pa") {
-   		f <- factor.pa(x,i,rotate=rotate,n.obs=n.obs,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
+   		f <- factor.pa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once
 		 sqoriginal <- original*original    #squared correlations
@@ -111,7 +131,9 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 }     #end of i loop for number of factors
 
 
-vss.stats <- data.frame(vss.df,cfit=complexfit,cresidual=complexresid)
+
+vss.stats <- data.frame(map=map.values,vss.df,cfit=complexfit,cresidual=complexresid)
+if (plot) VSS.plot(vss.stats,title=title)
 return(vss.stats)
    
     }     #end of VSS function

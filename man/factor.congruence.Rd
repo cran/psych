@@ -19,6 +19,8 @@ It is an interesting exercise to compare factor congruences with the correlation
 
 Input may either be matrices or factor analysis output (which includes a loadings object), or a mixture of the two.
 
+Factor congruences are the cosines of pairs vectors defined by the loadings matrix and based at the origin.  The correlations of factor loadings are cinoses of the vectors based at the mean loading for each factor.  
+
 }
 \value{A matrix of factor congruences.
 }

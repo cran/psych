@@ -42,14 +42,14 @@ function (x, digits = 2,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)  
         	}# i loop	
     	} #else loop
     if (ranges)
-    	{if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE), median = stats[, 
+    	{if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = SD(x), median = stats[, 
         3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8])}
          
-      	 else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE), median = stats[, 
+      	 else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = SD(x), median = stats[, 
         3],trimmed =stats[,9],mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4])}}
         
-        else {if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE),skew = stats[, 6], kurtosis = stats[,8])}
-       else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = sd(x,na.rm=TRUE))}}
+        else {if(skew){temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = SD(x),skew = stats[, 6], kurtosis = stats[,8])}
+       else {temp <-  data.frame(var = seq(1:len),n = stats[,1],mean=stats[,2], sd = SD(x))}}
                 
     answer <-  round(data.frame(temp, se = temp$sd/sqrt(temp$n)),  digits)
      return(answer)

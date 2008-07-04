@@ -1,4 +1,5 @@
 \name{matrix.addition}
+\alias{matrix.addition}
 \alias{\%+\%}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{A function to add two vectors or matrices }
@@ -11,7 +12,7 @@ x \%+\% y }
   \item{x}{ a n by m matrix (or vector if m= 1)}
   \item{y}{ a m by p matrix (or vector if m = 1)}
 }
-\details{Used in such problems as Thurstonian scaling.  Although not technically matrix addition, as pointed out by Krus, there are many applications where the sum or difference of two vectors or matrices is a useful operation.  This can be done, of course, through 
+\details{Used in such problems as Thurstonian scaling.  Although not technically matrix addition, as pointed out by Krus, there are many applications where the sum or difference of two vectors or matrices is a useful operation.  An alternative operation for vectors is  outer(x ,y , FUN="+") but this does not work for matrices.  
 }
 \value{a n by p matix of sums
 
@@ -25,13 +26,14 @@ x <- seq(1,4)
 z <- x \%+\% -t(x)
 x
 z
+#compare with outer(x,-x,FUN="+")
 x <- matrix(seq(1,6),ncol=2)
 y <- matrix(seq(1,10),nrow=2)
 z <- x \%+\% y
 x
 y
 z
-
+#but compare this with outer(x ,y,FUN="+") 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

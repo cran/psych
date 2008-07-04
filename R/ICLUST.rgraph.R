@@ -5,7 +5,7 @@
 "ICLUST.rgraph"  <- 
 function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction="RL", digits=2,title="ICLUST", ...){
+    edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=2,title="ICLUST",label.font=2, ...){
  if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
    clusters <- as.matrix(ic.results$clusters)  
    results <- ic.results$results 
@@ -45,12 +45,22 @@ function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
   names(var.labels) <-  nodes(clust.graph)
   nAttrs$label <- var.labels
   names(edge.label) <- edge.name
+  node.font.size <- as.numeric(node.font[2])
+   n.font.size <- c(rep(label.font*node.font.size,length(labels)),rep(node.font.size,(length(var.labels)-length(labels))))
+  names(n.font.size) <-   nodes(clust.graph)
+  nAttrs$fontsize <- n.font.size
+ 
   } 
     names(edge.label) <- edge.name
+    e.font.size <- rep(10,num.clust*2)
+   names(e.font.size) <- edge.name
+ 
  nAttrs$shape <- graph.shape
+ eAttrs$fontsize <- e.font.size
  nAttrs$rank <- graph.rank
+ 
  eAttrs$label <- edge.label
- attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir="RL", fontsize=10,bgcolor="white" ))
+ attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir=rank.direction, fontsize=8,bgcolor="white" ))
  obs.var <- subGraph(vars,clust.graph)
  cluster.vars <- subGraph(clust,clust.graph)
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")))

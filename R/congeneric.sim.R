@@ -10,6 +10,7 @@ colnames(pattern) <- c("theta", paste("e", seq(1:n), sep = ""))
 rownames(pattern) <- c(paste("V", seq(1:n), sep = "")) 
 latent <- matrix(rnorm(N * (n + 1)), ncol = (n + 1)) 
 observed <- latent %*% t(pattern) 
-if (short) {return(observed)}  else {result <- list(observed=observed,pattern=pattern)
+colnames(latent) <-  c("theta", paste("e", seq(1:n), sep = "")) 
+if (short) {return(observed)}  else {result <- list(observed=observed,pattern=pattern,latent=latent)
  return(result)} 
  }

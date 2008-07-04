@@ -36,7 +36,7 @@ To interpret the values of these various tests, it is useful to compare the part
   \item{VT}{variance.test}
  
 }
-\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
+\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf} }
 \author{ William Revelle}
 \note{ Of the 10 criterion discussed in Acton and Revelle (2004), these tests operationalize the four most useful.
 

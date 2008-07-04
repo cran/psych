@@ -36,7 +36,7 @@
     }
     if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
       if(keys) {ICLUST.sort <- list(sorted=loads,clusters=factor2cluster(loadings))} else 
- ICLUST.sort <- list(sorted=loads) }
+return(list(sorted=loads)) }
  #revised August 8, 2007 to add cluster keying option and to allow us to work with factor analysis output
  #revised Sept 15, 2007 to remove the "loadings" parameter
  

@@ -2,16 +2,16 @@
 \alias{score.items}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Score item composite scales and find Cronbach's alpha as well as associated statistics }
-\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.
+\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.
 }
 \usage{
 score.items(keys, items, totals = FALSE, ilabels = NULL, missing = TRUE,impute="median",  min = NULL, max = NULL, digits = 2,short=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{keys}{A matrix or dataframe of -1, 0, or 1 weights for each item on each scale }
+  \item{keys}{A matrix or dataframe of -1, 0, or 1 weights for each item on each scale. May be created by hand, or by using \code{\link{make.keys}} }
   \item{items}{ Matrix or dataframe of raw item scores }
-  \item{totals}{ if TRUE (default) find total scores, if FALSE, find average scores }
+  \item{totals}{ if TRUE  find total scores, if FALSE (default), find average scores }
   \item{ilabels}{ a vector of item labels. }
   \item{missing}{TRUE: Replace missing values with the corresponding item median or mean. FALSE: do not score that subject  }
   \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response.}
@@ -43,21 +43,15 @@ By default, missing values are replaced with the corresponding median value for 
 \references{An introduction to psychometric theory with applications in R (in preparation).  \url{http://personality-project.org/r/book}}
 \author{ William Revelle }
 
-\seealso{ \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha.scale}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}  for item/scale analysis}
+\seealso{\code{\link{make.keys}} for a convenient way to create the keys file,  \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha.scale}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}  for item/scale analysis}
 \examples{
-y <- attitude     #from the datasets package
-keys <- matrix(c(rep(1,7),rep(1,4),rep(0,7),rep(-1,3)),ncol=3)
-colnames(keys) <- c("first","second","third")
-x <- score.items(keys,y)
-x  
-#  
-#see also the example including the bfi data set
+
+#see  the example including the bfi data set
 data(bfi)
-describe(bfi)
-keys <- matrix(c(-1,1,1,1,1,rep(0,25),1,1,1,-1,-1,rep(0,25),-1,-1,1,1,1,rep(0,25),1,1,1,1,1,rep(0,25),1,-1,1,1,-1),ncol=5)
-rownames(keys) <- colnames(bfi)
-colnames(keys) <- c("Agreeable","Conscientious","Extravert","Neurotic","Open")
-score.items(keys,bfi,short=TRUE)
+ keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
+ keys <- make.keys(25,keys.list,item.labels=colnames(bfi))
+ scores <- score.items(keys,bfi,short=TRUE)
+ scores
 
 
 }

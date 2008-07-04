@@ -7,7 +7,7 @@
 \usage{
 ICLUST.graph(ic.results, out.file,min.size=1, short = FALSE,labels=NULL,
 size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 12), 
-rank.direction = "RL", digits = 2, title = "ICLUST", ...)
+ rank.direction=c("RL","TB","LR","BT"), digits = 2, title = "ICLUST", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

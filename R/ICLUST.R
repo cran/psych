@@ -18,10 +18,10 @@
 #ICLUST is the main function and calls other routines
 
 "ICLUST" <- 
- function (r.mat,nclusters=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST") {#should allow for raw data, correlation or covariances
- #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2) 
+ function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE) {#should allow for raw data, correlation or covariances
+ #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2) 
  ICLUST.debug <- FALSE
-	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,reverse=reverse,beta.min=beta.min,output=output,digits=digits) 
+	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,correct.cluster=correct.cluster,reverse=reverse,beta.min=beta.min,output=output,digits=digits) 
 	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
 	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
 	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options)
@@ -60,11 +60,14 @@
 		old.fit <- fit$cluster.fit
 					}
 		}
+
 	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,digits=digits)
 	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut)
 	purified <- cluster.cor(clusters,r.mat,digits=digits)
 	class(loads$loadings) <- "loading"
-	list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
+	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
+	if(plot && require(Rgraphviz)) {ICLUST.rgraph(result,labels=labels,title=title)}
+	return(result)
 }   
 
 

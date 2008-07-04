@@ -1,11 +1,12 @@
-\name{VSS.simulate}
+\name{VSS.sim}
 \alias{VSS.simulate}
+\alias{VSS.sim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ create VSS like data}
-\description{Simulation is one of most useful techniques in statistics and psychometrics.  Here we simulate a correlation matrix with a simple structure composed of a specified number of factors.  Each item is assumed to have complexity one.
+\description{Simulation is one of most useful techniques in statistics and psychometrics.  Here we simulate a correlation matrix with a simple structure composed of a specified number of factors.  Each item is assumed to have complexity one.  See \code{\link{circ.sim}} and \code{\link{item.sim}} for alternative simulations.
 }
 \usage{
-VSS.simulate(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=0)
+VSS.sim(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

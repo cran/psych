@@ -1,11 +1,12 @@
 \name{VSS}
 \alias{VSS}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Apply the Very Simple Structure criterion to determine the appropriate number of factors.}
-\description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity. 
+\alias{MAP}
+
+\title{ Apply the Very Simple Structure and MAP criteria to determine the appropriate number of factors.}
+\description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice.
 }
 \usage{
-VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,...)
+VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,6 +16,8 @@ VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,...)
   \item{diagonal}{Should we fit the diagonal as well }
   \item{pc}{pc="pa"  Principal Axis Factor Analysis, pc="mle"  Maximum Likelihood FA, pc="pc" Principal Components" }
   \item{n.obs}{Number of observations if doing a factor analysis of correlation matrix.  This value is ignored by VSS but is necessary for the ML factor analysis package.}
+  \item{plot}{plot=TRUE  Automatically call VSS.plot with the VSS output, otherwise don't plot}
+  \item{title}{a title to be passed on to VSS.plot}
   \item{\dots}{parameters to pass to the factor analysis program 
       The most important of these is if using a correlation matrix is covmat= xx}
 }
@@ -27,15 +30,17 @@ Techniques most commonly used include
 
 2) Extracting factors until the change in chi square from factor n to factor n+1 is not significant.
 
-3) Extracting factors until the eigen values of the real data are less than the corresponding eigen values of a random data set of the same size (parallel analysis).
+3) Extracting factors until the eigen values of the real data are less than the corresponding eigen values of a random data set of the same size (parallel analysis) \code{\link{fa.parallel}}.
 
 4) Plotting the magnitude of the successive eigen values and applying the scree test (a sudden drop in eigen values analogous to the change in slope seen when scrambling up the talus slope of a mountain and approaching the rock face.
 
-5) Extracting principal components until the eigen value <1. <
+5) Extracting principal components until the eigen value <1. 
 
 6) Extracting factors as long as they are interpetable.
 	
-7) Using the Very Structure Criterion.
+7) Using the Very Structure Criterion (VSS).
+
+8) Using Wayne Velicer's Minimum Average Partial (MAP) criterion. 
 	
 
  Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simlpy runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.  The scree test is quite appealling but can lead to differences of interpretation as to when the scree "breaks". The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3.  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  VSS, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2).
@@ -51,11 +56,14 @@ VSS for a given complexity will tend to peak at the optimal (most interpretable)
 Although originally written in Fortran for main frame computers, VSS has been adapted to micro computers (e.g., Macintosh OS 6-9) using Pascal. We now release R code for calculating VSS. 
 
 Note that if using a correlation matrix (e.g., my.matrix) and doing a factor analysis, the parameters n.obs should be specified for the factor analysis:
-the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000. 
+e.g., the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000. 
+
+Wayne Velicer's MAP criterion has been added as an additional test for the optimal number of components to extract.  Note that VSS and MAP will not always agree as to the optimal number.
 
 
 }
 \value{ A data.frame with entries:
+ map:  Velicer's MAP values (lower values are better) \cr
  dof:  degrees of freedom    (if using FA) \cr
  chisq: chi square (from the factor analysis output  (if using FA) \cr
  prob: probability of residual matrix > 0  (if using FA) \cr
@@ -69,8 +77,15 @@ the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000.
  ...:  sum squared residual correlations for complexity 2 ..8\cr
  
 }
-\references{ \url{http://personality-project.org/r/vss.html}
-see also Revelle, W. and Rocklin, T. 1979, Very Simple Structure: an Alternative Procedure for Estimating the Optimal Number of Interpretable Factors, Multivariate Behavioral Research, 14, 403-414. \url{http://personality-project.org/revelle/publications/vss.pdf}}
+\references{ \url{http://personality-project.org/r/vss.html},
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+
+see also Revelle, W. and Rocklin, T. 1979, Very Simple Structure: an Alternative Procedure for Estimating the Optimal Number of Interpretable Factors, Multivariate Behavioral Research, 14, 403-414. 
+\url{http://personality-project.org/revelle/publications/vss.pdf}
+
+Velicer, W. (1976) Determining the number of components from the matrix of partial correlations. Psychometrika, 41, 321-327.
+	
+}
 
 \author{William Revelle \cr
         Department of Psychology \cr
@@ -82,17 +97,17 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 
 }
 
-\seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}}
+\seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{fa.parallel}}}
 \examples{
 
 test.data <- Harman74.cor$cov
-my.vss <- VSS(test.data)      
-print(my.vss[,1:12],digits =2) 
-VSS.plot(my.vss, title="VSS of 24 mental tests")
+my.vss <- VSS(test.data,title="VSS of 24 mental tests")      
+#print(my.vss[,1:12],digits =2) 
+#VSS.plot(my.vss, title="VSS of 24 mental tests")
 
-#now, some simulated data
-VSS.plot(VSS(circ.sim(nvar=24),pc="mle" ),title="VSS of 24 circumplex variables")
-VSS.plot(VSS(item.sim(nvar=24),pc="mle" ),title="VSS of 24 simple structure variables")
+#now, some simulated data with two factors
+VSS(circ.sim(nvar=24),pc="mle" ,title="VSS of 24 circumplex variables")
+VSS(item.sim(nvar=24),pc="mle" ,title="VSS of 24 simple structure variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

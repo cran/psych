@@ -14,23 +14,27 @@ congeneric.sim(N = 1000, loads = c(0.8, 0.7, 0.6, 0.5), err=NULL, short = TRUE)
   \item{err}{A vector of error variances -- if NULL then error = 1 - loading 2}
   \item{short}{short=TRUE: Just give the test scores, short=FALSE, report observed test scores as well as the implied pattern matrix}
 }
-\details{When constructing examples for reliability analysis, it is convenient to simulate congeneric data structures.  These are the most simple of item structures, having just one factor.
+\details{When constructing examples for reliability analysis, it is convenient to simulate congeneric data structures.  These are the most simple of item structures, having just one factor. Mainly used for a discussion of reliability theory as well as factor score estimates.
 
 The implied covariance matrix is just pattern \%*\% t(pattern). 
 }
 \value{
   \item{observed}{a matrix of test scores for n tests}
   \item{pattern }{The pattern matrix implied by the loadings and error variances}
+  \item{latent}{The latent trait and error scores (if short=FALSE)}
 
 
 }
 \references{}
 \author{ William Revelle }
 
-\seealso{  \code{\link{item.sim}} }
+\seealso{  \code{\link{item.sim}} for other simulations, \code{\link{factor.pa}} for an example of factor scores.}
 \examples{
 
-#test <- congeneric.sim()
+test <- congeneric.sim(short=FALSE)
+round(cor(test$observed),2) # show  a congeneric correlation matrix
+f1=factor.pa(test$observed,1,scores=TRUE)
+round(cor(f1$scores,test$latent),2)  #factor score estimates are correlated with but not equal to the factor scores
 
 
 

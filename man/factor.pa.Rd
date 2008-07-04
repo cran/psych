@@ -6,7 +6,7 @@
 }
 \usage{
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NULL,
-scores = FALSE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE)
+scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,12 +16,14 @@ scores = FALSE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.i
   \item{rotate}{"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{scores}{If TRUE, estimate factor scores}
+  \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. }
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
   \item{digits}{ How many digits of output should be returned}
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
+  \item{warnings}{warnings=TRUE => warn if number of factors is too many }
 }
 \details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}).  
 

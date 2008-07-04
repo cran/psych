@@ -39,6 +39,7 @@ x.df <- as.data.frame(x)
 boxplot(x.df)
 error.bars(x.df, add=TRUE)
 
+error.bars(attitude) #another example
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

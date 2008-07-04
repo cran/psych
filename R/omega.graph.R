@@ -1,3 +1,5 @@
+#modified May 30, 2008 to try to get arrows going both ways in the sl option.
+#am currently unsuccessful in this attempt
 #Created May 20, 2007
 #modified June 2 to clarify the Rgraphviz issue
 #modified July 12 to fix label problem
@@ -5,7 +7,7 @@
 "omega.graph" <-
 function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction="RL", digits=1,title="Omega", ...){
+    edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=1,title="Omega", ...){
    
      if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
     
@@ -18,18 +20,29 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    gloading <- om.results$schmid$gloading
    vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels,1:num.var,sep=" ")}
-   fact <- c("g",paste("F",1:num.factors,sep=""))
-   clust.graph <-  new("graphNEL",nodes=c(vars,fact),edgemode="directed")
+   if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
+  clust.graph <-  new("graphNEL",nodes=c(vars,fact),edgemode="directed")
    graph.shape <- c(rep("box",num.var),rep("ellipse",num.factors+1))
-   graph.rank <- c(rep("sink",num.var),rep("",num.factors+1))
+   graph.rank <- c("sink", rep("same",num.var),rep("source",num.factors)) #this doesn't seem to make a difference
    names(graph.shape) <- nodes(clust.graph)
    names(graph.rank) <- nodes(clust.graph)
-   if (sl) {edge.label <- rep("",num.var*2)
+   
+   if (sl) {edge.label <- rep("",num.var*2)    #this basically just sets up the vectors to be the right size
+            edge.dir <-rep("forward",num.var*2)
+            edge.arrows <-rep("open",num.var+num.factors)
             edge.name <- rep("",num.var*2)
-            names(edge.label) <-  seq(1:num.var*2) } else {
-             edge.label <- rep("",num.var+num.factors)
+            names(edge.label) <-  seq(1:num.var*2)
+            names(edge.dir) <-rep("",num.var*2)
+            names(edge.arrows) <-rep("",num.var+num.factors)} else {
+            
+            edge.label <- rep("",num.var+num.factors)
             edge.name <- rep("",num.var+num.factors)
-            names(edge.label) <-  seq(1:num.var+num.factors) }
+            edge.arrows <-rep("open",num.var+num.factors)
+            edge.dir <-rep("forward",num.var*2)
+            names(edge.label) <-  seq(1:num.var+num.factors)
+            names(edge.dir) <-  seq(1:num.var+num.factors)
+            names(edge.arrows) <-  seq(1:num.var+num.factors)
+                       }
             
   #show the cluster structure with ellipses
    if (sl) {
@@ -37,24 +50,31 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max), 
         ncol = 1)
         
-  if (sl) { k <- num.var
-         for (i in 1:num.var) {  clust.graph <- addEdge(fact[1], vars[i], clust.graph,1) 
-             edge.label[i] <- round(factors[i,1],digits)
-              edge.name[i] <- paste(fact[1],"~",vars[i],sep="")
-             } 
+  if (sl) { 
+          k <- num.var
+         for (i in 1:num.var) {  clust.graph <- addEdge( vars[i],fact[1], clust.graph,1) 
+                                 edge.label[i] <- round(factors[i,1],digits)
+                                 edge.name[i] <- paste(vars[i],"~",fact[1],sep="")
+                                 edge.arrows[i] <- paste("open")
+                                 edge.dir[i] <- paste("back")
+                               
+                                
+            } 
          } else { k <- num.factors+1
-          for (j in 1:num.factors) {clust.graph <- addEdge(fact[1], fact[j+1], clust.graph,1) 
+          for (j in 1:num.factors) {clust.graph <- addEdge(fact[1], fact[j+1], clust.graph,1)  #hierarchical g 
           edge.label[j] <- round(gloading[j],digits)
           edge.name[j] <- paste(fact[1],"~",fact[j+1],sep="")
-         } 
+                 } 
                  }
    for (i in 1:num.var) {  clust.graph <- addEdge(fact[1+m1[i]], vars[i], clust.graph,1) 
                          edge.label[i+k] <- round(l[i,m1[i]],digits)
                          edge.name[i+k] <- paste(fact[1+m1[i]],"~",vars[i],sep="")
+                         edge.arrows[i+k] <- paste("open")
+                               
                         }  
 
      
-#     edge.label[(i-1)*2+1] <- results[i,"r1"]
+#    edge.label[(i-1)*2+1] <- results[i,"r1"]
 #    edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
       
      
@@ -70,15 +90,28 @@ if(FALSE) {
   					}
 				
  names(edge.label) <- edge.name
+ names(edge.dir) <- edge.name
+ names(edge.arrows) <- edge.name
  nAttrs$shape <- graph.shape
  nAttrs$rank <- graph.rank
  eAttrs$label <- edge.label
- attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir="RL", fontsize=10,bgcolor="white" ))
- obs.var <- subGraph(vars,clust.graph)
- cluster.vars <- subGraph(fact,clust.graph)
- observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="")))
- plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=title) 
+if(sl) { eAttrs$dir<- edge.dir
+         
+         eAttrs$arrowhead <- edge.arrows
+         eAttrs$arrowtail<- edge.arrows
+       
+  } 
+
+ attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir=rank.direction, fontsize=10,bgcolor="white" ))
+ 
+# obs.var <- subGraph(vars,clust.graph)
+# cluster.vars <- subGraph(fact,clust.graph)
+# observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="")))
+# plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=title) 
+
+
+plot(clust.graph,nodeAttrs = nAttrs,edgeAttrs = eAttrs,attrs = attrs,main=title)   #not clear if the subGList makes any difference
 if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
-return(clust.graph)
+
    }
  

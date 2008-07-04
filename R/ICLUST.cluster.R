@@ -44,7 +44,7 @@ for (i in 1: length(item.rel)) { if (cluster.stats$size[i]<2) {
 	}}
 sq.max <- diag(1/sqrt(item.rel))     #used to correct for reliabilities
  #this is the corrected for maximum r similarities
-if (ICLUST.options$correct) {sim <- sq.max %*% sim.mat %*% sq.max  
+if (ICLUST.options$correct) {sim <- sq.max %*% sim.mat %*% sq.max   #this corrects for reliabilities but messes up the correlations of two item clusters with items
      } else {sim <- sim.mat}
 diag(sim) <- NA                  #we need to not consider the diagonal when looking for maxima
 #find the most similar pair    and apply tests if we should combine
@@ -81,22 +81,23 @@ if(size1 < 2) {V1 <- 1
 	rbar1 <- item.rel[max.row] } else {
 	rbar1 <- results[cluster.names[max.row],"rbar"]
 	beta1 <- results[cluster.names[max.row],"beta"]
-	alpha1 <- results[cluster.names[max.row],"alpha"]}
-	
- V1 <- size1 + size1*(size1-1) * rbar1
- 
+	alpha1 <- results[cluster.names[max.row],"alpha"]
+	V1 <- size1 + size1*(size1-1) * rbar1
+	}
+	 
 size2 <- cluster.stats$size[max.col]
 if(size2 < 2) {V2 <- 1 
 	beta2 <-  item.rel[max.col] 
 	alpha2 <-  item.rel[max.col] 
 	rbar2 <- item.rel[max.col] } else {
+	
 	rbar2 <- results[cluster.names[max.col],"rbar"]
 	beta2 <- results[cluster.names[max.col],"beta"]
-	alpha2 <- results[cluster.names[max.col],"alpha"]}
+	alpha2 <- results[cluster.names[max.col],"alpha"] 
+	V2 <- size2 + size2 * (size2-1) * rbar2}
 
- V2 <- size2 + size2 * (size2-1) * rbar2
-	
-Cov12 <- sign.max* sim.mat[max.cell] * sqrt(V1*V2)
+ 	
+Cov12 <- sign.max* sim.mat[max.cell] * sqrt(V1*V2) 
 V12 <- V1 + V2 + 2 * Cov12
 size12 <- size1 + size2
 alpha <- (V12 - size12)*(size12/(size12-1))/V12
@@ -104,13 +105,30 @@ rbar <- alpha/(size12-alpha*(size12-1))
 
 #what is the correlation of this new cluster with the two subclusters?
 #this considers item overlap problems
-c1 <-  sign.max*rbar1*size1*size1 + sign.max* Cov12   #corrects for item overlap
-c2 <-  rbar2*size2*size2 + Cov12     #only flip one of the two correlations with the combined cluster
-if(size1 > size2) {r1 <- c1/sqrt(V1*V12)
-r2 <- sign.max* c2/sqrt(V2*V12) } else {r1 <-sign.max* c1/sqrt(V1*V12)    
-                                     #flip the smaller of the two clusters
-r2 <-  c2/sqrt(V2*V12) }
+c1 <-  sign.max*rbar1*size1*size1 + sign.max* Cov12  #corrects for item overlap
+c2 <-  rbar2*size2*size2 + Cov12    #only flip one of the two correlations with the combined cluster
 
+if((size1<2) & (size2  <2)) {
+       r1 <- sqrt(abs(rbar1))   #this  corrects for reliability in a two item cluster
+       r2 <- sign.max* r1         #flips the sign if two are negatively correlated 
+                             } else {    #this next part corrects for item overlap as well as reliability of the subcluster
+                                         #is the default option
+                                 if (ICLUST.options$correct.cluster) {
+                                 if(size1 > size2) {r1 <- c1/sqrt((V1-size1+size1*rbar1)*V12)
+												    if (size2<2) {r2 <- sign.max* c2/sqrt(abs(rbar1)*V12)} else { r2 <- sign.max* c2/sqrt((V2-size2+size2*rbar2)*V12)}
+												    } else {
+												       if(size1<2){ r1 <-sign.max* c1/sqrt(abs(rbar1)*V12)} else { r1 <-sign.max* c1/sqrt((V1-size1+size1*rbar1)*V12)  }  
+                                     #flip the smaller of the two clusters
+												            r2 <-  c2/sqrt((V2-size2+size2*rbar2)*V12) }
+							         
+							} else {if(size1 > size2) {r1 <- c1/sqrt(V1*V12)
+												   r2 <- sign.max* c2/sqrt(V2*V12)
+												    } else {
+												        r1 <-sign.max* c1/sqrt(V1*V12)  } 
+                                     #flip the smaller of the two clusters
+												            r2 <-  c2/sqrt(V2*V12) }
+							
+						}
 #test if we should combine these two clusters  
 #first, does alpha increase?
 test.alpha <- TRUE
@@ -156,18 +174,24 @@ if (ICLUST.options$beta.size < min(size1,size2)) {
 
 
 
-if(test.beta&test.alpha)   {break } else  {
-if (beta.combined < ICLUST.options$beta.min) {
+if(test.beta & test.alpha) { break} else { #we have failed the combining criteria 
+         
+            if((ICLUST.options$n.clus > 0) & ((num.var - count -1 ) < ICLUST.options$n.clus) ) {warning ("Clusters formed as requested do not meet the alpha and beta criteria. Perhaps you should rethink the number of cluster settings.")
+			                break } else {   
+			if (beta.combined < ICLUST.options$beta.min) {
+			
 			keep.clustering <- FALSE       #the most similiar pair is not very similar, we should quit
-			break}  else {sim[max.row,max.col] <- NA 
-		sim[max.col,max.row] <- NA }
+			break}  else { 
+			
+			sim[max.row,max.col] <- NA 
+		sim[max.col,max.row] <- NA }}
     }   #end of test.beta&test.alpha
     
-}    #end of while test.alpha&test.beta.loop
+}    #end of while test.alpha & test.beta.loop
 
 #combine and summarize
 if (keep.clustering) 
-   {          # we have based the alpha and beta tests, now combine these two variables
+   {          # we have passed the alpha and beta tests, now combine these two variables
 clusters[,max.row] <- clusters[,max.row] + sign.max *  clusters[,max.col]  
 cluster.names <- colnames(clusters)
 
@@ -217,3 +241,4 @@ if(num.var - count < 1) {keep.clustering <- FALSE}   #only one cluster left
 
 ICLUST.cluster <- list(results=results,clusters=clusters,number <- num.var - count)
 }   # end ICLUST.cluster
+#modified June 12, 2008 to  calculate the item-cluster correlation for cluster of size 2

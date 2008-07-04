@@ -35,7 +35,7 @@
     \item{\code{O5}}{Will not probe deeply into a subject.}
   }
 }
-\details{The 25 items are organized by five putative factors: Agreeableness, Conscientiousness, Extraversion, Neuroticism, and Opennness.  
+\details{The 25 items are organized by five putative factors: Agreeableness, Conscientiousness, Extraversion, Neuroticism, and Opennness.  The scoring key is created using  \code{\link{make.keys}}, the scores are found using  \code{\link{score.items}}
 }
 \source{The items are from the ipip.  The data are from the SAPA project, collected fall,2006.
 }
@@ -44,10 +44,11 @@
 \examples{
 data(bfi)
 describe(bfi)
-keys <- matrix(c(-1,1,1,1,1,rep(0,25),1,1,1,-1,-1,rep(0,25),-1,-1,1,1,1,rep(0,25),1,1,1,1,1,rep(0,25),1,-1,1,1,-1),ncol=5)
-rownames(keys) <- colnames(bfi)
-colnames(keys) <- c("Agreeable","Conscientious","Extravert","Neurotic","Open")
-score.items(keys,bfi,short=TRUE)
+ data(bfi)
+ keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
+ keys <- make.keys(25,keys.list,item.labels=colnames(bfi))
+ scores <- score.items(keys,bfi,short=TRUE)
+ scores
 
 }
 \keyword{datasets}

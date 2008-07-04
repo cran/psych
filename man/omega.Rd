@@ -5,7 +5,7 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=NULL, ...)
+omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,rotate="oblimin", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,6 +15,11 @@ omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=NULL, ...)
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
   \item{digits}{if specified, round the output to digits}
+  \item{title}{Title for this analysis}
+  \item{sl}{If plotting the results, should the Schmid Leiman solution be shown or should the hierarchical solution be shown? (default sl=TRUE)}
+  \item{labels}{If plotting, what labels should be applied to the variables}
+  \item{plot}{plot=TRUE (default) calls omega.graph, plot =FALSE does not}
+  \item{rotate}{What rotation to apply? The default is oblimin, the alternative is simplimax.}
   \item{...}{Allows additional parameters to be passed through to the factor routines}
 }
 
@@ -90,8 +95,8 @@ jen.omega <- omega(jen.data,digits=2)
 jen.omega
 
 #create 8 items with a two factor solution, showing the use of the flip option
-sim2 <- item.sim(8)
-omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
+#sim2 <- item.sim(8)
+#omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

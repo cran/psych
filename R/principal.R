@@ -3,19 +3,22 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
    n <- dim(r)[2]
   
    if (n!=dim(r)[1]) {
-      n.obs <- dim(r)[1] 
-      if(scores) {x.matrix <- r
+      				n.obs <- dim(r)[1] 
+      				if(scores) {x.matrix <- r
     
                   if(missing) {
-        miss <- which(is.na(x.matrix),arr.ind=TRUE)
-        if(impute=="mean") {
-       item.means <- colMeans(x.matrix,na.rm=TRUE)   #replace missing values with means
-       x.matrix[miss]<- item.means[miss[,2]]} else {
-       item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
-        x.matrix[miss]<- item.med[miss[,2]]}
-        }}
-      r <- cor(r,use="pairwise") } # if given a rectangular matrix, then find the correlations first
-    
+        			miss <- which(is.na(x.matrix),arr.ind=TRUE)
+       				 if(impute=="mean") {
+       				item.means <- colMeans(x.matrix,na.rm=TRUE)   #replace missing values with means
+      				x.matrix[miss]<- item.means[miss[,2]]} else {
+       				item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
+       				 x.matrix[miss]<- item.med[miss[,2]]}
+       				 }}
+      r <- cor(r,use="pairwise")  # if given a rectangular matrix, then find the correlations first
+             } else {
+     				if(!is.matrix(r)) {  r <- as.matrix(r)}
+     				 sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
+                     r <- r/(sds %o% sds)  }  #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0,fit.off=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0,fit.off=0)}
     eigens <- eigen(r)    #call the eigen value decomposition routine
     result$values <- round(eigens$values,digits)
@@ -55,16 +58,23 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
     class(loadings) <- "loadings"
     model <- loadings %*% t(loadings)  
     result$communality <- diag(model)
-     result$uniquenesses <- 1 - result$communality
+    result$uniquenesses <- diag(r- model)
     residual<- r - model
     if (residuals) {result$residual <-residual}
     diag(model) <- 1   
     model.inv <- solve(model)
     m.inv.r <- model.inv %*% r
+    if(is.null(n.obs)) {result$n.obs=NA
+    			        result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+  
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
-    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * (n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3
-   if (result$dof >0) { result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL  < - NA}
+    result$criteria <- c("objective"=result$objective,NA,NA)
+    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
+            if (result$STATISTIC <0) {result$STATISTIC <- 0}  
+   			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
+
+  
     
     r2 <- sum(r*r)
     rstar2 <- sum(residual*residual)
@@ -83,4 +93,5 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
    }
   
   # modified August 10, 2007
-  #last modified Feb 2, 2008 to calculate scores and become a factanal class
+  # modified Feb 2, 2008 to calculate scores and become a factanal class
+  #Modified June 8,2008 to get chi square values to work or default to statistic if n.obs==NULL.

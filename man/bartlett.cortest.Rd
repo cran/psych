@@ -1,0 +1,40 @@
+\name{bartlett.cortest}
+\alias{bartlett.cortest}
+
+\title{Bartlett's test that a correlation matrix is an identity matrix }
+\description{Bartlett (1951) proposed that -ln(det(R)*(N-1 - (2p+5)/6) was distributed as chi square if R were an identity matrix.  A useful test that residuals correlations are all zero.
+}
+\usage{
+bartlett.cortest(R, n = NULL)
+}
+
+\arguments{
+  \item{R}{A correlation matrix. (If R is not square, correlations are found and a warning is issued. }
+  \item{n}{Sample size (if not specified, 100 is assumed.}
+}
+\details{More useful for pedagogical purposes than actual applications. The Bartlett test is asymptotically chi square distributed.
+}
+\value{
+  \item{chisq}{Assymptotically chisquare}
+  \item{p.value }{Of chi square}
+  \item{df}{The degrees of freedom}
+
+}
+\references{ 
+Bartlett, M. S., (1951), The Effect of Standardization on a $\chi^2$ Approximation in Factor Analysis, Biometrika, 38, 337-344.
+	
+ }
+\author{William Revelle}
+
+\seealso{ \code{\link{mat.cortest}}, \code{\link{normal.cortest}}, \code{\link{jennrich.cortest}}}
+\examples{
+set.seed(42)   
+x <- matrix(rnorm(1000),ncol=10)
+r <- cor(x)
+bartlett.cortest(r)      #random data don't differ from an identity matrix
+data(bfi)
+bartlett.cortest(bfi)    #not an identity matrix
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ multivariate }

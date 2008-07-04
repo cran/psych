@@ -5,7 +5,7 @@
 \description{Given a cluster structure determined by \code{\link{ICLUST}}, create a rgraphic directly using Rgraphviz.  To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}.  As an option, dot code is also generated and saved in a file. To  use the dot code, use either \url{http://www.graphviz.org/} Graphviz or a commercial viewer (e.g., OmniGraffle).
 }
 \usage{
-ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = "RL", digits = 2, title = "ICLUST", ...)
+ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits = 2, title = "ICLUST",label.font=2, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,9 +18,10 @@ ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, labels =
   \item{size}{size of output }
   \item{node.font}{ Font to use for nodes in the graph }
   \item{edge.font}{ Font to use for the labels of the arrows (edges)}
-  \item{rank.direction}{LR or RL  }
+  \item{rank.direction}{LR or TB  or RL  }
   \item{digits}{ number of digits to show }
   \item{title}{ any title }
+  \item{label.font}{The variable labels can be a different size than the other nodes.  This is particularly helpful if the number of variables is large or the labels are long.}
   \item{\dots}{ other options to pass }
 }
 \details{
@@ -46,8 +47,8 @@ Additional output is drawn to main graphics screen. }
 
 \examples{
 test.data <- Harman74.cor$cov
-ic.out <- ICLUST(test.data)
-if(require(Rgraphviz) ) {ICLUST.rgraph(ic.out) }  
+
+if(require(Rgraphviz) ) {ic.out <- ICLUST(test.data,labels=colnames(test.data)) }  
 
 }
 \keyword{ multivariate}

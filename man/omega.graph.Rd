@@ -4,12 +4,14 @@
 \title{Graph hierarchical factor structures }
 \description{Hierarchical factor structures represent the correlations between variables in terms of a smaller set of correlated factors which themselves can be represented by a higher order factor.
 
-Two alternative solutions to such structures are found by the omega function.  The correlated factors solutions represents the effect of the higher level, general factor, through its effect on the correlated factors.  The other representation makes use of the Schmid Leiman transformation to find the direct effect of the general factor upon the original variables as well as the effect of orthogonal residual group factors upon the items. 
+Two alternative solutions to such structures are found by the \code{\link{omega}} function.  The correlated factors solutions represents the effect of the higher level, general factor, through its effect on the correlated factors.  The other representation makes use of the Schmid Leiman transformation to find the direct effect of the general factor upon the original variables as well as the effect of orthogonal residual group factors upon the items. 
 
 Graphic presentations of these two alternatives are helpful in understanding the structure.  omega.graph draws both such structures.  Graphs are drawn directly onto the graphics window or expressed in ``dot" commands for conversion to graphics using implementations of Graphviz.
+
+Using Graphviz allows the user to clean up the Rgraphviz output (e.g., make the arrows go the right direction!
 }
 \usage{
-omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = "RL", digits = 1, title = "Omega", ...)
+omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
 }
 
 \arguments{
@@ -26,12 +28,17 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{\dots}{Other options to pass into the graphics packages }
 }
 \details{Requires the Rgraphviz package.  omega requires the GPArotation package.
+
+ 
 }
 \value{
   
   \item{clust.graph }{A graph object}
+ 
  }
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
+
+Revelle, W. (in preparation) An Introduction to  Psychometric Theory with applications in R.  \url{http://personality-project.org/r/book}
 
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
 
@@ -39,12 +46,14 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
 
  
  Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{http://apm.sagepub.com/cgi/reprint/30/2/121}
+ 
+ 
 }
 \author{ 
  \url{http://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
-\note{ Requires rgraphviz.   -- omega requires GPARotation
+\note{ Requires rgraphviz.   -- omega requires GPArotation
 }
 \seealso{ \code{\link{omega}},  \code{\link{make.hierarchical}}, \code{\link{ICLUST.rgraph}} }
 \examples{
@@ -57,6 +66,5 @@ if(require(GPArotation) ) {jen.omega <- omega(make.hierarchical())}
 if(require(Rgraphviz) ) {om.jen <- omega.graph(jen.omega,sl=FALSE) }
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ multivariate }

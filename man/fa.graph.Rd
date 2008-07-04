@@ -5,7 +5,7 @@
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path).
 }
 \usage{
-fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = "RL", digits = 1, title = "Factor Analysis", ...)
+fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Factor Analysis", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -29,9 +29,9 @@ fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, s
 
 
 \author{William Revelle }
-\note{ Requires Rgraphviz.
+\note{ Requires Rgraphviz.  For the Mac, there are occasional difficulties installing Rgraphviz from Bioconductor in that some libraries are misplaced and need to be relinked using X11.
 
-As of June 1, there is an occasionally strange result when using the simple=FALSE option in Sweave.   }
+As of June 1, 2007 there is an occasionally strange result when using the simple=FALSE option in Sweave.   }
 
  
 \seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}}

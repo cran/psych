@@ -1,6 +1,8 @@
  "cluster.plot" <- 
-function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot") {
- if (!is.matrix(ic.results) ) {load <-ic.results$loadings} else {load <- ic.results}
+function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot",...) {
+ if (!is.matrix(ic.results) ) {
+  if(class(ic.results) == "kmeans") { load <- t(ic.results$centers) } else {
+      load <-ic.results$loadings} } else {load <- ic.results}
 nc <- dim(load)[2]
 nvar <- dim(load)[1]
 ch.col=c("black","blue","red","gray","black","blue","red","gray")
@@ -12,7 +14,7 @@ cluster[(apply(abs(load),1,max) < cut)] <- nc+1
 if (nc > 2 ) {
  pairs(load,pch = cluster+19,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster],main=title) }
  else {
- plot(load,pch = cluster+20,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster],main=title) 
+ plot(load,pch = cluster+20,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster],main=title,...) 
  abline(h=0)
  abline(v=0)}
  if(is.null(labels)) labels <- paste(1:nvar)

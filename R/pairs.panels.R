@@ -1,5 +1,5 @@
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,  ...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,jiggle=FALSE,  ...)   #combines a splom, histograms, and correlations
 {
     op <- par(no.readonly = TRUE)  # save the whole list of settable par's.
     par(pch = pch)
@@ -12,10 +12,11 @@ function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2
              pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor.scale, lower.panel = panel.smooth, ...)}
         }  #don't scale
         else {
-        if(ellipses) {
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoothie, ...) } else {
+        if(ellipses)  { #if (jiggle) {  } else {
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoothie , ...) } else {
             pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smooth, ...) }
-        }
+          }
+      # }
     }  #don't smooth
     else {
         if (scale) {
@@ -178,19 +179,42 @@ function (x, y, col = par("col"), bg = NA, pch = par("pch"),
  
 
 "panel.smoothie" <- 
-function (x, y,ellipses, col = par("col"), bg = NA, pch = par("pch"), 
+function (x, y, col = par("col"), bg = NA, pch = par("pch"), 
     cex = 1, col.smooth = "red", span = 2/3, iter = 3, ...) 
 {
-    points(x, y, pch = pch, col = col, bg = bg, cex = cex)
-    ok <- is.finite(x) & is.finite(y)
-    if (any(ok)) 
-        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), 
-            col = col.smooth, ...)
+  
   xm <- mean(x,na.rm=TRUE)
   ym <- mean(y,na.rm=TRUE)
   xs <- sd(x,na.rm=TRUE)
   ys <- sd(y,na.rm=TRUE)
   r = cor(x, y,use="pairwise")
+ 
+  points(x, y, pch = pch, col = col, bg = bg, cex = cex)
+    ok <- is.finite(x) & is.finite(y)
+    if (any(ok)) 
+        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), 
+            col = col.smooth, ...)
+
   p.ellipse(xm,ym,xs,ys,r,col=col.smooth,...)
 }
 
+"panel.jiggle" <- 
+function (x, y, col = par("col"), bg = NA, pch = par("pch"), 
+    cex = 1, col.smooth = "red", span = 2/3, iter = 3, ...) 
+{
+  
+  xm <- mean(x,na.rm=TRUE)
+  ym <- mean(y,na.rm=TRUE)
+  xs <- sd(x,na.rm=TRUE)
+  ys <- sd(y,na.rm=TRUE)
+  r = cor(x, y,use="pairwise")
+  x <- jitter(x,factor=2)
+  y <- jitter(y,factor=2)
+  points(x, y, pch = pch, col = col, bg = bg, cex = cex)
+    ok <- is.finite(x) & is.finite(y)
+    if (any(ok)) 
+        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), 
+            col = col.smooth, ...)
+
+  p.ellipse(xm,ym,xs,ys,r,col=col.smooth,...)
+}

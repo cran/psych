@@ -3,7 +3,7 @@
 \alias{Yule.inv}
 \alias{Yule2phi}
 \alias{Yule2poly}
-\title{From a two by two table, find the Yule coefficient, convert to phi, or polychoric, recreate table the table to create the Yule coefficient.}
+\title{From a two by two table, find the Yule coefficients of association, convert to phi, or polychoric, recreate table the table to create the Yule coefficient.}
 \description{One of the many measures of association is the Yule coefficient.  Given a two x two table of counts \cr
 \tabular{lll}{
 \tab a \tab b \cr
@@ -14,6 +14,7 @@ Conceptually, this is the number of pairs in agreement (ad) - the number in disa
 \cr
 ad/bc is the odds ratio and Q = (OR-1)/(OR+1) 
 \cr
+Yule's coefficient of colligation is Y = (sqrt(OR) - 1)/(sqrt(OR)+1)
 Yule.inv finds the cell entries for a particular Q and the marginals (a+b,c+d,a+c, b+d).  This is useful for converting old tables of correlations into more conventional \code{\link{phi}} or polychoric correlations.
 \cr
 Yule2phi and Yule2poly convert the Yule Q with set marginals to the correponding phi or polychoric correlation.
@@ -27,7 +28,7 @@ Yule2poly(Q,m)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{A vector of four elements or a two by two matrix }
-  \item{Y}{return Yule's Y coefficient of colligation}
+  \item{Y}{Y=TRUE return Yule's Y coefficient of colligation}
   \item{Q}{The Yule coefficient}
   \item{m}{A two x two matrix of marginals or a four element vector of marginals}
 }

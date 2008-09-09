@@ -1,5 +1,5 @@
 #modified May 30, 2008 to try to get arrows going both ways in the sl option.
-#am currently unsuccessful in this attempt
+#this now works, but sometimes two lines don't have arrows.
 #Created May 20, 2007
 #modified June 2 to clarify the Rgraphviz issue
 #modified July 12 to fix label problem
@@ -9,7 +9,9 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=1,title="Omega", ...){
    
+     
      if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
+    # if(!require(graph)) {stop("I am sorry, you need to have the  graph package installed")}
     
    if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else{factors <- as.matrix(om.results$schmid$oblique)}
    rank.direction <- match.arg(rank.direction)
@@ -29,11 +31,15 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    
    if (sl) {edge.label <- rep("",num.var*2)    #this basically just sets up the vectors to be the right size
             edge.dir <-rep("forward",num.var*2)
-            edge.arrows <-rep("open",num.var+num.factors)
+           # edge.arrows <-rep("open",num.var+num.factors)
+           edge.arrows <-rep("open",num.var*2)
             edge.name <- rep("",num.var*2)
             names(edge.label) <-  seq(1:num.var*2)
             names(edge.dir) <-rep("",num.var*2)
-            names(edge.arrows) <-rep("",num.var+num.factors)} else {
+            #names(edge.arrows) <-rep("",num.var+num.factors)
+            names(edge.arrows) <-rep("",num.var*2)
+            
+            } else {
             
             edge.label <- rep("",num.var+num.factors)
             edge.name <- rep("",num.var+num.factors)

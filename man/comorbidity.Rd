@@ -20,12 +20,11 @@ comorbidity(d1, d2, com, labels = NULL)
   \item{Yule}{Yule coefficient of the two by two table}
   \item{tetrachoric}{Tetrachoric coefficient of the two by two table}
 }
-\references{ ~put references to the literature/web site here ~ }
+
 \author{William Revelle }
 \note{Requires the polycor package}
 
  
-}
 \seealso{  \code{\link{phi}},  \code{\link{Yule}} }
 \examples{
 if(require(polycor)) {comorbidity(.2,.15,.1,c("Anxiety","Depression")) }

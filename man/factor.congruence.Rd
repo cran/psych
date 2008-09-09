@@ -5,12 +5,13 @@
 \description{Given two sets of factor loadings, report their degree of congruence. 
 }
 \usage{
-factor.congruence(x, y)
+factor.congruence(x, y,digits=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A matrix of factor loadings }
   \item{y}{ A second matrix of factor loadings }
+  \item{digits}{Round off to digits}
 
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
@@ -39,9 +40,9 @@ Revelle, W. (In preparation) An Introduction to Psychometric Theory with applica
 #fa <- factanal(x,4,covmat=Harman74.cor$cov)
 #pc <- principal(Harman74.cor$cov,4)
 #pcv <- varimax(pc$loading)
-#round(factor.congruence(fa,pcv),2)
+#factor.congruence(fa,pcv)
 #
-#round(factor.congruence(pcv,fa),2)
+#factor.congruence(pcv,fa)
 #    Factor1 Factor2 Factor3 Factor4
 #PC1    1.00    0.60    0.45    0.55
 #PC2    0.44    0.49    1.00    0.56

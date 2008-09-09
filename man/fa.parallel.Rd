@@ -5,7 +5,7 @@
 \description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of the observed data with that of a random data matrix of the same size as the original.  
 }
 \usage{
-fa.parallel(x, n.obs = 1000, fa="both", main = "Parallel Analysis Scree Plots",ntrials=20)
+fa.parallel(x, n.obs = NULL, fa="both", main = "Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,8 +14,11 @@ fa.parallel(x, n.obs = 1000, fa="both", main = "Parallel Analysis Scree Plots",n
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
  \item{main}{ a title for the analysis }
  \item{ntrials}{Number of simulated analyses to perform}
+ \item{error.bars}{Should error.bars be plotted (default = FALSE)}
 }
 \details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Humphreys and Montanelli's ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and principal factor solution and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
+
+The means of (n.trials) random solutions are shown.  Error bars are usually very small and are suppressed by default but can be shown if requested.
 }
 \value{
   A plot of the eigen values for the original data, ntrials of resampling of the  original data, and of a equivalent size matrix of random normal deviates.  If the data are a correlation matrix, specify the number of observations.  

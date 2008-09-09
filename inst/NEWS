@@ -6,6 +6,15 @@ Additional functions are added sporadically.
 
 History:
 
+September 2008: 1-0.58
+
+Introduced the guttman function to estimate the 6 Guttman (1945) estimates (as well as a few others).
+
+August 2008: 1.-0.54
+
+Added print.psych and summary.psych generic functions to clean up the output of many of the functions. 
+
+
 October-November, 2007
 
 Introduced several new functions:

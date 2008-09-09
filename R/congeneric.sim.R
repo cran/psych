@@ -8,9 +8,10 @@ if (!is.null(err)) {diag(error) <- err} else {
 pattern <- cbind(loading, error) 
 colnames(pattern) <- c("theta", paste("e", seq(1:n), sep = "")) 
 rownames(pattern) <- c(paste("V", seq(1:n), sep = "")) 
+model <- pattern %*% t(pattern)
 latent <- matrix(rnorm(N * (n + 1)), ncol = (n + 1)) 
 observed <- latent %*% t(pattern) 
 colnames(latent) <-  c("theta", paste("e", seq(1:n), sep = "")) 
-if (short) {return(observed)}  else {result <- list(observed=observed,pattern=pattern,latent=latent)
+if (short) {return(model)}  else {result <- list(model=model,pattern=pattern,observed=observed,latent=latent)
  return(result)} 
  }

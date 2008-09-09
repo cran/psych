@@ -4,7 +4,7 @@ function(m,x,y,n.obs=NULL,digits=2)  {
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #if there are NAs in the matrix, these are set to -999999 before the reordering and then set back to NA 
    if(dim(m)[1]!=dim(m)[2]) {n.obs=dim(m)[1]
-                    m <- cor(m,use="pairwise") }
+                    m <- cor(m,use="pairwise") } else {m <- cov2cor(m)}
   if(!is.matrix(m)) m <- as.matrix(m)
   m[is.na(m)] <- -9999999
     #first reorder the matrix to select the right variables
@@ -18,7 +18,7 @@ function(m,x,y,n.obs=NULL,digits=2)  {
      	t.mat[i,xy[i]] <- 1 }
      	
      	reorder <- t.mat %*% m %*% t(t.mat)
-     	reorder[abs(reorder)  > 1] <- NA    #this allows us to use the matrix operations to reorder and pick
+     	reorder[abs(reorder)  > 100000] <- NA    #this allows us to use the matrix operations to reorder and pick
      	a.matrix <- reorder[1:numx,1:numx]
      	b.matrix <- reorder[1:numx,(numx+1):nxy]
      beta<- solve(a.matrix,b.matrix)       #solve the equation bY~aX
@@ -51,3 +51,4 @@ function(m,x,y,n.obs=NULL,digits=2)  {
      	}
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests
+#modified yet again August 15 , 2008to convert covariances to correlations

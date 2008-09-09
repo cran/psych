@@ -1,5 +1,5 @@
 "factor.congruence" <-
-function (x,y) {
+function (x,y,digits=2) {
  
  if (!is.matrix(x)) {x <- x$loadings}
    if (!is.matrix(y))  { y <- y$loadings }
@@ -11,6 +11,6 @@ function (x,y) {
    sumsy<- sqrt(1/diag(t(y)%*%y)) 
 
    result<- matrix(rep(0,nx*ny),ncol=nx)
-    result<-  sumsy * (cross * rep(sumsx, each = ny))
+   result<-  round(sumsy * (cross * rep(sumsx, each = ny)),digits)
    return(t(result))
    }

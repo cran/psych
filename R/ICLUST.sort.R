@@ -5,12 +5,17 @@
      nitems <- dim(loadings)[1]
      loadings <- as.matrix(loadings)   #just in case there is just one cluster
      loadings <- unclass(loadings)  #to get around the problem of a real loading matrix
+     if(nclust > 1) {eigenvalue <- diag(t(loadings) %*% loadings)  #put the clusters into descending order by eigenvalue
+                     evorder <- order(eigenvalue,decreasing=TRUE)
+                     loadings <- loadings[,evorder]
+                     }
     if (length(labels)==0) {
     var.labels <- rownames(loadings)} else {var.labels=labels}
     if (length(var.labels)==0) {var.labels =paste('V',seq(1:nitems),sep='')} #unlabled variables
 
    
   loads <- data.frame(item=seq(1:nitems),content=var.labels,cluster=rep(0,nitems),loadings)
+ 
  
   #first find the maximum for each row and assign it to that cluster
    loads$cluster <- apply(abs(loadings),1,which.max)
@@ -35,8 +40,11 @@
     first <- first + items[i]}
     }
     if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
-      if(keys) {ICLUST.sort <- list(sorted=loads,clusters=factor2cluster(loadings))} else 
-return(list(sorted=loads)) }
+      if(keys) {result <- list(sorted=loads,clusters=factor2cluster(loadings))} else  result <- list(sorted=loads)
+   class(result) <- "psych"
+   return(result)
+}
  #revised August 8, 2007 to add cluster keying option and to allow us to work with factor analysis output
  #revised Sept 15, 2007 to remove the "loadings" parameter
+ #revised Ausgust 30, 2008 to make class psych
  

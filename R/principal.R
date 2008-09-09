@@ -87,7 +87,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
     result$loadings <- round(loadings,digits)
     if (rotate =="oblimin") {result$phi <- phi}
     result$factors <- nfactors 
-    class(result) <- "factanal"  
+    class(result) <- c("factanal" ,"psych") 
+    result$fn <- "principal"
     if(scores) {result$scores <- factor.scores(scale(x.matrix),loadings) }
     return(result)
    }

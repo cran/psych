@@ -1,9 +1,11 @@
 "multi.hist" <-
 function(x,nrow=NULL,ncol=NULL,density=TRUE,main="Histogram, Density, and Normal Fit") {
-nvar <- dim(x)[2]  #number of variables
+if((!is.matrix(x)) & (!is.data.frame(x))) {nvar <- 1
+    x <- as.matrix(x,ncol=1) } else {
+nvar <- dim(x)[2] } #number of variables
      if(!density & (main == "Histogram, Density, and Normal Fit")) main = "Histogram" 
      nsize=ceiling(sqrt(nvar))   #size of graphic
-     if(is.null(nrow) ) nrow <-nsize
+     if(is.null(nrow) ) nrow <- nsize
      if(is.null(ncol)) ncol  <- ceiling(nvar/nsize )
      
      old.par <- par(no.readonly = TRUE) # all par settings which can be changed

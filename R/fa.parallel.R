@@ -1,5 +1,8 @@
 "fa.parallel" <-
-function(x,n.obs=1000,fa="both",main="Parallel Analysis Scree Plots",ntrials=20)  {     
+function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE)  { 
+	
+	ci <- 1.96
+	arrow.len <- .05
  nsub <- dim(x)[1]
  nvariables <- dim(x)[2]
  if (!is.null(n.obs)) { nsub <- n.obs 
@@ -9,55 +12,86 @@ function(x,n.obs=1000,fa="both",main="Parallel Analysis Scree Plots",ntrials=20)
 
   	rx <- cor(x,use="pairwise")
  	}
-  
-  if(is.null(n.obs)) {sampledata <- matrix(sample(unlist(x),size=nsub*nvariables,replace=TRUE),nrow=nsub,ncol=nvariables) 
+ 	
+ 	 if (nsub==nvariables) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The data are treated as if you had raw data.  ")}
+  				
+   valuesx  <- eigen(rx)$values 
+   fa.valuesx  <- factor.pa(rx,warnings=FALSE)$values
+ 
+  temp <- list(samp =list(),samp.fa <- list(),sim=list(),sim.fa=list())
+   
+ for (trials in 1:ntrials) {
+   
+    if(is.null(n.obs)) {sampledata <- matrix(sample(unlist(x),size=nsub*nvariables,replace=TRUE),nrow=nsub,ncol=nvariables) 
    					values.samp <- eigen(cor(sampledata,use="pairwise"))$values
-   					 if (nsub==nvariables) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The data are treated as if you had raw data.  ")}
-  					if (fa!= "pc") {
-   						 fa.values.samp <- factor.pa(cor(sampledata,use="pairwise"),warnings=FALSE)$values
+   					temp[["samp"]][[trials]] <- values.samp
+   					if (fa!= "pc") {
+   						temp[["samp.fa"]][[trials]]  <- factor.pa(cor(sampledata,use="pairwise"),warnings=FALSE)$values
           					}
                   } 
-    
-   temp <- rep(0,nvariables)
-   temp.fa <- rep(0,nvariables)
-   
-   for (trials in 1:ntrials) {
+  
    simdata=matrix(rnorm(nsub*nvariables),nrow=nsub,ncol=nvariables)    #make up simulated data
-   values.sim <- eigen(cor(simdata))$values
-
-   valuesx  <- eigen(rx)$values 
-   temp <- temp + valuesx
-  
-  
-   
+   temp[["sim"]][[trials]] <- eigen(cor(simdata))$values
+    
    if (fa!="pc") {
    
    		fa.values.sim <- factor.pa(cor(simdata),SMC="FALSE",warnings=FALSE)$values
-   	
-   		fa.valuesx  <- factor.pa(rx,warnings=FALSE)$values
-   		temp.fa <- temp.fa + fa.valuesx
-   		ylabel <-  "eigen values of principal components and factors"
-   				}
+   		 temp[["sim.fa"]][[trials]] <- 	fa.values.sim
+}
    	}
-    ylabel  <- "eigen values of principal components"
-   valuesx <- temp/ntrials
-   fa.values.x <- temp.fa/ntrials
-   ymax <- max(valuesx)
+   	
+   if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}
    
-
+   values.sim <- describe(t(matrix(unlist(temp[["sim"]]),ncol=ntrials)))
+  if(is.null(n.obs)) { values.samp <- describe(t(matrix(unlist(temp[["samp"]]),ncol=ntrials)))}
+  
+    ymax <- max(valuesx,values.sim$mean)
+   
 if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) 
-	points(values.sim,type ="l",lty="dotted",pch=4)
-	if(is.null(n.obs)) {points(values.samp,type ="l",lty="dashed",pch=4)} }
+	points(values.sim$mean,type ="l",lty="dotted",pch=4)
+	if(error.bars) {
+      for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- values.sim$mean[i]
+         yse <-  values.sim$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	
+	
+	if(is.null(n.obs)) {points(values.samp$mean,type ="l",lty="dashed",pch=4)
+	if(error.bars) {
+      for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- values.samp$mean[i]
+         yse <-  values.samp$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	       
+	           }
+	}
 
-
-if (fa !="pc" ) { if (fa=="fa") {
-             ylabel <-  "eigen values of principal factors"
-             plot(fa.valuesx,type="l", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) 
-        	points(fa.values.sim,type ="l",lty="dotted",pch=2)
-	if(is.null(n.obs)) {points(fa.values.samp,type ="l",lty="dashed",pch=2)}} else
-	points(fa.valuesx,type ="b",lty="solid",pch=2)
+if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
+            plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) }
+            fa.values.sim <- describe(t(matrix(unlist(temp[["sim.fa"]]),ncol=ntrials)))
+        	points(fa.values.sim$mean,type ="l",lty="dotted",pch=2)
+        if(error.bars) {
+         for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- fa.values.sim$mean[i]
+         yse <-  fa.values.sim$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	
+        	  
+	if(is.null(n.obs)) {fa.values.samp <- describe(t(matrix(unlist(temp[["samp.fa"]]),ncol=ntrials)))
+						points(fa.values.samp$mean,type ="l",lty="dashed",pch=2)
+						 if(error.bars) {
+         for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- fa.values.samp$mean[i]
+         yse <-  fa.values.samp$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	} 
+					if (fa !="fa") 	points(fa.valuesx,type ="b",lty="solid",pch=2)
 	points(fa.values.sim,type ="l",lty="dotted",pch=2)
-	if(is.null(n.obs)) {points(fa.values.samp,type ="l",lty="dashed",pch=2)}
+	if(is.null(n.obs)) {points(fa.values.samp$mean,type ="l",lty="dashed",pch=2)}
         } 
 
 

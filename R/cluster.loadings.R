@@ -31,7 +31,7 @@ function (keys, r.mat, correct = TRUE,digits=2)
     p.loading <- c.loading %*% solve(c.correl)
     
      c.loading[abs(c.loading)  > 99999] <- NA
-      c.correl[abs(c.correl) > 99999] <- NA
+     c.correl[abs(c.correl) > 99999] <- NA
     
    
     
@@ -40,13 +40,15 @@ function (keys, r.mat, correct = TRUE,digits=2)
     key.alpha[!is.finite(key.alpha)] <- 1
     key.av.r <- key.alpha/(key.count - key.alpha*(key.count-1))  #alpha 1 = average r
     colnames(c.loading) <- colnames(keys)
-     colnames(p.loading) <- colnames(keys)
+    colnames(p.loading) <- colnames(keys)
     colnames(c.correl) <- colnames(keys)
     rownames(c.correl) <- colnames(keys)
     rownames(c.loading) <- rownames(r.mat)
     
     if( ncol(keys) >1)  {cluster.corrected <- correct.cor(c.correl, t(key.alpha))} else {cluster.corrected <- c.correl}
     
-    return(list(loadings=round(c.loading,digits),pattern=round(p.loading,digits), cor=round(c.correl,digits),corrected=round(cluster.corrected,digits), sd = round(sqrt(var),digits), alpha = round(key.alpha,digits),av.r = round(key.av.r,2),
-            size = key.count))
+    results <- list(loadings=round(c.loading,digits),pattern=round(p.loading,digits), cor=round(c.correl,digits),corrected=round(cluster.corrected,digits), sd = round(sqrt(var),digits), alpha = round(key.alpha,digits),av.r = round(key.av.r,2),
+            size = key.count)
+    class(results) <- "psych"
+    return(results)
     }

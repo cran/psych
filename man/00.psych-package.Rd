@@ -59,8 +59,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-51 \cr
-Date: \tab 2008-07-04\cr
+Version: \tab 1.0-57 \cr
+Date: \tab 2008-09-09\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -95,9 +95,10 @@ Useful data entry and descriptive statistics\cr
 Data reduction through cluster and factor analysis\cr
 \cr
 \link{factor.pa}              Do a principal Axis factor analysis\cr
-\link{fa.graph}              Show the results of a factor analysis or principal components analysis graphically\cr
+\link{fa.graph}                Show the results of a factor analysis or principal components analysis graphically\cr
 \link{principal}               Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}            Scree test and Parallel analysis \cr
+\link{guttman}                 8 different measures of reliability (6 from Guttman (1945)
 \code{\link{ICLUST}}           Apply the ICLUST algorithm\cr
 \link{ICLUST.graph}            Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}           Graph the output from ICLUST using rgraphviz \cr
@@ -132,6 +133,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{factor.model}            Reproduce a correlation matrix based upon the factor model\cr
 \link{factor.residuals}       Fit = data - model\cr
 \link{factor.rotate}          ``hand rotate" factors\cr
+\link{guttman}                8 different measures of reliability
 \link{mat.regress}            standardized multiple regression from raw or correlation matrix input\cr
 \link{principal}               Do an eigen value decomposition to find the principal components of a matrix\cr
 \cr

@@ -4,8 +4,8 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
-      nvar <-dim(m)[2]
-      if(dim(m)[1] != dim(m)[2]) m <- cor(m,use="pairwise")
+      nvar <- dim(m)[2]
+      if(dim(m)[1] != dim(m)[2]) {m <- cor(m,use="pairwise")} else {m <- cov2cor(as.matrix(m))}  #make sure it is a correlation matrix not a covariance or data matrix
       if(is.null(colnames(m))) {  rownames(m) <- colnames(m) <- paste("V",1:nvar,sep="") }
        m.names <- colnames(m)
       
@@ -26,7 +26,8 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       gload <- gf$sl[,1]
       if (flip) {       #should we think about flipping items ?
         key <- sign(gload)
-        if (sum(key) < nvar) {  #sum items have negative g loadings and should be flipped  
+        key[key==0] <- 1     # a rare and weird case where the gloading is 0 and thus needs not be flipped
+        if (sum(key) < nvar) {  #some items have negative g loadings and should be flipped  
             
              if(dim(m)[1] != dim(m)[2]) m <- cor(m,use="pairwise")
              m <- diag(key) %*% m %*% diag(key)
@@ -43,10 +44,15 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
             }
           }
       gsq <- (sum(gload))^2
+      uniq <- sum(gf$sl[,(nfactors+3)])
+      om.tot <- (Vt-uniq)/Vt
       alpha <- ((Vt-Vitem)/Vt)*(nvar/(nvar-1))
-      if (!is.null(digits)) {omega <-list(omega_h= round(gsq/Vt,digits),alpha=round(alpha,digits),schmid=gf ,key = key) } else {
-      omega <- list(omega_h= gsq/Vt,alpha=alpha,schmid=gf,key=key) }
+       sum.smc<- sum(smc(m))
+      lambda.6 <-(Vt +sum.smc-sum(diag(m)))/Vt
+      if (!is.null(digits)) {omega <-list(omega_h= round(gsq/Vt,digits),alpha=round(alpha,digits),lambda.6 = round(lambda.6,digits),omega.tot =round(om.tot,digits),schmid=gf ,key = key,title=title) } else {
+      omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title) }
       if (plot) {omega.graph(omega,title=title,sl=sl,labels=labels) }
+      class(omega) <- "psych"
       return(omega)
       }
 

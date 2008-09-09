@@ -35,7 +35,7 @@ diag(sim.mat) <- 0   #we don't want 1's on the diagonal to mess up the maximum
 if (ICLUST.options$correct) {   #find the largest and smallest similarities for each variable      
 	row.range <- apply(sim.mat,1,range,na.rm=TRUE)     
 	row.max <- pmax(abs(row.range[1,]),abs(row.range[2,]))  #find the largest absolute similarity
-   } else {row.max <- rep(1, nrow(sim)) }         #don't correct for largest similarity
+   } else {row.max <- rep(1, nrow(sim.mat)) }         #don't correct for largest similarity
    
    item.rel <-  cluster.stats$alpha
 for (i in 1: length(item.rel)) { if (cluster.stats$size[i]<2) {

@@ -29,37 +29,57 @@ interpretation with evidence regarding the internal structure of that scale. In 
 The second internal structural property pertains to the proportion of variance in the scale scores (derived from summing or averaging the indicators) accounted for by this latent variable that is common to all the indicators (Cronbach, 1951; McDonald, 1999; Revelle, 1979). That is, if an effect indicator scale is primarily a measure of one latent variable common to all the indicators forming the scale, then that latent variable should account for the majority of the variance in the scale scores. Put differently, this variance ratio provides important information about the sampling fluctuations when estimating individuals' standing on a latent variable common to all the indicators arising from the sampling of indicators (i.e., when dealing with either Type 2 or Type 12 sampling, to use the terminology of Lord, 1956). That is, this variance proportion can be interpreted as the square of the correlation between the scale score and the latent variable common to all the indicators in the infinite universe of indicators of which the scale indicators are a subset. Put yet another way, this variance ratio is important both as reliability and a validity coefficient. This is a reliability issue as the larger this variance ratio is, the more accurately one can predict an individual's relative standing on the latent variable common to all the scale's indicators based on his or her 
 observed scale score. At the same time, this variance ratio also bears on the construct validity of the scale given that construct validity encompasses the internal structure of a scale." (Zinbarg, Yovel, Revelle, and McDonald, 2006).
 
-McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
-\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's Omega to Cronbach's alpha and Revelle's beta.  They conclude that omega is the best estimate. (See also Zinbarg et al., 2006)   
+McDonald has proposed coefficient omega (hierarchical (\eqn{\omega_h}) as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
+\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's \eqn{\omega_h} to Cronbach's \eqn{\alpha} and Revelle's \eqn{\beta}  They conclude that \eqn{\omega_h} is the best estimate. (See also Zinbarg et al., 2006)   
 
-One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a   Schmid-Leiman (\link{schmid}) transformation, and then find omega.  Here we present code to do that.  
+One way to find \eqn{\omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}.  Here we present code to do that.  
 
-Omega differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
+\eqn{\omega_h} differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
 
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.
 
 
-Output from omega can be shown using the  \code{\link{omega.graph}} function.
+Output from omega will be shown graphically using the  \code{\link{omega.graph}} function.  This requires Rgraphviz to be installed.  If Rgraphviz is not available, select plot=FALSE. 
 
-Beta, an alternative to omega, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
+\eqn{\beta}, an alternative to \eqn{\omega}, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
-The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}{omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}{omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h}{omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
+The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 
 Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  See Zinbarg et al., 2007. 
 
+In addition to \eqn{\omega_h}, another of McDonald's coefficients is \eqn{\omega_t}.  This is an estimate of the total reliability of a test. 
+
+McDonald's \eqn{\omega_t}, which is similar to Guttman's \eqn{\lambda_6}, \code{\link{guttman}} but uses the estimates of uniqueness (\eqn{u^2} from factor analysis to find \eqn{e_j^2}. This is based on a decomposition of the variance of a test score, \eqn{V_x}  into four parts: that due to a general factor, \eqn{\vec{g}}, that due to a set of group factors, \eqn{\vec{f}},  (factors common to some but not all of the items), specific factors, \eqn{\vec{s}} unique to each item, and \eqn{\vec{e}}, random error.  (Because specific variance can not be distinguished from random error unless the test is given at least twice,  some combine these both into error). 
+
+Letting \eqn{\vec{x} =  \vec{cg} + \vec{Af} + \vec {Ds} + \vec{e}}
+then the communality of item\eqn{_j}, based upon general as well as group factors,
+\eqn{h_j^2 = c_j^2 + \sum{f_{ij}^2}}
+and the unique variance for the item
+\eqn{u_j^2 = \sigma_j^2 (1-h_j^2)}
+may be used to estimate the test reliability.
+That is, if \eqn{h_j^2} is the communality of item\eqn{_j}, based upon general as well as group factors,  then for standardized items,  \eqn{e_j^2 = 1 - h_j^2} and
+\deqn{
+\omega_t = \frac{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}{V_x} = 1 - \frac{\sum(1-h_j^2)}{V_x} = 1 - \frac{\sum u^2}{V_x}
+}
+Because \eqn{h_j^2 \geq r_{smc}^2}, \eqn{\omega_t \geq \lambda_6}.
+
+It is important to distinguish here between the two \eqn{\omega} coefficients of McDonald, 1978 and Equation 6.20a of McDonald, 1999, \eqn{\omega_t} and \eqn{\omega_h}.  While the former is based upon the sum of squared loadings on all the factors, the latter is based upon the sum of the squared loadings on the  general factor. 
+\deqn{\omega_h = \frac{ \vec{1}\vec{cc'}\vec{1}}{V_x}}
+
 }
 \value{
  
-  \item(omega) {The omega coefficient}
-  \item{alpha }{Cronbach's alpha}
-  \item{schmid }{The Schmid Leiman transformed factor matrix and associated matrices}
+  \item{omega hierarchical}{The \eqn{\omega_h} coefficient}
+  \item{omega total}{The \eqn{omega_t} coefficient}
+  \item{alpha}{Cronbach's \eqn{\alpha}}
+  \item{schmid}{The Schmid Leiman transformed factor matrix and associated matrices}
   \item{schmid$sl}{The g factor loadings as well as the residualized factors}
   \item{schmid$orthog}{Varimax rotated solution of the original factors}
   \item{schmid$oblique}{The oblimin transformed factors}
   \item{schmid$fcor}{the correlation matrix of the oblique factors}
-  \item{schid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
+  \item{schmid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
   \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
 }
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
@@ -74,7 +94,7 @@ Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures 
 }
 \author{ 
  \url{http://personality-project.org/revelle.html} \cr
-Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
+Maintainer: William Revelle  \email{  revelle@northwestern.edu  } 
 }
 \note{Requires the GPArotation package }
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
@@ -84,8 +104,7 @@ test.data <- Harman74.cor$cov
 my.omega <- omega(test.data,3)       
 print(my.omega,digits=2)
 #
-
-}
+         }
 #create 9 variables with a hierarchical structure
 jen.data <- make.hierarchical()
 #with correlations of
@@ -97,7 +116,9 @@ jen.omega
 #create 8 items with a two factor solution, showing the use of the flip option
 #sim2 <- item.sim(8)
 #omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
-
+#apply omega to analyze 6 mental ability tests 
+data(ability.cov)   #has a covariance matrix
+omega(ability.cov$cov) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

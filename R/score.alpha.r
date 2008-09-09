@@ -16,4 +16,6 @@ score.alpha <- function (keys,items,labels=NULL,totals=TRUE, digits=2) {
    item.cor <- cor(items,scores,use="pairwise")
    if (!totals) scores <- scores/num.item   #find averages
     results <- list(scores=scores,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item, cor = round(cor.scales,digits), item.cor = round(item.cor,digits)) 
- }
+    class(results) <- "psych"
+    return(results)
+}

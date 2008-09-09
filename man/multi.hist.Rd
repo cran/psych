@@ -26,7 +26,7 @@ May be used for single variables.
  \url{http://personality-project.org/revelle.html}}
 
 \examples{
-multi.hist(attitude[-1]) 
+#multi.hist(attitude[-1]) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

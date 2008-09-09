@@ -67,13 +67,19 @@ Although for items, it is typical to find factor scores by scoring the salient i
 \seealso{ \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}}
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
-pc <- principal(Harman74.cor$cov,4,rotate=TRUE)
+pc <- principal(Harman74.cor$cov,4,rotate="varimax")
 pa <- factor.pa(Harman74.cor$cov,4,rotate="varimax")
 round(factor.congruence(pc,pa),2)
 
 #then compare with a maximum likelihood solution using factanal
 mle <- factanal(x,4,covmat=Harman74.cor$cov)
 round(factor.congruence(mle,pa),2)
+#note that the order of factors and the sign of some of factors differ 
+
+#finally, compare the unrotated factor and pca solutions
+pc1 <- principal(Harman74.cor$cov,4,rotate="none")
+pa1 <- factor.pa(Harman74.cor$cov,4,rotate="none")
+round(factor.congruence(pc1,pa1),2)
 #note that the order of factors and the sign of some of factors differ 
 
 

@@ -19,9 +19,10 @@ congeneric.sim(N = 1000, loads = c(0.8, 0.7, 0.6, 0.5), err=NULL, short = TRUE)
 The implied covariance matrix is just pattern \%*\% t(pattern). 
 }
 \value{
-  \item{observed}{a matrix of test scores for n tests}
+  \item{model}{The implied population correlation matrix}
   \item{pattern }{The pattern matrix implied by the loadings and error variances}
-  \item{latent}{The latent trait and error scores (if short=FALSE)}
+  \item{observed}{a matrix of test scores for n tests}
+  \item{latent}{The latent trait and error scores }
 
 
 }
@@ -35,7 +36,6 @@ test <- congeneric.sim(short=FALSE)
 round(cor(test$observed),2) # show  a congeneric correlation matrix
 f1=factor.pa(test$observed,1,scores=TRUE)
 round(cor(f1$scores,test$latent),2)  #factor score estimates are correlated with but not equal to the factor scores
-
 
 
 

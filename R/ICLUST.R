@@ -24,11 +24,22 @@
 	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,correct.cluster=correct.cluster,reverse=reverse,beta.min=beta.min,output=output,digits=digits) 
 	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
 	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
-	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options)
-	loads <- cluster.loadings(iclust.results$clusters,r.mat,digits=digits)
+	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options) #this does all the work - the answers are in iclust.results
+	loads <- cluster.loadings(iclust.results$clusters,r.mat,digits=digits) #summarize the results by using cluster.loadings
+	
+	if(is.matrix(iclust.results$cluster) ) {
+		eigenvalue <- diag(t(loads$loading) %*% loads$loading)
+		sorted.cluster.keys.ord <- order(eigenvalue,decreasing=TRUE)
+		sorted.cluster.keys <- iclust.results$clusters[,sorted.cluster.keys.ord]
+	loads <- cluster.loadings(sorted.cluster.keys,r.mat,digits=digits) } else {sorted.cluster.keys <- iclust.results$clusters}
 	
 	fits <- cluster.fit(r.mat,as.matrix(loads$loadings),iclust.results$clusters,digits=digits)
-	sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut) #sort the loadings
+	sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut) #sort the loadings (again?  I think this might not be necessary anymore
+	
+	if(is.matrix(sorted.cluster.keys) ) {cluster.beta <- iclust.results$results[colnames(sorted.cluster.keys),"beta"]
+	names(cluster.beta) <- colnames(sorted.cluster.keys) } else {
+	number.of.clusters <- dim(iclust.results$results)[1]
+	cluster.beta <- iclust.results$results[number.of.clusters,"beta"]}
 	
 	#now, iterate the cluster solution to clean it up (if desired)
 	
@@ -62,11 +73,13 @@
 		}
 
 	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,digits=digits)
-	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut)
-	purified <- cluster.cor(clusters,r.mat,digits=digits)
+	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut,keys=TRUE)
+	
+	purified <- cluster.cor(p.sorted$clusters,r.mat,digits=digits)
 	class(loads$loadings) <- "loading"
-	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
+	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
 	if(plot && require(Rgraphviz)) {ICLUST.rgraph(result,labels=labels,title=title)}
+	class(result) <- "psych"
 	return(result)
 }   
 

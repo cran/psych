@@ -132,9 +132,11 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 
 
 
-vss.stats <- data.frame(map=map.values,vss.df,cfit=complexfit,cresidual=complexresid)
+vss.stats <- data.frame(vss.df,cfit=complexfit,cresidual=complexresid)
 if (plot) VSS.plot(vss.stats,title=title)
-return(vss.stats)
+vss.results <- list(title=title,map=map.values,cfit.1=complexfit[,1],cfit.2= complexfit[,2],vss.stats=vss.stats)
+class(vss.results) <- "psych"
+return(vss.results)
    
     }     #end of VSS function
 

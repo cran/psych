@@ -1,9 +1,9 @@
 \name{ICLUST.cluster}
 \alias{ICLUST.cluster}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{Function to form hierarchical cluster analysis of items }
 \description{
-  The guts of the  \code{\link{ICLUST}} algorithm.  Called by \code{\link{ICLUST}}.
+  The guts of the  \code{\link{ICLUST}} algorithm.  Called by \code{\link{ICLUST}} See ICLUST for description.
 }
 \usage{
 ICLUST.cluster(r.mat, ICLUST.options)
@@ -35,9 +35,6 @@ See also  more extensive documentation at
 \note{ Although the main code for ICLUST is here in ICLUST.cluster, the more extensive documentation is for \code{\link{ICLUST}}.
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega} }}
-\examples{
 
-
-}
-\keyword{multivariate }% at least one, from doc/KEYWORDS
-\keyword{cluster }% __ONLY ONE__ keyword per line
+\keyword{multivariate }
+\keyword{cluster }

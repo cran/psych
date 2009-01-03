@@ -1,11 +1,13 @@
-\name{make.hierarchical}
+\name{sim.hierarchical}
+\alias{sim.hierarchical}
 \alias{make.hierarchical}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Create a population or sample correlation matrix, perhaps with hierarchical structure. }
 \description{Create a population orthogonal or hierarchical correlation matrix from a set of factor loadings and factor intercorrelations. Samples of size n may be then be drawn from this population.  Return either the sample data, sample correlations, or population correlations.  This is used to create sample data sets for instruction and demonstration.
 }
 \usage{
-make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)
+sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)
+make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -47,12 +49,12 @@ fload <-matrix(c(                    #a lower order (oblique) factor matrix
             0,0,.5,
             0,0,.4),   ncol=3,byrow=TRUE)
             
-jensen <- make.hierarchical(gload,fload)    #the test set used by omega
+jensen <- sim.hierarchical(gload,fload)    #the test set used by omega
 round(jensen,2)     
 
 fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(c(.9,.8,.7,.6),rep(0,20)),c(.9,.8,.7,.6))),ncol=5)
 gload <- matrix(rep(0,5))
-five.factor <- make.hierarchical(gload,fload,500,TRUE) #create sample data set
+five.factor <- sim.hierarchical(gload,fload,500,TRUE) #create sample data set
 
 }
 \keyword{ multivariate}% at least one, from doc/KEYWORDS

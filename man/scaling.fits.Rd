@@ -15,7 +15,7 @@ scaling.fits(model, data, test = "logit", digits = 2, rowwise = TRUE)
   \item{digits}{ Precision of answer }
   \item{rowwise}{Are the choices ordered by column over row (TRUE) or row over column False)}
 }
-\details{
+\details{How well does a model fit the data is the classic problem of all of statistics.  One fit statistic for scaling is the just the size of the residual matrix compared to the original estimates. 
 }
 \value{
   \item{GF }{Goodness of fit of the model}
@@ -30,8 +30,7 @@ scaling.fits(model, data, test = "logit", digits = 2, rowwise = TRUE)
 
 }
 \seealso{ \code{\link{thurstone}}, \code{\link{vegetables}}}
-\examples{
-}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ models}

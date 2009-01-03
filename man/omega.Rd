@@ -5,7 +5,7 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,rotate="oblimin", ...)
+omega(m, nfactors=3, pc = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,8 +17,9 @@ omega(m, nfactors, pc = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=T
   \item{digits}{if specified, round the output to digits}
   \item{title}{Title for this analysis}
   \item{sl}{If plotting the results, should the Schmid Leiman solution be shown or should the hierarchical solution be shown? (default sl=TRUE)}
-  \item{labels}{If plotting, what labels should be applied to the variables}
+  \item{labels}{If plotting, what labels should be applied to the variables? If not specified, will default to the column names.}
   \item{plot}{plot=TRUE (default) calls omega.graph, plot =FALSE does not}
+  \item{n.obs}{Number of observations - used for goodness of fit statistic}
   \item{rotate}{What rotation to apply? The default is oblimin, the alternative is simplimax.}
   \item{...}{Allows additional parameters to be passed through to the factor routines}
 }
@@ -30,7 +31,7 @@ The second internal structural property pertains to the proportion of variance i
 observed scale score. At the same time, this variance ratio also bears on the construct validity of the scale given that construct validity encompasses the internal structure of a scale." (Zinbarg, Yovel, Revelle, and McDonald, 2006).
 
 McDonald has proposed coefficient omega (hierarchical (\eqn{\omega_h}) as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
-\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's \eqn{\omega_h} to Cronbach's \eqn{\alpha} and Revelle's \eqn{\beta}  They conclude that \eqn{\omega_h} is the best estimate. (See also Zinbarg et al., 2006)   
+\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's \eqn{\omega_h} to Cronbach's \eqn{\alpha} and Revelle's \eqn{\beta}  They conclude that \eqn{\omega_h} is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009)).   
 
 One way to find \eqn{\omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}.  Here we present code to do that.  
 
@@ -84,6 +85,8 @@ It is important to distinguish here between the two \eqn{\omega} coefficients of
 }
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
 
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika (in press).
+
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
 
  Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
@@ -106,11 +109,11 @@ print(my.omega,digits=2)
 #
          }
 #create 9 variables with a hierarchical structure
-jen.data <- make.hierarchical()
+jen.data <- sim.hierarchical()
 #with correlations of
 jen.data
 #find omega 
-jen.omega <- omega(jen.data,digits=2)
+if(require(Rgraphviz)) {jen.omega <- omega(jen.data,digits=2)} else {jen.omega <- omega(jen.data,digits=2,plot=FALSE)}
 jen.omega
 
 #create 8 items with a two factor solution, showing the use of the flip option
@@ -118,7 +121,7 @@ jen.omega
 #omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
-omega(ability.cov$cov) 
+if(require(Rgraphviz)) {omega(ability.cov$cov)} else {omega(ability.cov$cov,plot=FALSE)} 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

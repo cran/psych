@@ -1,5 +1,5 @@
 "print.psych" <-
-function(x,digits=2,all=FALSE,cutoff=0,sort=FALSE,...) { 
+function(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...) { 
 
 iclust <- omega <- vss <- scores <- fac.pa <- gutt <- FALSE
 
@@ -8,6 +8,8 @@ if(!is.null(x$purified$alpha)) { iclust <- TRUE}
 if(!is.null(x$omega_h)) {omega <- TRUE}
 if(!is.null(x$av.r)) {scores <- TRUE}
 if(!is.null(x$communality.iterations)) {fac.pa <- TRUE}
+if(!is.null(x$uniquenesses)) {fac.pa <- TRUE}
+if(!is.null(x$rotmat)) {fac.pa <- TRUE}
 if(!is.null(x$lambda.1) ) {gutt <- TRUE}
 
  
@@ -18,14 +20,25 @@ if(all) {class(x) <- "list"
          print(x) } else {
  
  if(omega) {
+     if(is.null(cutoff)) cutoff <- .2
 	 cat( x$title,"\n") 
  	cat("Alpha: ",x$alpha,"\n") 
  	cat("Lambda.6:  ",x$lambda.6,"\n")
  	cat("Omega Hierarchical:  " ,x$omega_h,"\n")
  	cat("Omega Total  " ,x$omega.tot,"\n")
             
-	cat("\nSchmid Leiman Factor loadings:\n")
-       print(x$schmid$sl)
+	cat("\nSchmid Leiman Factor loadings greater than ",cutoff, "\n")
+	   loads <- x$schmid$sl
+	   if(sort) {
+	      ord <- sort(abs(loads[,1]),decreasing=TRUE,index.return=TRUE)
+	      loads[,] <- loads[ord$ix,]
+	      loads <- cbind(v=ord$ix,loads)
+	   } #end sort 
+	    	fx <- format(loads,digits=digits)
+	    	nc <- nchar(fx[1,3], type = "c")  
+         	fx[abs(loads)< cutoff] <- paste(rep(" ", nc), collapse = "")
+	    	print(fx,quote="FALSE")
+	   
        numfactors <- dim(x$schmid$sl)[2] -2
        eigenvalues <- diag(t(x$schmid$sl[,1:numfactors]) %*% x$schmid$sl[,1:numfactors])
        cat("\nWith eigenvalues of:\n")
@@ -33,9 +46,12 @@ if(all) {class(x) <- "list"
       
   	 maxmin <- max(eigenvalues[2:numfactors])/min(eigenvalues[2:numfactors])
   	 gmax <- eigenvalues[1]/max(eigenvalues[2:numfactors])
-   	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
-   }
+   	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits))
+   	cat("\nThe degrees of freedom for the model is",x$schmid$dof," and the fit was ",round(x$schmid$objective,digits),"\n")
+   	if(!is.na(x$schmid$n.obs)) {cat("The number of observations was ",x$schmid$n.obs, " with Chi Square = ",round(x$schmid$STATISTIC,digits), " with prob < ", signif(x$schmid$PVAL,digits),"\n")}
+   	}
 
+#### VSS outpt
 if(vss) {
  if(x$title!="Very Simple Structure") {
  cat("\nVery Simple Structure of ", x$title,"\n") } else {cat("\nVery Simple Structure\n")} 
@@ -75,26 +91,9 @@ if(!is.null(x$item.cor) ) {
 	cat("\nItem by scale correlations:\n")
 		print(x$item.cor) } 
 
-#if(!is.null(x$sorted)) { load <- x$sorted
-if(FALSE) {
-	    ncol <-dim(load)[2]-4
-	    fx <- format(load,digits=digits)
-	     nc <- nchar(fx[1,4], type = "c")
-	     fx.1 <- fx[,1:3]
-	     fx.2 <- fx[,4:(4+ncol)]
-	     load.2 <- load[,4:(ncol+4)]
-         fx.2[abs(load.2)< cutoff] <- paste(rep(" ", nc), collapse = "")
-         fx <- data.frame(fx.1,fx.2)
-	    print(fx,quote="FALSE")
- 	   loadings <- load[,4:(4+ncol)]
- 	   loadings <- as.matrix(loadings)
- 		eigenvalues <- diag(t(loadings) %*% loadings)
-       cat("\nWith eigenvalues of:\n")
-       print(eigenvalues,digits=digits)}
-
-
-
+#### factor.pa output
 if(fac.pa) {
+ if(is.null(cutoff)) cutoff <- .3
  	load <- x$loadings
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
@@ -113,7 +112,7 @@ if(fac.pa) {
    		                                  for (i in 1:nfactors+1) {items[i] <- sum(loads$cluster==i) }  }
 
   #now sort the loadings that have their highest loading on each cluster
-  		 first <- 1
+  		first <- 1
 		for (i in 1:nfactors) {
 		if(items[i]>0 ) {
 				last <- first + items[i]- 1
@@ -121,25 +120,55 @@ if(fac.pa) {
    				loads[first:last,] <- loads[ord$ix+first-1,]
    				 rownames(loads)[first:last] <- rownames(loads)[ord$ix+first-1]
    		 		first <- first + items[i]  }
-          		 }
-          	ncol <-dim(loads)[2]-2
+          		 }  
+         }    #end of sort 		 
+    #they are now sorted, don't print the small loadings 
+          	ncol <- dim(loads)[2]-2
 	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")
 	    	 fx.1 <- fx[,1]
 	    	 fx.2 <- fx[,3:(2+ncol)]
 	    	 load.2 <- loads[,3:(ncol+2)]
          	fx.2[abs(load.2)< cutoff] <- paste(rep(" ", nc), collapse = "")
-         	fx <- data.frame(item=fx.1,fx.2)
+         	fx <- data.frame(V=fx.1,fx.2)
+         	if(dim(fx)[2] <3) colnames(fx) <- c("V","PA1") #for the case of one factor
 	    	print(fx,quote="FALSE")
  		
- 			eigenvalues <- diag(t(x$loadings) %*% x$loadings)
-       	cat("\nWith eigenvalues of:\n")
-      	 print(eigenvalues,digits=digits)  
-           
-	 } else {   #we don't want to sort
-	 print(x,cutoff=cutoff) } 
+      	   #adapted from print.loadings
+      	  if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
+      	                                                     names(vx) <- "PA1"}
+           varex <- rbind("SS loadings" =   vx)
+            varex <- rbind(varex, "Proportion Var" =  vx/nitems)
+            if (nfactors > 1) 
+                      varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nitems))
+  
+    cat("\n")
+  
+    print(round(varex, digits))
+    
+    if(!is.null(x$Phi))  { 
+       cat ("\n With factor correlations of \n" )
+       colnames(x$Phi) <- rownames(x$Phi) <- colnames(x$loadings)
+       print(round(x$Phi,digits))} else {
+       if(!is.null(x$rotmat)) {
+             U <- x$rotmat
+           Phi <- t(U) %*% U
+          Phi <- cov2cor(Phi) 
+           cat ("\n With factor correlations of \n" )
+       colnames(Phi) <- rownames(Phi) <- colnames(x$loadings)
+       print(round(Phi,digits))
+            } }
+            
+       objective <- x$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
+    cat("\nThe degrees of freedom for the model is",x$dof," and the fit was ",round(objective,digits),"\n") 
+   	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
+
+}
+          
 	 }  #end of fac.pa
  
+ ####  ICLUST output
 if(iclust) {
 if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
 	    load <- x$sorted$sorted
@@ -189,10 +218,11 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
    }# end of if ICLUST
    
  if(gutt) {
- cat ("Alternative estimates of reliability \n")
- cat ("Guttman bounds \n L1 = ",x$lambda.1, "  L2 = ", x$lambda.2, "L3 (alpha) = ", x$lambda.3, "L4 (max) = " ,x$lambda.4, "L5 = ", x$lambda.5, "L6 (smc) = " ,x$lambda.6, "\n")
+ cat ("Alternative estimates of reliability  \n")
+ cat("Beta = ", x$beta, " This is an estimate of the worst split half reliability")  
+ cat ("\nGuttman bounds \n L1 = ",x$lambda.1, "\n L2 = ", x$lambda.2, "\n L3 (alpha) = ", x$lambda.3, "\n L4 (max) = " ,x$lambda.4, "\n L5 = ", x$lambda.5, "\n L6 (smc) = " ,x$lambda.6, "\n")
  cat("TenBerge bounds \n mu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
- cat("Beta = ", x$beta, "        alpha of first PC = ", x$alpha.pc, "estimated glb = ", x$lambda.4,"\n")
+ cat("\n alpha of first PC = ", x$alpha.pc, "\n estimated glb = ", x$lambda.4,"\n")
  } 
    
 

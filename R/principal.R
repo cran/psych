@@ -1,5 +1,5 @@
 "principal" <-
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALSE,missing=FALSE,impute="median", digits=2) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,missing=FALSE,impute="median", digits=2) {
    n <- dim(r)[2]
   
    if (n!=dim(r)[1]) {
@@ -43,19 +43,31 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
 
 
      if(rotate != "none") {if (nfactors > 1) {
-    	if (rotate=="varimax") { 
-   			loadings <- varimax(loadings)$loadings } else { 
-     			if (rotate=="promax") {loadings <- promax(loadings)$loadings } else {
+   			if (rotate=="varimax") { 
+   			loadings <- varimax(loadings)$loadings 
+   			 phi <- NULL} else { 
+     			if (rotate=="promax") {pro <- promax(loadings)
+     			                loadings <- pro$loadings
+     			                 rotmat <-pro$rotmat 
+     			                 phi <- t(rotmat) %*% rotmat
+     			                 phi  <- cov2cor(phi) } else {
      			if (rotate =="oblimin") {
      				if (!require(GPArotation)) {warning("I am sorry, to do oblimin rotations requires the GPArotation package to be installed")
      				phi <- NULL} else { ob  <- oblimin(loadings)
-     				 loadings <- ob$loadings
+     				loadings <- ob$loadings
      				 phi <- ob$Phi}
      		                             }
      	               }}
+     			
      }}
+   #just in case the rotation changes the order of the components, sort them by size of eigen value
+   if(nfactors >1) {
+    ev.rotated <- diag(t(loadings) %*% loadings)
+    ev.order <- order(ev.rotated,decreasing=TRUE)
+    loadings <- loadings[,ev.order]}
    
-    class(loadings) <- "loadings"
+     class(loadings) <- "loadings"
+     
     model <- loadings %*% t(loadings)  
     result$communality <- diag(model)
     result$uniquenesses <- diag(r- model)
@@ -64,16 +76,17 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
     diag(model) <- 1   
     model.inv <- solve(model)
     m.inv.r <- model.inv %*% r
-    if(is.null(n.obs)) {result$n.obs=NA
+    if(is.na(n.obs)) {result$n.obs=NA
     			        result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
   
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
     result$criteria <- c("objective"=result$objective,NA,NA)
-    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
+    if (!is.na(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
             if (result$STATISTIC <0) {result$STATISTIC <- 0}  
    			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
-
+     
+      if(!is.null(phi)) {result$phi <- phi}
   
     
     r2 <- sum(r*r)
@@ -87,7 +100,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
     result$loadings <- round(loadings,digits)
     if (rotate =="oblimin") {result$phi <- phi}
     result$factors <- nfactors 
-    class(result) <- c("factanal" ,"psych") 
+    class(result) <- c("psych") 
     result$fn <- "principal"
     if(scores) {result$scores <- factor.scores(scale(x.matrix),loadings) }
     return(result)
@@ -96,3 +109,5 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL, scores=FALS
   # modified August 10, 2007
   # modified Feb 2, 2008 to calculate scores and become a factanal class
   #Modified June 8,2008 to get chi square values to work or default to statistic if n.obs==NULL.
+  #modified Jan  2, 2009 to  report the correlations between oblique factors
+  #modified December 30 to let n.obs ==NA rather than NULL to be compatible with factanal

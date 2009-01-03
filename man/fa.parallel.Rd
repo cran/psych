@@ -23,7 +23,10 @@ The means of (n.trials) random solutions are shown.  Error bars are usually very
 \value{
   A plot of the eigen values for the original data, ntrials of resampling of the  original data, and of a equivalent size matrix of random normal deviates.  If the data are a correlation matrix, specify the number of observations.  
 }
-\references{ }
+\references{
+Humphreys, Lloyd G. and Montanelli, Richard G. (1975),An investigation of the parallel analysis criterion for determining the number of common factors.
+Multivariate Behavioral Research, 10, 193-205.
+ }
 \author{ William Revelle }
 
 

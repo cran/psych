@@ -1,10 +1,12 @@
-"mat.cortest" <- 
+"cortest.mat" <- 
 function(R1,R2=NULL,n1=NULL,n2 = NULL) {
 p <- dim(R1)[2]
 if(dim(R1)[1] != p) { n1 <- dim(R1)[1]
                     R1 <- cor(R1,use="pairwise")
                     warning ("R1 matrix was not square, correlations found") 
                     }
+ if(!is.matrix(R1)) R1 <- as.matrix(R1)  #in case R1 is a data.frame
+ 
  if (is.null(n1)) {warning("n1 not specified, set to 100")
             n1 <-100}
  if (is.null(R2)) {message("Bartlett's test of is R = I") 
@@ -19,7 +21,7 @@ if(dim(R1)[1] != p) { n1 <- dim(R1)[1]
                     warning ("R2 matrix was not square, correlations found") }
                     
 if (p != dim(R2)[2]) stop("correlation matrices R1 and R2 must be of the same size!")
-
+ if(!is.matrix(R2)) R2 <- as.matrix(R2)  #in case R1 is a data.frame
 R1.inv <- solve(R1)    #inverse of R
 R2.inv <- solve(R2)    #inverse of R
 

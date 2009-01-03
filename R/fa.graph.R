@@ -4,12 +4,12 @@
 "fa.graph" <-
 function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,title="Factor Analysis", ...){
+    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis", ...){
     	if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
     
   Phi <- NULL  #the default case
  if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)
-                if(!is.null(fa.results$Phi)) Phi <- fa.results$Phi} else {factors <- fa.results}
+                if(!is.null(fa.results$phi)) Phi <- fa.results$phi} else {factors <- fa.results}
    rank.direction <- match.arg(rank.direction)
    
   #first some basic setup parameters 
@@ -60,19 +60,18 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
        }   #end of if num.factors ==1 
        
  if(!is.null(Phi)) {
-    k <- num.var 
+    k <- num.var +1 
+    
     for (f in 2:num.factors)  {
      for (f1 in 1:(f-1)) { 
         clust.graph <- addEdge(fact[f], fact[f1], clust.graph,1) 
-        edge.label[i+k] <- round(Phi[f,f1],digits)
-        edge.name[i+k] <- paste(fact[f],"~",fact[f1],sep="")
-        edge.dir[i+k] <- paste("both")
+        edge.label[k] <- round(Phi[f,f1],digits)
+        edge.name[k] <- paste(fact[f],"~",fact[f1],sep="")
+        edge.dir[k] <- paste("both")
         k <- k+1
-                          }
-                       } 
-    
- 
- }
+                         }
+                               } 
+    }
                   
  nAttrs <- list()  #node attributes
  eAttrs <- list()  #edge attributes
@@ -85,16 +84,22 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   } 
     names(edge.label) <- edge.name
     names(edge.dir) <- edge.name
+ 
  nAttrs$shape <- graph.shape
  nAttrs$rank <- graph.rank
  eAttrs$label <- edge.label
  eAttrs$dir <- edge.dir
- attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir=rank.direction, fontsize=10,bgcolor="white" ))
+ #eAttrs$font <- edge.font
+ attrs <- list(node = list(shape = "ellipse", fixedsize = FALSE),graph=list(rankdir=rank.direction, fontsize=edge.font[2],bgcolor="white" ))
  obs.var <- subGraph(vars,clust.graph)
  cluster.vars <- subGraph(fact,clust.graph)
- observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")),list(graph=cluster.vars,cluster=FALSE ,attrs=c(rank = "source")))
- plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=title) 
-if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+ observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")),list(graph=cluster.vars,cluster=FALSE ,attrs=c(rank = "source"))) #this crashes for correlated factors solution
+
+ observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")))   #this does not lead to a crash
+ plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=main)  
+
+ if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+
 
 return(clust.graph)
    }

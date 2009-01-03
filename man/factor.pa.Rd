@@ -5,7 +5,7 @@
 \description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.  For well behaved matrices, maximum likelihood factor analysis (factanal) is probably preferred.  
 }
 \usage{
-factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NULL,
+factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -29,7 +29,9 @@ scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits =
 
 Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until sum(diag(FF')) does not change (very much).  The current limit of max.iter =50 seems to work for most problems, but the Holzinger-Harmon 24 variable problem needs about 203 iterations to converge for a 5 factor solution.   
 
-Principal axes may be used in cases when maximum likelihood solutions fail to converge.  
+Principal axes may be used in cases when maximum likelihood solutions fail to converge. 
+
+A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
 
 The algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
 
@@ -56,11 +58,13 @@ Although for items, it is typical to find factor scores by scoring the salient i
  
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  
- \item{phi}{If oblique rotations (using oblimin from the GPArotation package) are requested, what is the interfactor correlation.}
+ \item{Phi}{If oblique rotations (using oblimin from the GPArotation package or promax) are requested, what is the interfactor correlation.}
  \item{communality.iterations}{The history of the communality estimates.  Probably only useful for teaching what happens in the process of iterative fitting.}
  \item{residual}{If residuals are requested, this is the matrix of residual correlations after the factor model is applied.} 
  }
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
+
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book.html} 
 }
 \author{ William Revelle }
 
@@ -81,10 +85,7 @@ pc1 <- principal(Harman74.cor$cov,4,rotate="none")
 pa1 <- factor.pa(Harman74.cor$cov,4,rotate="none")
 round(factor.congruence(pc1,pa1),2)
 #note that the order of factors and the sign of some of factors differ 
-
-
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ multivariate }
 \keyword{ models}% __ONLY ONE__ keyword per line

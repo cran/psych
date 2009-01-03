@@ -5,7 +5,7 @@
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path).
 }
 \usage{
-fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Factor Analysis", ...)
+fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, main = "Factor Analysis", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,15 +14,17 @@ fa.graph(fa.results, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, s
   \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
   \item{simple}{Only the biggest loading per item is shown}
-  \item{size}{  }
+  \item{size}{graph size }
   \item{node.font}{  }
   \item{edge.font}{ }
   \item{rank.direction}{  }
   \item{digits}{ Number of digits to show as an edgelable }
-  \item{title}{ Graphic title }
+  \item{main}{ Graphic title }
   \item{\dots}{ other parameters }
 }
 \details{Path diagram representations have become standard in confirmatory factor analysis, but are not yet common in exploratory factor analysis.  Representing factor structures graphically helps some people understand the structure. 
+
+Although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R.
 }
 \value{ A graph is drawn using rgraphviz.  If an output file is specified, the graph instructions are also saved in the dot language. }
   

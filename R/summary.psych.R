@@ -55,7 +55,9 @@ if(omega) {
    maxmin <- max(eigenvalues[2:numfactors])/min(eigenvalues[2:numfactors])
    gmax <- eigenvalues[1]/max(eigenvalues[2:numfactors])
    cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
-            } 
+   cat("The degrees of freedom for the model is",object$schmid$dof," and the fit was ",round(object$schmid$objective,digits),"\n")
+   	if(!is.na(object$schmid$n.obs)) {cat("The number of observations was ",object$schmid$n.obs, " with Chi Square = ",round(object$schmid$STATISTIC,digits), " with prob < ", round(object$schmid$PVAL,digits),"\n")}
+           } 
 
 if(scores & !iclust) { cat("\nAlpha:\n")
 print(object$alpha)

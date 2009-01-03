@@ -7,5 +7,5 @@ function(x, hlength=4,tlength=4,digits=2) {
    headtail <- rbind(round(h,digits),'...' = ellipsis,round(t,digits))
    } else {h <- head(x,hlength)
            t <- tail(x,tlength)
-           headtail <- rbind(h,"...       ...",t)}  
+           head.tail <- rbind(h,"...       ...",t)}  
    return(headtail)}

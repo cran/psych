@@ -1,5 +1,5 @@
 "factor.pa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE) {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE) {
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
                if(scores) {x.matrix <- r
@@ -15,12 +15,14 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
            } else {
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
      				 sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
-                     r <- r/(sds %o% sds)  }  #added June 9, 2008
+                     r <- r/(sds %o% sds)  } #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
 
    
    
     r.mat <- r
+    Phi <- NULL 
+    colnames(r.mat) <- rownames(r.mat) <- colnames(r)
      if(SMC) { 
       if(nfactors < n/2)   {diag(r.mat) <- smc(r) }  else {if (warnings) message("too many factors requested for this number of variables to use SMC, 1s used instead")}  }
     orig <- diag(r)
@@ -54,7 +56,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
        #making the matrix symmetric solves this problem
        if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
        loadings <- matrix(as.real(loadings),ncol=nfactors) } 
-       #make each vector signed so that the maximum loading is positive
+       #make each vector signed so that the maximum loading is positive  - probably should do after rotation
     if (nfactors >1) {
     		maxabs <- apply(apply(loadings,2,abs),2,which.max)
    			sign.max <- vector(mode="numeric",length=nfactors)
@@ -66,6 +68,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
    			maxi <- max(loadings)
     		if (abs(mini) > maxi) {loadings <- -loadings }
     		loadings <- as.matrix(loadings)
+    		colnames(loadings) <- "PA1"
     	} #sign of largest loading is positive
     	colnames(loadings) <- paste("PA",1:nfactors,sep='')
     rownames(loadings) <- rownames(r)
@@ -75,19 +78,34 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
     result$communality <- round(diag(model),digits)
     result$uniquenesses <- round(diag(r-model),digits)
     if(rotate != "none") {if (nfactors > 1) {
-    	if (rotate=="varimax") { 
-   			loadings <- varimax(loadings)$loadings } else { 
-     			if (rotate=="promax") {loadings <- promax(loadings)$loadings } else {
+   
+    
+   	if (rotate=="varimax") { 
+   			loadings <- varimax(loadings)$loadings 
+   			 Phi <- NULL} else { 
+     			if (rotate=="promax") {pro <- promax(loadings)
+     			                loadings <- pro$loadings
+     			                 rotmat <-pro$rotmat 
+     			                 Phi <- t(rotmat) %*% rotmat
+     			                 Phi  <- cov2cor(Phi) } else {
      			if (rotate =="oblimin") {
      				if (!require(GPArotation)) {warning("I am sorry, to do oblimin rotations requires the GPArotation package to be installed")
-     				phi <- NULL} else { ob  <- oblimin(loadings)
-     				 loadings <- ob$loadings
-     				 phi <- ob$Phi}
+     				Phi <- NULL} else { ob  <- oblimin(loadings)
+     				loadings <- ob$loadings
+     				 Phi <- ob$Phi}
      		                             }
      	               }}
+     	  
      }}
+        #just in case the rotation changes the order of the factors, sort them
+        #added October 30, 2008
+   if(nfactors >1) {
+    ev.rotated <- diag(t(loadings) %*% loadings)
+    ev.order <- order(ev.rotated,decreasing=TRUE)
+    loadings <- loadings[,ev.order]}
+    rownames(loadings) <- colnames(r)
     class(loadings) <- "loadings"
-    if(nfactors<1) nfactors <- n
+    if(nfactors < 1) nfactors <- n
    
     residual<- r - model
     r2 <- sum(r*r)
@@ -106,25 +124,27 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NULL,scores=FALSE
     diag(model) <- 1   
     model.inv <- solve(model)
     m.inv.r <- model.inv %*% r
-    if(is.null(n.obs)) {result$n.obs=NA
+    if(is.na(n.obs)) {result$n.obs=NA
     			
     			result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
     result$criteria <- c("objective"=result$objective,NA,NA)
-    if (!is.null(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
-           if (result$STATISTIC <0) {result$STATISTIC <- 0}  
+    if (!is.na(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
+          if(!is.nan(result$STATISTIC))if (result$STATISTIC <0) {result$STATISTIC <- 0}  
    			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
     result$loadings <- round(loadings,digits)
-    if (rotate =="oblimin") {result$phi <- phi}
+
+    if(!is.null(Phi)) {result$Phi <- Phi}
     result$communality.iterations <- round(unlist(comm.list),digits)
     
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
     result$fn <- "factor.pa"
-    class(result) <- c("factanal","psych")
+    class(result) <- c("psych")
     return(result) }
     
+    #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
  
  
  "factor.scores" <- function(x,f) {

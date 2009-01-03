@@ -5,14 +5,14 @@
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NULL, scores=FALSE,missing=FALSE,impute="median",digits=2)
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median",digits=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{r}{a correlation matrix.  If a raw data matrix is used, the correlations will be found using pairwise deletions for missing values.}
   \item{nfactors}{Number of components to extract }
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
-  \item{rotate} {"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
+  \item{rotate}{"none", "varimax", "promax" or "oblimin" are possible rotations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{scores}{If TRUE, estimate component scores}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
@@ -24,13 +24,15 @@ There are a number of data reduction techniques including principal components a
 
 For a n x n correlation matrix, the n principal components completely reproduce the correlation matrix.  However, if just the first k principal components are extracted, this is the best k dimensional approximation of the matrix.
 
+It is important to recognize that rotated principal components are not principal components (the axes associated with the eigen value decomposition) but are merely components.
+
 Some of the statistics reported are more appropriate for maximum likelihood factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
 Although for items, it is typical to find component scores by scoring the salient items (using, e.g.,\code{\link{score.items}} component scores can be estimated by regression.  This is done just to be parallel with the principal axis factor analysis function \code{\link{factor.pa}}
 }
 \value{
   
-  \item{values }{Eigen Values of all components -- useful for a scree plot}
+  \item{values}{Eigen Values of all components -- useful for a scree plot}
   \item{rotation}{which rotation was requested?}
   \item{n.obs}{number of observations specified or found}
    \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
@@ -55,13 +57,15 @@ Although for items, it is typical to find component scores by scoring the salien
 }
 
 \author{ William Revelle}
+\references{Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+}
 
 \seealso{\code{\link{VSS}},\code{\link{factor2cluster}},\code{\link{factor.pa}}, \code{\link{factor.congruence}}}
 \examples{
 #Four principal components of the Harmon 24 variable problem
 #compare to a four factor principal axes solution using factor.congruence
-pc <- principal(Harman74.cor$cov,4,rotate=TRUE)
-pa <- factor.pa(Harman74.cor$cov,4,rotate=TRUE)
+pc <- principal(Harman74.cor$cov,4,rotate="varimax")
+pa <- factor.pa(Harman74.cor$cov,4,rotate="varimax")
 round(factor.congruence(pc,pa),2)
 
 

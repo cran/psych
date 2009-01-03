@@ -1,4 +1,5 @@
-\name{VSS.sim}
+\name{sim.VSS}
+\alias{sim.VSS}
 \alias{VSS.simulate}
 \alias{VSS.sim}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -6,7 +7,7 @@
 \description{Simulation is one of most useful techniques in statistics and psychometrics.  Here we simulate a correlation matrix with a simple structure composed of a specified number of factors.  Each item is assumed to have complexity one.  See \code{\link{circ.sim}} and \code{\link{item.sim}} for alternative simulations.
 }
 \usage{
-VSS.sim(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=0)
+sim.VSS(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,7 +27,7 @@ VSS.sim(ncases=1000, nvariables=16, nfactors=4, meanloading=.5,dichot=FALSE,cut=
 \seealso{ \code{\link{VSS}}, \code{\link{ICLUST}} }
 \examples{
 \dontrun{
-simulated <- VSS.simulate(1000,20,4,.6)
+simulated <- sim.VSS(1000,20,4,.6)
 vss <- VSS(simulated,rotate="varimax")
 VSS.plot(vss)
 }

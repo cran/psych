@@ -26,11 +26,10 @@ A far better package with these features is the ltm package.  The IRT functions 
 \value{a vector of item difficulties or item discriminations.
 
 }
-\references{ }
+
 \author{William Revelle }
 \note{ Under development. Not recommended for public consumption.}
 \seealso{ \code{\link{irt.person.rasch}} }
-\examples{
-}
+
 \keyword{ multivariate}% at least one, from doc/KEYWORDS
 \keyword{ models}% __ONLY ONE__ keyword per line

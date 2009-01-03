@@ -13,7 +13,7 @@ make.keys(nvars, keys.list, key.labels = NULL, item.labels = NULL)
   \item{key.labels}{ Labels for the scales can be specified here, or in the key.list }
   \item{item.labels}{ Typically, just the colnames of the items data matrix. }
 }
-\details{
+\details{There are two ways to create keys for the \code{\link{score.items}} function. One is to laboriously do it in a spreadsheet and then copy them into R.  The other is to just specify them by item number in a list.  
 }
 \value{
   

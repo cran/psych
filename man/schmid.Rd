@@ -6,7 +6,7 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, pc = "pa",digits=2,rotate="oblimin",...)
+schmid(model, nfactors = 3, pc = "pa",digits=2,rotate="oblimin",n.obs=NA,...)
 }
 
 \arguments{
@@ -14,7 +14,8 @@ schmid(model, nfactors = 3, pc = "pa",digits=2,rotate="oblimin",...)
   \item{nfactors}{ Number of factors to extract }
   \item{pc}{ pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood }
   \item{digits}{if digits not equal NULL, rounds to digits}
-  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax.}
+  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. Although it is possible to use promax as a rotation option, these seems to produce very poor results and is discouraged.}
+  \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
 \details{Schmid Leiman orthogonalizations are typical in the ability domain, but are not seen as often in the non-cognitive personality domain.  S-L is one way of finding the loadings of items on the general factor for estimating omega. 

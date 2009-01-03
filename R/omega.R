@@ -1,11 +1,13 @@
 "omega" <-
-function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,rotate="oblimin",...) {
+function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
       nvar <- dim(m)[2]
-      if(dim(m)[1] != dim(m)[2]) {m <- cor(m,use="pairwise")} else {m <- cov2cor(as.matrix(m))}  #make sure it is a correlation matrix not a covariance or data matrix
+      if(dim(m)[1] != dim(m)[2]) {
+                            n.obs <- dim(m)[1]
+                            m <- cor(m,use="pairwise")} else {m <- cov2cor(as.matrix(m))}  #make sure it is a correlation matrix not a covariance or data matrix
       if(is.null(colnames(m))) {  rownames(m) <- colnames(m) <- paste("V",1:nvar,sep="") }
        m.names <- colnames(m)
       
@@ -19,7 +21,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
              colnames(m) <- rownames(m) <- m.names
       if ((nvar < 6) && (pc=="mle") ) {warning(paste("3 factors is too many for ",nvar," variables using mle.  Using pa instead",sep=""))
        pc <- "pa"} 
-       gf<-schmid(m,nfactors,pc,digits,rotate=rotate, ...)
+       gf<-schmid(m,nfactors,pc,digits,rotate=rotate,n.obs=n.obs, ...)
 
       Vt <- sum(m)   #find the total variance in the scale
       Vitem <-sum(diag(m)) #
@@ -37,7 +39,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
              m.names <- paste(m.names,signkey,sep="")
              colnames(m) <- rownames(m) <- m.names
              
-             gf<-schmid(m,nfactors,pc,digits=digits,...)
+             gf<-schmid(m,nfactors,pc,digits=digits,n.obs=n.obs,...)
       Vt <- sum(m)   #find the total variance in the scale
       Vitem <-sum(diag(m)) #
       gload <- gf$sl[,1]
@@ -49,9 +51,11 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       alpha <- ((Vt-Vitem)/Vt)*(nvar/(nvar-1))
        sum.smc<- sum(smc(m))
       lambda.6 <-(Vt +sum.smc-sum(diag(m)))/Vt
-      if (!is.null(digits)) {omega <-list(omega_h= round(gsq/Vt,digits),alpha=round(alpha,digits),lambda.6 = round(lambda.6,digits),omega.tot =round(om.tot,digits),schmid=gf ,key = key,title=title) } else {
-      omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title) }
-      if (plot) {omega.graph(omega,title=title,sl=sl,labels=labels) }
+      if (!is.null(digits)) {omega <-list(omega_h= round(gsq/Vt,digits),alpha=round(alpha,digits),lambda.6 = round(lambda.6,digits),omega.tot =round(om.tot,digits),schmid=gf ,key = key,title=title)
+      dg <-max(digits-1,1)} else {
+      omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
+      dg <- 1}
+     if(require(Rgraphviz) && plot) {omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) }
       class(omega) <- "psych"
       return(omega)
       }

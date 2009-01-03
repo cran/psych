@@ -8,7 +8,7 @@ Essentially, the cluster model is a Very Simple Structure factor model of comple
 
 This function applies the ICLUST algorithm to hierarchically cluster items to form composite scales. Clusters are combined if coefficients alpha and beta will increase in the new cluster.
 
-Alpha, the mean split half correlation, and beta, the worst split half correlation, are estimates of the reliability and general factor saturation of the test.  (See also the \code{\link{omega}} function to estimate McDonald's coeffient $\omega_h$ and $\omega_t$)
+Alpha, the mean split half correlation, and beta, the worst split half correlation, are estimates of the reliability and general factor saturation of the test.  (See also the \code{\link{omega}} function to estimate McDonald's coeffients   \eqn{\omega_h}{omega hierarchical} and   \eqn{\omega_t}{omega total})
 
 
 }
@@ -37,7 +37,7 @@ n.iterations = 0,title="ICLUST",plot=TRUE)
   \item{output}{ 1) short, 2) medium, 3 ) long output (default =1)}
   \item{labels}{vector of item content or labels}
   \item{cut}{sort cluster loadings > absolute(cut) (default = 0) }
-  \item{n.iterations}  {iterate the solution n.iterations times to "purify" the clusters (default = 0)}
+  \item{n.iterations}{iterate the solution n.iterations times to "purify" the clusters (default = 0)}
   \item{digits}{ Precision of digits of output (default = 2) }
   \item{title}{ Title for this run }
   \item{plot}{Should ICLUST.rgraph be called automatically for plotting (requires Rgraphviz default=TRUE)}
@@ -48,7 +48,9 @@ The results are best visualized using  \code{\link{ICLUST.graph}}, the results o
 
  A common problem in the social sciences is to construct scales or composites of items to measure constructs of theoretical interest and practical importance. This process frequently involves administering a battery of items from which those that meet certain criteria are selected. These criteria might be rational, empirical,or factorial. A similar problem is to analyze the adequacy of scales that already have been formed and to decide whether the putative constructs are measured properly. Both of these problems have been discussed in numerous texts,  as well as in myriad articles. Proponents of various methods have argued for the importance of face validity, discriminant validity, construct validity, factorial homogeneity, and theoretical importance. 
  
-Revelle (1979) proposed that hierachical cluster analysis could be used to estimate a new coefficient (beta) that was an estimate of the  general factor saturation of a test.  More recently, Zinbarg, Revelle, Yovel and Li (2005) compared McDonald's Omega to Chronbach's alpha and Revelle's beta. They conclude that $\omega_h$ is the best estimate.  An algorithm for estimating \code{\link{omega} } is available as part of this package. 
+Revelle (1979) proposed that hierachical cluster analysis could be used to estimate a new coefficient (beta) that was an estimate of the  general factor saturation of a test.  More recently, Zinbarg, Revelle, Yovel and Li (2005) compared McDonald's Omega to Chronbach's alpha and Revelle's beta. They conclude that   \eqn{\omega_h}{omega} hierarchical is the best estimate.  An algorithm for estimating \code{\link{omega} } is available as part of this package. 
+
+Revelle and Zinbarg (2009) discuss alpha, beta, and omega, as well as other estimates of reliability. 
 
 
 ICLUST was completely rewritten for the psych package.  Please email me if you want help with this version of ICLUST or if you desire more features.
@@ -71,20 +73,24 @@ To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.h
 
 }
 \value{
-  \item{title }{Name of this run}
-  \item{results}{A list containing}
-   \item{clusters}{a matrix of -1,0, and 1 values to define cluster membership.}
-  \results {The step by step cluster history, including which pair was grouped, what were the alpha and betas of the two groups and of the combined group.  
+ \item{title }{Name of this run}
+ \item{results}{A list containing the step by step cluster history, including which pair was grouped, what were the alpha and betas of the two groups and of the combined group.  
   
-  Note that the alpha values are ``standardized alphas'' based upon the correlation matrix, rather than the raw alphas that will come from \code{\link{score.items}}}
-   \item{corrected}{The raw and corrected for alpha reliability cluster intercorrelations.}
-   \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.
+  Note that the alpha values are ``standardized alphas'' based upon the correlation matrix, rather than the raw alphas that will come from \code{\link{score.items}}
+  
+  The print.psych and summary.psych functions will print out just the must important results.}
+ \item{corrected}{The raw and corrected for alpha reliability cluster intercorrelations.}
+ \item{clusters}{a matrix of -1,0, and 1 values to define cluster membership.}
+ \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.
    
    To show just the most salient items, use the cutoff option in \code{\link{print.psych}} }
-   \item{cluster.fit, structure.fit, pattern.fit}{There are a number of ways to evaluate how well any factor or cluster matrix reproduces the original matrix. Cluster fit considers how well the clusters fit if only correlations with clusters are considered.  Structure fit evaluates R = CC' while pattern fit evaluate R = C  inverse (phi) C'  where C is the cluster loading matrix, and phi is the intercluster correlation matrix.}
+ \item{cluster.fit, structure.fit, pattern.fit}{There are a number of ways to evaluate how well any factor or cluster matrix reproduces the original matrix. Cluster fit considers how well the clusters fit if only correlations with clusters are considered.  Structure fit evaluates R = CC' while pattern fit evaluate R = C  inverse (phi) C'  where C is the cluster loading matrix, and phi is the intercluster correlation matrix.}
 }
 
-\references{Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74. 
+\references{Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
+
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
+
 \url{http://personality-project.org/revelle/publications/iclust.pdf} \cr
 See also  more extensive documentation at 
 \url{http://personality-project.org/r/r.ICLUST.html} and \cr

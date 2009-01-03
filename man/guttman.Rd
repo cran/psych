@@ -39,13 +39,13 @@ This is just replacing the diagonal elements with the average off diagonal eleme
 \mu_r = \frac{1}{V_x} \bigl( p_o + (p_1 + (p_2 + \dots (p_{r-1} +( p_r)^{1/2})^{1/2} \dots )^{1/2})^{1/2}    \bigr), r = 0, 1, 2, \dots
 }
 where 
-\begin{displaymath}
+\deqn{
 p_h = \sum_{i\ne j}\sigma_{ij}^{2h}, h = 0, 1, 2, \dots r-1
-\end{displaymath}
+}
 and
-\begin{displaymath}
+\deqn{
 p_h = \frac{n}{n-1}\sigma_{ij}^{2h}, h = r 
-\end{displaymath} 
+} 
 tenberge \& Zegers (1978).  Clearly \eqn{\mu_0 = \lambda_3 = \alpha} and \eqn{ \mu_1 = \lambda_2}.  \eqn{\mu_r \geq \mu_{r-1} \geq \dots \mu_1 \geq \mu_0}, although the series does not improve much after the first two steps.
 
 Guttman's fourth lower bound, \eqn{\lambda_4} was originally proposed as any spit half reliability  but has been interpreted as the greatest split half reliability. If \eqn{\vec{X}} is split into  two parts, \eqn{\vec{X}_a} and \eqn{\vec{X}_b}, with correlation \eqn{r_{ab}} then
@@ -101,9 +101,13 @@ Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika
 
 Revelle, W. (1979). Hierarchical cluster-analysis and the internal structure of tests. Multivariate Behavioral Research, 14 (1), 57-74. 
 
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
+
 Ten Berge, J. M. F., & Zegers, F. E. (1978). A series of lower bounds to the reliability of a test. Psychometrika, 43 (4), 575-579. 
 
 	Zinbarg, R. E., Revelle, W., Yovel, I., & Li, W. (2005). Cronbach's \eqn{\alpha} , Revelle's \eqn{\beta} , and McDonald's \eqn{\omega_h} ): Their relations with each other and two alternative conceptualizations of reliability. Psychometrika, 70 (1), 123-133.
+	
+
 
 }
 \author{ William Revelle }

@@ -5,7 +5,7 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x, group,by.var = FALSE,x.cat=TRUE, ylab = "NULL", xlab = "NULL",main="95\% Confidence Intervals", ylim = NULL, ci = 1.96, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE, ...)
+error.bars.by(x, group,by.var = FALSE,x.cat=TRUE, ylab = "NULL", xlab = "NULL",main=NULL, ylim = NULL, alpha = .05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,7 +17,7 @@ error.bars.by(x, group,by.var = FALSE,x.cat=TRUE, ylab = "NULL", xlab = "NULL",m
   \item{xlab}{x label}
   \item{main}{title for figure}
   \item{ylim}{if specified, the limits for the plot, otherwise based upon the data}
-  \item{ci}{ What size confidence interval to use}
+  \item{alpha}{alpha level of confidence interval.  Default is 1- alpha =95\% confidence interval}
   \item{labels}{ X axis label }
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}

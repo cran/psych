@@ -1,11 +1,13 @@
-\name{congeneric.sim}
+\name{sim.congeneric}
 \alias{congeneric.sim}
+\alias{sim.congeneric}
+\alias{make.congeneric}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Simulate a congeneric data set }
 \description{Classical Test Theory (CTT) considers four or more tests to be congenerically equivalent if all tests may be expressed in terms of one factor and a residual error.  Parallel tests are the special case where (usually two) tests have equal factor loadings.  Tau equivalent tests have equal factor loadings but may have unequal errors.  Congeneric tests may differ in both factor loading and error variances.
 }
 \usage{
-congeneric.sim(N = 1000, loads = c(0.8, 0.7, 0.6, 0.5), err=NULL, short = TRUE)
+sim.congeneric(N = 1000, loads = c(0.8, 0.7, 0.6, 0.5), err=NULL, short = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,7 +28,7 @@ The implied covariance matrix is just pattern \%*\% t(pattern).
 
 
 }
-\references{}
+\references{Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
 \author{ William Revelle }
 
 \seealso{  \code{\link{item.sim}} for other simulations, \code{\link{factor.pa}} for an example of factor scores.}

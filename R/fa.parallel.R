@@ -26,7 +26,7 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,
    					values.samp <- eigen(cor(sampledata,use="pairwise"))$values
    					temp[["samp"]][[trials]] <- values.samp
    					if (fa!= "pc") {
-   						temp[["samp.fa"]][[trials]]  <- factor.pa(cor(sampledata,use="pairwise"),warnings=FALSE)$values
+   						temp[["samp.fa"]][[trials]]  <- factor.pa(cor(sampledata,use="pairwise"),SMC="FALSE",warnings=FALSE)$values
           					}
                   } 
   

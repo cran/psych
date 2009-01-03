@@ -1,7 +1,7 @@
 \name{correct.cor}
 \alias{correct.cor}
 
-\title{ Find dis-attenuated correlations and give alpha reliabilities }
+\title{ Find dis-attenuated correlations given correlations and reliabilities }
 \description{Given a raw correlation matrix and a vector of reliabilities, report the disattenuated correlations above the diagonal.
 }
 \usage{
@@ -29,7 +29,7 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 
 # attitude from the datasets package
 #example 1 is a rather clunky way of doing things
-\dontrun{
+
 a1 <- attitude[,c(1:3)]
 a2 <- attitude[,c(4:7)]
 x1 <- rowSums(a1)  #find the sum of the first 3 attitudes
@@ -51,9 +51,6 @@ cluster.cor(clusters,cor(attitude))
 #best
 scores <- score.items(matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2),attitude)
 scores$corrected
-}
-
-
 
 }
 \keyword{ models }% at least one, from doc/KEYWORDS

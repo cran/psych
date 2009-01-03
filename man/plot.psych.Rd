@@ -15,7 +15,7 @@ plot.psych(x,labels=NULL,...)
 }
 \details{Passes the appropriate values to plot
 }
-\value{
+\value{Graphic output for factor analysis and cluster analysis. 
  
 }
 

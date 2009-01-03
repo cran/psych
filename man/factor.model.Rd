@@ -11,8 +11,7 @@ factor.model(f)
 \arguments{
   \item{f}{ A matrix of loadings. }
 }
-\details{
-}
+
 \value{ A correlation or covariance matrix.
 }
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. 

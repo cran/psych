@@ -21,7 +21,7 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
   if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
    gloading <- om.results$schmid$gloading
    vars <- paste("V",1:num.var,sep="")  
-   if (!is.null(labels)) {vars <- paste(labels,1:num.var,sep=" ")}
+   if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
    if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
   clust.graph <-  new("graphNEL",nodes=c(vars,fact),edgemode="directed")
    graph.shape <- c(rep("box",num.var),rep("ellipse",num.factors+1))
@@ -53,8 +53,8 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
   #show the cluster structure with ellipses
    if (sl) {
    l <- matrix(factors[,2:(num.factors+1)],ncol=num.factors) } else { l <- factors }
-   m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max), 
-        ncol = 1)
+   
+   m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max),  ncol = 1)
         
   if (sl) { 
           k <- num.var

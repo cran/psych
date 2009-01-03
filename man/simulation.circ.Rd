@@ -1,16 +1,21 @@
-\name{circ.simulation}
+\name{simulation.circ}
+
+\alias{simulation.circ}
 \alias{circ.simulation}
+\alias{simulation.circ}
 \alias{circ.sim.plot}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Simulations of circumplex and simple structure}
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating these data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }
 \usage{
-circ.simulation(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))
+simulation.circ(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))
 }
 \arguments{
   \item{samplesize}{a vector of sample sizes to simulate }
   \item{numberofvariables}{vector of the number of variables to simulate }
+ 
+  
  }
  %
 
@@ -40,10 +45,10 @@ Included in this set of functions are simple procedure to generate circumplex st
 \author{ William Revelle}
 \note{The simulations default values are for sample sizes of 100, 200, 400, and 800 cases, with 16, 32, 48 and 72 items.  }
 
-\seealso{See also \code{\link{circ.tests}}, \code{\link{circ.sim}} }
+\seealso{See also \code{\link{circ.tests}}, \code{\link{sim.circ}}, \code{\link{sim.structural}}, \code{\link{sim.hierarchical}} }
 \examples{
 
-demo <- circ.simulation()
+demo <- simulation.circ()
  boxplot(demo[3:14])
  title("4 tests of Circumplex Structure",sub="Circumplex, Ellipsoid, Simple Structure")
 circ.sim.plot(demo[3:14])  #compare these results to real data

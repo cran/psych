@@ -46,15 +46,11 @@ This is not an "official" way to do IRT, but is useful for basic item developmen
    \cr
    a data.frame with the raw means, theta0, and the number of items completed}
   
-\references{  }
+
 \author{ William Revelle}
 \note{ Not recommended for serious use.  This code is under development.
 }
 \seealso{  \code{\link{irt.item.diff.rasch}} }
-\examples{
 
-
-
-}
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line

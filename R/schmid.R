@@ -3,21 +3,29 @@
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
 "schmid" <-
-function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",...) 
+function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
       nvar <-dim(model)[2]
-      if(dim(model)[1] != dim(model)[2]) model <- cor(model,use="pairwise")
+      if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
+                                          model <- cor(model,use="pairwise")}
+                                          
      if (pc=="pc") {
-        fact <- principal(model, nfactors,...)
-    } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,...) } else {
-        fact <- factanal(covmat = model, factors = nfactors)
+        fact <- principal(model, nfactors,n.obs=n.obs,...)
+    } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,n.obs=n.obs,...) } else {
+        fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}
     orth.load <- loadings(fact)
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
-      if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {obminfact <- oblimin(orth.load)}
+      if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
+      if (rotate == "promax")    {obminfact  <- promax(orth.load)
+      rotmat <- obminfact$rotmat
+                   U <- rotmat
+           phi <- t(U) %*% U
+          obminfact$Phi <- cov2cor(phi) 
+          message("Are you sure you want to use promax?  Compare with the other options")} else {obminfact <- oblimin(orth.load)} }
     rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     #factr <- t(obminfact$Th) %*% (obminfact$Th)
@@ -45,6 +53,6 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",...)
     sm <- sqrt(uniq2)
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
     if (!is.null(digits)) {schmid <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),h2=round( h2,digits), u2=round(u2,digits)), orthog = round(orth.load,digits), oblique = round(fload,digits),
-        phi = round(factr,digits), gloading = round(gload,digits) )} else {
+        phi = round(factr,digits), gloading = round(gload,digits),dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )} else {
     schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, phi = factr, gloading = gload)}
 }

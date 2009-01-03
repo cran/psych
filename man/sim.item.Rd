@@ -1,14 +1,18 @@
-\name{item.sim}
+\name{sim.item}
 \alias{item.sim}
+\alias{sim.item}
+\alias{sim.dichot}
 \alias{item.dichot}
+\alias{sim.circ}
 \alias{circ.sim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Generate simulated data structures for circumplex or simple structure }
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating simple structure and circumplex data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }
 \usage{
-item.sim(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
-circ.sim(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
+sim.item(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
+sim.circ(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, truncate = FALSE, cutpoint = 0)
+sim.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
 item.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -40,7 +44,7 @@ Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadne
 Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure. Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
 \author{ William Revelle }
 
-\seealso{  See Also the implementation in this to generate numerous simulations.  \code{\link{circ.simulation}},  \code{\link{circ.tests}} }
+\seealso{  See Also the implementation in this to generate numerous simulations.  \code{\link{simulation.circ}},  \code{\link{circ.tests}} as well as other simulations ( \code{\link{sim.structural}}  \code{\link{sim.hierarchical}})}
 \examples{
 
 round(cor(circ.sim(nvar=8,nsub=200)),2)

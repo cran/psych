@@ -28,7 +28,9 @@ function (keys, r.mat, correct = TRUE,digits=2)
     ident.sd <- diag(sd.inv, ncol = length(sd.inv))
     c.loading <-  item.covar %*% ident.sd
     c.correl <- ident.sd %*% covar %*% ident.sd
-    p.loading <- c.loading %*% solve(c.correl)
+    p.loading <- try(c.loading %*% solve(c.correl))
+    if(class(p.loading)=="try-error") {message('the correlation matrix was singular, pattern loadings not found, proceed with caution')
+                         p.loading  <- c.loading}
     
      c.loading[abs(c.loading)  > 99999] <- NA
      c.correl[abs(c.correl) > 99999] <- NA

@@ -1,5 +1,5 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main="95% Confidence Intervals",ylim= NULL, ci=1.96, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,...)  # x   data frame with 
     {
     lty = "solid"
     all.stats <- describe(x)
@@ -7,7 +7,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main="95% Confide
    		max.x <- max(all.stats$max)
     	max.se <- max(all.stats$se)
     if(is.null(ylim)) {ylim=c(min.x - 2*max.se,max.x+2*max.se)}
-
+    if(is.null(main)) main <- paste(1-alpha,"% confidence limits",sep="")
     
     group.stats <- describe.by(x,group,digits=8)
     n.group <- length(group.stats)
@@ -37,7 +37,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main="95% Confide
     	# ycen <- y$mean[i]
     	 xse  <- x.stats$se[i]
     	# yse <-  y$se[i]
-    	
+    	 ci <- qt(1-alpha,x.stats$n[i])
     	 arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 
     	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
@@ -83,7 +83,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main="95% Confide
       
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
-    	
+    	    ci <- qt(1-alpha,group.stats[[g]]$n)
     	   if(x.cat)  {arrows(g,xcen-ci*xse,g,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)}  else {
     	    
     	            arrows(x.values[g],xcen-ci*xse,x.values[g],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} 

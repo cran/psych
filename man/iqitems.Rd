@@ -24,11 +24,12 @@
     \item{\code{iq49}}{Matrix Reasoning 9}
   }
 }
-\details{14 items were sampled from 54 items given as part of the SAPA project to develop online measures of ability.  
+\details{14 items were sampled from 54 items given as part of the SAPA project  (Revelle, Wilt and Rosenthal, 2009) to develop online measures of ability.  
 }
 \source{\url{http://personality-project.org} 
 }
-\references{
+\references{Revelle, William, Wilt, Joshua,  and Rosenthal, Allen (2009)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, Alexandra  and Matthews, Gerald   and Szymura, Blazej (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control,
+	Springer. 
 }
 \examples{
 data(iqitems)

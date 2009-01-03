@@ -1,8 +1,8 @@
  "cluster.plot" <- 
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot",...) {
- if (!is.matrix(ic.results) ) {
-  if(class(ic.results) == "kmeans") { load <- t(ic.results$centers) } else {
-      load <-ic.results$loadings} } else {load <- ic.results}
+ if (!is.matrix(ic.results) ) {if (!is.null(class(ic.results)) )   {
+  if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
+      load <-ic.results$loadings} }} else {load <- ic.results}
 nc <- dim(load)[2]
 nvar <- dim(load)[1]
 ch.col=c("black","blue","red","gray","black","blue","red","gray")

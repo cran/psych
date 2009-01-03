@@ -18,7 +18,7 @@ comorbidity(d1, d2, com, labels = NULL)
   \item{twobytwo }{The two by two table implied by the input }
   \item{phi }{Phi coefficient of the two by two table}
   \item{Yule}{Yule coefficient of the two by two table}
-  \item{tetrachoric}{Tetrachoric coefficient of the two by two table}
+  \item{tetra}{Tetrachoric coefficient of the two by two table}
 }
 
 \author{William Revelle }

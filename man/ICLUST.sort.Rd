@@ -34,8 +34,5 @@ With the keys=TRUE option, the resulting cluster keys may be used to score the o
 
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{factor2cluster} }}
-\examples{
-
-}
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

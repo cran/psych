@@ -25,7 +25,7 @@ The second example shows how error crosses can be done for multiple variables wh
  \email{revelle@northwestern.edu}
 }
 
-\seealso{  See Also as \code{\link{error.bars}}, \code{\link{error.bars.by}},\code{\link{describe.by}}  }
+\seealso{To draw error bars for single variables  \code{\link{error.bars}}, or by groups \code{\link{error.bars.by}}, or to find descriptive statistics \code{\link{describe}}  or descriptive statistics by a grouping variable \code{\link{describe.by}}  }
 \examples{
 
 desc <- describe(attitude)

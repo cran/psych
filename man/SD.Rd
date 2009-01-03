@@ -14,12 +14,13 @@ SD(x, na.rm = TRUE)
 }
 \details{Finds the standard deviation of a vector, matrix, or data.frame.  Returns NA if no cases.
 
-Just an adaptation of the stats:sd function to return the functionality found in R < 2.7.0}
+Just an adaptation of the stats:sd function to return the functionality found in R < 2.7.0 or R >= 2.8.0}
 \value{The standard deviation
 }
 
 \author{ William Revelle }
-\note{ Until R 2.7.0, sd would return a NA rather than an error if no cases were observed.  SD brings back that functionality.  Although unusual, this condition will arise when analyzing data with high rates of missing values. }
+\note{ Until R 2.7.0, sd would return a NA rather than an error if no cases were observed.  SD brings back that functionality.  Although unusual, this condition will arise when analyzing data with high rates of missing values.
+This function will probably be removed as 2.7.0 becomes outdated.}
 
 \seealso{ These functions use SD rather than sd:  \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}}  }
 

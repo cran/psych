@@ -32,7 +32,7 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {r <- cov2cor(r)} 
  for(i in 1:nvar) {
  keys.kmean[i,best.kmeans$cluster[i]] <- 1 }  
  
-  f1 <- factor.pa(r)  #one factor solution
+  f1 <- factor.pa(r,SMC=FALSE)  #one factor solution
   load <- f1$loadings
    ord.load <- order(load)
     key.fa <- matrix(rep(0,nvar*2),ncol=2)
@@ -72,7 +72,7 @@ lambda.5 <- lambda.1 + 2*sqrt(c.co.max)/Vt
 lambda.5p <- lambda.1 +(nvar)/(nvar-1)*  2*sqrt(c.co.max)/Vt
  
 keys <- cbind(worst$p.sorted$cluster,keys,keys.kmean,key.fa,key.fa2)
-colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2")
+try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2"))
  covar <- t(keys) %*% r %*% keys    #matrix algebra is our friend
  var <- diag(covar)
  sd.inv <- 1/sqrt(var)

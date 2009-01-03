@@ -1,15 +1,18 @@
 "VSS" <-
 function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
-  #x is a data matrix
+ 
+ #x is a data matrix
   #n is the maximum number of factors to extract  (default is 8)
-  #rotate is a string "none" or "varimax" for type of rotation (default is "none"
+  #rotate is a string "none" or "varimax" for type of rotation (default is "varimax"
   #diagonal is a boolean value for whether or not we should count the diagonal  (default=FALSE)
   # ... other parameters for factanal may be passed as well  
   #e.g., to do VSS on a covariance/correlation matrix with up to 8 factors and 3000 cases:
   #VSS(covmat=msqcovar,n=8,rotate="none",n.obs=3000)
+   { 
+  if (rotate=="oblimin") require(GPArotation)
+  old_rotate=rotate  #used to remember which rotation to use
   
-  
- {             #start Function definition
+            #start Function definition
   #first some preliminary functions
   #complexrow sweeps out all except the c largest loadings
   #complexmat applies complexrow to the loading matrix
@@ -71,7 +74,8 @@ complexrow <- function(x,c)     #sweep out all except c loadings
         map.values <- map(x,n)
  if (n >  dim(x)[2]) {n <- dim(x)[2]}         #in cases where there are very few variables
  for (i in 1:n)                            #loop through 1 to the number of factors requested
- { 
+ { PHI <- diag(i) 
+ if(i<2) {(rotate="none")} else {rotate=old_rotate} 
    if(!(pc=="pc")) { if ( pc=="pa") {
    		f <- factor.pa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
@@ -91,12 +95,22 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 			 sqoriginal <- original*original    #squared correlations
 		 	totaloriginal <- sum(sqoriginal) - diagonal*sum(diag(sqoriginal) )   #sum of squared correlations - the diagonal
 			 }
-		if((rotate=="varimax") & (i>1)) {f <- varimax(f$loadings)} else {
-		if((rotate=="promax") & (i>1))  {f <- promax(f$loadings)}
+		if((rotate=="varimax") & (i>1)) {f <- varimax(f$loadings) 
+		                                 PHI <- diag(i)} else {
+		if((rotate=="promax") & (i>1))  {f <- promax(f$loadings) 
+		   U <- f$rotmat
+           PHI <- t(U) %*% U
+          phi <- cov2cor(phi) } else {
+		if((rotate=="oblimin")& (i>1))  {f <- oblimin(f$loadings)
+		    U <- f$Th
+           phi <- t(U) %*% U
+           PHI <- cov2cor(phi)
+		} }
 	     }}
 		
  	load <- as.matrix(f$loadings )                    #the loading matrix
-   	model <- load %*% t(load)                 #reproduce the correlation matrix by the factor law R=  FF'
+ 	
+   	model <- load %*% PHI %*%  t(load)       #reproduce the correlation matrix by the factor law R=  FF'
  	residual <- original-model              #find the residual  R* = R - FF'
  	sqresid <- residual*residual            #square the residuals
  	totalresid <- sum(sqresid)- diagonal * sum(diag(sqresid) )      #sum squared residuals - the main diagonal
@@ -119,7 +133,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   	
   	 { 
   	 	simpleload <- complexmat(load,c)             #find the simple structure version of the loadings for complexity c
-  		model <- simpleload%*%t(simpleload)           #the model is now a simple structure version  R ? SS'
+  		model <- simpleload %*% PHI %*% t(simpleload)           #the model is now a simple structure version  R ? SS'
   		residual <- original- model                   #R* = R - SS'       
   		sqresid <- residual*residual
   		totalsimple <- sum(sqresid) -diagonal * sum(diag(sqresid))    #default is to not count the diagonal 

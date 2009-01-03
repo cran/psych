@@ -10,11 +10,11 @@ describe.by(x, group,mat=FALSE,...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a data.frame or matrix  }
-  \item{group}{a grouping variable}
+  \item{group}{a grouping variable or a list of grouping variables}
   \item{mat}{provide a matrix output rather than a list}
   \item{...}{parameters to be passed to describe}
 }
-\details{
+\details{To get descriptive statistics for several different grouping variables, make sure that group is a list!
 }
 \value{
  A data.frame of the relevant statistics broken down by group: \cr
@@ -35,14 +35,11 @@ describe.by(x, group,mat=FALSE,...)
 
 \seealso{  \code{\link{describe}}}
 \examples{
-set.seed(42)  #to get the same values each time
- x.df <- data.frame(group=sample(2,20,replace=TRUE), matrix(rnorm(100),ncol=5))
- x <- describe.by(x.df,x.df$group)
- x  #shows all the results
- x[1]  #shows just the first group
- x <- matrix(sample(4,200,replace=TRUE),ncol=5)
- y <- describe.by(x,x[,1])
-y
+data(sat.act)
+describe.by(sat.act,sat.act$gender) #just one grouping variable	
+describe.by(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
+des.mat <- describe.by(sat.act$age,sat.act$education,mat=TRUE) #matrix output 
+des.mat <- describe.by(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE) 
 
 
 }

@@ -1,6 +1,6 @@
 Package: psych
-Version: 1.0-61
-Date: 2009-01-03
+Version: 1.0-62
+Date: 2009-01-04
 Title: Procedures for Personality, Psychometric, and Psychological Research
 Author: William Revelle <revelle@northwestern.edu>
 Maintainer: William Revelle <revelle@northwestern.edu>
@@ -11,4 +11,4 @@ Description: A number of routines for personality, psychometrics and experimenta
 License: GPL version 2 or newer
 Suggests: polycor, GPArotation, MASS, Rgraphviz
 URL: http://personality-project.org/r, http://personality-project.org/r/psych.manual.pdf
-Packaged: Sun Jan  4 15:12:10 2009; bill
+Packaged: Mon Jan  5 09:15:10 2009; bill

@@ -5,6 +5,8 @@
 \description{Graphic presentations of structural equation models are a very useful way to conceptualize sem and confirmatory factor models. Given a measurement model on x (xmodel) and on y (ymodel) as well as a path model connecting x and y (phi), draw the graph.  If ymodel is not specified, just draw the measurement model (xmodel + phi).
 
 Input can be specified as matrices or the output from factanal, factor.pa, or a rotation package such as GPArotation.
+
+For symbolic graphs, the input matrices can be character strings.
 }
 \usage{
 structure.graph(xmodel, ymodel = NULL, Phi = NULL, out.file = NULL, labels = NULL, cut = 0.3, simple = TRUE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
@@ -39,7 +41,15 @@ structure.graph(xmodel, ymodel = NULL, Phi = NULL, out.file = NULL, labels = NUL
 fx <- matrix(c(.9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)
 fy <- matrix(c(.6,.5,.4),ncol=1)
 Phi <- matrix(c(1,0,0,0,1,0,.7,.7,1),ncol=3,byrow=TRUE)
-structure.graph(fx,fy,Phi)  
+if(require(Rgraphviz)) { structure.graph(fx,fy,Phi)  }
+
+#symbolic input
+X2 <- matrix(c("a",0,0,"b","e1",0,0,"e2"),ncol=4)
+colnames(X2) <- c("X1","X2","E1","E2")
+phi2 <- diag(1,4,4)
+phi2[2,1] <- phi2[1,2] <- "r"
+if(require(Rgraphviz)) { structure.graph(X2,Phi=phi2)  }
+
 }
 
 \keyword{multivariate }

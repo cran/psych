@@ -75,7 +75,7 @@ function(xmodel,ymodel=NULL,Phi=NULL, out.file=NULL,labels=NULL,cut=.3,simple=TR
   if (num.xfactors ==1) { 
        
     for (i in 1:num.xvar) { clust.graph <- addEdge(fact[1], vars[i], clust.graph,1) 
-                                           edge.label[i] <- round(factors[i],digits)
+                                           if(is.numeric(factors[i])) {edge.label[i] <- round(factors[i],digits)} else {edge.label[i] <- factors[i]}
                                            edge.name[i] <- paste(fact[1],"~",vars[i],sep="")
                         }  
                         k <- num.var+1 
@@ -83,9 +83,10 @@ function(xmodel,ymodel=NULL,Phi=NULL, out.file=NULL,labels=NULL,cut=.3,simple=TR
         #all loadings > cut in absolute value
                    k <- 1
                    for (i in 1:num.xvar) {
-                   for (f in 1:num.xfactors) { if (abs(factors[i,f]) > cut) {
+                   for (f in 1:num.xfactors) { #if (!is.numeric(factors[i,f]) ||  (abs(factors[i,f]) > cut))
+                   if((!is.numeric(factors[i,f] ) && (factors[i,f] !="0"))||  ((is.numeric(factors[i,f]) && abs(factors[i,f]) > cut ))) {
                clust.graph <- addEdge(fact[f], vars[i], clust.graph,1) 
-                              edge.label[k] <- round(factors[i,f],digits)
+                               if(is.numeric(factors[i,f])) {edge.label[k] <- round(factors[i,f],digits)} else {edge.label[k] <- factors[i,f]}
                               edge.name[k] <- paste(fact[f],"~",vars[i],sep="")
                          k <- k+1 }   #end of if 
                          }  
@@ -97,7 +98,7 @@ function(xmodel,ymodel=NULL,Phi=NULL, out.file=NULL,labels=NULL,cut=.3,simple=TR
   if(!is.null(ymodel)) { 
   if (num.yfactors ==1) {     
     for (i in 1:num.y) { clust.graph <- addEdge( yvars[i],fact[1+num.xfactors], clust.graph,1) 
-                         edge.label[k] <- round(y.factors[i],digits)
+                         if(is.numeric(y.factors[i] ) ) {edge.label[k] <- round(y.factors[i],digits) } else {edge.label[k] <- y.factors[i]}
                          edge.name[k] <- paste(yvars[i],"~",fact[1+num.xfactors],sep="")
                          edge.dir[k] <- paste("back")
                          k <- k +1
@@ -105,8 +106,8 @@ function(xmodel,ymodel=NULL,Phi=NULL, out.file=NULL,labels=NULL,cut=.3,simple=TR
       } else { 
         #all loadings > cut in absolute value
                    for (i in 1:num.y) {
-                   for (f in 1:num.yfactors) { if (abs(y.factors[i,f]) > cut) {clust.graph <- addEdge( vars[i+num.xvar],fact[f+num.xfactors], clust.graph,1) 
-                         edge.label[k] <- round(y.factors[i,f],digits)
+                   for (f in 1:num.yfactors) { if (!is.numeric(factors[i,f]) || (abs(y.factors[i,f]) > cut)) {clust.graph <- addEdge( vars[i+num.xvar],fact[f+num.xfactors], clust.graph,1) 
+                         if(is.numeric(y.factors[i,f])) {edge.label[k] <- round(y.factors[i,f],digits)} else {edge.label[k] <-y.factors[i,f]}
                          edge.name[k] <- paste(vars[i+num.xvar],"~",fact[f+num.xfactors],sep="")
                           edge.dir[k] <- paste("back")
                          k <- k+1 }   #end of if 
@@ -126,19 +127,21 @@ function(xmodel,ymodel=NULL,Phi=NULL, out.file=NULL,labels=NULL,cut=.3,simple=TR
   nAttrs$label <- var.labels
   names(edge.label) <- edge.name
   } 
-  
+
+
+#message("I am here with k =",k ,"  \n and edge.label = ",edge.label, "\n edge.name" , edge.name)
+
   if(!is.null(Phi)) {for (i in 2:num.factors) {
-                         for (j in 1:(i-1)) { if(abs(Phi[i,j]) > cut ) {
+                         for (j in 1:(i-1)) {if((!is.numeric(Phi[i,j] ) && (Phi[i,j] !="0"))||  ((is.numeric(Phi[i,j]) && abs(Phi[i,j]) > cut ))) {
                             clust.graph <- addEdge( fact[i],fact[j],clust.graph,1)
-                            edge.label[k] <- round(Phi[i,j],digits)
+                           if (is.numeric(Phi[i,j])) { edge.label[k] <- round(Phi[i,j],digits)} else {edge.label[k] <- Phi[i,j]}
                             edge.name[k] <- paste(fact[i],"~",fact[j],sep="")
                             if(Phi[i,j] != Phi[j,i]){edge.dir[k] <- "back"} else {edge.dir[k] <- "both"}}
                           k <- k + 1
+  # message("\n k = ",k) 
+   }
                          }
-                         }
-                    
-   
-  
+                   
   
   }
   

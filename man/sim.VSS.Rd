@@ -35,3 +35,4 @@ VSS.plot(vss)
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ datagen }% __ONLY ONE__ keyword per line

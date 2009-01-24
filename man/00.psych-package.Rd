@@ -64,147 +64,178 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-62 \cr
-Date: \tab 2009-1-04\cr
+Version: \tab 1.0-63 \cr
+Date: \tab 2009-1-15\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
 
 
-\link{psych}        A package for personality, psychometric, and psychological research.\cr
-  \cr
+
+\link{psych}      A package for personality, psychometric, and psychological research.\cr
+ 
+
 Useful data entry and descriptive statistics\cr
+\tabular{ll}{
+\link{read.clipboard}       \tab      shortcut for reading from the clipboard\cr
+\link{read.clipboard.csv}   \tab      shortcut for reading comma delimited files from clipboard \cr
+\link{read.clipboard.lower}  \tab            shortcut for reading lower triangular matrices from the clipboard\cr
+\link{read.clipboard.upper}   \tab           shortcut for reading upper triangular matrices from the clipboard\cr
+\link{describe}        \tab           Basic descriptive statistics useful for psychometrics\cr
+\link{describe.by}    \tab            Find summary statistics by groups\cr
+\link{headtail}        \tab           combines the head and tail functions for showing data sets\cr
 
-\link{describe}                 Basic descriptive statistics useful for psychometrics\cr
-\link{describe.by}              Find summary statistics by groups\cr
-\link{headtail}                 combines the head and tail functions for showing data sets\cr
-\link{read.clipboard}           shortcut for reading from the clipboard\cr
-\link{read.clipboard.csv}       shortcut for reading comma delimited files from clipboard \cr
-\link{read.clipboard.lower}            shortcut for reading lower triangular matrices from the clipboard\cr
-\link{read.clipboard.upper}            shortcut for reading upper triangular matrices from the clipboard\cr
-\link{pairs.panels}            SPLOM and correlations for a data matrix\cr
-\link{multi.hist}             Histograms and densities of multiple variables arranged in matrix form\cr
-\link{skew}                   Calculate skew for a vector, each column of a matrix, or data.frame\cr
-\link{kurtosi}                Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
-\link{geometric.mean}        Find the geometric mean of a vector or columns of a data.frame \cr
-\link{harmonic.mean}         Find the harmonic mean of a vector or columns of a data.frame \cr
-\link{error.bars}             Plot means and error bars \cr
-\link{error.bars.by}            Plot means and error bars for separate groups\cr
-\link{error.crosses}          Two way error bars \cr
-\link{interp.median}           Find the interpolated median, quartiles, or general quantiles. \cr
-\link{rescale}                 Rescale data to specified mean and standard deviation \cr
-\link{table2df}                Convert a two dimensional table of counts to a matrix or data frame \cr
-\
-\cr
-\cr
+\link{pairs.panels}    \tab          SPLOM and correlations for a data matrix\cr
+\link{multi.hist}      \tab         Histograms and densities of multiple variables arranged in matrix form\cr
+\link{skew}           \tab          Calculate skew for a vector, each column of a matrix, or data.frame\cr
+\link{kurtosi}        \tab          Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
+\link{geometric.mean}  \tab        Find the geometric mean of a vector or columns of a data.frame \cr
+\link{harmonic.mean}  \tab         Find the harmonic mean of a vector or columns of a data.frame \cr
+\link{error.bars}      \tab         Plot means and error bars \cr
+\link{error.bars.by}   \tab           Plot means and error bars for separate groups\cr
+\link{error.crosses}   \tab         Two way error bars \cr
+\link{interp.median}  \tab           Find the interpolated median, quartiles, or general quantiles. \cr
+\link{rescale}        \tab           Rescale data to specified mean and standard deviation \cr
+\link{table2df}      \tab            Convert a two dimensional table of counts to a matrix or data frame \cr
+}
+
+
 Data reduction through cluster and factor analysis\cr
-\cr
-\link{factor.pa}              Do a principal Axis factor analysis\cr
-\link{fa.graph}                Show the results of a factor analysis or principal components analysis graphically\cr
-\link{principal}               Do an eigen value decomposition to find the principal components of a matrix\cr
-\link{fa.parallel}            Scree test and Parallel analysis \cr
-\link{guttman}                 8 different measures of reliability (6 from Guttman (1945)
-\code{\link{ICLUST}}           Apply the ICLUST algorithm\cr
-\link{ICLUST.graph}            Graph the output from ICLUST using the dot language\cr
-\link{ICLUST.rgraph}           Graph the output from ICLUST using rgraphviz \cr
-\link{poly.mat}                Find the polychoric correlations for items (uses J. Fox's hetcor \cr
-\link{omega}                   Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
-\link{omega.graph}             Draw a hierarchical or Schmid Leiman orthogonalized solution \cr 
-\link{schmid}                  Apply the Schmid Leiman transformation to a correlation matrix\cr
-\link{score.items}             Combine items into multiple scales and find alpha\cr
-\link{score.multiple.choice}   Combine items into multiple scales and find alpha and basic scale statistics\cr
-\link{smc}                     Find the Squared Multiple Correlation (used for initial communality estimates)\cr
-\link{VSS}                     Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
-\link{VSS.parallel}            Do a parallel analysis to determine the number of factors for a random matrix\cr
-\link{VSS.plot}                Plot VSS output\cr
-\link{VSS.scree}               Show the scree plot of the factor/principal components\cr
 
-\link{make.hierarchical}	  Generate simulated correlation matrices with hierarchical structure\cr
-\link{MAP}                    Apply the Velicer Minimum Absolute Partial criterion for number of factors \cr\cr
+\tabular{ll}{
+\link{factor.pa}        \tab        Do a principal Axis factor analysis\cr
+\link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
+\link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
+\link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
+\link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
+\code{\link{ICLUST}}   \tab          Apply the ICLUST algorithm\cr
+\link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
+\link{ICLUST.rgraph}   \tab          Graph the output from ICLUST using rgraphviz \cr
+\link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor \cr
+\link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
+\link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution \cr 
+\link{schmid}            \tab        Apply the Schmid Leiman transformation to a correlation matrix\cr
+\link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
+\link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
+\link{smc}             \tab          Find the Squared Multiple Correlation (used for initial communality estimates)\cr
+\link{VSS}            \tab           Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
+\link{VSS.parallel}    \tab          Do a parallel analysis to determine the number of factors for a random matrix\cr
+\link{VSS.plot}       \tab           Plot VSS output\cr
+\link{VSS.scree}      \tab           Show the scree plot of the factor/principal components\cr
+\link{MAP}             \tab         Apply the Velicer Minimum Absolute Partial criterion for number of factors \cr
+}
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
-\cr
-\link{alpha.scale}             Find coefficient alpha for a scale (see also \link{score.items})\cr
-\link{make.keys}             Create the keys file for score.items or cluster.cor            \cr
-\link{correct.cor}            Correct a correlation matrix for unreliability\cr 
-\link{count.pairwise}        Count the number of complete cases when doing pair wise correlations\cr
-\link{cluster.cor}             find correlations of composite variables from larger matrix\cr
-\link{cluster.loadings}        find correlations of items with  composite variables from a larger matrix\cr
-\link{eigen.loadings}          Find the loadings when doing an eigen value decomposition\cr
-\link{factor.pa}              Do a Principal Axis factor analysis and estimate factor scores\cr
-\link{factor2cluster}         extract cluster definitions from factor loadings\cr
-\link{factor.congruence}      Factor congruence coefficient\cr
-\link{factor.fit}             How well does a factor model fit a correlation matrix\cr
-\link{factor.model}            Reproduce a correlation matrix based upon the factor model\cr
-\link{factor.residuals}       Fit = data - model\cr
-\link{factor.rotate}          ``hand rotate" factors\cr
-\link{guttman}                8 different measures of reliability
-\link{mat.regress}            standardized multiple regression from raw or correlation matrix input\cr
-\link{principal}               Do an eigen value decomposition to find the principal components of a matrix\cr
-\cr
+
+
+\tabular{ll}{
+\link{alpha.scale}      \tab         Find coefficient alpha for a scale (see also \link{score.items})\cr
+\link{make.keys}        \tab         Create the keys file for score.items or cluster.cor            \cr
+\link{correct.cor}      \tab        Correct a correlation matrix for unreliability\cr 
+\link{count.pairwise}   \tab        Count the number of complete cases when doing pair wise correlations\cr
+\link{cluster.cor}       \tab        find correlations of composite variables from larger matrix\cr
+\link{cluster.loadings}  \tab        find correlations of items with  composite variables from a larger matrix\cr
+\link{eigen.loadings}    \tab        Find the loadings when doing an eigen value decomposition\cr
+\link{factor.pa}        \tab        Do a Principal Axis factor analysis and estimate factor scores\cr
+\link{factor2cluster}    \tab       extract cluster definitions from factor loadings\cr
+\link{factor.congruence}  \tab      Factor congruence coefficient\cr
+\link{factor.fit}       \tab        How well does a factor model fit a correlation matrix\cr
+\link{factor.model}    \tab          Reproduce a correlation matrix based upon the factor model\cr
+\link{factor.residuals} \tab        Fit = data - model\cr
+\link{factor.rotate}   \tab         ``hand rotate" factors\cr
+\link{guttman}         \tab         8 different measures of reliability\cr
+\link{mat.regress}     \tab         standardized multiple regression from raw or correlation matrix input\cr
+\link{principal}       \tab          Do an eigen value decomposition to find the principal components of a matrix\cr
+}
+
+
 Functions for generating simulated data sets \cr
-\link{sim.circ}               Generate a two dimensional circumplex item structure \cr
-\link{sim.item}               Generate a two dimensional simple structrue with particular item characteristics \cr
-\link{sim.congeneric}         Generate a one factor congeneric reliability structure \cr
-\link{sim.structural}         Generate a multifactorial structural model  \cr
-\link{sim.VSS}                  Generate simulated data for the factor model\cr
-\link{phi.demo}               Create artificial data matrices for teaching purposes\cr
-\link{sim.hierarchical}	  Generate simulated correlation matrices with hierarchical or any structure\cr 
-\cr
+\tabular{ll}{
+\link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
+\link{sim.item}         \tab        Generate a two dimensional simple structrue with particular item characteristics \cr
+\link{sim.congeneric}   \tab        Generate a one factor congeneric reliability structure \cr
+\link{sim.structural}   \tab        Generate a multifactorial structural model  \cr
+\link{sim.VSS}          \tab          Generate simulated data for the factor model\cr
+\link{phi.demo}          \tab       Create artificial data matrices for teaching purposes\cr
+\link{sim.hierarchical}	 \tab   Generate simulated correlation matrices with hierarchical or any structure\cr 
+}
+
+
+Graphical functions (require Rgraphviz) \cr
+\tabular{ll}{
+\link{structure.graph}  \tab           Draw a sem or regression graph \cr
+\link{fa.graph}        \tab           Draw the factor structure from a factor or principal components analysis \cr
+\link{omega.graph}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
+\link{ICLUST.graph}     \tab           Draw the tree diagram from ICLUST  \cr
+}
 
 Circular statistics (for circadian data analysis) \cr
-\link{circadian.cor}  \cr
-\link{circadian.linear.cor}  \cr
-\link{circadian.mean}  \cr
-\link{cosinor} \cr
- \cr
+\tabular{ll}{
+\link{circadian.cor} \tab  \cr
+\link{circadian.linear.cor} \tab  \cr
+\link{circadian.mean} \tab  \cr
+\link{cosinor} \tab  \cr
+}
+
+ 
 Miscellaneous functions\cr
 \cr
-\link{comorbidity}              Convert base rate and comorbity to phi, Yule and tetrachoric
-\link{fisherz}                 Apply the Fisher r to z transform\cr
-\link{fisherz2r}                Apply the Fisher z to r transform\cr
-\link{ICC}                     Intraclass correlation coefficients  \cr
-\link{cortest.mat}            Test for equality of two matrices (see also cortest.normal, cortest.jennrich ) \cr
-\link{cortest.bartlett}        Test whether a matrix is an identity matrix \cr
-\link{paired.r}               Test for the difference of two paired or two independent correlations\cr
-\link{r.con}                    Confidence intervals for correlation coefficients \cr
-\link{r.test}                  Test of significance of r, differences between rs. \cr
-\link{p.rep}                   The probability of replication given a p, r, t, or F \cr
-\link{phi}                     Find the phi coefficient of correlation from a 2 x 2 table \cr
-\link{phi.demo}                Demonstrate the problem of phi coefficients with varying cut points \cr
-\link{phi2poly}                Given a phi coefficient, what is the polychoric correlation\cr
-\link{phi2poly.matrix}         Given a phi coefficient, what is the polychoric correlation (works on matrices)\cr
-\link{polar}                   Convert 2 dimensional factor loadings to polar coordinates.\cr
-\link{poly.mat}                Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
-\link{polychor.matrix}         Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
-\link{scaling.fits}            Compares alternative scaling solutions and gives goodness of fits \cr
-\link{thurstone}               Thurstone Case V scaling \cr
-\link{tr}                      Find the trace of a square matrix \cr
-\link{wkappa}                  weighted and unweighted versions of Cohen's kappa \cr
+\tabular{ll}{
+\link{comorbidity}   \tab             Convert base rate and comorbity to phi, Yule and tetrachoric\cr
+\link{fisherz}      \tab             Apply the Fisher r to z transform\cr
+\link{fisherz2r}    \tab             Apply the Fisher z to r transform\cr
+\link{ICC}          \tab             Intraclass correlation coefficients  \cr
+\link{cortest.mat}     \tab         Test for equality of two matrices (see also cortest.normal, cortest.jennrich ) \cr
+\link{cortest.bartlett} \tab         Test whether a matrix is an identity matrix \cr
+\link{paired.r}       \tab          Test for the difference of two paired or two independent correlations\cr
+\link{r.con}          \tab            Confidence intervals for correlation coefficients \cr
+\link{r.test}         \tab           Test of significance of r, differences between rs. \cr
+\link{p.rep}          \tab           The probability of replication given a p, r, t, or F \cr
+\link{phi}             \tab          Find the phi coefficient of correlation from a 2 x 2 table \cr
+\link{phi.demo}        \tab          Demonstrate the problem of phi coefficients with varying cut points \cr
+\link{phi2poly}         \tab         Given a phi coefficient, what is the polychoric correlation\cr
+\link{phi2poly.matrix}  \tab         Given a phi coefficient, what is the polychoric correlation (works on matrices)\cr
+\link{polar}           \tab          Convert 2 dimensional factor loadings to polar coordinates.\cr
+\link{poly.mat}         \tab         Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
+\link{polychor.matrix}   \tab        Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
+\link{scaling.fits}     \tab         Compares alternative scaling solutions and gives goodness of fits \cr
+\link{thurstone}       \tab          Thurstone Case V scaling \cr
+\link{tr}               \tab         Find the trace of a square matrix \cr
+\link{wkappa}          \tab          weighted and unweighted versions of Cohen's kappa \cr
+\link{Yule}            \tab           Find the Yule Q coefficient of correlation \cr
+\link{Yule.inv}         \tab          What is the two by two table that produces a Yule Q with set marginals? \cr
+\link{Yule2phi}         \tab          What is the phi coefficient corresponding to a Yule Q with set marginals? \cr
+\link{Yule2phi.matrix}   \tab          Convert a matrix of Yule coefficients to a matrix of phi coefficients. \cr
+\link{Yule2phi.matrix}   \tab          Convert a matrix of Yule coefficients to a matrix of polychoric  coefficients. \cr
+}
 
-\link{Yule}                     Find the Yule Q coefficient of correlation \cr
-\link{Yule.inv}                 What is the two by two table that produces a Yule Q with set marginals? \cr
-\link{Yule2phi}                 What is the phi coefficient corresponding to a Yule Q with set marginals? \cr
-\link{Yule2phi.matrix}           Convert a matrix of Yule coefficients to a matrix of phi coefficients. \cr
-\link{Yule2phi.matrix}           Convert a matrix of Yule coefficients to a matrix of polychoric  coefficients. \cr
-\cr
+
 Functions that are under development and not recommended for casual use \cr
-\link{irt.item.diff.rasch}    IRT estimate of item difficulty with assumption that theta = 0\cr
-\link{irt.person.rasch}	      Item Response Theory estimates of theta (ability) using a Rasch like model\cr\cr
-\cr
-Data sets included in the psych package \cr
-\link{bfi}                   represents 25 personality items thought to represent five factors of personality \cr
-\link{cities}                The airline distances between 11 cities (used to demonstrate MDS) \cr
-\link{epi.bfi}               13 personality scales \cr
-\link{iqitems}               14 multiple choice iq items \cr
-\link{sat.act}                Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
-\link{galton}                  Galton's data set of the heights of parents and their children \cr
-\link{heights}                 Galton's data set of the relationship between height and forearm (cubit) length \cr
-\link{cubits}                   Galton's data table of height and forearm length \cr
-\link{peas}                    Galton`s data set of the diameters of 700 parent and offspring sweet peas \cr
-\link{vegetables}              Guilford`s preference matrix of vegetables (used for thurstone) \cr
+\tabular{ll}{
+\link{irt.item.diff.rasch}  \tab    IRT estimate of item difficulty with assumption that theta = 0\cr
+\link{irt.person.rasch}	   \tab     Item Response Theory estimates of theta (ability) using a Rasch like model\cr\cr
+}
 
-\link{test.psych}             Run a test of the major functions on 5 different data sets.  Primarily for development purposes. Although the output can be used as a demo of the various functions.
+
+Data sets included in the psych package \cr
+\tabular{ll}{
+\link{bfi}          \tab           represents 25 personality items thought to represent five factors of personality \cr
+\link{cities}        \tab          The airline distances between 11 cities (used to demonstrate MDS) \cr
+\link{epi.bfi}        \tab         13 personality scales \cr
+\link{iqitems}        \tab         14 multiple choice iq items \cr
+\link{sat.act}        \tab          Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
+\link{galton}        \tab            Galton's data set of the heights of parents and their children \cr
+\link{heights}       \tab            Galton's data set of the relationship between height and forearm (cubit) length \cr
+\link{cubits}        \tab             Galton's data table of height and forearm length \cr
+\link{peas}          \tab            Galton`s data set of the diameters of 700 parent and offspring sweet peas \cr
+\link{vegetables}     \tab           Guilford`s preference matrix of vegetables (used for thurstone) \cr
+}
+
+A debugging function that may also be used as a demonstration of psych.
+\tabular{ll}{
+\link{test.psych}   \tab          Run a test of the major functions on 5 different data sets.  Primarily for development purposes. Although the output can be used as a demo of the various functions.
+}
+
 }
 \note{Development versions (source code) of this package are maintained at the  repository \url{http://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
 \cr
@@ -220,6 +251,7 @@ function  \tab     requires\cr
 \link{polychor.matrix}\tab polychor \cr
 \link{ICLUST.rgraph} \tab   Rgraphviz \cr
 \link{fa.graph}  \tab      Rgraphviz \cr
+\link{structure.graph} \tab Rgraphviz \cr
 }
 
 }

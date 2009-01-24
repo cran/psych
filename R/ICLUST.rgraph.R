@@ -52,7 +52,7 @@ function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
  
   } 
     names(edge.label) <- edge.name
-    e.font.size <- rep(10,num.clust*2)
+    e.font.size <- rep(6,num.clust*2)
    names(e.font.size) <- edge.name
  
  nAttrs$shape <- graph.shape

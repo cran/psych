@@ -26,11 +26,7 @@ If the correlations are not independent (i.e., they are from the same sample) th
 }
 
 \seealso{\code{\link{p.rep.r}}, \code{\link{cor.test}} } 
-\author{ William Revelle \cr
-         Northwestern University \cr
-         Evanston, Illinois \cr
- \email{  revelle@northwestern.edu           } \cr
- \url{http://personality-project.org/revelle.html}}
+\author{ William Revelle}
 
 \examples{
 paired.r(.5,.3, .4, 100) #dependent correlations

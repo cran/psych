@@ -20,12 +20,10 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
     orth.load <- loadings(fact)
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
       if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
-      if (rotate == "promax")    {obminfact  <- promax(orth.load)
-      rotmat <- obminfact$rotmat
-                   U <- rotmat
-           phi <- t(U) %*% U
-          obminfact$Phi <- cov2cor(phi) 
-          message("Are you sure you want to use promax?  Compare with the other options")} else {obminfact <- oblimin(orth.load)} }
+      if((rotate == "promax")   )    {obminfact  <- Promax(orth.load)
+     								 rotmat <- obminfact$rotmat
+                   						Phi <- obminfact$Phi
+           							 } else {obminfact <- oblimin(orth.load)} }
     rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     #factr <- t(obminfact$Th) %*% (obminfact$Th)
@@ -52,7 +50,9 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
     uniq2 <- 1 - uniq - primeload^2
     sm <- sqrt(uniq2)
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
-    if (!is.null(digits)) {schmid <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),h2=round( h2,digits), u2=round(u2,digits)), orthog = round(orth.load,digits), oblique = round(fload,digits),
+    if (!is.null(digits)) {result <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),h2=round( h2,digits), u2=round(u2,digits)), orthog = round(orth.load,digits), oblique = round(fload,digits),
         phi = round(factr,digits), gloading = round(gload,digits),dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )} else {
-    schmid <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, phi = factr, gloading = gload)}
+    result <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, phi = factr, gloading = gload)}
+   # class(result) <- c("psych" ,"fa")
+    return(result)
 }

@@ -70,5 +70,5 @@ round(factor.congruence(pc,pa),2)
 
 
 }
-\keyword{ models }% at least one, from doc/KEYWORDS
+\keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

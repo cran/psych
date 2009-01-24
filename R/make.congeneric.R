@@ -1,5 +1,5 @@
 "make.congeneric" <- 
-function(N = 1000, loads = c(0.8, 0.7, 0.6, 0.5), err=NULL, short=TRUE) { 
+function(loads = c(0.8, 0.7, 0.6, 0.5),N = 1000,  err=NULL, short=TRUE) { 
  n <- length(loads) 
 loading <- matrix(loads, nrow = n) 
 error <- diag(1, nrow = n) 

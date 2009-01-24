@@ -9,7 +9,7 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
     
   Phi <- NULL  #the default case
  if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)
-                if(!is.null(fa.results$phi)) Phi <- fa.results$phi} else {factors <- fa.results}
+                if(!is.null(fa.results$Phi)) Phi <- fa.results$Phi} else {factors <- fa.results}
    rank.direction <- match.arg(rank.direction)
    
   #first some basic setup parameters 
@@ -63,12 +63,12 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
     k <- num.var +1 
     
     for (f in 2:num.factors)  {
-     for (f1 in 1:(f-1)) { 
-        clust.graph <- addEdge(fact[f], fact[f1], clust.graph,1) 
+     for (f1 in 1:(f-1)) { if(Phi[f,f1] > cut) {
+        clust.graph <- addEdge(fact[f1], fact[f], clust.graph,1) 
         edge.label[k] <- round(Phi[f,f1],digits)
-        edge.name[k] <- paste(fact[f],"~",fact[f1],sep="")
+        edge.name[k] <- paste(fact[f1],"~",fact[f],sep="")
         edge.dir[k] <- paste("both")
-        k <- k+1
+        k <- k+1}
                          }
                                } 
     }

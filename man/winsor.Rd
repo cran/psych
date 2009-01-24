@@ -22,11 +22,15 @@ winsor.means(x, trim = 0.2, na.rm = TRUE)
   
 
  }
-\author{William Revelle with modifications suggested by Joe Paxton}
+\author{William Revelle with modifications suggested by Joe Paxton and a further correction added  (January, 2009) to preserve the original order for the winsor case.}
 \seealso{ \code{\link{interp.median}} }
 \examples{
 data(sat.act)
-winsor.means(sat.act)
+winsor.means(sat.act) #compare with the means of the winsorized scores
+y <- winsor(sat.act)
+describe(y)
+xy <- data.frame(sat.act,y)
+pairs.panels(xy) #to see the effect of winsorizing 
 x <- matrix(1:100,ncol=5)
 winsor(x)
 winsor.means(x)

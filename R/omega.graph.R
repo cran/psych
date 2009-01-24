@@ -1,3 +1,4 @@
+#modified January 20, 2009 to create sem commands
 #modified May 30, 2008 to try to get arrows going both ways in the sl option.
 #this now works, but sometimes two lines don't have arrows.
 #Created May 20, 2007
@@ -38,7 +39,7 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
             names(edge.dir) <-rep("",num.var*2)
             #names(edge.arrows) <-rep("",num.var+num.factors)
             names(edge.arrows) <-rep("",num.var*2)
-            
+            sem <- matrix(rep(NA,6*(2*num.var + num.factors)),ncol=3)  #used for sem diagram
             } else {
             
             edge.label <- rep("",num.var+num.factors)
@@ -48,6 +49,7 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
             names(edge.label) <-  seq(1:num.var+num.factors)
             names(edge.dir) <-  seq(1:num.var+num.factors)
             names(edge.arrows) <-  seq(1:num.var+num.factors)
+            sem <- matrix(rep(NA,6*(num.var + num.factors)+3),ncol=3)  #used for sem diagram
                        }
             
   #show the cluster structure with ellipses
@@ -63,26 +65,65 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
                                  edge.name[i] <- paste(vars[i],"~",fact[1],sep="")
                                  edge.arrows[i] <- paste("open")
                                  edge.dir[i] <- paste("back")
-                               
-                                
+                                 sem[i,1] <- paste(fact[1],"->",vars[i],sep="")
+                                 sem[i,2] <- vars[i]               
             } 
-         } else { k <- num.factors+1
+            
+         } else { 
+         
+          k <- num.factors
           for (j in 1:num.factors) {clust.graph <- addEdge(fact[1], fact[j+1], clust.graph,1)  #hierarchical g 
           edge.label[j] <- round(gloading[j],digits)
           edge.name[j] <- paste(fact[1],"~",fact[j+1],sep="")
+           sem[j,1] <- paste(fact[1],"->",fact[1+j],sep="")
+           sem[j,2] <- paste("g",fact[1+j],sep="")
                  } 
                  }
    for (i in 1:num.var) {  clust.graph <- addEdge(fact[1+m1[i]], vars[i], clust.graph,1) 
                          edge.label[i+k] <- round(l[i,m1[i]],digits)
                          edge.name[i+k] <- paste(fact[1+m1[i]],"~",vars[i],sep="")
                          edge.arrows[i+k] <- paste("open")
-                               
+                           sem[i+k,1] <- paste(fact[1+m1[i]],"->",vars[i],sep="")
+                          sem[i+k,2] <- paste(fact[1+m1[i]],vars[i],sep="")
                         }  
 
      
 #    edge.label[(i-1)*2+1] <- results[i,"r1"]
 #    edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
-      
+ if(sl) {
+       k <- num.var*2
+      for (i in 1:num.var) {
+            sem[i+k,1] <- paste(vars[i],"<->",vars[i],sep="")
+            sem[i+k,2] <- paste("e",i,sep="")
+                            }
+        k <- k + num.var
+       for (f in 1:num.factors) {
+             sem[f+k,1] <- paste(fact[1+f],"<->",fact[1+f],sep="")
+             sem[f+k,3] <- "1"
+                                 }
+        k <- k+ num.factors
+           sem[k+1,1] <- paste("g <->g")
+           sem[k+1,3] <- "1"
+           k<- k+1
+           
+          } else { 
+          
+          k <- num.var + num.factors
+          for (i in 1:num.var) {
+            sem[i+k,1] <- paste(vars[i],"<->",vars[i],sep="")
+            sem[i+k,2] <- paste("e",i,sep="")
+                            }
+            k <- 2*num.var + num.factors
+          for (f in 1:num.factors) {
+            sem[f+k,1] <- paste(fact[f+1],"<->",fact[f+1],sep="")
+            sem[f+k,3] <- "1"
+                            }
+             k <- 2*num.var + 2*num.factors
+             sem[k+1,1] <- paste("g<->g")
+             sem[k+1,3] <- "1"
+             k <- k+1
+          }
+          
      
  nAttrs <- list()  #node attributes
  eAttrs <- list()  #edge attributes
@@ -118,6 +159,7 @@ if(sl) { eAttrs$dir<- edge.dir
 
 plot(clust.graph,nodeAttrs = nAttrs,edgeAttrs = eAttrs,attrs = attrs,main=title)   #not clear if the subGList makes any difference
 if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
-
+colnames(sem) <- c("Path","Parameter","Initial Value")
+return(sem=sem[1:k,])
    }
  

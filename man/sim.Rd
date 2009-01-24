@@ -2,7 +2,7 @@
 \alias{sim}
 \title{Functions to simulate psychological/psychometric data}
 \description{A number of functions in the psych package will generate simulated data.  These functions include
-\code{\link{sim.circ}}, \code{\link{sim.congeneric}}, \code{\link{sim.dichot}}, \code{\link{sim.hierarchical}}, \code{\link{sim.item}}, \code{\link{sim.structural}},  and \code{\link{sim.VSS}}. These functions are separately documented and listed here for ease of the help function. 
+\code{\link{sim.circ}}, \code{\link{sim.congeneric}}, \code{\link{sim.dichot}}, \code{\link{sim.hierarchical}}, \code{\link{sim.item}}, \code{\link{sim.structural}},  and \code{\link{sim.VSS}}. These functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
 sim()
@@ -31,8 +31,19 @@ sim()
 \author{William Revelle}
 
 \seealso{ See above}
+\examples{
+sim.congeneric()
+R <- sim.hierarchical()
+R
+fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
+fy <- c(.6,.5,.4)
+Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
+print(sim.structural(fx,fy,Phi),digits=2)  
+}
+
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{multivariate}
+\keyword{datagen}
 

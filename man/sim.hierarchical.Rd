@@ -59,3 +59,4 @@ five.factor <- sim.hierarchical(gload,fload,500,TRUE) #create sample data set
 }
 \keyword{ multivariate}% at least one, from doc/KEYWORDS
 \keyword{models }% __ONLY ONE__ keyword per line
+\keyword{datagen}

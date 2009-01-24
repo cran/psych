@@ -78,11 +78,14 @@ It is important to distinguish here between the two \eqn{\omega} coefficients of
   \item{schmid}{The Schmid Leiman transformed factor matrix and associated matrices}
   \item{schmid$sl}{The g factor loadings as well as the residualized factors}
   \item{schmid$orthog}{Varimax rotated solution of the original factors}
-  \item{schmid$oblique}{The oblimin transformed factors}
+  \item{schmid$oblique}{The oblimin or promax transformed factors}
   \item{schmid$fcor}{the correlation matrix of the oblique factors}
   \item{schmid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
   \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
+  \item{model}{a matrix suitable to be given to the sem function for structure equation models}
 }
+
+
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika (in press).
@@ -99,7 +102,9 @@ Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures 
  \url{http://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu  } 
 }
-\note{Requires the GPArotation package }
+\note{Requires the GPArotation package.
+
+The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as promax.  }
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
 \examples{
 \dontrun{

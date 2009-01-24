@@ -4,7 +4,7 @@
 
 
 \title{ Print and summary functions for the psych class }
-\description{Give limited output (print) or somewhat more detailed (summary) for the  \code{\link{factor.pa}}, \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{score.items}}, \code{\link{cluster.cor}}, or \code{\link{cluster.loadings}}   functions.
+\description{Give limited output (print) or somewhat more detailed (summary) for the  \code{\link{factor.pa}}, \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{score.items}}, \code{\link{cluster.cor}},  \code{\link{cluster.loadings}} and the \code{\link{sim}}  functions.
 In addition, will supply the factor correlations for output from a promax rotation applied to a factanal output.
 }
 \usage{
@@ -22,11 +22,11 @@ summary.psych(object,digits=2,items=FALSE,...)
   \item{sort}{Cluster loadings are in sorted order}
   \item{...}{More options to pass to summary and print}
 }
-\details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.
+\details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available, either ask for the structure (str(theobject).
 
 To get complete output, unclass(theobject) and then print it.
 
-As an added feature, if the promax function is applied to a factanal loadings matrix, the normal output just provides the rotation matrix.  print.psych will provide the factor correlations. (Following a suggestion by John Fox and Uli Keller to the R-help list). 
+As an added feature, if the promax function is applied to a factanal loadings matrix, the normal output just provides the rotation matrix.  print.psych will provide the factor correlations. (Following a suggestion by John Fox and Uli Keller to the R-help list).  The alternative is to just use the Promax function directly on the factanal object.
 
 }
 \value{ Various psych functions produce copious output.  This is a way to summarize the most important parts of the output of the score.items, cluster.scores, and ICLUST functions.  See those ( \code{\link{score.items}}, \code{\link{cluster.cor}}, \code{\link{cluster.loadings}}, or \code{\link{ICLUST}}) for details on what is produced.

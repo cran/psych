@@ -26,12 +26,7 @@ ICLUST.cluster(r.mat, ICLUST.options)
 \url{http://personality-project.org/revelle/publications/iclust.pdf} \cr
 See also  more extensive documentation at 
 \url{http://personality-project.org/r/r.ICLUST.html} }
-\author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University \cr
-        Evanston, Illinois \cr
-        \email{  revelle@northwestern.edu           }\cr
- \url{http://personality-project.org/revelle.html}   }
+\author{William Revelle  }
 \note{ Although the main code for ICLUST is here in ICLUST.cluster, the more extensive documentation is for \code{\link{ICLUST}}.
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega} }}

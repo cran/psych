@@ -14,30 +14,31 @@ function(x, trim=.2,na.rm=TRUE) {
    return(ans)
 }
 
-"win.mean" <- 
+  #corrected January 15, 2009 to use the quantile function rather than sorting.
+  #suggested by Michael Conklin in correspondence with Karl Healey
+  #this preserves the order of the data
+   "wins" <- 
+ function(x,trim=.2, na.rm=TRUE) {
+    if ((trim < 0) | (trim>0.5) ) 
+        stop("trimming must be reasonable")
+      qtrim <- quantile(x,c(trim,.5, 1-trim),na.rm = na.rm)
+      xbot <- qtrim[1]
+      xtop <- qtrim[3]
+       if(trim<.5) { 
+      x[x < xbot]  <- xbot
+      x[x > xtop] <- xtop} else {x[!is.na(x)] <- qtrim[2]}
+     return(x) } 
+    
+    
+ "win.mean" <- 
 function(x,trim=.2, na.rm=TRUE) {
-  if (na.rm) { x <-sort(x[!is.na(x)]) } else {x <- sort(x)}
-    ncases <-length(x)
     if ((trim < 0) | (trim>0.5) ) 
         stop("trimming must be reasonable")
      if (trim < .5) {
-    numtrim<-trunc(trim*ncases)
-   ans <-  (numtrim *x[numtrim+1]+sum(x[(numtrim+1):(ncases-numtrim)])+numtrim*x[ncases-numtrim])/ncases } else {
-    ans <- median(x)}
-   return(ans)} 
-   
-"wins" <- 
- function(x,trim=.2, na.rm=TRUE) {
- if (na.rm) { x <-sort(x[!is.na(x)]) } else {x <- sort(x)}
-    ncases <-length(x)
-    if ((trim < 0) | (trim>0.5) ) 
-        stop("trimming must be reasonable")
-    numtrim<-trunc(trim*ncases)
-    if(trim<.5) { 
-   ans <-  c(rep(x[numtrim],numtrim ),x[(numtrim+1):(ncases-numtrim)],rep(x[ncases-numtrim+1],numtrim))} else {
-        if((ncases %% 2) >0) {ans <- rep(median(x),ncases) } else {
-          ans <- c(rep(x[numtrim],numtrim),rep(x[ncases-numtrim+1],numtrim)) }
-          }
-   return(ans)} 
-   
+   ans <-  mean(wins(x,trim =trim,na.rm=na.rm),na.rm=na.rm)
+   return(ans)} else {return(median(x,na.rm=TRUE))} 
+   }
+ 
+        
+ 
  

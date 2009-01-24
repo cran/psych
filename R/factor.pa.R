@@ -57,7 +57,9 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
        loadings <- matrix(as.real(loadings),ncol=nfactors) } 
        #make each vector signed so that the maximum loading is positive  - probably should do after rotation
-    if (nfactors >1) {
+       #Alternatively, flip to make the colSums of loading positive
+   if (FALSE) {
+   if (nfactors >1) {
     		maxabs <- apply(apply(loadings,2,abs),2,which.max)
    			sign.max <- vector(mode="numeric",length=nfactors)
     		for (i in 1: nfactors) {sign.max[i] <- sign(loadings[maxabs[i],i])}
@@ -70,6 +72,17 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     		loadings <- as.matrix(loadings)
     		colnames(loadings) <- "PA1"
     	} #sign of largest loading is positive
+    }
+    
+    #added January 5, 2009 to flip based upon colSums of loadings
+    if (nfactors >1) {sign.tot <- vector(mode="numeric",length=nfactors)
+                 sign.tot <- sign(colSums(loadings))
+                 loadings <- loadings %*% diag(sign.tot)
+     } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
+             colnames(loadings) <- "PA1" }
+     
+ 
+    #end addition
     	colnames(loadings) <- paste("PA",1:nfactors,sep='')
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
@@ -83,11 +96,9 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
    	if (rotate=="varimax") { 
    			loadings <- varimax(loadings)$loadings 
    			 Phi <- NULL} else { 
-     			if (rotate=="promax") {pro <- promax(loadings)
+     			if ((rotate=="promax")|(rotate=="Promax")) {pro <- Promax(loadings)
      			                loadings <- pro$loadings
-     			                 rotmat <-pro$rotmat 
-     			                 Phi <- t(rotmat) %*% rotmat
-     			                 Phi  <- cov2cor(Phi) } else {
+     			                Phi <- pro$Phi} else {
      			if (rotate =="oblimin") {
      				if (!require(GPArotation)) {warning("I am sorry, to do oblimin rotations requires the GPArotation package to be installed")
      				Phi <- NULL} else { ob  <- oblimin(loadings)
@@ -99,11 +110,13 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      }}
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008
+       
    if(nfactors >1) {
     ev.rotated <- diag(t(loadings) %*% loadings)
     ev.order <- order(ev.rotated,decreasing=TRUE)
     loadings <- loadings[,ev.order]}
     rownames(loadings) <- colnames(r)
+    if(!is.null(Phi)) {Phi <- Phi[ev.order,ev.order] } #January 20, 2009 but, then, we also need to change the order of the rotation matrix!
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
    
@@ -141,7 +154,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
     result$fn <- "factor.pa"
-    class(result) <- c("psych")
+    class(result) <- c("psych", "fa")
     return(result) }
     
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.

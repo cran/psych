@@ -79,7 +79,7 @@
 	class(loads$loadings) <- "loading"
 	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified)
 	if(plot && require(Rgraphviz)) {ICLUST.rgraph(result,labels=labels,title=title)}
-	class(result) <- "psych"
+	class(result) <- c("psych","iclust")
 	return(result)
 }   
 

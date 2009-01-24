@@ -58,4 +58,5 @@ cluster.plot(factor.pa(item.dichot(16,low=0,high=1),2))
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ multivariate}
+\keyword{datagen}
 

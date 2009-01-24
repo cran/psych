@@ -1,0 +1,76 @@
+Change file for package psych
+
+
+
+Version 1.0.63  January 22, 2009
+
+Added a tutorial for using psych as a front end to sem
+
+Added structure.graph and structure.sem to create sem commands to represent specified structures.
+Added structure.list and phi.list to facilitate making structural models.
+
+Added Promax to ease the finding of promax interfactor correlations.
+As a consequence, corrected the use of promax in VSS and omega so it actually works.
+
+Added structure.graph to draw sem/regression figures. I am still having a problem with making the X latent variables line up if they are correlated.
+
+correction to principal for case of rotation not being defined
+
+correction to winsor so that it does not sort the returned vector (this would cause problems in the case of winsorizing matrices or data.frames.  It was not a problem for winsor.mean
+
+reorganization of print.psych function to make for a clearer structure
+
+Version 1.0.62    January 2009
+(version number jump because of problems getting through windows tests on CRAN)
+
+added confidence intervals to ICC
+renamed a number of functions to make it easier
+e.g., the sim.xxx family of simulations
+          cortest.xxx family of tests of correlations
+
+added super.matrix function
+added data sets for bifactor problems
+
+Change log started January, 2009
+
+
+Prior revisions are not well documented
+Source files available in personality-project.org/r/src/contrib   folder
+
+
+1.0.58  Sept 9, 2008
+
+1.0.53   July 31, 2008
+
+1.0.53   July 11, 2008
+In preparation for ECP short course
+
+1.0.50   June 30, 2008
+
+
+1.0.46   May 31, 2008
+
+1.0.40   Feb 12, 2008
+
+
+1.0.35  November 22, 2007
+
+
+1.0.29   August 14, 2007
+
+ 1.0.8  
+June 15 2006
+R version 2.3
+
+1.05   May 15, 2006
+
+1.0.4    May 15, 2006
+
+1.0.2   March 30, 2006
+
+1.0.1  October 30, 2005
+R version 2.2
+
+
+
+

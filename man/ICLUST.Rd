@@ -95,12 +95,7 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 See also  more extensive documentation at 
 \url{http://personality-project.org/r/r.ICLUST.html} and \cr
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
-\author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University \cr
-        Evanston, Illinois \cr
-        \email{  revelle@northwestern.edu           }\cr
- \url{http://personality-project.org/revelle.html}   }
+\author{William Revelle   }
         
 
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }

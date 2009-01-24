@@ -14,7 +14,7 @@ schmid(model, nfactors = 3, pc = "pa",digits=2,rotate="oblimin",n.obs=NA,...)
   \item{nfactors}{ Number of factors to extract }
   \item{pc}{ pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood }
   \item{digits}{if digits not equal NULL, rounds to digits}
-  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. Although it is possible to use promax as a rotation option, these seems to produce very poor results and is discouraged.}
+  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. The third option is the promax criterion}
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
@@ -27,6 +27,8 @@ An alternative model is to consider hierarchical cluster analysis techniques suc
 Requires the GPArotation package.
 
 Although 3 factors are the minimum number necessary to define the solution uniquely, it is occasionally useful to allow for a two factor solution.  This is  done here by setting the general factor loadings between the two lower order factors as the sqrt(oblique correlations between the factors). A warning message is issued. 
+
+
 }
 \value{
   
@@ -42,8 +44,9 @@ Although 3 factors are the minimum number necessary to define the solution uniqu
 
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
-s.jen <- schmid(make.hierarchical(),digits=2)  #create a hierarchical demo
-s.jen
+jen <- sim.hierarchical()  #create a hierarchical demo
+o.jen <- schmid(jen,digits=2)  #use the oblimin rotation
+p.jen <- schmid(jen,rotate="promax") #use the promax rotation
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

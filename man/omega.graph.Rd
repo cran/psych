@@ -1,5 +1,6 @@
 \name{omega.graph}
 \alias{omega.graph}
+\alias{omega.sem}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Graph hierarchical factor structures }
 \description{Hierarchical factor structures represent the correlations between variables in terms of a smaller set of correlated factors which themselves can be represented by a higher order factor.
@@ -8,7 +9,9 @@ Two alternative solutions to such structures are found by the \code{\link{omega}
 
 Graphic presentations of these two alternatives are helpful in understanding the structure.  omega.graph draws both such structures.  Graphs are drawn directly onto the graphics window or expressed in ``dot" commands for conversion to graphics using implementations of Graphviz.
 
-Using Graphviz allows the user to clean up the Rgraphviz output (e.g., make the arrows go the right direction!
+Using Graphviz allows the user to clean up the Rgraphviz output.
+
+In addition 
 }
 \usage{
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
@@ -34,6 +37,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
 \value{
   
   \item{clust.graph }{A graph object}
+  \item{sem}{A matrix suitable to be run throughe the sem function in the sem package.}
  
  }
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr

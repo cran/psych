@@ -41,7 +41,7 @@ To interpret the values of these various tests, it is useful to compare the part
 \note{ Of the 10 criterion discussed in Acton and Revelle (2004), these tests operationalize the four most useful.
 
 }
-\seealso{  \code{\link{circ.simulation}}, \code{\link{circ.sim}} }
+\seealso{  \code{\link{circ.simulation}}, \code{\link{sim.circ}} }
 \examples{
 circ.data <- circ.sim(24,500)
 circ.fa <- factor.pa(circ.data,2)

@@ -12,7 +12,7 @@ VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,plot=T
 \arguments{
   \item{x}{ a correlation matrix or a data matrix}
   \item{n}{Number of factors to extract -- should be more than hypothesized! }
-  \item{rotate}{ what rotation to use c("none", "varimax", "promax")}
+  \item{rotate}{ what rotation to use c("none", "varimax",  "oblimin","promax")}
   \item{diagonal}{Should we fit the diagonal as well }
   \item{pc}{pc="pa"  Principal Axis Factor Analysis, pc="mle"  Maximum Likelihood FA, pc="pc" Principal Components" }
   \item{n.obs}{Number of observations if doing a factor analysis of correlation matrix.  This value is ignored by VSS but is necessary for the ML factor analysis package.}
@@ -60,7 +60,7 @@ e.g., the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000.
 
 Wayne Velicer's MAP criterion has been added as an additional test for the optimal number of components to extract.  Note that VSS and MAP will not always agree as to the optimal number.
 
-
+A variety of rotation options are available. These include varimax, promax, and oblimin. Others can be added.  Suggestions are welcome.
 }
 \value{ A data.frame with entries:
  map:  Velicer's MAP values (lower values are better) \cr
@@ -80,22 +80,14 @@ Wayne Velicer's MAP criterion has been added as an additional test for the optim
 \references{ \url{http://personality-project.org/r/vss.html},
 Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 
-see also Revelle, W. and Rocklin, T. 1979, Very Simple Structure: an Alternative Procedure for Estimating the Optimal Number of Interpretable Factors, Multivariate Behavioral Research, 14, 403-414. 
+Revelle, W. and Rocklin, T. 1979, Very Simple Structure: an Alternative Procedure for Estimating the Optimal Number of Interpretable Factors, Multivariate Behavioral Research, 14, 403-414. 
 \url{http://personality-project.org/revelle/publications/vss.pdf}
 
 Velicer, W. (1976) Determining the number of components from the matrix of partial correlations. Psychometrika, 41, 321-327.
 	
 }
 
-\author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University \cr
-        Evanston, Illiniois \cr
-
-
-Maintainer: William Revelle <revelle@northwestern.edu>
-
-}
+\author{William Revelle}
 
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{fa.parallel}}}
 \examples{

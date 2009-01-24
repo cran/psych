@@ -1,41 +1,29 @@
 "sim.structural" <-
-function (s=NULL,f=NULL,n=0,mx=NULL,my=NULL,raw=FALSE) {
- require(MASS)
- #first, do the default case of two equally strong predictors
- if(is.null(s)) { 
-          s=diag(1,nrow=3)
-           s[3,1]  <- s[3,2] <- sqrt(.5)
-           s[3,3] <-0}
- 
- if(is.null(f) ) {if(!is.null(mx)) { if(is.null(my)) stop("must specify my if mx is specified")
-  f <- super.matrix(mx,my)} else {
-  f <-matrix(c(               
-            .9,0,0,
-            .8,0,.0,
-            .6,.6,.0,
-             0,.8,.0,
-             0,-.7,.0,
-              0,0,.6,
-              0,0,.5,
-              0,0,.4),   ncol=3,byrow=TRUE)} }
-  
-  
- 
-  if(!is.matrix(f)) f <- as.matrix(f)  #this is the case if doing a congeneric model
-  
- 
-  model <-  f %*% s %*% t(s) %*%  t(f) #the model correlation matrix for oblique factors
+function (fx=NULL,fy=NULL,Phi=NULL,f=NULL,n=0,raw=FALSE) {
+require(MASS)
 
-  diag(model)<- 1                       # put ones along the diagonal
+ if(is.null(f)) {if(!is.null(fx)) { if(is.null(fy)) stop("must specify ymodel if xmodel is specified")
+    f <- super.matrix(fx,fy) 
+    }}
+            
+  
+  if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
+                    Phi <- 1}
+  if(!is.null(Phi)) {
+  model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
+} else { model <- f%*% t(f)}
+diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
   colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
   if(n>0) {
     mu <- rep(0,nvar)
-  	data <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
-  model <- cor(data) } 
+  	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
+  r <- cor(observed) } 
   	reliability <- diag(f %*% t(f))
-  if (!raw) {results <- list( model=model,reliability=reliability )} else {
-             results <- list( model=model,reliability=reliability,data= data) }
+  if(n<1) {results <- list(model=model,reliability=reliability) } else {
+  if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
+             results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+  class(results) <- c("psych", "sim")
  return(results)}
  
  

@@ -1,10 +1,37 @@
 Software and data sets to do classic and modern psychometrics, and to analyze personality  and experimental psychological data sets. 
 
-The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory.  
+The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory.
+
+The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
 
 Additional functions are added sporadically.
 
 History:
+
+
+January 2009: 1-0.63
+
+Added structure.graph and structure.sem to create graphical output and pre-sem commands for sem.
+Modified omega.graph to return sem commands for running the sem function from John Fox.
+
+Added Promax to report factor intercorrelations for promax rotations.
+
+bug fix in VSS and omega to allow for promax rotations.
+
+correction to winsor so that it does not sort the vectors of the input data.frame.
+
+bug fix in principal (for problem of oblique rotations)
+
+continued improvements in the print.psych and summary.psych functions 
+cleaned up sim.congeneric to reduce the amount of output (now handled through print.psych)
+
+added super.matrix function (to combine two matrices -- useful for constructing keys and for doing examples in structure.graph)
+Improvements to structure graph.
+
+December 2008: 1-0.62
+added the structure.graph function
+added circadian functions 
+renamed some functions to make the index order easier to follow.
 
 September 2008: 1-0.58
 
@@ -35,4 +62,5 @@ circ.simulation
 item.sim
 
 polar                converts two dimensional factor loadings to polar coordinates.
+
 

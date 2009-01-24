@@ -14,14 +14,7 @@ VSS.scree(rx, main = "scree plot")
 }
 
 \references{ \url{http://personality-project.org/r/vss.html}}
-\author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University \cr
-        Evanston, Illiniois \cr
-
-
-Maintainer: William Revelle <revelle@northwestern.edu>
-
+\author{William Revelle 
 }
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}}
 \examples{

@@ -97,15 +97,13 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 			 }
 		if((rotate=="varimax") & (i>1)) {f <- varimax(f$loadings) 
 		                                 PHI <- diag(i)} else {
-		if((rotate=="promax") & (i>1))  {f <- promax(f$loadings) 
-		   U <- f$rotmat
-           PHI <- t(U) %*% U
-          phi <- cov2cor(phi) } else {
+		if(((rotate=="promax")| (rotate=="Promax") )& (i>1))  {f <- Promax(f$loadings) 
+          								 PHI <- f$Phi} else {
 		if((rotate=="oblimin")& (i>1))  {f <- oblimin(f$loadings)
 		    U <- f$Th
            phi <- t(U) %*% U
            PHI <- cov2cor(phi)
-		} }
+		}}
 	     }}
 		
  	load <- as.matrix(f$loadings )                    #the loading matrix
@@ -149,7 +147,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 vss.stats <- data.frame(vss.df,cfit=complexfit,cresidual=complexresid)
 if (plot) VSS.plot(vss.stats,title=title)
 vss.results <- list(title=title,map=map.values,cfit.1=complexfit[,1],cfit.2= complexfit[,2],vss.stats=vss.stats)
-class(vss.results) <- "psych"
+class(vss.results) <- c("psych" ,"vss")
 return(vss.results)
    
     }     #end of VSS function

@@ -15,13 +15,15 @@ wkappa(x, w = NULL)
   \item{w}{A p x p matrix of weights.  If not specified, they are set to be 1 (on the diagonal) and .5\^(distance from diagonal) off the diagonal.}
 }
 \details{Some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis).  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
+
+A more useful measure of the agreement between two raters when the data are quantitative is the Intra Class Correlation (\code{\link{ICC}}). 
 }
 
 \value{
   \item{kappa }{Unweighted kappa}
   \item{weighted.kappa }{If weights are provided}
 }
-\references{Cohen, J. (1960).A coefficient of agreement for nominal scales. Educational and Psychological Measurement, 20 37-46
+\references{Cohen, J. (1960). A coefficient of agreement for nominal scales. Educational and Psychological Measurement, 20 37-46
 
 
 Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. Psychological Bulletin, 70, 213-220.
@@ -36,26 +38,24 @@ To avoid confusion with Kappa (from vcd) or the kappa function from base, the fu
 
 
 \examples{
-cohen <- scan()
-0.44 0.05 0.01
-0.07 0.20 0.03
-0.09 0.05 0.06
 
-cohen <- matrix(cohen,ncol=3)
+cohen <- matrix(c(
+0.44, 0.05, 0.01,
+0.07, 0.20, 0.03,
+0.09, 0.05, 0.06),ncol=3)
+
 wkappa(cohen)
 
-fleiss <- scan()
- 0.53 0.05 0.02
- 0.11 0.14 0.05
- 0.01 0.06 0.03
+fleiss <- matrix(c(
+ 0.53, 0.05, 0.02,
+ 0.11, 0.14, 0.05,
+ 0.01, 0.06, 0.03),ncol=3)
 
-fleiss <- matrix(fleiss,ncol=3)
-weights <- scan()
- 1.0000 0.0000 0.4444
- 0.0000 1.0000 0.6666
- 0.4444 0.6666 1.0000
+weights <- matrix(c(
+ 1.0000, 0.0000, 0.4444,
+ 0.0000, 1.0000, 0.6666,
+ 0.4444, 0.6666, 1.0000),ncol=3)
  
- weights <- matrix(weights,ncol=3)
  wkappa(fleiss,weights)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

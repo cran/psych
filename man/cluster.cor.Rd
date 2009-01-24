@@ -17,7 +17,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
 }
 \details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix using \code{\link{score.items}}.
 
- A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{mat.regress}}.
+ A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
  
@@ -38,7 +38,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 
 }
-\note{ See SAPA  e.g., Revelle, W. (2006) Synthetic Aperture Personality Assessment. Invited paper at the Midwestern Psychological Association Annual Meeting, Chicago, May, 2006. pdf available at \url{http://personality-project.org/revelle/publications/sapa.mpa.key.pdf}
+\note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2009)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
 }
 \seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha.scale}}, \code{\link{score.items}}}
 \examples{

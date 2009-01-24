@@ -19,11 +19,7 @@ May be used for single variables.
   \item{main}{title for each panel}
 }
 
-\author{ William Revelle \cr
-         Northwestern University \cr
-         Evanston, Illinois \cr
- \email{  revelle@northwestern.edu           } \cr
- \url{http://personality-project.org/revelle.html}}
+\author{ William Revelle }
 
 \examples{
 #multi.hist(attitude[-1]) 

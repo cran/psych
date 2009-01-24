@@ -1,15 +1,17 @@
 \name{cluster.plot}
 \alias{cluster.plot}
+\alias{factor.plot}
 
 \title{Plot factor/cluster loadings and assign items to clusters by their highest loading.}
 \description{Cluster analysis and factor analysis are procedures for grouping items in terms of a smaller number of (latent) factors or (observed) clusters.  Graphical presentations of clusters typically show tree structures, although they can be represented in terms of item by cluster correlations.  
 
-Cluster.plot plots items by their cluster loadings (taken, e.g., from ICLUST).  Cluster membership may be assigned apriori or may be determined in terms of the highest (absolute) cluster loading for each item.  
+Cluster.plot plots items by their cluster loadings (taken, e.g., from \code{\link{ICLUST}}) or factor loadings (taken, eg., from \code{\link{factor.pa}}).  Cluster membership may be assigned apriori or may be determined in terms of the highest (absolute) cluster loading for each item.  
 
 If the input is an object of class "kmeans", then the cluster centers are plotted. 
 }
 \usage{
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
+factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,12 +32,10 @@ cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster p
 }
 
 \author{William Revelle}
-\note{ September 5, 2007
 
- 
-}
-\seealso{ \code{\link{ICLUST}},\code{\link{ICLUST.graph}}}
-\examples{circ.data <- circ.sim(24,500)
+\seealso{ \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{fa.graph}}}
+\examples{
+circ.data <- circ.sim(24,500)
 circ.fa <- factor.pa(circ.data,2)
 cluster.plot(circ.fa,cut=.5)
 }

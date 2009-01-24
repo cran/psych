@@ -19,4 +19,5 @@
    boxplot(x.df,main=" Box Plot of all tests")
   title(main = "Circumplex Tests for Circumplex, Ellipsoid, and Simple Structure",outer=TRUE,line=-1)
 })  #end of with
+op <- par(mfrow=c(1,1))
   }

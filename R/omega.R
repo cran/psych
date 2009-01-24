@@ -55,8 +55,9 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       dg <-max(digits-1,1)} else {
       omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
       dg <- 1}
-     if(require(Rgraphviz) && plot) {omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) }
-      class(omega) <- "psych"
+     if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
+     omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title,model=omega.model)
+      class(omega) <- c("psych","omega")
       return(omega)
       }
 

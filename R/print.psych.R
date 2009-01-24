@@ -1,24 +1,35 @@
+#reorganized, January 18, 2009 to make some what clearer
 "print.psych" <-
 function(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- gutt <- FALSE
-
-if (!is.null(x$map)) { vss <- TRUE}     
-if(!is.null(x$purified$alpha)) { iclust <- TRUE} 
-if(!is.null(x$omega_h)) {omega <- TRUE}
+iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- FALSE
+#first, figure out which psych function was called
+if(length(class(x)) > 1)  { 
+   if(class(x)[2] =='sim')  sim <- TRUE
+   if(class(x)[2] =='vss')  vss <- TRUE
+   if(class(x)[2] =='iclust')  iclust <- TRUE
+   if(class(x)[2] =='omega')  omega <- TRUE
+   if(class(x)[2] =='fa')  fac.pa <- TRUE
+   if(class(x)[2] =='principal') fac.pa <- TRUE
+     } 
+else {      #old and clunky way of figuring out which function called,   replace as above
+   
 if(!is.null(x$av.r)) {scores <- TRUE}
 if(!is.null(x$communality.iterations)) {fac.pa <- TRUE}
 if(!is.null(x$uniquenesses)) {fac.pa <- TRUE}
 if(!is.null(x$rotmat)) {fac.pa <- TRUE}
+if(!is.null(x$Th)) {fac.pa <- TRUE}
 if(!is.null(x$lambda.1) ) {gutt <- TRUE}
+}
+
 
  
-if(!is.null(x$scores)) {
- x <- x[-c(1:2)]}
+#if(!is.null(x$scores)) { x <- x[-c(1:2)]}     # I am not sure which function this was referrring to, 
   
 if(all) {class(x) <- "list"
-         print(x) } else {
- 
+         print(x) } else {    #find out which function created the data and then print accordingly
+
+## 
  if(omega) {
      if(is.null(cutoff)) cutoff <- .2
 	 cat( x$title,"\n") 
@@ -70,26 +81,31 @@ if(vss) {
        print(round(x$cfit.1,digits))
        cat("\nVery Simple Structure Complexity 2\n")
        print(round(x$cfit.2,digits))
- }
+   }
 
 if(scores) {
-	 cat("\nAlpha:\n")
+	cat("\nAlpha:\n")
 	print(x$alpha)
   	cat("\nAverage item correlation:\n")
-	print(x$av.r,digits)
+	print(x$av.r,digits) 
+	      
 	
-if(iclust) {cat("\nOriginal Beta:\n")
-		print(x$beta,digits) }	
- 	cat("\nScale intercorrelations:\n")
-	print(x$cor,digits=digits)
+	 if(iclust) {cat("\nOriginal Beta:\n")  
+	            print(x$beta,digits) }	
+ 	  cat("\nScale intercorrelations:\n")
+	  print(x$cor,digits=digits)
 	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(x$corrected,digits) 
-	 }
 	 
+	  if(!is.null(x$item.cor) ) {
+	   cat("\nItem by scale correlations:\n")
+	 print(x$item.cor) } 
+  }
+	
+	
 
-if(!is.null(x$item.cor) ) {
-	cat("\nItem by scale correlations:\n")
-		print(x$item.cor) } 
+
+
 
 #### factor.pa output
 if(fac.pa) {
@@ -152,7 +168,8 @@ if(fac.pa) {
        print(round(x$Phi,digits))} else {
        if(!is.null(x$rotmat)) {
              U <- x$rotmat
-           Phi <- t(U) %*% U
+             ui <- solve(U)
+           Phi <- t(ui) %*% ui
           Phi <- cov2cor(Phi) 
            cat ("\n With factor correlations of \n" )
        colnames(Phi) <- rownames(Phi) <- colnames(x$loadings)
@@ -224,6 +241,18 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
  cat("TenBerge bounds \n mu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
  cat("\n alpha of first PC = ", x$alpha.pc, "\n estimated glb = ", x$lambda.4,"\n")
  } 
-   
+  
+  
+ if(sim) { if(is.matrix(x)) {x <-unclass(x) 
+             round(x,digits) } else {
+             cat("\n $model (Population correlation matrix) \n")
+             print(x$model,digits)
+             if(!is.null(x$reliability)) { cat("\n$reliability (population reliability) \n")
+                print(x$reliability,digits) } 
+             if(!is.null(x$N) && !is.null(x$r)) {
+             cat("\n$r  (Sample correlation matrix  for sample size = ",x$N,")\n")
+             print(x$r,digits)}} 
+             
+      }  #end of the not list condition
 
 }  #end function

@@ -26,36 +26,33 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,
    if(nfactors >0) {loadings <- loadings[,1:nfactors]} else {nfactors <- n}
 
    	
-   	if(nfactors >1) {
-    	maxabs <- apply(apply(loadings,2,abs),2,which.max)
-    	sign.max <- vector(mode="numeric",length=nfactors)
-    	for (i in 1: nfactors) {sign.max[i] <- sign(loadings[maxabs[i],i])}
-  
-  		loadings <- loadings %*% diag(sign.max)  #sign of largest loading is positive 
-      	} else {if(nfactors >0) {mini <- min(loadings)
-   			maxi <- max(loadings)
-    		if (abs(mini) > maxi) {loadings <- -loadings }
-    		loadings <- as.matrix(loadings)
-    	 } }
+   
+    	 
+     #added January 19, 2009 to flip based upon colSums of loadings
+    if (nfactors >1) {sign.tot <- vector(mode="numeric",length=nfactors)
+                 sign.tot <- sign(colSums(loadings))
+                 loadings <- loadings %*% diag(sign.tot)
+     } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
+             colnames(loadings) <- "PC1" }
+     
     	
     colnames(loadings) <- paste("PC",1:nfactors,sep='')
     rownames(loadings) <- rownames(r)
 
-
+     Phi <- NULL
      if(rotate != "none") {if (nfactors > 1) {
    			if (rotate=="varimax") { 
    			loadings <- varimax(loadings)$loadings 
-   			 phi <- NULL} else { 
-     			if (rotate=="promax") {pro <- promax(loadings)
+   			 Phi <- NULL} else { 
+     			if ((rotate=="promax") | (rotate=="Promax"))  {pro <- Promax(loadings)
      			                loadings <- pro$loadings
-     			                 rotmat <-pro$rotmat 
-     			                 phi <- t(rotmat) %*% rotmat
-     			                 phi  <- cov2cor(phi) } else {
+     			                 Phi<-pro$Phi 
+     			                  } else {
      			if (rotate =="oblimin") {
      				if (!require(GPArotation)) {warning("I am sorry, to do oblimin rotations requires the GPArotation package to be installed")
-     				phi <- NULL} else { ob  <- oblimin(loadings)
+     				Phi <- NULL} else { ob  <- oblimin(loadings)
      				loadings <- ob$loadings
-     				 phi <- ob$Phi}
+     				 Phi <- ob$Phi}
      		                             }
      	               }}
      			
@@ -65,6 +62,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,
     ev.rotated <- diag(t(loadings) %*% loadings)
     ev.order <- order(ev.rotated,decreasing=TRUE)
     loadings <- loadings[,ev.order]}
+    if(!is.null(Phi)) {Phi <- Phi[ev.order,ev.order] } #January 20, 2009 but, then, we also need to change the order of the rotation matrix!
    
      class(loadings) <- "loadings"
      
@@ -86,7 +84,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,
             if (result$STATISTIC <0) {result$STATISTIC <- 0}  
    			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
      
-      if(!is.null(phi)) {result$phi <- phi}
+      if(!is.null(Phi)) {result$Phi <- phi}
   
     
     r2 <- sum(r*r)
@@ -98,9 +96,9 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,
     result$fit <- round(1-rstar2/r2,digits)
     result$fit.off <- round(1-rstar.off/r2.off,digits)
     result$loadings <- round(loadings,digits)
-    if (rotate =="oblimin") {result$phi <- phi}
+    if (!is.null(Phi)) {result$Phi <- Phi}
     result$factors <- nfactors 
-    class(result) <- c("psych") 
+    class(result) <- c("psych", "principal") 
     result$fn <- "principal"
     if(scores) {result$scores <- factor.scores(scale(x.matrix),loadings) }
     return(result)
@@ -111,3 +109,5 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA, scores=FALSE,
   #Modified June 8,2008 to get chi square values to work or default to statistic if n.obs==NULL.
   #modified Jan  2, 2009 to  report the correlations between oblique factors
   #modified December 30 to let n.obs ==NA rather than NULL to be compatible with factanal
+  #modified Jan 14, 2009 to change phi to Phi  to avoid confusion
+  #modified Jan 19, 2009 to allow for promax rotations

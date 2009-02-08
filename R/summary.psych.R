@@ -8,7 +8,18 @@ function(object,digits=2,items=FALSE,...) {
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
 #figure out which psych function called us 
- iclust <- omega <- vss <- scores <- fa <-  FALSE 
+ iclust <- omega <- vss <- scores <- fa <- alpha <-  FALSE 
+ 
+ if(length(class(object)) > 1)  { 
+   if(class(object)[2] =='sim')  sim <- TRUE
+   if(class(object)[2] =='vss')  vss <- TRUE
+   if(class(object)[2] =='iclust')  iclust <- TRUE
+   if(class(object)[2] =='omega')  omega <- TRUE
+   if(class(object)[2] =='fa')  fac.pa <- TRUE
+   if(class(object)[2] =='principal') fac.pa <- TRUE
+   if(class(object)[2] == 'alpha') alpha <- TRUE
+     } 
+ #old way, soon to be removed    
 if (!is.null(object$map)) { vss <- TRUE} 
 if(!is.null(object$purified$alpha)) {  iclust <- TRUE} 
 if(!is.null(object$omega_h)) {omega <- TRUE}
@@ -103,5 +114,11 @@ if(items) {
       }
 	
 	}  #end if items
+	
+if(alpha) {
+cat("\nReliability analysis ",object$title," \n")
+
+print(object$total,digits=digits)
+}
  
 }

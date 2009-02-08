@@ -6,19 +6,19 @@
 	<meta name="generator" content="BBEdit 8.6" />
 </head>
 <body>
-<h2>psych: A package for personality, psychometric, and psychological research</h2>
+<h2>psych: A package for psychological, psychometric, and personality research</h2>
 
 
 <h3>Description</h3>
 
 <p>
-The psych package has been developed at Northwestern University to include functions most useful for personality, psychometrics, and psychological research.  Some of the functions (e.g., describe,  pairs.panels, error.bars) are useful for basic descriptive analyses typical of a short research paper.
+The psych package has been developed at Northwestern University to include functions most useful for psychological, psychometrics, and personality research.  Some of the functions (e.g., describe,  pairs.panels, error.bars) are useful for basic descriptive analyses typical of a short research paper.
 </p>
 <p>
-Psychometric applications include routines for Very Simple Structure (VSS), Item Cluster Analysis (ICLUST), as well as functions to do Schmid Leiman transformations, principal axes factor analysis, and to calculate reliability coefficients alpha, beta, and omega-hierarchical, omega-total. The six reliability estimates of Guttman are also found
+Psychometric applications include routines for principal components, principal axes factor analysis, Very Simple Structure (VSS), Item Cluster Analysis (ICLUST), as well as functions to do Schmid Leiman transformations,  and to calculate reliability coefficients alpha, beta,  omega-hierarchical, and omega-total. The six reliability estimates of Guttman are also found
 </p>
 
-<p> Functions to score dichotomous, polytomous, and multiple choice items are useful for classic item analysis. 
+<p> Functions to score or simulate dichotomous, polytomous, and multiple choice items are useful for classic item analysis. 
 
 <p>A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA) project. These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (factor2cluster), synthetically forming clusters from correlation matrices (cluster.cor), and finding multiple correlation from correlation matrices (mat.regress). </p>
 
@@ -26,9 +26,11 @@ Psychometric applications include routines for Very Simple Structure (VSS), Item
 
 <p> Graphical functions for showing factor and cluster structures are included. Some of these require Rgraphviz which needs to be installed from BioConductor.
 
+<p> Several functions serve as parts of a front end for the structural equation modeling (sem) package. These are discussed in more detail in the <a href="psych_for_sem.pdf">psych for sem</a> tutorial. 
+
 <h3> User manual and tutorials </h3>
 
-The extended <a href="psych-manual.pdf">user manual </a> includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at <a href="http://personality-project.org/r/psych-manual.pdf">http://personality-project.org/r/psych-manual.pdf</a>). 
+The extended <a href="psych_manual.pdf">user manual </a> includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at <a href="http://personality-project.org/r/psych-manual.pdf">http://personality-project.org/r/psych_manual.pdf</a>). 
 
 The tutorial <a href="psych_for_sem.pdf">psych for sem</a> tutorial discusses how to use psych as a front end to the sem package. (Also available at <a href="http://personality-project.org/r/psych_for_sem.pdf">http://personality-project.org/r/psych_for_sem.pdf</a>).
 
@@ -44,10 +46,11 @@ Note: the most recent development version is available as a source file at the r
 
 For more extensive discussion of the use of psych in particular and R in general, consult  <a href="http://personality-project.org/r/r.guide.html">A short guide to R</a>
 
+News and a history of changes are available in the NEWS and CHANGES files.
 <br>
 <br>
 
-<br>Version of January 25, 2009
+<br>Version of February 1, 2009
 
 
 

@@ -3,7 +3,7 @@
 \alias{phi.list}
 
 \title{Create factor model matrices from an input list}
-\description{When creating a structural diagram or a structural model, it is convenient to not have to specify all of the zero loadings in a structural matrix.  structure.list converts list input into a design matrix.  phi.list does the same for a correlation matrix.
+\description{When creating a structural diagram or a structural model, it is convenient to not have to specify all of the zero loadings in a structural matrix.  structure.list converts list input into a design matrix.  phi.list does the same for a correlation matrix. Factors with NULL values are filled with 0s.
 }
 \usage{
 structure.list(nvars, f.list,f=NULL, f.labels = NULL, item.labels = NULL)

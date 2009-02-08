@@ -8,6 +8,11 @@ Additional functions are added sporadically.
 
 History:
 
+February 2009:  1.0.64
+
+Added the function alpha to find Cronbach's alpha and Guttman's Lambda 6 for total scales as well as with single item deleted.
+
+Minor enhancements to the structure.graph and structure.sem functions. Further refinements to the psych_for_sem.pdf tutorial.  
 
 January 2009: 1-0.63
 

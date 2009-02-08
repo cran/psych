@@ -2,7 +2,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- alpha <- FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  { 
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -11,6 +11,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] =='omega')  omega <- TRUE
    if(class(x)[2] =='fa')  fac.pa <- TRUE
    if(class(x)[2] =='principal') fac.pa <- TRUE
+   if(class(x)[2] == 'alpha') alpha <- TRUE
      } 
 else {      #old and clunky way of figuring out which function called,   replace as above
    
@@ -33,10 +34,12 @@ if(all) {class(x) <- "list"
  if(omega) {
      if(is.null(cutoff)) cutoff <- .2
 	 cat( x$title,"\n") 
- 	cat("Alpha: ",x$alpha,"\n") 
- 	cat("Lambda.6:  ",x$lambda.6,"\n")
- 	cat("Omega Hierarchical:  " ,x$omega_h,"\n")
- 	cat("Omega Total  " ,x$omega.tot,"\n")
+	 cat("Call: ")
+     print(x$call)
+ 	cat("Alpha: ",round(x$alpha,digits),"\n") 
+ 	cat("G.6:  ",round(x$G6,digits),"\n")
+ 	cat("Omega Hierarchical:  " ,round(x$omega_h,digits),"\n")
+ 	cat("Omega Total  " ,round(x$omega.tot,digits),"\n")
             
 	cat("\nSchmid Leiman Factor loadings greater than ",cutoff, "\n")
 	   loads <- x$schmid$sl
@@ -102,7 +105,18 @@ if(scores) {
 	 print(x$item.cor) } 
   }
 	
-	
+####
+if(alpha) {
+cat("\nReliability analysis ",x$title," \n")
+cat("Call: ")
+print(x$call)
+cat("\n ")
+print(x$total,digits=digits)
+cat("\n Reliability if an item is dropped:\n")
+    print(x$alpha.drop,digits=digits)
+cat("\n Item statistics \n")
+   print(x$item.stats,digits=digits)
+}
 
 
 

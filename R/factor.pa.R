@@ -44,7 +44,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
          comm1 <- sum(new)
          diag(r.mat) <- new
          err <- abs(comm-comm1)
-         if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa, exiting")
+         if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa,\n Try again with SMC=FALSE \n exiting factor.pa")
           break}
          comm <- comm1
          comm.list[[i]] <- comm1

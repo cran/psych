@@ -1,7 +1,9 @@
  "guttman" <- 
  function(r,key=NULL,digits=2) {
  nvar <- dim(r)[2]
-if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data matrix
+if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {
+if(!is.matrix(r)) r <- as.matrix(r)
+r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data matrix
       if(is.null(colnames(r))) {  rownames(r) <- colnames(r) <- paste("V",1:nvar,sep="") }
       m <- (1-r)/2
       diag(m) <- 1

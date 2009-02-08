@@ -3,8 +3,9 @@ function(nvars,f.list,f=NULL,f.labels=NULL,item.labels=NULL) {
  nfactors <- length(f.list) 
 fmodel <- matrix(rep(0,nvars*nfactors),ncol=nfactors)
 for (i in 1:nfactors) {
+        if(!is.null(f.list[[i]])) {
 		list.i <-  unlist(f.list[[i]])
-		fmodel[abs(list.i),i] <- paste(f,letters[i],list.i,sep="") 
+		fmodel[abs(list.i),i] <- paste(f,letters[i],list.i,sep="") } 
 			}
 
 if(!is.null(f.labels)) {colnames(fmodel) <- f.labels} else {colnames(fmodel) <- names(f.list)}

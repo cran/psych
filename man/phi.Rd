@@ -12,7 +12,9 @@ phi(t, digits = 2)
   \item{t}{a 1 x 4 vector or a 2 x 2 matrix }
   \item{digits}{ round the result to digits }
 }
-\details{In many prediction situations, a dichotomous predictor (accept/reject) is validated against a dichotomous criterion (success/failure).  Although a polychoric correlation estimates the underlying Pearson correlation as if the predictor and criteria were continuous and bivariate normal variables, the phi coefficient is the Pearson applied to a matrix of 0's and 1s.  
+\details{In many prediction situations, a dichotomous predictor (accept/reject) is validated against a dichotomous criterion (success/failure).  Although a polychoric correlation estimates the underlying Pearson correlation as if the predictor and criteria were continuous and bivariate normal variables, the phi coefficient is the Pearson applied to a matrix of 0's and 1s. 
+
+For a very useful discussion of various measures of association given a 2 x 2 table, and why one should probably prefer the \code{\link{Yule}} coefficient, see Warren (2008). 
 
 Given a two x two table of counts \cr
 \tabular{llll}{
@@ -29,6 +31,8 @@ Phi = a- (a+b)*(a+c)/sqrt((a+b)(c+d)(a+c)(b+d) )
 }
 
 \author{William Revelle with modifications by Leo Gurtler }
+
+\references{Warrens, Matthijs (2008), On Association Coefficients for 2x2 Tables and Properties That Do Not Depend on the Marginal Distributions. Psychometrika, 73, 777-789.}
 
 \seealso{ \code{\link{phi2poly}} ,\code{\link{Yule}}, \code{\link{Yule2phi}}}
 \examples{

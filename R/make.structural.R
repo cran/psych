@@ -1,5 +1,5 @@
 "make.structural" <-
-function (fx=NULL,fy=NULL,Phi=NULL,f=NULL,n=0,raw=FALSE) {
+function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
  require(MASS)
  #first, do the default case of two equally strong predictors
  if(is.null(Phi)) { 

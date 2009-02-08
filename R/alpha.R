@@ -1,11 +1,3 @@
-"alpha.scale" <-
-function (x,y)   #find coefficient alpha given a scale and a data.frame of the items in the scale
-	{
-		n=length(y)          #number of variables
-		Vi=sum(diag(var(y,na.rm=TRUE)))     #sum of item variance
-		Vt=var(x,na.rm=TRUE)                #total test variance
-		((Vt-Vi)/Vt)*(n/(n-1))}              #alpha
-
 "alpha" <- 
     function(x,keys=NULL,title=NULL, na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
@@ -28,7 +20,7 @@ function (x,y)   #find coefficient alpha given a scale and a data.frame of the i
          if(!is.null(keys)) {key.d <- diag(keys)
                             C <- key.d %*% C %*% key.d}
          total <- rowSums(x,na.rm=na.rm)
-         mean.t <- mean(total)
+         mean.t <- mean(total,na.rm=na.rm)
          sdev <- sd(total,na.rm=na.rm)
          t.valid <- colSums(!is.na(x))} else { C <- as.matrix(x) 
                                                if(!is.null(keys)) {key.d <- diag(keys)
@@ -48,7 +40,7 @@ function (x,y)   #find coefficient alpha given a scale and a data.frame of the i
         Vt <- sum(R)
         item.r <- colSums(R)/sqrt(Vt)
         item.means <- colMeans(x, na.rm=na.rm )
-        item.sd <-  SD(x)
+        item.sd <-  SD(x,na.rm=na.rm)
         if(nsub > nvar) {
         	alpha.total <- data.frame(alpha.total,mean=mean.t,sd=sdev)
         	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","mean","sd")

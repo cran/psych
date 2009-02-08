@@ -10,10 +10,10 @@ sim()
 
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  Various simulation functions in psych are:
 
-\code{\link{sim.structural}}  A function to combine a measurement and structural model into one data matrix.  Useful for understanding structural equation models.
+\code{\link{sim.structure}}  A function to combine a measurement and structural model into one data matrix.  Useful for understanding structural equation models.
 
 
-\code{\link{sim.congeneric}}   A function to create congeneric items/tests for demonstrating classical test theory.
+\code{\link{sim.congeneric}}   A function to create congeneric items/tests for demonstrating classical test theory. This is just a special case of sim.structure.
  
 \code{\link{sim.hierarchical}}  A function to create data with a hierarchical (bifactor) structure.  
 
@@ -38,7 +38,7 @@ R
 fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
 fy <- c(.6,.5,.4)
 Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
-print(sim.structural(fx,fy,Phi),digits=2)  
+print(sim.structure(fx,Phi,fy,),digits=2)  
 }
 
 

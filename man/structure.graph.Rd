@@ -14,14 +14,14 @@ For symbolic graphs, the input matrices can be character strings or mixtures of 
 As an option, for those without Rgraphviz installed, structure.sem will just create the sem model and skip the graph.
 }
 \usage{
-structure.graph(xmodel,  Phi = NULL,ymodel = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
-structure.sem(xmodel,  Phi = NULL, ymodel = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
+structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
+structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{xmodel}{a factor model on the x variables. }
-  \item{ymodel}{a factor model on the y variables (can be empty) }
+  \item{fx}{a factor model on the x variables. }
   \item{Phi}{A matrix of directed relationships.  Lower diagonal values are drawn.  If the upper diagonal values match the lower diagonal, two headed arrows are drawn.  For a single, directed path, just the value may be specified. }
+  \item{fy}{a factor model on the y variables (can be empty) }
   \item{out.file}{name a file to send dot language instructions. }
   \item{labels}{variable labels if not specified as colnames for the matrices}
   \item{cut}{Draw paths for values > cut }
@@ -81,7 +81,7 @@ colnames(Y3) <- "Y"
 rownames(Y3) <- c("y1","y2","y3")
 phi21 <- matrix(c(1,0,"r1",0,1,"r2",0,0,1),ncol=3)
 colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
-if(require(Rgraphviz)) {f4 <- structure.graph(X6,phi21,Y3,title="Structural model")} else {f4 <- structure.sem(X6,phi21,Y3,title="Structural model")}
+if(require(Rgraphviz)) {f4 <- structure.graph(X6,phi21,Y3,title="Structural model")} else {f4 <- structure.sem(X6,phi21,Y3)}
 
 
 # and finally, a regression model

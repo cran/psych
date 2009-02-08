@@ -4,6 +4,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
+      cl <- match.call()
       nvar <- dim(m)[2]
       if(dim(m)[1] != dim(m)[2]) {
                             n.obs <- dim(m)[1]
@@ -49,14 +50,14 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       uniq <- sum(gf$sl[,(nfactors+3)])
       om.tot <- (Vt-uniq)/Vt
       alpha <- ((Vt-Vitem)/Vt)*(nvar/(nvar-1))
-       sum.smc<- sum(smc(m))
+      sum.smc <- sum(smc(m))
       lambda.6 <-(Vt +sum.smc-sum(diag(m)))/Vt
-      if (!is.null(digits)) {omega <-list(omega_h= round(gsq/Vt,digits),alpha=round(alpha,digits),lambda.6 = round(lambda.6,digits),omega.tot =round(om.tot,digits),schmid=gf ,key = key,title=title)
+      if (!is.null(digits)) {omega <-list(omega_h= gsq/Vt,alpha=alpha,lambda.6 = lambda.6,omega.tot =om.tot,schmid=gf ,key = key,title=title)
       dg <-max(digits-1,1)} else {
       omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
       dg <- 1}
      if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
-     omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title,model=omega.model)
+     omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,call=cl,title=title,model=omega.model)
       class(omega) <- c("psych","omega")
       return(omega)
       }

@@ -64,8 +64,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-63 \cr
-Date: \tab 2009-1-15\cr
+Version: \tab 1.0-65 \cr
+Date: \tab 2009-2-7\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -129,7 +129,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 
 
 \tabular{ll}{
-\link{alpha.scale}      \tab         Find coefficient alpha for a scale (see also \link{score.items})\cr
+\link{alpha}      \tab         Find coefficient alpha and Guttman Lambda 6 for a scale (see also \link{score.items})\cr
 \link{make.keys}        \tab         Create the keys file for score.items or cluster.cor            \cr
 \link{correct.cor}      \tab        Correct a correlation matrix for unreliability\cr 
 \link{count.pairwise}   \tab        Count the number of complete cases when doing pair wise correlations\cr

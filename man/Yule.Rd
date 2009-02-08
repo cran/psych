@@ -10,7 +10,7 @@
 \tab c \tab d  \cr
 }
 Yule Q is (ad - bc)/(ad+bc). \cr
-Conceptually, this is the number of pairs in agreement (ad) - the number in disagreement (bc) over the total number of paired observations.  
+Conceptually, this is the number of pairs in agreement (ad) - the number in disagreement (bc) over the total number of paired observations.  Warren (2008) has shown that  Yule's Q is one of the ``coefficients that have zero value under statistical independence,maximum value unity, and minimum value minus unity independent of the marginal distributions" (p 787). 
 \cr
 ad/bc is the odds ratio and Q = (OR-1)/(OR+1) 
 \cr
@@ -20,10 +20,10 @@ Yule.inv finds the cell entries for a particular Q and the marginals (a+b,c+d,a+
 Yule2phi and Yule2poly convert the Yule Q with set marginals to the correponding phi or polychoric correlation.
 }
 \usage{
-Yule(x,Y=FALSE)
-Yule.inv(Q,m)
-Yule2phi(Q,m)
-Yule2poly(Q,m)
+Yule(x,Y=FALSE)  #find Yule given a two by two table of frequencies
+Yule.inv(Q,m)    #find the frequencies that produce a Yule Q given the Q and marginals
+Yule2phi(Q,m)    #find the phi coefficient that matches the Yule Q given the marginals
+Yule2poly(Q,m)   #Find the tetrachoric correlation given the Yule Q and the marginals
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,10 +38,14 @@ Yule2poly(Q,m)
   \item{Q}{The Yule Q coefficient}
   \item{R}{A two by two matrix of counts}
 }
-\references{Yule, G. Uday (1912) On the methods of measuring association between two attributes. Journal of the Royal Statistical Society, LXXV, 579-652}
+\references{Yule, G. Uday (1912) On the methods of measuring association between two attributes. Journal of the Royal Statistical Society, LXXV, 579-652
+
+Warrens, Matthijs (2008), On Association Coefficients for 2x2 Tables and Properties That Do Not Depend on the Marginal Distributions. Psychometrika, 73, 777-789. 
+
+}
 
 \author{ William Revelle }
-\note{Currently done by using the optimize function, but presumably could be redone by solving a quadratic equation.
+\note{Yule.inv is currently done by using the optimize function, but presumably could be redone by solving a quadratic equation.
 }
 \seealso{ See Also as \code{\link{phi}}, \code{\link{Yule2poly.matrix}}, \code{\link{Yule2phi.matrix}} }
 \examples{

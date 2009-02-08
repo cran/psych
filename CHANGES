@@ -2,6 +2,11 @@ Change file for package psych
 
 
 
+Version 1.0.64  February 2, 2009
+
+Added the data set Thurstone to the bifactor data set.
+Minor corrections to omega, structure.graph and structure.sem functions to allow for ease of use as a front end to sem.
+
 Version 1.0.63  January 22, 2009
 
 Added a tutorial for using psych as a front end to sem

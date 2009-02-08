@@ -1,7 +1,9 @@
 #just structure.graph, without the graphics (graphics commented out)
 "structure.sem" <-
-function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simple=TRUE,regression=FALSE) {
-    	#if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
+function(fx,Phi=NULL,fy=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simple=TRUE,regression=FALSE) {
+    	
+  xmodel <- fx
+  ymodel <- fy
  if(!is.null(class(xmodel)) && (length(class(xmodel))>1)) {
    if(class(xmodel)[1] =="psych" && class(xmodel)[2] =="omega") {
     Phi <- xmodel$schmid$phi
@@ -24,20 +26,21 @@ function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TR
   
   #first some basic setup parameters 
   num.y <- 0   #we assume there is nothing there
-  num.var <- dim(factors)[1]   #how many x variables?
+  num.var  <- num.xvar <- dim(factors)[1]   #how many x variables?
   if (is.null(num.var) ){num.var <- length(factors)
                           num.factors <- 1} else {
             num.factors <- dim(factors)[2]}
    
    num.xfactors <- num.factors
-   num.xvar <- num.var
-  if(is.null(labels)) {vars <- rownames(xmodel)} else {vars <- labels}
+  
+  if(is.null(labels)) {vars <- xvars <-  rownames(xmodel)} else { xvars <-  vars <- labels}
  
- if(is.null(vars) ) {vars <- paste("x",1:num.var,sep="")  }
+ if(is.null(vars) ) {vars <-xvars <- paste("x",1:num.var,sep="")  }
   fact <- colnames(xmodel)
   if (is.null(fact)) { fact <- paste("X",1:num.factors,sep="") }
   
-   num.yfactors <- 0
+  
+ num.yfactors <- 0
    if (!is.null(ymodel)) { 
    if(is.list(ymodel) & !is.data.frame(ymodel)  ) {ymodel <- as.matrix(ymodel$loadings)} else {ymodel <- ymodel}   
  if(!is.matrix(ymodel) ) {y.factors <- as.matrix(ymodel)} else {y.factors <- ymodel}
@@ -51,6 +54,8 @@ function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TR
       
      yvars <- rownames(ymodel)
      if(is.null(yvars)) {yvars <- paste("y",1:num.y,sep="")  }
+      if(is.null(labels)) {vars <- c(xvars,yvars)} else {yvars <- labels[(num.xvar+1):(num.xvar+num.y)]} 
+    
      vars <- c(vars,yvars)
      
       yfact <- colnames(ymodel)
@@ -63,39 +68,37 @@ function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TR
     colnames(sem) <- c("Path","Parameter","Value")
    
    if(!regression) {    #the normal condition is to draw a latent model
-   k <- num.factors  
+           k <- num.factors  
       
-  if (num.xfactors ==1) { 
-       
-    for (i in 1:num.xvar) { 
+  	if (num.xfactors ==1) {    
+    	for (i in 1:num.xvar) { 
                           sem[i,1] <- paste(fact[1],"->",vars[i],sep="")
                           if(is.numeric(factors[i])) {sem[i,2] <- vars[i]} else {sem[i,2] <- factors[i] }
-                        }  
-                        k <- num.var+1 
-      } else {         #end of if num.xfactors ==1 
+                                }  
+                        k <- num.xvar+1 
+     	} else {         #end of if num.xfactors ==1 
         #all loadings > cut in absolute value
                    k <- 1
                    for (i in 1:num.xvar) {
-                   for (f in 1:num.xfactors) { 
-                   if((!is.numeric(factors[i,f] ) && (factors[i,f] !="0"))||  ((is.numeric(factors[i,f]) && abs(factors[i,f]) > cut ))) {
+                   	for (f in 1:num.xfactors) { 
+                   		if((!is.numeric(factors[i,f] ) && (factors[i,f] !="0"))||  ((is.numeric(factors[i,f]) && abs(factors[i,f]) > cut ))) {
                
-                              sem[k,1] <- paste(fact[f],"->",vars[i],sep="")
+                             sem[k,1] <- paste(fact[f],"->",vars[i],sep="")
                              if(is.numeric(factors[i,f])) {sem[k,2] <- paste("F",f,vars[i],sep="")} else {sem[k,2] <- factors[i,f]}
                               k <- k+1 }   #end of if 
                          }  
                         }      
        } 
-        if(errors) {  for (i in 1:num.xvar) { #clust.graph <- addEdge(vars[i], vars[i], clust.graph,1)  
-                                        
+        if(errors) {  for (i in 1:num.xvar) { 
                                           sem[k,1] <- paste(vars[i],"<->",vars[i],sep="")
                                           sem[k,2] <- paste("x",i,"e",sep="")
-                    k <- k+1 }
-        }
+                                             k <- k+1 }
+                    }
     } else  {   #the regression case
        if (title=="Structural model") title <- "Regression model"
        k <- num.var+1
        yvars <- "Y1"
-    }   ?
+              }   
        
   #now, if there is a ymodel, do it for y model 
   
@@ -109,10 +112,12 @@ function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TR
       } else {   #end of if num.yfactors ==1 
         #all loadings > cut in absolute value
                    for (i in 1:num.y) {
-                   for (f in 1:num.yfactors) { if (!is.numeric(factors[i,f]) || (abs(y.factors[i,f]) > cut)) {#clust.graph <- addEdge( vars[i+num.xvar],fact[f+num.xfactors], clust.graph,1) 
+                   for (f in 1:num.yfactors) { #if (!is.numeric(y.factors[i,f]) || (abs(y.factors[i,f]) > cut)) 
+                    if((!is.numeric(y.factors[i,f] ) && (y.factors[i,f] !="0"))||  ((is.numeric(y.factors[i,f]) && abs(y.factors[i,f]) > cut ))) {
+                    
                         
                            sem[k,1] <- paste(fact[f+num.xfactors],"->",vars[i+num.xvar],sep="")
-                           if(is.numeric(y.factors[i,f])) { sem[k,2] <- paste("Fy",f,vars[i+num.xvar],sep="")} else {sem[k,2] <- factors[i,f]}
+                           if(is.numeric(y.factors[i,f])) { sem[k,2] <- paste("Fy",f,vars[i+num.xvar],sep="")} else {sem[k,2] <- y.factors[i,f]}
                          k <- k+1 }   #end of if 
                          }  #end of factor
                         } # end of variable loop
@@ -123,14 +128,14 @@ function(xmodel,Phi=NULL,ymodel=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TR
                     sem[k,2] <- paste("y",i,"e",sep="")
                     k <- k+1 }}
   
-  }   #end of if.null(ymodel)
+  }   #end of !is.null(ymodel)
  
  if (!is.null(labels)) {var.labels <- c(labels,fact)
   } 
 
 if(!regression) {
   if(!is.null(Phi)) {if (!is.matrix(Phi))  Phi <- matrix(c(1,Phi,0,1),ncol=2) 
-  for (i in 2:num.factors) {
+  if(num.xfactors>1) {for (i in 2:num.xfactors) {
                          for (j in 1:(i-1)) {if((!is.numeric(Phi[i,j] ) && (Phi[i,j] !="0"))||  ((is.numeric(Phi[i,j]) && abs(Phi[i,j]) > cut ))) {
                           
                             if(Phi[i,j] != Phi[j,i]){
@@ -144,6 +149,24 @@ if(!regression) {
                               }              }
                             }
                        }
+                       } #end of correlations within x set
+               if(!is.null(ymodel)) {
+                  for (i in 1:num.xfactors) { 
+                      for (j in 1:num.yfactors) {
+                      if((!is.numeric(Phi[i,j+num.xfactors] ) && (Phi[i,j+num.xfactors] !="0"))||  ((is.numeric(Phi[i,j+num.xfactors]) && abs(Phi[i,j+num.xfactors]) > cut ))) {
+                      # clust.graph <- addEdge( fact[j+num.xfactors],fact[i],clust.graph,1)
+                      # if (is.numeric(Phi[i,j+num.xfactors])) { edge.label[k] <- round(Phi[i,j+num.xfactors],digits)} else {edge.label[k] <- Phi[i,j+num.xfactors]}
+                      # edge.dir[k] <- "back"
+                      # edge.name[k] <- paste(fact[j+num.xfactors],"~",fact[i],sep="")
+                        sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="")
+                        if (is.numeric(Phi[i,j+num.xfactors])) {sem[k,2] <-  paste("rX",i,"Y",j,sep="")} else {sem[k,2] <- Phi[i,j+num.xfactors] } 
+                       k <- k + 1 }
+                        }
+                      
+                  
+                  }
+                          
+      }  
      } else {if(!is.null(Phi)) {if (!is.matrix(Phi))  Phi <- matrix(c(1,Phi,0,1),ncol=2) 
         for (i in 2:num.xvar) {
              for (j in 1:(i-1))  {

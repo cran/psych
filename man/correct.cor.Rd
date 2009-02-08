@@ -34,11 +34,11 @@ a1 <- attitude[,c(1:3)]
 a2 <- attitude[,c(4:7)]
 x1 <- rowSums(a1)  #find the sum of the first 3 attitudes
 x2 <- rowSums(a2)   #find the sum of the last 4 attitudes
-alpha1 <- alpha.scale(x1,a1)
-alpha2 <- alpha.scale(x2,a2)
+alpha1 <- alpha(a1)
+alpha2 <- alpha(a2)
 x <- matrix(c(x1,x2),ncol=2)
 x.cor <- cor(x)
-alpha <- c(alpha1,alpha2)
+alpha <- c(alpha1$total$raw_alpha,alpha2$total$raw_alpha)
 round(correct.cor(x.cor,alpha),2)
 #
 #much better - although uses standardized alpha 

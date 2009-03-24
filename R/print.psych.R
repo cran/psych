@@ -1,10 +1,11 @@
 #reorganized, January 18, 2009 to make some what clearer
+#should eventually just break into separate print functions
 "print.psych" <-
-function(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...) { 
+function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- alpha <- FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- FALSE
 #first, figure out which psych function was called
-if(length(class(x)) > 1)  { 
+if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
    if(class(x)[2] =='vss')  vss <- TRUE
    if(class(x)[2] =='iclust')  iclust <- TRUE
@@ -12,27 +13,66 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] =='fa')  fac.pa <- TRUE
    if(class(x)[2] =='principal') fac.pa <- TRUE
    if(class(x)[2] == 'alpha') alpha <- TRUE
+   if(class(x)[2] == 'describe') describe <- TRUE
+   if(class(x)[2] == "corr.test") corr.test <- TRUE
+   if(class(x)[2] == "r.test") r.test <- TRUE
+   if(class(x)[2] == "cortest") cortest <- TRUE
+   if(class(x)[2] == "score.items") scores <- TRUE
+   if(class(x)[2] == "cluster.cor") cluster.cor <- TRUE
+   if(class(x)[2] == "cluster.loadings") cluster.loadings <- TRUE
+   if(class(x)[2] == "guttman") gutt <- TRUE
      } 
 else {      #old and clunky way of figuring out which function called,   replace as above
    
-if(!is.null(x$av.r)) {scores <- TRUE}
+#these next test for non-psych functions that may be printed using print.psych
 if(!is.null(x$communality.iterations)) {fac.pa <- TRUE}
 if(!is.null(x$uniquenesses)) {fac.pa <- TRUE}
 if(!is.null(x$rotmat)) {fac.pa <- TRUE}
 if(!is.null(x$Th)) {fac.pa <- TRUE}
-if(!is.null(x$lambda.1) ) {gutt <- TRUE}
+
 }
 
 
- 
-#if(!is.null(x$scores)) { x <- x[-c(1:2)]}     # I am not sure which function this was referrring to, 
+if(describe) {if  (length(dim(x))==1) {class(x) <- "list"
+              attr(x,"call") <- NULL
+              print(x,digits)
+                  } else  {class(x) <- "data.frame" 
+            print(round(x,digits)) }
+      }
+         
+          
+if(corr.test) {cat("Call:")
+              print(x$Call)
+              cat("Correlation matrix \n")
+              print(round(x$r,digits))
+              cat("Sample Size \n")
+              print(x$n)
+              cat("Probability value \n")
+             print(round(x$p,digits))
+     }
+
+if(r.test) {cat("Correlation tests \n")
+            cat("Call:")
+              print(x$Call)
+              cat( x$Test,"\n")
+              if(!is.null(x$t)) {cat(" t value" ,round(x$t,digits),"   with probability <", signif(x$p,digits) )}
+              if(!is.null(x$z)) {cat(" z value" ,round(x$z,digits),"   with probability ",  round(x$p,digits) )}               
+              if(!is.null(x$ci)) {cat("\n and confidence interval ",round(x$ci,digits) ) }
+         }
+         
+ if(cortest) {cat("Tests of correlation matrices \n")
+            cat("Call:")
+            print(x$Call)
+            cat(" Chi Square value" ,round(x$chi,digits)," with df = ",x$df, "  with probability <", signif(x$p,digits) )
+         }
+                                
   
 if(all) {class(x) <- "list"
          print(x) } else {    #find out which function created the data and then print accordingly
 
 ## 
  if(omega) {
-     if(is.null(cutoff)) cutoff <- .2
+     if(is.null(cut)) cut <- .2
 	 cat( x$title,"\n") 
 	 cat("Call: ")
      print(x$call)
@@ -41,7 +81,7 @@ if(all) {class(x) <- "list"
  	cat("Omega Hierarchical:  " ,round(x$omega_h,digits),"\n")
  	cat("Omega Total  " ,round(x$omega.tot,digits),"\n")
             
-	cat("\nSchmid Leiman Factor loadings greater than ",cutoff, "\n")
+	cat("\nSchmid Leiman Factor loadings greater than ",cut, "\n")
 	   loads <- x$schmid$sl
 	   if(sort) {
 	      ord <- sort(abs(loads[,1]),decreasing=TRUE,index.return=TRUE)
@@ -50,7 +90,7 @@ if(all) {class(x) <- "list"
 	   } #end sort 
 	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")  
-         	fx[abs(loads)< cutoff] <- paste(rep(" ", nc), collapse = "")
+         	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
 	    	print(fx,quote="FALSE")
 	   
        numfactors <- dim(x$schmid$sl)[2] -2
@@ -68,7 +108,10 @@ if(all) {class(x) <- "list"
 #### VSS outpt
 if(vss) {
  if(x$title!="Very Simple Structure") {
+ 
  cat("\nVery Simple Structure of ", x$title,"\n") } else {cat("\nVery Simple Structure\n")} 
+ cat("Call: ")
+ print(x$call)
  cat("VSS complexity 1 achieves a maximimum of ")
  vss.max <- round(max(x$cfit.1) ,digits) 
  cat(vss.max," with " ,which.max(x$cfit.1), " factors\n") 
@@ -87,24 +130,69 @@ if(vss) {
    }
 
 if(scores) {
-	cat("\nAlpha:\n")
-	print(x$alpha)
-  	cat("\nAverage item correlation:\n")
-	print(x$av.r,digits) 
-	      
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Unstandardized) Alpha:\n")
+	print(x$alpha,digits=digits)
 	
-	 if(iclust) {cat("\nOriginal Beta:\n")  
-	            print(x$beta,digits) }	
- 	  cat("\nScale intercorrelations:\n")
-	  print(x$cor,digits=digits)
+  	cat("\nAverage item correlation:\n")
+  	print(x$av.r,digits=digits)
+	
+	cat("\n Guttman 6* reliability: \n")
+	print(x$G6,digits=digits)     
+	
+	 if(iclust) {cat("\nOriginal Beta:\n")
+	 print(x$beta,digits) }	 
+	           
+ 	 # cat("\nScale intercorrelations:\n")
+	 # print(x$cor,digits=digits)
 	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(x$corrected,digits) 
 	 
 	  if(!is.null(x$item.cor) ) {
-	   cat("\nItem by scale correlations:\n")
-	 print(x$item.cor) } 
+	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
+	 print(round(x$item.corrected,digits=digits)) } 
   }
+  
+if(cluster.cor) {
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Standardized) Alpha:\n")
+	print(x$alpha,digits)
+
+  	cat("\nAverage item correlation:\n")
+	print(x$av.r,digits)
+	cat("\nNumber of items:\n")
+	print(x$size)
 	
+	      
+ 	 # cat("\nScale intercorrelations:\n")
+	 # print(x$cor,digits=digits)
+	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 print(x$corrected,digits) 
+	  }
+	
+	
+if(cluster.loadings) {
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Standardized) Alpha:\n")
+	print(x$alpha,digits)
+		cat("\n(Standardized) G6*:\n")
+	print(x$G6,digits)
+  	cat("\nAverage item correlation:\n")
+	print(x$av.r,digits)
+	cat("\nNumber of items:\n")
+	print(x$size)
+ cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 print(x$corrected,digits) 
+	 
+   cat("\nItem by scale intercorrelations\n corrected for item overlap and scale reliability\n")
+	 print(x$loadings,digits) 
+  #cat("\nItem by scale Pattern matrix\n")
+	# print(x$pattern,digits) 
+	
+  }
 ####
 if(alpha) {
 cat("\nReliability analysis ",x$title," \n")
@@ -123,7 +211,7 @@ cat("\n Item statistics \n")
 
 #### factor.pa output
 if(fac.pa) {
- if(is.null(cutoff)) cutoff <- .3
+ if(is.null(cut)) cut <- .3
  	load <- x$loadings
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
@@ -159,7 +247,7 @@ if(fac.pa) {
 	    	 fx.1 <- fx[,1]
 	    	 fx.2 <- fx[,3:(2+ncol)]
 	    	 load.2 <- loads[,3:(ncol+2)]
-         	fx.2[abs(load.2)< cutoff] <- paste(rep(" ", nc), collapse = "")
+         	fx.2[abs(load.2)< cut] <- paste(rep(" ", nc), collapse = "")
          	fx <- data.frame(V=fx.1,fx.2)
          	if(dim(fx)[2] <3) colnames(fx) <- c("V","PA1") #for the case of one factor
 	    	print(fx,quote="FALSE")
@@ -201,15 +289,32 @@ if(fac.pa) {
  
  ####  ICLUST output
 if(iclust) {
+   cat("ICLUST (Item Cluster Analysis)")
+   cat("\nCall: ")
+     print(x$call)
+     
+     
+   
+ 	cat("\nPurified Alpha:\n")
+	print(x$purified$alpha,digits)
+		cat("\nG6* reliability:\n")
+	print(x$G6,digits)
+	cat("\nOriginal Beta:\n")
+	print(x$beta)
+	cat("\nCluster size:\n")
+	print(x$purified$size,digits)
+
+ 
 if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
-	    load <- x$sorted$sorted
-	    ncol <-dim(load)[2]-4
-	    fx <- format(load,digits=digits)
+ load <- x$sorted$sorted
+  if(is.null(cut)) cut <- .3
+	    ncol <- dim(load)[2]-3
+	    fx <- as.matrix(format(load,digits=digits))
 	     nc <- nchar(fx[1,4], type = "c")
 	     fx.1 <- fx[,1:3]
-	     fx.2 <- fx[,4:(4+ncol)]
-	     load.2 <- load[,4:(ncol+4)]
-         fx.2[abs(load.2)< cutoff] <- paste(rep(" ", nc), collapse = "")
+	     fx.2 <- fx[,4:(3+ncol)]
+	     load.2 <- load[,4:(ncol+3)]
+         fx.2[abs(load.2)< cut] <- paste(rep(" ", nc), collapse = "")
          fx <- data.frame(fx.1,fx.2)
 	    print(fx,quote="FALSE")
  		
@@ -222,30 +327,16 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
 	    load <- unclass(x$loadings)
 	    fx <- format(load,digits=digits)
 	     nc <- nchar(fx[1,1], type = "c")
-         fx[abs(load) < cutoff] <- paste(rep(" ", nc), collapse = "")
+         fx[abs(load) < cut] <- paste(rep(" ", nc), collapse = "")
 	    print(fx,quote="FALSE")
  		#print(unclass(x$loadings)) 
  		eigenvalues <- diag(t(x$loadings) %*% x$loadings)
        cat("\nWith eigenvalues of:\n")
        print(eigenvalues,digits=digits)
  		}
- 
- if (!is.null(x$pattern))  {
-    if (sort) {cat("\nItem by Cluster Pattern matrix: sort by loadings is not yet available\n Redo without sort=TRUE to get pattern matrix\n") } else {
-       
-        cat("\nItem by Cluster Pattern matrix:\n")
-		 load <- unclass(x$pattern)
-		  fx <- format(load,digits=digits)
-	     nc <- nchar(fx[1,1], type = "c")
-         fx[abs(load) < cutoff] <- paste(rep(" ", nc), collapse = "")
-	    print(fx,quote="FALSE")
-		# print(x$pattern) 
-		 	eigenvalues <- diag(t(x$pattern) %*% x$pattern)
-       cat("\nWith eigenvalues of:\n")
-       print(eigenvalues,digits=digits)}
-       }
-  
-   } #end if !is.null(x$loadings)
+ if(!is.null(x$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
+print(x$purified$corrected)  }
+}
    }# end of if ICLUST
    
  if(gutt) {
@@ -254,6 +345,7 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
  cat ("\nGuttman bounds \n L1 = ",x$lambda.1, "\n L2 = ", x$lambda.2, "\n L3 (alpha) = ", x$lambda.3, "\n L4 (max) = " ,x$lambda.4, "\n L5 = ", x$lambda.5, "\n L6 (smc) = " ,x$lambda.6, "\n")
  cat("TenBerge bounds \n mu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
  cat("\n alpha of first PC = ", x$alpha.pc, "\n estimated glb = ", x$lambda.4,"\n")
+ cat("\n beta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
  } 
   
   

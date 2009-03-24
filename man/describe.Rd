@@ -8,12 +8,11 @@ There are many summary statistics available in R; this function
   Range is most useful for the first pass in a data set, to check for coding errors. 
 }
 \usage{
-describe(x, digits = 2, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1)
+describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A data frame or matrix}
-  \item{digits}{ How many significant digits to report}
   \item{na.rm}{The default is to delete missing data.  na.rm=FALSE will delete the case. }
   \item{interp}{Should the median be standard or interpolated}
   \item{skew}{ Should the skew and kurtosis be calculated? }
@@ -25,7 +24,7 @@ Procedures such as \code{\link{summary}} and hmisc::describe do so.  The describ
 
 The range statistics (min, max, range) are most useful for data checking to detect coding errors, and should be found in early analyses of the data.  
 
-Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not for factors or for alphanumeric data). 
+Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not  for alphanumeric data). Variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name. 
 
 In a typical study, one might read the data in from the clipboard (\code{\link{read.clipboard}}), show the splom plot of the correlations (\code{\link{pairs.panels}}), and then describe the data. 
 
@@ -59,10 +58,10 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 }
 \seealso{ \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{pairs.panels}}, \code{\link{read.clipboard}}, \code{\link{error.crosses}} }
 \examples{
+data(sat.act)
+describe(sat.act)
 
-describe(attitude)
-
-describe(attitude,skew=FALSE)   #attitude is taken from R data sets
+describe(sat.act,skew=FALSE)   
 
 
 

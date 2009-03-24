@@ -8,15 +8,16 @@
 \description{input from the keyboard is easy but a bit obscure, particularly for Mac users. This is just an easier mnemonic to do so.  Also will do some processing to read lower triangular matrices and fill them out to square matrices.
 }
 \usage{
-read.clipboard(header = TRUE, ...)
-read.clipboard.lower(diag=TRUE,names=NULL)
-read.clipboard.upper(diag=TRUE,names=NULL)
-#my.data <- read.clipboad()         #assumes headers and tab delimited
-#my.data <- read.clipboard.csv()     #assumes heades and comma delimited
+read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
+read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
+read.clipboard.lower(diag=TRUE,names=NULL,...)  #read in a matrix given the lower off diagonal
+read.clipboard.upper(diag=TRUE,names=NULL,...)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{header}{Does the first row have variable labels }
+  \item{sep}{What is the designated separater between data fields?}
   \item{diag}{for upper or lower triangular matrices, is the diagonal specified or not}
   \item{names}{for read.clipboard.lower or upper, what colnames to use}
   \item{\dots}{ Other parameters to pass to read }

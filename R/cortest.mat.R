@@ -1,5 +1,6 @@
 "cortest.mat" <- 
 function(R1,R2=NULL,n1=NULL,n2 = NULL) {
+cl <- match.call()
 p <- dim(R1)[2]
 if(dim(R1)[1] != p) { n1 <- dim(R1)[1]
                     R1 <- cor(R1,use="pairwise")
@@ -40,6 +41,7 @@ n.obs <- min(n1,n2)
 chi21 <- E1 * (n1-1-(2*p - 5)/6)
 chi22 <- E2 * (n2-1-(2*p - 5)/6)
 chi2 <- chi21 + chi22} 
- results <- list(chi2 =chi2,prob =pchisq(chi2,df,lower.tail=FALSE), df= df,n.obs=n.obs)
+ results <- list(chi2 =chi2,prob =pchisq(chi2,df,lower.tail=FALSE), df= df,n.obs=n.obs,Call =cl)
+ class(results) <- c("psych","cortest")
  return(results)
 }

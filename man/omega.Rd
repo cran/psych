@@ -1,7 +1,7 @@
 \name{omega}
 \alias{omega}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{   Calculate the omega estimate of factor saturation}
+\title{  Calculate McDonald's  omega estimates of general and total factor saturation }
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{

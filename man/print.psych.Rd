@@ -8,7 +8,7 @@
 In addition, will supply the factor correlations for output from a promax rotation applied to a factanal output.
 }
 \usage{
-print.psych(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...)
+print.psych(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...)
 summary.psych(object,digits=2,items=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -18,7 +18,7 @@ summary.psych(object,digits=2,items=FALSE,...)
   \item{items}{items=TRUE (default) does not print the item whole correlations}
   \item{digits}{Number of digits to use in printing}
   \item{all}{if all=TRUE, then the object is declassed and all output from the function is printed}
-  \item{cutoff}{Cluster loadings < cutoff will not be printed.  For factor.pa, cutoff defaults to .3, for omega to .2.}
+  \item{cut}{Cluster loadings < cut will not be printed.  For factor.pa and ICLUST, cut defaults to .3, for omega to .2.}
   \item{sort}{Cluster loadings are in sorted order}
   \item{...}{More options to pass to summary and print}
 }

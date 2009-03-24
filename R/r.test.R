@@ -1,11 +1,14 @@
  "r.test" <- 
  function(n,r12, r34=NULL, r23=NULL,r13=NULL,r14=NULL,r24=NULL,n2=NULL,pooled=TRUE, twotailed=TRUE) {
+  cl <- match.call()
   if(is.null(r34) & is.null(r13) & is.null(r23)) {  #test for significance of r
+     
   
      t <- r12*sqrt(n-2)/sqrt(1-r12^2) 
      p <- (1-pt(t,n-2))
      if(twotailed) p <- 2*p
-      result <-  list(test="test of significance of a  correlation",t=t,p=p)
+     ci <- r.con(r12,n)
+      result <-  list(Call=cl,Test="Test of significance of a  correlation",t=t,p=p,ci=ci)
   } else {if(is.null(r23)) { #compare two independent correlations
         xy.z <- 0.5*log((1+r12)/(1-r12))
         xz.z <- 0.5*log((1+r34)/(1-r34))
@@ -15,7 +18,7 @@
         z <- abs(diff/se.diff.r)
          p <- (1-pnorm(z ))
           if(twotailed) p <- 2*p
-      result <-  list(test="test of difference between two independent correlations",z=z,p=p)
+      result <-  list(Call=cl,Test="Test of difference between two independent correlations",z=z,p=p)
                              }  else { if (is.null(r14)) {#compare two dependent correlations case 1
       
         
@@ -29,7 +32,7 @@
        t2 = diff * sqrt((n-1)*(1+r23)/(((2*(n-1)/(n-3))*determin+av*av*cube)))
        p <- pt(abs(t2),n-2,lower.tail=FALSE)
         if(twotailed) p <- 2*p
-      result <- list(test="test of difference between two correlated  correlations",t=t2,p=p)                                  
+      result <- list(Call=cl,Test="Test of difference between two correlated  correlations",t=t2,p=p)                                  
       } else { #compare two dependent correlations, case 2
        z12 <- fisherz(r12)
     z34 <- fisherz(r34)
@@ -43,10 +46,11 @@
       z <- ztest
        p <- (1-pnorm(abs(z) ))
           if(twotailed) p <- 2*p
-       result <-  list(test="test of difference between two dependent correlations",z=z,p=p)
+       result <-  list(Call=cl,Test="Test of difference between two dependent correlations",z=z,p=p)
       
                               }
            }
     } 
+    class(result) <- c("psych", "r.test")
     return(result)
    }

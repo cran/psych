@@ -41,7 +41,7 @@
     }
     if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
       if(keys) {result <- list(sorted=loads,clusters=factor2cluster(loadings))} else  result <- list(sorted=loads)
-   class(result) <- "psych"
+   #class(result) <- c("psych","iclust")
    return(result)
 }
  #revised August 8, 2007 to add cluster keying option and to allow us to work with factor analysis output

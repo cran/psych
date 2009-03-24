@@ -1,4 +1,4 @@
-#last modified January 22, 2009 by William Revelle 
+#last modified March 14, 2009 by William Revelle 
 export(alpha,
 circ.tests,
 circ.sim,
@@ -13,6 +13,7 @@ cluster.loadings,
 cluster.plot,
 cluster2keys,
 correct.cor,
+corr.test,
 cortest,
 cortest.bartlett,
 cortest.jennrich,

@@ -7,7 +7,7 @@
     alpha.std <-  (1- n/sum(R))*(n/(n-1))
     smc.R <- smc(R)
     G6 <- (1- (n-sum(smc.R))/sum(R))
-    av.r <- (sum(R)-n)/(n*n-1)
+    av.r <- (sum(R)-n)/(n*(n-1))
     result <- list(raw=alpha.raw,std=alpha.std,G6,av.r)
     return(result)
     }
@@ -17,8 +17,10 @@
     nsub <- dim(x)[1]
     if (nsub !=nvar)  {
          C <- cov(x,use="pairwise") 
-         if(!is.null(keys)) {key.d <- diag(keys)
-                            C <- key.d %*% C %*% key.d}
+         if(!is.null(keys)) {
+         			keys<- as.vector(keys)
+        			 key.d <- diag(keys)
+                     C <- key.d %*% C %*% key.d}
          total <- rowSums(x,na.rm=na.rm)
          mean.t <- mean(total,na.rm=na.rm)
          sdev <- sd(total,na.rm=na.rm)
@@ -39,17 +41,24 @@
        
         Vt <- sum(R)
         item.r <- colSums(R)/sqrt(Vt)
+     #correct for item overlap 
+        RC <-R
+        diag(RC) <- smc(R)
+        Vtc <- sum(RC)
+        item.rc <-colSums(RC)/sqrt(Vtc)
+     #  
         item.means <- colMeans(x, na.rm=na.rm )
         item.sd <-  SD(x,na.rm=na.rm)
         if(nsub > nvar) {
         	alpha.total <- data.frame(alpha.total,mean=mean.t,sd=sdev)
         	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","mean","sd")
         	rownames(alpha.total) <- ""
-        	stats <- data.frame(n=t.valid,r =item.r,mean=item.means,sd=item.sd)} else {
+        	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,mean=item.means,sd=item.sd)} else {
         	alpha.total <- data.frame(alpha.total)
         	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r")
         	        rownames(alpha.total) <- ""
-        	stats <- data.frame(r =item.r)
+
+                  stats <- data.frame(r =item.r,r.cor = item.rc)
         	}
        	rownames(stats) <- colnames(x)
         result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,call=cl,title=title)

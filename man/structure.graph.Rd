@@ -43,7 +43,7 @@ Boths function return a matrix of commands suitable for using in the sem package
 The structure.graph output can be directed to an output file for post processing using the dot graphic language.  
 }
 \value{
- \item{sem}{a model matrix (partially) ready for input to John Fox's sem package}
+ \item{sem}{a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.}
  \item{dotfile}{If out.file is specified, a dot language file suitable for using in a dot graphics program such as graphviz or Omnigraffle.}
  
  A graphic structural diagram in the graphics window

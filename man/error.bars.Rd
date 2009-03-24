@@ -2,10 +2,10 @@
 \alias{error.bars}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plot means and confidence intervals}
-\description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}.
+\description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}.
 }
 \usage{
-error.bars(x, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL, ylim = NULL, alpha=.05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE, ...)
+error.bars(x, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL, ylim = NULL, alpha=.05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE,bars=FALSE, ...)
 }
 
 \arguments{
@@ -19,6 +19,7 @@ error.bars(x, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
+  \item{bars}{bars=TRUE will draw a bar graph if you really want to do that}
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 }
 
@@ -41,7 +42,15 @@ boxplot(x.df)
 error.bars(x.df, add=TRUE)
 
 error.bars(attitude) #another example
+error.bars(attitude,bar=TRUE)  #show the use of bar graphs
 
+#combine with boxplot
+boxplot(attitude)
+error.bars(attitude,add=TRUE)
+
+#combine with a strip chart
+stripchart(attitude,vertical=TRUE,method="jitter")
+error.bars(attitude,add=TRUE,arrow.len=.2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

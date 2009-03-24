@@ -10,21 +10,22 @@ SMCs are also used when estimating reliability using Guttman's lambda 6  \code{\
 The SMC is just  1 - 1/diag(R.inv) where R.inv is the inverse of R.
 }
 \usage{
-smc(R)
+smc(R,covar=FALSE)
 }
 
 \arguments{
   \item{R}{ A correlation matrix or a dataframe.  In the latter case, correlations are found.}
+  \item{covar}{if covar = TRUE and  R is either a covariance matrix or data frame, then return the smc * variance for each item}
 }
 
-\value{a vector of squared multiple correlations. 
+\value{a vector of squared multiple correlations.  Or, if covar=TRUE, a vector of squared multiple correlations * the item variances
 
 If the matrix is not invertible, then a vector of 1s is returned
 }
 
 \author{ William Revelle }
 
-\seealso{  \code{\link{mat.regress}}, \code{\link{factor.pa}} }
+\seealso{  \code{\link{mat.regress}}, \code{\link{factor.pa}}  }
 \examples{
 R <- make.hierarchical()
 round(smc(R),2)

@@ -35,7 +35,7 @@ n.iterations = 0,title="ICLUST",plot=TRUE)
   \item{reverse}{Reverse negative keyed items (default = TRUE}
   \item{beta.min}{ Stop clustering if the beta is not greater than beta.min (default = .5) }
   \item{output}{ 1) short, 2) medium, 3 ) long output (default =1)}
-  \item{labels}{vector of item content or labels}
+  \item{labels}{vector of item content or labels. If NULL, then the colnames are used.  If FALSE, then labels are V1 .. Vn}
   \item{cut}{sort cluster loadings > absolute(cut) (default = 0) }
   \item{n.iterations}{iterate the solution n.iterations times to "purify" the clusters (default = 0)}
   \item{digits}{ Precision of digits of output (default = 2) }

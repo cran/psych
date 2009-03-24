@@ -8,6 +8,23 @@ Additional functions are added sporadically.
 
 History:
 
+March, 2009:  1.0.67
+Have included the vignettes in the package
+Serious modifications to mat.regress to allow for raw data and covariances to be used.
+Added corrections for item overlap to use estimated communalities of items to alpha, cluster.cor, etc.
+
+Added estimates of G6+ reliabililty to alpha, score.items
+
+
+February, 2009: 1.0.66
+Introduced two package vignettes (overview and psych_for_sem)
+minor modification to ICLUST with respect to labeling
+addition to factor.congruence to allow for comparing omega solutions with factor solutions
+modified describe to allow for descriptions of categorical variables.
+
+
+February 7, 2009: 1.0.65 released to CRAN
+
 February 2009:  1.0.64
 
 Added the function alpha to find Cronbach's alpha and Guttman's Lambda 6 for total scales as well as with single item deleted.

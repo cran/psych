@@ -298,7 +298,10 @@ if (!is.null(ymodel)) {observed <- list(list(graph=obs.xvar,cluster=TRUE,attrs=c
 if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
 
 #return(list(nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs))  #useful for debugging 
-return(model=sem[1:(k-1),])
+
+model=sem[1:(k-1),]
+class(model) <- "mod"   #suggested by John Fox to make the output cleaner
+return(model)
    }
    
  

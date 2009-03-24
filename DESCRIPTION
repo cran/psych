@@ -1,14 +1,22 @@
 Package: psych
-Version: 1.0-65
-Date: 2009-02-08
-Title: Procedures for Psychological, Psychometric, and Personality Research
+Version: 1.0-67
+Date: 2009-03-24
+Title: Procedures for Psychological, Psychometric, and Personality
+        Research
 Author: William Revelle <revelle@northwestern.edu>
 Maintainer: William Revelle <revelle@northwestern.edu>
-Description: A number of routines for personality, psychometrics and experimental
-        psychology.   Functions are primarily for scale construction using factor analysis, cluster analysis and
+Description: A number of routines for personality, psychometrics and
+        experimental psychology.  Functions are primarily for scale
+        construction using factor analysis, cluster analysis and
         reliability analysis, although others provide basic descriptive
-        statistics. Functions for simulating particular item and test structures are included. Several functions serve as a useful front end for structural equation modeling.  For more information, see the personality-project.org/r.
-License: GPL version 2 or newer
+        statistics. Functions for simulating particular item and test
+        structures are included. Several functions serve as a useful
+        front end for structural equation modeling.  For more
+        information, see the personality-project.org/r webpage.
+License: GPL (>= 2)
 Suggests: polycor, GPArotation, MASS, Rgraphviz
-URL: http://personality-project.org/r, http://personality-project.org/r/psych.manual.pdf
-Packaged: Sun Feb  8 07:47:51 2009; bill
+URL: http://personality-project.org/r,
+        http://personality-project.org/r/psych.manual.pdf
+Packaged: Thu Mar 26 14:53:26 2009; bill
+Repository: CRAN
+Date/Publication: 2009-03-27 08:10:47

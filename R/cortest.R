@@ -1,5 +1,7 @@
 "cortest" <- 
 function(R1,R2=NULL, n1=NULL,n2=NULL,fisher=TRUE) {
+cl <- match.call()
+
 if (dim(R1)[1] != dim(R1)[2]) {n1 <- dim(R1)[1] 
                              message("R1 was not square, finding R from data")
                              R1 <- cor(R1,use="pairwise")}
@@ -37,7 +39,8 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
                  df <- p*(p-1)/2
                  p.val <- pchisq(chisq,df,lower.tail=FALSE)
       }
-   result <- list(chi2=chisq,prob=p.val,df=df)
+   result <- list(chi2=chisq,prob=p.val,df=df,Call=cl)
+   class(result) <- c("psych","cortest")
    return(result)
     }
 

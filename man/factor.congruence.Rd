@@ -5,22 +5,24 @@
 \description{Given two sets of factor loadings, report their degree of congruence (vector cosine). 
 }
 \usage{
-factor.congruence(x, y,digits=2)
+factor.congruence(x, y=NULL,digits=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ A matrix of factor loadings }
-  \item{y}{ A second matrix of factor loadings }
+  \item{x}{ A matrix of factor loadings or a list of matrices of factor loadings}
+  \item{y}{ A second matrix of factor loadings (if x is a list, then y may be empty)}
   \item{digits}{Round off to digits}
 
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
 
-Factor congruences are the cosines of pairs vectors defined by the loadings matrix and based at the origin.  Thus, for loadings that differ only by a scaler (e.g. the size of the eigen value), the factor congruences will be 1.
+Factor congruences are the cosines of pairs of vectors defined by the loadings matrix and based at the origin.  Thus, for loadings that differ only by a scaler (e.g. the size of the eigen value), the factor congruences will be 1.
 
 It is an interesting exercise to compare factor congruences with the correlations of factor loadings.  Factor congruences are based upon the raw cross products, while correlations are based upon centered cross products. That is,  correlations of factor loadings are cosines of the vectors based at the mean loading for each factor.   
 
 Input may either be matrices or factor analysis or principal components analyis output (which includes a loadings object), or a mixture of the two.
+
+To compare more than two solutions, x may be a list of matrices, all of which will be compared.
 
 
 

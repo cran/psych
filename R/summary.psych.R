@@ -8,7 +8,7 @@ function(object,digits=2,items=FALSE,...) {
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
 #figure out which psych function called us 
- iclust <- omega <- vss <- scores <- fa <- alpha <-  FALSE 
+ iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- FALSE 
  
  if(length(class(object)) > 1)  { 
    if(class(object)[2] =='sim')  sim <- TRUE
@@ -18,12 +18,11 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] =='fa')  fac.pa <- TRUE
    if(class(object)[2] =='principal') fac.pa <- TRUE
    if(class(object)[2] == 'alpha') alpha <- TRUE
+   if(class(object)[2] == 'score.items') scores <- TRUE
+   if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
+   if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
      } 
- #old way, soon to be removed    
-if (!is.null(object$map)) { vss <- TRUE} 
-if(!is.null(object$purified$alpha)) {  iclust <- TRUE} 
-if(!is.null(object$omega_h)) {omega <- TRUE}
-if(!is.null(object$av.r)) {scores <- TRUE}
+
 if(!is.null(object$fn)) {fa <- TRUE}
  
  if(vss) {
@@ -40,25 +39,29 @@ if(!is.null(object$fn)) {fa <- TRUE}
  cat(vss.map," with " ,which.min(object$map), " factors\n ") 
  }
  
-if(iclust) { 
+if(iclust) { cat("ICLUST (Item Cluster Analysis)") 
+ cat("Call: ")
+     print(object$call)
     cat( object$title,"\n") 
  	cat("\nPurified Alpha:\n")
 	print(object$purified$alpha)
+	cat("\n Guttman Lambda6  * \n")
+	print(object$G6,digits)
 	cat("\nOriginal Beta:\n")
 	print(object$beta)
 	cat("\nCluster size:\n")
 	print(object$purified$size)
 
-if(!is.null(object$purified$cor)) {cat("\nPurified scale intercorrelations:\n")
-print(object$purified$cor)  }
+if(!is.null(object$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
+print(object$purified$corrected)  }
 
 } 
 
 if(omega) {
  cat( object$title,"\n") 
- cat("Alpha: ",object$alpha,"\n") 
- cat("Omega Hierarchical:  " ,object$omega_h,"\n")
- cat("Omega Total:  " ,object$omega.tot,"\n")
+ cat("Alpha: ",round(object$alpha,digits),"\n") 
+ cat("Omega Hierarchical:  " ,round(object$omega_h,digits),"\n")
+ cat("Omega Total:  " ,round(object$omega.tot,digits),"\n")
  numfactors <- dim(object$schmid$sl)[2] -2
   eigenvalues <- diag(t(object$schmid$sl[,1:numfactors]) %*% object$schmid$sl[,1:numfactors])
        cat("\nWith eigenvalues of:\n")
@@ -70,10 +73,18 @@ if(omega) {
    	if(!is.na(object$schmid$n.obs)) {cat("The number of observations was ",object$schmid$n.obs, " with Chi Square = ",round(object$schmid$STATISTIC,digits), " with prob < ", round(object$schmid$PVAL,digits),"\n")}
            } 
 
-if(scores & !iclust) { cat("\nAlpha:\n")
-print(object$alpha)
- cat("\nScale intercorrelations:\n")
- print(object$cor)  
+if(scores ) { 
+cat("Call: ")
+print(object$Call)
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (unstandardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 print(object$corrected,digits) 
+	 }
+ 
+if(cluster.cor ) { 
+cat("Call: ")
+print(object$Call)
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (standardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 print(object$corrected,digits) 
  
 
 }

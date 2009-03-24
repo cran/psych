@@ -25,7 +25,7 @@ Surprisingly, 105 years after Spearman (1904) introduced the concept of reliabil
 \lambda_3 =  \frac{n}{n-1}\Bigl(1 - \frac{tr(\vec{V})_x}{V_x}\Bigr) = \frac{n}{n-1} \frac{V_x - tr(\vec{V}_x)}{V_x} = \alpha
 }{Lambda 3 = (n)/(n-1)(1-tr(Vx)/(Vx)  = (n)/(n-1)(Vx-tr(Vx)/Vx  = alpha}
 
-Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients \eqn{\beta}{beta} (Revelle, 1979; see \code{\link{ICLUST}}) and \eqn{\omega_h}{omega_hierchical} (see \code{\link{omega}})  are more appropriate estimates of the general factor saturation.  \eqn{\omega_h}{omega_total} (see \code{\link{omega}}) is a better estimate of the reliability of the total test.  
+Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients \eqn{\beta}{beta} (Revelle, 1979; see \code{\link{ICLUST}}) and \eqn{\omega_h}{omega_hierchical} (see \code{\link{omega}})  are more appropriate estimates of the general factor saturation.  \eqn{\omega_t}{omega_total} (see \code{\link{omega}}) is a better estimate of the reliability of the total test.  
 
 Guttman's Lambda 6 (G6) considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
 \deqn{
@@ -54,6 +54,7 @@ Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} w
   \item{alpha.drop }{A data frame with all of the above for the case of each item being removed one by one.}
   \item{item.stats}{A data frame including}
   \item{r}{The correlation of each item with the total score (not corrected for item overlap)}
+  \item{r.cor}{Item whole correlation corrected for item overlap and scale reliability}
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
   
@@ -75,8 +76,8 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 
 \seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, }
 \examples{
-r6 <- sim.congeneric()
-alpha(r6)
+r4 <- sim.congeneric()
+alpha(r4)
 r9 <- sim.hierarchical()
 alpha(r9)
 #an example of two independent factors that produce reasonable alphas

@@ -182,5 +182,7 @@ if(!regression) {
          k <- k+1
      }
   
-return(model=sem[1:(k-1),])
+model=sem[1:(k-1),]
+class(model) <- "mod"  #to make for pretty output when using sem package -- suggested by John Fox
+return(model)
    }

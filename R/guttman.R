@@ -5,27 +5,31 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {
 if(!is.matrix(r)) r <- as.matrix(r)
 r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data matrix
       if(is.null(colnames(r))) {  rownames(r) <- colnames(r) <- paste("V",1:nvar,sep="") }
-      m <- (1-r)/2
-      diag(m) <- 1
-       m.names <- colnames(m)
-       
- 
- if (!is.null(key)) { m <- diag(key) %*% m %*% diag(key)
-                           colnames(m) <- m.names   #flip items if we choose to do so
+      if (!is.null(key)) { key <- as.vector(key)
+                          r <- diag(key) %*% r %*% diag(key)
+                        
                            flip <- FALSE   #we do this if we specify the key
                            } else {key <- rep(1,nvar) }
+      
+      m <- (1-r)/2
+      diag(m) <- 1
+      m.names <- colnames(r)
+      colnames(m) <- m.names   #flip items if we choose to do so
+       
+ 
+
        signkey <- strtrim(key,1)
-             signkey[signkey=="1"] <- ""
-             m.names <- paste(m.names,signkey,sep="")
-             colnames(m) <- rownames(m) <- m.names 
+       signkey[signkey=="1"] <- ""
+        m.names <- paste(m.names,signkey,sep="")
+        colnames(m) <- rownames(m) <- m.names 
             
              
  worst <- ICLUST(r,2,plot=FALSE)
-  keys <- worst$p.sorted$cluster
+ w.keys <- worst$p.sorted$cluster
  
  best <- ICLUST(m,2,plot=FALSE)
  keys <- matrix(rep(0,nvar*2),ncol=2)
- keys <- best$p.sorted$cluster
+ b.keys <- best$p.sorted$cluster
  
  m1 <- r
  diag(m1) <- 0
@@ -51,9 +55,14 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
     key.fa2[,1] <- (load[,1] > load[,2]) + 0
     key.fa2[,2 ] <- 1- key.fa2[,1]
     
-
-e <- eigen(r)$values[1]
+ev <-eigen(r)$values
+e <- ev[1]
 alpha.pc <- (1-1/e) * nvar/(nvar-1)
+#alpha.pc2 <- (1-1/ev[2]) * nvar/(nvar-1)
+
+r.pc <-  2*ev[1]/(ev[1]+ev[2])-1
+r.pc <- r.pc * alpha.pc #attenuate the correlation
+beta.pc <- 2 * r.pc/(1+r.pc)
 
 Vt <-  sum.r <- sum(r)
  tr.r <- tr(r)
@@ -73,14 +82,14 @@ c.co.max <- max(c.co)
 lambda.5 <- lambda.1 + 2*sqrt(c.co.max)/Vt
 lambda.5p <- lambda.1 +(nvar)/(nvar-1)*  2*sqrt(c.co.max)/Vt
  
-keys <- cbind(worst$p.sorted$cluster,keys,keys.kmean,key.fa,key.fa2)
+keys <- cbind(w.keys,b.keys,keys.kmean,key.fa,key.fa2)
 try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2"))
  covar <- t(keys) %*% r %*% keys    #matrix algebra is our friend
  var <- diag(covar)
  sd.inv <- 1/sqrt(var)
  ident.sd <- diag(sd.inv,ncol = length(sd.inv))
  cluster.correl <- ident.sd %*% covar  %*% ident.sd
- beta <- cluster.correl[2,1] *2 /(1+cluster.correl[2,1])
+ beta <- abs(cluster.correl[2,1]) *2 /(1+abs(cluster.correl[2,1]))
  glb1 <- cluster.correl[3,4] *2 /(1+cluster.correl[3,4])
  glb2 <- cluster.correl[5,6] * 2/(1+ cluster.correl[5,6] )
  glb3 <- cluster.correl[7,8] * 2/(1+cluster.correl[7,8])
@@ -91,7 +100,7 @@ try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2")
  gamma <- (sum.r+sum.smc-sum(diag(r)))/Vt
  tenberg <- tenberge(r,digits=digits)
  result <- list(lambda.1=round(lambda.1,digits),lambda.2=round(lambda.2,digits),lambda.3=round(lambda.3,digits),lambda.4 =round(glb.max,digits),lambda.5 = round(lambda.5,digits),lambda.5p = round(lambda.5p,digits),lambda.6=round(lambda.6,digits),beta = round(beta,digits),beta.factor = round(beta.fa,digits),alpha.pc = round(alpha.pc,digits),
- glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), keys=keys, tenberge=tenberg)
- class(result) <- "psych"
+ glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), keys=keys, tenberge=tenberg,r.pc=r.pc,beta.pc=beta.pc)
+ class(result) <- c("psych","guttman")
  return(result)
 }

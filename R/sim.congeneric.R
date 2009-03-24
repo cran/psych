@@ -39,3 +39,6 @@ if (short) {return(model)}  else {result <- list(model=model,pattern=pattern,r=c
 class(result) <- c("psych","sim")
  return(result)} 
  }
+ 
+ 
+ 

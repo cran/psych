@@ -43,7 +43,7 @@ Techniques most commonly used include
 8) Using Wayne Velicer's Minimum Average Partial (MAP) criterion. 
 	
 
- Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simlpy runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.  The scree test is quite appealling but can lead to differences of interpretation as to when the scree "breaks". The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3.  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  VSS, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2).
+ Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simply runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.  The scree test is quite appealling but can lead to differences of interpretation as to when the scree "breaks". The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3.  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  VSS, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2).
 
 
 
@@ -98,8 +98,8 @@ my.vss <- VSS(test.data,title="VSS of 24 mental tests")
 #VSS.plot(my.vss, title="VSS of 24 mental tests")
 
 #now, some simulated data with two factors
-VSS(circ.sim(nvar=24),pc="mle" ,title="VSS of 24 circumplex variables")
-VSS(item.sim(nvar=24),pc="mle" ,title="VSS of 24 simple structure variables")
+VSS(sim.circ(nvar=24),pc="mle" ,title="VSS of 24 circumplex variables")
+VSS(sim.item(nvar=24),pc="mle" ,title="VSS of 24 simple structure variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

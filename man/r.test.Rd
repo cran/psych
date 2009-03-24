@@ -20,22 +20,27 @@ r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL, n2 = 
   \item{pooled}{use pooled estimates of correlations}
   \item{twotailed}{ should a twotailed or one tailed test be used }
 }
-\details{Depending upon the input, one of four different tests of correlations is done.\\
-1) For a sample size n, find the t value for a single correlation. \\
-2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores. \\
-3) For sample size n, and correlations ra= r12, rb= r23 and r13 specified, test for the difference of two dependent correlations. \\
-4) For sample size n, test for the difference between two dependent correlations involving different variables.\\
- For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23.
+\details{Depending upon the input, one of four different tests of correlations is done.
+1) For a sample size n, find the t value for a single correlation. 
+
+2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores. 
+
+3) For sample size n, and correlations ra= r12, rb= r23 and r13 specified, test for the difference of two dependent correlations. 
+
+4) For sample size n, test for the difference between two dependent correlations involving different variables.
+
+For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23.
 }
 \value{
   
-  \item{test }{Label of test done}
-  \item{z }{z value for tests 2 or 4}
+  \item{test}{Label of test done}
+  \item{z}{z value for tests 2 or 4}
   \item{t}{t value for tests 1 and 3}
   \item{p}{probability value of z or t}
 
 }
-\references{Olkin, I. and Finn, J. D. (1995). Correlations redux. Psychological Bulletin, 118(1):155-164. \\
+\references{Olkin, I. and Finn, J. D. (1995). Correlations redux. Psychological Bulletin, 118(1):155-164. 
+
 Steiger, J.H. (1980), Tests for comparing elements of a correlation matrix, Psychological Bulletin, 87, 245-251. 
 }
 \author{William Revelle }

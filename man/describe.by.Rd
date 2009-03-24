@@ -37,9 +37,9 @@ describe.by(x, group,mat=FALSE,...)
 \examples{
 data(sat.act)
 describe.by(sat.act,sat.act$gender) #just one grouping variable	
-describe.by(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
-des.mat <- describe.by(sat.act$age,sat.act$education,mat=TRUE) #matrix output 
-des.mat <- describe.by(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE) 
+#describe.by(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
+#des.mat <- describe.by(sat.act$age,sat.act$education,mat=TRUE) #matrix output 
+#des.mat <- describe.by(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE) 
 
 
 }

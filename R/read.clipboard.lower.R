@@ -1,6 +1,6 @@
 #adapted from John Fox's read.moments function
 "read.clipboard.lower" <-
-function( diag = TRUE,names=NULL) {
+function( diag = TRUE,names=NULL,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
    if (!MAC ) {
            xij <- scan(file("clipboard")) }
@@ -21,7 +21,7 @@ function( diag = TRUE,names=NULL) {
 
 
 "read.clipboard.upper" <-
-function( diag = TRUE,names=NULL) {
+function( diag = TRUE,names=NULL,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
    if (!MAC ) {
            xij <- scan(file("clipboard")) }

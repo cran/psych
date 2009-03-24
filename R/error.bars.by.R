@@ -1,18 +1,60 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
     {
     lty = "solid"
     all.stats <- describe(x)
-       min.x <- min(all.stats$min)
+        min.x <- min(all.stats$min)
    		max.x <- max(all.stats$max)
     	max.se <- max(all.stats$se)
     if(is.null(ylim)) {ylim=c(min.x - 2*max.se,max.x+2*max.se)}
     if(is.null(main)) main <- paste(1-alpha,"% confidence limits",sep="")
     
-    group.stats <- describe.by(x,group,digits=8)
+    if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
+    group.stats <- describe.by(x,group,mat=TRUE)   
+           n.var <- dim(all.stats)[1]
+           n.groups <- length(group.stats[[1]])/n.var
+           group.means <- matrix(group.stats$mean,ncol=n.groups,byrow=TRUE)
+           group.se <- matrix(group.stats$se,ncol=n.groups,byrow=TRUE)
+           group.n <- matrix(group.stats$n,ncol=n.groups,byrow=TRUE)
+           rownames(group.means) <- rownames(all.stats)
+           if(is.null(labels)) {colnames(group.means) <- paste("Group",1:n.groups)} else {colnames(group.means) <- labels }
+           
+           if (is.null(ylab)) ylab <- "Dependent Variable"
+          
+           ylim=c(0,max.x+2*max.se)
+           if(by.var)  {
+           if (is.null(xlab)) xlab <- "Variables"
+           mp <- barplot(t(group.means),beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main)
+            for(i in 1:n.var) {
+             for (j in 1:n.groups) {
+         	 xcen <- group.means[i,j]
+    	 	 xse  <- group.se[i,j]
+    	 	ci <- qt(1-alpha,group.n[i,j])
+          arrows(mp[j,i],xcen-ci*xse,mp[j,i],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
+          }} } else {
+           if (is.null(xlab)) xlab <- "Grouping Variable"
+           mp <- barplot(group.means,beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main)
+            for(i in 1:n.var) {
+             for (j in 1:n.groups) {
+         	 xcen <- group.means[i,j]
+    	 	 xse  <- group.se[i,j]
+    	 	ci <- qt(1-alpha,group.n[i,j])
+          arrows(mp[i,j],xcen-ci*xse,mp[i,j],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
+          }} }
+         
+         
+          axis(2)
+          box()
+           
+           
+           
+           } else {   #the normal case is to not use bars
+           
+           group.stats <- describe.by(x,group)
     n.group <- length(group.stats)
      z <- dim(x)[2]
-     if(is.null(z)) z <- 1
+     if(is.null(z)) z <- 1 
+     
     if (is.null(ylab)) ylab <- "Dependent Variable"
      
      if(!by.var) {
@@ -27,6 +69,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	axis(2)
     	box()
     	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),...) }
+    
     	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
    
@@ -93,4 +136,5 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
      lty <- "dashed"
      }   #end of i loop 
     }  #end of by var is true loop
+    } # end of if not bars condition
    }

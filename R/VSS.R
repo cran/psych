@@ -9,6 +9,7 @@ function (x,n=8,rotate="varimax",diagonal=FALSE,pc="pa",n.obs=NULL,plot=TRUE,tit
   #e.g., to do VSS on a covariance/correlation matrix with up to 8 factors and 3000 cases:
   #VSS(covmat=msqcovar,n=8,rotate="none",n.obs=3000)
    { 
+  cl <- match.call()
   if (rotate=="oblimin") require(GPArotation)
   old_rotate=rotate  #used to remember which rotation to use
   
@@ -146,7 +147,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 
 vss.stats <- data.frame(vss.df,cfit=complexfit,cresidual=complexresid)
 if (plot) VSS.plot(vss.stats,title=title)
-vss.results <- list(title=title,map=map.values,cfit.1=complexfit[,1],cfit.2= complexfit[,2],vss.stats=vss.stats)
+vss.results <- list(title=title,map=map.values,cfit.1=complexfit[,1],cfit.2= complexfit[,2],vss.stats=vss.stats,call=cl)
 class(vss.results) <- c("psych" ,"vss")
 return(vss.results)
    

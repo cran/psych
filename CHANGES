@@ -1,7 +1,28 @@
 Change file for package psych
 
+Have included vignettes in the package
 
+Version 1.0.67  March 24, 2009
+Rewrote mat.regress to allow for raw data/covariances as input
+Seriously simplified the mat.regress code
 
+Added reliability G6+ to alpha, score.items, cluster.Cor
+Changed the correction for item overlap to use smc and G6+ theory
+
+Added corr.test to give correlations, sample sizes, and probability values for data.frames and matrix input.
+
+Added bar graph output to the error.bars function.  (Although these "dynamite plots" should be discouraged.)
+
+Revised count.pairwise to be much cleaner code. (Replaced 20 lines with 1).
+
+Version 1.0.66   February 12, 2009
+Having finally learned how to write vignettes, have started to write them.
+Modififed ICLUST to default to show labels on graphics
+Modified factor.congruence to allow comparisons for omega solutions
+Modified error bars to allow for raw data input.
+
+Version 1.0.65  February 7, 2009
+Released to CRAN (basically 1.0.64 with two errors in the Rd.files fixed).
 Version 1.0.64  February 2, 2009
 
 Added the data set Thurstone to the bifactor data set.

@@ -1,14 +1,26 @@
 \name{sim}
 \alias{sim}
-\title{Functions to simulate psychological/psychometric data}
+\title{Functions to simulate psychological/psychometric data.}
 \description{A number of functions in the psych package will generate simulated data.  These functions include
-\code{\link{sim.circ}}, \code{\link{sim.congeneric}}, \code{\link{sim.dichot}}, \code{\link{sim.hierarchical}}, \code{\link{sim.item}}, \code{\link{sim.structural}},  and \code{\link{sim.VSS}}. These functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
+\code{link{sim}} (for a simplex), \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} (for a one factor factor congeneric model), \code{\link{sim.dichot}} (to simulate dichotomous items), \code{\link{sim.hierarchical}} (a hierarchical factor model), \code{\link{sim.item}} (general item simulations), \code{\link{sim.structural}} (general simulation of structural models),  and \code{\link{sim.VSS}}. These functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
-sim()
+sim(fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=FALSE)
 }
+\arguments{
+  \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
+  \item{Phi}{The structure matrix of the latent variables}
+  \item{fy}{The measurement model for y}
+  \item{mu}{The means structure for the fx factors}
+  \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
+  \item{raw}{if raw=TRUE, raw data are returned as well.}
+ }
 
-\details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  Various simulation functions in psych are:
+\details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  
+
+The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors.  
+
+Other simulation functions in psych are:
 
 \code{\link{sim.structure}}  A function to combine a measurement and structural model into one data matrix.  Useful for understanding structural equation models.
 
@@ -32,7 +44,11 @@ sim()
 
 \seealso{ See above}
 \examples{
-sim.congeneric()
+simplex <- sim()
+round(simplex$model,2)
+
+congeneric <- sim.congeneric()
+round(congeneric,2)
 R <- sim.hierarchical()
 R
 fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)

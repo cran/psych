@@ -48,7 +48,7 @@ Additional output is drawn to main graphics screen. }
 \examples{
 test.data <- Harman74.cor$cov
 
-if(require(Rgraphviz) ) {ic.out <- ICLUST(test.data,labels=colnames(test.data)) }  
+if(require(Rgraphviz) ) {ic.out <- ICLUST(test.data) }  
 
 }
 \keyword{ multivariate}

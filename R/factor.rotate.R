@@ -5,8 +5,8 @@ function(f,angle,col1=1,col2=2)  {
      if (!is.matrix(f) ) {f <-f$loadings} 
      nvar<- dim(f)[2]
      if(!is.matrix(f)) {if(!is.data.frame(f)) {stop("f must be either a data frame or a matrix")} else {f <- as.matrix(f)} }
-     rot<- matrix(rep(0,nvar*nvar),ncol=nvar)
-     rot[cbind(1:nvar, 1:nvar)] <- 1
+     rot<- diag(1,nvar,nvar)
+     
      theta<- 2*pi*angle/360
      rot[col1,col1]<-cos(theta)
      rot[col2,col2]<-cos(theta)

@@ -19,6 +19,7 @@
 
 "ICLUST" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE) {#should allow for raw data, correlation or covariances
+
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2) 
  cl <- match.call()
  if(is.null(labels)) {labels <- colnames(r.mat)} else {if(!labels) labels<- NULL}

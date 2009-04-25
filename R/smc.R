@@ -1,11 +1,13 @@
 #modified Dec 10, 2008 to return 1 on diagonal if non-invertible
 #modifed March 20, 2009 to return smcs * variance if covariance matrix is desired
+#modified April 8, 2009 to remove bug introduced March 10 when using covar from data
 "smc" <-
 function(R,covar =FALSE) {
 failed=FALSE
  p <- dim(R)[2]
  if (dim(R)[1] != p) {if(covar) {C <- cov(R, use="pairwise")
                                  vari <- diag(C)
+                                 R <- cov2cor(C)
                                  } else {R <- cor(R,use="pairwise")}}  else {vari <- diag(R)
                                  R <- cov2cor(R)
       if (!is.matrix(R)) R <- as.matrix(R)}

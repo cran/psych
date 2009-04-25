@@ -1,4 +1,4 @@
-\name{psych}
+\name{00.psych}
 \alias{psych}
 \alias{psych-package}
 \alias{00.psych-package}
@@ -7,9 +7,9 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") a list of all functions type: 
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") for a list of all functions.
 
-Psychometric applications include routines for Very Simple Structure (\code{\link{VSS}}), Minimum Average Partial correlation (\code{\link{MAP}}), Item Cluster Analysis (\code{\link{ICLUST}}) and principal axes factor analysis (\code{\link{factor.pa}}), as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution, and to calculate reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}). Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
+Psychometric applications include routines for principal axes (\code{\link{factor.pa}}) and minimum residual (minres) factor analysis (\code{\link{factor.minres}}) as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
 
 The \code{\link{score.items}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
 
@@ -17,9 +17,9 @@ Additional functions make for more convenient descriptions of item characteristi
 
  A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{mat.regress}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
  
- Functions to generate simulated data with particular structures include \code{\link{sim.circ}} (for circumplex structures), \code{\link{sim.item}} (for general structures) and \code{\link{sim.congeneric}} (for a specific demonstration of congeneric measurement).  The functions \code{\link{sim.congeneric}}  and \code{\link{sim.hierarchical}} can be used to create data sets with particular structural properties. A more general form for all of these is \code{\link{sim.structural}} for generating general structural models.
+ Functions to generate simulated data with particular structures include \code{\link{sim.circ}} (for circumplex structures), \code{\link{sim.item}} (for general structures) and \code{\link{sim.congeneric}} (for a specific demonstration of congeneric measurement).  The functions \code{\link{sim.congeneric}}  and \code{\link{sim.hierarchical}} can be used to create data sets with particular structural properties. A more general form for all of these is \code{\link{sim.structural}} for generating general structural models.  These are discussed in more detail in a vignette.
 
- Functions to apply various standard statistical tests include \code{\link{p.rep}} and its variants for testing the probability of replication, \code{\link{r.con}} for the confidence intervals of a correlation, \code{\link{r.test}} to test single, paired, or sets of correlations. 
+ Functions to apply various standard statistical tests include \code{\link{p.rep}} and its variants for testing the probability of replication, \code{\link{r.con}} for the confidence intervals of a correlation, and \code{\link{r.test}} to test single, paired, or sets of correlations. 
  
  In order to study diurnal or circadian variations in mood, it is helpful to use circular statistics.  Functions to find the circular mean (\code{\link{circadian.mean}}), circular (phasic) correlations (\code{\link{circadian.cor}}) and the correlation between linear variables and circular variables (\code{\link{circadian.linear.cor}}) supplement a function to find the best fitting phase angle (\code{\link{cosinor}}) for measures taken with a fixed period (e.g., 24 hours).
 
@@ -38,21 +38,22 @@ The more important functions in the package are for the analysis of multivariate
 
 When given a set of items from a personality inventory, one goal is to combine these into higher level item composites. This leads to several questions:
 
-1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describe.by}} provides descriptive statistics, organized by one or more grouping variables.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals. \code{\link{error.bars}} will plot confidence intervals for both the x and y coordinates.\code{\link{corr.test}} will find the significance values for a matrix of correlations.
+1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describe.by}} provides descriptive statistics, organized by one or more grouping variables.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals. \code{\link{error.bars}} will plot confidence intervals for both the x and y coordinates.  \code{\link{corr.test}} will find the significance values for a matrix of correlations.
 
 2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations using a wrapper (\code{\link{poly.mat}}) for John Fox's hetcor function, the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}},  \code{\link{fa.parallel}}, and \code{\link{MAP}})  also address this question.  
 
-3) What are the best composites to form?  Although this may be answered using principal components  (\code{\link{principal})} or principal axis factor analysis (\code{\link{factor.pa})} and to show the results graphically (\code{\link{fa.graph})}, it is sometimes more useful to address this question using cluster analytic techniques. (Some would argue that better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at doing this.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  
+3) What are the best composites to form?  Although this may be answered using principal components  (\code{\link{principal})}, principal axis (\code{\link{factor.pa})} or minimum residual (\code{\link{factor.minres})}  factor analysis  and to show the results graphically (\code{\link{fa.graph})}, it is sometimes more useful to address this question using cluster analytic techniques. (Some would argue that better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at forming maximally consistent and independent item composites.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  If Rgraphviz is available, these graphs can be done in R.
 
 Graphical organizations of cluster and factor analysis output can be done using  \code{\link{cluster.plot}} which plots items by cluster/factor loadings and assigns items to that dimension with the highest loading.  
 
 4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{alpha}}, \code{\link{score.items}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}} (both omega hierarchical and omega total). Additional reliability estimates may be found in the \code{\link{guttman}} function.
 
-5) For some applications, data matrices are synthetically combined from sampling different items for different people.  So called Synthetic Aperture Personality Assessement (SAPA) techniques allow the formation of large correlation or covariance matrices even though no one person has taken all of the items. To analyze such data sets, it is easy to form item composites based upon the covariance matrix of the items, rather than original data set.  These matrices may then be analyzed using a number of functions (e.g., \code{\link{cluster.cor}},   \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal} }, \code{\link{mat.regress}}, and \code{\link{factor2cluster}}.
+5) For some applications, data matrices are synthetically combined from sampling different items for different people.  So called Synthetic Aperture Personality Assessement (SAPA) techniques allow the formation of large correlation or covariance matrices even though no one person has taken all of the items. To analyze such data sets, it is easy to form item composites based upon the covariance matrix of the items, rather than original data set.  These matrices may then be analyzed using a number of functions (e.g., \code{\link{cluster.cor}},   \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}, \code{\link{mat.regress}}, and \code{\link{factor2cluster}}.
 
 6) More typically, one has a raw data set to analyze. \code{\link{alpha}} will report several reliablity estimates as well as item-whole correlations for items forming a single scale, \code{\link{score.items}} will score data sets on multiple scales, reporting the scale scores, item-scale and scale-scale correlations, as well as coefficient alpha,  alpha-1 and G6+. Using a `keys' matrix (created by \code{\link{make.keys}} or by hand), scales can have overlapping or independent items. \code{\link{score.multiple.choice}} scores multiple choice items or converts multiple choice items to dichtomous (0/1) format for other functions. 
 
-An additional set of functions generate simulated data to meet certain structural properties.  \code{\link{item.sim}} creates simple structure data,  \code{\link{sim.circ}} will produce circumplex structured data,  \code{\link{item.dichot}} produces circumplex or simple structured data for dichotomous items.  These item structures are useful for understanding the effects of skew, differential item endorsement on factor and cluster analytic soutions.
+An additional set of functions generate simulated data to meet certain structural properties. \code{\link{sim.anova}} produces data simulating a 3 way analysis of variance (ANOVA) or linear model with or with out repeated measures. \code{\link{sim.item}} creates simple structure data,  \code{\link{sim.circ}} will produce circumplex structured data,  \code{\link{sim.dichot}} produces circumplex or simple structured data for dichotomous items.  These item structures are useful for understanding the effects of skew, differential item endorsement on factor and cluster analytic soutions.  \code{\link{sim.structural}} will produce correlation matrices and data matrices to match general structural models. (See the vignette).
+
 
 When examining personality items, some people like to discuss them as representing items in a two dimensional space with a circumplex structure.  Tests of circumplex fit \code{\link{circ.tests}} have been developed.  When representing items in a circumplex, it is convenient to view them in \code{\link{polar}} coordinates. 
 
@@ -64,8 +65,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-67 \cr
-Date: \tab 2009-3-24\cr
+Version: \tab 1.0-70 \cr
+Date: \tab 2009-5-22\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -87,6 +88,7 @@ Useful data entry and descriptive statistics\cr
 
 \link{pairs.panels}    \tab          SPLOM and correlations for a data matrix\cr
 \link{corr.test}    \tab             Correlations, sample sizes, and p values  for a data matrix\cr
+\link{cor.plot}    \tab             graphically show the size of correlations in a correlation matrix\cr
 \link{multi.hist}      \tab         Histograms and densities of multiple variables arranged in matrix form\cr
 \link{skew}           \tab          Calculate skew for a vector, each column of a matrix, or data.frame\cr
 \link{kurtosi}        \tab          Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
@@ -105,6 +107,7 @@ Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
 \link{factor.pa}        \tab        Do a principal Axis factor analysis\cr
+\link{factor.minres}    \tab        Do a minimum residual factor analysis\cr
 \link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
 \link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
@@ -112,9 +115,9 @@ Data reduction through cluster and factor analysis\cr
 \code{\link{ICLUST}}   \tab          Apply the ICLUST algorithm\cr
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}   \tab          Graph the output from ICLUST using rgraphviz \cr
-\link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor \cr
+\link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor) \cr
 \link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
-\link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution \cr 
+\link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution (uses Rgraphviz) \cr 
 \link{schmid}            \tab        Apply the Schmid Leiman transformation to a correlation matrix\cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
@@ -124,6 +127,15 @@ Data reduction through cluster and factor analysis\cr
 \link{VSS.plot}       \tab           Plot VSS output\cr
 \link{VSS.scree}      \tab           Show the scree plot of the factor/principal components\cr
 \link{MAP}             \tab         Apply the Velicer Minimum Absolute Partial criterion for number of factors \cr
+}
+
+Functions for reliability analysis (some are listed above as well).
+\tabular{ll}{
+\link{alpha}      \tab         Find coefficient alpha and Guttman Lambda 6 for a scale (see also \link{score.items})\cr
+\link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
+\link{omega}           \tab          Calculate the omega estimates of reliability (requires the GPArotation package)\cr
+\link{ICC}          \tab             Intraclass correlation coefficients  \cr
+\link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 }
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
@@ -146,12 +158,11 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{factor.rotate}   \tab         ``hand rotate" factors\cr
 \link{guttman}         \tab         8 different measures of reliability\cr
 \link{mat.regress}     \tab         standardized multiple regression from raw or correlation matrix input\cr
-\link{principal}       \tab          Do an eigen value decomposition to find the principal components of a matrix\cr
 }
-
 
 Functions for generating simulated data sets \cr
 \tabular{ll}{
+\link{sim.anova}         \tab        Generate 3 independent variables and 1 or more dependent variables for demonstrating ANOVA and lm designs \cr
 \link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
 \link{sim.item}         \tab        Generate a two dimensional simple structrue with particular item characteristics \cr
 \link{sim.congeneric}   \tab        Generate a one factor congeneric reliability structure \cr
@@ -172,11 +183,12 @@ Graphical functions (require Rgraphviz) \cr
 
 Circular statistics (for circadian data analysis) \cr
 \tabular{ll}{
-\link{circadian.cor} \tab  \cr
-\link{circadian.linear.cor} \tab  \cr
-\link{circadian.mean} \tab  \cr
-\link{cosinor} \tab  \cr
+\link{circadian.cor} \tab      Find the correlation with e.g., mood and time of day \cr
+\link{circadian.linear.cor} \tab  Correlate a circular value with a linear value \cr
+\link{circadian.mean} \tab      Find the circular mean of each column of a a data set     \cr
+\link{cosinor} \tab            Find the best fitting phase angle for a circular data set \cr
 }
+
 
  
 Miscellaneous functions\cr
@@ -221,10 +233,13 @@ Functions that are under development and not recommended for casual use \cr
 Data sets included in the psych package \cr
 \tabular{ll}{
 \link{bfi}          \tab           represents 25 personality items thought to represent five factors of personality \cr
+\link{bifactor}     \tab           8 different data sets with a bifactor structure  \cr
 \link{cities}        \tab          The airline distances between 11 cities (used to demonstrate MDS) \cr
 \link{epi.bfi}        \tab         13 personality scales \cr
 \link{iqitems}        \tab         14 multiple choice iq items \cr
+\link{msq}            \tab         75 mood items  \cr
 \link{sat.act}        \tab          Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
+
 \link{galton}        \tab            Galton's data set of the heights of parents and their children \cr
 \link{heights}       \tab            Galton's data set of the relationship between height and forearm (cubit) length \cr
 \link{cubits}        \tab             Galton's data table of height and forearm length \cr

@@ -5,13 +5,13 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors=3, pc = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin", ...)
+omega(m, nfactors=3, fm = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{A correlation matrix or a data.frame/matrix of data }
   \item{nfactors}{Number of factors believed to be group factors}
-  \item{pc}{  pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood.}
+  \item{fm}{factor method  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="mle" for maximum likelihood.}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
   \item{digits}{if specified, round the output to digits}
@@ -37,10 +37,10 @@ One way to find \eqn{\omega_h} is to do a factor analysis of the original data s
 
 \eqn{\omega_h} differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
 
-For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.
+For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.  Arbitrarly reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
 
-Output from omega will be shown graphically using the  \code{\link{omega.graph}} function.  This requires Rgraphviz to be installed.  If Rgraphviz is not available, select plot=FALSE. 
+Output from omega is shown graphically using the  \code{\link{omega.graph}} function.  This requires Rgraphviz to be installed.  If Rgraphviz is not available, select plot=FALSE. 
 
 \eqn{\beta}, an alternative to \eqn{\omega}, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
@@ -49,6 +49,7 @@ The \code{\link{omega}} function uses exploratory factor analysis to estimate th
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 
 Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  See Zinbarg et al., 2007. 
+
 
 In addition to \eqn{\omega_h}, another of McDonald's coefficients is \eqn{\omega_t}.  This is an estimate of the total reliability of a test. 
 
@@ -69,10 +70,14 @@ Because \eqn{h_j^2 \geq r_{smc}^2}, \eqn{\omega_t \geq \lambda_6}.
 It is important to distinguish here between the two \eqn{\omega} coefficients of McDonald, 1978 and Equation 6.20a of McDonald, 1999, \eqn{\omega_t} and \eqn{\omega_h}.  While the former is based upon the sum of squared loadings on all the factors, the latter is based upon the sum of the squared loadings on the  general factor. 
 \deqn{\omega_h = \frac{ \vec{1}\vec{cc'}\vec{1}}{V_x}}
 
+Another estimate reported is the omega for an infinite lenght test with a structure similar to the observed test.  This is found by 
+\deqn{\omega_limit = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}
+
 }
 \value{
  
   \item{omega hierarchical}{The \eqn{\omega_h} coefficient}
+  \item{omega.lim}{The limit of \eqn{\omega_h} as the test becomes infinitly large}
   \item{omega total}{The \eqn{omega_t} coefficient}
   \item{alpha}{Cronbach's \eqn{\alpha}}
   \item{schmid}{The Schmid Leiman transformed factor matrix and associated matrices}
@@ -104,7 +109,10 @@ Maintainer: William Revelle  \email{  revelle@northwestern.edu  }
 }
 \note{Requires the GPArotation package.
 
-The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as promax.  }
+The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as \code{\link{Promax}}.
+
+If the factor solution leads to an exactly orthogonal solution (probably only for demonstration data sets), then use the rotate="Promax" option to get a solution.}
+
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
 \examples{
 \dontrun{

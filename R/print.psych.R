@@ -3,7 +3,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -11,7 +11,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] =='iclust')  iclust <- TRUE
    if(class(x)[2] =='omega')  omega <- TRUE
    if(class(x)[2] =='fa')  fac.pa <- TRUE
-   if(class(x)[2] =='principal') fac.pa <- TRUE
+   if(class(x)[2] =='principal') principal <- fac.pa <- TRUE
    if(class(x)[2] == 'alpha') alpha <- TRUE
    if(class(x)[2] == 'describe') describe <- TRUE
    if(class(x)[2] == "corr.test") corr.test <- TRUE
@@ -21,6 +21,8 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "cluster.cor") cluster.cor <- TRUE
    if(class(x)[2] == "cluster.loadings") cluster.loadings <- TRUE
    if(class(x)[2] == "guttman") gutt <- TRUE
+   if(class(x)[2] == "thurstone") thurstone <- TRUE
+   if(class(x)[2] == "stats") stats <- TRUE
      } 
 else {      #old and clunky way of figuring out which function called,   replace as above
    
@@ -76,10 +78,11 @@ if(all) {class(x) <- "list"
 	 cat( x$title,"\n") 
 	 cat("Call: ")
      print(x$call)
- 	cat("Alpha: ",round(x$alpha,digits),"\n") 
- 	cat("G.6:  ",round(x$G6,digits),"\n")
- 	cat("Omega Hierarchical:  " ,round(x$omega_h,digits),"\n")
- 	cat("Omega Total  " ,round(x$omega.tot,digits),"\n")
+ 	cat("Alpha:                ",round(x$alpha,digits),"\n") 
+ 	cat("G.6:                  ",round(x$G6,digits),"\n")
+ 	cat("Omega Hierarchical:   " ,round(x$omega_h,digits),"\n")
+ 	cat("Omega H asymptotic:   " ,round(x$omega.lim,digits),"\n")
+ 	cat("Omega Total           " ,round(x$omega.tot,digits),"\n")
             
 	cat("\nSchmid Leiman Factor loadings greater than ",cut, "\n")
 	   loads <- x$schmid$sl
@@ -225,39 +228,40 @@ if(fac.pa) {
  		rownames(loads)[1:nitems] <- rownames(loads)[ord$ix]
  		 
   #now sort column wise
-   		items <- c(table(loads$cluster),1)   #how many items are in each cluster?
-  		if(length(items) < (nfactors+1)) {items <- rep(0,(nfactors+1))   #this is a rare case where some clusters don't have anything in them
-   		                                  for (i in 1:nfactors+1) {items[i] <- sum(loads$cluster==i) }  }
-
   #now sort the loadings that have their highest loading on each cluster
+  
+  		items <- table(loads$cluster)   #how many items are in each cluster?
   		first <- 1
-		for (i in 1:nfactors) {
-		if(items[i]>0 ) {
+  		item <- loads$item
+		for (i in 1:length(items)) {
+		if(items[i] > 0 ) {
 				last <- first + items[i]- 1
 				ord <- sort(abs(loads[first:last,i+2]),decreasing=TRUE,index.return=TRUE)
-   				loads[first:last,] <- loads[ord$ix+first-1,]
-   				 rownames(loads)[first:last] <- rownames(loads)[ord$ix+first-1]
+   				loads[first:last,3:(nfactors+2)] <- load[item[ord$ix+first-1],]
+   				loads[first:last,1] <- item[ord$ix+first-1]
+   				rownames(loads)[first:last] <- rownames(loads)[ord$ix+first-1]
    		 		first <- first + items[i]  }
           		 }  
          }    #end of sort 		 
     #they are now sorted, don't print the small loadings 
           	ncol <- dim(loads)[2]-2
-	    	fx <- format(loads,digits=digits)
+	    	fx <- format(round(loads,digits=digits))
 	    	nc <- nchar(fx[1,3], type = "c")
 	    	 fx.1 <- fx[,1]
 	    	 fx.2 <- fx[,3:(2+ncol)]
 	    	 load.2 <- loads[,3:(ncol+2)]
          	fx.2[abs(load.2)< cut] <- paste(rep(" ", nc), collapse = "")
          	fx <- data.frame(V=fx.1,fx.2)
-         	if(dim(fx)[2] <3) colnames(fx) <- c("V","PA1") #for the case of one factor
+         	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
 	    	print(fx,quote="FALSE")
  		
       	   #adapted from print.loadings
       	  if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
-      	                                                     names(vx) <- "PA1"}
+      	                                                     names(vx) <- colnames(x$loadings)
+      	                                                     }
            varex <- rbind("SS loadings" =   vx)
-            varex <- rbind(varex, "Proportion Var" =  vx/nitems)
-            if (nfactors > 1) 
+           varex <- rbind(varex, "Proportion Var" =  vx/nitems)
+           if (nfactors > 1) 
                       varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nitems))
   
     cat("\n")
@@ -282,6 +286,11 @@ if(fac.pa) {
      if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
     cat("\nThe degrees of freedom for the model is",x$dof," and the fit was ",round(objective,digits),"\n") 
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
+  if(!principal) { cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
+  cat("\n Correlation of scores with factors           ",round(sqrt(x$R2),digits))
+  cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
+  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
+  cat("\nValidity of unit weighted factor scores       ",round(x$valid,digits),"\n")
 
 }
           
@@ -338,19 +347,35 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
 print(x$purified$corrected)  }
 }
    }# end of if ICLUST
-   
+
+
+###
+
  if(gutt) {
- cat ("Alternative estimates of reliability  \n")
+  cat("Call: ")
+    print(x$Call)
+ cat ("\nAlternative estimates of reliability\n")
  cat("Beta = ", x$beta, " This is an estimate of the worst split half reliability")  
- cat ("\nGuttman bounds \n L1 = ",x$lambda.1, "\n L2 = ", x$lambda.2, "\n L3 (alpha) = ", x$lambda.3, "\n L4 (max) = " ,x$lambda.4, "\n L5 = ", x$lambda.5, "\n L6 (smc) = " ,x$lambda.6, "\n")
- cat("TenBerge bounds \n mu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
- cat("\n alpha of first PC = ", x$alpha.pc, "\n estimated glb = ", x$lambda.4,"\n")
- cat("\n beta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
+ cat ("\nGuttman bounds \nL1 = ",x$lambda.1, "\nL2 = ", x$lambda.2, "\nL3 (alpha) = ", x$lambda.3,"\nL4 (max) = " ,x$lambda.4, "\nL5 = ", x$lambda.5, "\nL6 (smc) = " ,x$lambda.6, "\n")
+ cat("TenBerge bounds \nmu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
+ cat("\nalpha of first PC = ", x$alpha.pc, "\nestimated greatest lower bound = ", x$lambda.4,"\n")
+ cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
  } 
   
   
+ ## 
+ if(thurstone) {
+cat("Thurstonian scale (case 5) scale values ")
+cat("\nCall: ")
+     print(x$Call)
+print(x$scale)
+cat("\n Goodness of fit of model  ", round(x$GF,digits))
+ }
+  
  if(sim) { if(is.matrix(x)) {x <-unclass(x) 
              round(x,digits) } else {
+              cat("Call: ")
+              print(x$call)
              cat("\n $model (Population correlation matrix) \n")
              print(x$model,digits)
              if(!is.null(x$reliability)) { cat("\n$reliability (population reliability) \n")
@@ -360,5 +385,20 @@ print(x$purified$corrected)  }
              print(x$r,digits)}} 
              
       }  #end of the not list condition
+  
+ if(stats) {
+  cat("Call: ")
+  print(x$Call)
+  nfactors <- x$factors
+   objective <- x$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
+    cat("\nThe degrees of freedom for the model is",x$dof," and the fit was ",round(objective,digits),"\n") 
+   	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
+}
+  cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
+  cat("\n Correlation of scores with factors           ",round(sqrt(x$R2),digits))
+  cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
+  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits),"\n")
+ }
 
 }  #end function

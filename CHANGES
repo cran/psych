@@ -1,8 +1,28 @@
 Change file for package psych
 
-Have included vignettes in the package
+Version 1.0.70 May 25, 2009
+Added factor.stats function to clarify the various statistics for factor analysis using the factor.pa, factor.minres, and principal functions.
+Added "cluster" as a rotation option in target.rot. 
+Added omega_infinity to the omega function
+adjustment to sim.hierarchical to make consistent with Jensen and Weng
+corrected bug in principal for case of singular matrices (reported by Gudmundur Arnkelsson) 
+corrected bug in print.psych so that it now correctly sorts by loadings if desired
+
+Version 1.0.69 April 25
+Modified cosinor to allow for regression as well as optimization approaches
+
+Version 1.0.68  April 15, 2009
+Added factor.minres (basically just factor.pa with a new method) to do minimum residual exploratory factor analysis. 
+Added the Holzinger.9 nine cognitive variable data set from the LISREL examples.
+Added the msq (motivational state questionnaire) data set of 74 mood items and 3800 subjects.
+
+Added sim.anova to simulate ANOVA and lm experimental designs.
+
+Added target.rot to do targeted factor transformations (basically a Procrustian transformation) to an arbitrary target matrix.
+
 
 Version 1.0.67  March 24, 2009
+Have included vignettes in the package
 Rewrote mat.regress to allow for raw data/covariances as input
 Seriously simplified the mat.regress code
 

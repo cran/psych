@@ -1,23 +1,29 @@
 
    
    "error.bars" <-
-function (x,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
+function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
     {
-    x.stats <- describe(x)
-    z <- dim(x)[2]
-    min.x <- min(x.stats$mean)
-    max.x <- max(x.stats$mean)
-    max.se <- max(x.stats$se)
-    ci <- qt(1-alpha/2,x.stats$n)
+    if(is.null(stats)) {
+    	x.stats <- describe(x)
+    	z <- dim(x)[2]
+    	names <- colnames(x)
+    	}  else { x.stats <- stats
+    	          z <- dim(x.stats)[1]
+    	          names <- rownames(stats)
+    	}
+    	min.x <- min(x.stats$mean)
+    	max.x <- max(x.stats$mean)
+    	max.se <- max(x.stats$se)
+   		ci <- qt(1-alpha/2,x.stats$n)
     if(is.null(main)) main = paste((1-alpha)*100,"% confidence limits",sep="") 
     if(is.null(ylim)) {if(bars) {ylim=c(0,max.x+2*max.se) } else {ylim=c(min.x - 2*max.se,max.x+2*max.se)} }
     if(bars) {mp =barplot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
-     axis(1,mp[1:z],colnames(x))
+     axis(1,mp[1:z],names)
      axis(2)
      box()
     } else {
     if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,axes=FALSE,main=main,...)
-     axis(1,1:z,colnames(x))
+     axis(1,1:z,names)
      axis(2)
      box()
      } else {points(x.stats$mean,...) }

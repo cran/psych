@@ -19,7 +19,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stat
 			stats[1, 6] <-  skew(x,na.rm=na.rm  )
 			stats[1,7] <-  mad(x,na.rm=na.rm) 
 			stats[1,8] <-  kurtosi(x,na.rm=na.rm) 
-			
+			vars <- 1
     	}   else  {
     	len = dim(x)[2]     #do it for matrices or data.frames 
     	

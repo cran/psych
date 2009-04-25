@@ -7,6 +7,28 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
+May, 2009  1.0.70
+Added factor.stats function to report a variety of statistics for factors or components.  In particular, added measures of factorial adequacy.  factor.stats is now called by the factor.pa, factor.minres, and principal, so it is easier to adjust all three of these functions.
+
+Added a new rotation option to target.rot -- if keys are not specified, it will rotate to a cluster solution.
+
+minor tweak to sim.hierarchical to make it consistent with the Jensen and Weng paper
+added to omega to calculate omege_infinity
+corrected bug in principal for case of singular matrices (reported by Gudmundur Arnkelsson) 
+corrected bug in print.psych so that it now sorts by factor loadings correctly 
+
+
+April, 2009  1.0.69
+added cor.plot to graphically display correlation structures
+modified cosinor to do regression as well as optimization for fits
+minor correction to ICLUST to catch non-invertible matrices
+
+April, 2009   1.0.68
+Added method="minres" to do minimal residual (ULS) factor analysis to the factor.pa function. 
+Added the target.rot function to do targeted rotation.
+Added the sim.anova function to simulate 3 way ANOVA or linear models.
+Minor cleanups of code in other functions
+
 
 March, 2009:  1.0.67
 Have included the vignettes in the package

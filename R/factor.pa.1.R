@@ -8,10 +8,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
               diag(S) <- 1- Psi
            
               eigens <- eigen(S)
-              eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
         #loadings <- eigen.loadings(eigens)[,1:nf]
-         if(nf >1 ) {
-         loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
+         if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
          residual <- (S - model)^2
          diag(residual) <- 0
@@ -89,7 +87,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
       {
         eigens <- eigen(r.mat,symmetric=symmetric)
-         eigens$values[ eigens$values < .Machine$double.eps] <-  .Machine$double.eps  #added May 14, 2009 to fix case of singular matrices
         #loadings <- eigen.loadings(eigens)[,1:nfactors]
          if(nfactors >1 ) {loadings <- eigens$vectors[,1:nfactors] %*% diag(sqrt(eigens$values[1:nfactors])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
@@ -113,7 +110,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        if(fm=="minres") { #added April 12, 2009 to do ULS fits
        uls <- min.res(r,nfactors)
        eigens <- eigen(r)  #used for the summary stats
-       
        result$par <- uls$res
        loadings <- uls$loadings
                             }
@@ -154,33 +150,28 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
     
     model <- loadings %*% t(loadings)  
-   
-    #f.loadings <- loadings #used to pass them to factor.stats 
-    Phi <- NULL
+    result$communality <- round(diag(model),digits)
+    result$uniquenesses <- round(diag(r-model),digits)
     if(rotate != "none") {if (nfactors > 1) {
    
     
-   	if (rotate=="varimax" | rotate=="quartimax") { 
-   			rotated <- do.call(rotate,list(loadings))
-   			loadings <- rotated$loadings
+   	if (rotate=="varimax") { 
+   			loadings <- varimax(loadings)$loadings 
    			 Phi <- NULL} else { 
      			if ((rotate=="promax")|(rotate=="Promax")) {pro <- Promax(loadings)
      			                loadings <- pro$loadings
      			                Phi <- pro$Phi} else {
-     			if (rotate == "cluster") {loadings <- varimax(loadings)$loadings           			
-								pro <- target.rot(loadings)
-     			              	loadings <- pro$loadings
-     			                Phi <- pro$Phi} else {
-     			                     
-     			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax") {
-     				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
-     				Phi <- NULL} else { ob  <- do.call(rotate,list(loadings) )
+     			if (rotate =="oblimin") {
+     				if (!require(GPArotation)) {warning("I am sorry, to do oblimin rotations requires the GPArotation package to be installed")
+     				Phi <- NULL} else { ob  <- oblimin(loadings)
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
      		                             }
-     	               }}}
+     	               }}
      	  
      }}
+        #just in case the rotation changes the order of the factors, sort them
+        #added October 30, 2008
        
    if(nfactors >1) {
     ev.rotated <- diag(t(loadings) %*% loadings)
@@ -191,13 +182,10 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
    
-    result <- factor.stats(r,loadings,Phi,n.obs)   #do stats as a subroutine common to several functions
-    
-    result$rotate  <- rotate
-    result$loadings <- loadings
-    result$values <- eigens$values
-    result$communality <- round(diag(model),digits)
-    result$uniquenesses <- round(diag(r-model),digits)
+   ###
+   result <- factor.test(r,model,eigens,result,residuals,digits,n.obs,n,nfactors)
+   ##
+   
     if(!is.null(Phi)) {result$Phi <- Phi}
     if(fm=="pa") result$communality.iterations <- round(unlist(comm.list),digits)
     
@@ -214,17 +202,44 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
  "factor.scores" <- function(x,f) {
      if(!is.matrix(f)) f <- loadings(f)
      r <- cor(x,use="pairwise")   #find the correlation matrix from the data
-     w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
-     if(class(w)=="try-error") {warning("correlation matrix is singular, approximation used")
-     ev <- eigen(r)
-     ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-       r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
-       diag(r)  <- 1
-      w <- solve(r,f)}
+     w <- solve(r,f)   #these are the factor weights
      scores <- scale(x) %*% w    #standardize the data before doing the regression
      return(scores) }
      #how to treat missing data?  see score.item
      
-   
+     
+     
+    "factor.test" <- function(r,model,eigens,result,residuals,digits,n.obs,n,nfactors) {
+     residual<- r - model
+    r2 <- sum(r*r)
+    rstar2 <- sum(residual*residual)
+    if (residuals) {result$residual <- round(residual,digits)}
+  
+    r2.off <- r
+    diag(r2.off) <- 0
+    r2.off <- sum(r2.off^2)
+    diag(residual) <- 0
+    rstar.off <- sum(residual^2)
+    result$fit <- round(1-rstar2/r2,digits)
+    result$fit.off <- round(1-rstar.off/r2.off,digits)
+    
+    result$values <- eigens$values
+  
+    diag(model) <- 1   
+    model.inv <- solve(model)
+    m.inv.r <- model.inv %*% r
+    if(is.na(n.obs)) {result$n.obs=NA
+    			
+    			result$PVAL=NA} else {result$n.obs=n.obs}
+    result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+    result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
+    result$criteria <- c("objective"=result$objective,NA,NA)
+    if (!is.na(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
+          if(!is.nan(result$STATISTIC))if (result$STATISTIC <0) {result$STATISTIC <- 0}  
+   			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
+    result$loadings <- loadings
+
+    
+    return(result) }
     
   

@@ -6,13 +6,13 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, pc = "pa",digits=2,rotate="oblimin",n.obs=NA,...)
+schmid(model, nfactors = 3, fm = "pa",digits=2,rotate="oblimin",n.obs=NA,...)
 }
 
 \arguments{
   \item{model}{ A correlation matrix }
   \item{nfactors}{ Number of factors to extract }
-  \item{pc}{ pc="pa" for principal axes, pc="pc" for principal components, pc="mle" for maximum likelihood }
+  \item{fm}{ fm="pa" for principal axes, fm="pc" for principal components, fm = "minres" for minimum residual (OLS), pc="mle" for maximum likelihood }
   \item{digits}{if digits not equal NULL, rounds to digits}
   \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. The third option is the promax criterion}
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}

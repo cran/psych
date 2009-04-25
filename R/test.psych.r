@@ -21,13 +21,13 @@ for (i in first:last) {
 			fa2 <- factor.pa(test.data,2)
 			fp <-    fa.parallel(test.data)
 			vss2 <- VSS(test.data)
-			vsspc <- VSS(test.data,pc="pc")
+			vsspc <- VSS(test.data,fm="pc")
 		} else {
 			fa2 <- factor.pa(test.data,2,n.obs=200)
 			cluster.plot(fa2)
 			fp <-    fa.parallel(test.data,n.obs=200)
 			vss2 <- VSS(test.data,n.obs=200)
-			vsspc <- VSS(test.data,pc="pc",n.obs=200)
+			vsspc <- VSS(test.data,fm="pc",n.obs=200)
 			
 
 			}
@@ -51,8 +51,10 @@ for (i in first:last) {
   
   simple <- sim.item(nvar=24)
   circ <-  sim.circ(nvar=24)
+  cor.plot(cor(circ))
   simple.par <- fa.parallel(simple)
   fa.simple <- factor.pa(simple,2)
+  cor.plot(fa.simple,TRUE,n=4)
   fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE)
  
  simple.scores <-  score.items(fa.simple.keys$clusters,simple)

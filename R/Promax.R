@@ -11,7 +11,13 @@ function (x, m = 4)
     x <- xx$loadings
     Q <- x * abs(x)^(m - 1)
     U <- lm.fit(x, Q)$coefficients
-    d <- diag(solve(t(U) %*% U))
+    d <- try(diag(solve(t(U) %*% U)),silent=TRUE)
+     if(class(d)=="try-error") {warning("Factors are exactly uncorrelated and the model produces a singular matrix. An approximation is used")
+        ev <- eigen(t(U) %*% U)
+        ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
+        UU <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
+       diag(UU)  <- 1
+       d <- diag(solve(UU))}
     U <- U %*% diag(sqrt(d))
     dimnames(U) <- NULL
     z <- x %*% U

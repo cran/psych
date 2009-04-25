@@ -3,7 +3,7 @@
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
 "schmid" <-
-function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,...) 
+function (model, nfactors = 3, fm = "pa",  digits=2,rotate="oblimin",n.obs=NA,...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
@@ -12,23 +12,32 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
       if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
                                           model <- cor(model,use="pairwise")}
                                           
-     if (pc=="pc") {
+     if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if (pc=="pa") {fact <- factor.pa(model, nfactors,n.obs=n.obs,...) } else {
+    } else {if ((fm == "pa") |(fm =="minres")) {fact <- factor.pa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
+     
         fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}
     orth.load <- loadings(fact)
+    
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
+    if(nfactors == 1) { message("Omega_h for 1 factor is not meaningful, just omega_t")
+                       obminfact <-list(loadings= orth.load)
+                       
+                       factr <- 1
+           } else {   #the normal case is nfactors > 2
       if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
-      if((rotate == "promax")   )    {obminfact  <- Promax(orth.load)
+      if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
            							 } else {obminfact <- oblimin(orth.load)} }
-    rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
+           		}  
+    if(nfactors>1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
     #factr <- t(obminfact$Th) %*% (obminfact$Th)
     factr <- obminfact$Phi
-    colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")
+   
+   if (nfactors ==1) {gload <- c(1)} else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
        gfactor <- factanal( covmat = factr, factors = 1)
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)
@@ -36,7 +45,7 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
        gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2]))
        
               warning("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")}  
-
+    }
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g"
     u2 <- 1 - diag(orth.load %*% t(orth.load)) 
@@ -48,10 +57,11 @@ function (model, nfactors = 3, pc = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
     primeload <- fload %*% Ig
 
     uniq2 <- 1 - uniq - primeload^2
+    uniq2[uniq2<0] <- 0
     sm <- sqrt(uniq2)
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
     if (!is.null(digits)) {result <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),h2=round( h2,digits), u2=round(u2,digits)), orthog = round(orth.load,digits), oblique = round(fload,digits),
-        phi = round(factr,digits), gloading = round(gload,digits),dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )} else {
+        phi =factr, gloading = round(gload,digits),dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )} else {
     result <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, phi = factr, gloading = gload)}
    # class(result) <- c("psych" ,"fa")
     return(result)

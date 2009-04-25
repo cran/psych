@@ -1,5 +1,6 @@
  "guttman" <- 
  function(r,key=NULL,digits=2) {
+ cl <- match.call()
  nvar <- dim(r)[2]
 if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {
 if(!is.matrix(r)) r <- as.matrix(r)
@@ -100,7 +101,7 @@ try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2")
  gamma <- (sum.r+sum.smc-sum(diag(r)))/Vt
  tenberg <- tenberge(r,digits=digits)
  result <- list(lambda.1=round(lambda.1,digits),lambda.2=round(lambda.2,digits),lambda.3=round(lambda.3,digits),lambda.4 =round(glb.max,digits),lambda.5 = round(lambda.5,digits),lambda.5p = round(lambda.5p,digits),lambda.6=round(lambda.6,digits),beta = round(beta,digits),beta.factor = round(beta.fa,digits),alpha.pc = round(alpha.pc,digits),
- glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), keys=keys, tenberge=tenberg,r.pc=r.pc,beta.pc=beta.pc)
+ glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), keys=keys, tenberge=tenberg,r.pc=r.pc,beta.pc=beta.pc,Call=cl)
  class(result) <- c("psych","guttman")
  return(result)
 }

@@ -47,7 +47,7 @@ Steiger, J.H. (1980), Tests for comparing elements of a correlation matrix, Psyc
 \note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations.  These tests follow Steiger's advice.
 
 }
-\seealso{ This extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
+\seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
 \examples{
 
 n <- 30 

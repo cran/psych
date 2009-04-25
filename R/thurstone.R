@@ -2,6 +2,7 @@
 #Thurstone case V  (assumption of equal and uncorrelated error variances)
 #Version of March 22, 2005
 #revised April 4, 2008
+#Revised March 29, 2009 to be much cleaner code
 #Do a Thurstone scaling (Case 5) of either a square choice matrix or a rectangular rank order matrix
 #Need to add output options to allow users to see progress
 #data are either a set of rank orders or
@@ -15,49 +16,22 @@
 
 "thurstone" <- 
 function(x, ranks = FALSE,digits=2) {     #the main routine
-    if (ranks) {choice <- choice.mat(x)  
+ cl <- match.call()
+    if (ranks) {choice <- choice.mat(x)   #convert rank order information to choice matrix 
        } else {if (is.matrix(x)) choice <- x
               choice <- as.matrix(x)}
             
-        scale.values <- scale.vect(choice)  #convert rank order information to choice matrix 
-     
-       fit <- thurstone.fit(scale.values,choice,digits)        #see how well this model fits
-       thurstone <- list("scale"=round(scale.values,2), "GF"= fit$Fit, "residual"=fit$residual,"data"= choice)
-    return(thurstone)}
+        scale.values <- colMeans(qnorm(choice)) - min(colMeans(qnorm(choice)))  #do the Thurstonian scaling 
+        model <- pnorm(-scale.values %+% t(scale.values))
+		error <- model - choice
+		fit <- 1-(sum(error*error)/sum(choice*choice))
+       result <- list(scale=round(scale.values,digits), GF= fit, residual=error,Call=cl)
+       class(result) <- c("psych","thurstone")
+    return(result)}
     
 #the functions used by thurstone (local to thurstone)
 
- #this next function does almost all of the work, by transforming choices to normal deviates
- scale.mat <- function(x) {scale.mat <- qnorm(x)}   #convert choice matrix to normal deviates
- 
- #find the average normal deviate score for each item, and subtract from the minimum
- scale.vect <- function(x)           #do the actual thurstonian scaling
-     {nvar <- dim(x)[2]
-     score <- colSums(scale.mat(x))   #find the summed scores
-     minscore <-min(score)            #rescale to 0 as minumum
-     relative <- score - minscore
-     relative <- relative/nvar
-     return(relative) }         #the thurstone scale values
-     
- #next two functions are used for finding goodness of fit   -- not a very powerful measure  
- thurstone.model <- function (x,square) {
-    if (!square) {      #returns the lower diagonal distances
-    return(1-pnorm(dist(x,diag=TRUE))) } else {
-    return(1-pnorm(dist(x,diag=TRUE,upper=TRUE)))}
-   }
-    
- thurstone.fit <- function (s,d,digits) {   #s is the thurstone scale values, d is the data matrix
-     model <- thurstone.model(s,FALSE)
-     dm <- as.dist(d)              #makes the distance matrix a lower diagonal
-     error <- model - dm         #error = model - data  or more conventionally data = model+error
-     fit1 <- 1- sum(error*error)/sum(dm*dm)   #a typical fit measure -- squared error/squared original
-    
-     model <- thurstone.model(s,TRUE)
-     error <- model - dm  
-     fit2 <- 1- sum(error*error)/sum(d*d)   #a typical fit measure -- squared error/squared original
-     thurstone.fit <- list("Fit"=c(round(fit1,digits),round(fit2,digits)),"model"=round(model,2),"residual"=round(error,2))
-     
-     }
+
      
 #if we have rank order data, then convert them to a choice matrix
 #convert a rank order matrix into a choice matrix

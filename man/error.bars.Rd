@@ -5,11 +5,12 @@
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}.
 }
 \usage{
-error.bars(x, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL, ylim = NULL, alpha=.05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE,bars=FALSE, ...)
+error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL, ylim = NULL, alpha=.05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE,bars=FALSE, ...)
 }
 
 \arguments{
-  \item{x}{ A data frame or matrix }
+  \item{x}{ A data frame or matrix of raw data }
+  \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe)}
   \item{ylab}{y label}
   \item{xlab}{x label}
   \item{main}{title for figure}
@@ -34,23 +35,19 @@ error.bars(x, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL
 
 \seealso{ \code{\link{error.crosses}} for two way error bars, \code{\link{error.bars.by}} for error bars for different groups }
 \examples{
-x <- matrix(rnorm(500),ncol=20)
-error.bars(x)
-#now do a boxplot and then add error bars
-x.df <- as.data.frame(x)
-boxplot(x.df)
-error.bars(x.df, add=TRUE)
+x <- replicate(20,rnorm(50))
+boxplot(x,notch=TRUE,main="Notched boxplot with error bars")
+error.bars(x,add=TRUE)
+abline(h=0)
 
-error.bars(attitude) #another example
+error.bars(attitude,alpha=.5,main="50 percent confidence limits") #another example
 error.bars(attitude,bar=TRUE)  #show the use of bar graphs
 
-#combine with boxplot
-boxplot(attitude)
-error.bars(attitude,add=TRUE)
 
 #combine with a strip chart
-stripchart(attitude,vertical=TRUE,method="jitter")
+stripchart(attitude,vertical=TRUE,method="jitter",main="Stripchart with 95 percent confidence limits")
 error.bars(attitude,add=TRUE,arrow.len=.2)
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

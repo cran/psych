@@ -6,7 +6,7 @@
 \description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice.
 }
 \usage{
-VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "pa", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +14,7 @@ VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, pc = "pa", n.obs=NULL,plot=T
   \item{n}{Number of factors to extract -- should be more than hypothesized! }
   \item{rotate}{ what rotation to use c("none", "varimax",  "oblimin","promax")}
   \item{diagonal}{Should we fit the diagonal as well }
-  \item{pc}{pc="pa"  Principal Axis Factor Analysis, pc="mle"  Maximum Likelihood FA, pc="pc" Principal Components" }
+  \item{fm}{factoring method -- fm="pa"  Principal Axis Factor Analysis, fm = "minres" minimum residual (OLS) factoring fm="mle"  Maximum Likelihood FA, fm="pc" Principal Components" }
   \item{n.obs}{Number of observations if doing a factor analysis of correlation matrix.  This value is ignored by VSS but is necessary for the ML factor analysis package.}
   \item{plot}{plot=TRUE  Automatically call VSS.plot with the VSS output, otherwise don't plot}
   \item{title}{a title to be passed on to VSS.plot}
@@ -98,8 +98,8 @@ my.vss <- VSS(test.data,title="VSS of 24 mental tests")
 #VSS.plot(my.vss, title="VSS of 24 mental tests")
 
 #now, some simulated data with two factors
-VSS(sim.circ(nvar=24),pc="mle" ,title="VSS of 24 circumplex variables")
-VSS(sim.item(nvar=24),pc="mle" ,title="VSS of 24 simple structure variables")
+VSS(sim.circ(nvar=24),fm="mle" ,title="VSS of 24 circumplex variables")
+VSS(sim.item(nvar=24),fm="mle" ,title="VSS of 24 simple structure variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

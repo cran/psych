@@ -130,7 +130,7 @@ describe.by(sat.act,sat.act$gender,skew=FALSE,ranges=FALSE) #basic descriptive s
 
 \subsection{Simple descriptive graphics}
 
-Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the ``lowess'' locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the first and second principal components is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable.
+Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the ``lowess'' locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the first and second principal components is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).
 
 \begin{description}
 \item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.
@@ -177,6 +177,19 @@ error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("Male","Female"),yl
 @
 \caption{A ``Dynamite plot" of SAT scores as a function of gender is one way of misleading the reader. By using a bar graph, the range of scores is ignored. }
 \label{default}
+\end{center}
+\end{figure}
+
+It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data in the \pfun{bifactor} data set.
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+data(bifactor)
+cor.plot(Thurstone,color=TRUE,main="9 cognitive variables from Thurstone")
+@
+\caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color. }
+\label{fig:cor.plot}
 \end{center}
 \end{figure}
 
@@ -233,6 +246,9 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \begin{description}
 \item[\pfun{ICLUST} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
+
+\item [\pfun{factor.minres}] Minimum residual factor analysis is a least squares, iterative solution to the factor problem.  minres attempts to minimize the residual (off-diagonal) correlation matrix.  It produces solutions similar to maximum likelihood solutions, but will work even if the matrix is singular. 
+
 \item [\pfun{factor.pa}]  Principal Axis factor analysis is a least squares, iterative solution to the factor problem.  PA will work for cases where maximum likelihood techniques (\fun{factanal}) will not work.  The original communality estimates are either the squared multiple correlations (\pfun{smc}) for each item or 1.
 
 \item [\pfun{principal}] Principal Components Analysis reports the largest n eigen vectors rescaled by the square root of their eigen values.  
@@ -242,6 +258,8 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 \item [\pfun{VSS}] Very Simple Structure \cite{revelle:vss} applies a goodness of fit test to determine the optimal number of factors to extract. It can be thought of as a quasi-confirmatory model, in that it fits the very simple structure (all except the biggest c loadings per item are set to zero where c is the level of complexity of the item) of a factor pattern matrix to the original correlation matrix.  For items where the model is usually of complexity one, this is equivalent to making all except the largest loading for each item 0.  This is typically the solution that the user wants to interpret.  The analysis includes the \pfun{MAP} criterion of \cite{velicer:76} and a $\chi^2$ estimate.
 \item [\pfun{fa.parallel}] The parallel factors technique compares the observed eigen values of a correlation matrix with those from random data. 
 \item [\pfun{factor.plot}] will plot the loadings from a factor, principal components, or cluster analysis.  If there are more than two factors, then a SPLOM of the loadings is generated.
+
+\item[\pfun{fa.graph}] requires \fun{Rgraphviz} and will draw a graphic representation of the factor structure. If factors are correlated, this will be represented as well. 
 \end{description}
 
 \subsubsection{Item Cluster Analysis: ICLUST}
@@ -264,7 +282,9 @@ ICLUST  forms clusters of items using a hierarchical clustering algorithm until 
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 data(bfi)
-ic <- ICLUST(bfi)
+if(require(Rgraphviz)) {ic <- ICLUST(bfi)} else {
+ic <- ICLUST(bfi,plot=FALSE)
+cluster.plot(ic)}
 @
 \caption{Using the \pfun{ICLUST} function to find the cluster structure of 25 personality items.}
 \label{fig:iclust}
@@ -281,26 +301,45 @@ summary(ic)  #show the results
 \label{tab:iclust}
 \end{table}%
 
+\subsubsection{Minimum Residual Factor Analysis}
 
-\subsubsection{Principal Axis Factor Analysis}
 The factor model is an approximation of a correlation matrix by a matrix of lower rank. That is, can the correlation matrix, $\vec{_nR_n}$ be approximated by the product of a factor matrix, $\vec{_nF_k}$ and its transpose plus a diagonal matrix of uniqueness.
 \begin{equation}
 R = FF' + U^2
 \end{equation}
 
-The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package.  An alternative, least squares algorithm, \pfun{factor.pa}, does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results. 
+The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Two alternatives are provided in \Rpkg{psych},  \pfun{factor.minres} and \pfun{factor.pa}. \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions.
 
-A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  Three factors were requested for this solution (Table~\ref{tab:Thurstone}).
+A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an independent clusters solution using the ``cluster" option on rotate (Table~\ref{tab:factor.minres}).  The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
+
+\begin{table}[htdp]
+\caption{Three correlated factors from the Thurstone 9 variable problem.  The solution is transformed obliquely using a targeted rotation towards an independent cluster solution.}
+\begin{center}
+<<print=FALSE,echo=TRUE>>=
+f3t <- factor.minres(Thurstone,3,n.obs=213,rotate="cluster")
+f3t 
+@
+\end{center}
+\label{tab:factor.minres}
+\end{table}%
+
+
+\subsubsection{Principal Axis Factor Analysis}
+ An alternative, least squares algorithm, \pfun{factor.pa}, does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results. 
+
+Both the \pfun{factor.minres} and \pfun{factor.pa} as well as the \pfun{principal} solutions can be rotated or transformed with a number of options.  Some of these call the \Rpkg{GPArotation} package. Orthogonal rotations are \fun{varimax} and \fun{quartimax}. Oblique transformations include \fun{oblimin}, \fun{quartimin} and then two targeted rotation functions \pfun{Promax} and \pfun{target.rot}. The latter of these will transform a loadings matrix towards an arbitrary target matrix.  The default is to transform towards an independent cluster solution. 
+ 
+Using the Thurstone data set, three factors were requested  and then transformed into an independent clusters solution using \pfun{target.rot}  (Table~\ref{tab:Thurstone}).
+
 \begin{table}[htdp]
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
 data(bifactor)
 f3 <- factor.pa(Thurstone,3,n.obs = 213)
-f3p <- Promax(f3)
-f3p
+f3t <- target.rot(f3)
+f3t
 @
-
 \end{center}
 \label{tab:Thurstone}
 \end{table}
@@ -308,15 +347,15 @@ f3p
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-factor.plot(f3p)
+factor.plot(f3t)
 @
-\caption{A graphic representation of the 3 factors from the Thurstone data using \pfun{factor.plot}}
+\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{factor.plot}.  Factors were transformed to an oblique solution using  the \pfun{target.rot} function.}
 \label{fig:thurstone}
 \end{center}
 \end{figure}
 
 \subsubsection{Principal Components analysis}
-An alternative to factor analysis, which is unfortunately frequently confused with factor analysis, is principal components analysis.  Although the goals of PCA and FA are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem. Note how the loadings from the factor model are similar but smaller than the principal component loadings.
+An alternative to factor analysis, which is unfortunately frequently confused with factor analysis, is principal components analysis.  Although the goals of PCA and FA are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices.
 
 
 \begin{table}[htdp]
@@ -343,10 +382,13 @@ Consider the 9 Thurstone variables from above (Figure~\ref{fig:omega}).   The fi
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-op <- par(mfrow=c(1,2))
+if(require(Rgraphviz)) {op <- par(mfrow=c(1,2))
 om <- omega(Thurstone,n.obs=213)
 om.h <- omega(Thurstone,n.obs=213,sl=FALSE)
-op <- par(mfrow=c(1,1))
+op <- par(mfrow=c(1,1))} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+om <- omega(Thurstone,n.obs=213)}
 @
 \caption{A bifactor and hierarchical factor solution to the Thurstone 9 variable problem}
 \label{fig:omega}
@@ -366,7 +408,7 @@ factor.congruence(f4,ic)
 
 Now consider the solutions to the Thurstone problem, considering the factor, component, and bifactor solution.
 <<print=FALSE,echo=TRUE>>=
-factor.congruence(list(om,p3p,f3p))
+factor.congruence(list(om,p3p,f3t))
 @
 
 \subsection{Determining the number of dimensions to extract.}
@@ -403,7 +445,7 @@ Using the Very Simple Structure criterion for the bfi data suggests that 4 facto
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-vss <- VSS(bfi)
+vss <- VSS(bfi,title="Very Simple Structure of a Big 5 inventory")
 @
 \caption{The Very Simple Structure criterion for the number of factors compares solutions for various levels of item complexity and various numbers of factors.}
 \label{fig:vss}
@@ -420,7 +462,7 @@ parallel analysis suggests that 6 factors might be most appropriate (Figure~\ref
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-fa.parallel(bfi)
+fa.parallel(bfi,main="Parallel Analysis of a Big 5 inventory")
 @
 \caption{Parallel analysis compares factor and principal components solutions to the real data as well as resampled data.}
 \label{fig:parallel}
@@ -492,7 +534,11 @@ Two alternative estimates of reliability that take into account the hierarchical
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-om.9 <- omega(r9,title="9 simulated variables")
+if(require(Rgraphviz)) {om.9 <- omega(r9,title="9 simulated variables")
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+om.9 <- omega(r9,title="9 simulated variables")}
 @
 \caption{A bifactor solution for 9 simulated variables with a hierarchical structure. }
 \label{fig:omega.9}

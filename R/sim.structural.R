@@ -90,4 +90,16 @@ diag(model)<- 1                       # put ones along the diagonal
   class(results) <- c("psych", "sim")
  return(results)}
  
- 
+ 	
+	"sim.simplex" <-
+	function(nvar =12, r=.8,mu=NULL, n=0) {
+	R <- matrix(0,nvar,nvar)
+	R[] <- r^abs(col(R)-row(R))
+	require(MASS)
+	if(is.null(mu)) {mu <- rep(0,nvar)} 
+	if(n>0) {
+	observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
+	observed <- cor(observed.scores)
+	results <- list(model=R,r=observed,observed=observed.scores) } else {results <- R}
+	results
+	}

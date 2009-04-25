@@ -112,7 +112,11 @@ round(cong,2)
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-m1 <- structure.graph(c("a","b","c","d"))
+if(require(Rgraphviz)) {m1 <- structure.graph(c("a","b","c","d"))
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+m1 <- structure.sem(c("a","b","c","d"))}
 @
 \caption{Tau equivalent tests are special cases of congeneric tests.  Tau equivalence assumes a=b=c=d}
 \label{fig:tau}
@@ -139,10 +143,13 @@ These data can be represented as either a \iemph{bifactor} (Figure~\ref{fig:bifa
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-op <- par(mfrow=c(1,2))
+if(require(Rgraphviz)) {op <- par(mfrow=c(1,2))
 m.bi <- omega(bifact,title="A bifactor model")
 m.hi <- omega(bifact,sl=FALSE,title="A hierarchical model")
 op <- par(mfrow = c(1,1))
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")}
 @
 \caption{(Left panel) A bifactor solution represents each test in terms of a general factor and a residualized group factor. (Right Panel) A hierarchical factor solution has g as a second order factor accounting for the correlations between the first order factors}
 \label{fig:bifact}
@@ -197,7 +204,10 @@ three.fact
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-three.fact.mod <-structure.graph(fx)
+if(require(Rgraphviz)) {three.fact.mod <-structure.graph(fx)} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")}
+
 @
 \caption{Three uncorrelated factors generated using the sim.structure function and drawn using structure.graph.}
 \label{fig:3f}
@@ -227,7 +237,9 @@ The \pfun{structure.list} and \pfun{phi.list} functions allow for for creation o
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-corf3.mod <- structure.graph(fxs,Phis)
+if(require(Rgraphviz)) {corf3.mod <- structure.graph(fxs,Phis)} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")}
 @
 \caption{Three correlated factors with symbolic paths. Created using structure.graph and structure.list and phi.list for ease of input.}
 \label{fig:symb3}
@@ -236,7 +248,7 @@ corf3.mod <- structure.graph(fxs,Phis)
 
 \paragraph{Drawing path models from Exploratory Factor Analysis solutions}
 
-Alternatively, this result can represent the estimated factor loadings and oblique correlations found using \fun{factanal}  (Maximum Likelihood factoring) or \pfun{factor.pa}  (Principal axis factoring) followed by a promax rotation using the \pfun{Promax} function (Figure~\ref{fig:f3:emp}. Comparing this figure with the previous one (Figure~\ref{fig:symb3}), it will be seen that one path was dropped because it was less than the arbitrary ``cut" value of .2.
+Alternatively, this result can represent the estimated factor loadings and oblique correlations found using \fun{factanal}  (Maximum Likelihood factoring) or \pfun{factor.pa}  (Principal axis or minimum residual (minres) factoring) followed by a promax rotation using the \pfun{Promax} function (Figure~\ref{fig:f3:emp}. Comparing this figure with the previous one (Figure~\ref{fig:symb3}), it will be seen that one path was dropped because it was less than the arbitrary ``cut" value of .2. 
 
 <<print=FALSE,echo=TRUE>>=
 f3.p <- Promax(factor.pa(cor.f3$model,3))
@@ -245,7 +257,11 @@ f3.p <- Promax(factor.pa(cor.f3$model,3))
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-mod.f3p <- structure.graph(f3.p,cut=.2)
+if(require(Rgraphviz)) {mod.f3p <- structure.graph(f3.p,cut=.2)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")}
+
 @
 \caption{The empirically fitted structural model.  Paths less than cut (.2 in this case, the default is .3) are not shown.}
 \label{fig:f3:emp}
@@ -275,7 +291,11 @@ fyx <- structure.list(3,list(Y=c(1,2,3)),"Y")
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-sg3 <- structure.graph(fxs,phi,fyx)
+if(require(Rgraphviz)) {sg3 <- structure.graph(fxs,phi,fyx)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+sg3 <- structure.sem(fxs,phi,fyx)}
 @
 \caption{A symbolic structural model. Three independent latent variables are regressed on a latent Y.}
 \label{fig:symbxy}
@@ -294,7 +314,12 @@ fy <- structure.list(3,list(Y=c(1,2,3)))
 Phi <- diag(1,5,5)
 Phi[4,c(1:3)] <- letters[1:3]
 Phi[5,4] <- "r"
-hi.mod <-structure.graph(fxh,Phi, fy)
+if(require(Rgraphviz)) {hi.mod <-structure.graph(fxh,Phi, fy)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+hi.mod <-structure.sem(fxh,Phi, fy)}
+
 @
 \caption{A symbolic structural model with a general factor and three group factors. The general factor is regressed on the latent Y variable.}
 \label{fig:symb:gy}
@@ -313,7 +338,7 @@ The technique of \iemph{principal components} provides a set of weighted linear 
 principal(cong1$model)
 factor.pa(cong1$model)
 @
-It is important to note that although the \pfun{principal} components function does not exactly reproduce the model parameters, the \pfun{factor.pa} function, implementing principal axes factor analysis, does.  
+It is important to note that although the \pfun{principal} components function does not exactly reproduce the model parameters, the \pfun{factor.pa} function, implementing principal axes or minimum residual (minres) factor analysis, does.  
 
 Consider the case of three underlying factors as seen in the bifact example above.  Because the number of observations is not specified, there is no  associated $\chi^2$ value.  The \pfun{factor.congruence} function reports the cosine of the angle between the factors.  
 
@@ -340,7 +365,12 @@ In addition to the conventional oblique factor model, an alternative model is to
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-om.bi <- omega(bifact)
+if(require(Rgraphviz)) {om.bi <- omega(bifact)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+om.bi <- omega(bifact,plot=FALSE)}
+
 @
 \caption{An exploratory bifactor solution to the nine variable problem}
 \label{fig:om:bi}
@@ -353,7 +383,11 @@ The \iemph{bifactor} solution has a general factor loading for each variable as 
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-om.hi <- omega(bifact,sl=FALSE)
+if(require(Rgraphviz)) {om.hi <- omega(bifact,sl=FALSE)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+}
 @
 \caption{An exploratory hierarchical solution to the nine variable problem.}
 \label{fig:om:hi}
@@ -371,7 +405,10 @@ Yet one more way to treat the hierarchical structure of a data set is to conside
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
+if(require(Rgraphviz)) {ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")}
 @
 \caption{A hierarchical cluster analysis of the bifact data set using ICLUST}
 \label{fig:iclust}
@@ -394,7 +431,7 @@ The congeneric model is a one factor model with possibly unequal factor loadings
 The following example tests the hypothesis (which is actually false) that the correlations found in the cong data set (see \ref{congeneric}) are tau equivalent.  Because the variable labels in that data set were V1 ... V4, we specify the labels to match those.
 <<print=FALSE,echo=TRUE>>=
 library(sem)
- mod.tau <- structure.graph(c("a","a","a","a"),labels=paste("V",1:4,sep=""))
+ mod.tau <- structure.sem(c("a","a","a","a"),labels=paste("V",1:4,sep=""))
 mod.tau   #show it
 sem.tau <- sem(mod.tau,cong,100)
 summary(sem.tau,digits=2)
@@ -478,7 +515,12 @@ The structure being tested may be seen using \pfun{structure.graph}
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-mod.f3p <- structure.graph(f3.p)
+
+if(require(Rgraphviz)) {mod.f3p <- structure.graph(f3.p)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
+mod.f3p <- structure.sem(f3.p)}
 @
 \caption{A three factor, oblique solution.}
 \label{default}
@@ -496,7 +538,12 @@ The sem manual includes an example of a hierarchical solution to 9 mental abilit
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 data(bifactor)
+if(require(Rgraphviz)) {om.th.bi  <- omega(Thurstone,digits=3)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
 om.th.bi  <- omega(Thurstone,digits=3)
+}
 @
 \caption{A bifactor solution to the Thurstone 9 variable problem.  All items load on a general factor of ability, the residual factors account for the correlations between items within groups. }
 \label{fig:thurstone:bi}
@@ -520,7 +567,13 @@ A hierarchical solution to this data set was previously found by the \pfun{omega
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+
+if(require(Rgraphviz)) {om.hi <- omega(Thurstone,digits=3,sl=FALSE)
+} else {plot(1:10,main="Figure missing",typ="l")
+points(10:1,typ="l")
+text(5,2,"Rgraphviz needs to be installed")
 om.hi <- omega(Thurstone,digits=3,sl=FALSE)
+}
 @
 \caption{Hierarchical analysis of the Thurstone 9 variable problem using an exploratory algorithm can provide the appropriate sem code for analysis using the sem package.}
 \label{fig:thurstone:hi}

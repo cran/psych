@@ -6,15 +6,16 @@
 \description{Create a population orthogonal or hierarchical correlation matrix from a set of factor loadings and factor intercorrelations. Samples of size n may be then be drawn from this population.  Return either the sample data, sample correlations, or population correlations.  This is used to create sample data sets for instruction and demonstration.
 }
 \usage{
-sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)
+sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE,mu = NULL)
 make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{gload}{ Loadings of group factors on a general factor }
-  \item{fload}{ Loadings of items on the group factor }
+  \item{fload}{ Loadings of items on the group factors }
   \item{n}{ Number of subjects to generate: N=0 => population values }
   \item{raw}{ raw=TRUE, report the raw data, raw=FALSE, report the sample  correlation matrix. }
+  \item{mu}{means for the individual variables}
 }
 \details{Many personality and cognitive tests have a hierarchical factor structure.  For demonstration purposes, it is useful to be able to create such matrices, either with population values, or sample values. 
 

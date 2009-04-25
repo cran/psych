@@ -1,5 +1,5 @@
-cluster.fit <- function(original,load,clusters,diagonal=FALSE,digits=2) {
-      
+cluster.fit <- function(original,load,clusters,diagonal=FALSE) {
+  Pattern <- TRUE    
 
  sqoriginal <- original*original    #squared correlations
  totaloriginal <- sum(sqoriginal) - diagonal*sum(diag(sqoriginal) )   #sum of squared correlations - the diagonal
@@ -17,13 +17,20 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE,digits=2) {
         sd.inv <- 1/sqrt(var)
        ident.sd <- diag(sd.inv,ncol = length(sd.inv))
     phi <- ident.sd %*% covar  %*% ident.sd
-       phi.inv <- solve(phi)
-       pattern <- load %*%  phi.inv
-       model2 <- pattern  %*% t(load)
+    
+    
+        phi.inv <- try(solve(phi),TRUE)
+        if(class(phi.inv) == as.character("try-error")) {Pattern <- FALSE
+                    message("Could not invert cluster intercorrelation matrix, pattern matrix not found")
+                    } #can not invert matrix
+    
+        if(Pattern) {
+      pattern <- load %*%  phi.inv
+       model2 <- pattern  %*% t(load) 
        residual <- original - model2
        sqresid <- residual*residual
        totalresid <- sum(sqresid) -diagonal * sum(diag(sqresid))
-       fit2 <- 1-totalresid/totaloriginal 
+       fit2 <- 1-totalresid/totaloriginal } else {fit2 <- NULL} 
         
        clusters <- abs(clusters)               #why do I do this?
        model.1 <- (load * clusters) %*%  t(load*clusters)
@@ -33,6 +40,6 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE,digits=2) {
         fit.1 <- 1-totalresid/totaloriginal       #fit is 1-sumsquared residuals/sumsquared original     (of off diagonal elements 
         
         
- cluster.fit <- list(clusterfit=round(fit.1,digits),structurefit=round(fit,digits),patternfit =round(fit2,digits))
+ cluster.fit <- list(clusterfit=fit.1,structurefit=fit,patternfit=fit2)
  }
  

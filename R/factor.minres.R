@@ -1,23 +1,32 @@
-"factor.pa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="pa") {
+"factor.minres" <- 
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres") {
  cl <- match.call()
  
  ##first some functions that are internal to factor.minres
   #this does the ULS fitting  
   "fit.residuals.ols" <- function(Psi,S,nf) {
               diag(S) <- 1- Psi
-           
               eigens <- eigen(S)
               eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
-        #loadings <- eigen.loadings(eigens)[,1:nf]
-         if(nf >1 ) {
-         loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
+       
+         if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
          residual <- (S - model)^2
          diag(residual) <- 0
          error <- sum(residual)
          }
- 
+   "fit.residuals.min.res" <- function(Psi,S,nf) {
+              diag(S) <-1- Psi
+           
+              eigens <- eigen(S)
+        #loadings <- eigen.loadings(eigens)[,1:nf]
+         if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
+         model <- loadings %*% t(loadings)
+         residual <- (S - model)
+         diag(residual) <- 0
+        
+         error <- det(residual)
+         }
  #this code is taken (with minor modification to make ULS) from factanal        
  #it does the iterative calls to fit.residuals   
      "min.res" <- function(S,nf) {
@@ -50,10 +59,11 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     }
  
  ## now start the main function
- if((fm !="pa") & (fm != "minres")) {message("factor method not specified correctly, principal axes used")
-   fm <- "pa" }
-   
- n <- dim(r)[2]
+ 
+ if((fm !="pa") & (fm != "minres")) {message("factor method not specified correctly, minimum residual used  used")
+   fm <- "minres" }
+ 
+    n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
                if(scores) {x.matrix <- r
              if(missing) {     #impute values 
@@ -89,7 +99,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
       {
         eigens <- eigen(r.mat,symmetric=symmetric)
-         eigens$values[ eigens$values < .Machine$double.eps] <-  .Machine$double.eps  #added May 14, 2009 to fix case of singular matrices
         #loadings <- eigen.loadings(eigens)[,1:nfactors]
          if(nfactors >1 ) {loadings <- eigens$vectors[,1:nfactors] %*% diag(sqrt(eigens$values[1:nfactors])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
@@ -110,10 +119,9 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        
        }
        
-       if(fm=="minres") { #added April 12, 2009 to do ULS fits
+       if(fm == "minres") { #added April 12, 2009 to do ULS fits
        uls <- min.res(r,nfactors)
        eigens <- eigen(r)  #used for the summary stats
-       
        result$par <- uls$res
        loadings <- uls$loadings
                             }
@@ -136,7 +144,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
    			maxi <- max(loadings)
     		if (abs(mini) > maxi) {loadings <- -loadings }
     		loadings <- as.matrix(loadings)
-    		if(fm=="minres") {colnames(loadings) <- "mr1"} else {colnames(loadings) <- "PA1"}
+    		if(fm == "minres") {colnames(loadings) <- "MR1"} else {colnames(loadings) <- "PA1"}
     	} #sign of largest loading is positive
     }
     
@@ -145,18 +153,17 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
                  sign.tot <- sign(colSums(loadings))
                  loadings <- loadings %*% diag(sign.tot)
      } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
-             colnames(loadings) <- "PA1" }
+             colnames(loadings) <- "MR1" }
      
  
     #end addition
-    if(fm=="minres") {colnames(loadings) <- paste("MR",1:nfactors,sep='')	} else {colnames(loadings) <- paste("PA",1:nfactors,sep='')}
+    if(fm == "minres") {colnames(loadings) <- paste("MR",1:nfactors,sep='')	} else {colnames(loadings) <- paste("PA",1:nfactors,sep='')}
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
     
     model <- loadings %*% t(loadings)  
    
-    #f.loadings <- loadings #used to pass them to factor.stats 
-    Phi <- NULL
+    f.loadings <- loadings #used to pass them to factor.stats 
     if(rotate != "none") {if (nfactors > 1) {
    
     
@@ -181,6 +188,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      	               }}}
      	  
      }}
+        #just in case the rotation changes the order of the factors, sort them
+        #added October 30, 2008
        
    if(nfactors >1) {
     ev.rotated <- diag(t(loadings) %*% loadings)
@@ -191,15 +200,15 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
    
-    result <- factor.stats(r,loadings,Phi,n.obs)   #do stats as a subroutine common to several functions
-    
-    result$rotate  <- rotate
-    result$loadings <- loadings
-    result$values <- eigens$values
+   result <- factor.stats(r,loadings,Phi,n.obs)   #do stats as a subroutine common to several functions
+
     result$communality <- round(diag(model),digits)
     result$uniquenesses <- round(diag(r-model),digits)
+    result$values <- round(eigens$values,digits)
+    result$loadings <- loadings
+
     if(!is.null(Phi)) {result$Phi <- Phi}
-    if(fm=="pa") result$communality.iterations <- round(unlist(comm.list),digits)
+    if(fm == "pa") result$communality.iterations <- round(unlist(comm.list),digits)
     
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
@@ -211,20 +220,3 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
  
  
- "factor.scores" <- function(x,f) {
-     if(!is.matrix(f)) f <- loadings(f)
-     r <- cor(x,use="pairwise")   #find the correlation matrix from the data
-     w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
-     if(class(w)=="try-error") {warning("correlation matrix is singular, approximation used")
-     ev <- eigen(r)
-     ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-       r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
-       diag(r)  <- 1
-      w <- solve(r,f)}
-     scores <- scale(x) %*% w    #standardize the data before doing the regression
-     return(scores) }
-     #how to treat missing data?  see score.item
-     
-   
-    
-  

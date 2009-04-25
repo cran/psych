@@ -1,5 +1,5 @@
 "omega" <-
-function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",...) {
+function(m,nfactors=3,fm="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
@@ -20,9 +20,9 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
              signkey[signkey=="1"] <- ""
              m.names <- paste(m.names,signkey,sep="")
              colnames(m) <- rownames(m) <- m.names
-      if ((nvar < 6) && (pc=="mle") ) {warning(paste("3 factors is too many for ",nvar," variables using mle.  Using pa instead",sep=""))
-       pc <- "pa"} 
-       gf<-schmid(m,nfactors,pc,digits,rotate=rotate,n.obs=n.obs, ...)
+      if ((nvar < 6) && (fm =="mle") ) {warning(paste("3 factors is too many for ",nvar," variables using mle.  Using minres instead",sep=""))
+       fm <- "minres"} 
+       gf<-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs, ...)
 
       Vt <- sum(m)   #find the total variance in the scale
       Vitem <-sum(diag(m)) #
@@ -40,7 +40,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
              m.names <- paste(m.names,signkey,sep="")
              colnames(m) <- rownames(m) <- m.names
              
-             gf<-schmid(m,nfactors,pc,digits=digits,n.obs=n.obs,...)
+             gf<-schmid(m,nfactors,fm,digits=digits,n.obs=n.obs,...)
       Vt <- sum(m)   #find the total variance in the scale
       Vitem <-sum(diag(m)) #
       gload <- gf$sl[,1]
@@ -49,6 +49,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       gsq <- (sum(gload))^2
       uniq <- sum(gf$sl[,(nfactors+3)])
       om.tot <- (Vt-uniq)/Vt
+      om.limit <- gsq/(Vt-uniq)  
       alpha <- ((Vt-Vitem)/Vt)*(nvar/(nvar-1))
       sum.smc <- sum(smc(m))
       lambda.6 <-(Vt +sum.smc-sum(diag(m)))/Vt
@@ -57,7 +58,7 @@ function(m,nfactors=3,pc="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
       dg <- 1}
      if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
-     omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,call=cl,title=title,model=omega.model)
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,call=cl,title=title,model=omega.model)
       class(omega) <- c("psych","omega")
       return(omega)
       }

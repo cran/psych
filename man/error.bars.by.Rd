@@ -39,12 +39,12 @@ If desired, a barplot with error bars can be shown. Many find this type of plot 
 \examples{
 
 data(sat.act)
-error.bars.by(sat.act,sat.act$gender)
-error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"))  #draw a barplot
+error.bars.by(sat.act[1:4],sat.act$gender)
+error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"),main="SAT V and SAT Q by gender")  #draw a barplot
 
-error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE) 
+error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE,xlab="Education",main="95 percent confidence limits of Sat V and Sat Q") 
 
-error.bars.by(sat.act[5:6],sat.act$education,TRUE)  #plot SAT V and SAT Q by education
+error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education")  #plot SAT V and SAT Q by education
 
 
 }

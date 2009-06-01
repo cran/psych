@@ -13,7 +13,7 @@ failed=FALSE
       if (!is.matrix(R)) R <- as.matrix(R)}
  R.inv <- try(solve(R),TRUE)
  if(class(R.inv)== as.character("try-error")) {smc <- rep(1,p)
- warning("Correlation matrix not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
+ message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
  if(covar) {smc <- smc * vari}}
  return(smc)
  }

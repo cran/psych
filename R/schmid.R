@@ -3,7 +3,7 @@
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
 "schmid" <-
-function (model, nfactors = 3, fm = "pa",  digits=2,rotate="oblimin",n.obs=NA,...) 
+function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
@@ -14,7 +14,7 @@ function (model, nfactors = 3, fm = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres")) {fact <- factor.pa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")) {fact <- fa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
      
         fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}
@@ -37,10 +37,11 @@ function (model, nfactors = 3, fm = "pa",  digits=2,rotate="oblimin",n.obs=NA,..
     #factr <- t(obminfact$Th) %*% (obminfact$Th)
     factr <- obminfact$Phi
    
-   if (nfactors ==1) {gload <- c(1)} else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
+   if (nfactors ==1) {gload <- c(1)
+              warning("Omega_h and Omega_assymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
        gfactor <- factanal( covmat = factr, factors = 1)
-       gload <- loadings(gfactor) } else {gload<- c(NA,NA)
+       gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
        gload[1] <- sqrt(abs(factr[1,2]))
        gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2]))
        

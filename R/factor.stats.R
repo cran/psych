@@ -48,7 +48,7 @@ cl <- match.call()
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
    	if(!is.null(phi)) f <- f %*% phi
       w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
-     if(class(w)=="try-error") {warning("\nCorrelation matrix is singular, approximation used")
+     if(class(w)=="try-error") {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
@@ -72,6 +72,7 @@ cl <- match.call()
    	                                           if(dim(sd.inv)[1] == 1) sd.inv <- diag(sd.inv)
    	                                           valid <- t(f) %*% keys * sd.inv
    	                                           result$valid <- valid}
+   	 result$weights <- w  #the beta weights for factor scores
    	class(result) <- c("psych","stats")
    	return(result)	
    }

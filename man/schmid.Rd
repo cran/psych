@@ -6,7 +6,7 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, fm = "pa",digits=2,rotate="oblimin",n.obs=NA,...)
+schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,...)
 }
 
 \arguments{

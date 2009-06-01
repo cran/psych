@@ -1,6 +1,7 @@
 \name{factor.stats}
 \Rdversion{1.1}
 \alias{factor.stats}
+\alias{factor.scores}
 
 \title{Find various goodness of fit statistics for factor analysis and principal components }
 
@@ -8,10 +9,12 @@
 }
 \usage{
 factor.stats(r, f, phi=NULL, n.obs = NA)
+factor.scores(x,f)
 }
 
 \arguments{
   \item{r}{A correlation matrix or a data frame of raw data}
+  \item{x}{A data frame or matrix of raw data}
   \item{f}{A factor analysis loadings matrix or the output from a factor or principal components analysis}
   \item{phi}{A factor intercorrelation matrix if the factor solution was oblique}
   \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.
@@ -41,6 +44,8 @@ factor.stats(r, f, phi=NULL, n.obs = NA)
 
 \item{r.scores}{The correlations of the factor score estimates, if they were to be found.}
 
+\item{weights}{The beta weights to find the factor score estimates}
+
 \item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
 
 \item{score.cor}{The correlation matrix of course coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix.}
@@ -63,6 +68,8 @@ f3 <- factor.minres(v9,3)
 factor.stats(v9,f3,n.obs=500)
 f3o <- factor.pa(v9,3,rotate="Promax")
 factor.stats(v9,f3o,n.obs=500)
+
+
 }
 
 \keyword{ multivariate }

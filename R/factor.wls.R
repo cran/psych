@@ -1,46 +1,38 @@
-"factor.minres" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres") {
+"factor.wls" <- 
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="wls") {
  cl <- match.call()
  
- ##first some functions that are internal to factor.minres
-  #this does the ULS fitting  
-  "fit.residuals.ols" <- function(Psi,S,nf) {
+ #this does the WLS or ULS fitting  depending upon fm 
+  "fit.residuals" <- function(Psi,S,nf,S.inv,fm) {
               diag(S) <- 1- Psi
+              if(!is.null(S.inv)) sd.inv <- diag(1/diag(S.inv))
               eigens <- eigen(S)
               eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
        
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
-         residual <- (S - model)^2
+       #weighted least squares weights by the importance of each variable   
+       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {residual <- (S - model)^2 }  # the uls solution usually seems better?
          diag(residual) <- 0
          error <- sum(residual)
          }
-   "fit.residuals.min.res" <- function(Psi,S,nf) {
-              diag(S) <-1- Psi
-           
-              eigens <- eigen(S)
-        #loadings <- eigen.loadings(eigens)[,1:nf]
-         if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
-         model <- loadings %*% t(loadings)
-         residual <- (S - model)
-         diag(residual) <- 0
-        
-         error <- det(residual)
-         }
- #this code is taken (with minor modification to make ULS) from factanal        
+  
+ #this code is taken (with minor modification to make ULS or WLS) from factanal        
  #it does the iterative calls to fit.residuals   
-     "min.res" <- function(S,nf) {
+     "fit" <- function(S,nf,fm) {
           S.smc <- smc(S)
+          if(fm=="wls") {S.inv <- solve(S)} else {S.inv <- NULL}
           if(sum(S.smc) == nf) {start <- rep(.5,nf)}  else {start <- 1- S.smc}       
-          res <- optim(start, fit.residuals.ols, method = "L-BFGS-B", lower = .005, 
+          res <- optim(start, fit.residuals, method = "L-BFGS-B", lower = .005, 
         upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
-            length(start)))), nf= nf, S=S )
-    Lambda <- FAout(res$par, S, nf)
+            length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
+   
+    if(fm=="wls") {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
     result <- list(loadings=Lambda,res=res)
     }
           
  #these  were also taken from factanal        
-     FAout <- function(Psi, S, q) {
+    FAout <- function(Psi, S, q) {
         sc <- diag(1/sqrt(Psi))
         Sstar <- sc %*% S %*% sc
         E <- eigen(Sstar, symmetric = TRUE)
@@ -49,19 +41,19 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
             q)
         diag(sqrt(Psi)) %*% load
     }
-    FAfn <- function(Psi, S, q) {
-        sc <- diag(1/sqrt(Psi))
-        Sstar <- sc %*% S %*% sc
-        E <- eigen(Sstar, symmetric = TRUE, only.values = TRUE)
-        e <- E$values[-(1L:q)]
-        e <- sum(log(e) - e) - q + nrow(S)
-        -e
-    }
+  
+   FAout.wls <-  function(Psi, S, q) {
+        diag(S) <- 1- Psi
+        E <- eigen(S,symmetric = TRUE)
+        L <- E$vectors[,1:q,drop=FALSE] %*% diag(sqrt(E$values[1:q,drop=FALSE]))
+        return(L)
+    } ## now start the main function
+ 
  
  ## now start the main function
  
- if((fm !="pa") & (fm != "minres")) {message("factor method not specified correctly, minimum residual used  used")
-   fm <- "minres" }
+ if((fm !="pa") & (fm !="minres" )& (fm != "wls")) {message("factor method not specified correctly, weighted least squares  used")
+   fm <- "wls" }
  
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
@@ -119,8 +111,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        
        }
        
-       if(fm == "minres") { #added April 12, 2009 to do ULS fits
-       uls <- min.res(r,nfactors)
+       if(fm == "wls") { #added May 25, 2009 to do WLS fits
+       uls <- fit(r,nfactors,fm)
        eigens <- eigen(r)  #used for the summary stats
        result$par <- uls$res
        loadings <- uls$loadings
@@ -157,7 +149,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      
  
     #end addition
-    if(fm == "minres") {colnames(loadings) <- paste("MR",1:nfactors,sep='')	} else {colnames(loadings) <- paste("PA",1:nfactors,sep='')}
+    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {colnames(loadings) <- paste("PA",1:nfactors,sep='')}
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
     
@@ -213,7 +205,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
     result$fn <- "factor.pa"
-    result$fm <- fm
     result$Call <- cl
     class(result) <- c("psych", "fa")
     return(result) }

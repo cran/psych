@@ -1,5 +1,16 @@
 Change file for package psych
 
+Version 1.0.72 June 1, 2009
+Fixed a bug introduced earlier today when printing unsorted omega general factor loadings.
+Added factor adequacy measures to omega
+
+Version 1.0.71  June 1, 2009
+Reports omega for 1  factor problem
+Revised print.psych to be a number of subroutines for easier maintenance.
+Added function fa to combine factor.pa, factor.wls, factor.minres into one function.
+Added rotation more rotation options to fa.
+Fixed bug in print.psych.omega so that item numbers are correctly identified when sorting.
+
 Version 1.0.70 May 25, 2009
 Added factor.stats function to clarify the various statistics for factor analysis using the factor.pa, factor.minres, and principal functions.
 Added "cluster" as a rotation option in target.rot. 

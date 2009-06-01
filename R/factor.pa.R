@@ -204,6 +204,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
     result$fn <- "factor.pa"
+    result$fm <- fm
     result$Call <- cl
     class(result) <- c("psych", "fa")
     return(result) }
@@ -211,20 +212,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
  
  
- "factor.scores" <- function(x,f) {
-     if(!is.matrix(f)) f <- loadings(f)
-     r <- cor(x,use="pairwise")   #find the correlation matrix from the data
-     w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
-     if(class(w)=="try-error") {warning("correlation matrix is singular, approximation used")
-     ev <- eigen(r)
-     ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-       r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
-       diag(r)  <- 1
-      w <- solve(r,f)}
-     scores <- scale(x) %*% w    #standardize the data before doing the regression
-     return(scores) }
-     #how to treat missing data?  see score.item
-     
-   
+ 
     
   

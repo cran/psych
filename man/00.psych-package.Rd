@@ -9,7 +9,7 @@
 
 The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") for a list of all functions.
 
-Psychometric applications include routines for principal axes (\code{\link{factor.pa}}) and minimum residual (minres) factor analysis (\code{\link{factor.minres}}) as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
+Psychometric applications include routines (\code{\link{fa}} for principal axes (\code{\link{factor.pa}}), minimum residual (minres: \code{\link{factor.minres}}), and weighted least squares (\code{link{factor.wls}}  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
 
 The \code{\link{score.items}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
 
@@ -65,8 +65,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-70 \cr
-Date: \tab 2009-5-22\cr
+Version: \tab 1.0-72 \cr
+Date: \tab 2009-6-1\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -106,11 +106,14 @@ Useful data entry and descriptive statistics\cr
 Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
+\link{fa}              \tab         Combined function for principal axis, minimum residual, or weighted least squares factor analysis\cr
 \link{factor.pa}        \tab        Do a principal Axis factor analysis\cr
 \link{factor.minres}    \tab        Do a minimum residual factor analysis\cr
+\link{factor.wls}    \tab        Do a weighted least squares factor analysis\cr
 \link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
 \link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
+\link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
 \code{\link{ICLUST}}   \tab          Apply the ICLUST algorithm\cr
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr

@@ -1,6 +1,6 @@
 "poly.mat" <- 
 function(x,short=TRUE,std.err=FALSE,ML=FALSE) {
-	if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package")}  #John Fox's Polycor package
+	if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}  #John Fox's Polycor package
 xm <- as.matrix(x)   
 xm.cat <- matrix(as.factor(xm),ncol=dim(xm)[2])
 colnames(xm.cat) <- colnames(xm)

@@ -20,7 +20,7 @@ function(m,nfactors=3,fm="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
              signkey[signkey=="1"] <- ""
              m.names <- paste(m.names,signkey,sep="")
              colnames(m) <- rownames(m) <- m.names
-      if ((nvar < 6) && (fm =="mle") ) {warning(paste("3 factors is too many for ",nvar," variables using mle.  Using minres instead",sep=""))
+      if ((nvar < 6) && (fm =="mle") ) {message(paste("In omega, 3 factors are too many for ",nvar," variables using mle.  Using minres instead",sep=""))
        fm <- "minres"} 
        gf<-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs, ...)
 
@@ -57,8 +57,10 @@ function(m,nfactors=3,fm="mle",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRU
       dg <-max(digits-1,1)} else {
       omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
       dg <- 1}
+      omega.stats <- factor.stats(m,gf$sl[,1:(nfactors+1)])
+     if (nfactors<2) plot <- FALSE
      if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
-     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,call=cl,title=title,model=omega.model)
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,call=cl,title=title,model=omega.model)
       class(omega) <- c("psych","omega")
       return(omega)
       }

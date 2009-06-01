@@ -1,6 +1,6 @@
  "Yule2poly.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package")}
+if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)
@@ -22,7 +22,7 @@ if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor p
    
  "phi2poly.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package")}
+if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)
@@ -41,7 +41,7 @@ if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor p
 
 "Yule2phi.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package")}
+if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)

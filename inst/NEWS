@@ -7,7 +7,28 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
-May, 2009  1.0.70
+
+June 1, 1.0.72
+Minor fix to print.psych.omega to correct printing error introduced in .71
+Added factor stats to omega
+
+June 1,  1.0.71
+Released to CRAN
+
+Combined principal axis, unweighted least squares (minres) and weighted least squares into one combined function (fa). Eventually the three other functions (factor.pa,factor.wls, and factor.minres) will be phased out. Added more rotation and transformation options (basically by making calls to the GPArotation package).
+
+factor.stats now reports the factor weights matrix for factor scores.
+
+A new factor analysis function factor.wls will give weighted least squares (wls).
+
+Omega will now give an estimate for  1  factor and a message about how there are alternatives for 2 factors.
+
+Fixed a bug in print.psych.omega so that it will now report the item numbers correctly when sorting.
+
+Fixed call in phi.demo so that it checks if the polycor package is installed.  This was causing problems in the Mac version on CRAN.
+
+
+May 25, 2009  1.0.70
 Added factor.stats function to report a variety of statistics for factors or components.  In particular, added measures of factorial adequacy.  factor.stats is now called by the factor.pa, factor.minres, and principal, so it is easier to adjust all three of these functions.
 
 Added a new rotation option to target.rot -- if keys are not specified, it will rotate to a cluster solution.

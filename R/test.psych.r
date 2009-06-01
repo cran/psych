@@ -64,6 +64,12 @@ for (i in first:last) {
   #the next test, phi.demo, throws multiple warnings that are from the polycor package and can not be found
   #if (!require(polycor)) { warning("psycho.demo requires the polycor package")  psych.d <- NULL  } else  {psych.d <- phi.demo() } 
   cong <- sim.congeneric()
+ #test of factoring and scoring singular data
+
+IRIS <- iris[,1:4]
+IRIS[,5] <- iris[,1]+iris[,2]
+f.iris <-fa(IRIS,5,scores=TRUE)
+p.iris <- principal(IRIS,5,scores=TRUE)
   
 
    

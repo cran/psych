@@ -1,8 +1,8 @@
 \name{phi.demo}
 \alias{phi.demo}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Create demo data for psychometrics }
-\description{A not very interesting demo of what happens if bivariate continuous data are dichotomized.  Bascially a demo of r, phi, and polychor. }
+\title{ A simple demonstration of the Pearson, phi, and polychoric corelation} 
+\description{A not very interesting demo of what happens if bivariate continuous data are dichotomized.  Bascially a demo of r, phi, and polychor.  }
 \usage{
 phi.demo(n=1000,r=.6, cuts=c(-2,-1,0,1,2))
 }
@@ -17,7 +17,7 @@ phi.demo(n=1000,r=.6, cuts=c(-2,-1,0,1,2))
 \url{http://personality-project.org/r/simulating-personality.html} and 
 \url{http://personality-project.org/r/r.datageneration.html} for better demonstrations of data generation.
 }
-\value{a matrix of correlations and a graphic plot)
+\value{a matrix of correlations and a graphic plot.   The items above the diagonal are the tetrachoric correlations, below the diagonal are raw correlations.
   
 }
 \references{\url{http://personality-project.org/r/simulating-personality.html} and 
@@ -26,7 +26,11 @@ phi.demo(n=1000,r=.6, cuts=c(-2,-1,0,1,2))
 
 \seealso{\code{\link{VSS.simulate}},\code{\link{item.sim}}}
 \examples{
-round(phi.demo() ,2)  #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+#show the result from poly.mat
+round(demo$tetrachoric,2)
+#show the result from phi2poly
+round(demo$phis,2)
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

@@ -38,7 +38,10 @@ Yule2phi.matrix(x, v)
 \author{ William Revelle}
 
 \examples{
-round(phi.demo() ,2)  #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+demo <- phi.demo()
+round(demo$tetrachoric,2) #these should actually be all 1s but won't be
+round(demo$phis,2)    #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ multivariate }% __ONLY ONE__ keyword per line

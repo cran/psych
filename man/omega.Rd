@@ -48,7 +48,9 @@ The \code{\link{omega}} function uses exploratory factor analysis to estimate th
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 
-Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  See Zinbarg et al., 2007. 
+Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  The solution discussed in Zinbarg et al., 2007 for reporting a range of omega in this case is not yet implemented.
+
+Although obviously not meaningful for a 1 factor solution, it is of course possible to find the sum of the loadings on the first (and only) factor, square them, and compare them to the overall matrix variance.  This is done, with appropriate complaints.
 
 
 In addition to \eqn{\omega_h}, another of McDonald's coefficients is \eqn{\omega_t}.  This is an estimate of the total reliability of a test. 

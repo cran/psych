@@ -40,7 +40,8 @@ A special case of a structural model are one factor models such as parallel test
 \author{ William Revelle }
 
 
-\seealso{ \code{\link{make.hierarchical}} for another structural model and \code{\link{make.congeneric}} for the one factor case.}
+\seealso{ \code{\link{make.hierarchical}} for another structural model and \code{\link{make.congeneric}} for the one factor case. \code{\link{structure.list}} and \code{\link{structure.list}} for making symbolic structures.
+} 
 \examples{
 fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)              
 fy <- c(.6,.5,.4)

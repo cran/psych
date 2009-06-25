@@ -77,7 +77,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { PHI <- diag(i) 
  if(i<2) {(rotate="none")} else {rotate=old_rotate} 
-   if(!(fm=="pc")) { if(( fm=="pa") | ( fm=="minres") |( fm=="wls")) {
+   if(!(fm=="pc")) { if(( fm=="pa") | ( fm=="minres") |( fm=="wls") |( fm=="gls")) {
    		f <- fa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,fm=fm,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once

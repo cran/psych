@@ -1,10 +1,14 @@
-#a function to do principal axis, minres and weighted least squares factor analysis
+#a function to do principal axis, minres,  weighted least squares and maximimum likelihood factor analysis
 #basically, just combining the three separate functions
 #the code for wls and minres is adapted from the factanal function 
+#the optimization function in ml is taken almost directly from the factanal function
 #created May 28, 2009 
+#modified June 7, 2009 to add gls fitting
+#modified June 24, 2009 to add ml fitting
 "fa" <- 
 function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres") {
  cl <- match.call()
+ control <- NULL   #if you want all the options of mle, then use factanal
  
  ##first some functions that are internal to fa
   #this does the WLS or ULS fitting  depending upon fm 
@@ -17,26 +21,56 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
        #weighted least squares weights by the importance of each variable   
-       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {residual <- (S - model)^2 }  # the uls solution usually seems better?
+       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 }}  # the uls solution usually seems better?
          diag(residual) <- 0
          error <- sum(residual)
          }
   
- #this code is taken (with minor modification to make ULS or WLS) from factanal        
- #it does the iterative calls to fit.residuals   
+ #this code is taken (with minor modification to make ULS, WLS or GLS) from factanal        
+ #it does the iterative calls to fit.residuals 
+ #modified June 7 to add gls fits
      "fit" <- function(S,nf,fm) {
           S.smc <- smc(S)
-          if(fm=="wls") {S.inv <- solve(S)} else {S.inv <- NULL}
-          if(sum(S.smc) == nf) {start <- rep(.5,nf)}  else {start <- 1- S.smc}       
+           if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
+          if(sum(S.smc) == nf) {start <- rep(.5,nf)}  else {start <- 1- S.smc} #initial communality estimates  
+          if(fm=="ml")  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
+                 lower = .005, upper = 1,
+                 control = c(list(fnscale=1,
+                 parscale = rep(0.01, length(start))), control),
+                 nf = nf, S = S)} else {
           res <- optim(start, fit.residuals, method = "L-BFGS-B", lower = .005, 
         upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
-            length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
+            length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )}
    
-    if(fm=="wls") {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
+   if((fm=="wls") | (fm=="gls") ) {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
     result <- list(loadings=Lambda,res=res)
     }
+    
+ ## the next two functions are taken directly from the factanal function in order to include maximum likelihood as one of the estimate procedures
+ 
+   FAfn <- function(Psi, S, nf)
+    {
+        sc <- diag(1/sqrt(Psi))
+        Sstar <- sc %*% S %*% sc
+        E <- eigen(Sstar, symmetric = TRUE, only.values = TRUE)
+        e <- E$values[-(1:nf)]
+        e <- sum(log(e) - e) - nf + nrow(S)
+##        print(round(c(Psi, -e), 5))  # for tracing
+        -e
+    }
+    FAgr <- function(Psi, S, nf)
+    {
+        sc <- diag(1/sqrt(Psi))
+        Sstar <- sc %*% S %*% sc
+        E <- eigen(Sstar, symmetric = TRUE)
+        L <- E$vectors[, 1:nf, drop = FALSE]
+        load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
+        load <- diag(sqrt(Psi)) %*% load
+        g <- load %*% t(load) + diag(Psi) - S
+        diag(g)/Psi^2
+    }
           
- #these  were also taken from factanal        
+ #this was also taken from factanal        
     FAout <- function(Psi, S, q) {
         sc <- diag(1/sqrt(Psi))
         Sstar <- sc %*% S %*% sc
@@ -46,15 +80,15 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
             q)
         diag(sqrt(Psi)) %*% load
     }
-  
+#This is modified from factanal -- the difference in the loadings is that these produce orthogonal loadings, but slightly worse fit  
    FAout.wls <-  function(Psi, S, q) {
         diag(S) <- 1- Psi
         E <- eigen(S,symmetric = TRUE)
-        L <- E$vectors[,1:q,drop=FALSE] %*% diag(sqrt(E$values[1:q,drop=FALSE]))
+        L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
         return(L)
     } ## now start the main function
  
- if((fm !="pa") & (fm != "wls") & (fm != "minres")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
     n <- dim(r)[2]
@@ -89,6 +123,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     err <- comm
      i <- 1
     comm.list <- list()
+    
+    #principal axis is an iterative eigen value fitting
     if(fm=="pa") {
     while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
       {
@@ -109,11 +145,10 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
          i <- i + 1
          if(i > max.iter) {if(warnings)  {message("maximum iteration exceeded")}
                 err <-0 }
+       } 
        }
        
-       }
-       
-       if((fm == "wls") | (fm=="minres") | (fm=="ml")) { 
+       if((fm == "wls") | (fm=="minres") | (fm=="gls") |(fm== "ml")) { 
        uls <- fit(r,nfactors,fm)
        
        eigens <- eigen(r)  #used for the summary stats
@@ -137,7 +172,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      
  
  
-    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }
+    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
     

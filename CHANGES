@@ -1,5 +1,24 @@
 Change file for package psych
 
+Version 1.0.74  June 25, 2009
+Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.
+Modified the examples for ICLUST to show how to get graphics output with using Rgraphviz.
+Added fm="ml" option to the fa (factor analysis) function to do maximum likelihood factoring
+
+
+Version 1.0.73  June 8, 2009
+Added General Least Squares (gls) to fitting in fa
+
+Revised psych_overview vignette.
+
+Added mat.sort to sort correlation matrices to make pretty pictures.
+
+Starting to revise the estimate for factor indeterminancy to take into account the other factors.  This is clearly exploratory at this point and is not yet part of the package.
+
+Added a check in psych.demo() to check if the polycor package is available.  This gets around a problem in the Mac version at CRAN (I hope.)
+
+Fixed a bug in fa(fm="wls") for 1 factor problems (reported by Ben Schalet)
+
 Version 1.0.72 June 1, 2009
 Fixed a bug introduced earlier today when printing unsorted omega general factor loadings.
 Added factor adequacy measures to omega

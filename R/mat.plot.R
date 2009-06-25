@@ -1,6 +1,6 @@
 #developed April 24, 2009
 #
-"cor.plot" <- 
+"mat.plot" <- 
 function(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1)){
 
 if(is.null(main)) {main <- "Correlation plot" }

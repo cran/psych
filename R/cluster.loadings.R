@@ -1,9 +1,11 @@
 cluster.loadings <- 
-function (keys, r.mat, correct = TRUE) 
+function (keys, r.mat, correct = TRUE,SMC=TRUE) 
 {  cl <- match.call()
     if (!is.matrix(keys)) {
         keys <- as.matrix(keys)}
     r.mat[is.na(r.mat)] <- -9999999 
+    
+ 
    
     item.sd <- sqrt(diag(r.mat))
     item.covar <- r.mat %*% keys          #item by cluster covariances
@@ -15,8 +17,10 @@ function (keys, r.mat, correct = TRUE)
     
   #items corrected for communality lead to the Guttman G6 estimate
     r.smc <- smc(r.mat)
-    r.smc[r.smc<0] <- 1  #for a very weird condition
-    diag(r.mat) <- r.smc
+    r.smc[r.smc < 0 ] <- 1  #for a very weird condition
+   if(SMC)  {diag(r.mat) <- r.smc } else {diag(r.mat) <- 0
+                                          item.max <- apply(r.mat,1,max)
+                                          diag(r.mat) <- item.max}
     c.item.covar <- r.mat %*% keys #this uses the communality estimate and thus corrects for item overlap
     c.covar <- t(keys) %*% c.item.covar 
     c.var <- diag(c.covar)

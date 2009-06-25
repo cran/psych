@@ -26,11 +26,12 @@ phi.demo(n=1000,r=.6, cuts=c(-2,-1,0,1,2))
 
 \seealso{\code{\link{VSS.simulate}},\code{\link{item.sim}}}
 \examples{
-demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+if(require(polycor)) {demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
 #show the result from poly.mat
 round(demo$tetrachoric,2)
 #show the result from phi2poly
-round(demo$phis,2)
+#tetrachorics above the diagonal, phi below the diagonal 
+round(demo$phis,2) }
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

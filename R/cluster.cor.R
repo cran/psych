@@ -20,6 +20,11 @@ function(keys,r.mat,correct=TRUE,digits=2) { #function to extract clusters accor
  key.av.r <- key.alpha/(key.var - key.alpha*(key.var-1))  #alpha 1 = average r
  colnames(cluster.correl) <- colnames(keys)
  rownames(cluster.correl) <- colnames(keys)
+ 
+# diag(r.mat) <- 0  
+# row.range <- apply(r.mat,1,range,na.rm=TRUE)     
+# row.max <- pmax(abs(row.range[1,]),abs(row.range[2,]))  #find the largest absolute similarity
+ 
  if (correct) {cluster.corrected <- correct.cor(cluster.correl,t(key.alpha))
  result <- list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),corrected= round(cluster.corrected,digits),alpha=round(key.alpha,digits),av.r = round(key.av.r,2),size=key.var,Call=cl)
  }  #correct for attenuation

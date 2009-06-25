@@ -15,7 +15,7 @@ Alpha, the mean split half correlation, and beta, the worst split half correlati
 \usage{
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="ICLUST",plot=TRUE)
+n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE)
 
 #ICLUST(r.mat)    #use all defaults
 #ICLUST(r.mat,nclusters =3)    #use all defaults and if possible stop at 3 clusters
@@ -41,6 +41,9 @@ n.iterations = 0,title="ICLUST",plot=TRUE)
   \item{digits}{ Precision of digits of output (default = 2) }
   \item{title}{ Title for this run }
   \item{plot}{Should ICLUST.rgraph be called automatically for plotting (requires Rgraphviz default=TRUE)}
+  \item{weighted}{Weight the intercluster correlation by the size of the two clusters (TRUE) or do not weight them (FALSE)}
+  \item{cor.gen}{When correlating clusters with subclusters, base the correlations on the general factor (default) or general + group (cor.gen=FALSE)}
+  
 }
 \details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 
 
@@ -53,19 +56,37 @@ Revelle (1979) proposed that hierachical cluster analysis could be used to estim
 Revelle and Zinbarg (2009) discuss alpha, beta, and omega, as well as other estimates of reliability. 
 
 
-ICLUST was completely rewritten for the psych package.  Please email me if you want help with this version of ICLUST or if you desire more features.
+The original ICLUST program was written in FORTRAN to run on CDC and IBM mainframes and was then modified to run in PC-DOS.  The R version of ICLUST is a completely new version  written for the psych package.  Please email me if you want help with this version of ICLUST or if you desire more features.
 
 A requested feature (not yet available) is to specify certain items as forming a cluster.  That is, to do confirmatory cluster analysis.  
 
 The program currently has three primary functions: cluster, loadings, and graphics.  
 
+In June, 2009, the option of weighted versus unweighted beta was introduced.  Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test length using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions.
+
+Also modified in June, 2009 was the way of correcting for item overlap when calculating the cluster-subcluster correlations for the graphic output.  This does not affect the final cluster solution, but does produce slightly different path values.  In addition, there are two ways to solve for the cluster - subcluster correlation.
+
+Given the covariance between two clusters, Cab with average rab = Cab/(N*M), and cluster variances Va and Vb with Va = N  + N*(N-1)*ra  then the  correlation of cluster A with the combined cluster AB  is either
+
+a) ((N^2)ra + Cab)/sqrt(Vab*Va)   (option cor.gen=TRUE) or
+b) (Va - N + Nra + Cab)/sqrt(Vab*Va)    (option cor.gen=FALSE)
+
+The default is to use cor.gen=TRUE.
+
+
 Although ICLUST will give what it thinks is the best solution in terms of the number of clusters to extract, the user will sometimes disagree.  To get more clusters than the default solution, just set the nclusters parameter to the number desired.  However, to get fewer than meet the alpha and beta criteria, it is sometimes necessary to set alpha=0 and beta=0 and then set the nclusters to the desired number.   
 
 Clustering 24 tests of mental ability
 
- A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order.  Note that the graphic is created using GraphViz in the dot language.  \code{\link{ICLUST.graph}} produces the dot code for Graphviz.  Somewhat lower resolution graphs with fewer options are available in the \code{\link{ICLUST.rgraph}} function which requires Rgraphviz.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g.,OmniGraffle)
+ A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order. The default is to produce graphics using the Rgraphviz package (from BioConductor).  Because this package is sometimes hard to install, there is an alternative option to write the output out using the dot language.  This will create a  graphic suitable for any viewing program that uses the dot language.  \code{\link{ICLUST.graph}} produces the dot code for Graphviz.  Somewhat lower resolution graphs with fewer options are available in the \code{\link{ICLUST.rgraph}} function which requires Rgraphviz.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g., OmniGraffle)
+ 
 
-Note that for this problem, with these parameters, the data form one large cluster. (This is consistent with the Very Simple Structure (\code{\link{VSS}}) output as well, which shows a clear one factor solution for complexity 1 data.)  See below for an example with this same data set, but with more stringent parameter settings.  
+
+Note that for this problem, with the default parameters, the data form one large cluster. (This is consistent with the Very Simple Structure (\code{\link{VSS}}) output as well, which shows a clear one factor solution for complexity 1 data.)  
+
+An alternative solution is to ask for a somewhat more stringent set of criteria and require an increase in the size of beta for all clusters greater than 3 variables.  This produces a 4 cluster solution.
+
+It is also possible to use the original parameter settings, but ask for a 4 cluster solution.
 
 At least for the Harman 24 mental ability measures, it is interesting to compare the cluster pattern matrix with the oblique rotation solution from a factor analysis.  The factor congruence of a four factor oblique pattern solution with the four cluster solution is > .99 for three of the four clusters and > .97 for the fourth cluster.  
 
@@ -97,7 +118,8 @@ See also  more extensive documentation at
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
 \author{William Revelle   }
         
-
+\note{ICLUST draws graphical displays using Rgraphiviz by default.  If Rgraphviz is not installed, ICLUST will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST will think it is available, try to produce a graph, and fail (ungracefully).  The solution to this problem is to specify plot=FALSE and the create graphs using the dot language.  See the last example.
+}
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
 \examples{
@@ -105,9 +127,11 @@ test.data <- Harman74.cor$cov
 ic.out <- ICLUST(test.data)
 summary(ic.out)
 ic.out <- ICLUST(test.data,nclusters =4)  #use all defaults and stop at 4 clusters
-print(ic.out)
+ic.out1 <- ICLUST(test.data,beta=3,beta.size=3)  #use more stringent criteria
+print(ic.out1)
 plot(ic.out)    #this shows the spatial representation
-
+ic.no.graph <- ICLUST(test.data,plot=FALSE)
+dot.graph <- ICLUST.graph(ic.no.graph,out.file="test.ICLUST.graph.dot")   #use a dot graphics viewer
 
 
 }

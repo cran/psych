@@ -25,7 +25,7 @@ phi.list(nf,f.list, f.labels = NULL)
   \item{factor.matrix}{a matrix of factor loadings to model}
 }
 
-\seealso{  \code{\link{structure.graph}}}
+\seealso{  \code{\link{structure.graph}} for drawing it, or  \code{\link{sim.structure}} for creating this data structure. }
 \examples{
 fx <- structure.list(9,list(F1=c(1,2,3),F2=c(4,5,6),F3=c(7,8,9)))
 fy <- structure.list(3,list(Y=c(1,2,3)),"Y")

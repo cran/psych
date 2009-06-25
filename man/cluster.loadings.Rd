@@ -6,13 +6,14 @@
  Given a n x n correlation matrix and a n x c matrix of -1,0,1 cluster weights for those n items on  c clusters, find the correlation of each item with each cluster.  If the item is part of the cluster, correct for item overlap.  Part of the \code{\link{ICLUST}} set of functions, but useful for many item analysis problems.
 }
 \usage{
-cluster.loadings(keys, r.mat, correct = TRUE)
+cluster.loadings(keys, r.mat, correct = TRUE,SMC=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{keys}{ Cluster keys: a matrix of -1,0,1 cluster weights}
   \item{r.mat}{ A correlation matrix }
   \item{correct}{Correct for reliability}
+  \item{SMC}{Use the squared multiple correlation as a communality estimate, otherwise use the greatest correlation for each variable}
 }
 \details{Given a set of items to be scored as (perhaps overlapping) clusters and the intercorrelation matrix of the items, find the clusters and then the correlations of each item with each cluster.  Correct for item overlap by replacing the item variance with its average within cluster inter-item correlation.  
 

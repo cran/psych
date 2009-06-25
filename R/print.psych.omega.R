@@ -24,6 +24,7 @@ if(is.null(cut)) cut <- .2
 	        colnames(loads) <- tn  #this seems weird, but otherwise we lose the F* name
 	       
 	        if(sort) loads[,1] <- as.integer(loads[,1])
+	        loads <-round(loads,digits)
 	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")  
          	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
@@ -33,7 +34,8 @@ if(is.null(cut)) cut <- .2
        numfactors <- dim(x$schmid$sl)[2] -2
        eigenvalues <- diag(t(x$schmid$sl[,1:numfactors]) %*% x$schmid$sl[,1:numfactors])
        cat("\nWith eigenvalues of:\n")
-       print(eigenvalues,digits=digits)
+       ev.rnd <- round(eigenvalues,digits)
+       print(ev.rnd,digits=digits)
       
   	 maxmin <- max(eigenvalues[2:numfactors])/min(eigenvalues[2:numfactors])
   	 gmax <- eigenvalues[1]/max(eigenvalues[2:numfactors])

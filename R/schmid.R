@@ -3,7 +3,7 @@
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
 "schmid" <-
-function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,...) 
+function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",...) 
 {
  #model is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
@@ -22,7 +22,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
     if(nfactors == 1) { message("Omega_h for 1 factor is not meaningful, just omega_t")
-                       obminfact <-list(loadings= orth.load)
+                        obminfact <-list(loadings= orth.load)
                        
                        factr <- 1
            } else {   #the normal case is nfactors > 2
@@ -30,7 +30,10 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
       if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
-           							 } else {obminfact <- oblimin(orth.load)} }
+           							 } else {obminfact <- try(oblimin(orth.load))
+           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        rotmat <- obminfact$rotmat
+                   						    Phi <- obminfact$Phi} }}
            		}  
     if(nfactors>1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
@@ -42,10 +45,18 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
    if (nfactors>2) {
        gfactor <- factanal( covmat = factr, factors = 1)
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
-       gload[1] <- sqrt(abs(factr[1,2]))
-       gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2]))
+            if(option=="equal") {
+      			 gload[1] <- sqrt(abs(factr[1,2]))
+      			 gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2])) 
+      			 message("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")} else { if(option=="first") {
+      			 gload[1] <- 1
+      			 gload[2] <- abs(factr[1,2])
+      			 message("Three factors are required for identification -- general factor loading set to be 1 for group factor 1. Proceed with caution.")} else { gload[2] <- 1
+      			 gload[1] <- abs(factr[1,2]) 
+      			 message("Three factors are required for identification -- general factor loadings are set to be 1 for group factor 2. Proceed with caution.")} }
+      			 
        
-              warning("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")}  
+              }  
     }
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g"
@@ -61,9 +72,8 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     uniq2[uniq2<0] <- 0
     sm <- sqrt(uniq2)
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
-    if (!is.null(digits)) {result <- list(sl = cbind(round(gprimaryload,digits), round(sm,digits),h2=round( h2,digits), u2=round(u2,digits)), orthog = round(orth.load,digits), oblique = round(fload,digits),
-        phi =factr, gloading = round(gload,digits),dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )} else {
-    result <- list(sl = cbind(gprimaryload, sm, h2, u2), orthog = fact$loadings, oblique = fload, phi = factr, gloading = gload)}
+    result <- list(sl = cbind(gprimaryload, sm,h2, u2), orthog = orth.load, oblique=fload,
+        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )
    # class(result) <- c("psych" ,"fa")
     return(result)
 }

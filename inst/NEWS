@@ -8,6 +8,20 @@ Additional functions are added sporadically.
 
 History:
 
+June 25, 2009  1.0.74
+
+Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test lenght using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions.
+
+Modified the fa function to include maximimum likelihood factor analysis.
+
+
+June 8, 2009  1.0.73
+Added gls fit option to fa
+
+Added mat.sort to sort correlation matrices by factor loadings.  
+Revised the overview vignette to make more readable.
+Fixed (I hope) the documentation error that has been preventing being loaded onto CRAN for Mac.
+
 June 1, 1.0.72
 Minor fix to print.psych.omega to correct printing error introduced in .71
 Added factor stats to omega

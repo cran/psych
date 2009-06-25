@@ -21,7 +21,8 @@ omega(m, nfactors=3, fm = "mle",key = NULL, flip=TRUE, digits=2,title="Omega",sl
   \item{plot}{plot=TRUE (default) calls omega.graph, plot =FALSE does not}
   \item{n.obs}{Number of observations - used for goodness of fit statistic}
   \item{rotate}{What rotation to apply? The default is oblimin, the alternative is simplimax.}
-  \item{...}{Allows additional parameters to be passed through to the factor routines}
+  
+  \item{...}{Allows additional parameters to be passed through to the factor routines.  See in particular the option parameter in  \link{schmid} for treating the case of two group factors.}
 }
 
 \details{``Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 
@@ -48,7 +49,9 @@ The \code{\link{omega}} function uses exploratory factor analysis to estimate th
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 
-Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  This is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  The solution discussed in Zinbarg et al., 2007 for reporting a range of omega in this case is not yet implemented.
+Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  
+
+There are three possible options for this condition: setting the general factor loadings between the two lower order factors to be "equal" which will be the sqrt(oblique correlations between the factors) or to "first" or "second" in which case the general factor is equated with either the first or second group factor. A  message is issued suggesting that the model is not really well defined. This solution discussed in Zinbarg et al., 2007.  To do this in omega, add the option="first" or option="second" to the call.
 
 Although obviously not meaningful for a 1 factor solution, it is of course possible to find the sum of the loadings on the first (and only) factor, square them, and compare them to the overall matrix variance.  This is done, with appropriate complaints.
 
@@ -132,8 +135,10 @@ if(require(Rgraphviz)) {jen.omega <- omega(jen.data,digits=2)} else {jen.omega <
 jen.omega
 
 #create 8 items with a two factor solution, showing the use of the flip option
-#sim2 <- item.sim(8)
-#omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
+sim2 <- item.sim(8)
+omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
+omega(sim2,2)  #this shows that in fact there is no general factor
+omega(sim2,2,option="first") #but, if we define one of the two group factors as a general factor, we get a falsely high omega 
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
 if(require(Rgraphviz)) {omega(ability.cov$cov)} else {omega(ability.cov$cov,plot=FALSE)} 

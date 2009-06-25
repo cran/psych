@@ -59,6 +59,9 @@ cl <- match.call()
       result$r.scores <- r.scores 
    	  result$R2 <-R2   #this is the multiple R2 of the scores with the factors
    	  
+   	 # result$R2.corrected <- factor.indeterm(r,f)
+   	 # result$R2.total <- R2.cor$R2
+   	 # result$beta.total <- R2.cor$beta.total
    	  #course coding
    	  keys <- factor2cluster(f) 
    	  covar <- t(keys) %*% r %*% keys 

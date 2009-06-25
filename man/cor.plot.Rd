@@ -17,6 +17,10 @@ cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1))
 }
 \details{When teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
 
+The difference of mat.plot with a regular image plot is that the primary diagonal goes from the top left to the lower right.
+
+The zlim parameter defaults to 0 to 1.  This means that negative correlations are treated as zero.  This is advantageous when showing general factor structures, because it makes the 0 white.  
+
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
 }
 
@@ -31,7 +35,7 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 data(bifactor)
 cor.plot(Thurstone,TRUE, main="9 cognitive variables from Thurstone")
 simp <- sim.circ(24)
-cor.plot(cor(simp),colors=TRUE,main="24 variables in a circumplex")
+cor.plot(cor(simp),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

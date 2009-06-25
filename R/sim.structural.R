@@ -14,7 +14,8 @@ require(MASS)
 } else { model <- f%*% t(f)}
 diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
-  colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
+  if(is.null(rownames(fx))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} else {colnames(model) <- rownames(model) <- rownames(fx)}
+ 
   if(n>0) {
     mu <- rep(0,nvar)
   	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
@@ -43,7 +44,7 @@ require(MASS)
 } else { model <- f%*% t(f)}
 diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
-  colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
+  if(is.null(rownames(fx))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} else {colnames(model) <- rownames(model) <- rownames(fx)}
   if(n>0) {
     mu <- rep(0,nvar)
   	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)

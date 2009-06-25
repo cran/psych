@@ -6,8 +6,8 @@
 
 
 
-\title{Factor analysis by Principal Axis, MinRes (minimum residual) or Weighted Least Squares }
-\description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary. Another technique is to use Ordinary Least Squares to find the minimum residual (minres) solution.  A variation on minres is to do weighed least squares.  For well behaved matrices, maximum likelihood factor analysis (factanal) is probably preferred.  
+\title{Factor analysis by Principal Axis, MinRes (minimum residual), Weighted Least Squares or Maximum Likelihood }
+\description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary. Another technique is to use Ordinary Least Squares to find the minimum residual (minres) solution.  A variation on minres is to do weighed least squares.  Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  
 }
 \usage{
 fa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
@@ -38,7 +38,8 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
-  \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="pa" will do the principal factor solution}
+  \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
+  
  } 
  
 \details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}).  
@@ -47,15 +48,19 @@ Principal axes factor analysis has a long history in exploratory analysis and is
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge. 
 
-A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
+A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable sollution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
 
 The algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
 
-The minimum residual (minres) solution is an unweighted least squares solution that takes a slightly different approach.  It uses the optim function and adjusts the diagonal elements of the correlation matrix to mimimize the squared residual when the factor model is the eigen value decomposition of the reduced matrix.  MINRES and PA will both work when ML will not, for they can be used when the matrix is singular. At least on a number of test cases, the MINRES solution is slightly more similar to the ML solution than is the PA solution.  To a great extent, the minres and wls solutions follow ideas in the \code{\link{factanal}} function.  
+The minimum residual (minres) solution is an unweighted least squares solution that takes a slightly different approach.  It uses the \code{\link{optim}} function and adjusts the diagonal elements of the correlation matrix to mimimize the squared residual when the factor model is the eigen value decomposition of the reduced matrix.  MINRES and PA will both work when ML will not, for they can be used when the matrix is singular. At least on a number of test cases, the MINRES solution is slightly more similar to the ML solution than is the PA solution.  To a great extent, the minres and wls solutions follow ideas in the \code{\link{factanal}} function.  
 
-The weighted least squares (wls) solution weights the residual matrix by 1/ diagonal of the inverse of the correlation matrix.  This has the effect of weighting items with low communalities more than those with high commumnalities. 
+The weighted least squares (wls) solution weights the residual matrix by 1/ diagonal of the inverse of the correlation matrix.  This has the effect of weighting items with low communalities more than those with high commumnalities. \
 
-Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. 
+The generalized least squares (gls) solution weights the residual matrix by the inverse of the correlation matrix.  This has the effect of weighting those variables with low communalities even more than those with high communalities.
+
+The maximum likelihood solution takes yet another approach and finds those communality values that minimize the chi square goodness of fit test.  The fm="ml" option provides a maximum likelihood solution following the procedures used in \code{\link{factanal}} but does not provide all the extra features of that function.
+
+Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. The wls and gls solutions have slightly larger eigen values, but slightly worse fits of the off diagonal residuals than do the minres or maximum likelihood solutions.  
 
 Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression. 
 

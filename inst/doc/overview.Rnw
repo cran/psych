@@ -70,14 +70,41 @@
 
 The \Rpkg{psych} package \citep{psych} has been developed at Northwestern University to include functions most useful for personality, psychometric,  and psychological research.  Some of the functions (e.g., \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels}, \pfun{error.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications include routines for Very Simple Structure \citep{revelle:vss} (\pfun{VSS}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}), Item Cluster Analysis \citep{revelle:iclust} (\pfun{ICLUST}) and principal axes factor analysis (\pfun{factor.pa}), as well as functions to do Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}, and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{ICLUST}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients \pfun{ICC}) discussed by \cite{shrout:79}are also available.
+Psychometric applications include routines for three types of \iemph{factor analysis} (\pfun{fa} does \iemph{principal axis}, \iemph{minimum residual}, or \iemph{weighted least squares}). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{VSS}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis \pfun{fa.parallel} criteria.  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{ICLUST}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{ICLUST}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients \pfun{ICC}) discussed by \cite{shrout:79}are also available.
 
 
-This vignette is meant to give an overview of  the  \Rpkg{psych} package;  it is meant to give an overview of the main functions in the psych package and how they are used for data description, dimension reduction, and scale construction.  The extended  \href{"psych_manual.pdf"}{user manual} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \href{"http://personality-project.org/r/psych-manual.pdf"}{\url{http://personality-project.org/r/psych-manual.pdf}}.  The vignette, \href{"psych_for_sem.pdf"}{psych for sem}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
+This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  \href{"psych_manual.pdf"}{user manual} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \href{"http://personality-project.org/r/psych-manual.pdf"}{\url{http://personality-project.org/r/psych-manual.pdf}}).  The vignette, \href{"psych_for_sem.pdf"}{psych for sem}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
 
 For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  \href{"http://personalitytheory.org/r/r.short.html"}{guide for using \R{} for personality research}.  
 
+\section{Getting started} 
+Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polychor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions. Although sometimes hard to install, the \Rpkg{Rgraphviz} package is well worth the effort in order to appreciate the structure of hierarchical factor models or hierarchical cluster models.  (Other useful packages can be installed by installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but are not necessary.)
+
+
+
+\begin{Schunk}
+\begin{Sinput}
+install.packages("ctv")
+library(ctv)
+task.views("Psychometrics")
+\end{Sinput}
+\end{Schunk} 
+
+
 \section{Basic data analysis}
+A number of \Rpkg{psych} functions facilitate the entry of data and finding basic descriptive statistics.
+
+Remember, to run any of the \Rpkg{psych} functions, it is necessary to make the package active by using the \fun{library} command: 
+
+\begin{Schunk}
+\begin{Sinput}
+> library(psych)
+\end{Sinput}
+\end{Schunk} 
+
+The other packages, once installed, will be called automatically by \Rpkg{psych}. 
+
+
 
 \subsection{Data input and descriptive statistics}
 
@@ -85,7 +112,8 @@ There are of course many ways to enter data into \R.  Reading from a local file 
 
  \begin{description}
  \item [\pfun{read.clipboard}] is the base function for reading data from the clipboard.
- \item [\pfun{read.clipboard.csv}] for reading text is that is comma delimited. 
+ \item [\pfun{read.clipboard.csv}] for reading text that is comma delimited. 
+  \item [\pfun{read.clipboard.tab}] for reading text  that is tab delimited. 
  \item [\pfun{read.clipboard.lower}] for reading input of a lower triangular matrix with or without a diagonal.
  \item [\pfun{read.clipboard.upper}] for reading input of an upper triangular matrix.
  \end{description}
@@ -98,10 +126,12 @@ There are of course many ways to enter data into \R.  Reading from a local file 
 \end{Sinput}
 \end{Schunk} 
 
-This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited.
+This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
+
  \begin{Schunk}
 \begin{Sinput}
-> my.data <- read.clipboard(sep="\t")
+> my.data <- read.clipboard(sep="\t")   #define the tab option, or 
+> my.tab.data <- read.clipboard.tab()   #just use the alternative function
 \end{Sinput}
 \end{Schunk} 
  
@@ -155,7 +185,7 @@ Additional descriptive graphics include the ability to draw \iemph{error bars} o
 \item [\pfun{error.crosses}]  draw the confidence intervals for an x set and a y set of the same size.
 \end{description}
 
-The use of the \pfun{error.bars.by} function allows for graphic comparisons of different groups (see Figure~\ref{fig:error.bars}).  Five personality measures are shown as a function of high versus low scores on a ``lie" scale. People with higher lie scores tend to report being more agreeable, conscientious and less neurotic than people with lower lie scores.  
+The use of the \pfun{error.bars.by} function allows for graphic comparisons of different groups (see Figure~\ref{fig:error.bars}).  Five personality measures are shown as a function of high versus low scores on a ``lie" scale. People with higher lie scores tend to report being more agreeable, conscientious and less neurotic than people with lower lie scores.  The error bars are based upon normal theory and thus are symmetric rather than reflect any skewing in the data.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -180,7 +210,7 @@ error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("Male","Female"),yl
 \end{center}
 \end{figure}
 
-It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data in the \pfun{bifactor} data set.
+It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data in the \pfun{bifactor} data set which has a clear 3 factor solution (Figure~\ref{fig:cor.plot}) or a simulated data set of 24 variables with a circumplex structure  (Figure~\ref{fig:cor.plot.circ}).
 
 \begin{figure}[htbp]
 \begin{center}
@@ -192,6 +222,19 @@ cor.plot(Thurstone,color=TRUE,main="9 cognitive variables from Thurstone")
 \label{fig:cor.plot}
 \end{center}
 \end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+circ <- sim.circ(24)
+r.circ <- cor(circ)
+cor.plot(r.circ,color=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
+@
+\caption{Using the cor.plot function to show the correlations in a circumplex. Correlations are highest near the diagonal, diminish to zero further from the diagonal, and the increase again towards the corners of the matrix.  Circumplex structures are common in the study of affect.}
+\label{fig:cor.plot.circ}
+\end{center}
+\end{figure}
+
 
 \subsection{Testing correlations}
 Correlations are wonderful descriptive statistics of the data but some people like to test whether these correlations differ from zero, or differ from each other. The \fun{cor.test} function (in the \Rpkg{stats} package)  will test the significance of a single correlation, and the \fun{rcorr} function in the \Rpkg{Hmisc} package will do this for many correlations.  In the \Rpkg{psych} package, the \pfun{corr.test} function reports the correlation (Pearson or Spearman) between all variables in either one or two data frames or matrices, as well as the number of observations for each case, and the (two-tailed) probability for each correlation.  These probability values have not been corrected for multiple comparisons and so should be taken with a great deal of salt.
@@ -247,9 +290,13 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 \begin{description}
 \item[\pfun{ICLUST} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
 
+\item[\pfun{fa}] incorporates three alternative algorithms: \iemph{minres factor analysis}, \iemph{principal axis factor analysis} and \iemph{weighted least squares factor analysis}. That is, it includes the functionality of three other functions that will be eventually phased out.
+
 \item [\pfun{factor.minres}] Minimum residual factor analysis is a least squares, iterative solution to the factor problem.  minres attempts to minimize the residual (off-diagonal) correlation matrix.  It produces solutions similar to maximum likelihood solutions, but will work even if the matrix is singular. 
 
 \item [\pfun{factor.pa}]  Principal Axis factor analysis is a least squares, iterative solution to the factor problem.  PA will work for cases where maximum likelihood techniques (\fun{factanal}) will not work.  The original communality estimates are either the squared multiple correlations (\pfun{smc}) for each item or 1.
+
+\item [\pfun{factor.wls}]  Weighted least squares factor analysis is a least squares, iterative solution to the factor problem.  It minimizes the (weighted) squared residual matrix.  The  weights are based upon the independent contribution of each variable. 
 
 \item [\pfun{principal}] Principal Components Analysis reports the largest n eigen vectors rescaled by the square root of their eigen values.  
 
@@ -301,6 +348,7 @@ summary(ic)  #show the results
 \label{tab:iclust}
 \end{table}%
 
+
 \subsubsection{Minimum Residual Factor Analysis}
 
 The factor model is an approximation of a correlation matrix by a matrix of lower rank. That is, can the correlation matrix, $\vec{_nR_n}$ be approximated by the product of a factor matrix, $\vec{_nF_k}$ and its transpose plus a diagonal matrix of uniqueness.
@@ -308,15 +356,18 @@ The factor model is an approximation of a correlation matrix by a matrix of lowe
 R = FF' + U^2
 \end{equation}
 
-The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Two alternatives are provided in \Rpkg{psych},  \pfun{factor.minres} and \pfun{factor.pa}. \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions.
+The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Three alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", or fm=``"wls"). 
+
+
+\pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions.
 
 A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an independent clusters solution using the ``cluster" option on rotate (Table~\ref{tab:factor.minres}).  The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
 
 \begin{table}[htdp]
-\caption{Three correlated factors from the Thurstone 9 variable problem.  The solution is transformed obliquely using a targeted rotation towards an independent cluster solution.}
+\caption{Three correlated factors from the Thurstone 9 variable problem.  The solution is transformed obliquely using a targeted rotation towards an independent cluster solution. The extraction method was minimum residual.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
-f3t <- factor.minres(Thurstone,3,n.obs=213,rotate="cluster")
+f3t <- fa(Thurstone,3,n.obs=213,rotate="cluster",fm="minres")
 f3t 
 @
 \end{center}
@@ -332,17 +383,36 @@ Both the \pfun{factor.minres} and \pfun{factor.pa} as well as the \pfun{principa
 Using the Thurstone data set, three factors were requested  and then transformed into an independent clusters solution using \pfun{target.rot}  (Table~\ref{tab:Thurstone}).
 
 \begin{table}[htdp]
-\caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors.}
+\caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The extraction method was principal axis.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
 data(bifactor)
-f3 <- factor.pa(Thurstone,3,n.obs = 213)
-f3t <- target.rot(f3)
+f3 <- fa(Thurstone,3,n.obs = 213,fm="pa")
+f3o <- target.rot(f3)
 f3t
 @
 \end{center}
 \label{tab:Thurstone}
 \end{table}
+
+
+\subsubsection{Weighted Least Squares Factor Analysis}
+
+Similar to the minres approach of minimizing the squared residuals, factor method ``wls" weights the squared residuals by their uniquenesses.  This tends to produce slightly smaller overall residuals. In the example of weighted least squares, the output is shown by using the \pfun{print} function with the cut option set to 0.  That is, all loadings are shown (Table~\ref{tab:Thurstone.wls}).
+
+\begin{table}[htdp]
+\caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The factors were extracted using a weighted least squares algorithm.  All loadings are shown by using the cut=0 option in the \pfun{print.psych} function.}
+\begin{center}
+<<print=FALSE,echo=TRUE>>=
+data(bifactor)
+f3w <- fa(Thurstone,3,n.obs = 213,fm="wls")
+print(f3w,cut=0,digits=3)
+@
+\end{center}
+\label{tab:Thurstone.wls}
+\end{table}
+
+The unweighted least squares solution may be shown graphically using the \pfun{factor.plot} function (Figure~\ref{fig:thurstone}. Factors were transformed obliquely using a targeted rotation to a simple cluster structure. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -354,17 +424,18 @@ factor.plot(f3t)
 \end{center}
 \end{figure}
 
+A comparison of these three approaches suggests that the minres solution is more similar to a maximum likelihood solution and fits slightly better than the pa or wls solutions.  Comparisons with SPSS suggest that the pa solution matches the SPSS OLS solution, but that the minres solution is slightly better.  At least in one test data set, the weighted least squares solutions, although fitting equally well, had slightly different structure loadings.
+
 \subsubsection{Principal Components analysis}
-An alternative to factor analysis, which is unfortunately frequently confused with factor analysis, is principal components analysis.  Although the goals of PCA and FA are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices.
+An alternative to factor analysis, which is unfortunately frequently confused with factor analysis, is principal components analysis.  Although the goals of PCA and FA are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem rotated using the \pfun{Promax} function. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices. Also note how the goodness of fit statistics, based upon the residual off diagonal elements, is much worse than the \pfun{fa} solution.
 
 
 \begin{table}[htdp]
-\caption{The Thurstone problem can also be analyzed using Principal Components Analysis.  Compare this to Table~\ref{tab:Thurstone}.  The loadings are higher for the PCA because the model accounts for the unique as well as the common variance.}
+\caption{The Thurstone problem can also be analyzed using Principal Components Analysis.  Compare this to Table~\ref{tab:Thurstone}.  The loadings are higher for the PCA because the model accounts for the unique as well as the common variance.The fit of the off diagonal elements, however, is much worse than the \pfun{fa} results.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
 data(bifactor)
-p3 <-principal(Thurstone,3,n.obs = 213)
-p3p <- Promax(p3)
+p3p <-principal(Thurstone,3,n.obs = 213,rotate="Promax")
 p3p
 @
 \end{center}
@@ -408,7 +479,7 @@ factor.congruence(f4,ic)
 
 Now consider the solutions to the Thurstone problem, considering the factor, component, and bifactor solution.
 <<print=FALSE,echo=TRUE>>=
-factor.congruence(list(om,p3p,f3t))
+factor.congruence(list(f3t,f3o,om,p3p))
 @
 
 \subsection{Determining the number of dimensions to extract.}

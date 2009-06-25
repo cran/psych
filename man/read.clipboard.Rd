@@ -1,6 +1,7 @@
 \name{read.clipboard}
 \alias{read.clipboard}
 \alias{read.clipboard.csv}
+\alias{read.clipboard.tab}
 \alias{read.clipboard.lower}
 \alias{read.clipboard.upper}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -10,6 +11,7 @@
 \usage{
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
+read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimited
 read.clipboard.lower(diag=TRUE,names=NULL,...)  #read in a matrix given the lower off diagonal
 read.clipboard.upper(diag=TRUE,names=NULL,...)
 
@@ -22,9 +24,11 @@ read.clipboard.upper(diag=TRUE,names=NULL,...)
   \item{names}{for read.clipboard.lower or upper, what colnames to use}
   \item{\dots}{ Other parameters to pass to read }
 }
-\details{A typical session of R might involve data stored in text files, generated on line, etc. Although it is easy to just read from a file (particularly if using file.locate(), copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user. This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
+\details{A typical session of R might involve data stored in text files, generated on line, etc. Although it is easy to just read from a file (particularly if using file.locate() or file.choose(), copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user. This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
 
 Based upon a suggestion by Ken Knoblauch to the R-help listserve.
+
+If the input file that was copied into the clipboard was an Excel file with blanks for missing data, then read.clipboard.tab() will correctly replace the blanks with NAs.  Similarly for a csv file with blank entries, read.clipboard.csv will replace empty fields with NA.  
 
 read.clipboard.lower and read.clipboard.upper are adapted from John Fox's read.moments function in the sem package.  They will read a lower (or upper) triangular matrix from the clipboard and return a full, symmetric matrix for use by factanal, \code{\link{factor.pa}} , \code{\link{ICLUST}} , etc.  If the diagonal is false, it will be replaced by 1.0s.  These two function were added to allow easy reading of examples from various texts and manuscripts with just triangular output. }
 \value{the contents of the clipboard.

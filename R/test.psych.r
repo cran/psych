@@ -1,3 +1,4 @@
+#Quality control function to run through hard problems 
 "test.psych" <- 
 function(first=1,last=5,short=TRUE) {  
 s1 <- USArrests         #  Violent Crime Rates by US State  (4 variables)
@@ -51,14 +52,14 @@ for (i in first:last) {
   
   simple <- sim.item(nvar=24)
   circ <-  sim.circ(nvar=24)
-  cor.plot(cor(circ))
+  cor.plot(cor(circ),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
   simple.par <- fa.parallel(simple)
   fa.simple <- factor.pa(simple,2)
   cor.plot(fa.simple,TRUE,n=4)
   fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE)
  
  simple.scores <-  score.items(fa.simple.keys$clusters,simple)
-  pairs.panels(simple.scores$scores)
+ pairs.panels(simple.scores$scores)
    f4 <- sim.VSS()
     psych.d <- NULL 
   #the next test, phi.demo, throws multiple warnings that are from the polycor package and can not be found
@@ -66,14 +67,16 @@ for (i in first:last) {
   cong <- sim.congeneric()
  #test of factoring and scoring singular data
 
+#a test example of a singular matrix
 IRIS <- iris[,1:4]
 IRIS[,5] <- iris[,1]+iris[,2]
 f.iris <-fa(IRIS,5,scores=TRUE)
 p.iris <- principal(IRIS,5,scores=TRUE)
+#this will fail if not using minres or pa
   
 
    
-   cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
+cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
  pairs.panels(cong) 
  #this section tests various functions that use Rgraphviz (if it is installed) 
  if(require(Rgraphviz)) { fa.graph(factor.pa(item.sim(16),2) ,title="Principal factor of a simple structure") 

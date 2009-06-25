@@ -5,14 +5,15 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
  #this does the WLS or ULS fitting  depending upon fm 
   "fit.residuals" <- function(Psi,S,nf,S.inv,fm) {
               diag(S) <- 1- Psi
-              if(!is.null(S.inv)) sd.inv <- diag(1/diag(S.inv))
+             if(fm=="wls") {if(!is.null(S.inv)) sd.inv <- diag(1/diag(S.inv)) } else {if(!is.null(S.inv)) sd.inv <- ((S.inv))}  #gls
+            
               eigens <- eigen(S)
               eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
        
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
        #weighted least squares weights by the importance of each variable   
-       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {residual <- (S - model)^2 }  # the uls solution usually seems better?
+       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if(fm=="gls") {residual <- (sd.inv %*% (S- model))^2 } else {residual <-  (S-model)^2 } } # the uls solution usually seems better?
          diag(residual) <- 0
          error <- sum(residual)
          }
@@ -21,13 +22,13 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
  #it does the iterative calls to fit.residuals   
      "fit" <- function(S,nf,fm) {
           S.smc <- smc(S)
-          if(fm=="wls") {S.inv <- solve(S)} else {S.inv <- NULL}
+          if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
           if(sum(S.smc) == nf) {start <- rep(.5,nf)}  else {start <- 1- S.smc}       
           res <- optim(start, fit.residuals, method = "L-BFGS-B", lower = .005, 
         upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
             length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
    
-    if(fm=="wls") {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
+    if((fm=="wls") | (fm=="gls"))  {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
     result <- list(loadings=Lambda,res=res)
     }
           
@@ -45,14 +46,14 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
    FAout.wls <-  function(Psi, S, q) {
         diag(S) <- 1- Psi
         E <- eigen(S,symmetric = TRUE)
-        L <- E$vectors[,1:q,drop=FALSE] %*% diag(sqrt(E$values[1:q,drop=FALSE]))
+        L <- E$vectors[,1:q,drop=FALSE] %*% diag(sqrt(E$values[1:q,drop=FALSE]),q)
         return(L)
     } ## now start the main function
  
  
  ## now start the main function
  
- if((fm !="pa") & (fm !="minres" )& (fm != "wls")) {message("factor method not specified correctly, weighted least squares  used")
+ if((fm !="pa") & (fm !="minres" )& (fm != "gls") & (fm != "wls")) {message("factor method not specified correctly, weighted least squares  used")
    fm <- "wls" }
  
     n <- dim(r)[2]
@@ -111,7 +112,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        
        }
        
-       if(fm == "wls") { #added May 25, 2009 to do WLS fits
+       if((fm == "wls")| (fm=="gls")) { #added May 25, 2009 to do WLS fits
        uls <- fit(r,nfactors,fm)
        eigens <- eigen(r)  #used for the summary stats
        result$par <- uls$res
@@ -149,7 +150,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      
  
     #end addition
-    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {colnames(loadings) <- paste("PA",1:nfactors,sep='')}
+    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if(fm == "gls") {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')}}
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
     

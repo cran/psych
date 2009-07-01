@@ -1,7 +1,6 @@
 \name{irt.item.diff.rasch}
 \alias{irt.item.diff.rasch}
 \alias{irt.discrim}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Simple function to estimate item difficulties using IRT concepts}
 \description{Steps toward a  very crude and preliminary IRT program. These two functions  estimate item difficulty and discrimination parameters.
 }

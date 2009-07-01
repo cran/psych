@@ -1,6 +1,5 @@
 \name{mat.regress}
 \alias{mat.regress}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Multiple Regression from matrix input}
 \description{
  Extract subsets of variables (x and y) from a correlation or data matrix

@@ -235,5 +235,6 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     return(result) }
     
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
+    #modified Spring, 2009 to add multiple ways of doing factor analysis
  
  

@@ -1,7 +1,6 @@
 \name{omega.graph}
 \alias{omega.graph}
 \alias{omega.sem}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Graph hierarchical factor structures }
 \description{Hierarchical factor structures represent the correlations between variables in terms of a smaller set of correlated factors which themselves can be represented by a higher order factor.
 

@@ -1,6 +1,5 @@
 \name{score.items}
 \alias{score.items}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
 \description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported.
 }

@@ -1,7 +1,6 @@
 \name{table2matrix}
 \alias{table2matrix}
 \alias{table2df}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Convert a table with counts to a matrix or data.frame representing those counts.}
 \description{Some historical sets are reported as summary tables of counts in a limited number of bins.  Transforming these tables to data.frames representing the original values is useful for pedagogical purposes.  (E.g., transforming the original Galton table of height x cubits in order to demonstrate regression.) The column and row names must be able to be converted to numeric values.
 }

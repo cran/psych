@@ -1,6 +1,5 @@
 \name{error.bars}
 \alias{error.bars}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plot means and confidence intervals}
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}.
 }

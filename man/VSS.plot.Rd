@@ -1,6 +1,5 @@
 \name{VSS.plot}
 \alias{VSS.plot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plot VSS fits}
 \description{The Very Simple Structure criterion ( \code{\link{VSS}}) for estimating the optimal number of factors is plotted as a function of the increasing complexity and increasing number of factors.  
 }

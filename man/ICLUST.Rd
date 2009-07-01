@@ -1,7 +1,6 @@
 \name{ICLUST}
 \alias{ICLUST}
 \alias{iclust}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ICLUST: Item Cluster Analysis   -- Hierarchical cluster analysis using psychometric principles }
 \description{A common data reduction technique is to cluster cases (subjects). Less common, but particularly useful in psychological research, is to cluster items (variables). This may be thought of as an alternative to factor analysis, based upon a much simpler model. The cluster model is that the correlations between variables reflect that each item loads on at most one cluster, and that items that load on those clusters correlate as a function of their respective loadings on that cluster and items that define different clusters correlate as a function of their respective cluster loadings and the intercluster correlations. 
 Essentially, the cluster model is a Very Simple Structure factor model of complexity one (see \code{\link{VSS}}).

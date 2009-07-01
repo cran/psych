@@ -10,7 +10,6 @@
 \alias{p.ellipse}
 \alias{panel.smoothie}
 
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{SPLOM, histograms and correlations for a data matrix}
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown.
 }

@@ -1,6 +1,6 @@
 \name{cluster.cor}
 \alias{cluster.cor}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{Find correlations of composite variables from a larger matrix}
 \description{
  Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function. 

@@ -1,6 +1,5 @@
 \name{harmonic.mean}
 \alias{harmonic.mean}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Find the harmonic mean of a vector, matrix, or columns of a data.frame}
 \description{The harmonic mean is merely the reciprocal of the arithmetic mean of the reciprocals.
 }

@@ -1,12 +1,11 @@
 \name{thurstone}
 \alias{thurstone}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Thurstone Case V scaling}
 \description{Thurstone Case V scaling allows for a scaling of objects compared to other objects. As one of the cases considered by Thurstone, Case V makes the assumption of equal variances and uncorrelated distributions. }
 \usage{
 thurstone(x, ranks = FALSE, digits = 2)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{x}{ A square matrix or data frame of preferences, or a rectangular data frame or matrix rank order choices. }
   \item{ranks}{TRUE if rank orders are presented}
@@ -37,6 +36,5 @@ Revelle, W. An introduction to psychometric theory with applications in R. (in p
 data(vegetables)
 thurstone(veg)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ models }

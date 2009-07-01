@@ -1,6 +1,5 @@
 \name{factor.rotate}
 \alias{factor.rotate}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{``Hand" rotate a factor loading matrix }
 \description{Given a factor or components matrix, it is sometimes useful to do arbitrary rotations of particular pairs of variables.  This supplements the much more powerful rotation package GPArotation and is meant for specific requirements to do unusual rotations.
 }

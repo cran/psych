@@ -1,5 +1,11 @@
 Change file for package psych
 
+Version 1.0.75  July 1, 2009
+Report (once again) communalities and uniquenesses for principal components and factors (reported missing by Ista Zahn).
+Added two more data sets for examples for factor analysis   -- data(Harman).
+Added yet another check to see if polycor is available. The Mac version keeps failing because polycor is NOT available for the test suite. 
+Although those functions that require polycor fail gracefully if it is not there, the examples do not.
+
 Version 1.0.74  June 25, 2009
 Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.
 Modified the examples for ICLUST to show how to get graphics output with using Rgraphviz.

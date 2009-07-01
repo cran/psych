@@ -3,7 +3,6 @@
 \alias{irt.1p}
 \alias{irt.2p}
 \alias{irt.person.rasch}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Item Response Theory estimate of theta (ability) using a Rasch (like) model}
 \description{Item Response Theory models individual responses to items by estimating individual ability (theta) and item difficulty (diff) parameters.  
 This is an early and crude attempt to capture this modeling procedure.

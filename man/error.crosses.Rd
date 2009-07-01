@@ -1,6 +1,5 @@
 \name{error.crosses}
 \alias{error.crosses}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Plot x and y error bars }
 \description{Given two vectors of data, plot the means and show standard errors in both X and Y directions. 
 }

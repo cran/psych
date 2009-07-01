@@ -8,6 +8,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
      
  if(is.null(cut)) cut <- .3
  	load <- x$loadings
+ 	communality <- rowSums(load^2)
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
@@ -45,7 +46,9 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
          	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
          	fx <- data.frame(V=fx.1,fx.2)
          	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
-	    	print(fx,quote="FALSE")
+         	if(nfactors > 1) {h2 <- round(rowSums(load.2^2),digits)} else {h2 <- round(load.2^2,digits)}
+         	u2 <- 1 - h2
+	    	print(cbind(fx,h2,u2),quote="FALSE")
  		
       	   #adapted from print.loadings
       	  if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
@@ -83,5 +86,6 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
   cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
   cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
   cat("\nValidity of unit weighted factor scores       ",round(x$valid,digits),"\n")
+  
 } 
  }  #end of fac.pa

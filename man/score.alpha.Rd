@@ -1,6 +1,5 @@
 \name{score.alpha}
 \alias{score.alpha}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Score scales and find Cronbach's alpha as well as associated statistics}
 \description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  (Superseded by  \code{\link{score.items}}). 
 }

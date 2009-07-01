@@ -1,6 +1,5 @@
 \name{phi.demo}
 \alias{phi.demo}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ A simple demonstration of the Pearson, phi, and polychoric corelation} 
 \description{A not very interesting demo of what happens if bivariate continuous data are dichotomized.  Bascially a demo of r, phi, and polychor.  }
 \usage{

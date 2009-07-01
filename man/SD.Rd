@@ -1,6 +1,5 @@
 \name{SD}
 \alias{SD}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Find the Standard deviation for a vector, matrix, or data.frame - do not return error if there are no cases }
 \description{Find the standard deviation of a vector, matrix, or data.frame.  In the latter two cases, return the sd of each column.  Unlike the sd function, return NA if there are no observations rather than throw an error.
 }

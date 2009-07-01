@@ -1,6 +1,5 @@
 \name{fa.graph}
 \alias{fa.graph}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Graph factor loading matrices}
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path).
 }

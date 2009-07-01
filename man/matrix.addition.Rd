@@ -1,7 +1,6 @@
 \name{matrix.addition}
 \alias{matrix.addition}
 \alias{\%+\%}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{A function to add two vectors or matrices }
 \description{It is sometimes convenient to add two vectors or matrices in an operation analogous to matrix multiplication. For matrices nXm and mYp, the matrix sum  of the i,jth element of nSp = sum(over m) of iXm + mYj. 
 }

@@ -1,6 +1,5 @@
 \name{r.test}
 \alias{r.test}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Tests of significance for correlations}
 \description{Tests the significance of a single correlation, the difference between two independent correlations, the difference between two dependent correlations sharing one variable, or the difference between two dependent correlations with different variables.
 }

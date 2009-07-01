@@ -1,6 +1,5 @@
 \name{factor.fit}
 \alias{factor.fit}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{   How well does the factor model fit a correlation matrix. Part of the VSS package }
 \description{The basic factor or principal components model is that a correlation or covariance matrix may be reproduced by the product of a factor loading matrix times its transpose: F'F or P'P.  One simple index of fit is the 1 - sum squared residuals/sum squared original correlations. This fit index is used by \code{\link{VSS}}, \code{\link{ICLUST}}, etc. 
 }

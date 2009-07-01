@@ -1,6 +1,5 @@
 \name{poly.mat}
 \alias{poly.mat}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Find polychoric correlations of item data}
 \description{Uses John Fox's hetcor function (from polychor package) to find a matrix of polychoric correlations for integer data.  Essentially a wrapper for hetcor to convert integer item data into factor (categorical) data and then use hetcor.  Just a useful shortcut for subsequent factor analysis.
 }
@@ -23,10 +22,10 @@ poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)
 
 
 \examples{
-demo <- phi.demo()
+if(require(polycor)) {demo <- phi.demo()
 round(demo$tetrachoric,2) #these should actually be all 1s but won't be
 round(demo$phis,2)    #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
-
+} else {print("I am sorry, this demo requires the polycor package")}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

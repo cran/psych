@@ -8,6 +8,11 @@ Additional functions are added sporadically.
 
 History:
 
+July 1, 2009  1.0.75
+Reinstituted reporting communalities and uniquenesses for principal components and for factor analysis.  This feature had been dropped sometime in the past and reported missing by Ista Zahn.
+
+Added two new data sets: Harman.Holzinger and Harman.Burt.  The former is used by Peter Bentler as an example of alternative methods for estimating reliability, the latter is a nice example of what happens if the correlation matrix is singular.  smc estimates are inappropriate in this case and need to be checked.
+
 June 25, 2009  1.0.74
 
 Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test lenght using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions.

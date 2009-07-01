@@ -1,6 +1,5 @@
 \name{factor.congruence}
 \alias{factor.congruence}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Coefficient of factor congruence }
 \description{Given two sets of factor loadings, report their degree of congruence (vector cosine). 
 }

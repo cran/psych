@@ -1,6 +1,5 @@
 \name{geometric.mean}
 \alias{geometric.mean}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Find the geometric mean of a vector or columns of a data.frame. }
 \description{The geometric mean is the nth root of n products or e to the mean log of x.
 Useful for describing non-normal, i.e., geometric distributions.

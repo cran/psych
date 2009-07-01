@@ -88,7 +88,7 @@ Of the various rotation/transformation options, varimax, quatimax, bentlerT and 
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  
  \item{Phi}{If oblique rotations (using oblimin from the GPArotation package or promax) are requested, what is the interfactor correlation.}
- \item{communality.iterations}{The history of the communality estimates.  Probably only useful for teaching what happens in the process of iterative fitting.}
+ \item{communality.iterations}{The history of the communality estimates (For principal axis only.) Probably only useful for teaching what happens in the process of iterative fitting.}
  \item{residual}{If residuals are requested, this is the matrix of residual correlations after the factor model is applied.} 
  
 

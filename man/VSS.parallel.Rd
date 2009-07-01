@@ -1,6 +1,5 @@
 \name{VSS.parallel}
 \alias{VSS.parallel}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Compare real and random VSS solutions}
 \description{Another useful test for the number of factors is when the eigen values of a random matrix are greater than the eigen values of a a real matrix. Here we show VSS solutions to random data. 
 }

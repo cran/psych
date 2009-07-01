@@ -1,6 +1,5 @@
 \name{phi2poly}
 \alias{phi2poly}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Convert a phi coefficient to a polychoric correlation }
 \description{Given a phi coefficient (a Pearson r calculated on two dichotomous variables), and the marginal frequencies (in percentages), what is the corresponding estimate of the polychoric correlation?
 

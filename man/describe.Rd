@@ -1,6 +1,5 @@
 \name{describe}
 \alias{describe}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{  Basic descriptive statistics useful for psychometrics }
 \description{
 There are many summary statistics available in R; this function

@@ -1,6 +1,5 @@
 \name{factor2cluster}
 \alias{factor2cluster}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Extract cluster definitions from factor loadings }
 \description{Given a factor or principal components loading matrix, assign each item to a cluster corresponding to the largest (signed) factor loading for that item.  Essentially, this is a Very Simple Structure approach to cluster definition that corresponds to what most people actually do: highlight the largest loading for each item and ignore the rest.
 }

@@ -1,6 +1,5 @@
 \name{fa.parallel}
 \alias{fa.parallel}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Scree plots of data or correlation matrix compared to random ``parallel" matrices }
 \description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of the observed data with that of a random data matrix of the same size as the original.  
 }

@@ -1,6 +1,5 @@
 \name{schmid}
 \alias{schmid}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Apply the Schmid Leiman transformation to a correlation matrix}
 \description{One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. Here is the code for Schmid Leiman.  The S-L transform takes a factor or PC solution, transforms it to an oblique solution, factors the oblique solution to find a higher order (g ) factor, and then residualizes g out of the the group factors.
 

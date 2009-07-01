@@ -1,6 +1,5 @@
 \name{factor.model}
 \alias{factor.model}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Find R =  F F' + U2 is the basic factor model }
 \description{The basic factor or principal components model is that a correlation or covariance matrix may be reproduced by the product of a factor loading matrix times its transpose.  Find this reproduced matrix.  Used by \code{\link{factor.fit}}, \code{\link{VSS}}, \code{\link{ICLUST}}, etc.
 }

@@ -4,7 +4,6 @@
 \alias{circ.simulation}
 \alias{simulation.circ}
 \alias{circ.sim.plot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Simulations of circumplex and simple structure}
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating these data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }

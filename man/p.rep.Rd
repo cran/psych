@@ -3,7 +3,6 @@
 \alias{p.rep.f}
 \alias{p.rep.t}
 \alias{p.rep.r}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Find the probability of replication for an F, t, or r and estimate effect size }
 \description{The probability of replication of an experimental or correlational finding as discussed by Peter Killeen (2005) is the probability of finding an effect in the same direction upon an exact replication.  For articles submitted to Psychological Science, p.rep needs to be reported. 
 

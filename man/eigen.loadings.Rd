@@ -1,6 +1,5 @@
 \name{eigen.loadings}
 \alias{eigen.loadings}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Convert eigen vectors and eigen values to the more normal (for psychologists) component loadings}
 \description{ The default procedures for principal component returns values not immediately equivalent to the loadings from a factor analysis.  eigen.loadings translates them into the more typical metric of eigen vectors multiplied by the squareroot of the eigenvalues.   This lets us find pseudo factor loadings if we have used princomp  or eigen. \cr
 If we use \code{\link{principal}} to do our principal components analysis, then we do not need this routine.}

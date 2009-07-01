@@ -1,7 +1,6 @@
 \name{sim.hierarchical}
 \alias{sim.hierarchical}
 \alias{make.hierarchical}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Create a population or sample correlation matrix, perhaps with hierarchical structure. }
 \description{Create a population orthogonal or hierarchical correlation matrix from a set of factor loadings and factor intercorrelations. Samples of size n may be then be drawn from this population.  Return either the sample data, sample correlations, or population correlations.  This is used to create sample data sets for instruction and demonstration.
 }

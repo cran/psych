@@ -14,6 +14,8 @@ failed=FALSE
  R.inv <- try(solve(R),TRUE)
  if(class(R.inv)== as.character("try-error")) {smc <- rep(1,p)
  message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
+ if(max(smc) > 1.0) {message("In smc, smcs > 1 were set to 1.0")
+   smc[smc>1]  <- 1.0}
  if(covar) {smc <- smc * vari}}
  return(smc)
  }

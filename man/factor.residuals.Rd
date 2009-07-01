@@ -1,6 +1,5 @@
 \name{factor.residuals}
 \alias{factor.residuals}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ R* =  R- F F' }
 \description{The basic factor or principal components model is that a correlation or covariance matrix may be reproduced by the product of a factor loading matrix times its transpose.  Find the residuals of the original minus the  reproduced matrix.  Used by \code{\link{factor.fit}}, \code{\link{VSS}}, \code{\link{ICLUST}}, etc.
 }

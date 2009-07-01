@@ -1,6 +1,5 @@
 \name{principal}
 \alias{principal}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Principal components analysis }
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
@@ -43,7 +42,6 @@ Although for items, it is typical to find component scores by scoring the salien
   \item{fit }{Fit of the model to the correlation matrix }
    \item{fit.off}{how well are the off diagonal elements reproduced?}
   \item{residual }{Residual matrix -- if requested}
-   \item{communality}{The history of the communality estimates.  Probably only useful for teaching what happens in the process of iterative fitting.}
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters (number of items * number of factors - nf*(nf-1)/2.   That is, dof = niI * (ni-1)/2 - ni * nf + nf*(nf-1)/2.}
   \item{objective}{value of the function that is minimized by maximum likelihood procedures.  This is reported for comparison purposes and as a way to estimate chi square goodness of fit.  The objective function is 
   \cr

@@ -1,7 +1,6 @@
 \name{multi.hist}
 \alias{multi.hist}
 \alias{histo.density}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{  Multiple histograms with density and normal fits on one page}
 \description{Given a matrix or data.frame, produce histograms for each variable in a "matrix" form. Include normal fits and density distributions for each plot.
 

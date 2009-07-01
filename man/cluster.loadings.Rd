@@ -1,6 +1,5 @@
 \name{cluster.loadings}
 \alias{cluster.loadings}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Find item by cluster correlations, corrected for overlap and reliability }
 \description{
  Given a n x n correlation matrix and a n x c matrix of -1,0,1 cluster weights for those n items on  c clusters, find the correlation of each item with each cluster.  If the item is part of the cluster, correct for item overlap.  Part of the \code{\link{ICLUST}} set of functions, but useful for many item analysis problems.

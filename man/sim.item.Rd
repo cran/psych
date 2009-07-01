@@ -5,7 +5,6 @@
 \alias{item.dichot}
 \alias{sim.circ}
 \alias{circ.sim}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Generate simulated data structures for circumplex or simple structure }
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating simple structure and circumplex data is straightforward, and is useful for exploring alternative solutions to affect and personality structure.
 }

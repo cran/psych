@@ -1,6 +1,5 @@
 \name{cluster.fit}
 \alias{cluster.fit}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ cluster Fit:  fit of the cluster model to a correlation matrix }
 \description{
  How well does the cluster model found by \code{\link{ICLUST}} fit the original correlation matrix?  A similar algorithm  \code{\link{factor.fit}} is found in \code{\link{VSS}}. This function is internal to ICLUST but has more general use as well.

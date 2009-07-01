@@ -30,6 +30,7 @@ The five factors from Reise et al. reflect Getting care quickly (1-3), Doctor co
 
 The two Bechtoldt data sets are two samples from Thurstone (1941).  They include 17 variables, 9 of which were used by McDonald to form the Thurstone data set. The sample sizes are 212 and 213 respectively. The six proposed factors reflect  memory, verbal, words,  space, number and reasoning with three markers for all expect the rote memory factor. 9 variables from this set appear in Thurstone.
 
+Two more data sets with  similar structures are found in the \code{\link{Harman}} data set.  
 
 
 

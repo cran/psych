@@ -4,7 +4,6 @@
 \alias{read.clipboard.tab}
 \alias{read.clipboard.lower}
 \alias{read.clipboard.upper}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{shortcut for reading from the clipboard}
 \description{input from the keyboard is easy but a bit obscure, particularly for Mac users. This is just an easier mnemonic to do so.  Also will do some processing to read lower triangular matrices and fill them out to square matrices.
 }

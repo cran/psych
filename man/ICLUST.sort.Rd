@@ -1,6 +1,5 @@
 \name{ICLUST.sort}
 \alias{ICLUST.sort}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Sort items by absolute size of cluster loadings}
 \description{Given a cluster analysis or factor analysis loadings matrix, sort the items by the (absolute) size of each column of loadings.  Used as part of ICLUST and SAPA analyses.
 }

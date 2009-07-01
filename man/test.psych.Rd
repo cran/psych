@@ -1,6 +1,5 @@
 \name{test.psych}
 \alias{test.psych}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Testing of functions in the psych package }
 \description{Test to make sure the psych functions run on basic test data sets
 }

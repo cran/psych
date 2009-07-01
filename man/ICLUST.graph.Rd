@@ -1,6 +1,5 @@
 \name{ICLUST.graph}
 \alias{ICLUST.graph}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ create control code for ICLUST graphical output}
 \description{Given a cluster structure determined by \code{\link{ICLUST}}, create dot code to describe the \code{\link{ICLUST}} output.  To use the dot code, use either \url{http://www.graphviz.org/} Graphviz or a commercial viewer (e.g., OmniGraffle).
 }

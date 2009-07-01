@@ -1,6 +1,5 @@
 \name{ellipses}
 \alias{ellipses}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plot data and 1 and 2 sigma correlation ellipses}
 \description{For teaching correlation, it is useful to draw ellipses around the mean to reflect the correlation.  This variation of the ellipse function from John Fox's car package does so.  Input may be either two vectors or a matrix or data.frame.  In the latter cases, if the number of variables >2, then the ellipses are done in the \code{\link{pairs.panels}} function. Ellipses may be added to existing plots.  
 }

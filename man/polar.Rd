@@ -1,6 +1,5 @@
 \name{polar}
 \alias{polar}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Convert Cartesian factor loadings into polar coordinates }
 \description{Factor and cluster analysis output typically presents item by factor correlations (loadings).  Tables of factor loadings are frequently sorted by the size of loadings.  This style of presentation tends to make it difficult to notice the pattern of loadings on other, secondary, dimensions.  By converting to polar coordinates, it is easier to see the pattern of the secondary loadings. 
 }

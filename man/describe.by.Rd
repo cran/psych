@@ -1,6 +1,5 @@
 \name{describe.by}
 \alias{describe.by}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Basic summary statistics by group}
 \description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Just a wrapper for by and \code{\link{describe}}.
 }

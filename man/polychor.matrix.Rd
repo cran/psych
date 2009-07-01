@@ -3,7 +3,6 @@
 \alias{Yule2poly.matrix}
 \alias{phi2poly.matrix}
 \alias{Yule2phi.matrix}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Phi or Yule coefficient matrix  to polychoric coefficient matrix}
 \description{Given a matrix of phi or Yule correlation coefficients and a vector of marginals,  use John Fox's polycor function to convert these to polychoric correlations.   
 

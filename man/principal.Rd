@@ -27,9 +27,9 @@ It is important to recognize that rotated principal components are not principal
 
 Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin).
 
-Some of the statistics reported are more appropriate for maximum likelihood factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
+Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
-Although for items, it is typical to find component scores by scoring the salient items (using, e.g.,\code{\link{score.items}} component scores can be estimated by regression.  This is done just to be parallel with the principal axis factor analysis function \code{\link{factor.pa}}
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores can be estimated by regression.  This is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.  
 }
 \value{
   
@@ -40,12 +40,12 @@ Although for items, it is typical to find component scores by scoring the salien
 
   \item{loadings }{A standard loading matrix of class ``loadings"}
   \item{fit }{Fit of the model to the correlation matrix }
-   \item{fit.off}{how well are the off diagonal elements reproduced?}
+  \item{fit.off}{how well are the off diagonal elements reproduced?}
   \item{residual }{Residual matrix -- if requested}
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters (number of items * number of factors - nf*(nf-1)/2.   That is, dof = niI * (ni-1)/2 - ni * nf + nf*(nf-1)/2.}
   \item{objective}{value of the function that is minimized by maximum likelihood procedures.  This is reported for comparison purposes and as a way to estimate chi square goodness of fit.  The objective function is 
   \cr
-  \eqn{f = log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^{-1} R|) - n.items}{log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^-1 R|) - n.items}. }
+  \eqn{f = log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^{-1} R|) - n.items}{log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^-1 R|) - n.items}.   Because components do not minimize the off diagonal, this fit will be not as good as for factor analysis. }
   
   \item{STATISTIC}{If the number of observations is specified or found, this is a chi square based upon the objective function, f.  Using the formula from \code{\link{factanal}}:
  \cr
@@ -54,19 +54,27 @@ Although for items, it is typical to find component scores by scoring the salien
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  \item{phi}{If oblique rotations (using oblimin from the GPArotation package) are requested, what is the interfactor correlation.}
  \item{scores}{If scores=TRUE, then estimates of the factor scores are reported }
+ \item{weights}{The beta weights to find the principal components from the data}
+ \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001)  For components, these are of course 1.0.}
+\item{valid}{The correlations of the component score estimates with the components, if they were to be found and unit weights were used. (So called course coding).}
 }
 
 \author{ William Revelle}
-\references{Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+\references{
+
+Grice, James W.  (2001), Computing and evaluating factor scores. Psychological Methods, 6, 430-450
+
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 }
 
-\seealso{\code{\link{VSS}},\code{\link{factor2cluster}},\code{\link{factor.pa}}, \code{\link{factor.congruence}}}
+\seealso{\code{\link{VSS}} (to test for the number of components or factors to extract), \code{\link{VSS.scree}} and \code{\link{fa.parallel}} to show a scree plot and compare it with random resamplings of the data), \code{\link{factor2cluster}} (for course coding keys), \code{\link{fa}} (for factor analysis), \code{\link{factor.congruence}} (to compare solutions)}
 \examples{
 #Four principal components of the Harmon 24 variable problem
 #compare to a four factor principal axes solution using factor.congruence
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")
-pa <- factor.pa(Harman74.cor$cov,4,rotate="varimax")
-round(factor.congruence(pc,pa),2)
+mr <- fa(Harman74.cor$cov,4,rotate="varimax")  #minres factor analysis
+pa <- fa(Harman74.cor$cov,4,rotate="varimax",fm="pa")  # principal axis factor analysis
+round(factor.congruence(list(pc,mr,pa)),2)
 
 
 }

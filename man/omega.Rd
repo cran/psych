@@ -121,7 +121,7 @@ If the factor solution leads to an exactly orthogonal solution (probably only fo
 \examples{
 \dontrun{
 test.data <- Harman74.cor$cov
-my.omega <- omega(test.data,3)       
+if(!require(GPArotation) {message("Omega requires GPA rotation" )} else {my.omega <- omega(test.data,3)       
 print(my.omega,digits=2)
 #
          }
@@ -141,6 +141,7 @@ omega(sim2,2,option="first") #but, if we define one of the two group factors as 
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
 if(require(Rgraphviz)) {omega(ability.cov$cov)} else {omega(ability.cov$cov,plot=FALSE)} 
+}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

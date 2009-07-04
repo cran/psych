@@ -105,6 +105,8 @@ Of the various rotation/transformation options, varimax, quatimax, bentlerT and 
  }
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
 
+Grice, James W.  (2001), Computing and evaluating factor scores. Psychological Methods, 6, 430-450
+
 Harman, Harry and Jones, Wayne (1966) Factor analysis by minimizing residuals (minres), Psychometrika, 31, 3, 351-368.
 
 

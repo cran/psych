@@ -1,6 +1,7 @@
 \name{VSS.scree}
 \alias{VSS.scree}
-\title{  Plot a scree test}
+\alias{scree}
+\title{Plot the successive eigen values for a scree test}
 \description{Cattell's scree test is one of most simple ways of testing the number of components in  a correlation matrix. Here we plot the  eigen values of a correlation matrix.
 }
 \usage{

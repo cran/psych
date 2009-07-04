@@ -37,9 +37,13 @@ Yule2phi.matrix(x, v)
 \author{ William Revelle}
 
 \examples{
-demo <- phi.demo()
-round(demo$tetrachoric,2) #these should actually be all 1s but won't be
-round(demo$phis,2)    #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+if(require(polycor)) {demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+#show the result from poly.mat
+round(demo$tetrachoric,2)
+#show the result from phi2poly
+#tetrachorics above the diagonal, phi below the diagonal 
+round(demo$phis,2) }
+
 
 }
 \keyword{ models }% at least one, from doc/KEYWORDS

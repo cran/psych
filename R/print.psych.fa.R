@@ -81,11 +81,21 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
      if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
     cat("\nThe degrees of freedom for the model is",x$dof," and the fit was ",round(objective,digits),"\n") 
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
-  if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
-  cat("\n Correlation of scores with factors           ",round(sqrt(x$R2),digits))
-  cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
-  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
-  cat("\nValidity of unit weighted factor scores       ",round(x$valid,digits),"\n")
+
+cat("\nFit based upon off diagonal values =", round(x$fit.off,2))
+ stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
+ 
+ rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+
+
+ if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             \n")
+ print(round(stats.df,digits))}
+
+# if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
+#cat("\nCorrelation of scores with factors           ",round(sqrt(x$R2),digits))
+# cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
+ # cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
+ # cat("\nValidity of unit weighted factor scores       ",round(x$valid,digits),"\n")
   
 } 
  }  #end of fac.pa

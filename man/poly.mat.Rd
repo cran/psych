@@ -1,7 +1,7 @@
 \name{poly.mat}
 \alias{poly.mat}
 \title{Find polychoric correlations of item data}
-\description{Uses John Fox's hetcor function (from polychor package) to find a matrix of polychoric correlations for integer data.  Essentially a wrapper for hetcor to convert integer item data into factor (categorical) data and then use hetcor.  Just a useful shortcut for subsequent factor analysis.
+\description{Uses John Fox's hetcor function (from polycor package) to find a matrix of polychoric correlations for integer data.  Essentially a wrapper for hetcor to convert integer item data into factor (categorical) data and then use hetcor.  Just a useful shortcut for subsequent factor analysis.
 }
 \usage{
 poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)

@@ -5,7 +5,7 @@
      
   
      t <- r12*sqrt(n-2)/sqrt(1-r12^2) 
-     p <- (1-pt(t,n-2))
+     p <- 1-pt(abs(t),n-2) 
      if(twotailed) p <- 2*p
      ci <- r.con(r12,n)
       result <-  list(Call=cl,Test="Test of significance of a  correlation",t=t,p=p,ci=ci)

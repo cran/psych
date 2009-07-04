@@ -31,4 +31,4 @@ function (x, m = 4)
     return(result)
 }
 #obviously a direct copy of the promax function, with the addition of returning the angles between factors
-#based upon a suggestion to the R-help news group by ulrich keller and John Fox. 
+#based upon a suggestion to the R-help news group by Ulrich Keller and John Fox. 

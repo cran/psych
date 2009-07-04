@@ -46,8 +46,9 @@ Although 3 factors are the minimum number necessary to define the solution uniqu
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
 jen <- sim.hierarchical()  #create a hierarchical demo
-o.jen <- schmid(jen,digits=2)  #use the oblimin rotation
+if(!require(GPA.rotation)) {message("I am sorry, you must have GPArotation installed to use schmid.")} else {jen <- schmid(jen,digits=2)   #use the oblimin rotation
 p.jen <- schmid(jen,rotate="promax") #use the promax rotation
+}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

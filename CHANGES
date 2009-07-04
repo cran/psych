@@ -1,5 +1,13 @@
 Change file for package psych
 
+
+To do:
+Need to work on weird multiple R in Omega 
+
+Version 1.0.76    July 4, 2009
+fixed incorrect p value for negative correlations in r.test
+Yet another check for polycor to get through the Mac test on CRAN.
+
 Version 1.0.75  July 1, 2009
 Report (once again) communalities and uniquenesses for principal components and factors (reported missing by Ista Zahn).
 Added two more data sets for examples for factor analysis   -- data(Harman).

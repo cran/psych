@@ -32,6 +32,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                    						Phi <- obminfact$Phi
            							 } else {obminfact <- try(oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        message("\nThe oblimin solution failed, Promax used instead.\n")
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi} }}
            		}  

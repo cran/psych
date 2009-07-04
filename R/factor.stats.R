@@ -14,7 +14,7 @@ cl <- match.call()
     r2 <- sum(r*r)
     rstar2 <- sum(residual*residual)
     result <- list(residual =residual)
-  
+ 
     r2.off <- r
     diag(r2.off) <- 0
     r2.off <- sum(r2.off^2)
@@ -55,6 +55,10 @@ cl <- match.call()
        diag(r)  <- 1
       w <- solve(r,f)}   #these are the beta weights 
       R2 <- diag(t(w) %*% f)
+     if(prod(R2) <0 ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
+                      R2[abs(R2) > 1] <- NA
+                      #added to 
+                     }
       r.scores <- cov2cor(t(w) %*% r %*% w)
       result$r.scores <- r.scores 
    	  result$R2 <-R2   #this is the multiple R2 of the scores with the factors

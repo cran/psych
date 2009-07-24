@@ -1,6 +1,4 @@
-
-   
-   "error.bars" <-
+"error.bars" <-
 function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
     {
     if(is.null(stats)) {
@@ -32,14 +30,9 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      if (length(labels)==0) lab <- rep("",z) else lab <-labels
-        for (i in 1:z)  
-    	{xcen <- x.stats$mean[i]
-    	# ycen <- y$mean[i]
-    	 xse  <- x.stats$se[i]
-    	# yse <-  y$se[i]
-    	if(bars) {arrows(mp[i],xcen-ci*xse,mp[i],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else {
-    	 arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	 }
-    	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
-    	}	
+      s <- matrix(1:z,nrow=1)
+    	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else {
+    	 arrows(s[s],x.stats$mean[s]-ci[s]* x.stats$se[s],s[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL) }
+    	
    }
+   #corrected July 25, 2009 to fix bug reported by Junqian Gordon Xu and then modified to be cleaner code

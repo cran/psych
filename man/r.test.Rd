@@ -1,7 +1,7 @@
 \name{r.test}
 \alias{r.test}
 \title{Tests of significance for correlations}
-\description{Tests the significance of a single correlation, the difference between two independent correlations, the difference between two dependent correlations sharing one variable, or the difference between two dependent correlations with different variables.
+\description{Tests the significance of a single correlation, the difference between two independent correlations, the difference between two dependent correlations sharing one variable (Williams's Test), or the difference between two dependent correlations with different variables (Steiger Tests).
 }
 \usage{
 r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL, n2 = NULL,pooled=TRUE, twotailed = TRUE)
@@ -41,9 +41,13 @@ For clarity, correlations may be specified by value.  If specified by location a
 \references{Olkin, I. and Finn, J. D. (1995). Correlations redux. Psychological Bulletin, 118(1):155-164. 
 
 Steiger, J.H. (1980), Tests for comparing elements of a correlation matrix, Psychological Bulletin, 87, 245-251. 
+
+Williams, E.J.  (1959) Regression analysis. Wiley, New York, 1959.
+
+
 }
 \author{William Revelle }
-\note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations.  These tests follow Steiger's advice.
+\note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations. Instead, he recommends Williams' test. (See also Dunn and Clark, 1971). These tests follow Steiger's advice.
 
 }
 \seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}

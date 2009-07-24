@@ -7,6 +7,11 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
+July 24, 2009  1.0.77
+Fixed an error in printing communalities for rotated factor solutions reported by Tamaki Hattori. Also resolved a problem of extra lines appearing in error.bars.  Minor revision to polar. 
+
+July 4, 2009  1.0.76
+Finally resolved the problem of not passing the CRAN tests for Mac (even though developed on a Mac, the test package assumes no other packages).
 
 July 1, 2009  1.0.75
 Reinstituted reporting communalities and uniquenesses for principal components and for factor analysis.  This feature had been dropped sometime in the past and reported missing by Ista Zahn.

@@ -8,7 +8,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
      
  if(is.null(cut)) cut <- .3
  	load <- x$loadings
- 	communality <- rowSums(load^2)
+
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
@@ -40,20 +40,23 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           	ncol <- dim(loads)[2]-2
 	    	fx <- format(round(loads,digits=digits))
 	    	nc <- nchar(fx[1,3], type = "c")
-	    	 fx.1 <- fx[,1]
+	    	 fx.1 <- fx[,1,drop=FALSE]    #drop = FALSE  preserves the rownames for single factors
 	    	 fx.2 <- fx[,3:(2+ncol)]
 	    	 load.2 <- loads[,3:(ncol+2)]
          	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
          	fx <- data.frame(V=fx.1,fx.2)
          	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
-         	if(nfactors > 1) {h2 <- round(rowSums(load.2^2),digits)} else {h2 <- round(load.2^2,digits)}
-         	u2 <- 1 - h2
+         	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load^2)} else {h2 <- diag(load %*% x$Phi %*% t(load)) }} else {h2 <-load.2^2}
+         	u2 <- round(1 - h2,digits)
+         	h2 <- round(h2,digits)
+         	
 	    	print(cbind(fx,h2,u2),quote="FALSE")
  		
       	   #adapted from print.loadings
-      	  if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
+      	  if(is.null(x$Phi)) {if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
       	                                                     names(vx) <- colnames(x$loadings)
-      	                                                     }
+      	                                                     }} else {vx <- diag(x$Phi %*% t(load) %*% load)
+      	                                                      names(vx) <- colnames(x$loadings)}
            varex <- rbind("SS loadings" =   vx)
            varex <- rbind(varex, "Proportion Var" =  vx/nitems)
            if (nfactors > 1) 
@@ -79,7 +82,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
             
        objective <- x$criteria[1]
      if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
-    cat("\nThe degrees of freedom for the model is",x$dof," and the fit was ",round(objective,digits),"\n") 
+    cat("\nThe degrees of freedom for the model is",x$dof," and the objective function was ",round(objective,digits),"\n") 
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
 
 cat("\nFit based upon off diagonal values =", round(x$fit.off,2))

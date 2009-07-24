@@ -1,8 +1,11 @@
 Change file for package psych
 
 
-To do:
-Need to work on weird multiple R in Omega 
+Version 1.0.77   July 25, 2009
+Corrected the estimation of communalities  and eigen values in print.psych.fa  for the case of oblique rotations.  (The problem with communalities was reported by Tamaki Hattori).
+Corrected a bug in error.bars reported by Junqian Gordon Xu.  (Was drawing multiple bars in case of missing data.)
+
+Fixed a problem with weird multiple R in Omega
 
 Version 1.0.76    July 4, 2009
 fixed incorrect p value for negative correlations in r.test

@@ -1,5 +1,5 @@
 "factor.rotate" <-
-function(f,angle,col1=1,col2=2)  {
+function(f,angle,col1=1,col2=2,plot=FALSE,...)  {
    #hand rotate two factors from a loading matrix
    #see the GPArotation package for much more elegant procedures
      if (!is.matrix(f) ) {f <-f$loadings} 
@@ -8,10 +8,13 @@ function(f,angle,col1=1,col2=2)  {
      rot<- diag(1,nvar,nvar)
      
      theta<- 2*pi*angle/360
-     rot[col1,col1]<-cos(theta)
-     rot[col2,col2]<-cos(theta)
+     rot[col1,col1]<-  cos(theta)
+     rot[col2,col2]<-  cos(theta)
      rot[col1,col2]<- -sin(theta)
-     rot[col2,col1]<- sin(theta)
+     rot[col2,col1]<-  sin(theta)
      result <- f %*% rot
+     if(plot) {factor.plot(f,...)
+        abline(a=0,b=tan(theta),lty="dashed")
+        abline(a=0,b=tan(theta+ pi/2),lty="dashed") }
      return(result) }
 

@@ -166,6 +166,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
    
     if (nfactors >1) {sign.tot <- vector(mode="numeric",length=nfactors)
                  sign.tot <- sign(colSums(loadings))
+                 sign.tot[sign.tot==0] <- 1
                  loadings <- loadings %*% diag(sign.tot)
      } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
              colnames(loadings) <- "MR1" }

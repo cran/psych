@@ -53,7 +53,11 @@ cl <- match.call()
      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
        diag(r)  <- 1
-      w <- solve(r,f)}   #these are the beta weights 
+     w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
+     if(class(w)=="try-error") {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
+     w <- diag(1,dim(r)[1])
+     }   #these are the beta weights 
+    }
       R2 <- diag(t(w) %*% f)
      if(prod(R2) <0 ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
                       R2[abs(R2) > 1] <- NA

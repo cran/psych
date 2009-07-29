@@ -4,7 +4,7 @@
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median",digits=2)
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,7 +15,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=F
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{scores}{If TRUE, estimate component scores}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
-  \item{impute}{"median" or "mean" values are used to replace missing values} \item{digits }{digits =2.    Accuracy of answers as well as display}
+  \item{impute}{"median" or "mean" values are used to replace missing values} 
 }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 

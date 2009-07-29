@@ -1,5 +1,14 @@
 Change file for package psych
 
+to do:
+modify Rd for pairs.panels to cross link to pairs2
+add some features from pairs2 (group coloring, x, y option)
+
+
+Version 1.0.78   July 29, 2009
+Corrected bug to ICLUST introduced in version 74
+added a fix to factor.stats so that it can handle seriously deficient matrices.
+added a fix to principal to check case when sum of loadings is exactly 0 and thus the sign of the sum is not defined. (problem reported by Mark Leeds)
 
 Version 1.0.77   July 25, 2009
 Corrected the estimation of communalities  and eigen values in print.psych.fa  for the case of oblique rotations.  (The problem with communalities was reported by Tamaki Hattori).
@@ -18,7 +27,8 @@ Added yet another check to see if polycor is available. The Mac version keeps fa
 Although those functions that require polycor fail gracefully if it is not there, the examples do not.
 
 Version 1.0.74  June 25, 2009
-Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.
+Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.  (and introduced a bug that was detected and fixed in version 78) 
+
 Modified the examples for ICLUST to show how to get graphics output with using Rgraphviz.
 Added fm="ml" option to the fa (factor analysis) function to do maximum likelihood factoring
 

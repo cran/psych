@@ -7,6 +7,10 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
+July 28, 2009  1.0.78  
+Corrected bug to ICLUST introduced in version 74 that can, in some conditions, produce negative betas. 
+Modified factor.stats to allow for statistics even if the matrix is very singular (i.e., N var >> n.obs).
+
 July 24, 2009  1.0.77
 Fixed an error in printing communalities for rotated factor solutions reported by Tamaki Hattori. Also resolved a problem of extra lines appearing in error.bars.  Minor revision to polar. 
 
@@ -20,7 +24,7 @@ Added two new data sets: Harman.Holzinger and Harman.Burt.  The former is used b
 
 June 25, 2009  1.0.74
 
-Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test lenght using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions.
+Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test length using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions. (Unfortunately, in doing this, a bug was introduced that could produce negative betas.  Fixed in Version 78).
 
 Modified the fa function to include maximimum likelihood factor analysis.
 

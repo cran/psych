@@ -7,14 +7,14 @@ function(f,angle,col1=1,col2=2,plot=FALSE,...)  {
      if(!is.matrix(f)) {if(!is.data.frame(f)) {stop("f must be either a data frame or a matrix")} else {f <- as.matrix(f)} }
      rot<- diag(1,nvar,nvar)
      
-     theta<- 2*pi*angle/360
+     theta<- pi*angle/180
      rot[col1,col1]<-  cos(theta)
      rot[col2,col2]<-  cos(theta)
      rot[col1,col2]<- -sin(theta)
      rot[col2,col1]<-  sin(theta)
      result <- f %*% rot
-     if(plot) {factor.plot(f,...)
-        abline(a=0,b=tan(theta),lty="dashed")
-        abline(a=0,b=tan(theta+ pi/2),lty="dashed") }
+     if(plot) {factor.plot(result,...)
+        abline(a=0,b=tan(-theta),lty="dashed")
+        abline(a=0,b=tan(-theta+ pi/2),lty="dashed") }
      return(result) }
 

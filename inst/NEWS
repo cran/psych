@@ -7,6 +7,11 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
+August 25, 2009  1.0.79
+added the Schmid data set which includes the original Schmid-Leiman correlation matrix as well as data from Chen, West, and Sousa (2006).
+modified geometric.mean and harmonic.mean to allow for missing data.
+Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly.
+
 July 28, 2009  1.0.78  
 Corrected bug to ICLUST introduced in version 74 that can, in some conditions, produce negative betas. 
 Modified factor.stats to allow for statistics even if the matrix is very singular (i.e., N var >> n.obs).

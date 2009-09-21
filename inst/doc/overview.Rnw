@@ -79,7 +79,7 @@ For a step by step tutorial in the use of the psych package and the base functio
 
 
 \section{Getting started} 
-Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polycor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions. Although sometimes hard to install, the \Rpkg{Rgraphviz} package is well worth the effort in order to appreciate the structure of hierarchical factor models or hierarchical cluster models.  (Other useful packages can be installed by installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but are not necessary.)
+Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polycor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  (Other useful packages can be installed by installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but are not necessary.)  Because of the difficulty of installing the  package \Rpkg{Rgraphviz}, alternative graphics have been developed.   If \Rpkg{Rgraphviz} is available, some functions will take advantage of it.
 
 
 
@@ -307,6 +307,7 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 \item [\pfun{fa.parallel}] The parallel factors technique compares the observed eigen values of a correlation matrix with those from random data. 
 \item [\pfun{factor.plot}] will plot the loadings from a factor, principal components, or cluster analysis.  If there are more than two factors, then a SPLOM of the loadings is generated.
 
+\item[\pfun{fa.diagram}] replaces \pfun{fa.graph} and will draw a path diagram representing the factor structure.  It does not require Rgraphviz and thus  is probably preferred.
 \item[\pfun{fa.graph}] requires \fun{Rgraphviz} and will draw a graphic representation of the factor structure. If factors are correlated, this will be represented as well. 
 \end{description}
 
@@ -330,9 +331,7 @@ ICLUST  forms clusters of items using a hierarchical clustering algorithm until 
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 data(bfi)
-if(require(Rgraphviz)) {ic <- ICLUST(bfi)} else {
-ic <- ICLUST(bfi,plot=FALSE)
-cluster.plot(ic)}
+ic <- ICLUST(bfi)
 @
 \caption{Using the \pfun{ICLUST} function to find the cluster structure of 25 personality items.}
 \label{fig:iclust}
@@ -390,7 +389,7 @@ Using the Thurstone data set, three factors were requested  and then transformed
 data(bifactor)
 f3 <- fa(Thurstone,3,n.obs = 213,fm="pa")
 f3o <- target.rot(f3)
-f3t
+f3o
 @
 \end{center}
 \label{tab:Thurstone}
@@ -425,6 +424,18 @@ factor.plot(f3t)
 \end{center}
 \end{figure}
 
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+fa.diagram(f3t)
+@
+\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{fa.diagram}.  Factors were transformed to an oblique solution using  the \pfun{target.rot} function.}
+\label{fig:thurstone.diagram}
+\end{center}
+\end{figure}
+
+
 A comparison of these three approaches suggests that the minres solution is more similar to a maximum likelihood solution and fits slightly better than the pa or wls solutions.  Comparisons with SPSS suggest that the pa solution matches the SPSS OLS solution, but that the minres solution is slightly better.  At least in one test data set, the weighted least squares solutions, although fitting equally well, had slightly different structure loadings.
 
 \subsubsection{Principal Components analysis}
@@ -454,13 +465,10 @@ Consider the 9 Thurstone variables from above (Figure~\ref{fig:omega}).   The fi
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {op <- par(mfrow=c(1,2))
+op <- par(mfrow=c(1,2))
 om <- omega(Thurstone,n.obs=213)
 om.h <- omega(Thurstone,n.obs=213,sl=FALSE)
-op <- par(mfrow=c(1,1))} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-om <- omega(Thurstone,n.obs=213)}
+op <- par(mfrow=c(1,1))
 @
 \caption{A bifactor and hierarchical factor solution to the Thurstone 9 variable problem}
 \label{fig:omega}
@@ -606,11 +614,7 @@ Two alternative estimates of reliability that take into account the hierarchical
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {om.9 <- omega(r9,title="9 simulated variables")
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-om.9 <- omega(r9,title="9 simulated variables")}
+om.9 <- omega(r9,title="9 simulated variables")
 @
 \caption{A bifactor solution for 9 simulated variables with a hierarchical structure. }
 \label{fig:omega.9}

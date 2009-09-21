@@ -8,7 +8,10 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
       nvar <- dim(m)[2]
       if(dim(m)[1] != dim(m)[2]) {
                             n.obs <- dim(m)[1]
-                            m <- cor(m,use="pairwise")} else {m <- cov2cor(as.matrix(m))}  #make sure it is a correlation matrix not a covariance or data matrix
+                            m <- cor(m,use="pairwise")} else {
+                            m <- cov2cor(as.matrix(m))    #make sure it is a correlation matrix not a covariance or data matrix (if we change this, we will need to change the calculation for omega later)
+                           }
+                            
       if(is.null(colnames(m))) {  rownames(m) <- colnames(m) <- paste("V",1:nvar,sep="") }
        m.names <- colnames(m)
       
@@ -59,9 +62,13 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
       dg <- 1}
       omega.stats <- factor.stats(m,gf$sl[,1:(nfactors+1)])
      if (nfactors<2) plot <- FALSE
-     if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
+    # if(require(Rgraphviz) && plot) {omega.model <-omega.graph(omega,title=title,sl=sl,labels=labels,digits=dg) } else {omega.model <- omega.sem(omega,sl=sl)}
+    omega.model <- omega.sem(omega,sl=sl)
+     
      omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,call=cl,title=title,model=omega.model)
+
       class(omega) <- c("psych","omega")
+            omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
       return(omega)
       }
 

@@ -86,9 +86,9 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
 
 cat("\nFit based upon off diagonal values =", round(x$fit.off,2))
- stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
+if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
  
- rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+ rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")}
 
 
  if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             \n")

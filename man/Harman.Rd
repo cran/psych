@@ -18,7 +18,7 @@
 \item Harman.Burt: a 8 x 8 correlation matrix of ``emotional" items. N = 172
 }
 
-Harman.Holzinger. The nine psychological variables from Harman (1967, p 244) are taken from unpublished class notes of K.J. Holzinger with 696 participants.  This is a subset of 12 tests with 4 factors. It is yet another nice example of a bifactor solution.  Bentler (2007) uses this data set to discuss reliablity analysis. The data show a clear bifactor structure and are a nice example of the various estimates of reliability included in the \code{\link{omega}} function. Should not be confused with the \code{\link{Holzinger}} or \code{\link{Holzinger.9}} data sets in \code{link{bifactor}}.
+Harman.Holzinger. The nine psychological variables from Harman (1967, p 244) are taken from unpublished class notes of K.J. Holzinger with 696 participants.  This is a subset of 12 tests with 4 factors. It is yet another nice example of a bifactor solution.  Bentler (2007) uses this data set to discuss reliablity analysis. The data show a clear bifactor structure and are a nice example of the various estimates of reliability included in the \code{\link{omega}} function. Should not be confused with the \code{\link{Holzinger}} or  \code{\link{Holzinger.9}} data sets in \code{\link{bifactor}}.
 
 Harman.Burt. Eight ``emotional" variables are taken from Harman (1967, p 164) who in turn adapted them from Burt (1939).  They are said be from 172 normal children aged nine to twelve.  As pointed out by Harman, this correlation matrix is singular and has squared multiple correlations > 1.  Because of this problem, it is a nice test case for various factoring algorthms.  (For instance, omega will fail unless using fm="pa" or fm="minres".)
 
@@ -28,6 +28,11 @@ Other example data sets that are useful demonstrations of factor analysis are th
 \source{Harman (1967 p 164 and p 244.)
 }
 \references{Harman, Harry Horace (1967), Modern factor analysis. Chicago, University of Chicago Press.
+
+P.Bentler. Covariance structure models for maximal reliability of unit-weighted
+  composites. In Handbook of latent variable and related models, pages 1--17.  North Holland, 2007.
+
+
 }
 \examples{
 data(Harman)

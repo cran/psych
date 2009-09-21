@@ -1,5 +1,6 @@
 "sim.structure" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
+ cl <- match.call()
 require(MASS)
 
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
@@ -24,6 +25,7 @@ diag(model)<- 1                       # put ones along the diagonal
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
              results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+  results$Call <- cl
   class(results) <- c("psych", "sim")
  return(results)}
  
@@ -31,7 +33,7 @@ diag(model)<- 1                       # put ones along the diagonal
 "sim.structural" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
 require(MASS)
-
+ cl <- match.call()
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
     f <- super.matrix(fx,fy)} }
   
@@ -53,12 +55,14 @@ diag(model)<- 1                       # put ones along the diagonal
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
              results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+  results$Call <- cl
   class(results) <- c("psych", "sim")
  return(results)}
  
  
 "sim" <-
 function (fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=FALSE) {
+ cl <- match.call()
 require(MASS)
 #set up some default values 
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
@@ -88,19 +92,25 @@ diag(model)<- 1                       # put ones along the diagonal
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
              results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+  results$Call <- cl
   class(results) <- c("psych", "sim")
  return(results)}
  
  	
 	"sim.simplex" <-
 	function(nvar =12, r=.8,mu=NULL, n=0) {
+	 cl <- match.call()
 	R <- matrix(0,nvar,nvar)
 	R[] <- r^abs(col(R)-row(R))
+	colnames(R) <- rownames(R) <- paste("V",1:nvar,sep="")
 	require(MASS)
 	if(is.null(mu)) {mu <- rep(0,nvar)} 
 	if(n>0) {
 	observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
 	observed <- cor(observed.scores)
-	results <- list(model=R,r=observed,observed=observed.scores) } else {results <- R}
+	results <- list(model=R,r=observed,observed=observed.scores)
+	results$Call <- cl
+	class(results) <- c("psych", "sim")} else {results <- R}
+	  
 	results
 	}

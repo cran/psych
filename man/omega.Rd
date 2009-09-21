@@ -19,9 +19,9 @@ omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega"
   \item{labels}{If plotting, what labels should be applied to the variables? If not specified, will default to the column names.}
   \item{plot}{plot=TRUE (default) calls omega.graph, plot =FALSE does not}
   \item{n.obs}{Number of observations - used for goodness of fit statistic}
-  \item{rotate}{What rotation to apply? The default is oblimin, the alternative is simplimax.}
+  \item{rotate}{What rotation to apply? The default is oblimin, the alternatives include simplimax, Promax,  cluster and target. target will rotate to an optional keys matrix (See \code{\link{target.rot}})}
   
-  \item{...}{Allows additional parameters to be passed through to the factor routines.  See in particular the option parameter in  \link{schmid} for treating the case of two group factors.}
+  \item{...}{Allows additional parameters to be passed through to the factor routines.  See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
 }
 
 \details{``Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 
@@ -88,10 +88,11 @@ Another estimate reported is the omega for an infinite lenght test with a struct
   \item{schmid$sl}{The g factor loadings as well as the residualized factors}
   \item{schmid$orthog}{Varimax rotated solution of the original factors}
   \item{schmid$oblique}{The oblimin or promax transformed factors}
-  \item{schmid$fcor}{the correlation matrix of the oblique factors}
+  \item{schmid$phi}{the correlation matrix of the oblique factors}
   \item{schmid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
   \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
   \item{model}{a matrix suitable to be given to the sem function for structure equation models}
+  \item{various fit statistics}{various fit statistics, see output}
 }
 
 

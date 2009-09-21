@@ -11,7 +11,7 @@ If the input is an object of class "kmeans", then the cluster centers are plotte
 }
 \usage{
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
-factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
+factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Factor plot",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

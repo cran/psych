@@ -1,6 +1,7 @@
 \name{structure.graph}
 \alias{structure.graph}
 \alias{structure.sem}
+\alias{structure.diagram}
 
 \title{Draw a structural equation model specified by two measurement models and a structural model}
 \description{Graphic presentations of structural equation models are a very useful way to conceptualize sem and confirmatory factor models. Given a measurement model on x (xmodel) and on y (ymodel) as well as a path model connecting x and y (phi), draw the graph.  If ymodel is not specified, just draw the measurement model (xmodel + phi).
@@ -12,6 +13,9 @@ Input can be specified as matrices or the output from factanal, factor.pa, or a 
 For symbolic graphs, the input matrices can be character strings or mixtures of character strings and numeric vectors.
 
 As an option, for those without Rgraphviz installed, structure.sem will just create the sem model and skip the graph.
+
+structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option.
+
 }
 \usage{
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
@@ -38,9 +42,13 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
 }
 \details{
 
-Boths function return a matrix of commands suitable for using in the sem package.
+The recommended function is structure.diagram which does not use Rgraphviz but it does not produce dot code either.  
 
-The structure.graph output can be directed to an output file for post processing using the dot graphic language.  
+All three function return a matrix of commands suitable for using in the sem package.
+
+The structure.graph output can be directed to an output file for post processing using the dot graphic language. 
+
+
 }
 \value{
  \item{sem}{a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.}
@@ -56,21 +64,21 @@ The structure.graph output can be directed to an output file for post processing
 fx <- matrix(c(.9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)
 fy <- matrix(c(.6,.5,.4),ncol=1)
 Phi <- matrix(c(1,0,0,0,1,0,.7,.7,1),ncol=3,byrow=TRUE)
-if(require(Rgraphviz)) { f1 <- structure.graph(fx,Phi,fy)  } else {f1 <- structure.sem(fx,Phi,fy)}
+f1 <- structure.diagram(fx,Phi,fy,main="A structural path diagram")
 
 #symbolic input
 X2 <- matrix(c("a",0,0,"b","e1",0,0,"e2"),ncol=4)
 colnames(X2) <- c("X1","X2","E1","E2")
 phi2 <- diag(1,4,4)
 phi2[2,1] <- phi2[1,2] <- "r"
-if(require(Rgraphviz)) { f2 <- structure.graph(X2,Phi=phi2,errors=FALSE)  } else {f2 <- structure.sem(X2,Phi=phi2,errors=FALSE) }
+f2 <- structure.diagram(X2,Phi=phi2,errors=FALSE,main="A symbolic model") 
 
 #symbolic input with error 
 X2 <- matrix(c("a",0,0,"b"),ncol=2)
 colnames(X2) <- c("X1","X2")
 phi2 <- diag(1,2,2)
 phi2[2,1] <- phi2[1,2] <- "r"
-if(require(Rgraphviz)) { f3 <- structure.graph(X2,Phi=phi2)  } else {f3 <- structure.sem(X2,Phi=phi2)}
+f3 <- structure.diagram(X2,Phi=phi2,main="an alternative representation")
 
 #and yet another one
 X6 <- matrix(c("a","b","c",rep(0,6),"d","e","f"),nrow=6)
@@ -81,17 +89,17 @@ colnames(Y3) <- "Y"
 rownames(Y3) <- c("y1","y2","y3")
 phi21 <- matrix(c(1,0,"r1",0,1,"r2",0,0,1),ncol=3)
 colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
-if(require(Rgraphviz)) {f4 <- structure.graph(X6,phi21,Y3,title="Structural model")} else {f4 <- structure.sem(X6,phi21,Y3)}
+f4 <- structure.diagram(X6,phi21,Y3)
 
 
 # and finally, a regression model
 X7 <- matrix(c("a","b","c","d","e","f"),nrow=6)
-if(require(Rgraphviz)) {f5 <- structure.graph(X7,regression=TRUE)}
+f5 <- structure.diagram(X7,regression=TRUE)
 
 #and a really messy regession model
 x8 <- c("b1","b2","b3")
 r8 <- matrix(c(1,"r12","r13","r12",1,"r23","r13","r23",1),ncol=3)
-if(require(Rgraphviz)) {f6<- structure.graph(x8,Phi=r8,regression=TRUE)}
+f6<- structure.diagram(x8,Phi=r8,regression=TRUE)
 }
 \keyword{multivariate }
 \keyword{hplot }

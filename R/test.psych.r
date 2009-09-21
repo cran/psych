@@ -79,7 +79,7 @@ p.iris <- principal(IRIS,5,scores=TRUE)
 cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
  pairs.panels(cong) 
  #this section tests various functions that use Rgraphviz (if it is installed) 
- if(require(Rgraphviz)) { fa.graph(factor.pa(item.sim(16),2) ,title="Principal factor of a simple structure") 
+ if(require(Rgraphviz)) { fa.graph(fa(item.sim(16),2) ,title="Principal factor of a simple structure") 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
   	jen <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
   	omega.graph(jen,sl=FALSE,title="Omega with hierarchical factors")
@@ -95,6 +95,23 @@ cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
 	structure.graph(X6,phi21,Y3,title="Symbolic structural model")
 
  } else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz") }
+ 
+ fa.diagram(fa(item.sim(16),2) ,main="Principal factor of a simple structure") 
+  	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
+  	jen <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
+  	omega.diagram(jen,sl=FALSE,main="Omega with hierarchical factors")
+  	   #set up the parameters for the structure graph
+		X6 <- matrix(c("a","b","c",rep(0,6),"d","e","f"),nrow=6)
+		colnames(X6) <- c("L1","L2")
+		rownames(X6) <- c("x1","x2","x3","x4","x5","x6")
+		Y3 <- matrix(c("u","w","z"),ncol=1)
+		colnames(Y3) <- "Y"
+		rownames(Y3) <- c("y1","y2","y3")
+		phi21 <- matrix(c(1,0,"r1",0,1,"r2",0,0,1),ncol=3)
+		colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
+	 example.model <- structure.diagram(X6,phi21,Y3,main="Symbolic structural model")
+
+
   
   out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}

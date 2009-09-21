@@ -1,14 +1,27 @@
 Change file for package psych
 
 to do:
+modify principal so that scoring of components can yield unstandardized scores
+
 modify Rd for pairs.panels to cross link to pairs2
 add some features from pairs2 (group coloring, x, y option)
 
+Version 1.0.80  September 21, 2009
+Replaced fa.graph (which requires Rgraphviz) with fa.diagram (which does not)
+added fa.sort to sort factor analysis output
+
+Version 1.0.79  September 5, 2009
+modified harmonic.mean and geometric.mean to accept (by default) na.rm=TRUE
+Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly
+corrected fa to get better gls and wls fits 
+added lambda6 reliability estimates to cluster.cor
+added winsor.var, winsor.sd, and winsor.mean (to supplement winsor.means) per suggestion of Jim Lemon
+modified error.bars and error.bars.by to better treat missing and completely missing data (suggestion by Junqian Gordon Xu).
 
 Version 1.0.78   July 29, 2009
-Corrected bug to ICLUST introduced in version 74
+Corrected bug to ICLUST introduced in version 74 (for sign of beta estimate)
 added a fix to factor.stats so that it can handle seriously deficient matrices.
-added a fix to principal to check case when sum of loadings is exactly 0 and thus the sign of the sum is not defined. (problem reported by Mark Leeds)
+added a fix to principal to check case when sum of loadings is exactly 0 and thus the sign of the sum is not defined. This led to a problem in estimating communalities. (problem reported by Mark Leeds)
 
 Version 1.0.77   July 25, 2009
 Corrected the estimation of communalities  and eigen values in print.psych.fa  for the case of oblique rotations.  (The problem with communalities was reported by Tamaki Hattori).

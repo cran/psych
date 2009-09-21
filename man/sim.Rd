@@ -65,7 +65,7 @@ cor.plot(R) #show it graphically
 
 simp <- sim.simplex()
 #show the simplex structure using cor.plot
-cor.plot(simp)
+cor.plot(simp,colors=TRUE)
 }
 
 

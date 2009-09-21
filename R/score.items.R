@@ -20,7 +20,7 @@
        item.means <- colMeans(items,na.rm=TRUE)   #replace missing values with means
        items[miss]<- item.means[miss[,2]]} else {
        item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
-        items[miss]<- item.med[miss[,2]]}
+        items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
         }
       
        scores<- items %*%  keys  #this actually does all the work but doesn't handle missing values

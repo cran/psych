@@ -20,7 +20,7 @@ The 14 variables are ordered to reflect 3 spatial tests, 3 mental speed tests, 4
 
 Another data set from Holzinger (Holzinger.9) represents 9 cognitive abilities (Holzinger, 1939) and is used as an example by Karl Joreskog (2003) for factor analysis by the MINRES algorithm and also appears in the LISREL manual as example NPV.KM.  
 
-Another classic data set is the 9 variable Thurstone problem which is discussed in detail by R. P. McDonald (1985, 1999) and and is used as example in the sem package as well as in the PROC CALIS manual for SAS.  These nine tests were grouped by Thurstone, 1941 (based on other data) into three factors: Verbal Comprehension, Word Fluency, and Reasoning. The original data came from Thurstone and Thurstone (1941) but were reanalyzed by Bechthold (1961) who broke the data set into two. McDonald, in turn, selected these nine variables from a larger set of 17. The sample size is 213.
+Another classic data set is the 9 variable Thurstone problem which is discussed in detail by R. P. McDonald (1985, 1999) and and is used as example in the sem package as well as in the PROC CALIS manual for SAS.  These nine tests were grouped by Thurstone and Thurstone, 1941 (based on other data) into three factors: Verbal Comprehension, Word Fluency, and Reasoning. The original data came from Thurstone and Thurstone (1941) but were reanalyzed by Bechthold (1961) who broke the data set into two. McDonald, in turn, selected these nine variables from the larger set of 17 found in Bechtoldt.2. The sample size is 213.
 
 Another set of 9 cognitive variables attributed to Thurstone (1933) is the data set of 4,175 students reported by Professor Brigham of Princeton to the College Entrance Examination Board.  This set does not show a clear bifactor solution but is included as a demonstration of the differences between a maximimum likelihood factor analysis solution versus a principal axis factor solution.
 
@@ -28,7 +28,7 @@ More recent applications of the bifactor model are to the measurement of psychol
 
 The five factors from Reise et al. reflect Getting care quickly (1-3), Doctor communicates well (4-7), Courteous and helpful staff (8,9), Getting needed care (10-13), and and Health plan customer service (14-16). 
 
-The two Bechtoldt data sets are two samples from Thurstone (1941).  They include 17 variables, 9 of which were used by McDonald to form the Thurstone data set. The sample sizes are 212 and 213 respectively. The six proposed factors reflect  memory, verbal, words,  space, number and reasoning with three markers for all expect the rote memory factor. 9 variables from this set appear in Thurstone.
+The two Bechtoldt data sets are two samples from Thurstone and Thurstone (1941).  They include 17 variables, 9 of which were used by McDonald to form the Thurstone data set. The sample sizes are 212 and 213 respectively. The six proposed factors reflect  memory, verbal, words,  space, number and reasoning with three markers for all expect the rote memory factor. 9 variables from this set appear in the Thurstone data set.
 
 Two more data sets with  similar structures are found in the \code{\link{Harman}} data set.  
 

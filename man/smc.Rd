@@ -1,6 +1,6 @@
 \name{smc}
 \alias{smc}
-\alias{SMC}
+
 
 \title{Find the Squared Multiple Correlation (SMC) of each variable with the remaining variables in a matrix}
 \description{The squared multiple correlation of a variable with the remaining variables in a matrix is sometimes used as initial estimates of the communality of a variable.

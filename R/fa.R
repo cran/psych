@@ -6,7 +6,7 @@
 #modified June 7, 2009 to add gls fitting
 #modified June 24, 2009 to add ml fitting
 "fa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres") {
+function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -21,14 +21,16 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
        #weighted least squares weights by the importance of each variable   
-       if(fm=="wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 }}  # the uls solution usually seems better?
-         diag(residual) <- 0
+       if(fm == "wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 
+       if(fm == "minres") diag(residual) <- 0   #this is minimum residual factor analysis, ignore the diagonal
+       }}  # the uls solution usually seems better?
+        # 
          error <- sum(residual)
          }
   
  #this code is taken (with minor modification to make ULS, WLS or GLS) from factanal        
  #it does the iterative calls to fit.residuals 
- #modified June 7 to add gls fits
+ #modified June 7, 2009 to add gls fits
      "fit" <- function(S,nf,fm) {
           S.smc <- smc(S)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
@@ -88,13 +90,14 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
         return(L)
     } ## now start the main function
  
- if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
                if(scores) {x.matrix <- r
-             if(missing) {     #impute values 
+             if(missing) { #impute values 
+        x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
         miss <- which(is.na(x.matrix),arr.ind=TRUE)
         if(impute=="mean") {
        item.means <- colMeans(x.matrix,na.rm=TRUE)   #replace missing values with means
@@ -106,7 +109,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
            } else {
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
      				 sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
-                     r <- r/(sds %o% sds)  } #added June 9, 2008
+                     r <- r/(sds %o% sds) #if we remove this, then we need to fix the communality estimates
+                     } #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
 
    
@@ -148,7 +152,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        } 
        }
        
-       if((fm == "wls") | (fm=="minres") | (fm=="gls") |(fm== "ml")) { 
+       if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")) { 
        uls <- fit(r,nfactors,fm)
        
        eigens <- eigen(r)  #used for the summary stats
@@ -160,7 +164,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        #making the matrix symmetric solves this problem
        if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
        loadings <- matrix(as.real(loadings),ncol=nfactors) } 
-       #make each vector signed so that the maximum loading is positive  - probably should do after rotation
+       #make each vector signed so that the maximum loading is positive  -  should do after rotation
        #Alternatively, flip to make the colSums of loading positive
    
    
@@ -173,10 +177,10 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      
  
  
-    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}
+    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {if (fm=="ml")  {colnames(loadings) <- paste("ML",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}}
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
-    
+   
     model <- loadings %*% t(loadings)  
    
     f.loadings <- loadings #used to pass them to factor.stats 
@@ -191,7 +195,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      			                loadings <- pro$loadings
      			                Phi <- pro$Phi} else {
      			if (rotate == "cluster") {loadings <- varimax(loadings)$loadings           			
-								pro <- target.rot(loadings)
+								pro <- target.rot(loadings,...)
      			              	loadings <- pro$loadings
      			                Phi <- pro$Phi} else {
      			                     
@@ -204,6 +208,10 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      	               }}}
      	  
      }}
+    signed <- sign(colSums(loadings))
+    signed[signed==0] <- 1
+    loadings <- loadings %*% diag(signed)  #flips factors to be in positive direction but loses the colnames
+     if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {if (fm=="ml")  {colnames(loadings) <- paste("ML",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}}
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008
        
@@ -229,7 +237,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
-    result$fn <- "factor.pa"
+    result$fn <- "fa"
     result$fm <- fm
     result$Call <- cl
     class(result) <- c("psych", "fa")
@@ -237,5 +245,5 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
     #modified Spring, 2009 to add multiple ways of doing factor analysis
- 
+    #corrected, August, 2009 to count the diagonal when doing GLS or WLS - this mainly affects (improves) the chi square
  

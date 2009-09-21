@@ -39,3 +39,6 @@ function( diag = TRUE,names=NULL,...) {
     rownames(X) <- colnames(X) <- names
     return(X)
    }
+   
+   
+  

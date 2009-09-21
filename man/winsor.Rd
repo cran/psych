@@ -1,12 +1,19 @@
 \name{winsor}
 \alias{winsor}
+\alias{winsor.mean}
 \alias{winsor.means}
+\alias{winsor.sd}
+\alias{winsor.var}
 
-\title{Find the Winsorized scores or means for a vector, matrix, or data.frame }
-\description{Among the  robust estimates of central tendency are trimmed means and Winsorized means.  This function finds the Winsorized mean.  The top and bottom trim values are given values of the trimmed and 1- trimmed quantiles.  Then means are found.    }
+\title{Find the Winsorized scores, means, sds or variances  for a vector, matrix, or data.frame }
+\description{Among the  robust estimates of central tendency are trimmed means and Winsorized means.  This function finds the Winsorized scores.   The top and bottom trim values are given values of the trimmed and 1- trimmed quantiles.  Then means, sds, and variances are found.    }
 \usage{
 winsor(x, trim = 0.2, na.rm = TRUE)
-winsor.means(x, trim = 0.2, na.rm = TRUE)
+winsor.mean(x, trim = 0.2, na.rm = TRUE)
+winsor.means(x, trim = 0.2, na.rm = TRUE)  
+winsor.sd(x, trim = 0.2, na.rm = TRUE)  
+winsor.var(x, trim = 0.2, na.rm = TRUE)  
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,7 +23,7 @@ winsor.means(x, trim = 0.2, na.rm = TRUE)
 }
 \details{Among the many robust estimates of central tendency, some recommend the Winsorized mean.  Rather than just dropping the top and bottom trim percent, these extreme values are replaced with values at the trim and 1- trim quantiles.
 }
-\value{A scalar or vector of winsorized scores or winsorized means (depending upon the call).
+\value{A scalar or vector of winsorized scores or winsorized means, sds, or variances (depending upon the call).
 }
 \references{Wilcox, Rand R. (2005) Introduction to robust estimation and hypothesis testing. Elsevier/Academic Press. Amsterdam ; Boston.
   

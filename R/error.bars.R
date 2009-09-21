@@ -9,12 +9,19 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     	          z <- dim(x.stats)[1]
     	          names <- rownames(stats)
     	}
-    	min.x <- min(x.stats$mean)
-    	max.x <- max(x.stats$mean)
-    	max.se <- max(x.stats$se)
+    	min.x <- min(x.stats$mean,na.rm=TRUE)
+    	max.x <- max(x.stats$mean,na.rm=TRUE)
+    	max.se <- max(x.stats$se,na.rm=TRUE)
    		ci <- qt(1-alpha/2,x.stats$n)
     if(is.null(main)) main = paste((1-alpha)*100,"% confidence limits",sep="") 
-    if(is.null(ylim)) {if(bars) {ylim=c(0,max.x+2*max.se) } else {ylim=c(min.x - 2*max.se,max.x+2*max.se)} }
+    if(is.null(ylim)) {if(is.na(max.x) | is.na(max.se) | is.na(min.x) | is.infinite(max.x)| is.infinite(min.x) | is.infinite(max.se)) {
+                        ylim=c(0,1)} else {
+                          if(bars) {
+                                   ylim=c(0,max.x+2*max.se)
+                                   } else {
+                                           ylim=c(min.x - 2*max.se,max.x+2*max.se)
+                                           }}
+                        }
     if(bars) {mp =barplot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
      axis(1,mp[1:z],names)
      axis(2)
@@ -36,3 +43,4 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     	
    }
    #corrected July 25, 2009 to fix bug reported by Junqian Gordon Xu and then modified to be cleaner code
+   #modified Sept 5, 2009 to handle data with all missing values (why we would want to that is a mystery, but was requested by Junqian Gordon Xu.)

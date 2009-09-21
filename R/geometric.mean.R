@@ -1,5 +1,5 @@
 "geometric.mean" <- 
-function(x)
+function(x,na.rm=TRUE)
 { 
-exp(mean(log(x))) }
+exp(mean(log(x),na.rm=na.rm)) }
 

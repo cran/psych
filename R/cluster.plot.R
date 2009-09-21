@@ -23,10 +23,11 @@ if (nc > 2 ) {
  
  
   "factor.plot" <- 
-function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot",...) {
+function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Factor plot",...) {
  if (!is.matrix(ic.results) ) {if (!is.null(class(ic.results)) )   {
   if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
       load <-ic.results$loadings} }} else {load <- ic.results}
+   if(is.null(colnames(load))) colnames(load) <- paste("F",1:ncol(load),sep="")
 nc <- dim(load)[2]
 nvar <- dim(load)[1]
 ch.col=c("black","blue","red","gray","black","blue","red","gray")

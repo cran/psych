@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -23,6 +23,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "cluster.loadings") cluster.loadings <- TRUE
    if(class(x)[2] == "guttman") gutt <- TRUE
    if(class(x)[2] == "thurstone") thurstone <- TRUE
+   if(class(x)[2] == "ICC") ICC <- TRUE
    if(class(x)[2] == "stats") stats <- TRUE
      } 
 else {     
@@ -48,10 +49,11 @@ if(all) {class(x) <- "list"
 
 if(describe) {if  (length(dim(x))==1) {class(x) <- "list"
               attr(x,"call") <- NULL
-              print(x,digits)
+              print(round(x,digits=digits))
                   } else  {class(x) <- "data.frame" 
-            print(round(x,digits)) }
+            print(round(x,digits=digits)) }
          }
+         
           
 if(corr.test) {cat("Call:")
               print(x$Call)
@@ -103,7 +105,8 @@ if(cluster.cor) {
     print(x$Call)
 	cat("\n(Standardized) Alpha:\n")
 	print(x$alpha,digits)
-
+    cat("\n(Standardized) G6*:\n")
+    print(x$G6,digits)
   	cat("\nAverage item correlation:\n")
 	print(x$av.r,digits)
 	cat("\nNumber of items:\n")
@@ -175,15 +178,28 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
  if(sim) { if(is.matrix(x)) {x <-unclass(x) 
              round(x,digits) } else {
               cat("Call: ")
-              print(x$call)
+              print(x$Call)
              cat("\n $model (Population correlation matrix) \n")
              print(x$model,digits)
              if(!is.null(x$reliability)) { cat("\n$reliability (population reliability) \n")
                 print(x$reliability,digits) } 
              if(!is.null(x$N) && !is.null(x$r)) {
              cat("\n$r  (Sample correlation matrix  for sample size = ",x$N,")\n")
-             print(x$r,digits)}} 
+             print(x$r,digits)}
+             }
              
-      }  #end of the not list condition
-  }  
+ }
+            
+             
+ if(ICC) {cat("Call: ")
+              print(x$Call)
+            cat("\nIntraclass correlation coefficients \n")
+            print(x$results)
+            cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
+
+   }
+    
+             
+  }     #end of the not list condition
+  
 }  #end function

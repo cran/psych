@@ -4,7 +4,7 @@
 "fa.graph" <-
 function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis", ...){
+    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis",graphviz=TRUE, ...){
     	if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
     
   Phi <- NULL  #the default case
@@ -96,7 +96,7 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")),list(graph=cluster.vars,cluster=FALSE ,attrs=c(rank = "source"))) #this crashes for correlated factors solution
 
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")))   #this does not lead to a crash
- plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=main)  
+plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=main)  
 
  if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
 

@@ -30,6 +30,8 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2)
   \item{sd }{standard deviation of the cluster scores}
   \item{corrected }{raw correlations below the diagonal, alphas on diagonal, disattenuated above diagonal}
   \item{alpha}{The (standardized) alpha reliability of each scale.}
+  \item{G6}{Guttman's Lambda 6 reliability estimate is based upon the smcs for each item in a scale.  G6 uses the smc based upon the entire item domain.}
+  \item{av.r}{The average inter item correlation within a scale}
  \item{size}{How many items are in each cluster?}
  
 }

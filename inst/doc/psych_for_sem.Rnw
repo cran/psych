@@ -77,7 +77,7 @@ The \Rpkg{psych} package \citep{psych} has been developed to include those funct
 This vignette is concerned with the problem of modeling structural data and using the \Rpkg{psych} package as a front end for the much more powerful \Rpkg{sem} package of John Fox \cite{fox:06,sem}. The first section discusses how to simulate particular latent variable structures.  The second considers several Exploratory Factor Analysis (EFA) solutions to these problems.  The third section considers how to do confirmatory factor analysis and structural equation modeling using the \Rpkg{sem} package but with the input prepared using functions in the \Rpkg{psych} package.
 
 \subsection{Creating and modeling structural relations}
-One common application of \pfun{psych} is the creation of simulated data matrices with  particular structures to use as examples for principal components analysis, factor analysis, cluster analysis, and structural equation modeling.   This vignette describes some of the functions used for creating, analyzing, and displaying such data sets.  The examples use two other packages: \Rpkg{Rgraphviz} and \Rpkg{sem}.  Although not required to use the \Rpkg{psych} package, these two libraries are required for these examples. \Rpkg{Rgraphviz} is used for the graphical displays, but the analyses themselves require only the \Rpkg{sem} package to do  the structural modeling.
+One common application of \pfun{psych} is the creation of simulated data matrices with  particular structures to use as examples for principal components analysis, factor analysis, cluster analysis, and structural equation modeling.   This vignette describes some of the functions used for creating, analyzing, and displaying such data sets.  The examples use two other packages: \Rpkg{Rgraphviz} and \Rpkg{sem}.  Although not required to use the \Rpkg{psych} package, sem is required for these examples. Although \Rpkg{Rgraphviz} had been used for the graphical displays, it has now been replaced with graphical functions within psych.  The analyses themselves require only the \Rpkg{sem} package to do  the structural modeling.
 
 
 
@@ -112,11 +112,7 @@ round(cong,2)
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {m1 <- structure.graph(c("a","b","c","d"))
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-m1 <- structure.sem(c("a","b","c","d"))}
+m1 <- structure.diagram(c("a","b","c","d"))
 @
 \caption{Tau equivalent tests are special cases of congeneric tests.  Tau equivalence assumes a=b=c=d}
 \label{fig:tau}
@@ -139,17 +135,14 @@ fload #echo it to see the structure
 bifact <- sim.hierarchical(gload=gload,fload=fload)
 round(bifact,2)
 @
-These data can be represented as either a \iemph{bifactor} (Figure~\ref{fig:bifact} panel A) or \iemph{hierarchical} (Figure~\ref{fig:bifact} Panel B) factor solution.  The analysis was done with the \pfun{omega} function.  The graphs require the \Rpkg{Rgraphviz} package. 
+These data can be represented as either a \iemph{bifactor} (Figure~\ref{fig:bifact} panel A) or \iemph{hierarchical} (Figure~\ref{fig:bifact} Panel B) factor solution.  The analysis was done with the \pfun{omega} function.  
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {op <- par(mfrow=c(1,2))
+op <- par(mfrow=c(1,2))
 m.bi <- omega(bifact,title="A bifactor model")
 m.hi <- omega(bifact,sl=FALSE,title="A hierarchical model")
 op <- par(mfrow = c(1,1))
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")}
 @
 \caption{(Left panel) A bifactor solution represents each test in terms of a general factor and a residualized group factor. (Right Panel) A hierarchical factor solution has g as a second order factor accounting for the correlations between the first order factors}
 \label{fig:bifact}
@@ -204,12 +197,9 @@ three.fact
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {three.fact.mod <-structure.graph(fx)} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")}
-
+three.fact.mod <-structure.diagram(fx)
 @
-\caption{Three uncorrelated factors generated using the sim.structure function and drawn using structure.graph.}
+\caption{Three uncorrelated factors generated using the sim.structure function and drawn using structure.diagram.}
 \label{fig:3f}
 \end{center}
 \end{figure}
@@ -237,11 +227,9 @@ The \pfun{structure.list} and \pfun{phi.list} functions allow for creation of fx
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {corf3.mod <- structure.graph(fxs,Phis)} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")}
+corf3.mod <- structure.diagram(fxs,Phis)
 @
-\caption{Three correlated factors with symbolic paths. Created using structure.graph and structure.list and phi.list for ease of input.}
+\caption{Three correlated factors with symbolic paths. Created using structure.diagram and structure.list and phi.list for ease of input.}
 \label{fig:symb3}
 \end{center}
 \end{figure}
@@ -257,11 +245,7 @@ f3.p <- Promax(fa(cor.f3$model,3))
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {mod.f3p <- structure.graph(f3.p,cut=.2)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")}
-
+mod.f3p <- structure.diagram(f3.p,cut=.2)
 @
 \caption{The empirically fitted structural model.  Paths less than cut (.2 in this case, the default is .3) are not shown.}
 \label{fig:f3:emp}
@@ -281,7 +265,7 @@ twelveV <- sim.structure(fx,Phi, fy)$model
 colnames(twelveV) <-rownames(twelveV) <- c(paste("x",1:9,sep=""),paste("y",1:3,sep=""))
 round(twelveV,2)
 @
-Data with this structure may be created using the \pfun{sim.structure} function, and shown either with the numeric values or symbolically using the \pfun{structure.graph} function (Figure~\ref{fig:symbxy}).
+Data with this structure may be created using the \pfun{sim.structure} function, and shown either with the numeric values or symbolically using the \pfun{structure.diagram} function (Figure~\ref{fig:symbxy}).
 
 <<print=FALSE,echo=TRUE>>=
 fxs <- structure.list(9,list(X1=c(1,2,3), X2 =c(4,5,6),X3 = c(7,8,9)))
@@ -291,11 +275,7 @@ fyx <- structure.list(3,list(Y=c(1,2,3)),"Y")
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {sg3 <- structure.graph(fxs,phi,fyx)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-sg3 <- structure.sem(fxs,phi,fyx)}
+sg3 <- structure.diagram(fxs,phi,fyx)
 @
 \caption{A symbolic structural model. Three independent latent variables are regressed on a latent Y.}
 \label{fig:symbxy}
@@ -314,12 +294,7 @@ fy <- structure.list(3,list(Y=c(1,2,3)))
 Phi <- diag(1,5,5)
 Phi[4,c(1:3)] <- letters[1:3]
 Phi[5,4] <- "r"
-if(require(Rgraphviz)) {hi.mod <-structure.graph(fxh,Phi, fy)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-hi.mod <-structure.sem(fxh,Phi, fy)}
-
+hi.mod <-structure.diagram(fxh,Phi, fy)
 @
 \caption{A symbolic structural model with a general factor and three group factors. The general factor is regressed on the latent Y variable.}
 \label{fig:symb:gy}
@@ -364,12 +339,7 @@ In addition to the conventional oblique factor model, an alternative model is to
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {om.bi <- omega(bifact)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-om.bi <- omega(bifact,plot=FALSE)}
-
+om.bi <- omega(bifact)
 @
 \caption{An exploratory bifactor solution to the nine variable problem}
 \label{fig:om:bi}
@@ -382,11 +352,7 @@ The \iemph{bifactor} solution has a general factor loading for each variable as 
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {om.hi <- omega(bifact,sl=FALSE)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-}
+om.hi <- omega(bifact,sl=FALSE)
 @
 \caption{An exploratory hierarchical solution to the nine variable problem.}
 \label{fig:om:hi}
@@ -404,10 +370,7 @@ Yet one more way to treat the hierarchical structure of a data set is to conside
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-if(require(Rgraphviz)) {ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")}
+ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
 @
 \caption{A hierarchical cluster analysis of the bifact data set using ICLUST}
 \label{fig:iclust}
@@ -421,11 +384,11 @@ Although the exploratory models shown above do estimate the goodness of fit of t
 
 
 \subsection{Using psych as a front end for the sem package}
-Because preparation of the \fun{sem} commands is a bit tedious, several of the \Rpkg{psych} package functions have been designed to provide the appropriate commands.  That is, the functions \pfun{structure.list},  \pfun{phi.list},  \pfun{structure.graph}, \pfun{structure.sem}, and \pfun{omega.graph} may be used as a front end to \fun{sem}.  Usually with no modification, but sometimes with just slight modification, the model output from the  \pfun{structure.graph}, \pfun{structure.sem}, and \pfun{omega.graph} functions is meant to provide the appropriate commands for \fun{sem}.
+Because preparation of the \fun{sem} commands is a bit tedious, several of the \Rpkg{psych} package functions have been designed to provide the appropriate commands.  That is, the functions \pfun{structure.list},  \pfun{phi.list},  \pfun{structure.diagram}, \pfun{structure.sem}, and \pfun{omega.graph} may be used as a front end to \fun{sem}.  Usually with no modification, but sometimes with just slight modification, the model output from the  \pfun{structure.diagram}, \pfun{structure.sem}, and \pfun{omega.graph} functions is meant to provide the appropriate commands for \fun{sem}.
 
 
 \subsection{Testing a congeneric model versus a tau equivalent model}
-The congeneric model is a one factor model with possibly unequal factor loadings.  The  tau equivalent model model is one with equal factor loadings. Tests for these may be done by creating the appropriate structures. Either the \pfun{structure.graph} function which requires \fun{Rgraphviz} or the \pfun{structure.sem} function which does not may be used.
+The congeneric model is a one factor model with possibly unequal factor loadings.  The  tau equivalent model model is one with equal factor loadings. Tests for these may be done by creating the appropriate structures. The \pfun{structure.graph} function which requires \fun{Rgraphviz}, or \pfun{structure.diagram} or  the \pfun{structure.sem} functions which do not may be used.
 
 The following example tests the hypothesis (which is actually false) that the correlations found in the cong data set (see \ref{congeneric}) are tau equivalent.  Because the variable labels in that data set were V1 ... V4, we specify the labels to match those.
 <<print=FALSE,echo=TRUE>>=
@@ -515,11 +478,7 @@ The structure being tested may be seen using \pfun{structure.graph}
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 
-if(require(Rgraphviz)) {mod.f3p <- structure.graph(f3.p)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
-mod.f3p <- structure.sem(f3.p)}
+mod.f3p <- structure.diagram(f3.p)
 @
 \caption{A three factor, oblique solution.}
 \label{default}
@@ -537,12 +496,7 @@ The sem manual includes an example of a hierarchical solution to 9 mental abilit
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 data(bifactor)
-if(require(Rgraphviz)) {om.th.bi  <- omega(Thurstone,digits=3)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
 om.th.bi  <- omega(Thurstone,digits=3)
-}
 @
 \caption{A bifactor solution to the Thurstone 9 variable problem.  All items load on a general factor of ability, the residual factors account for the correlations between items within groups. }
 \label{fig:thurstone:bi}
@@ -567,12 +521,7 @@ A hierarchical solution to this data set was previously found by the \pfun{omega
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 
-if(require(Rgraphviz)) {om.hi <- omega(Thurstone,digits=3,sl=FALSE)
-} else {plot(1:10,main="Figure missing",typ="l")
-points(10:1,typ="l")
-text(5,2,"Rgraphviz needs to be installed")
 om.hi <- omega(Thurstone,digits=3,sl=FALSE)
-}
 @
 \caption{Hierarchical analysis of the Thurstone 9 variable problem using an exploratory algorithm can provide the appropriate sem code for analysis using the sem package.}
 \label{fig:thurstone:hi}

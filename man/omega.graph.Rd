@@ -1,4 +1,5 @@
 \name{omega.graph}
+\alias{omega.diagram}
 \alias{omega.graph}
 \alias{omega.sem}
 \title{Graph hierarchical factor structures }
@@ -6,13 +7,14 @@
 
 Two alternative solutions to such structures are found by the \code{\link{omega}} function.  The correlated factors solutions represents the effect of the higher level, general factor, through its effect on the correlated factors.  The other representation makes use of the Schmid Leiman transformation to find the direct effect of the general factor upon the original variables as well as the effect of orthogonal residual group factors upon the items. 
 
-Graphic presentations of these two alternatives are helpful in understanding the structure.  omega.graph draws both such structures.  Graphs are drawn directly onto the graphics window or expressed in ``dot" commands for conversion to graphics using implementations of Graphviz.
+Graphic presentations of these two alternatives are helpful in understanding the structure.  omega.graph  and omega.diagram draw both such structures.  Graphs are drawn directly onto the graphics window or expressed in ``dot" commands for conversion to graphics using implementations of Graphviz (if using omega.graph).
 
-Using Graphviz allows the user to clean up the Rgraphviz output.
+Using Graphviz allows the user to clean up the Rgraphviz output. However, if Graphviz and Rgraphviz are not available, use omega.diagram.
 
 In addition 
 }
 \usage{
+omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE, digits=1,e.size=.05,rsize=.15,side=3,main=NULL, ...) 
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
 }
 
@@ -27,7 +29,15 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{rank.direction}{ Defaults to left to right }
   \item{digits}{ Precision of labels }
   \item{title}{ Figure title }
+    \item{main}{ main figure caption }
   \item{\dots}{Other options to pass into the graphics packages }
+  \item{e.size}{the size to draw the ellipses for the factors}
+  \item{cut}{Minimum path coefficient to draw}
+  \item{simple}{draw just one path per item}
+  \item{sort}{sort the solution before making the diagram}
+  \item{side}{on which side should errors  be drawn?}
+  \item{errors}{show the error estimates}
+  \item{rsize}{size of the rectangles}
 }
 \details{Requires the Rgraphviz package.  omega requires the GPArotation package.
 

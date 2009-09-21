@@ -32,10 +32,10 @@ function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
   #show the cluster structure with ellipses
   for (i in 1:num.clust) {if(results[i,1]>0) { #avoid printing null results
      clust.graph <- addEdge(row.names(results)[i], results[i,1], clust.graph,1)
-     edge.label[(i-1)*2+1] <- results[i,"r1"]
+     edge.label[(i-1)*2+1] <- round(results[i,"r1"],digits)
      edge.name [(i-1)*2+1]  <- paste(row.names(results)[i],"~", results[i,1],sep="")
      clust.graph <- addEdge(row.names(results)[i], results[i,2], clust.graph,1)
-      edge.label[i*2] <- results[i,"r2"]
+      edge.label[i*2] <- round(results[i,"r2"],digits)
       edge.name [i*2]  <- paste(row.names(results)[i],"~", results[i,2],sep="")
      }}
  nAttrs <- list()  #node attributes

@@ -14,7 +14,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")) {fact <- fa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
      
         fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}
@@ -30,11 +30,17 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
       if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
-           							 } else {obminfact <- try(oblimin(orth.load))
+           							 } else {
+           							 if ((rotate == "cluster") | (rotate == "target")) {obminfact <- varimax(orth.load)            			
+								obminfact <- target.rot(obminfact,...)
+     			              	loadings <- obminfact$loadings
+     			                Phi <- obminfact$Phi} else {
+           							  obminfact <- try(oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe oblimin solution failed, Promax used instead.\n")
            							        rotmat <- obminfact$rotmat
-                   						    Phi <- obminfact$Phi} }}
+                   						    Phi <- obminfact$Phi} }} 
+                   						    }
            		}  
     if(nfactors>1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     fload <- obminfact$loadings
@@ -44,7 +50,8 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
    if (nfactors ==1) {gload <- c(1)
               warning("Omega_h and Omega_assymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
-       gfactor <- factanal( covmat = factr, factors = 1)
+       #gfactor <- factanal( covmat = factr, factors = 1)
+       gfactor <- fa(factr)    #modified August, 2009
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))

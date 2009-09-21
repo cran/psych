@@ -13,7 +13,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=F
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
   \item{rotate}{"none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
-  \item{scores}{If TRUE, estimate component scores}
+  \item{scores}{If TRUE, find component scores}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values} 
 }
@@ -29,7 +29,7 @@ Rotations and transformations are either part of psych (Promax and cluster), of 
 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
-Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores can be estimated by regression.  This is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.  
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores can be estimated either by regression (which is done) or just multiplying the data by  the components.  The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.  This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.    
 }
 \value{
   

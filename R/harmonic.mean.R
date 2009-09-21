@@ -1,2 +1,2 @@
 "harmonic.mean" <- 
-function(x) { 1/(mean(1/x)) }
+function(x,na.rm=TRUE) { 1/(mean(1/x,na.rm=na.rm)) }

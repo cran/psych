@@ -67,8 +67,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-78 \cr
-Date: \tab 2009-7-29\cr
+Version: \tab 1.0-80 \cr
+Date: \tab 2009-9-30\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -113,6 +113,8 @@ Data reduction through cluster and factor analysis\cr
 \link{factor.minres}    \tab        Do a minimum residual factor analysis\cr
 \link{factor.wls}    \tab        Do a weighted least squares factor analysis\cr
 \link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
+\link{fa.diagram}     \tab          Show the results of a factor analysis without using Rgraphviz \cr
+\link{fa.sort}        \tab          Sort a factor or principal components output \cr
 \link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
 \link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr

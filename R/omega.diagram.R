@@ -7,10 +7,10 @@
 
 "omega.diagram" <-
   function(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=3,main=NULL, ...) {
+    digits=1,e.size=.05,rsize=.15,side=3,main=NULL,cex=NULL, ...) {
    col <- c("black","red")
   Phi <- NULL  #the default case
-  
+  if(is.null(cex)) cex <- 1
   om.results <- fa.sort(om.results)
  
  if (sl) {factors <- as.matrix(om.results$schmid$sl) 
@@ -30,9 +30,9 @@
    if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
    var.rect <- list()
    fact.rect <- list()
-   
-   
-  plot(0,type="n",xlim=c(1,nvar),ylim=c(1,nvar+1),asp=1,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
+    max.len <- max(nchar(rownames(factors)))*rsize
+   cex <-  min(cex,20/nvar)
+  plot(0,type="n",xlim=c(-max.len/2,nvar+1),ylim=c(1,nvar+1),asp=1,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
    if (sl) {vloc <- (nvar+1)/2
             gloc <- 1
             grouploc <- nvar
@@ -45,7 +45,7 @@
             end <- num.factors
             }
   for (v in 1:nvar) { 
- 	 var.rect[[v]] <- dia.rect(vloc,nvar-v+1,rownames(factors)[v],xlim=c(0,nvar),ylim=c(0,nvar),...)
+ 	 var.rect[[v]] <- dia.rect(vloc,nvar-v+1,rownames(factors)[v],xlim=c(0,nvar),ylim=c(0,nvar),cex=cex,...)
      }
    f.scale <- (nvar+ 1)/(num.factors+1)
    f.shift <- nvar/num.factors
@@ -53,7 +53,7 @@
    		fact.rect[[f]] <- dia.ellipse(grouploc,(num.factors+1-f)*f.scale,colnames(factors)[f+start],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
      		for (v in 1:nvar)  {
      		
-    			if (abs(factors[v,f+start]) > cut) {dia.arrow(from=fact.rect[[f]]$center,to=var.rect[[v]]$right,col=((sign(factors[v,f])<0) +1),radius1=e.size*nvar,labels=round(factors[v,f+start],digits))
+    			if (abs(factors[v,f+start]) > cut) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,col=((sign(factors[v,f])<0) +1),labels=round(factors[v,f+start],digits))
                                 
     }
 }
@@ -62,13 +62,13 @@
   g.ellipse <-  dia.ellipse(gloc,(num.var+1)/2,"g",xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
    if(!sl) { 
    for (f in 1:num.factors) {
-             dia.arrow(from=g.ellipse$center,to=fact.rect[[f]]$center,col=((sign(gloading[f])<0) +1),labels=round(gloading[f],digits),radius1 =e.size*nvar,radius2 = e.size*nvar)
+             dia.arrow(from=g.ellipse,to=fact.rect[[f]],col=((sign(gloading[f])<0) +1),labels=round(gloading[f],digits))
                               
                             }
             
              } else {
               for (i in 1:nvar) {
-             dia.arrow(from=g.ellipse$center,to=var.rect[[i]]$left,col=((sign(gloading[f])<0) +1),radius1=-e.size*nvar,labels=round(factors[i,1],digits))
+             dia.arrow(from=g.ellipse,to=var.rect[[i]]$left,col=((sign(gloading[f])<0) +1),labels=round(factors[i,1],digits))
                               
                             }
  

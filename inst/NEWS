@@ -7,6 +7,11 @@ The functions are a supplement to the text (in progress): An introduction to psy
 Additional functions are added sporadically.
 
 History:
+September 30, 2009  1.0.80
+Added the ability to draw "diagrams" to replace the functions that required Rgraphviz.  These are path diagrams with rectangles for observed variables and ellipses for latent variables.  A set of graphic functions for drawing diagrams includes dia.ellipse, dia.rect, dia.arrow, dia.curve and dia.self.  This allows the  function omega and ICLUST to draw structural diagrams without using Rgraphviz.
+
+The documentation for these new functions is a bit less than desirable and the dia primitives will be modified slightly for the next release.
+
 August 25, 2009  1.0.79
 added the Schmid data set which includes the original Schmid-Leiman correlation matrix as well as data from Chen, West, and Sousa (2006).
 modified geometric.mean and harmonic.mean to allow for missing data.

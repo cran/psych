@@ -7,7 +7,7 @@
 \description{Given a cluster structure determined by \code{\link{ICLUST}}, create a graphic structural diagram using graphic functions in the psych package To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}. If Rgraphviz has been successfully installed, the alternative is to use \code{\link{ICLUST.rgraph}}.
 }
 \usage{
-iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.size = NULL, e.size = 0.6, main = "ICLUST diagram")
+iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.size = NULL, e.size =1, main = "ICLUST diagram")
 }
 
 \arguments{
@@ -19,6 +19,7 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.siz
   \item{min.size}{Don't provide statistics for clusters less than min.size}
   \item{e.size}{size of the ellipses with the cluster statistics.}
   \item{main}{The main graphic title}
+ 
 }
 \details{iclust.diagram provides most of the power of \code{\link{ICLUST.rgraph}} without the difficulties involved in installing Rgraphviz.  It is called automatically from ICLUST. 
 }

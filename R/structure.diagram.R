@@ -97,12 +97,13 @@ plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",
    		fact.rect[[f]] <- dia.ellipse(limx[2]/3,(num.xfactors+1-f)*f.scale,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
      		for (v in 1:num.xvar)  {
      		    if(is.numeric(factors[v,f])) {
-    			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { if (!regression) {dia.arrow(from=fact.rect[[f]]$center,to=var.rect[[v]]$right,labels =factors[v,f], radius1 = e.size*nvar,col=((sign(factors[v,f])<0) +1)) 
-    			} else {dia.arrow(to=fact.rect[[f]]$center,from=var.rect[[v]]$right,labels =factors[v,f], radius2 = -e.size*nvar,col=((sign(factors[v,f])<0) +1))} }
+     		    if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { if (!regression) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1)) 
+    			
+    		} else {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1))} }
                                     }  else {
                 if (factors[v,f] !="0") {
-               if (!regression) { dia.arrow(from=fact.rect[[f]]$center,to=var.rect[[v]]$right,labels =factors[v,f], radius1 = e.size*nvar) 
-    			} else {dia.arrow(to=fact.rect[[f]]$center,from=var.rect[[v]]$right,labels =factors[v,f], radius2 = -e.size*nvar)} }
+               if (!regression) { dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f]) 
+    			} else {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =factors[v,f])} }
                                     } }
                               } 
                               
@@ -145,9 +146,9 @@ plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",
    		fact.rect[[f+num.xfactors]] <- dia.ellipse(2*limx[2]/3,(num.yfactors+1-f)*f.yscale +y.fadj,yfact[f],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
    		  
      		for (v in 1:num.yvar) {if(is.numeric(y.factors[v,f])) {
-     		{if(simple && (abs(y.factors[v,f]) == max(abs(y.factors[v,])) )  && (abs(y.factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) {dia.arrow(from=fact.rect[[f+num.xfactors]]$center,to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f], radius1 = -e.size*nvar,col=((sign(y.factors[v,f])<0) +1)) }
+     		{if(simple && (abs(y.factors[v,f]) == max(abs(y.factors[v,])) )  && (abs(y.factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1)) }
                                     }
-                   } else {if(factors[v,f] !="0")  {dia.arrow(from=fact.rect[[f+num.xfactors]]$center,to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f], radius1 = -e.size*nvar) }
+                   } else {if(factors[v,f] !="0")  {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f]) }
              }}
                              } 
                        
@@ -212,7 +213,7 @@ if(!regression) {
                       for (j in 1:num.yfactors) {
                       		if((!is.numeric(Phi[j+num.xfactors,i] ) && (Phi[j+num.xfactors,i] !="0"))||  ((is.numeric(Phi[j+num.xfactors,i]) && abs(Phi[j+num.xfactors,i]) > cut ))) {
                       
-                       dia.arrow(from=fact.rect[[i]]$right,to=fact.rect[[j+num.xfactors]]$center,Phi[j+num.xfactors,i],radius2=-e.size*nvar)
+                       dia.arrow(from=fact.rect[[i]],to=fact.rect[[j+num.xfactors]],Phi[j+num.xfactors,i])
                        sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="") } else {
                       
                        sem[k,1]  <- paste(fact[i],"<->",fact[j+num.xfactors],sep="")}

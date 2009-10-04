@@ -14,7 +14,7 @@ Using Graphviz allows the user to clean up the Rgraphviz output. However, if Gra
 In addition 
 }
 \usage{
-omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE, digits=1,e.size=.05,rsize=.15,side=3,main=NULL, ...) 
+omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE, digits=1,e.size=.05,rsize=.15,side=3,main=NULL,cex=NULL, ...) 
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
 }
 
@@ -28,6 +28,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{edge.font}{What font to use for the edge labels }
   \item{rank.direction}{ Defaults to left to right }
   \item{digits}{ Precision of labels }
+  \item{cex}{control font size}
   \item{title}{ Figure title }
     \item{main}{ main figure caption }
   \item{\dots}{Other options to pass into the graphics packages }
@@ -66,17 +67,17 @@ Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of
  \url{http://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
-\note{ Requires rgraphviz.   -- omega requires GPArotation
+\note{ omega.graph requires rgraphviz.   -- omega requires GPArotation
 }
 \seealso{ \code{\link{omega}},  \code{\link{make.hierarchical}}, \code{\link{ICLUST.rgraph}} }
 \examples{
 #24 mental tests from Holzinger-Swineford-Harman
 if(require(GPArotation) ) {om24 <- omega(Harman74.cor$cov,4) } #run omega
-if(require(Rgraphviz) ){om24pn <- omega.graph(om24,sl=FALSE)} #show the structure
+#if(require(Rgraphviz) ){om24pn <- omega.graph(om24,sl=FALSE)} #show the structure
 #
 #example hierarchical structure from Jensen and Weng
 if(require(GPArotation) ) {jen.omega <- omega(make.hierarchical())}
-if(require(Rgraphviz) ) {om.jen <- omega.graph(jen.omega,sl=FALSE) }
+#if(require(Rgraphviz) ) {om.jen <- omega.graph(jen.omega,sl=FALSE) }
 
 }
 

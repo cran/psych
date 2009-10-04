@@ -3,7 +3,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
-      if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
+     if(!require(GPArotation) && (rotate !="cluster")) {stop("I am sorry, you need to have the  GPArotation package installed")}
       cl <- match.call()
       nvar <- dim(m)[2]
       if(dim(m)[1] != dim(m)[2]) {
@@ -68,7 +68,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,call=cl,title=title,model=omega.model)
 
       class(omega) <- c("psych","omega")
-            omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
+      omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
       return(omega)
       }
 

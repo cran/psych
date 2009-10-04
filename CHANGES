@@ -6,9 +6,13 @@ modify principal so that scoring of components can yield unstandardized scores
 modify Rd for pairs.panels to cross link to pairs2
 add some features from pairs2 (group coloring, x, y option)
 
+Version 1.0.81  October, 2009 
+Improved the documentation for the dia.X functions and made some of the calls simpler.  
+
 Version 1.0.80  September 21, 2009
-Replaced fa.graph (which requires Rgraphviz) with fa.diagram (which does not)
-added fa.sort to sort factor analysis output
+Replaced fa.graph, omega.graph, ICLUST.rgraph and structure.graph (which required Rgraphviz) with fa.diagram, omega.diagram, iclust.diagram and structure.diagram (which do not)
+
+added fa.sort to sort factor analysis output (used in fa.diagram as well).
 
 Version 1.0.79  September 5, 2009
 modified harmonic.mean and geometric.mean to accept (by default) na.rm=TRUE

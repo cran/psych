@@ -1,4 +1,4 @@
-\name{fa.graph}
+\name{fa.diagram}
 \alias{fa.graph}
 \alias{fa.diagram}
 \title{ Graph factor loading matrices}
@@ -6,7 +6,7 @@
 }
 \usage{
 fa.diagram(fa.results,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main="Factor Analysis", ...) 
+    digits=1,e.size=.05,rsize=.15,side=2,main="Factor Analysis",cex=NULL, ...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis",graphviz=TRUE, ...)
@@ -25,6 +25,7 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{e.size}{size of ellipses}
   \item{rsize}{size of rectangles}
   \item{side}{on which side should error arrows go?}
+  \item{cex}{modify font size}
   \item{node.font}{  }
   \item{edge.font}{ }
   \item{rank.direction}{  }
@@ -57,7 +58,7 @@ As of June 1, 2007 there is an occasionally strange result when using the simple
 
 
 test.simple <- fa(item.sim(16),2,rotate="oblimin")
-if(require(Rgraphviz)) {fa.graph(test.simple) }
+#if(require(Rgraphviz)) {fa.graph(test.simple) } 
 fa.diagram(test.simple)
 data(bifactor)
 fa.diagram(fa(Thurstone,3,rotate="cluster"),cut=.4,digits=2)

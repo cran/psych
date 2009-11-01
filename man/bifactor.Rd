@@ -26,7 +26,7 @@ Another set of 9 cognitive variables attributed to Thurstone (1933) is the data 
 
 More recent applications of the bifactor model are to the measurement of psychological status. The Reise data set is a correlation matrix based upon >35,000 observations to the Consumer Assessment of Health Care Provideers and Systems survey instrument. Reise, Morizot, and Hays (2007) describe a bifactor solution based upon 1,000 cases.    
 
-The five factors from Reise et al. reflect Getting care quickly (1-3), Doctor communicates well (4-7), Courteous and helpful staff (8,9), Getting needed care (10-13), and and Health plan customer service (14-16). 
+The five factors from Reise et al. reflect Getting care quickly (1-3), Doctor communicates well (4-7), Courteous and helpful staff (8,9), Getting needed care (10-13), and  Health plan customer service (14-16). 
 
 The two Bechtoldt data sets are two samples from Thurstone and Thurstone (1941).  They include 17 variables, 9 of which were used by McDonald to form the Thurstone data set. The sample sizes are 212 and 213 respectively. The six proposed factors reflect  memory, verbal, words,  space, number and reasoning with three markers for all expect the rote memory factor. 9 variables from this set appear in the Thurstone data set.
 

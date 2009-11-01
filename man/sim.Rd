@@ -60,8 +60,8 @@ R
 fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
 fy <- c(.6,.5,.4)
 Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
-print(sim.structure(fx,Phi,fy,),digits=2)  
-cor.plot(R) #show it graphically
+R <- sim.structure(fx,Phi,fy) 
+cor.plot(R$model) #show it graphically
 
 simp <- sim.simplex()
 #show the simplex structure using cor.plot

@@ -7,21 +7,21 @@
   predicting each member of the (y) set.  
 }
 \usage{
-mat.regress(m, x, y,n.obs=NULL,digits=2)
+mat.regress(m, x, y,n.obs=NULL,digits=6)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{  a matrix of correlations or, if not square of data}
-  \item{x}{  the column numbers of the x set (e.g., c(1,3,5)}
-  \item{y}{  the column numbers of the y set  (e.g., c(2,4,6)}
+  \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
+  \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
   \item{digits}{round the answer to digits}
 }
 \details{
   Although it is more common to calculate multiple regression from raw data, it is, 
   of course, possible to do so from a set of correlations.  The input to the function is 
-  a square covariance or correlation matrix, as well as the column numbers of the x (predictor) and 
-  y (criterion) variables. The program will find correlations if given raw data.
+  a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor) and 
+  y (criterion) variables. The program will find the correlations if given raw data.
   
   The output is a set of multiple correlations, one for each dependent variable in the y set. 
   
@@ -48,28 +48,11 @@ Maintainer: William Revelle <revelle@northwestern.edu> }
 \seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}} }
 \examples{
 
-\dontrun{
+
 test.data <- Harman74.cor$cov     #24 mental variables
 #choose 3 of them to regress against another 4 -- arbitrary choice of variables
-print(mat.regress(test.data,c(1,2,3),c(4,5,10,12)),digits=2)
-}
-#gives this output
-#print(mat.regress(test.data,c(1,2,3),c(4,5,10,12)),digits=2)
-#$beta
-#                 Flags GeneralInformation Addition CountingDots
-#VisualPerception  0.40               0.22     0.16         0.30
-#Cubes             0.06               0.18     0.06         0.05
-#PaperFormBoard    0.12               0.10    -0.16         0.00
-#
-#$R
-#             Flags GeneralInformation           Addition       CountingDots 
-#             0.49               0.38               0.18               0.32 
-#
-#$R2
-#             Flags GeneralInformation           Addition       CountingDots 
-#              0.24               0.15               0.03               0.10 
-#
-#
+summary(mat.regress(test.data,c(1,2,3),c(4,5,10,12),n.obs=213),digits=2) #choose the variables by number 
+mat.regress(test.data,c("VisualPerception", "Cubes","PaperFormBoard"),c("Flags","Addition"))  #choose the variables by name
 data(attitude)
 mat.regress(attitude,c(1:3),c(4:7)) #standardized regression from raw data
 }

@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- mat.reg <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -25,6 +25,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "thurstone") thurstone <- TRUE
    if(class(x)[2] == "ICC") ICC <- TRUE
    if(class(x)[2] == "stats") stats <- TRUE
+   if(class(x)[2] == "mat.regress") mat.reg <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -198,8 +199,37 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
 
    }
-    
-             
+  
+  if(mat.reg) { cat("Call: ")
+              print(x$Call)
+            cat("\nMultiple Regression from matrix input \n")
+           cat("\nBeta weights \n")
+           print(round(x$beta,digits))
+           cat("\nMultiple R \n") 
+           print(round(x$R,digits))
+            cat("\nMultiple R2 \n") 
+            print(x$R2,digits)
+              if(!is.null(x$se)) {
+               cat("\n SE of Beta weights \n")
+           print(round(x$se,digits))
+           cat("\n t of Beta Weights \n") 
+           print(round(x$t,digits))
+            cat("\nProbability of t < \n") 
+            print(signif(x$Probability,digits))
+            cat("\n Shrunken R2 \n")
+           print(x$shrunkenR2,digits)
+           cat("\nStandard Error of R2  \n") 
+           print(x$seR2,digits)
+            cat("\nF \n") 
+            print(round(x$F,digits))
+             cat("\nProbability of F < \n") 
+           print(signif(x$probF,digits))
+            cat("\n degrees of freedom of regression \n") 
+            print(x$df)
+           }
+
+   }
+  
   }     #end of the not list condition
   
 }  #end function

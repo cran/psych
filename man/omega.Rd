@@ -124,14 +124,14 @@ If the factor solution leads to an exactly orthogonal solution (probably only fo
 test.data <- Harman74.cor$cov
 if(!require(GPArotation) {message("Omega requires GPA rotation" )} else {my.omega <- omega(test.data,3)       
 print(my.omega,digits=2)
-#
-         }
+}
 #create 9 variables with a hierarchical structure
 jen.data <- sim.hierarchical()
 #with correlations of
 jen.data
 #find omega 
-if(require(Rgraphviz)) {jen.omega <- omega(jen.data,digits=2)} else {jen.omega <- omega(jen.data,digits=2,plot=FALSE)}
+#if(require(Rgraphviz)) {jen.omega <- omega(jen.data,digits=2)} else {
+jen.omega <- omega(jen.data,digits=2,plot=FALSE)
 jen.omega
 
 #create 8 items with a two factor solution, showing the use of the flip option
@@ -141,7 +141,8 @@ omega(sim2,2)  #this shows that in fact there is no general factor
 omega(sim2,2,option="first") #but, if we define one of the two group factors as a general factor, we get a falsely high omega 
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
-if(require(Rgraphviz)) {omega(ability.cov$cov)} else {omega(ability.cov$cov,plot=FALSE)} 
+#if(require(Rgraphviz)) {omega(ability.cov$cov)} else omega(ability.cov$cov,plot=FALSE)
+}
 }
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

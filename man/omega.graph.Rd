@@ -73,11 +73,11 @@ Maintainer: William Revelle  \email{  revelle@northwestern.edu           }
 \examples{
 #24 mental tests from Holzinger-Swineford-Harman
 if(require(GPArotation) ) {om24 <- omega(Harman74.cor$cov,4) } #run omega
-#if(require(Rgraphviz) ){om24pn <- omega.graph(om24,sl=FALSE)} #show the structure
+
 #
 #example hierarchical structure from Jensen and Weng
 if(require(GPArotation) ) {jen.omega <- omega(make.hierarchical())}
-#if(require(Rgraphviz) ) {om.jen <- omega.graph(jen.omega,sl=FALSE) }
+
 
 }
 

@@ -24,7 +24,8 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
         m.names <- paste(m.names,signkey,sep="")
         colnames(m) <- rownames(m) <- m.names 
             
-             
+ if(nvar < 3) {message("These estimates are not really meaningful if you have less than 3 items, \n Try running the alpha function instead")
+            stop()}
  worst <- ICLUST(r,2,plot=FALSE)
  w.keys <- worst$p.sorted$cluster
  

@@ -14,10 +14,11 @@ For symbolic graphs, the input matrices can be character strings or mixtures of 
 
 As an option, for those without Rgraphviz installed, structure.sem will just create the sem model and skip the graph.
 
-structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option.
+structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option. structure.graph will be removed eventually.
 
 }
 \usage{
+structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,digits=1,e.size=.1,main="Structural model", ...)
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
 }
@@ -32,6 +33,8 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
   \item{errors}{draw an error term for observerd variables }
   \item{simple}{Just draw one path per x or y variable }
   \item{regression}{Draw a regression diagram (observed variables cause Y)}
+  \item{e.size}{size of the ellipses in structure.diagram}
+  \item{main}{main title of diagram}
   \item{size}{page size of graphic }
   \item{node.font}{ font type for graph }
   \item{edge.font}{font type for graph }
@@ -42,11 +45,11 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
 }
 \details{
 
-The recommended function is structure.diagram which does not use Rgraphviz but it does not produce dot code either.  
+The recommended function is structure.diagram which does not use Rgraphviz but which does not produce dot code either.  
 
 All three function return a matrix of commands suitable for using in the sem package.
 
-The structure.graph output can be directed to an output file for post processing using the dot graphic language. 
+The structure.graph output can be directed to an output file for post processing using the dot graphic language but requires that Rgraphviz is installed. 
 
 
 }

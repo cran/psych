@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,title=NULL, na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL, na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -22,9 +22,10 @@
         			 key.d <- diag(keys)
                      C <- key.d %*% C %*% key.d}
          total <- rowSums(x,na.rm=na.rm)
-         mean.t <- mean(total,na.rm=na.rm)
-         sdev <- sd(total,na.rm=na.rm)
-         t.valid <- colSums(!is.na(x))} else { C <- as.matrix(x) 
+        if(cumulative) { mean.t <- mean(total,na.rm=na.rm)
+         sdev <- sd(total,na.rm=na.rm) } else { mean.t <- mean(total/nvar,na.rm=na.rm)
+                                               sdev <- sd(total/nvar,na.rm=na.rm)}
+        t.valid <- colSums(!is.na(x))} else { C <- as.matrix(x) 
                                                if(!is.null(keys)) {key.d <- diag(keys)
                             C <- key.d %*% C %*% key.d}}
          R <- cov2cor(C)
@@ -32,18 +33,18 @@
          alpha.total <- alpha.1(C,R)
          if(nvar>2) {
          for (i in 1:nvar) {
-         drop.item[[i]] <- alpha.1(C[-i,-i],R[-i,-i])
-         } 
-         }
+         drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
+                            } 
+         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2])}
         by.item <- data.frame(matrix(unlist(drop.item),ncol=4,byrow=TRUE))
         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r")
         rownames(by.item) <- colnames(x)
        
         Vt <- sum(R)
         item.r <- colSums(R)/sqrt(Vt)
-     #correct for item overlap 
+     #correct for item overlap by using  smc 
         RC <-R
-        diag(RC) <- smc(R)
+        diag(RC) <-smc(R)
         Vtc <- sum(RC)
         item.rc <-colSums(RC)/sqrt(Vtc)
      #  

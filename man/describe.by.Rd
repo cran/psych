@@ -1,7 +1,7 @@
 \name{describe.by}
 \alias{describe.by}
 \title{ Basic summary statistics by group}
-\description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Just a wrapper for by and \code{\link{describe}}.
+\description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Partly a wrapper for by and \code{\link{describe}}
 }
 \usage{
 describe.by(x, group,mat=FALSE,...)
@@ -13,7 +13,7 @@ describe.by(x, group,mat=FALSE,...)
   \item{mat}{provide a matrix output rather than a list}
   \item{...}{parameters to be passed to describe}
 }
-\details{To get descriptive statistics for several different grouping variables, make sure that group is a list!
+\details{To get descriptive statistics for several different grouping variables, make sure that group is a list.  In the case of matrix output with multiple grouping variables, the grouping variable values are added to the output.
 }
 \value{
  A data.frame of the relevant statistics broken down by group: \cr
@@ -37,8 +37,8 @@ describe.by(x, group,mat=FALSE,...)
 data(sat.act)
 describe.by(sat.act,sat.act$gender) #just one grouping variable	
 #describe.by(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
-#des.mat <- describe.by(sat.act$age,sat.act$education,mat=TRUE) #matrix output 
-#des.mat <- describe.by(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE) 
+des.mat <- describe.by(sat.act$age,sat.act$education,mat=TRUE) #matrix  (data.frame) output 
+des.mat <- describe.by(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE)  #matrix output
 
 
 }

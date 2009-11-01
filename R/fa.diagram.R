@@ -53,7 +53,7 @@
    
    if(!is.null(fa.results$Phi)) { for (i in 2:num.factors) {
      for (j in 1:(i-1)) {
-     if(Phi[i,j] > cut) {
+     if(abs(Phi[i,j]) > cut) {
         dia.curve(from=c(nvar-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(nvar -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}
 						}
   															 }

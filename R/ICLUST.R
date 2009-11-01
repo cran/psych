@@ -30,7 +30,8 @@
 	
 	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
 	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
-	
+	if(dim(r.mat)[2] < 3 ) {message("Cluster analysis of items is only meaningful for more than 2 variables. Otherwise, you will find one cluster that is just the composite of the two.  Beta = Alpha = 2*r/(1+r).  Have you made a mistake? \n Try calling the alpha function to give some trivial statistics.")
+	  stop() }
 	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options) #this does all the work - the answers are in iclust.results
 	loads <- cluster.loadings(iclust.results$clusters,r.mat) #summarize the results by using cluster.loadings
 	

@@ -82,8 +82,8 @@ cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
 #  if(require(Rgraphviz))       
  if(FALSE) { fa.graph(fa(item.sim(16),2) ,title="Principal factor of a simple structure") 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
-  	jen <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
-  	omega.graph(jen,sl=FALSE,title="Omega with hierarchical factors")
+  	v9 <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
+  	omega.graph(v9,sl=FALSE,title="Omega with hierarchical factors")
   	   #set up the parameters for the structure graph
 		X6 <- matrix(c("a","b","c",rep(0,6),"d","e","f"),nrow=6)
 		colnames(X6) <- c("L1","L2")
@@ -95,12 +95,12 @@ cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
 		colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 	structure.graph(X6,phi21,Y3,title="Symbolic structural model")
 
- } else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz") }
+ } #else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz") }
  
  fa.diagram(fa(item.sim(16),2) ,main="Principal factor of a simple structure") 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
-  	jen <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
-  	omega.diagram(jen,sl=FALSE,main="Omega with hierarchical factors")
+  	v9 <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
+  	omega.diagram(v9,sl=FALSE,main="Omega with hierarchical factors")
   	   #set up the parameters for the structure graph
 		X6 <- matrix(c("a","b","c",rep(0,6),"d","e","f"),nrow=6)
 		colnames(X6) <- c("L1","L2")

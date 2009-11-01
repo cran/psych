@@ -211,6 +211,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     signed <- sign(colSums(loadings))
     signed[signed==0] <- 1
     loadings <- loadings %*% diag(signed)  #flips factors to be in positive direction but loses the colnames
+    if(!is.null(Phi)) {Phi <- diag(signed) %*% Phi %*% diag(signed) }  #added October 20, 2009 to correct bug found by Erich Studerus
      if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {if (fm=="ml")  {colnames(loadings) <- paste("ML",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}}
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008

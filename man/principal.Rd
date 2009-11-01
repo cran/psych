@@ -23,7 +23,7 @@ There are a number of data reduction techniques including principal components a
 
 For a n x n correlation matrix, the n principal components completely reproduce the correlation matrix.  However, if just the first k principal components are extracted, this is the best k dimensional approximation of the matrix.
 
-It is important to recognize that rotated principal components are not principal components (the axes associated with the eigen value decomposition) but are merely components.
+It is important to recognize that rotated principal components are not principal components (the axes associated with the eigen value decomposition) but are merely components.  To point this out, unrotated principal components are labelled as PCi, while rotated PCs are now labeled as RCi (for rotated components) and obliquely transformed components as TCi (for transformed components). (Thanks to Ulrike Gromping for this suggestion.)
 
 Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin).
 

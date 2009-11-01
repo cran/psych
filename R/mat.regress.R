@@ -1,9 +1,10 @@
 "mat.regress" <-
-function(m,x,y,n.obs=NULL,digits=2)  {
+function(m,x,y,n.obs=NULL,digits=6)  {
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #seriously rewritten, March 24, 2009 to make much simpler
-  
+  #minor additons, October, 20, 2009 to allow for print and summary function
+   cl <- match.call()
   if(!is.matrix(m)) m <- as.matrix(m)
   if(dim(m)[1]!=dim(m)[2]) {n.obs=dim(m)[1]
                     C <- cov(m,use="pairwise")
@@ -23,10 +24,12 @@ function(m,x,y,n.obs=NULL,digits=2)  {
      	bc.matrix <- C[x,y]
      	
      beta<- solve(a.matrix,b.matrix)       #solve the equation bY~aX
-     	if (length(y) >1 ) { rownames(beta) <- colnames(m)[x]
-     	 colnames(beta) <- colnames(m)[y]
+        beta <- as.matrix(beta)
+     	if (length(y) >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
+     	                      if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
      	 
-     	R2 <- colSums(beta * b.matrix) } else { R2 <- sum(beta * b.matrix)
+     	R2 <- colSums(beta * b.matrix) } else { colnames(beta) <- colnames(m)[1]
+     	 R2 <- sum(beta * b.matrix)
      	 names(beta) <- colnames(m)[x]
      	 names(R2) <- colnames(m)[y]}
      	if(!is.null(n.obs)) {k<- length(x)
@@ -51,10 +54,11 @@ function(m,x,y,n.obs=NULL,digits=2)  {
      	
      	beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix)) #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {mat.regress <- list(beta=round(beta,digits),R=round(sqrt(R2),digits),R2=round(R2,digits))} else {
-     	              mat.regress <- list(beta=round(beta,digits),se=round(se,digits),t=round(tvalue,digits),Probability = round(prob,digits),R=round(sqrt(R2),digits),R2=round(R2,digits),shrunkenR2 = round(shrunkenR2,digits),seR2 = round(SE,digits),F=round(F,digits),probF= round(pF,digits+1),df=c(k,df))}
+     	if(is.null(n.obs)) {mat.regress <- list(beta=round(beta,digits),R=round(sqrt(R2),digits),R2=round(R2,digits),Call = cl)} else {
+     	              mat.regress <- list(beta=round(beta,digits),se=round(se,digits),t=round(tvalue,digits),Probability = round(prob,digits),R=round(sqrt(R2),digits),R2=round(R2,digits),shrunkenR2 = round(shrunkenR2,digits),seR2 = round(SE,digits),F=round(F,digits),probF= round(pF,digits+1),df=c(k,df),Call = cl)}
+     	class(mat.regress) <- c("psych","mat.regress")
      	return(mat.regress)
      	}
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests
-#modified yet again August 15 , 2008to convert covariances to correlations
+#modified yet again August 15 , 2008 to convert covariances to correlations

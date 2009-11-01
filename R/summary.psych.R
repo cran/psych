@@ -8,7 +8,7 @@ function(object,digits=2,items=FALSE,...) {
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
 #figure out which psych function called us 
- iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- FALSE 
+ iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- mat.reg <- FALSE 
  
  if(length(class(object)) > 1)  { 
    if(class(object)[2] =='sim')  sim <- TRUE
@@ -21,6 +21,7 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'score.items') scores <- TRUE
    if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
    if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
+   if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
      } 
 
 if(!is.null(object$fn)) {fa <- TRUE}
@@ -132,4 +133,17 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 }
  
-}
+  if(mat.reg) { cat("Call: ")
+              print(object$Call)
+            cat("\nMultiple Regression from matrix input \n")
+           cat("\nBeta weights \n")
+           print(round(object$beta,digits))
+           cat("\nMultiple R \n") 
+           print(round(object$R,digits))
+            cat("\nMultiple R2 \n") 
+           print(round(object$R2,digits))
+           
+           }
+
+   }
+  

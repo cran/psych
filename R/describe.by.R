@@ -1,44 +1,1 @@
-#modified March 4, 2009 for matrix output
-#and yet again August 1 to make it actually work!
-"describe.by" <-
-function (x,group=NULL,mat=FALSE,...) {               #data are x, grouping variable is group
-if(is.null(group)) {answer <- describe(x)
-   warning("no grouping variable requested")} else {
-		answer <- by(x,group,describe,...)
-      	 #class(answer) <- c("psych","describe")  #probably better not to make of class psych (at least not yet)
-       	}
-
-if (mat) { ncol <- length(answer[[1]])  #the more complicated case. How to reorder a list of data.frames
-#the interesting problem is treating the case of multiple grouping variables. 
-	n.var <- nrow(answer[[1]])
-	n.col <- ncol(answer[[1]])
-	n.grouping <- length(dim(answer))  #this is the case of multiple grouping variables
-	n.groups <- prod(dim(answer))
-	names  <- names(answer[[1]])
-	row.names <-attr(answer[[1]],"row.names")
-  
-	 mat.ans <- matrix(NA,ncol=(ncol),nrow=n.var*n.groups)
-	 labels.ans <- matrix(NA,ncol = n.grouping+1,nrow= n.var*n.groups)
-	 colnames(labels.ans) <- c("item",paste("group",1:n.grouping,sep=""))
-	 colnames(mat.ans) <- colnames(answer[[1]])
-	 rn <- 1:(n.var*n.groups)
-	 k <- 1
-	 labels.ans[,1] <- seq(1,(n.var*n.groups))
-	 for (grouping in 1:n.grouping)	   { labels.ans[,grouping+1] <- attr(answer,"dimnames")[[grouping]] }
-	 for (var  in 1:n.var) {
-	  for (group in 1:n.groups) {
-
-	  	rn[k] <- paste(row.names[var],group,sep="")
-	    #mat.ans[k,1] <- group
-	    for (stat in 1:n.col) {
-	   	 mat.ans[k,stat] <- answer[[group]][[stat]][var] } 
-	     k <- k + 1}
-	   }
-	   answer <- data.frame( labels.ans,mat.ans) 
-	   rownames(answer) <- rn
-        }
-     
-	  
-	   #class(answer) <- c("psych","describe","list")
-	  
-return(answer)}
+#modified March 4, 2009 for matrix output#and yet again August 1 to make it actually work!"describe.by" <-function (x,group=NULL,mat=FALSE,...) {               #data are x, grouping variable is groupif(is.null(group)) {answer <- describe(x)   warning("no grouping variable requested")} else {		answer <- by(x,group,describe,...)      	 #class(answer) <- c("psych","describe")  #probably better not to make of class psych (at least not yet)       	}if (mat) { ncol <- length(answer[[1]])  #the more complicated case. How to reorder a list of data.frames#the interesting problem is treating the case of multiple grouping variables. 	n.var <- nrow(answer[[1]])	n.col <- ncol(answer[[1]])	n.grouping <- length(dim(answer))  #this is the case of multiple grouping variables	n.groups <- prod(dim(answer))	names  <- names(answer[[1]])	row.names <-attr(answer[[1]],"row.names")	dim.names <- attr(answer,"dimnames")  	 mat.ans <- matrix(NA,ncol=ncol,nrow=n.var*n.groups)	 labels.ans <- matrix(NA,ncol = n.grouping+1,nrow= n.var*n.groups)	 colnames(labels.ans) <- c("item",paste("group",1:n.grouping,sep=""))	 colnames(mat.ans) <- colnames(answer[[1]])	 rn <- 1:(n.var*n.groups)	 k <- 1	 labels.ans[,1] <- seq(1,(n.var*n.groups))	# for (grouping in 1:n.grouping)	   { labels.ans[,grouping+1] <- attr(answer,"dimnames")[[grouping]] }#no	 group.scale <- cumprod(c(1,dim(answer)))	 	  for (var in 1:(n.var*n.groups)) {	 		for (group in 1:n.grouping)  {	     		groupi <- ((trunc((var-1)/group.scale[group]) ) %% dim(answer)[group] ) +1	         	          labels.ans[var,group+1] <- dim.names[[group]][[groupi]]}	         }	 	 	 k <- 1   	 for (var  in 1:n.var) {	  for (group in 1:n.groups) {        	  	rn[k] <- paste(row.names[var],group,sep="")	    #mat.ans[k,1] <- group	    for (stat in 1:n.col) {	   	 mat.ans[k,stat] <- answer[[group]][[stat]][var] } 	     k <- k + 1}	   }	   answer <- data.frame( labels.ans,mat.ans) 	   rownames(answer) <- rn        }     	  	   #class(answer) <- c("psych","describe","list")	  return(answer)}

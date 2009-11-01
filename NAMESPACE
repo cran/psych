@@ -1,4 +1,4 @@
-#last modified September 25, 2009 by William Revelle 
+#last modified October 21, 2009 by William Revelle 
 export(alpha,
 circ.tests,
 circ.sim,

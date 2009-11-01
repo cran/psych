@@ -47,9 +47,7 @@ Additional output is drawn to main graphics screen. }
 
 \examples{
 test.data <- Harman74.cor$cov
-
-if(require(Rgraphviz) ) {ic.out <- ICLUST(test.data) }  
-
+ic.out <- ICLUST(test.data)   #uses iclust.diagram instead 
 }
 \keyword{ multivariate}
 \keyword{ cluster}% __ONLY ONE__ keyword per line

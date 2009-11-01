@@ -1,169 +1,1 @@
-Software and data sets to do classic and modern psychometrics, and to analyze personality  and experimental psychological data sets. 
-
-The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory.
-
-The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
-
-Additional functions are added sporadically.
-
-History:
-September 30, 2009  1.0.80
-Added the ability to draw "diagrams" to replace the functions that required Rgraphviz.  These are path diagrams with rectangles for observed variables and ellipses for latent variables.  A set of graphic functions for drawing diagrams includes dia.ellipse, dia.rect, dia.arrow, dia.curve and dia.self.  This allows the  function omega and ICLUST to draw structural diagrams without using Rgraphviz.
-
-The documentation for these new functions is a bit less than desirable and the dia primitives will be modified slightly for the next release.
-
-August 25, 2009  1.0.79
-added the Schmid data set which includes the original Schmid-Leiman correlation matrix as well as data from Chen, West, and Sousa (2006).
-modified geometric.mean and harmonic.mean to allow for missing data.
-Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly.
-
-July 28, 2009  1.0.78  
-Corrected bug to ICLUST introduced in version 74 that can, in some conditions, produce negative betas. 
-Modified factor.stats to allow for statistics even if the matrix is very singular (i.e., N var >> n.obs).
-
-July 24, 2009  1.0.77
-Fixed an error in printing communalities for rotated factor solutions reported by Tamaki Hattori. Also resolved a problem of extra lines appearing in error.bars.  Minor revision to polar. 
-
-July 4, 2009  1.0.76
-Finally resolved the problem of not passing the CRAN tests for Mac (even though developed on a Mac, the test package assumes no other packages).
-
-July 1, 2009  1.0.75
-Reinstituted reporting communalities and uniquenesses for principal components and for factor analysis.  This feature had been dropped sometime in the past and reported missing by Ista Zahn.
-
-Added two new data sets: Harman.Holzinger and Harman.Burt.  The former is used by Peter Bentler as an example of alternative methods for estimating reliability, the latter is a nice example of what happens if the correlation matrix is singular.  smc estimates are inappropriate in this case and need to be checked.
-
-June 25, 2009  1.0.74
-
-Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test length using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions. (Unfortunately, in doing this, a bug was introduced that could produce negative betas.  Fixed in Version 78).
-
-Modified the fa function to include maximimum likelihood factor analysis.
-
-
-June 8, 2009  1.0.73
-Added gls fit option to fa
-
-Added mat.sort to sort correlation matrices by factor loadings.  
-Revised the overview vignette to make more readable.
-Fixed (I hope) the documentation error that has been preventing being loaded onto CRAN for Mac.
-
-June 1, 1.0.72
-Minor fix to print.psych.omega to correct printing error introduced in .71
-Added factor stats to omega
-
-June 1,  1.0.71
-Released to CRAN
-
-Combined principal axis, unweighted least squares (minres) and weighted least squares into one combined function (fa). Eventually the three other functions (factor.pa,factor.wls, and factor.minres) will be phased out. Added more rotation and transformation options (basically by making calls to the GPArotation package).
-
-factor.stats now reports the factor weights matrix for factor scores.
-
-A new factor analysis function factor.wls will give weighted least squares (wls).
-
-Omega will now give an estimate for  1  factor and a message about how there are alternatives for 2 factors.
-
-Fixed a bug in print.psych.omega so that it will now report the item numbers correctly when sorting.
-
-Fixed call in phi.demo so that it checks if the polycor package is installed.  This was causing problems in the Mac version on CRAN.
-
-
-May 25, 2009  1.0.70
-Added factor.stats function to report a variety of statistics for factors or components.  In particular, added measures of factorial adequacy.  factor.stats is now called by the factor.pa, factor.minres, and principal, so it is easier to adjust all three of these functions.
-
-Added a new rotation option to target.rot -- if keys are not specified, it will rotate to a cluster solution.
-
-minor tweak to sim.hierarchical to make it consistent with the Jensen and Weng paper
-added to omega to calculate omege_infinity
-corrected bug in principal for case of singular matrices (reported by Gudmundur Arnkelsson) 
-corrected bug in print.psych so that it now sorts by factor loadings correctly 
-
-
-April, 2009  1.0.69
-added cor.plot to graphically display correlation structures
-modified cosinor to do regression as well as optimization for fits
-minor correction to ICLUST to catch non-invertible matrices
-
-April, 2009   1.0.68
-Added method="minres" to do minimal residual (ULS) factor analysis to the factor.pa function. 
-Added the target.rot function to do targeted rotation.
-Added the sim.anova function to simulate 3 way ANOVA or linear models.
-Minor cleanups of code in other functions
-
-
-March, 2009:  1.0.67
-Have included the vignettes in the package
-Serious modifications to mat.regress to allow for raw data and covariances to be used.
-Added corrections for item overlap to use estimated communalities of items to alpha, cluster.cor, etc.
-
-Added estimates of G6+ reliabililty to alpha, score.items
-
-
-February, 2009: 1.0.66
-Introduced two package vignettes (overview and psych_for_sem)
-minor modification to ICLUST with respect to labeling
-addition to factor.congruence to allow for comparing omega solutions with factor solutions
-modified describe to allow for descriptions of categorical variables.
-
-
-February 7, 2009: 1.0.65 released to CRAN
-
-February 2009:  1.0.64
-
-Added the function alpha to find Cronbach's alpha and Guttman's Lambda 6 for total scales as well as with single item deleted.
-
-Minor enhancements to the structure.graph and structure.sem functions. Further refinements to the psych_for_sem.pdf tutorial.  
-
-January 2009: 1-0.63
-
-Added structure.graph and structure.sem to create graphical output and pre-sem commands for sem.
-Modified omega.graph to return sem commands for running the sem function from John Fox.
-
-Added Promax to report factor intercorrelations for promax rotations.
-
-bug fix in VSS and omega to allow for promax rotations.
-
-correction to winsor so that it does not sort the vectors of the input data.frame.
-
-bug fix in principal (for problem of oblique rotations)
-
-continued improvements in the print.psych and summary.psych functions 
-cleaned up sim.congeneric to reduce the amount of output (now handled through print.psych)
-
-added super.matrix function (to combine two matrices -- useful for constructing keys and for doing examples in structure.graph)
-Improvements to structure graph.
-
-December 2008: 1-0.62
-added the structure.graph function
-added circadian functions 
-renamed some functions to make the index order easier to follow.
-
-September 2008: 1-0.58
-
-Introduced the guttman function to estimate the 6 Guttman (1945) estimates (as well as a few others).
-
-August 2008: 1.-0.54
-
-Added print.psych and summary.psych generic functions to clean up the output of many of the functions. 
-
-
-October-November, 2007
-
-Introduced several new functions:
-
-headtail   (combines head and tail functions to produce the first N and last M rows of a matrix or dataframe)
-
-error.bars and 
-error.bars.by     plot means with error bars by a grouping variable
-
-omega       revised to allow for negatively keyed items.  Detects items that should be reversed.
-
-June-September, 2007
-
-score.multiple.choice   provides scores and item statistics for multiple choice items.
-
-circ.sim              modified to be more general item simulations
-circ.simulation
-item.sim
-
-polar                converts two dimensional factor loadings to polar coordinates.
-
-
+Software and data sets to do classic and modern psychometrics, and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory.The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. Additional functions are added sporadically.History (Also see the Changes file)Changes in version 1.0.82  (2009-10-26)	  o	Improved the output for mat.regress to allow print() and summary().  o	Corrected bug to fa for case of oblique and negatively correlated factors (reported by Erich Studerus).  o	Corrected problem in describe.by to properly identify the matrix output   o	Minor improvements to the dia.x functions   o	Fixed the formatting of the news file to follow the appropriate format  o	Removed the old supplementary  manual from the docs folder to make for a cleaner installationChanges in version  1.0.81 (2009-10-04)   o	Improved the documentation for the dia.X functions and made some of the calls simpler.  Changes in version  1.0.80 (2009-09-30)   o	Added the ability to draw "diagrams" to replace the functions that required Rgraphviz.  These are path diagrams with rectangles for observed variables and ellipses for latent variables.  A set of graphic functions for drawing diagrams includes dia.ellipse, dia.rect, dia.arrow, dia.curve and dia.self.  This allows the  function omega and ICLUST to draw structural diagrams without using Rgraphviz.  o	The documentation for these new functions is a bit less than desirable and the dia primitives will be modified slightly for the next release.Changes in version  1.0.79 (2009-08-25)  o	added the Schmid data set which includes the original Schmid-Leiman correlation matrix as well as data from Chen, West, and Sousa (2006).  o	modified geometric.mean and harmonic.mean to allow for missing data.  o	Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly.Changes in version  1.0.78  (2009-07-28)  o	Corrected bug to ICLUST introduced in version 74 that can, in some conditions, produce negative betas.   o	Modified factor.stats to allow for statistics even if the matrix is very singular (i.e., N var >> n.obs).Changes in version  1.0.77 (2009-7-24)  o	Fixed an error in printing communalities for rotated factor solutions reported by Tamaki Hattori. Also resolved a problem of extra lines appearing in error.bars.  Minor revision to polar. Changes in version  1.0.76 (2009-7-4)  o	Finally resolved the problem of not passing the CRAN tests for Mac (even though developed on a Mac, the test package assumes no other packages).Changes in version  1.0.75 (2009-07-01)  o	Reinstituted reporting communalities and uniquenesses for principal components and for factor analysis.  This feature had been dropped sometime in the past and reported missing by Ista Zahn.  o	Added two new data sets: Harman.Holzinger and Harman.Burt.  The former is used by Peter Bentler as an example of alternative methods for estimating   o	  o	reliability, the latter is a nice example of what happens if the correlation matrix is singular.  smc estimates are inappropriate in this case and need to be checked.Changes in version  1.0.74 (2009-06-25)   o	Added a weighting option to ICLUST.  Weighted beta finds the average between cluster correlation and takes the ratio of the  n ^2 * average between cluster correlation to the total variance of the pooled clusters as a measure of the general factor.  That is, Unweighted beta calculates beta based upon the correlation between  two clusters, corrected for test length using the Spearman-Brown prophecy formala, while weighted beta finds the average interitem correlation between the items  within two clusters and then finds beta from this.  That is, for two clusters A and B of size N and M with between average correlation rb, weighted beta is (N+M)^2 rb/(Va +Vb + 2Cab).  Raw (unweighted) beta is 2rab/(1+rab) where rab = Cab/sqrt(VaVb).   Weighted beta seems a more appropriate estimate and is now the default.  Unweighted beta is still available for consistency with prior versions. (Unfortunately, in doing this, a bug was introduced that could produce negative betas.  Fixed in Version 78).  o	Modified the fa function to include maximimum likelihood factor analysis.Changes in version  1.0.73 (2009-06-08)   o	Added gls fit option to fa  o	Added mat.sort to sort correlation matrices by factor loadings.    o	Revised the overview vignette to make more readable.  o	Fixed (I hope) the documentation error that has been preventing being loaded onto CRAN for Mac.Changes in version  1.0.72 (2009-06-02)  o	Minor fix to print.psych.omega to correct printing error introduced in .71  o	Added factor stats to omegaChanges in version  1.0.71 (2009-06-01) June 1,  1.0.71  o	Released to CRAN  o	Combined principal axis, unweighted least squares (minres) and weighted least squares into one combined function (fa). Eventually the three other functions (factor.pa,factor.wls, and factor.minres) will be phased out. Added more rotation and transformation options (basically by making calls to the GPArotation package).  o	factor.stats now reports the factor weights matrix for factor scores.  o	A new factor analysis function factor.wls will give weighted least squares (wls).  o	Omega will now give an estimate for  1  factor and a message about how there are alternatives for 2 factors.  o	Fixed a bug in print.psych.omega so that it will now report the item numbers correctly when sorting.  o	Fixed call in phi.demo so that it checks if the polycor package is installed.  This was causing problems in the Mac version on CRAN.Changes in version  1.0.70 (2009-05-25)   o	Added factor.stats function to report a variety of statistics for factors or components.  In particular, added measures of factorial adequacy.  factor.stats is now called by the factor.pa, factor.minres, and principal, so it is easier to adjust all three of these functions.  o	Added a new rotation option to target.rot -- if keys are not specified, it will rotate to a cluster solution.  o	minor tweak to sim.hierarchical to make it consistent with the Jensen and Weng paper  o	added to omega to calculate omege_infinity  o	corrected bug in principal for case of singular matrices (reported by Gudmundur Arnkelsson)   o	corrected bug in print.psych so that it now sorts by factor loadings correctly Changes in version  1.0.69:  2009-04-25    o	added cor.plot to graphically display correlation structures  o	modified cosinor to do regression as well as optimization for fits  o	minor correction to ICLUST to catch non-invertible matricesChanges in version  1.0.68:  2009-04-15   o	Added method="minres" to do minimal residual (ULS) factor analysis to the factor.pa function.   o	Added the target.rot function to do targeted rotation.  o	Added the sim.anova function to simulate 3 way ANOVA or linear models.  o	Minor cleanups of code in other functionsChanges in version  1.0.67:  2009-03-15  o	Have included the vignettes in the package  o	Serious modifications to mat.regress to allow for raw data and covariances to be used.  o	Added corrections for item overlap to use estimated communalities of items to alpha, cluster.cor, etc.  o	Added estimates of G6+  (Modified Guttman 6) reliabililty to alpha, score.itemsChanges in version  1.0.66:  2009-02-15  o	Introduced two package vignettes (overview and psych_for_sem)  o	minor modification to ICLUST with respect to labeling  o	addition to factor.congruence to allow for comparing omega solutions with factor solutions  o	modified describe to allow for descriptions of categorical variables.Changes in version  1.0.65:  2009-02-07Changes in version  1.0.64:  2009-02-01   o	Added the function alpha to find Cronbach's alpha and Guttman's Lambda 6 for total scales as well as with single item deleted.  o	Minor enhancements to the structure.graph and structure.sem functions. Further refinements to the psych_for_sem.pdf tutorial.  Changes in version  1.0.63:  2009-01-15  o	Added structure.graph and structure.sem to create graphical output and pre-sem commands for sem.  o	Modified omega.graph to return sem commands for running the sem function from John Fox.  o	Added Promax to report factor intercorrelations for promax rotations.  o	bug fix in VSS and omega to allow for promax rotations.  o	correction to winsor so that it does not sort the vectors of the input data.frame.  o	bug fix in principal (for problem of oblique rotations)  o	continued improvements in the print.psych and summary.psych functions   o	cleaned up sim.congeneric to reduce the amount of output (now handled through print.psych)  o	added super.matrix function (to combine two matrices -- useful for constructing keys and for doing examples in structure.graph)  o	Improvements to structure graph.Changes in version  1.0.62:  2008-12-31  o	added the structure.graph function  o	added circadian functions   o	renamed some functions to make the index order easier to follow.Changes in version  1.0.58:  2009-09-15  o	Introduced the guttman function to estimate the 6 Guttman (1945) estimates (as well as a few others).Changes in version  1.0.54:  2009-08-15  o	Added print.psych and summary.psych generic functions to clean up the output of many of the functions. Changes in version  1.0.50:  2007-11-15  o	Introduced several new functions:  o	headtail   (combines head and tail functions to produce the first N and last M rows of a matrix or dataframe)  o	error.bars and   o	error.bars.by     plot means with error bars by a grouping variable  o	omega       revised to allow for negatively keyed items.  Detects items that should be reversed.Changes in version  1.0.40:  2007-08-15  o	score.multiple.choice   provides scores and item statistics for multiple choice items.  o	circ.sim              modified to be more general item simulations  o	circ.simulation  o	item.sim  o	polar                converts two dimensional factor loadings to polar coordinates.

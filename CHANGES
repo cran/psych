@@ -6,150 +6,141 @@ modify principal so that scoring of components can yield unstandardized scores
 modify Rd for pairs.panels to cross link to pairs2
 add some features from pairs2 (group coloring, x, y option)
 
-Version 1.0.81  October, 2009 
-Improved the documentation for the dia.X functions and made some of the calls simpler.  
-
-Version 1.0.80  September 21, 2009
-Replaced fa.graph, omega.graph, ICLUST.rgraph and structure.graph (which required Rgraphviz) with fa.diagram, omega.diagram, iclust.diagram and structure.diagram (which do not)
-
-added fa.sort to sort factor analysis output (used in fa.diagram as well).
-
-Version 1.0.79  September 5, 2009
-modified harmonic.mean and geometric.mean to accept (by default) na.rm=TRUE
-Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly
-corrected fa to get better gls and wls fits 
-added lambda6 reliability estimates to cluster.cor
-added winsor.var, winsor.sd, and winsor.mean (to supplement winsor.means) per suggestion of Jim Lemon
-modified error.bars and error.bars.by to better treat missing and completely missing data (suggestion by Junqian Gordon Xu).
-
-Version 1.0.78   July 29, 2009
-Corrected bug to ICLUST introduced in version 74 (for sign of beta estimate)
-added a fix to factor.stats so that it can handle seriously deficient matrices.
-added a fix to principal to check case when sum of loadings is exactly 0 and thus the sign of the sum is not defined. This led to a problem in estimating communalities. (problem reported by Mark Leeds)
-
-Version 1.0.77   July 25, 2009
-Corrected the estimation of communalities  and eigen values in print.psych.fa  for the case of oblique rotations.  (The problem with communalities was reported by Tamaki Hattori).
-Corrected a bug in error.bars reported by Junqian Gordon Xu.  (Was drawing multiple bars in case of missing data.)
-
-Fixed a problem with weird multiple R in Omega
-
-Version 1.0.76    July 4, 2009
-fixed incorrect p value for negative correlations in r.test
-Yet another check for polycor to get through the Mac test on CRAN.
-
-Version 1.0.75  July 1, 2009
-Report (once again) communalities and uniquenesses for principal components and factors (reported missing by Ista Zahn).
-Added two more data sets for examples for factor analysis   -- data(Harman).
-Added yet another check to see if polycor is available. The Mac version keeps failing because polycor is NOT available for the test suite. 
-Although those functions that require polycor fail gracefully if it is not there, the examples do not.
-
-Version 1.0.74  June 25, 2009
-Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.  (and introduced a bug that was detected and fixed in version 78) 
-
-Modified the examples for ICLUST to show how to get graphics output with using Rgraphviz.
-Added fm="ml" option to the fa (factor analysis) function to do maximum likelihood factoring
+modify the dia.functions so that dia.arrow can be dotted (to show negative values)
 
 
-Version 1.0.73  June 8, 2009
-Added General Least Squares (gls) to fitting in fa
+clean up structure.diagram for prettier output of y variables
+Changes in version 1.0.83  (2009-11-01)
 
-Revised psych_overview vignette.
 
-Added mat.sort to sort correlation matrices to make pretty pictures.
+Changes in version 1.0.82  (2009-10-26)
+  o	Fixed a bug in fa  that produced incorrect estimates for rotated factors if some of them were negatively correlated. (discovered by Erich Studerus)
+  o	Modified alpha, ICLUST and guttman to handle the case of just two variables. (A problem pointed out by Erich Studerus.)
+  o	alpha will give appropriate statistics, ICLUST and guttman will complain that their statistics are not really meaningful for the case of two variables.  
+  o	Identified and fixed a problem with matrix output for multiple groups in describe.by
+  o	Improved the print and summary for mat.regress
 
-Starting to revise the estimate for factor indeterminancy to take into account the other factors.  This is clearly exploratory at this point and is not yet part of the package.
+Changes in version  1.0.81 (2009-10-04) 
+  o	Improved the documentation for the dia.X functions and made some of the calls simpler.  
 
-Added a check in psych.demo() to check if the polycor package is available.  This gets around a problem in the Mac version at CRAN (I hope.)
+Changes in version  1.0.80 (2009-09-30) 
+  o	Replaced fa.graph, omega.graph, ICLUST.rgraph and structure.graph (which required Rgraphviz) with fa.diagram, omega.diagram, iclust.diagram and structure.diagram (which do not)
+  o	added fa.sort to sort factor analysis output (used in fa.diagram as well).
 
-Fixed a bug in fa(fm="wls") for 1 factor problems (reported by Ben Schalet)
+Changes in version  1.0.79 (2009-08-25)
+  o	modified harmonic.mean and geometric.mean to accept (by default) na.rm=TRUE
+  o	Cleaned up describe.by so that it can handle matrix output of multiple grouping variables and then print correctly
+  o	corrected fa to get better gls and wls fits 
+  o	added lambda6 reliability estimates to cluster.cor
+  o	added winsor.var, winsor.sd, and winsor.mean (to supplement winsor.means) per suggestion of Jim Lemon
+  o	modified error.bars and error.bars.by to better treat missing and completely missing data (suggestion by Junqian Gordon Xu).
 
-Version 1.0.72 June 1, 2009
-Fixed a bug introduced earlier today when printing unsorted omega general factor loadings.
-Added factor adequacy measures to omega
+Changes in version  1.0.78  (2009-07-28)
+  o	Corrected bug to ICLUST introduced in version 74 (for sign of beta estimate)
+  o	added a fix to factor.stats so that it can handle seriously deficient matrices.
+  o	added a fix to principal to check case when sum of loadings is exactly 0 and thus the sign of the sum is not defined. This led to a problem in estimating communalities. (problem reported by Mark Leeds)
 
-Version 1.0.71  June 1, 2009
-Reports omega for 1  factor problem
-Revised print.psych to be a number of subroutines for easier maintenance.
-Added function fa to combine factor.pa, factor.wls, factor.minres into one function.
-Added rotation more rotation options to fa.
-Fixed bug in print.psych.omega so that item numbers are correctly identified when sorting.
+Changes in version  1.0.77 (2009-7-24)
+  o	Corrected the estimation of communalities  and eigen values in print.psych.fa  for the case of oblique rotations.  (The problem with communalities was reported by Tamaki Hattori).
+  o	Corrected a bug in error.bars reported by Junqian Gordon Xu.  (Was drawing multiple bars in case of missing data.)
+  o	Fixed a problem with weird multiple R in Omega
 
-Version 1.0.70 May 25, 2009
-Added factor.stats function to clarify the various statistics for factor analysis using the factor.pa, factor.minres, and principal functions.
-Added "cluster" as a rotation option in target.rot. 
-Added omega_infinity to the omega function
-adjustment to sim.hierarchical to make consistent with Jensen and Weng
+Changes in version  1.0.76 (2009-7-4)
+  o	fixed incorrect p value for negative correlations in r.test
+  o	Yet another check for polycor to get through the Mac test on CRAN.
+
+Changes in version  1.0.75 (2009-07-01)
+  o	Report (once again) communalities and uniquenesses for principal components and factors (reported missing by Ista Zahn).
+  o	Added two more data sets for examples for factor analysis   -- data(Harman).
+  o	Added yet another check to see if polycor is available. The Mac version keeps failing because polycor is NOT available for the test suite. 
+  o	Although those functions that require polycor fail gracefully if it is not there, the examples do not.
+
+Changes in version  1.0.74 (2009-06-25) 
+  o	Revised ICLUST to find weighted beta.  This is a better estimated of the general factor.  (and introduced a bug that was detected and fixed in version 78) 
+  o	Modified the examples for ICLUST to show how to get graphics output with using Rgraphviz.
+  o	Added fm="ml" option to the fa (factor analysis) function to do maximum likelihood factoring
+
+
+Changes in version  1.0.73 (2009-06-08) 
+  o	Added General Least Squares (gls) to fitting in fa
+  o	Revised psych_overview vignette.
+  o	Added mat.sort to sort correlation matrices to make pretty pictures.
+  o	Starting to revise the estimate for factor indeterminancy to take into account the other factors.  This is clearly exploratory at this point and is not yet part of the package.
+  o	Added a check in psych.demo() to check if the polycor package is available.  This gets around a problem in the Mac version at CRAN (I hope.)
+  o	Fixed a bug in fa(fm="wls") for 1 factor problems (reported by Ben Schalet)
+
+Changes in version  1.0.72 (2009-06-02)
+  o	Fixed a bug introduced earlier today when printing unsorted omega general factor loadings.
+  o	Added factor adequacy measures to omega
+
+Changes in version  1.0.71 (2009-06-01)
+  o	Reports omega for 1  factor problem
+  o	Revised print.psych to be a number of subroutines for easier maintenance.
+  o	Added function fa to combine factor.pa, factor.wls, factor.minres into one function.
+  o	Added rotation more rotation options to fa.
+  o	Fixed bug in print.psych.omega so that item numbers are correctly identified when sorting.
+
+Changes in version  1.0.70 (2009-05-25)
+  o	Added factor.stats function to clarify the various statistics for factor analysis using the factor.pa, factor.minres, and principal functions.
+  o	Added "cluster" as a rotation option in target.rot. 
+  o	Added omega_infinity to the omega function
+  o	adjustment to sim.hierarchical to make consistent with Jensen and Weng
 corrected bug in principal for case of singular matrices (reported by Gudmundur Arnkelsson) 
-corrected bug in print.psych so that it now correctly sorts by loadings if desired
+  o	corrected bug in print.psych so that it now correctly sorts by loadings if desired
 
 Version 1.0.69 April 25
-Modified cosinor to allow for regression as well as optimization approaches
+  o	Modified cosinor to allow for regression as well as optimization approaches
 
 Version 1.0.68  April 15, 2009
-Added factor.minres (basically just factor.pa with a new method) to do minimum residual exploratory factor analysis. 
-Added the Holzinger.9 nine cognitive variable data set from the LISREL examples.
-Added the msq (motivational state questionnaire) data set of 74 mood items and 3800 subjects.
-
-Added sim.anova to simulate ANOVA and lm experimental designs.
-
-Added target.rot to do targeted factor transformations (basically a Procrustian transformation) to an arbitrary target matrix.
+  o	Added factor.minres (basically just factor.pa with a new method) to do minimum residual exploratory factor analysis. 
+  o	Added the Holzinger.9 nine cognitive variable data set from the LISREL examples.
+  o	Added the msq (motivational state questionnaire) data set of 74 mood items and 3800 subjects.
+  o	Added sim.anova to simulate ANOVA and lm experimental designs.
+  o	Added target.rot to do targeted factor transformations (basically a Procrustian transformation) to an arbitrary target matrix.
 
 
 Version 1.0.67  March 24, 2009
-Have included vignettes in the package
-Rewrote mat.regress to allow for raw data/covariances as input
-Seriously simplified the mat.regress code
-
-Added reliability G6+ to alpha, score.items, cluster.Cor
-Changed the correction for item overlap to use smc and G6+ theory
-
-Added corr.test to give correlations, sample sizes, and probability values for data.frames and matrix input.
-
-Added bar graph output to the error.bars function.  (Although these "dynamite plots" should be discouraged.)
-
-Revised count.pairwise to be much cleaner code. (Replaced 20 lines with 1).
+  o	Have included vignettes in the package
+  o	Rewrote mat.regress to allow for raw data/covariances as input
+  o	Seriously simplified the mat.regress code
+  o	Added reliability G6+ to alpha, score.items, cluster.Cor
+  o	Changed the correction for item overlap to use smc and G6+ theory
+  o	Added corr.test to give correlations, sample sizes, and probability values for data.frames and matrix input.
+  o	Added bar graph output to the error.bars function.  (Although these "dynamite plots" should be discouraged.)
+  o	Revised count.pairwise to be much cleaner code. (Replaced 20 lines with 1).
 
 Version 1.0.66   February 12, 2009
-Having finally learned how to write vignettes, have started to write them.
-Modififed ICLUST to default to show labels on graphics
-Modified factor.congruence to allow comparisons for omega solutions
-Modified error bars to allow for raw data input.
+  o	Having finally learned how to write vignettes, have started to write them.
+  o	Modififed ICLUST to default to show labels on graphics
+  o	Modified factor.congruence to allow comparisons for omega solutions
+  o	Modified error bars to allow for raw data input.
 
 Version 1.0.65  February 7, 2009
-Released to CRAN (basically 1.0.64 with two errors in the Rd.files fixed).
+  o	Released to CRAN (basically 1.0.64 with two errors in the Rd.files fixed).
 Version 1.0.64  February 2, 2009
-
-Added the data set Thurstone to the bifactor data set.
-Minor corrections to omega, structure.graph and structure.sem functions to allow for ease of use as a front end to sem.
+  o	Added the data set Thurstone to the bifactor data set.
+  o	Minor corrections to omega, structure.graph and structure.sem functions to allow for ease of use as a front end to sem.
 
 Version 1.0.63  January 22, 2009
 
-Added a tutorial for using psych as a front end to sem
-
-Added structure.graph and structure.sem to create sem commands to represent specified structures.
-Added structure.list and phi.list to facilitate making structural models.
-
-Added Promax to ease the finding of promax interfactor correlations.
-As a consequence, corrected the use of promax in VSS and omega so it actually works.
-
-Added structure.graph to draw sem/regression figures. I am still having a problem with making the X latent variables line up if they are correlated.
-
-correction to principal for case of rotation not being defined
-
-correction to winsor so that it does not sort the returned vector (this would cause problems in the case of winsorizing matrices or data.frames.  It was not a problem for winsor.mean
-
-reorganization of print.psych function to make for a clearer structure
+  o	Added a tutorial for using psych as a front end to sem
+  o	Added structure.graph and structure.sem to create sem commands to represent specified structures.
+  o	Added structure.list and phi.list to facilitate making structural models.
+  o	Added Promax to ease the finding of promax interfactor correlations.
+  o	As a consequence, corrected the use of promax in VSS and omega so it actually works.
+  o	Added structure.graph to draw sem/regression figures. I am still having a problem with making the X latent variables line up if they are correlated.
+  o	correction to principal for case of rotation not being defined
+  o	correction to winsor so that it does not sort the returned vector (this would cause problems in the case of winsorizing matrices or data.frames.  It was not a problem for winsor.mean
+  o	reorganization of print.psych function to make for a clearer structure
 
 Version 1.0.62    January 2009
-(version number jump because of problems getting through windows tests on CRAN)
-
-added confidence intervals to ICC
-renamed a number of functions to make it easier
-e.g., the sim.xxx family of simulations
+  o	(version number jump because of problems getting through windows tests on CRAN)
+  o	added confidence intervals to ICC
+  o	renamed a number of functions to make it easier
+  o	e.g., the sim.xxx family of simulations
           cortest.xxx family of tests of correlations
-
-added super.matrix function
-added data sets for bifactor problems
+  o	added super.matrix function
+  o	added data sets for bifactor problems
 
 Change log started January, 2009
 

@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- mat.reg <-  FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- mat.reg <- parallel <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -26,6 +26,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "ICC") ICC <- TRUE
    if(class(x)[2] == "stats") stats <- TRUE
    if(class(x)[2] == "mat.regress") mat.reg <- TRUE
+   if(class(x)[2] == "parallel") parallel <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -223,12 +224,37 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             cat("\nF \n") 
             print(round(x$F,digits))
              cat("\nProbability of F < \n") 
-           print(signif(x$probF,digits))
+           print(signif(x$probF,digits+1))
             cat("\n degrees of freedom of regression \n") 
             print(x$df)
            }
 
    }
+ if(parallel) { cat("Call: ")
+              print(x$Call) 
+              if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
+                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim$mean,pc= x$pc.values,pc.sim =x$pc.sim$mean)
+fa.test <- which(!(x$fa.values > x$fa.sim$mean))[1]-1
+pc.test <- which(!(x$pc.values > x$pc.sim$mean))[1] -1
+cat("Parallel analysis suggests that ")
+cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
+                  cat("\n Eigen Values of \n")
+                  
+                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")
+                  print(round(parallel.df[1:max(fa.test,pc.test),],digits))} else {
+              if(!is.null(x$fa.values)) {cat("\n eigen values of factors\n")
+              print(round(x$fa.values,digits))}
+               if(!is.null(x$fa.sim)){cat("\n eigen values of simulated factors\n") 
+               print(round(x$fa.sim$mean,digits))}
+              if(!is.null(x$pc.values)){cat("\n eigen values of components \n")
+              print(round(x$pc.values,digits))}
+             
+              if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
+              print(round(x$pc.sim$mean,digits))}
+              
+              }
+         }
+  
   
   }     #end of the not list condition
   

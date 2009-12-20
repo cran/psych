@@ -18,11 +18,12 @@ function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
   
-  model <-  f %*% Phi %*% t(Phi) %*%  t(f) #the model correlation matrix for oblique factors
+if(!isSymmetric(Phi)) {  model <-  f %*% Phi %*% t(Phi) %*%  t(f)} else { 
+                          model <-   f %*% Phi  %*%  t(f)} #the model correlation matrix for oblique factors
 
   diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
-  colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
+  if(is.null(colnames(model))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")}
   if(n>0) {
     mu <- rep(0,nvar)
   	data <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)

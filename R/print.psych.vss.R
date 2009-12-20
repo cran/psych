@@ -12,7 +12,7 @@ function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...)  {
   vss.max <- round(max(x$cfit.2) ,digits) 
  cat(vss.max," with " ,which.max(x$cfit.2), " factors\n") 
  cat("\nThe Velicer MAP criterion achieves a minimum of ")
- vss.map <- round(max(x$map) ,digits) 
+ vss.map <- round(min(x$map) ,digits) 
  cat(vss.map," with " ,which.min(x$map), " factors\n ") 
   cat("\nVelicer MAP\n")
       print(round(x$map,digits))

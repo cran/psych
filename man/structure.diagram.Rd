@@ -1,24 +1,25 @@
-\name{structure.graph}
+\name{structure.diagram}
+\alias{structure.diagram}
 \alias{structure.graph}
 \alias{structure.sem}
-\alias{structure.diagram}
+
 
 \title{Draw a structural equation model specified by two measurement models and a structural model}
-\description{Graphic presentations of structural equation models are a very useful way to conceptualize sem and confirmatory factor models. Given a measurement model on x (xmodel) and on y (ymodel) as well as a path model connecting x and y (phi), draw the graph.  If ymodel is not specified, just draw the measurement model (xmodel + phi).
+\description{Graphic presentations of structural equation models are a very useful way to conceptualize sem and confirmatory factor models. Given a measurement model on x (xmodel) and on y (ymodel) as well as a path model connecting x and y (phi), draw the graph.  If ymodel is not specified, just draw the measurement model (xmodel + phi). If the Rx or Ry matrices are specified, show the correlations between the x variables, or y variables.
 
 Perhaps even more usefully, the function returns a model appropriate for running directly in the \emph{sem package} written by John Fox.
 
-Input can be specified as matrices or the output from factanal, factor.pa, or a rotation package such as \emph{GPArotation}.
+Input can be specified as matrices or the output from  \code{\link{fa}},  \code{\link{factor.pa}}, factanal,  or a rotation package such as \emph{GPArotation}.
 
 For symbolic graphs, the input matrices can be character strings or mixtures of character strings and numeric vectors.
 
-As an option, for those without Rgraphviz installed, structure.sem will just create the sem model and skip the graph.
+As an option, for those without Rgraphviz installed, structure.sem will just create the sem model and skip the graph. (This functionality is now included in structure.diagram.)
 
 structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option. structure.graph will be removed eventually.
 
 }
 \usage{
-structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,digits=1,e.size=.1,main="Structural model", ...)
+structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,main="Structural model", ...)
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
 }
@@ -27,12 +28,15 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
   \item{fx}{a factor model on the x variables. }
   \item{Phi}{A matrix of directed relationships.  Lower diagonal values are drawn.  If the upper diagonal values match the lower diagonal, two headed arrows are drawn.  For a single, directed path, just the value may be specified. }
   \item{fy}{a factor model on the y variables (can be empty) }
+  \item{Rx}{The correlation matrix among the x variables}
+  \item{Ry}{The correlation matrix among the y variables}
   \item{out.file}{name a file to send dot language instructions. }
   \item{labels}{variable labels if not specified as colnames for the matrices}
   \item{cut}{Draw paths for values > cut }
   \item{errors}{draw an error term for observerd variables }
   \item{simple}{Just draw one path per x or y variable }
   \item{regression}{Draw a regression diagram (observed variables cause Y)}
+  \item{lr}{Direction of diagram is from left to right (lr=TRUE, default) or from bottom to top (lr=FALSE) }
   \item{e.size}{size of the ellipses in structure.diagram}
   \item{main}{main title of diagram}
   \item{size}{page size of graphic }
@@ -51,10 +55,21 @@ All three function return a matrix of commands suitable for using in the sem pac
 
 The structure.graph output can be directed to an output file for post processing using the dot graphic language but requires that Rgraphviz is installed. 
 
+The figure is organized to show the appropriate paths between:
 
+The correlations between the X variables (if Rx is specified) \cr
+The X variables and their latent factors  (if fx is specified) \cr
+The latent X and the latent Y (if Phi is specified)  \cr
+The latent Y and the observed Y (if fy is specified) \cr
+The correlations between the Y variables (if Ry is specified)\cr
+
+A confirmatory factor model would specify just fx and Phi, a structural model would include fx, Phi, and fy.  The raw correlations could be shown by just including Rx and Ry.
+
+
+Other diagram functions include \code{\link{fa.diagram}}, \code{link{omega.diagram}}.  All of these functions use the various dia functions such as \code{\link{dia.rect}}, \code{\link{dia.ellipse}}, \code{\link{dia.arrow}}, \code{\link{dia.curve}}, \code{\link{dia.curved.arrow}}, and \code{\link{dia.shape}}.
 }
 \value{
- \item{sem}{a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.}
+ \item{sem}{(invisible) a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.  }
  \item{dotfile}{If out.file is specified, a dot language file suitable for using in a dot graphics program such as graphviz or Omnigraffle.}
  
  A graphic structural diagram in the graphics window
@@ -93,6 +108,7 @@ rownames(Y3) <- c("y1","y2","y3")
 phi21 <- matrix(c(1,0,"r1",0,1,"r2",0,0,1),ncol=3)
 colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 f4 <- structure.diagram(X6,phi21,Y3)
+
 
 
 # and finally, a regression model

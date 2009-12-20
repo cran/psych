@@ -37,16 +37,15 @@ require(MASS)
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
     f <- super.matrix(fx,fy)} }
   
-            
-  
   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
   if(!is.null(Phi)) {
+  
   model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
 } else { model <- f%*% t(f)}
 diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
-  if(is.null(rownames(fx))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} else {colnames(model) <- rownames(model) <- rownames(fx)}
+  if(is.null(rownames(model))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} #else {colnames(model) <- rownames(model) <- rownames(fx)}
   if(n>0) {
     mu <- rep(0,nvar)
   	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
@@ -61,7 +60,7 @@ diag(model)<- 1                       # put ones along the diagonal
  
  
 "sim" <-
-function (fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=FALSE) {
+function (fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=TRUE) {
  cl <- match.call()
 require(MASS)
 #set up some default values 
@@ -114,3 +113,21 @@ diag(model)<- 1                       # put ones along the diagonal
 	  
 	results
 	}
+	
+
+#simulate major and minor factors
+"sim.minor" <-
+function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = NULL) {
+if(is.null(fbig)) {loads <- c(.8,.6) 
+loads <- sample(loads,nvar/nfact,replace=TRUE)} else {loads <- fbig}
+fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)
+
+if(is.null(fsmall))  {fsmall <- c(-.2,rep(0,nvar/8),.2) }
+     fs <- matrix(sample(fsmall,nvar*nvar/2,replace=TRUE),ncol=nvar/2) 
+fload <- cbind(fx,fs)
+
+results <- sim(fload,n=n)
+         results$fload <- fload
+ class(results) <- c("psych", "sim")
+ return(results)
+}

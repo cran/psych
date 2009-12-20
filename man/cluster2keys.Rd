@@ -3,6 +3,8 @@
 
 \title{Convert a cluster vector (from e.g., kmeans) to a keys matrix suitable for scoring item clusters. }
 \description{The output of the kmeans clustering function produces a vector of cluster membership.  The \code{\link{score.items}} and \code{\link{cluster.cor}} functions require a matrix of keys.  cluster2keys does this.
+
+May also be used to take the output of an \code{\link{ICLUST}} analysis and find a keys matrix.  (By doing a call to the \code{\link{factor2cluster}} function.
 }
 \usage{
 cluster2keys(c)
@@ -20,7 +22,7 @@ cluster2keys(c)
 
 \author{William Revelle}
 
-\seealso{ \code{\link{cluster.cor}},\code{\link{score.items}}}
+\seealso{ \code{\link{cluster.cor}},\code{\link{score.items}}, \code{\link{factor2cluster}}, \code{\link{make.keys}}}
 \examples{
 test.data <- Harman74.cor$cov
 kc <- kmeans(test.data,4)

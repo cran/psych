@@ -25,9 +25,13 @@ sequences. London: Macmillan.
 previously undiscovered nonlinearity in Galton's family stature regression 
 data. The American Statistician, 57, 190-1922.
 }
+
+\seealso{The other Galton data sets:   \code{\link{heights}}, \code{\link{peas}},\code{\link{cubits}}}
 \examples{
 data(galton)
 describe(galton)
-pairs.panels(galton,lm=TRUE)
+pairs.panels(galton,main="Galton's Parent child heights")   #show the scatter plot and the lowess fit 
+pairs.panels(galton,lm=TRUE,main="Galton's Parent child heights") #but this makes the regression lines look the same
+pairs.panels(galton,lm=TRUE,xlim=c(62,74),ylim=c(62,74),main="Galton's Parent child heights")  #better is to scale them 
 }
 \keyword{datasets}

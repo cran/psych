@@ -1,6 +1,7 @@
 #Created May 24, 2007
 #modifed April 12, 2008 to allow figures from matrices that are not loadings
 #take the output from a factor analysis and graph it using rgraphviz
+#Except for the ability to write a dot file, this has been replaced by fa.diagram to avoid using Rgraphviz (September, 2009)
 "fa.graph" <-
 function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),

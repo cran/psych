@@ -22,10 +22,12 @@ The data were generated from this table.
 
 Galton, Francis (1894) Natural Inheritance (5th Edition), New York: MacMillan). 
 }
+
+\seealso{The other Galton data sets:   \code{\link{heights}}, \code{\link{galton}},\code{\link{cubits}}}
 \examples{
 data(peas)
-pairs.panels(peas,lm=TRUE,xlim=c(14,22),ylim=c(14,22))
+pairs.panels(peas,lm=TRUE,xlim=c(14,22),ylim=c(14,22),main="Galton's Peas")
 describe(peas)
-pairs.panels(peas)
+pairs.panels(peas,main="Galton's Peas")
 }
 \keyword{datasets}

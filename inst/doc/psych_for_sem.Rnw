@@ -112,6 +112,7 @@ round(cong,2)
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+plot.new()
 m1 <- structure.diagram(c("a","b","c","d"))
 @
 \caption{Tau equivalent tests are special cases of congeneric tests.  Tau equivalence assumes a=b=c=d}
@@ -197,6 +198,7 @@ three.fact
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+plot.new()
 three.fact.mod <-structure.diagram(fx)
 @
 \caption{Three uncorrelated factors generated using the sim.structure function and drawn using structure.diagram.}
@@ -227,6 +229,7 @@ The \pfun{structure.list} and \pfun{phi.list} functions allow for creation of fx
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+plot.new()
 corf3.mod <- structure.diagram(fxs,Phis)
 @
 \caption{Three correlated factors with symbolic paths. Created using structure.diagram and structure.list and phi.list for ease of input.}
@@ -245,6 +248,7 @@ f3.p <- Promax(fa(cor.f3$model,3))
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+plot.new()
 mod.f3p <- structure.diagram(f3.p,cut=.2)
 @
 \caption{The empirically fitted structural model.  Paths less than cut (.2 in this case, the default is .3) are not shown.}
@@ -275,6 +279,7 @@ fyx <- structure.list(3,list(Y=c(1,2,3)),"Y")
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+plot.new()
 sg3 <- structure.diagram(fxs,phi,fyx)
 @
 \caption{A symbolic structural model. Three independent latent variables are regressed on a latent Y.}
@@ -294,6 +299,7 @@ fy <- structure.list(3,list(Y=c(1,2,3)))
 Phi <- diag(1,5,5)
 Phi[4,c(1:3)] <- letters[1:3]
 Phi[5,4] <- "r"
+plot.new()
 hi.mod <-structure.diagram(fxh,Phi, fy)
 @
 \caption{A symbolic structural model with a general factor and three group factors. The general factor is regressed on the latent Y variable.}
@@ -477,7 +483,7 @@ The structure being tested may be seen using \pfun{structure.graph}
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-
+plot.new()
 mod.f3p <- structure.diagram(f3.p)
 @
 \caption{A three factor, oblique solution.}

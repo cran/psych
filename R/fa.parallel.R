@@ -1,5 +1,6 @@
 "fa.parallel" <-
-function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE)  { 
+ cl <- match.call()
 	
 	ci <- 1.96
 	arrow.len <- .05
@@ -9,14 +10,19 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,
   	rx <- x
   	if(dim(x)[1] != dim(x)[2]) {warning("You specified the number of subjects, implying a correlation matrix, but do not have a correlation matrix, correlations found ")
   	rx <- cor(x,use="pairwise") }   	 } else {
-
+  	if (nsub==nvariables) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The number of subjects is arbitrarily set to be 100  ") 
+  	rx <- x
+  	nsub = 100
+  	n.obs=100}  else {
   	rx <- cor(x,use="pairwise")
- 	}
+ 	} }
  	
- 	 if (nsub==nvariables) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The data are treated as if you had raw data.  ")}
+ 	 
   				
    valuesx  <- eigen(rx)$values 
-   fa.valuesx  <- factor.pa(rx,warnings=FALSE)$values
+   if(smc) {diag(rx) <- smc(rx)
+   fa.valuesx <- eigen(rx)$values} else {
+   fa.valuesx  <- fa(rx,fm=fm,warnings=FALSE)$values}
  
   temp <- list(samp =list(),samp.fa <- list(),sim=list(),sim.fa=list())
    
@@ -26,18 +32,24 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,
    					values.samp <- eigen(cor(sampledata,use="pairwise"))$values
    					temp[["samp"]][[trials]] <- values.samp
    					if (fa!= "pc") {
-   						temp[["samp.fa"]][[trials]]  <- factor.pa(cor(sampledata,use="pairwise"),SMC="FALSE",warnings=FALSE)$values
+   					 if(smc) {sampler <- cor(sampledata,use="pairwise")
+   					          diag(sampler) <- smc(sampler)
+   					 temp[["samp.fa"]][[trials]] <- eigen(sampler)$values} else {
+   						temp[["samp.fa"]][[trials]]  <- fa(cor(sampledata,use="pairwise"),fm=fm,SMC="FALSE",warnings=FALSE)$values
+          					}
           					}
                   } 
   
    simdata=matrix(rnorm(nsub*nvariables),nrow=nsub,ncol=nvariables)    #make up simulated data
-   temp[["sim"]][[trials]] <- eigen(cor(simdata))$values
+   sim.cor <- cor(simdata)
+   temp[["sim"]][[trials]] <- eigen(sim.cor)$values
     
    if (fa!="pc") {
-   
-   		fa.values.sim <- factor.pa(cor(simdata),SMC="FALSE",warnings=FALSE)$values
+        if(smc) { diag(sim.cor) <- smc(sim.cor)
+   					 temp[["sim.fa"]][[trials]] <- eigen(sim.cor)$values} else 
+   		{fa.values.sim <- fa(sim.cor,fm=fm,SMC="FALSE",warnings=FALSE)$values
    		 temp[["sim.fa"]][[trials]] <- 	fa.values.sim
-}
+}}
    	}
    	
    if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}
@@ -47,8 +59,8 @@ function(x,n.obs=NULL,fa="both",main="Parallel Analysis Scree Plots",ntrials=20,
   
     ymax <- max(valuesx,values.sim$mean)
    
-if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) 
-	points(values.sim$mean,type ="l",lty="dotted",pch=4)
+if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4,col="blue") 
+	points(values.sim$mean,type ="l",lty="dotted",pch=4,col="red")
 	if(error.bars) {
       for (i in 1:dim(values.sim)[1])  
     	{
@@ -57,7 +69,7 @@ if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),x
     	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
     	
 	
-	if(is.null(n.obs)) {points(values.samp$mean,type ="l",lty="dashed",pch=4)
+	if(is.null(n.obs)) {points(values.samp$mean,type ="l",lty="dashed",pch=4,col="red")
 	if(error.bars) {
       for (i in 1:dim(values.sim)[1])  
     	{
@@ -69,9 +81,9 @@ if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),x
 	}
 
 if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
-            plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4) }
+            plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4,col="blue") }
             fa.values.sim <- describe(t(matrix(unlist(temp[["sim.fa"]]),ncol=ntrials)))
-        	points(fa.values.sim$mean,type ="l",lty="dotted",pch=2)
+        	points(fa.values.sim$mean,type ="l",lty="dotted",pch=2,col="red")
         if(error.bars) {
          for (i in 1:dim(values.sim)[1])  
     	{
@@ -81,7 +93,7 @@ if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
     	
         	  
 	if(is.null(n.obs)) {fa.values.samp <- describe(t(matrix(unlist(temp[["samp.fa"]]),ncol=ntrials)))
-						points(fa.values.samp$mean,type ="l",lty="dashed",pch=2)
+						points(fa.values.samp$mean,type ="l",lty="dashed",pch=2,col="red")
 						 if(error.bars) {
          for (i in 1:dim(values.sim)[1])  
     	{
@@ -89,22 +101,29 @@ if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
          yse <-  fa.values.samp$se[i]
     	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
     	} 
-					if (fa !="fa") 	points(fa.valuesx,type ="b",lty="solid",pch=2)
-	points(fa.values.sim,type ="l",lty="dotted",pch=2)
-	if(is.null(n.obs)) {points(fa.values.samp$mean,type ="l",lty="dashed",pch=2)}
+					if (fa !="fa") 	points(fa.valuesx,type ="b",lty="solid",pch=2,col="blue")
+	points(fa.values.sim,type ="l",lty="dotted",pch=2,col="red")
+	if(is.null(n.obs)) {points(fa.values.samp$mean,type ="l",lty="dashed",pch=2,col="red")}
         } 
 
 
 if(is.null(n.obs)) {
-legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"), col = c(3,4,5,6,7,8),pch=c(4,NA,NA,2,NA,NA),
+legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"), col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
        text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
        merge = TRUE, bg = 'gray90')} else {
 
-       legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c(3,4,5,6),pch=c(4,NA,2,NA),
+       legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
        text.col = "green4", lty = c("solid","dotted","solid","dotted"),
        merge = TRUE, bg = 'gray90')}
        
 abline(h=1)
-if (fa!="pc") {abline(h=0) }}
+if (fa!="pc") {abline(h=0) }
+results <- list(fa.values = fa.valuesx,fa.sim = fa.values.sim,pc.values=valuesx,pc.sim=values.sim,Call=cl)
+fa.test <- which(!(fa.valuesx > fa.values.sim$mean))[1]-1
+pc.test <- which(!(valuesx > values.sim$mean))[1] -1
+cat("Parallel analysis suggests that ")
+cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
+class(results) <- c("psych","parallel")
+return(invisible(results))}
 
  

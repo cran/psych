@@ -82,23 +82,37 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
             
        objective <- x$criteria[1]
      if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
-    cat("\nThe degrees of freedom for the model is",x$dof," and the objective function was ",round(objective,digits),"\n") 
-   	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")}
+    if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits))}
+    if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
+    cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")
+   	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,2))}
 
 cat("\nFit based upon off diagonal values =", round(x$fit.off,2))
+
+if (x$fn != "principal") {
 if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
+
+
  
- rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")}
-
-
- if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             \n")
+ rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+         colnames(stats.df) <- colnames(x$loadings)
+ 
+ cat("\nMeasures of factor score adequacy             \n")
  print(round(stats.df,digits))}
+ 
+ 
 
-# if(!is.null(x$R2)) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
-#cat("\nCorrelation of scores with factors           ",round(sqrt(x$R2),digits))
-# cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
- # cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
- # cat("\nValidity of unit weighted factor scores       ",round(x$valid,digits),"\n")
+	 if( max(x$R2) > (1 + .Machine$double.eps) ) {
+	 cat("\n WARNING, the factor score fit indices suggest that the solution is degenerate. Try a different method of factor extraction.\n")
+	 warning("the factor score fit indices suggest that the solution is degenerate\n")}
+	 
+	if(!is.null(x$stats$R2)) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
+	cat("\nCorrelation of scores with factors           ",round(sqrt(x$R2),digits))
+	cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
+	  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
+	  }
+ 
   
 } 
  }  #end of fac.pa

@@ -23,7 +23,7 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
    if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
      } 
-
+result <- NULL
 if(!is.null(object$fn)) {fa <- TRUE}
  
  if(vss) {
@@ -79,6 +79,7 @@ cat("Call: ")
 print(object$Call)
 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (unstandardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(object$corrected,digits) 
+	 result <- object$corrected
 	 }
  
 if(cluster.cor ) { 
@@ -86,11 +87,21 @@ cat("Call: ")
 print(object$Call)
 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (standardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(object$corrected,digits) 
- 
+     result <- object$corrected
 
 }
 
-if(fa) {print(object$loadings)}
+if(fa) {
+  cat("\nFactor analysis with Call: ")
+   print(object$Call)
+   
+ 	nfactors <- dim(object$loadings)[2]
+    objective <- object$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
+    cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(object$n.obs)) {cat("The number of observations was ",object$n.obs, " with Chi Square = ",round(object$STATISTIC,digits), " with prob < ", signif(object$PVAL,digits),"\n")}
+    }
+}
 
 
 if(items) { 
@@ -133,7 +144,7 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 }
  
-  if(mat.reg) { cat("Call: ")
+  if(mat.reg) { cat("\nMultiple Regression for matrix input \nCall: ")
               print(object$Call)
             cat("\nMultiple Regression from matrix input \n")
            cat("\nBeta weights \n")
@@ -144,6 +155,6 @@ print(object$total,digits=digits)
            print(round(object$R2,digits))
            
            }
-
+invisible(result)
    }
   

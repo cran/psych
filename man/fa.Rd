@@ -11,7 +11,7 @@
 }
 \usage{
 fa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
-scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres", ...)
+scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres", ...)
 
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="pa")
@@ -34,7 +34,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
-  \item{digits}{ How many digits of output should be returned}
+  \item{digits}{ How many digits of output should be returned-- deprecated -- now specified in the print function}
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
@@ -63,17 +63,19 @@ The maximum likelihood solution takes yet another approach and finds those commu
 
 Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. The wls and gls solutions have slightly larger eigen values, but slightly worse fits of the off diagonal residuals than do the minres or maximum likelihood solutions.  
 
-Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression. 
+Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression. There are multiple approaches that are possible (see Grice, 2001) and the one taken here is Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.
 
 
 Of the various rotation/transformation options, varimax, quatimax, bentlerT and geominT do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ, and geominQ are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)}
 \value{
-  \item{values }{Eigen values of the final solution}
+  \item{values }{Eigen values of the common factor solution}
+  \item{e.values}{Eigen values of the original matrix}
   \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
   \item{rotation}{which rotation was requested?}
   \item{n.obs}{number of observations specified or found}
   \item{loadings}{An item by factor loading matrix of class ``loadings"  Suitable for use in other programs (e.g., GPA rotation or factor2cluster. To show these by sorted order, use \code{\link{print.psych}} with sort=TRUE}
-  \item{fit}{How well does the factor model reproduce the correlation matrix. (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
+  \item{fit}{How well does the factor model reproduce the correlation matrix. This is just \eqn{\frac{\Sigma r_{ij}^2 - \Sigma r^{*2}_{ij} }{\Sigma r_{ij}^2}
+}{(sum(r^2ij - sum(r*^2ij))/sum(r^2ij}  (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
   \item{fit.off}{how well are the off diagonal elements reproduced?}
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters.  Let n=Number of items, nf = number of factors then
   \cr
@@ -92,8 +94,9 @@ Of the various rotation/transformation options, varimax, quatimax, bentlerT and 
  \item{communality.iterations}{The history of the communality estimates (For principal axis only.) Probably only useful for teaching what happens in the process of iterative fitting.}
  \item{residual}{If residuals are requested, this is the matrix of residual correlations after the factor model is applied.} 
  
+\item{TLI}{The Tucker Lewis Index of factoring reliability whici is also known as the non-normed fit index.  }
 
-\item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001)}
+\item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
 
 \item{r.scores}{The correlations of the factor score estimates, if they were to be found.}
 
@@ -121,9 +124,9 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")
-pa <- fa(Harman74.cor$cov,4,fm="pa" ,rotate="varimax")
-uls <- fa(Harman74.cor$cov,4,rotate="varimax")
-wls <- fa(Harman74.cor$cov,4,fm="wls")
+pa <- fa(Harman74.cor$cov,4,fm="pa" ,rotate="varimax")  #principal axis 
+uls <- fa(Harman74.cor$cov,4,rotate="varimax")          #unweighted least squares is minres
+wls <- fa(Harman74.cor$cov,4,fm="wls")       #weighted least squares
 
 #to show the loadings sorted by absolute value
 print(uls,sort=TRUE)

@@ -1,5 +1,5 @@
 "mat.regress" <-
-function(m,x,y,n.obs=NULL,digits=6)  {
+function(m,x,y,n.obs=NULL)  {
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #seriously rewritten, March 24, 2009 to make much simpler
@@ -23,7 +23,7 @@ function(m,x,y,n.obs=NULL,digits=6)  {
      	b.matrix <- m[x,y]
      	bc.matrix <- C[x,y]
      	
-     beta<- solve(a.matrix,b.matrix)       #solve the equation bY~aX
+        beta <- solve(a.matrix,b.matrix)       #solve the equation bY~aX
         beta <- as.matrix(beta)
      	if (length(y) >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
      	                      if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
@@ -54,8 +54,8 @@ function(m,x,y,n.obs=NULL,digits=6)  {
      	
      	beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix)) #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {mat.regress <- list(beta=round(beta,digits),R=round(sqrt(R2),digits),R2=round(R2,digits),Call = cl)} else {
-     	              mat.regress <- list(beta=round(beta,digits),se=round(se,digits),t=round(tvalue,digits),Probability = round(prob,digits),R=round(sqrt(R2),digits),R2=round(R2,digits),shrunkenR2 = round(shrunkenR2,digits),seR2 = round(SE,digits),F=round(F,digits),probF= round(pF,digits+1),df=c(k,df),Call = cl)}
+     	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Call = cl)} else {
+     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Call = cl)}
      	class(mat.regress) <- c("psych","mat.regress")
      	return(mat.regress)
      	}

@@ -4,12 +4,12 @@
 \alias{sim.structural}
 
 \title{Create correlation matrices or data matrices with a particular measurement and structural model }
-\description{Structural Equation Models decompose correlation or correlation matrices into a measurement (factor) model and a structural (regression) model.  sim.structure creates data sets with known measurement and structural properties. Population or sample correlation matrices with known properties are generated. Optionally raw data are produced. 
+\description{Structural Equation Models decompose correlation or correlation matrices into a measurement (factor) model and a structural (regression) model.  sim.structural creates data sets with known measurement and structural properties. Population or sample correlation matrices with known properties are generated. Optionally raw data are produced. 
 
 It is also possible to specify a measurement model for a set of x variables separately from a set of y variables.  They are then combined into one model with the correlation structure between the two sets.
 }
 \usage{
-sim.structure(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		
+sim.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		
 make.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)  #deprecated
 
 }
@@ -44,7 +44,9 @@ A special case of a structural model are one factor models such as parallel test
 } 
 \examples{
 fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)              
-fy <- c(.6,.5,.4)
+fy <- matrix(c(.6,.5,.4),ncol=1)
+rownames(fx) <- c("V","Q","A","nach","Anx")
+rownames(fy)<- c("gpa","Pre","MA")
 Phi <-matrix( c(1,0,.7,.0,1,.7,.7,.7,1),ncol=3)
 gre.gpa <- sim.structural(fx,Phi,fy)
 print(gre.gpa,2)  

@@ -74,7 +74,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
         diag(g)/Psi^2                             #normalized 
     }
     
-     FAgr.minres <- function(Psi, S, nf,S.inv,fm)  #the first derivatives 
+     FAgr.minres <- function(Psi, S, nf,S.inv,fm)  #the first derivatives
     {
         sc <- diag(1/sqrt(Psi))
         Sstar <- sc %*% S %*% sc
@@ -169,13 +169,13 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")) { 
        uls <- fit(r,nfactors,fm)
        
-       e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  
+       e.values <- eigen(r)$values  #used for the summary stats --  
        result$par <- uls$res
       
        loadings <- uls$loadings
        model <- loadings %*% t(loadings)
        S <- r
-       diag(S) <- diag(model)   #communalities from the factor model 
+       diag(S) <- diag(model)
        eigens <- eigen(S)$values
        
                             }
@@ -253,7 +253,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     result$e.values <- e.values  
     result$loadings <- loadings
     result$fm <- fm  #remember what kind of analysis we did
-    
+
     if(!is.null(Phi)) {result$Phi <- Phi}
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
     

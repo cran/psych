@@ -5,12 +5,13 @@ cl <- match.call()
  if(dim(r)[1] !=n ) {n.obs = dim(r)[1]
                     r <- cor(r,use="pairwise")
                      }
- if(is.data.frame(r)) r<- as.matrix(r)
+ if(is.data.frame(r)) r <- as.matrix(r)
  if((!is.matrix(f)) && (!is.data.frame(f)))  {f <- as.matrix(f$loadings)} else {f <- as.matrix(f)}
  nfactors <- dim(f)[2]  # number of factors
  if(is.null(phi)) {model <- f %*%  t(f)} else {model <- f %*% phi %*% t(f)}
 
- residual<- r - model
+    residual<- r - model
+  
     r2 <- sum(r*r)
     rstar2 <- sum(residual*residual)
     result <- list(residual =residual)
@@ -23,6 +24,8 @@ cl <- match.call()
     result$fit <-1-rstar2/r2
     result$fit.off <- 1-rstar.off/r2.off
     
+    
+    
     result$factors <- nfactors
   
     diag(model) <- 1   
@@ -32,21 +35,38 @@ cl <- match.call()
        ev.mod$values[ev.mod$values < .Machine$double.eps] <- 100 * .Machine$double.eps
        model <- ev.mod$vectors %*% diag(ev.mod$values) %*% t(ev.mod$vectors)
        diag(model)  <- 1
-       model.inv <- solve(model)}
-    m.inv.r <- model.inv %*% r
-    if(is.na(n.obs)) {result$n.obs=NA
-    			
-    			result$PVAL=NA} else {result$n.obs=n.obs}
+       #model.inv <- solve(model)
+       }
+   # m.inv.r <- model.inv %*% r
+     m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision
+    if(is.na(n.obs)) {result$n.obs=NA 
+    			      result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
-    result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n 
+    result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n   #this is what Tucker Lewis call F
     result$criteria <- c("objective"=result$objective,NA,NA)
     if (!is.na(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
           if(!is.nan(result$STATISTIC))if (result$STATISTIC <0) {result$STATISTIC <- 0}  
    			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
    	result$Call <- cl
    	
+   	#find the Tucker Lewis Index of reliability
+   	#Also known as the NNFI which is expressed in terms of Chisq
+   	#NNFI <- (chisqNull/dfNull - chisq/df)/(chisqNull/dfNull - 1)
+   	#first find the null model 
+   	F0 <- sum(diag((r))) - log(det(r)) -n  
+   	Fm <-  result$objective
+   	Mm <- Fm/( n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2))
+   	M0 <- F0* 2 /(n*(n-1))
+    nm <- ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #
+   	result$null.model <- F0
+   	result$null.dof <- n * (n-1) /2
+   	if (!is.na(n.obs)) {result$null.chisq <-  F0 * ((n.obs-1) -(2 * n + 5)/6 )
+                  	result$TLI <- (M0 - Mm)/(M0 - 1/nm)
+                  	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$TLI <-1 }
+  
+   	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
-   	if(!is.null(phi)) f <- f %*% phi
+   	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
       w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
      if(class(w)=="try-error") {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
@@ -63,6 +83,7 @@ cl <- match.call()
                       R2[abs(R2) > 1] <- NA
                       #added to 
                      }
+     #if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
       r.scores <- cov2cor(t(w) %*% r %*% w)
       result$r.scores <- r.scores 
    	  result$R2 <-R2   #this is the multiple R2 of the scores with the factors

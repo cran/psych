@@ -11,6 +11,8 @@ Graphic presentations of these two alternatives are helpful in understanding the
 
 Using Graphviz allows the user to clean up the Rgraphviz output. However, if Graphviz and Rgraphviz are not available, use omega.diagram.
 
+See the other structural diagramming functions, \code{\link{fa.diagram}} and \code{\link{structure.diagram}}. 
+
 In addition 
 }
 \usage{
@@ -40,7 +42,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{errors}{show the error estimates}
   \item{rsize}{size of the rectangles}
 }
-\details{Requires the Rgraphviz package.  omega requires the GPArotation package.
+\details{While omega.graph requires the Rgraphviz package, omega.diagram does not.  code{\link{omega}} requires the GPArotation package.
 
  
 }

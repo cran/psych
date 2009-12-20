@@ -7,7 +7,7 @@
   predicting each member of the (y) set.  
 }
 \usage{
-mat.regress(m, x, y,n.obs=NULL,digits=6)
+mat.regress(m, x, y,n.obs=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,7 +15,7 @@ mat.regress(m, x, y,n.obs=NULL,digits=6)
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
   \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
-  \item{digits}{round the answer to digits}
+  
 }
 \details{
   Although it is more common to calculate multiple regression from raw data, it is, 

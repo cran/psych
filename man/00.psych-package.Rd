@@ -67,8 +67,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-83 \cr
-Date: \tab 2009-11-01\cr
+Version: \tab 1.0-85 \cr
+Date: \tab 2009-12-20\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -169,10 +169,12 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 
 Functions for generating simulated data sets \cr
 \tabular{ll}{
+\link{sim}               \tab       The basic simulation functions \cr
 \link{sim.anova}         \tab        Generate 3 independent variables and 1 or more dependent variables for demonstrating ANOVA and lm designs \cr
 \link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
 \link{sim.item}         \tab        Generate a two dimensional simple structrue with particular item characteristics \cr
 \link{sim.congeneric}   \tab        Generate a one factor congeneric reliability structure \cr
+\link{sim.minor}       \tab         Simulate nfact major and nvar/2 minor factors  \cr
 \link{sim.structural}   \tab        Generate a multifactorial structural model  \cr
 \link{sim.VSS}          \tab          Generate simulated data for the factor model\cr
 \link{phi.demo}          \tab       Create artificial data matrices for teaching purposes\cr
@@ -180,12 +182,22 @@ Functions for generating simulated data sets \cr
 }
 
 
-Graphical functions (require Rgraphviz) \cr
+Graphical functions (require Rgraphviz) -- deprecated \cr
 \tabular{ll}{
 \link{structure.graph}  \tab           Draw a sem or regression graph \cr
 \link{fa.graph}        \tab           Draw the factor structure from a factor or principal components analysis \cr
 \link{omega.graph}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
 \link{ICLUST.graph}     \tab           Draw the tree diagram from ICLUST  \cr
+}
+
+
+Graphical functions that do not require Rgraphviz \cr
+\tabular{ll}{
+\link{diagram}           \tab           A general set of diagram functions. \cr 
+\link{structure.diagram}  \tab           Draw a sem or regression graph \cr
+\link{fa.diagram}        \tab           Draw the factor structure from a factor or principal components analysis \cr
+\link{omega.diagram}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
+\link{ICLUST.diagram}     \tab           Draw the tree diagram from ICLUST  \cr
 }
 
 Circular statistics (for circadian data analysis) \cr
@@ -246,7 +258,7 @@ Data sets included in the psych package \cr
 \link{iqitems}        \tab         14 multiple choice iq items \cr
 \link{msq}            \tab         75 mood items  \cr
 \link{sat.act}        \tab          Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
-
+\link{Tucker}         \tab          Correlation matrix from Tucker \cr
 \link{galton}        \tab            Galton's data set of the heights of parents and their children \cr
 \link{heights}       \tab            Galton's data set of the relationship between height and forearm (cubit) length \cr
 \link{cubits}        \tab             Galton's data table of height and forearm length \cr
@@ -262,7 +274,7 @@ A debugging function that may also be used as a demonstration of psych.
 }
 \note{Development versions (source code) of this package are maintained at the  repository \url{http://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
 \cr
-Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph and fa.graph require Rgraphviz.  i.e.:
+Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph and fa.graph require Rgraphviz but have alternatives using the diagram functions.  i.e.:
 \cr
 
 \tabular{ll}{

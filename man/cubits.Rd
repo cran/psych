@@ -22,7 +22,7 @@ The data frame, \code{\link{heights}}, is converted from this table.
 }
 \details{Sir Francis Galton (1888) published the first demonstration of the correlation coefficient.  The regression (or reversion to mediocrity) of the height to the length of the left forearm (a cubit) was found to .8.  There seem to be some errors in the table as published in that the row sums do not agree with the actual row sums. These data are used to create a matrix using \code{\link{table2matrix}} for demonstrations of analysis and displays of the data.
 }
-\seealso{  \code{\link{table2matrix}},  \code{\link{table2df}},\code{\link{heights}},\code{\link{ellipses}},\code{\link{galton}}}
+\seealso{  \code{\link{table2matrix}},  \code{\link{table2df}}, \code{\link{ellipses}}, \code{\link{heights}}, \code{\link{peas}},\code{\link{galton}}}
 \source{Galton (1888)
 }
 \references{Galton, Francis (1888) Co-relations and their measurement. Proceedings of the Royal Society. London Series,45,135-145,

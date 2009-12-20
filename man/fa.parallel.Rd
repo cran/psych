@@ -1,42 +1,76 @@
 \name{fa.parallel}
 \alias{fa.parallel}
 \title{Scree plots of data or correlation matrix compared to random ``parallel" matrices }
-\description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of the observed data with that of a random data matrix of the same size as the original.  
+\description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original.  
 }
 \usage{
-fa.parallel(x, n.obs = NULL, fa="both", main = "Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE)
+fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A data.frame or data matrix of scores.  If the matrix is square, it is assumed to be a correlation matrix.  Otherwise, correlations (with pairwise deletion) will be found }
   \item{n.obs}{n.obs=0 implies a data matrix/data.frame.  Otherwise, how many cases were used to find the correlations. }
+  \item{fm}{What factor method to use. (minres, ml, uls, wls, gls, pa) See  \code{\link{fa}} for details.}
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
  \item{main}{ a title for the analysis }
  \item{ntrials}{Number of simulated analyses to perform}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
+ \item{smc}{smc=TRUE finds eigen values after estimating communalities by using SMCs.  smc = FALSE finds eigen values after estimating communalities with the first factor.}
 }
-\details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Humphreys and Montanelli's ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and principal factor solution and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
+\details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 
-The means of (n.trials) random solutions are shown.  Error bars are usually very small and are suppressed by default but can be shown if requested.
+The means of (ntrials) random solutions are shown.  Error bars are usually very small and are suppressed by default but can be shown if requested.
+
+Alternative ways to estimate the number of factors problem are discussed in the Very Simple Structure  (Revelle and Rocklin, 1979) documentation (\code{\link{VSS}}) and include Wayne Velicer's \code{\link{MAP}} algorithm (Veicer, 1976).  
+
+Parallel analysis for factors is actually harder than it seems, for the question is what are the appropriate communalities to use.  If communalities are estimated by the Squared Multiple Correlation (SMC) \code{\link{smc}}, then the eigen values of the original data will reflect major as well as minor factors (see \code{\link{sim.minor}} to simulate such data).  Random data will not, of course, have any structure and thus the number of factors will tend to be biased upwards by the presence of the minor factors.  
+
+By default, fa.parallel estimates the communalities based upon a one factor minres solution.  Although this will underestimate the communalities, it does seem to lead to better solutions on simulated or real (e.g., the \code{\link{bfi}} or Harman74) data sets.  
+
+For comparability with other algorithms (e.g, the paran function in the paran package), setting smc=TRUE will use smcs as estimates of communalities. This will tend towards identifying more factors than the default option.
 }
 \value{
   A plot of the eigen values for the original data, ntrials of resampling of the  original data, and of a equivalent size matrix of random normal deviates.  If the data are a correlation matrix, specify the number of observations.  
+  
+  Also returned (invisibly) are:
+  
+  \item{fa.values}{The eigen values of the factor model for the real data.}
+  \item{fa.sim}{The descriptive statistics of the simulated factor models.}
+  \item{pc.values}{The eigen values of a principal components of the real data.}
+  \item{pc.sim}{The descriptive statistics of the simulated principal components analysis.}
+  
+  Printing the results will show the eigen values of the original data that are greater than simulated values.
+  
 }
 \references{
-Humphreys, Lloyd G. and Montanelli, Richard G. (1975),An investigation of the parallel analysis criterion for determining the number of common factors.
+
+
+Floyd, Frank J.  and  Widaman, Keith. F (1995)  Factor analysis in the development and refinement of clinical assessment instruments. Psychological Assessment, 7(3):286-299, 1995.
+
+Horn, John (1965) A rationale and test for the number of factors in factor analysis. Psychometrika, 30, 179-185.
+
+Humphreys, Lloyd G. and Montanelli, Richard G. (1975), An investigation of the parallel analysis criterion for determining the number of common factors.
 Multivariate Behavioral Research, 10, 193-205.
+
+
+Revelle, William and Rocklin, Tom (1979) Very simple structure - alternative procedure for estimating the optimal number of interpretable factors. Multivariate Behavioral Research, 14(4):403-414.
+
+Velicer, Wayne. (1976) Determining the number of components from the matrix of partial correlations. Psychometrika, 41(3):321-327, 1976.
+
  }
 \author{ William Revelle }
 
 
-\seealso{ \code{\link{VSS}},\code{\link{VSS.plot}}, \code{\link{VSS.parallel}} }
+\seealso{  \code{\link{fa}}, \code{\link{VSS}}, \code{\link{VSS.plot}},   \code{\link{VSS.parallel}}, \code{\link{sim.minor}}}
 \examples{
 
 test.data <- Harman74.cor$cov 
-fa.parallel(test.data,n.obs=200)
+fa.parallel(test.data,n.obs=145)
+set.seed(123)
+minor <- sim.minor(24,4,400) #4 large and 12 minor factors
+fa.parallel(minor$observed) #shows 4 factors  -- compare with 
+fa.parallel(minor$observed,smc=TRUE) #which shows 8 factors
 
-fa.parallel(attitude) 
-#
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -38,6 +38,8 @@ For comparability with other algorithms (e.g, the paran function in the paran pa
   \item{fa.sim}{The descriptive statistics of the simulated factor models.}
   \item{pc.values}{The eigen values of a principal components of the real data.}
   \item{pc.sim}{The descriptive statistics of the simulated principal components analysis.}
+  \item{nfact}{Number of factors with eigen values > eigen values of random data}
+  \item{ncomp}{Number of components with eigen values > eigen values of random data}
   
   Printing the results will show the eigen values of the original data that are greater than simulated values.
   

@@ -30,7 +30,7 @@ The data frame, \code{\link{heights}}, is converted from this table.
 \examples{
 data(cubits)
 cubits
-heights <- table2df(cubits,labs <- c("height","cubit"))
+heights <- table2df(cubits,labs = c("height","cubit"))
 ellipses(heights,n=1,main="Galton's co-relation data set")
 ellipses(jitter(heights$cubit,3),jitter(heights$height,3),pch=".",main="Galton's co-relation data set") #add in some noise to see the points
 

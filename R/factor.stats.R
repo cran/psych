@@ -14,11 +14,12 @@ cl <- match.call()
   
     r2 <- sum(r*r)
     rstar2 <- sum(residual*residual)
-    result <- list(residual =residual)
+    result <- list(residual = residual)
  
-    r2.off <- r
-    diag(r2.off) <- 0
-    r2.off <- sum(r2.off^2)
+    #r2.off <- r
+    #diag(r2.off) <- 0
+   # r2.off <- sum(r2.off^2)
+   r2.off <- r2 - tr(r)
     diag(residual) <- 0
     rstar.off <- sum(residual^2)
     result$fit <-1-rstar2/r2
@@ -28,7 +29,7 @@ cl <- match.call()
     
     result$factors <- nfactors
   
-    diag(model) <- 1   
+    diag(model) <- diag(r)   
      model.inv <- try(solve(model),silent=TRUE)
     if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
        ev.mod <- eigen(model)
@@ -37,7 +38,7 @@ cl <- match.call()
        diag(model)  <- 1
        #model.inv <- solve(model)
        }
-   # m.inv.r <- model.inv %*% r
+   
      m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}

@@ -5,8 +5,10 @@
 #created May 28, 2009 
 #modified June 7, 2009 to add gls fitting
 #modified June 24, 2009 to add ml fitting
+#modified March 4, 2010 to allow for factoring of covariance matrices rather than correlation matrices
+#this itself is straight foward, but the summary stats need to be worked on
 "fa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",...) {
+function(r,nfactors=1,residuals=FALSE,rotate="oblimin",n.obs = NA,scores=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -32,10 +34,12 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
  #it does the iterative calls to fit.residuals 
  #modified June 7, 2009 to add gls fits
  #Modified December 11, 2009 to use first derivatives from formula rather than emprical.  this seriously improves the speed.
-     "fit" <- function(S,nf,fm) {
-          S.smc <- smc(S)
+     "fit" <- function(S,nf,fm,covar) {
+          S.smc <- smc(S,covar)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
-           if(sum(S.smc) == nf) {start <- rep(.5,nf)}  else {start <- 1- S.smc} #initial communality estimates  
+           if(!covar &&(sum(S.smc) == nf)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
+                    #initial communality estimates are variance - smc 
+                    
            if(fm=="ml")  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
                           	lower = .005, upper = 1,
                           	control = c(list(fnscale=1,
@@ -119,12 +123,14 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
         x.matrix[miss]<- item.med[miss[,2]]}
         }}
-    		r <- cor(r,use="pairwise") # if given a rectangular matrix, then find the correlations first
+    		if(!covar) {r <- cor(r,use="pairwise")} else {r <- cov(r,use="pairwise")} # if given a rectangular matrix, then find the correlation or covariance first
            } else {
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
-     				 sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
+     				if(!covar) {
+     				sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
                      r <- r/(sds %o% sds) #if we remove this, then we need to fix the communality estimates
-                     } #added June 9, 2008
+                    }
+                    } #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
 
    
@@ -133,7 +139,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     Phi <- NULL 
     colnames(r.mat) <- rownames(r.mat) <- colnames(r)
      if(SMC) { 
-      if(nfactors < n/2)   {diag(r.mat) <- smc(r) }  else {if (warnings) message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")}  }
+      if(nfactors < n/2)   {diag(r.mat) <- smc(r,covar=covar) }  else {if (warnings) message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")}  }
     orig <- diag(r)
    
    
@@ -167,7 +173,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        } 
        
        if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")) { 
-       uls <- fit(r,nfactors,fm)
+       uls <- fit(r,nfactors,fm,covar=covar)
        
        e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  
        result$par <- uls$res
@@ -180,7 +186,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        
                             }
        
-       # a weird condition that happens with the Eysenck data
+       # a weird condition that happens with poor data
        #making the matrix symmetric solves this problem
        if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
        loadings <- matrix(as.real(loadings),ncol=nfactors) } 
@@ -207,8 +213,9 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     if(rotate != "none") {if (nfactors > 1) {
    
     
-   	if (rotate=="varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT") { 
-   			rotated <- do.call(rotate,list(loadings))
+   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT") { 
+   	       
+   			rotated <- do.call(rotate,list(loadings,...))
    			loadings <- rotated$loadings
    			 Phi <- NULL} else { 
      			if ((rotate=="promax")|(rotate=="Promax") ) {pro <- Promax(loadings)
@@ -221,7 +228,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      			                     
      			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ") {
      				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
-     				Phi <- NULL} else { ob  <- do.call(rotate,list(loadings) )
+     				Phi <- NULL} else { ob  <- do.call(rotate,list(loadings,...) )
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
      		                             }

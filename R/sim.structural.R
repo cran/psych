@@ -117,15 +117,15 @@ diag(model)<- 1                       # put ones along the diagonal
 
 #simulate major and minor factors
 "sim.minor" <-
-function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = NULL) {
+function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2)) {
 if(is.null(fbig)) {loads <- c(.8,.6) 
 loads <- sample(loads,nvar/nfact,replace=TRUE)} else {loads <- fbig}
 fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)
-
-if(is.null(fsmall))  {fsmall <- c(-.2,rep(0,nvar/8),.2) }
-     fs <- matrix(sample(fsmall,nvar*nvar/2,replace=TRUE),ncol=nvar/2) 
+fsmall  <- c(fsmall,rep(0,nvar/4))
+fs <- matrix(sample(fsmall,nvar*nvar/2,replace=TRUE),ncol=nvar/2)  
 fload <- cbind(fx,fs)
-
+colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))
+rownames(fload) <- paste("V",1:nvar,sep="")
 results <- sim(fload,n=n)
          results$fload <- fload
  class(results) <- c("psych", "sim")

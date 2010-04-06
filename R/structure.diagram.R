@@ -100,9 +100,11 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
 
 length.labels <-  0    # a filler for now
 #plot.new() is necessary if we have not plotted before
-strwd <- try(strwidth(xvars),silent=TRUE)
-if (class(strwd) == "try-error" ) {plot.new() } 
-length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8
+#strwd <- try(strwidth(xvars),silent=TRUE)
+strwd <- try(length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8)
+#if (class(strwd) == "try-error" ) {plot.new() } 
+if (class(strwd) == "try-error" ) {length.labels = max(nchar(xvars),3)/1.8 } 
+#length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8
 
 if(lr) {limx <- c(-(length.labels+ x.curves),max(num.xvar,num.yvar)+2 + y.curves)  
         limy <-  c(0,max(num.xvar,num.yvar)+1) } else {

@@ -1,7 +1,7 @@
 \name{headtail}
 \alias{headtail}
 \title{Combine calls to head and tail}
-\description{A quick way to show the first and last n lines of a data.frame, matrix, or a textt object.  Just a pretty call to \code{\link{head}} and \code{\link{tail}}
+\description{A quick way to show the first and last n lines of a data.frame, matrix, or a text object.  Just a pretty call to \code{\link{head}} and \code{\link{tail}}
 }
 \usage{
 headtail(x,hlength=4,tlength=4,digits=2)

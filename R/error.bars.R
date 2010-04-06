@@ -3,7 +3,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     {
     if(is.null(stats)) {
     	x.stats <- describe(x)
-    	z <- dim(x)[2]
+    	if(is.null(dim(x))) { z <- 1} else {z <- dim(x)[2]}  #if we just have one variable
     	names <- colnames(x)
     	}  else { x.stats <- stats
     	          z <- dim(x.stats)[1]
@@ -37,7 +37,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      if (length(labels)==0) lab <- rep("",z) else lab <-labels
-      s <- matrix(1:z,nrow=1)
+      s <- c(1:z)
     	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else {
     	 arrows(s[s],x.stats$mean[s]-ci[s]* x.stats$se[s],s[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL) }
     	

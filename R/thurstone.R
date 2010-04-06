@@ -47,13 +47,43 @@ orders.to.choice <- function(x,y) {      #does one subject (row) at a time
           }} 
           return(y)}
           
+          
 #  makes repeated calls to orders.to.choice  -- can we vectorize this?        
 choice.mat <-function(x) {
    nsubs<- dim(x)[1]
    nvar <- dim(x)[2]
-   y <- matrix(0,ncol=5,nrow=5)
+   y <- matrix(0,ncol=nvar,nrow=nvar)
    for (k in 1:nsubs) {
       y <-orders.to.choice(x[k,],y) }     #is there a way to vectorize this?
+     d <- diag(y)    
+     y<- y/(2*d)
+     lower <- 1/(4*nsubs)     #in case of 0 or 1, we put limits 
+     upper <- 1- lower
+     y[y<lower] <-lower    
+     y[y>upper] <- upper
+    return(y) }
+    
+    
+#irt type data
+#subjects endorse or do not endorse an item  
+item.to.choice <- function(x) {
+    nsubs<- dim(x)[1]
+   nvar <- dim(x)[2]
+   count <- t(x) %*% x
+   dx <- diag(count)
+   y <- dx - count
+   diag(y) <- dx
+   y <- y/nsubs
+   
+   for (k in 1:nsubs) {
+     temp <- x[k,]
+        for (i in 1:nvar) {
+        for (j in 1:nvar) {
+        if(temp[j]>0) count [i,j] <- count[i,j]+ temp[i]
+          } 
+          }
+          
+         }     #is there a way to vectorize this?
      d <- diag(y)    
      y<- y/(2*d)
      lower <- 1/(4*nsubs)     #in case of 0 or 1, we put limits 

@@ -10,8 +10,8 @@
 \description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary. Another technique is to use Ordinary Least Squares to find the minimum residual (minres) solution.  A variation on minres is to do weighed least squares.  Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  
 }
 \usage{
-fa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
-scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres", ...)
+fa(r, nfactors=1, residuals = FALSE, rotate = "oblimin",n.obs = NA,
+scores = FALSE,SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres", ...)
 
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="pa")
@@ -27,10 +27,11 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
   \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{residuals}{Should the residual matrix be shown }
-  \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", and "geominT" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ, and "geominQ" or "cluster" are possible rotations or transformations of the solution.}
+  \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", and "geominT" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ, and "geominQ" or "cluster" are possible rotations or transformations of the solution.  The default is to do a oblimin transformation, although prior versions defaulted to varimax.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{scores}{If TRUE, estimate factor scores}
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. }
+  \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
@@ -39,7 +40,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
-  \item{...}{additional parameters, specifically, keys may be passed if using the target rotation}
+  \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
  
@@ -66,7 +67,9 @@ Test cases comparing the output to SPSS suggest that the PA algorithm matches wh
 Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression. There are multiple approaches that are possible (see Grice, 2001) and the one taken here is Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.
 
 
-Of the various rotation/transformation options, varimax, quatimax, bentlerT and geominT do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ, and geominQ are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)}
+Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT and geominT do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ, and geominQ are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
+
+There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce sllightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred. }
 \value{
   \item{values }{Eigen values of the common factor solution}
   \item{e.values}{Eigen values of the original matrix}

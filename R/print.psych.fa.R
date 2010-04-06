@@ -6,9 +6,10 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
    print(x$Call)
      
      
- if(is.null(cut)) cut <- .3
+ if(is.null(cut)) cut <- 0   #caving into recommendations to print all loadings
  	load <- x$loadings
-
+    #but, if we are print factors of covariance matrices, they might be very small
+            cut <- min(cut,max(abs(load))/2)  
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
@@ -36,35 +37,93 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
    		 		first <- first + items[i]  }
           		 }  
          }    #end of sort 		 
-    #they are now sorted, don't print the small loadings 
+    #they are now sorted, don't print the small loadings if cut > 0 
+ if (cut > 0) {
           	ncol <- dim(loads)[2]-2
-	    	fx <- format(round(loads,digits=digits))
+	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")
 	    	 fx.1 <- fx[,1,drop=FALSE]    #drop = FALSE  preserves the rownames for single factors
 	    	 fx.2 <- fx[,3:(2+ncol)]
-	    	 load.2 <- loads[,3:(ncol+2)]
+	    	 load.2 <- as.matrix(loads[,3:(ncol+2)])
          	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
          	fx <- data.frame(V=fx.1,fx.2)
          	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
-         	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load^2)} else {h2 <- diag(load %*% x$Phi %*% t(load)) }} else {h2 <-load.2^2}
-         	u2 <- round(1 - h2,digits)
-         	h2 <- round(h2,digits)
-         	
-	    	print(cbind(fx,h2,u2),quote="FALSE")
+         
+         	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
+         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses} else {u2 <- (1 - h2)}
+         	#h2 <- round(h2,digits)
+         	vtotal <- sum(h2 + u2)
+           if(isTRUE(all.equal(vtotal,nitems))) {
+           cat("Standardized loadings based upon correlation matrix\n")
+	    	print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } else {
+	    	cat("Unstandardized loadings based upon covariance matrix\n") 
+	    	print(cbind(fx,h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
+	    } else {
+	       ncol <- dim(loads)[2]-2
+	    	load.2 <- as.matrix(loads[,3:(ncol+2)])
+	     if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
+         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses} else {u2 <- (1 - h2)}
+         	#h2 <- round(h2,digits)
+         	vtotal <- sum(h2 + u2)
+           if(isTRUE(all.equal(vtotal,nitems))) {
+           cat("Standardized loadings based upon correlation matrix\n")
+	       print(cbind(round(loads[-(1:2)],digits),h2,u2),quote="FALSE",digits=digits) } else {
+	    	cat("Unstandardized loadings based upon covariance matrix\n") 
+	    	print(cbind(round(loads[-c(1:2)],digits),h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
+	    }	
  		
       	   #adapted from print.loadings
       	  if(is.null(x$Phi)) {if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
-      	                                                     names(vx) <- colnames(x$loadings)
-      	                                                     }} else {vx <- diag(x$Phi %*% t(load) %*% load)
-      	                                                      names(vx) <- colnames(x$loadings)}
-           varex <- rbind("SS loadings" =   vx)
-           varex <- rbind(varex, "Proportion Var" =  vx/nitems)
+      	                                             }} else {vx <- diag(x$Phi %*% t(load) %*% load)
+      	                                                      }
+          
+          names(vx) <- colnames(x$loadings)
+          varex <- rbind("SS loadings" =   vx)
+           varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
+           if (nfactors > 1) 
+                      varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/vtotal))
+                      
+             cat("\n")
+  
+    print(round(varex, digits))
+                      
+          #now, if we did covariances show the standardized coefficients as well
+	    	
+	    	if(!isTRUE(all.equal(vtotal,nitems))) {  #total variance accounted for is not just the number of items in the matrix
+	    	cat('\n Standardized loadings\n')
+	    	 
+	    	 fx <- format(loads,digits=digits)
+	    	nc <- nchar(fx[1,3], type = "c")
+	    	 fx.1 <- fx[,1,drop=FALSE]    #drop = FALSE  preserves the rownames for single factors
+	    	 fx.2 <- round(loads[,3:(2+ncol)]/sqrt(h2+u2),digits)
+	    	 load.2 <- loads[,3:(ncol+2)]/sqrt(h2+u2)
+	    	 
+	    	
+         	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
+         	fx <- data.frame(V=fx.1,fx.2)
+         	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
+         	if(nfactors > 1) { h2 <-h2/(h2+u2)} else {h2 <-h2/(h2+u2)}
+         	u2 <- (1 - h2)
+         	
+	    	print(cbind(fx,h2,u2),quote="FALSE",digits=digits)
+
+
+  if(is.null(x$Phi)) {if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- diag(t(load) %*% load)
+                                                                         vx <- vx*nitems/vtotal 
+      	                                                         }} else {vx <- diag(x$Phi %*% t(load) %*% load)
+      	                                                           vx <- vx*nitems/vtotal }
+      	  names(vx) <- colnames(x$loadings)
+          
+           
+          varex <- rbind("SS loadings" =   vx)
+          varex <- rbind(varex, "Proportion Var" =  vx/nitems)
            if (nfactors > 1) 
                       varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nitems))
-  
     cat("\n")
   
     print(round(varex, digits))
+    	    	}
+  
     
     if(!is.null(x$Phi))  { 
        cat ("\n With factor correlations of \n" )
@@ -95,7 +154,7 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 
 
  
- rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+ rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
          colnames(stats.df) <- colnames(x$loadings)
  
  cat("\nMeasures of factor score adequacy             \n")
@@ -115,4 +174,5 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
  
   
 } 
- }  #end of fac.pa
+ }  #end of print.psych.fa
+

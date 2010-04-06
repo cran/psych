@@ -67,8 +67,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-85 \cr
-Date: \tab 2009-12-20\cr
+Version: \tab 1.0-87 \cr
+Date: \tab 20010-04-06\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -108,7 +108,7 @@ Useful data entry and descriptive statistics\cr
 Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
-\link{fa}              \tab         Combined function for principal axis, minimum residual, or weighted least squares factor analysis\cr
+\link{fa}              \tab         Combined function for principal axis, minimum residual,  weighted least squares, and maximum likelihood factor analysis\cr
 \link{factor.pa}        \tab        Do a principal Axis factor analysis\cr
 \link{factor.minres}    \tab        Do a minimum residual factor analysis\cr
 \link{factor.wls}    \tab        Do a weighted least squares factor analysis\cr
@@ -143,6 +143,7 @@ Functions for reliability analysis (some are listed above as well).
 \link{omega}           \tab          Calculate the omega estimates of reliability (requires the GPArotation package)\cr
 \link{ICC}          \tab             Intraclass correlation coefficients  \cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
+\link{glb.algebraic} \tab  The greates lower bound found by an algebraic solution (requires Rcsdp).  Written by  Andreas Moeltner
 }
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
@@ -170,15 +171,16 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 Functions for generating simulated data sets \cr
 \tabular{ll}{
 \link{sim}               \tab       The basic simulation functions \cr
-\link{sim.anova}         \tab        Generate 3 independent variables and 1 or more dependent variables for demonstrating ANOVA and lm designs \cr
+\link{sim.anova}         \tab       Generate 3 independent variables and 1 or more dependent variables for demonstrating ANOVA and lm designs \cr
 \link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
 \link{sim.item}         \tab        Generate a two dimensional simple structrue with particular item characteristics \cr
 \link{sim.congeneric}   \tab        Generate a one factor congeneric reliability structure \cr
 \link{sim.minor}       \tab         Simulate nfact major and nvar/2 minor factors  \cr
 \link{sim.structural}   \tab        Generate a multifactorial structural model  \cr
+\link{sim.irt}          \tab        Generate data for a 1, 2, 3 or 4 parameter logistic model\cr
 \link{sim.VSS}          \tab          Generate simulated data for the factor model\cr
 \link{phi.demo}          \tab       Create artificial data matrices for teaching purposes\cr
-\link{sim.hierarchical}	 \tab   Generate simulated correlation matrices with hierarchical or any structure\cr 
+\link{sim.hierarchical} \tab        Generate simulated correlation matrices with hierarchical or any structure\cr 
 }
 
 
@@ -287,6 +289,7 @@ function  \tab     requires\cr
 \link{ICLUST.rgraph} \tab   Rgraphviz \cr
 \link{fa.graph}  \tab      Rgraphviz \cr
 \link{structure.graph} \tab Rgraphviz \cr
+\link{glb.algebraic} \tab Rcsdp \cr
 }
 
 }

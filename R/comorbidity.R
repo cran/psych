@@ -1,5 +1,6 @@
 "comorbidity" <- 
 function(d1,d2,com,labels=NULL) {
+ cl <- match.call()
 twobytwo <- matrix(c(com, d1-com,d2-com,1-d1-d2+com),ncol=2)
 if(is.null(labels)) {
 colnames(twobytwo) <- c("D1","d1")
@@ -8,6 +9,7 @@ rownames(twobytwo) <- c("D2","d2")} else { colnames(twobytwo) <- c(labels[1],pas
 phi <- phi(twobytwo)
 Yule <- Yule(twobytwo)
 tetra<- polychor(twobytwo)
-answer <- list(twobytwo=twobytwo,phi=phi,Yule=Yule,tetra=tetra)
+answer <- list(twobytwo=twobytwo,phi=phi,Yule=Yule,tetra=tetra,Call=cl)
+class(answer) <- c("psych","comorbid")
 return(answer)
 }

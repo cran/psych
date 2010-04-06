@@ -9,7 +9,7 @@ This is an early and crude attempt to capture this modeling procedure.
 }
 \usage{
 irt.person.rasch(diff, items)
-irt.0p(items,possible=20)
+irt.0p(items)
 irt.1p(delta,items)
 irt.2p(delta,beta,items) 
 }
@@ -17,7 +17,6 @@ irt.2p(delta,beta,items)
 \arguments{
   \item{diff}{ A vector of item difficulties  --probably taken from irt.item.diff.rasch}
   \item{items}{A matrix of 0,1 items  nrows = number of subjects, ncols = number of items}
-  \item{possible}{Number of items in the scale -- used to determine values of all wrong or all right}
   \item{delta}{delta is the same as diff and is the item difficulty parameter}
   \item{beta}{beta is the item discrimination parameter  found in \code{\link{irt.discrim}} } 
 }
@@ -40,6 +39,7 @@ Then find theta given those deltas
 Then find beta given delta and theta.
 
 This is not an "official" way to do IRT, but is useful for basic item development.
+
 }
 \value{ a data.frame with estimated ability (theta) and quality of fit. (for irt.person.rasch)
    \cr
@@ -47,9 +47,10 @@ This is not an "official" way to do IRT, but is useful for basic item developmen
   
 
 \author{ William Revelle}
-\note{ Not recommended for serious use.  This code is under development.
+\note{ Not recommended for serious use.  This code is under development. Much better functions are in the ltm and eRm packages,
 }
-\seealso{  \code{\link{irt.item.diff.rasch}} }
+\seealso{ \code{\link{sim.irt}}, \code{\link{sim.rasch}},  \code{\link{logistic}}, \code{\link{irt.item.diff.rasch}}
+}
 
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line

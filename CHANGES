@@ -3,9 +3,23 @@ Change file for package psych
 to do:
 modify principal so that scoring of components can yield unstandardized scores
 correct weird factor score estimates in omega 
+allow ICLUST to do confirmatory clustering
+add standard errors to factor loadings
 
+Changes in Version 1.0.86 (2010-03-15)
+ o	Changed the default behavior of print.psych.fa to have cut=0 (print all loadings)
+ o	Added the ability to factor analyze covariance matrices (with resulting loadings of covariances rather than correlations) (suggested by Andreas Moeltner)
+ o	Added two new functions to estimate the greatest lower bound (glb.algebraic written by Andreas Moeltner) and glb.communality.  
+ o	Added read.clipboard.fwf to allow reading of fixed width files from clipboard
+ o	 Added a sim.rasch function to simulate Rasch models
+ o	 Minor change to comorbidity to clean up output (using print.psych)
+ o	 Seriously modified the estimation of cohen's Kappa in the wkappa function and added a new function: cohen.kappa to calculate kappa from raw data or from similarity matrices.  Also calculates the variances following Fleiss, Cohen, and Blashfield, and then find the confidence limits.
+ o	Added the sim.minor function to simulate correlation matrices with nfact major factors and nvar/2 minor factors. 
+  o	Bug fix:  Print factor loadings gave the wrong communalities for sorted loadings
 
 Changes in version 1.0.85  (2009-12-15)
+ o  Modified the output from fa.parallel to print summary statistics.  Also added an option to use smcs as communality estimates.
+ o  Added the sim.minor function to generate major and minor factor structures. 
  o	Modified sim.structural and make.structure to properly handle structure matrices.
  o	Changed fa to use first derivatives based upon the model rather than empirical.  This results in roughly a 10 times improvement in speed for large problems.  As a consequence, VSS is much faster when using minres than previously.
  o	Improved documentation for the dia functions to show the power of structure diagrams

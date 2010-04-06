@@ -4,6 +4,7 @@
 \alias{read.clipboard.tab}
 \alias{read.clipboard.lower}
 \alias{read.clipboard.upper}
+\alias{read.clipboard.fwf}
 \title{shortcut for reading from the clipboard}
 \description{input from the keyboard is easy but a bit obscure, particularly for Mac users. This is just an easier mnemonic to do so.  Also will do some processing to read lower triangular matrices and fill them out to square matrices.
 }
@@ -13,6 +14,7 @@ read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimit
 read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimited
 read.clipboard.lower(diag=TRUE,names=NULL,...)  #read in a matrix given the lower off diagonal
 read.clipboard.upper(diag=TRUE,names=NULL,...)
+read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  #read in data using a fixed format width (see read.fwf for instructions)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -21,6 +23,7 @@ read.clipboard.upper(diag=TRUE,names=NULL,...)
   \item{sep}{What is the designated separater between data fields?}
   \item{diag}{for upper or lower triangular matrices, is the diagonal specified or not}
   \item{names}{for read.clipboard.lower or upper, what colnames to use}
+  \item{widths}{how wide are the columns in fixed width input.  The default is to read 10 columns of size 1. }
   \item{\dots}{ Other parameters to pass to read }
 }
 \details{A typical session of R might involve data stored in text files, generated on line, etc. Although it is easy to just read from a file (particularly if using file.locate() or file.choose(), copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user. This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
@@ -29,7 +32,9 @@ Based upon a suggestion by Ken Knoblauch to the R-help listserve.
 
 If the input file that was copied into the clipboard was an Excel file with blanks for missing data, then read.clipboard.tab() will correctly replace the blanks with NAs.  Similarly for a csv file with blank entries, read.clipboard.csv will replace empty fields with NA.  
 
-read.clipboard.lower and read.clipboard.upper are adapted from John Fox's read.moments function in the sem package.  They will read a lower (or upper) triangular matrix from the clipboard and return a full, symmetric matrix for use by factanal, \code{\link{factor.pa}} , \code{\link{ICLUST}} , etc.  If the diagonal is false, it will be replaced by 1.0s.  These two function were added to allow easy reading of examples from various texts and manuscripts with just triangular output. }
+read.clipboard.lower and read.clipboard.upper are adapted from John Fox's read.moments function in the sem package.  They will read a lower (or upper) triangular matrix from the clipboard and return a full, symmetric matrix for use by factanal, \code{\link{factor.pa}} , \code{\link{ICLUST}} , etc.  If the diagonal is false, it will be replaced by 1.0s.  These two function were added to allow easy reading of examples from various texts and manuscripts with just triangular output. 
+
+read.clipboard.fwf will read fixed format files from the clipboard.  It includes a patch to read.fwf which will not read from the clipboard or from remote file.  See read.fwf for documentation of how to specify the widths. }
 \value{the contents of the clipboard.
 }
 

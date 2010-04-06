@@ -33,7 +33,9 @@
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \bibstyle{apacite}
 \bibliographystyle{apa}   %this one plus author year seems to work?
-\usepackage{hyperref}
+%\usepackage{hyperref}
+\usepackage[colorlinks=true,citecolor=blue]{hyperref}  %this makes reference links hyperlinks in pdf!
+
 
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \usepackage{multicol}        % used for the two-column index
@@ -84,6 +86,32 @@ One common application of \pfun{psych} is the creation of simulated data matrice
 \section{Functions for generating correlational matrices with a particular structure}
 The \pfun{sim} family of  functions create data sets with particular structure.  Most of these functions have default values that will produce useful examples.  Although graphical summaries of these structures will be shown here, some of the options of the graphical displays will be discussed in a later section.
 
+The \pfun{sim} functions include:
+
+\begin{description}
+\item[sim.structure ]A function to combine a measurement and structural model into one data matrix. Useful for understanding structural equation models. Combined with structure.diagram to see the proposed structure.
+
+\item[sim.congeneric] A function to create congeneric items/tests for demonstrating classical test theory. This is just a special case of sim.structure.
+
+\item[sim.hierarchical ]A function to create data with a hierarchical (bifactor) structure.
+
+\item[sim.item] A function to create items that either have a simple structure or a circumplex structure.
+
+\item[sim.circ] Create data with a circumplex structure.
+
+\item[sim.dichot ]Create dichotomous item data with a simple or circumplex structure.
+
+\item[sim.minor] Create a factor structure for nvar variables defined by nfact major factors and $\frac{nvar}{2} $``minor" factors for n observations.
+
+\item[sim.parallel] Create a number of simulated data sets using sim.minor to show how parallel analysis works.
+
+\item[sim.rasch] Create  IRT data following a Rasch model.
+
+\item[sim.irt]  Create a two parameter IRT logistic (2PL) model.
+
+\item[sim.anova] Simulate a 3 way balanced ANOVA or linear model, with or without repeated measures.
+\end{description}
+
 To make these examples replicable for readers, all simulations are prefaced by setting the random seed to a fixed (and for some, memorable) number \citep{adams:80}.  For normal use of the simulations, this is not necessary.
 
 \subsection{\pfun{sim.congeneric}}
@@ -111,8 +139,8 @@ round(cong,2)
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-plot.new()
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+#plot.new()
 m1 <- structure.diagram(c("a","b","c","d"))
 @
 \caption{Tau equivalent tests are special cases of congeneric tests.  Tau equivalence assumes a=b=c=d}
@@ -198,7 +226,7 @@ three.fact
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-plot.new()
+#plot.new()
 three.fact.mod <-structure.diagram(fx)
 @
 \caption{Three uncorrelated factors generated using the sim.structure function and drawn using structure.diagram.}
@@ -229,7 +257,7 @@ The \pfun{structure.list} and \pfun{phi.list} functions allow for creation of fx
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-plot.new()
+#plot.new()
 corf3.mod <- structure.diagram(fxs,Phis)
 @
 \caption{Three correlated factors with symbolic paths. Created using structure.diagram and structure.list and phi.list for ease of input.}
@@ -248,7 +276,7 @@ f3.p <- Promax(fa(cor.f3$model,3))
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-plot.new()
+#plot.new()
 mod.f3p <- structure.diagram(f3.p,cut=.2)
 @
 \caption{The empirically fitted structural model.  Paths less than cut (.2 in this case, the default is .3) are not shown.}
@@ -279,7 +307,7 @@ fyx <- structure.list(3,list(Y=c(1,2,3)),"Y")
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-plot.new()
+#plot.new()
 sg3 <- structure.diagram(fxs,phi,fyx)
 @
 \caption{A symbolic structural model. Three independent latent variables are regressed on a latent Y.}
@@ -293,13 +321,13 @@ sg3 <- structure.diagram(fxs,phi,fyx)
 Measures of intelligence and psychopathology frequently have a general factor as well as multiple group factors.  The general factor then is thought to predict some dependent latent variable.  Compare this with the previous model (see Figure~\ref{fig:symbxy}). 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 fxh  <- structure.list(9,list(X1=c(1:3),X2=c(4:6),X3=c(7:9),g=NULL))
 fy <- structure.list(3,list(Y=c(1,2,3)))
 Phi <- diag(1,5,5)
 Phi[4,c(1:3)] <- letters[1:3]
 Phi[5,4] <- "r"
-plot.new()
+#plot.new()
 hi.mod <-structure.diagram(fxh,Phi, fy)
 @
 \caption{A symbolic structural model with a general factor and three group factors. The general factor is regressed on the latent Y variable.}
@@ -483,7 +511,7 @@ The structure being tested may be seen using \pfun{structure.graph}
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-plot.new()
+#plot.new()
 mod.f3p <- structure.diagram(f3.p)
 @
 \caption{A three factor, oblique solution.}
@@ -561,6 +589,72 @@ The use of exploratory and confirmatory models for understanding real data struc
 
 \newpage
 %\bibliography{/Volumes/WR/bill/Documents/Active/book/all} 
-\bibliography{all} 
+%\bibliography{all} 
+\begin{thebibliography}{}
+
+\bibitem[\protect\astroncite{Adams}{1980}]{adams:80}
+Adams, D. (1980).
+\newblock {\em The hitchhiker's guide to the galaxy}.
+\newblock Harmony Books, New York, 1st {American} edition.
+
+\bibitem[\protect\astroncite{Bechtoldt}{1961}]{bechtoldt:61}
+Bechtoldt, H. (1961).
+\newblock An empirical study of the factor analysis stability hypothesis.
+\newblock {\em Psychometrika}, 26(4):405--432.
+
+\bibitem[\protect\astroncite{Fox}{2006}]{fox:06}
+Fox, J. (2006).
+\newblock Structural equation modeling with the sem package in {R}.
+\newblock {\em Structural Equation Modeling}, 13:465--486.
+
+\bibitem[\protect\astroncite{Fox}{2009}]{sem}
+Fox, J. (2009).
+\newblock {\em sem: Structural Equation Models}.
+\newblock R package version 0.9-15.
+
+\bibitem[\protect\astroncite{Holzinger and Swineford}{1937}]{holzinger:37}
+Holzinger, K. and Swineford, F. (1937).
+\newblock The bi-factor method.
+\newblock {\em Psychometrika}, 2(1):41--54.
+
+\bibitem[\protect\astroncite{Jensen and Weng}{1994}]{jensen:weng}
+Jensen, A.~R. and Weng, L.-J. (1994).
+\newblock What is a good g?
+\newblock {\em Intelligence}, 18(3):231--258.
+
+\bibitem[\protect\astroncite{McDonald}{1999}]{mcdonald:tt}
+McDonald, R.~P. (1999).
+\newblock {\em Test theory: {A} unified treatment}.
+\newblock L. Erlbaum Associates, Mahwah, N.J.
+
+\bibitem[\protect\astroncite{Rafaeli and Revelle}{2006}]{rafaeli:revelle:06}
+Rafaeli, E. and Revelle, W. (2006).
+\newblock A premature consensus: Are happiness and sadness truly opposite
+  affects?
+\newblock {\em Motivation and Emotion}, 30(1):1--12.
+
+\bibitem[\protect\astroncite{Reise et~al.}{2007}]{reise:07}
+Reise, S., Morizot, J., and Hays, R. (2007).
+\newblock The role of the bifactor model in resolving dimensionality issues in
+  health outcomes measures.
+\newblock {\em Quality of Life Research}, 16(0):19--31.
+
+\bibitem[\protect\astroncite{Revelle}{2010}]{psych}
+Revelle, W. (2010).
+\newblock {\em psych: Procedures for Personality and Psychological Research}.
+\newblock R package version 1.0-86.
+
+\bibitem[\protect\astroncite{Schmid and Leiman}{1957}]{schmid:57}
+Schmid, J.~J. and Leiman, J.~M. (1957).
+\newblock The development of hierarchical factor solutions.
+\newblock {\em Psychometrika}, 22(1):83--90.
+
+\bibitem[\protect\astroncite{Thurstone and Thurstone}{1941}]{thurstone:41}
+Thurstone, L.~L. and Thurstone, T.~G. (1941).
+\newblock {\em Factorial studies of intelligence}.
+\newblock The University of Chicago press, Chicago, Ill.
+
+\end{thebibliography}
+
 \printindex
 \end{document}  

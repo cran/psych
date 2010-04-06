@@ -33,7 +33,9 @@
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \bibstyle{apacite}
 \bibliographystyle{apa}   %this one plus author year seems to work?
-\usepackage{hyperref}
+%\usepackage{hyperref}
+\usepackage[colorlinks=true,citecolor=blue]{hyperref}  %this makes reference links hyperlinks in pdf!
+
 
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \usepackage{multicol}        % used for the two-column index
@@ -70,16 +72,17 @@
 
 The \Rpkg{psych} package \citep{psych} has been developed at Northwestern University to include functions most useful for personality, psychometric,  and psychological research.  Some of the functions (e.g., \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels}, \pfun{error.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications include routines for five types of \iemph{factor analysis} (\pfun{fa} does  \iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{VSS}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis \pfun{fa.parallel} criteria.  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{ICLUST}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{ICLUST}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79}are also available.
+Psychometric applications include routines for five types of \iemph{factor analysis} (\pfun{fa} does  \iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{VSS}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis \pfun{fa.parallel} criteria.  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{ICLUST}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{ICLUST}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
 
 
 This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
 
-For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  guide for using \R{} for personality research at \url{http://personalitytheory.org/r/r.short.html}. 
+For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  guide for using \R{} for personality research at \url{http://personalitytheory.org/r/r.short.html}.  For an \iemph{introduction to psychometric theory with applications in \R{}}, see the draft chapters at \url{http://personality-project.org/r/book}).
+
 
 
 \section{Getting started} 
-Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polycor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  (These and other useful packages can be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but it doing it this way is not necessary.)  
+Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polycor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
 
 
 \begin{Schunk}
@@ -90,7 +93,7 @@ task.views("Psychometrics")
 \end{Sinput}
 \end{Schunk} 
 
-Because of the difficulty of installing the  package \Rpkg{Rgraphviz}, alternative graphics have been developed and are available as ``diagram" functions.   If \Rpkg{Rgraphviz} is available, some functions will take advantage of it.
+Because of the difficulty of installing the  package \Rpkg{Rgraphviz}, alternative graphics have been developed and are available as \iemph{diagram} functions.   If \Rpkg{Rgraphviz} is available, some functions will take advantage of it.
 
 
 \section{Basic data analysis}
@@ -119,7 +122,7 @@ It is possible to automatically load  \Rpkg{psych} and other functions by creati
 
 \subsection{Data input and descriptive statistics}
 
-There are of course many ways to enter data into \R.  Reading from a local file using \fun{read.table} is perhaps the most preferred.  However, many users will enter their data in a text editor or spreadsheet program and then want to copy and paste into \R{}.  This may be done by using \fun{read.table} and specifying the input file as ``clipboard" (PCs) or ``pbpaste" (Macs). Alternatively, the  \pfun{read.clipboard} set of functions are perhaps more user friendly:
+There are of course many ways to enter data into \R.  Reading from a local file using \fun{read.table} is perhaps the most preferred.  However, many users will enter their data in a text editor or spreadsheet program and then want to copy and paste into \R{}.  This may be done by using \fun{read.table} and specifying the input file as ``clipboard" (PCs) or ``pipe(pbpaste)" (Macs). Alternatively, the  \pfun{read.clipboard} set of functions are perhaps more user friendly:
 
  \begin{description}
  \item [\pfun{read.clipboard}] is the base function for reading data from the clipboard.
@@ -127,11 +130,12 @@ There are of course many ways to enter data into \R.  Reading from a local file 
   \item [\pfun{read.clipboard.tab}] for reading text  that is tab delimited. 
  \item [\pfun{read.clipboard.lower}] for reading input of a lower triangular matrix with or without a diagonal.  The resulting object is a square matrix.
  \item [\pfun{read.clipboard.upper}] for reading input of an upper triangular matrix.
+ \item[\pfun{read.clipboard.fwf}] for reading in fixed width fields (some very old data sets)
  \end{description}
  
  For example, given a data set copied to the clipboard from a spreadsheet, just enter the command
  
- \begin{Schunk}
+\begin{Schunk}
 \begin{Sinput}
 > my.data <- read.clipboard()
 \end{Sinput}
@@ -139,10 +143,16 @@ There are of course many ways to enter data into \R.  Reading from a local file 
 
 This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
 
- \begin{Schunk}
+\begin{Schunk}
 \begin{Sinput}
 > my.data <- read.clipboard(sep="\t")   #define the tab option, or 
 > my.tab.data <- read.clipboard.tab()   #just use the alternative function
+\end{Sinput}
+\end{Schunk} 
+For the case of data in fixed width fields (some old data sets tend to have this format), copy to the clipboard and then specify the width of each field (in the example below, the first variable is 5 columns, the second is 2 columns, the next 5 are 1 column the last 4 are 3 columns). 
+\begin{Schunk}
+\begin{Sinput}
+> my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
 \end{Sinput}
 \end{Schunk} 
  
@@ -161,7 +171,7 @@ describe(sat.act)  #basic descriptive statistics
 @
 
 
-These data can then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.
+These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.
 
 
 <<print=FALSE,echo=TRUE>>= 
@@ -170,13 +180,17 @@ describe.by(sat.act,sat.act$gender,skew=FALSE,ranges=FALSE) #basic descriptive s
 
 The output from the describe.by function can be forced into a matrix form for easy analysis by other programs.  In addition, describe.by can group by several grouping variables at the same time.
 
-sa.mat <- describe.by(sat.act,list(sat.act$gender,sat.act$education),skew=FALSE,ranges=FALSE,mat=TRUE)
-
+<<print=FALSE,echo=TRUE>>= 
+sa.mat <- describe.by(sat.act,list(sat.act$gender,sat.act$education),
+ skew=FALSE,ranges=FALSE,mat=TRUE)
+head(sa.mat)
+tail(sa.mat)
+@
 
 
 \subsection{Simple descriptive graphics}
 
-Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the ``lowess'' locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the first and second principal components is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).
+Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the \iemph{lowess} locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the first and second principal components is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).
 
 \begin{description}
 \item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.
@@ -227,7 +241,7 @@ error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 \end{center}
 \end{figure}
 
-Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of ``dynamite plot" can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{http://emdbolker.wikidot.com/blog:dynamite}. 
+Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of`\iemph{dynamite plot} (Figure~\ref{fig:dynamite}) can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{http://emdbolker.wikidot.com/blog:dynamite}. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -235,7 +249,7 @@ Although not recommended, it is possible to use the \pfun{error.bars} function t
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("Male","Female"),ylab="SAT score",xlab="")
 @
 \caption{A ``Dynamite plot" of SAT scores as a function of gender is one way of misleading the reader. By using a bar graph, the range of scores is ignored. }
-\label{default}
+\label{fig:dynamite}
 \end{center}
 \end{figure}
 
@@ -317,7 +331,6 @@ At the data level the data reduction problem may be solved as a \iemph{Singular 
 Several of the functions in \Rpkg{psych} address the problem of data reduction. 
 
 \begin{description}
-\item[\pfun{ICLUST} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
 
 \item[\pfun{fa}] incorporates five alternative algorithms: \iemph{minres factor analysis}, \iemph{principal axis factor analysis}, \iemph{weighted least squares factor analysis}, \iemph{generalized least squares factor analysis} and \iemph{maximum likelihood factor analysis}. That is, it includes the functionality of three other functions that will be eventually phased out.
 
@@ -337,45 +350,10 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \item[\pfun{fa.diagram}] replaces \pfun{fa.graph} and will draw a path diagram representing the factor structure.  It does not require Rgraphviz and thus  is probably preferred.
 \item[\pfun{fa.graph}] requires \fun{Rgraphviz} and will draw a graphic representation of the factor structure. If factors are correlated, this will be represented as well. 
+
+
+\item[\pfun{ICLUST} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
 \end{description}
-
-\subsubsection{Item Cluster Analysis: ICLUST}
- An alternative to factor or components analysis is \iemph{cluster analysis}.  The goal of cluster analysis is the same as factor or components analysis (reduce the complexity of the data and attempt to identify homogeneous subgroupings).  Mainly used for clustering people or objects (e.g., projectile points if an anthropologist, DNA if a biologist, galaxies if an astronomer), clustering may be used for clustering items or tests as well.  Introduced to psychologists by \cite{tryon:39} in the 1930's, the cluster analytic literature exploded in the 1970s and 1980s \citep{blashfield:80,blashfield:88,everitt:74,hartigan:75}.  Much of the research is in taxonmetric applications in biology \cite{sneath:73,sokal:63} and marketing \citep{cooksey:06} where clustering remains very popular.  It is also used for taxonomic work in forming clusters of people in family  \citep{henry:05}   and clinical psychology \citep{martinent:07,mun:08}. Interestingly enough it has has had limited applications to psychometrics.  This is unfortunate, for as has been pointed out by e.g. \citep{tryon:35,loevinger:53}, the theory of factors, while mathematically compelling, offers little that the geneticist or behaviorist or perhaps even non-specialist finds compelling. \cite{cooksey:06} reviews why the \pfun{ICLUST} algorithm is particularly appropriate for scale construction in marketing. 
- 
-
-\emph{Hierarchical cluster analysis} \index{hierarchical cluster analysis} forms clusters that are nested within clusters.  The resulting \iemph{tree diagram} (also known somewhat pretentiously as a \iemph{rooted dendritic structure}) shows the nesting structure.  Although there are many hierarchical clustering algorithms in \R{} (e.g., \fun{agnes},  \fun{hclust}, and \pfun{ICLUST}), the one most applicable to the problems of scale construction is \pfun{ICLUST}  \citep{revelle:iclust}.
-\begin{enumerate}
-\item Find the proximity (e.g. correlation) matrix,
-\item Identify the most similar pair of items
-\item Combine this most similar pair of items to form a new variable (cluster),
-\item Find the similarity of this cluster to all other items and clusters,
-\item Repeat  steps 2 and 3 until some criterion is reached (e.g., typicallly, if only one cluster remains or in \pfun{ICLUST} if there is a failure to increase reliability coefficients $\alpha$ or $\beta$). 
-\item Purify the solution by reassigning items to the most similar cluster center.
-\end{enumerate}
-
-
-ICLUST  forms clusters of items using a hierarchical clustering algorithm until one of two measures of internal consistency fails to increase \citep{revelle:iclust}. The number of clusters may be specified a priori, or found empirically. The resulting statistics include the average split half reliability, $\alpha$ \citep{cronbach:51}, as well as the worst split half reliability, $\beta$ \citep{revelle:iclust}, which is an estimate of the general factor saturation of the resulting scale.
-\begin{figure}[htbp]
-\begin{center}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-data(bfi)
-ic <- ICLUST(bfi)
-@
-\caption{Using the \pfun{ICLUST} function to find the cluster structure of 25 personality items.}
-\label{fig:iclust}
-\end{center}
-\end{figure}
-
-\begin{table}[htdp]
-\caption{The summary statistics from an ICLUST analysis shows three large clusters and one item that is not grouped with the other clusters.}
-\begin{center}
-<<print=FALSE,echo=TRUE>>=
-summary(ic)  #show the results
-@
-\end{center}
-\label{tab:iclust}
-\end{table}%
-
 
 \subsubsection{Minimum Residual Factor Analysis}
 
@@ -510,6 +488,44 @@ om <- omega(Thurstone,n.obs=213)
 \label{fig:omega.2}
 \end{center}
 \end{figure}
+
+\subsubsection{Item Cluster Analysis: ICLUST}
+ An alternative to factor or components analysis is \iemph{cluster analysis}.  The goal of cluster analysis is the same as factor or components analysis (reduce the complexity of the data and attempt to identify homogeneous subgroupings).  Mainly used for clustering people or objects (e.g., projectile points if an anthropologist, DNA if a biologist, galaxies if an astronomer), clustering may be used for clustering items or tests as well.  Introduced to psychologists by \cite{tryon:39} in the 1930's, the cluster analytic literature exploded in the 1970s and 1980s \citep{blashfield:80,blashfield:88,everitt:74,hartigan:75}.  Much of the research is in taxonmetric applications in biology \cite{sneath:73,sokal:63} and marketing \citep{cooksey:06} where clustering remains very popular.  It is also used for taxonomic work in forming clusters of people in family  \citep{henry:05}   and clinical psychology \citep{martinent:07,mun:08}. Interestingly enough it has has had limited applications to psychometrics.  This is unfortunate, for as has been pointed out by e.g. \citep{tryon:35,loevinger:53}, the theory of factors, while mathematically compelling, offers little that the geneticist or behaviorist or perhaps even non-specialist finds compelling. \cite{cooksey:06} reviews why the \pfun{ICLUST} algorithm is particularly appropriate for scale construction in marketing. 
+ 
+
+\emph{Hierarchical cluster analysis} \index{hierarchical cluster analysis} forms clusters that are nested within clusters.  The resulting \iemph{tree diagram} (also known somewhat pretentiously as a \iemph{rooted dendritic structure}) shows the nesting structure.  Although there are many hierarchical clustering algorithms in \R{} (e.g., \fun{agnes},  \fun{hclust}, and \pfun{ICLUST}), the one most applicable to the problems of scale construction is \pfun{ICLUST}  \citep{revelle:iclust}.
+\begin{enumerate}
+\item Find the proximity (e.g. correlation) matrix,
+\item Identify the most similar pair of items
+\item Combine this most similar pair of items to form a new variable (cluster),
+\item Find the similarity of this cluster to all other items and clusters,
+\item Repeat  steps 2 and 3 until some criterion is reached (e.g., typicallly, if only one cluster remains or in \pfun{ICLUST} if there is a failure to increase reliability coefficients $\alpha$ or $\beta$). 
+\item Purify the solution by reassigning items to the most similar cluster center.
+\end{enumerate}
+
+
+ICLUST  forms clusters of items using a hierarchical clustering algorithm until one of two measures of internal consistency fails to increase \citep{revelle:iclust}. The number of clusters may be specified a priori, or found empirically. The resulting statistics include the average split half reliability, $\alpha$ \citep{cronbach:51}, as well as the worst split half reliability, $\beta$ \citep{revelle:iclust}, which is an estimate of the general factor saturation of the resulting scale.
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+data(bfi)
+ic <- ICLUST(bfi)
+@
+\caption{Using the \pfun{ICLUST} function to find the cluster structure of 25 personality items.}
+\label{fig:iclust}
+\end{center}
+\end{figure}
+
+\begin{table}[htdp]
+\caption{The summary statistics from an ICLUST analysis shows three large clusters and one item that is not grouped with the other clusters.}
+\begin{center}
+<<print=FALSE,echo=TRUE>>=
+summary(ic)  #show the results
+@
+\end{center}
+\label{tab:iclust}
+\end{table}%
+
 
 
 \subsection{Comparing factor/component/cluster solutions}
@@ -770,7 +786,10 @@ It is particularly helpful, when teaching psychometric concepts, to be able to g
 \item [\pfun{sim.circ}]  To create data with a circumplex structure.
 \item [\pfun{sim.item}]To create items that either have a simple structure or a circumplex structure.
 \item [\pfun{sim.dichot}] Create dichotomous item data with a simple or circumplex structure.
+\item[\pfun{sim.rasch}] Simulate a 1 parameter logistic (Rasch) model.
+\item[\pfun{sim.irt}] Simulate a 2 parameter logistic (2PL) model.
 \end{description}
+
 
 These functions are described in more detail in the companion vignette: \href{"psych_for_sem.pdf"}{psych for sem}.
 
@@ -805,7 +824,7 @@ dia.arrow(bl,ll$bottom)
 dia.curved.arrow(ml,ll$right)
 dia.curved.arrow(mr,lr$top)
 @
-\caption{The basic graphic capabilities of the dia functions}
+\caption{The basic graphic capabilities of the dia functions are shown in this figure.}
 \label{fig:dia}
 \end{center}
 \end{figure}
@@ -842,7 +861,7 @@ The \Rpkg{psych} package has been developed to help psychologists do basic resea
 For more extensive discussion of the use of psych in particular and R in general, consult  \url{http://personality-project.org/r/r.guide.html} A short guide to R.
 
 
-\section{sessionInfo}
+\section{SessionInfo}
 This document was prepared using the following settings.
 <<print=FALSE,echo=TRUE>>=
 sessionInfo()
@@ -850,6 +869,213 @@ sessionInfo()
 
 \newpage
 %\bibliography{/Volumes/WR/bill/Documents/Active/book/all}
-\bibliography{all} 
+%\bibliography{all} 
+\begin{thebibliography}{}
+
+\bibitem[\protect\astroncite{Bechtoldt}{1961}]{bechtoldt:61}
+Bechtoldt, H. (1961).
+\newblock An empirical study of the factor analysis stability hypothesis.
+\newblock {\em Psychometrika}, 26(4):405--432.
+
+\bibitem[\protect\astroncite{Blashfield}{1980}]{blashfield:80}
+Blashfield, R.~K. (1980).
+\newblock The growth of cluster analysis: {Tryon, Ward, and Johnson}.
+\newblock {\em Multivariate Behavioral Research}, 15(4):439 -- 458.
+
+\bibitem[\protect\astroncite{Blashfield and Aldenderfer}{1988}]{blashfield:88}
+Blashfield, R.~K. and Aldenderfer, M.~S. (1988).
+\newblock The methods and problems of cluster analysis.
+\newblock In Nesselroade, J.~R. and Cattell, R.~B., editors, {\em Handbook of
+  multivariate experimental psychology (2nd ed.)}, pages 447--473. Plenum
+  Press, New York, NY.
+
+\bibitem[\protect\astroncite{Cattell}{1966}]{cattell:scree}
+Cattell, R.~B. (1966).
+\newblock The scree test for the number of factors.
+\newblock {\em Multivariate Behavioral Research}, 1(2):245--276.
+
+\bibitem[\protect\astroncite{Cattell}{1978}]{cattell:fa78}
+Cattell, R.~B. (1978).
+\newblock {\em The scientific use of factor analysis}.
+\newblock Plenum Press, New York.
+
+\bibitem[\protect\astroncite{Cooksey and Soutar}{2006}]{cooksey:06}
+Cooksey, R. and Soutar, G. (2006).
+\newblock Coefficient beta and hierarchical item clustering - an analytical
+  procedure for establishing and displaying the dimensionality and homogeneity
+  of summated scales.
+\newblock {\em Organizational Research Methods}, 9:78--98.
+
+\bibitem[\protect\astroncite{Cronbach}{1951}]{cronbach:51}
+Cronbach, L.~J. (1951).
+\newblock Coefficient alpha and the internal structure of tests.
+\newblock {\em Psychometrika}, 16:297--334.
+
+\bibitem[\protect\astroncite{Everitt}{1974}]{everitt:74}
+Everitt, B. (1974).
+\newblock {\em Cluster analysis}.
+\newblock John Wiley \& Sons, Cluster analysis. 122 pp. Oxford, England.
+
+\bibitem[\protect\astroncite{Fox}{2009}]{sem}
+Fox, J. (2009).
+\newblock {\em sem: Structural Equation Models}.
+\newblock R package version 0.9-15.
+
+\bibitem[\protect\astroncite{Grice}{2001}]{grice:01}
+Grice, J.~W. (2001).
+\newblock Computing and evaluating factor scores.
+\newblock {\em Psychological Methods}, 6(4):430--450.
+
+\bibitem[\protect\astroncite{Guilford}{1954}]{guilford:54}
+Guilford, J.~P. (1954).
+\newblock {\em Psychometric Methods}.
+\newblock McGraw-Hill, New York, 2nd edition.
+
+\bibitem[\protect\astroncite{Guttman}{1945}]{guttman:45}
+Guttman, L. (1945).
+\newblock A basis for analyzing test-retest reliability.
+\newblock {\em Psychometrika}, 10(4):255--282.
+
+\bibitem[\protect\astroncite{Hartigan}{1975}]{hartigan:75}
+Hartigan, J.~A. (1975).
+\newblock {\em Clustering Algorithms}.
+\newblock John Wiley \& Sons, Inc., New York, NY, USA.
+
+\bibitem[\protect\astroncite{Henry et~al.}{2005}]{henry:05}
+Henry, D.~B., Tolan, P.~H., and Gorman-Smith, D. (2005).
+\newblock Cluster analysis in family psychology research.
+\newblock {\em Journal of Family Psychology}, 19(1):121--132.
+
+\bibitem[\protect\astroncite{Holzinger and Swineford}{1937}]{holzinger:37}
+Holzinger, K. and Swineford, F. (1937).
+\newblock The bi-factor method.
+\newblock {\em Psychometrika}, 2(1):41--54.
+
+\bibitem[\protect\astroncite{Horn}{1965}]{horn:65}
+Horn, J. (1965).
+\newblock A rationale and test for the number of factors in factor analysis.
+\newblock {\em Psychometrika}, 30(2):179--185.
+
+\bibitem[\protect\astroncite{Horn and Engstrom}{1979}]{horn:79}
+Horn, J.~L. and Engstrom, R. (1979).
+\newblock Cattell's scree test in relation to bartlett's chi-square test and
+  other observations on the number of factors problem.
+\newblock {\em Multivariate Behavioral Research}, 14(3):283--300.
+
+\bibitem[\protect\astroncite{Jensen and Weng}{1994}]{jensen:weng}
+Jensen, A.~R. and Weng, L.-J. (1994).
+\newblock What is a good g?
+\newblock {\em Intelligence}, 18(3):231--258.
+
+\bibitem[\protect\astroncite{Loevinger et~al.}{1953}]{loevinger:53}
+Loevinger, J., Gleser, G., and DuBois, P. (1953).
+\newblock Maximizing the discriminating power of a multiple-score test.
+\newblock {\em Psychometrika}, 18(4):309--317.
+
+\bibitem[\protect\astroncite{MacCallum et~al.}{2007}]{maccallum:07}
+MacCallum, R.~C., Browne, M.~W., and Cai, L. (2007).
+\newblock Factor analysis models as approximations.
+\newblock In Cudeck, R. and MacCallum, R.~C., editors, {\em Factor analysis at
+  100: Historical developments and future directions}, pages 153--175. Lawrence
+  Erlbaum Associates Publishers, Mahwah, NJ.
+
+\bibitem[\protect\astroncite{Martinent and Ferrand}{2007}]{martinent:07}
+Martinent, G. and Ferrand, C. (2007).
+\newblock A cluster analysis of precompetitive anxiety: Relationship with
+  perfectionism and trait anxiety.
+\newblock {\em Personality and Individual Differences}, 43(7):1676--1686.
+
+\bibitem[\protect\astroncite{McDonald}{1999}]{mcdonald:tt}
+McDonald, R.~P. (1999).
+\newblock {\em Test theory: {A} unified treatment}.
+\newblock L. Erlbaum Associates, Mahwah, N.J.
+
+\bibitem[\protect\astroncite{Mun et~al.}{2008}]{mun:08}
+Mun, E.~Y., von Eye, A., Bates, M.~E., and Vaschillo, E.~G. (2008).
+\newblock Finding groups using model-based cluster analysis: Heterogeneous
+  emotional self-regulatory processes and heavy alcohol use risk.
+\newblock {\em Developmental Psychology}, 44(2):481--495.
+
+\bibitem[\protect\astroncite{Nunnally}{1967}]{nunnally:67}
+Nunnally, J.~C. (1967).
+\newblock {\em Psychometric theory}.
+\newblock McGraw-Hill, New York,.
+
+\bibitem[\protect\astroncite{Revelle}{1979}]{revelle:iclust}
+Revelle, W. (1979).
+\newblock Hierarchical cluster-analysis and the internal structure of tests.
+\newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
+
+\bibitem[\protect\astroncite{Revelle}{2010}]{psych}
+Revelle, W. (2010).
+\newblock {\em psych: Procedures for Personality and Psychological Research}.
+\newblock R package version 1.0-86.
+
+\bibitem[\protect\astroncite{Revelle and Rocklin}{1979}]{revelle:vss}
+Revelle, W. and Rocklin, T. (1979).
+\newblock {Very Simple Structure} - alternative procedure for estimating the
+  optimal number of interpretable factors.
+\newblock {\em Multivariate Behavioral Research}, 14(4):403--414.
+
+\bibitem[\protect\astroncite{Revelle and Zinbarg}{2009}]{rz:09}
+Revelle, W. and Zinbarg, R.~E. (2009).
+\newblock Coefficients alpha, beta, omega and the glb: comments on {Sijtsma}.
+\newblock {\em Psychometrika}, 74(1):145--154.
+
+\bibitem[\protect\astroncite{Schmid and Leiman}{1957}]{schmid:57}
+Schmid, J.~J. and Leiman, J.~M. (1957).
+\newblock The development of hierarchical factor solutions.
+\newblock {\em Psychometrika}, 22(1):83--90.
+
+\bibitem[\protect\astroncite{Shrout and Fleiss}{1979}]{shrout:79}
+Shrout, P.~E. and Fleiss, J.~L. (1979).
+\newblock Intraclass correlations: Uses in assessing rater reliability.
+\newblock {\em Psychological Bulletin}, 86(2):420--428.
+
+\bibitem[\protect\astroncite{Sneath and Sokal}{1973}]{sneath:73}
+Sneath, P. H.~A. and Sokal, R.~R. (1973).
+\newblock {\em Numerical taxonomy: the principles and practice of numerical
+  classification}.
+\newblock A Series of books in biology. W. H. Freeman, San Francisco.
+
+\bibitem[\protect\astroncite{Sokal and Sneath}{1963}]{sokal:63}
+Sokal, R.~R. and Sneath, P. H.~A. (1963).
+\newblock {\em Principles of numerical taxonomy}.
+\newblock A Series of books in biology. W. H. Freeman, San Francisco.
+
+\bibitem[\protect\astroncite{Steiger}{1980}]{steiger:80b}
+Steiger, J.~H. (1980).
+\newblock Tests for comparing elements of a correlation matrix.
+\newblock {\em Psychological Bulletin}, 87(2):245--251.
+
+\bibitem[\protect\astroncite{Thorburn}{1918}]{thornburn:1918}
+Thorburn, W.~M. (1918).
+\newblock The myth of occam's razor.
+\newblock {\em Mind}, 27:345--353.
+
+\bibitem[\protect\astroncite{Thurstone and Thurstone}{1941}]{thurstone:41}
+Thurstone, L.~L. and Thurstone, T.~G. (1941).
+\newblock {\em Factorial studies of intelligence}.
+\newblock The University of Chicago press, Chicago, Ill.
+
+\bibitem[\protect\astroncite{Tryon}{1935}]{tryon:35}
+Tryon, R.~C. (1935).
+\newblock A theory of psychological components--an alternative to "mathematical
+  factors.".
+\newblock {\em Psychological Review}, 42(5):425--454.
+
+\bibitem[\protect\astroncite{Tryon}{1939}]{tryon:39}
+Tryon, R.~C. (1939).
+\newblock {\em Cluster analysis}.
+\newblock Edwards Brothers, Ann Arbor, Michigan.
+
+\bibitem[\protect\astroncite{Velicer}{1976}]{velicer:76}
+Velicer, W. (1976).
+\newblock Determining the number of components from the matrix of partial
+  correlations.
+\newblock {\em Psychometrika}, 41(3):321--327.
+
+\end{thebibliography}
+
 \printindex
 \end{document}  

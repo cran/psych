@@ -26,9 +26,9 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{rsize}{size of rectangles}
   \item{side}{on which side should error arrows go?}
   \item{cex}{modify font size}
-  \item{node.font}{  }
-  \item{edge.font}{ }
-  \item{rank.direction}{  }
+  \item{node.font}{what font should be used for nodes in fa.graph  }
+  \item{edge.font}{what font should be used for edges in fa.graph  }
+  \item{rank.direction}{ parameter passed to Rgraphviz-- which way to draw the graph }
   \item{digits}{ Number of digits to show as an edgelable }
   \item{main}{ Graphic title }
   \item{graphviz}{Should we try to use Rgraphviz for output?}
@@ -38,35 +38,27 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
 
 fa.diagram does not use Rgraphviz and is the preferred function.
 
-
-In fa.graph, although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R.
+In fa.graph, although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram.
 }
 \value{fa.diagram: A path diagram is drawn without using Rgraphviz.  This is probably the more useful function.
 
 fa.graph: A graph is drawn using rgraphviz.  If an output file is specified, the graph instructions are also saved in the dot language.  }
-  
-
-
+ 
 \author{William Revelle }
 \note{ fa.graph requires Rgraphviz. Because there are occasional difficulties installing Rgraphviz from Bioconductor in that some libraries are misplaced and need to be relinked, it is probably better to use fa.diagram.
-
-As of June 1, 2007 there is an occasionally strange result when using the simple=FALSE option in Sweave.   }
+}
 
  
 \seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}}
 \examples{
-
 
 test.simple <- fa(item.sim(16),2,rotate="oblimin")
 #if(require(Rgraphviz)) {fa.graph(test.simple) } 
 fa.diagram(test.simple)
 data(bifactor)
 fa.diagram(fa(Thurstone,3,rotate="cluster"),cut=.4,digits=2)
-
-
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ multivariate }
 \keyword{hplot}
 

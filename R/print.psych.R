@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <- thurstone <- stats <- ICC <- mat.reg <- parallel <-  FALSE
+iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -27,6 +27,9 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "stats") stats <- TRUE
    if(class(x)[2] == "mat.regress") mat.reg <- TRUE
    if(class(x)[2] == "parallel") parallel <- TRUE
+   if(class(x)[2] == "kappa")    kappa <- TRUE 
+   if(class(x)[2] == "comorbid")    comorbid <- TRUE
+   if(class(x)[2] == "tetra")    tetra <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -161,11 +164,11 @@ cat("\n Item statistics \n")
   cat("Call: ")
     print(x$Call)
  cat ("\nAlternative estimates of reliability\n")
- cat("Beta = ", x$beta, " This is an estimate of the worst split half reliability")  
- cat ("\nGuttman bounds \nL1 = ",x$lambda.1, "\nL2 = ", x$lambda.2, "\nL3 (alpha) = ", x$lambda.3,"\nL4 (max) = " ,x$lambda.4, "\nL5 = ", x$lambda.5, "\nL6 (smc) = " ,x$lambda.6, "\n")
- cat("TenBerge bounds \nmu0 = ",x$tenberge$mu.0, "mu1 = ", x$tenberge$mu1, "mu2 = " ,x$tenberge$mu2, "mu3 = ",x$tenberge$mu3 , "\n")
- cat("\nalpha of first PC = ", x$alpha.pc, "\nestimated greatest lower bound = ", x$lambda.4,"\n")
- cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
+ cat("Beta = ", round(x$beta,digits), " This is an estimate of the worst split half reliability")  
+ cat ("\nGuttman bounds \nL1 = ",round(x$lambda.1,digits), "\nL2 = ", round(x$lambda.2,digits), "\nL3 (alpha) = ", round(x$lambda.3,digits),"\nL4 (max) = " ,round(x$lambda.4,digits), "\nL5 = ", round(x$lambda.5,digits), "\nL6 (smc) = " ,round(x$lambda.6,digits), "\n")
+ cat("TenBerge bounds \nmu0 = ",round(x$tenberge$mu0,digits), "mu1 = ", round(x$tenberge$mu1,digits), "mu2 = " ,round(x$tenberge$mu2,digits), "mu3 = ",round(x$tenberge$mu3,digits) , "\n")
+ cat("\nalpha of first PC = ",round( x$alpha.pc,digits), "\nestimated greatest lower bound based upon communalities= ", round(x$glb,digits),"\n")
+ #cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
  } 
   
  ## 
@@ -199,6 +202,40 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             print(x$results)
             cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
 
+   }
+  
+   if(kappa) {if(is.null(x$cohen.kappa)) {
+            cat("Call: ")
+            print(x$Call)
+            
+            cat("\nCohen Kappa and Weighted Kappa correlation coefficients and confidence boundaries \n")
+           
+            print(x$confid,digits=digits)
+            cat("\n Number of subjects =", x$n.obs)} else {
+            cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
+            print(x$cohen.kappa,digits) 
+            }
+   }
+   
+  if(comorbid) {cat("Call: ")
+              print(x$Call)
+            cat("Comorbidity table \n")
+            print(x$twobytwo,digits=digits)
+            cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra,digits))
+          
+   }
+   
+  if(tetra) {cat("Call: ")
+              print(x$Call)
+            cat("tetrachoric correlation \n")
+            if(!is.null(x$twobytwo)) {
+              print(x$twobytwo,digits=digits)
+              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
+            
+            print(x$rho,digits)
+            cat("\n with tau of \n")
+            print(x$tau,digits)
+          }
    }
   
   if(mat.reg) { cat("Call: ")

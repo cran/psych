@@ -4,7 +4,7 @@
      nclust <- dim(loadings)[2]
      nitems <- dim(loadings)[1]
      loadings <- as.matrix(loadings)   #just in case there is just one cluster
-     loadings <- unclass(loadings)  #to get around the problem of a real loading matrix
+     loadings <- unclass(loadings)     #to get around the problem of a real loading matrix
      if(nclust > 1) {eigenvalue <- diag(t(loadings) %*% loadings)  #put the clusters into descending order by eigenvalue
                      evorder <- order(eigenvalue,decreasing=TRUE)
                      loadings <- loadings[,evorder]

@@ -29,3 +29,53 @@ function (nvar = 72 ,nsub = 500,
 	if (truncate) {item[item < cutpoint] <- 0  }
 	return (item) 
 	}  
+
+
+"sim.rasch" <-
+function (nvar = 5 , n = 500, low=-3,high=3,d=NULL, a=1) 
+	{ 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))}
+	theta <- rnorm(n)
+	item <- matrix(1/(1+exp(a*(-theta %+% t( d)))),n,nvar)
+	#now convert these probabilities to outcomes
+    item[] <- rbinom(n*nvar, 1, item)                  
+   result <- list(items=item,tau=d,theta=theta)
+	return (result) 
+	}  
+	
+	
+"sim.irt" <- 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mod="logistic") 
+	{ 
+	if(mod=="logistic") {result <- sim.npl(nvar,n,low,high,a,c,z,d)} else {result <- sim.npn(nvar,n,low,high,a,c,z,d)}
+	return (result) 
+	}  
+
+"sim.npn" <- 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL) 
+	{ 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} 
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n) # the latent variable
+	
+	item <- matrix(c+(z-c)*pnorm(a*(theta %+% t( -d))),n,nvar)
+	#now convert these probabilities to outcomes
+	
+    item[] <- rbinom(n*nvar, 1, item)
+	              
+   result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=d,theta=theta)
+	return (result) 
+	}  
+	
+	
+"sim.npl" <- 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL) 
+	{ 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} 
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n)
+	item <- matrix(c+(z-c)/(1+exp(a*(-theta %+% t( d)))),n,nvar)
+    item[] <- rbinom(n*nvar, 1, item) #now convert these probabilities to outcomes	          
+    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=d,theta=theta)
+	return (result) 
+	} 

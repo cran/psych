@@ -121,6 +121,8 @@ if (fa!="pc") {abline(h=0) }
 results <- list(fa.values = fa.valuesx,fa.sim = fa.values.sim,pc.values=valuesx,pc.sim=values.sim,Call=cl)
 fa.test <- which(!(fa.valuesx > fa.values.sim$mean))[1]-1
 pc.test <- which(!(valuesx > values.sim$mean))[1] -1
+results$nfact <- fa.test
+results$ncomp <- pc.test
 cat("Parallel analysis suggests that ")
 cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
 class(results) <- c("psych","parallel")

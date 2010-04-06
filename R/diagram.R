@@ -233,3 +233,5 @@ if(side %%2 > 0) {scale <- scale*(location$right[1] - location$left[1]) } else {
      if (shape==2) {dia.ellipse(x, y = NULL, labels = NULL, cex = 1,e.size=.05,xlim=c(0,1),ylim=c(0,1), ...)}
      if (shape==3) {dia.triangle(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...)}
      }
+     
+     

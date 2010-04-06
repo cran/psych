@@ -18,7 +18,7 @@ summary.psych(object,digits=2,items=FALSE,...)
   \item{items}{items=TRUE (default) does not print the item whole correlations}
   \item{digits}{Number of digits to use in printing}
   \item{all}{if all=TRUE, then the object is declassed and all output from the function is printed}
-  \item{cut}{Cluster loadings < cut will not be printed.  For factor.pa and ICLUST, cut defaults to .3, for omega to .2.}
+  \item{cut}{Cluster loadings < cut will not be printed.  For the factor analysis functions (fa and factor.pa etc.), cut defaults to 0, for ICLUST  to .3, for omega to .2.}
   \item{sort}{Cluster loadings are in sorted order}
   \item{...}{More options to pass to summary and print}
 }

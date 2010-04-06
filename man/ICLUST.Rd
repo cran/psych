@@ -14,7 +14,7 @@ Alpha, the mean split half correlation, and beta, the worst split half correlati
 \usage{
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE)
+n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
 
 #ICLUST(r.mat)    #use all defaults
 #ICLUST(r.mat,nclusters =3)    #use all defaults and if possible stop at 3 clusters
@@ -42,6 +42,7 @@ n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE)
   \item{plot}{Should ICLUST.rgraph be called automatically for plotting (requires Rgraphviz default=TRUE)}
   \item{weighted}{Weight the intercluster correlation by the size of the two clusters (TRUE) or do not weight them (FALSE)}
   \item{cor.gen}{When correlating clusters with subclusters, base the correlations on the general factor (default) or general + group (cor.gen=FALSE)}
+  \item{SMC}{When estimating cluster-item correlations, use the smcs as the estimate of an item communality (SMC=TRUE) or use the maximum correlation (SMC=FALSE).  }
   
 }
 \details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 

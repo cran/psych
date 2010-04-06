@@ -1,5 +1,5 @@
 "cluster.cor" <-
-function(keys,r.mat,correct=TRUE,digits=2) { #function to extract clusters according to the key vector
+function(keys,r.mat,correct=TRUE,digits=2,SMC=TRUE) { #function to extract clusters according to the key vector
 				#default is to correct for attenuation and show this above the diagonal
 				#find the correlation matrix of scales made up of items defined in a keys matrix (e.g., extracted by factor2cluster) 
                 #takes as input the keys matrix as well as a correlation matrix of all the items
@@ -7,7 +7,7 @@ function(keys,r.mat,correct=TRUE,digits=2) { #function to extract clusters accor
  cl <- match.call()
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  r.mat[is.na(r.mat)] <- -9999999    #changes missing values to obviously incorrect values
- item.smc <- smc(r.mat)
+ if(SMC) {item.smc <- smc(r.mat)} else {item.smc <- rep(1,dim(r.mat)[1])}
  covar <- t(keys) %*% r.mat %*% keys    #matrix algebra is our friend
  var <- diag(covar)    #these are the scale variances
  sd.inv <- 1/sqrt(var)

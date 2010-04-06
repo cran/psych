@@ -62,3 +62,15 @@ if (add) {
   
 }
 
+
+  #then, just a fun function to draw Minkowski "circles"
+  
+"minkowski"<- function(r=2,add=FALSE,main=NULL,xl=1,yl=1) {
+ segments=51
+ x <- cos((0:segments) * pi/(2* segments))  #this spaces the points out to make a cleaner drawing
+ min.circle <- cbind(x*xl, yl*((1-x^r)/(x^r+(1-x^r)))^(1/r))
+if(add) {points(min.circle,type="l") } else plot(min.circle,ylim=c(-1,1),xlim=c(-1,1),typ="l", xlab="",ylab="",main=main)
+ points(-min.circle,typ="l")
+ points(-min.circle[,1],min.circle[,2],typ="l")
+ points(min.circle[,1],-min.circle[,2],typ="l")
+}

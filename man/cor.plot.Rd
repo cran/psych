@@ -35,9 +35,12 @@ Inspired, in part, by a paper by S. Dray (2008)  on the number of components pro
 Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics \& Data Analysis. 52, 4, 2228-2237.
 }
 
+\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}
+}
 \examples{
 data(bifactor)
 cor.plot(Thurstone,TRUE, main="9 cognitive variables from Thurstone")
+cor.plot(mat.sort(Thurstone),TRUE, main="9 cognitive variables from Thurstone (sorted by factor loading) ")
 simp <- sim.circ(24)
 cor.plot(cor(simp),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
 

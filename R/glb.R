@@ -1,7 +1,7 @@
 # an attempt at finding the worst and best splits, beta is worst split (from ICLUST)
 
 "glb" <-
-function(r,key=NULL,digits=2) {
+function(r,key=NULL) {
  nvar <- dim(r)[2]
 if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")} else {r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data matrix
       if(is.null(colnames(r))) {  rownames(r) <- colnames(r) <- paste("V",1:nvar,sep="") }
@@ -21,7 +21,7 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")} else {r <- cov2cor(r)}  
  worst <- ICLUST(r,2,plot=FALSE)
   keys <- worst$p.sorted$cluster
  
- best <- ICLUST(m,2,plot=FALSE)
+ best <- ICLUST(m,2,plot=FALSE,SMC=FALSE)
  keys <- matrix(rep(0,nvar*2),ncol=2)
  keys <- best$p.sorted$cluster
  
@@ -32,7 +32,7 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")} else {r <- cov2cor(r)}  
  for(i in 1:nvar) {
  keys.kmean[i,best.kmeans$cluster[i]] <- 1 }  
  
-  f1 <- factor.pa(r)  #one factor solution
+  f1 <- fa(r)  #one factor solution
   load <- f1$loadings
    ord.load <- order(load)
     key.fa <- matrix(rep(0,nvar*2),ncol=2)
@@ -42,7 +42,7 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")} else {r <- cov2cor(r)}  
   
   
     
-  f2 <- factor.pa(r,2,SMC=FALSE)  #two factor solution
+  f2 <- fa(r,2,SMC=FALSE)  #two factor solution
     load <- f2$loadings
      key.fa2 <- matrix(rep(0,nvar*2),ncol=2)
    
@@ -61,16 +61,16 @@ colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2")
  ident.sd <- diag(sd.inv,ncol = length(sd.inv))
  cluster.correl <- ident.sd %*% covar  %*% ident.sd
  beta <- cluster.correl[2,1] *2 /(1+cluster.correl[2,1])
- glb1 <- cluster.correl[3,4] *2 /(1+cluster.correl[3,4])
+ glbIC <- cluster.correl[3,4] *2 /(1+cluster.correl[3,4])
  glb2 <- cluster.correl[5,6] * 2/(1+ cluster.correl[5,6] )
  glb3 <- cluster.correl[7,8] * 2/(1+cluster.correl[7,8])
  beta.fa <- cluster.correl[9,10] * 2/(1+cluster.correl[9,10])
- glb.max <- max(glb1,glb2,glb3)
+ glb.max <- max(glbIC,glb2,glb3)
  sum.smc <- sum(smc(r))
  sum.r <- sum(r)
  gamma <- (sum.r+sum.smc-sum(diag(r)))/sum.r
- tenberg <- tenberge(r,digits=digits)
- result <- list(beta = round(beta,digits),beta.factor = round(beta.fa,digits),alpha.pc = alpha.pc, glb.max = round(glb.max,digits), glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), r.smc = gamma,tenberge=tenberg, keys=keys)
+ tenberg <- tenberge(r)
+ result <- list(beta = beta,beta.factor = beta.fa,alpha.pc = alpha.pc, glb.max = glb.max, glb.IC =glbIC,glb.Km = glb2, glb.Fa =glb3, r.smc = gamma,tenberge=tenberg, keys=keys)
  return(result)
 }
 

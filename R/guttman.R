@@ -1,5 +1,5 @@
  "guttman" <- 
- function(r,key=NULL,digits=2) {
+ function(r,key=NULL) {
  cl <- match.call()
  nvar <- dim(r)[2]
 if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")}  else {
@@ -26,9 +26,11 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
             
  if(nvar < 3) {message("These estimates are not really meaningful if you have less than 3 items, \n Try running the alpha function instead")
             stop()}
+ beta <- ICLUST(r,1,plot=FALSE)$beta
  worst <- ICLUST(r,2,plot=FALSE)
  w.keys <- worst$p.sorted$cluster
  
+ #best <- ICLUST(m,2,plot=FALSE,SMC=FALSE)
  best <- ICLUST(m,2,plot=FALSE)
  keys <- matrix(rep(0,nvar*2),ncol=2)
  b.keys <- best$p.sorted$cluster
@@ -50,11 +52,11 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
   
   
     
-  f2 <- factor.pa(r,2,SMC=FALSE)  #two factor solution
+  f2 <- fa(r,2,SMC=FALSE)  #two factor solution
     load <- f2$loadings
      key.fa2 <- matrix(rep(0,nvar*2),ncol=2)
    
-    key.fa2[,1] <- (load[,1] > load[,2]) + 0
+    key.fa2[,1] <- (abs(load[,1]) > abs(load[,2])) + 0
     key.fa2[,2 ] <- 1- key.fa2[,1]
     
 ev <-eigen(r)$values
@@ -83,7 +85,11 @@ c.co <- colSums(r^2)-diag(r^2)
 c.co.max <- max(c.co)
 lambda.5 <- lambda.1 + 2*sqrt(c.co.max)/Vt
 lambda.5p <- lambda.1 +(nvar)/(nvar-1)*  2*sqrt(c.co.max)/Vt
- 
+#
+#this next section is a complete kludge meant to find the most similar splits
+#a better way is to use the glb function of Andreas Moeltner
+#revised February 11 to implement equation 51 of Guttman, not 51'
+#
 keys <- cbind(w.keys,b.keys,keys.kmean,key.fa,key.fa2)
 try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2"))
  covar <- t(keys) %*% r %*% keys    #matrix algebra is our friend
@@ -91,18 +97,26 @@ try(colnames(keys) <- c("IC1","IC2","ICr1","ICr2","K1","K2","F1","F2","f1","f2")
  sd.inv <- 1/sqrt(var)
  ident.sd <- diag(sd.inv,ncol = length(sd.inv))
  cluster.correl <- ident.sd %*% covar  %*% ident.sd
- beta <- abs(cluster.correl[2,1]) *2 /(1+abs(cluster.correl[2,1]))
- glb1 <- cluster.correl[3,4] *2 /(1+cluster.correl[3,4])
- glb2 <- cluster.correl[5,6] * 2/(1+ cluster.correl[5,6] )
- glb3 <- cluster.correl[7,8] * 2/(1+cluster.correl[7,8])
- beta.fa <- cluster.correl[9,10] * 2/(1+cluster.correl[9,10])
- glb.max <- max(glb1,glb2,glb3)
+ #beta <- abs(cluster.correl[2,1]) *2 /(1+abs(cluster.correl[2,1])) #worst split 
+# beta <- 2 * (1-2/(2+abs(cluster.correl[2,1])))
+ #glb1 <- cluster.correl[3,4] *2 /(1+cluster.correl[3,4])
+# glb2 <- cluster.correl[5,6] * 2/(1+ cluster.correl[5,6] )
+# glb3 <- cluster.correl[7,8] * 2/(1+cluster.correl[7,8])
+Vtcl1 <- covar[3,3]+ covar[4,4] + 2 * covar[3,4]
+Vtcl2 <- covar[5,5]+ covar[6,6] + 2 * covar[5,6]
+Vtcl3 <- covar[7,7]+covar[8,8] + 2 * covar[7,8]
+glbIC <- 2*(1-(covar[3,3]+ covar[4,4])/Vtcl1  )
+glb2 <- 2*(1-(covar[5,5]+ covar[6,6])/Vtcl2  )
+glb3 <- 2*(1-(covar[7,7]+ covar[8,8])/Vtcl3  )
+beta.fa <- cluster.correl[9,10] * 2/(1+cluster.correl[9,10])
+ glb.max <- max(glbIC,glb2,glb3)
  sum.smc <- sum(smc(r))
+ glb <- glb.fa(r)$glb
 
  gamma <- (sum.r+sum.smc-sum(diag(r)))/Vt
- tenberg <- tenberge(r,digits=digits)
- result <- list(lambda.1=round(lambda.1,digits),lambda.2=round(lambda.2,digits),lambda.3=round(lambda.3,digits),lambda.4 =round(glb.max,digits),lambda.5 = round(lambda.5,digits),lambda.5p = round(lambda.5p,digits),lambda.6=round(lambda.6,digits),beta = round(beta,digits),beta.factor = round(beta.fa,digits),alpha.pc = round(alpha.pc,digits),
- glb.IC =round(glb1,digits),glb.Km = round(glb2,digits), glb.Fa =round(glb3,digits), keys=keys, tenberge=tenberg,r.pc=r.pc,beta.pc=beta.pc,Call=cl)
+ tenberg <- tenberge(r)
+ result <- list(lambda.1=lambda.1,lambda.2=lambda.2,lambda.3=lambda.3,lambda.4 =glb.max,lambda.5 = lambda.5,lambda.5p = lambda.5p,lambda.6=lambda.6,beta = beta,beta.factor = beta.fa,alpha.pc = alpha.pc,
+ glb=glb,glb.IC= glbIC,glb.Km =glb2, glb.Fa =glb3, keys=keys, tenberge=tenberg,r.pc=r.pc,beta.pc=beta.pc,Call=cl)
  class(result) <- c("psych","guttman")
  return(result)
 }

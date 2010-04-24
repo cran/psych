@@ -1,5 +1,5 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,...)  # x   data frame with 
     {
     lty = "solid"
     all.stats <- describe(x)
@@ -18,6 +18,10 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
            group.means <- matrix(group.stats$mean,ncol=n.groups,byrow=TRUE)
            group.se <- matrix(group.stats$se,ncol=n.groups,byrow=TRUE)
            group.n <- matrix(group.stats$n,ncol=n.groups,byrow=TRUE)
+           if(within) {group.smc <- matrix(unlist(by(x,group,smc)),nrow=n.groups,byrow=TRUE)
+                       group.sd <- matrix(group.stats$sd,ncol=n.groups,byrow=TRUE)
+                       group.se <- sqrt(group.sd^2 *(1-group.smc)/group.n) }
+           
            rownames(group.means) <- rownames(all.stats)
            if(is.null(labels)) {colnames(group.means) <- paste("Group",1:n.groups)} else {colnames(group.means) <- labels }
            
@@ -53,8 +57,9 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
            
            } else {   #the normal case is to not use bars
            
-           group.stats <- describe.by(x,group)
+    group.stats <- describe.by(x,group)
     n.group <- length(group.stats)
+     if(within) {group.smc <- by(x,group,smc) }
      z <- dim(x)[2]
      if(is.null(z)) z <- 1 
      
@@ -65,7 +70,9 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
       if (is.null(xlab)) xlab <- "Independent Variable"
     for (g in 1:n.group) {
    	 	x.stats <- group.stats[[g]]
-   	 	
+   	 	if (within) { x.smc <- group.smc[[g]]  
+    	              x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)
+    	               }
 
     	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE,...)
     	axis(1,1:z,colnames(x))

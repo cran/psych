@@ -1,5 +1,6 @@
-#last modified October 21, 2009 by William Revelle 
+#last modified April 25, 2010  by William Revelle 
 export(alpha,
+block.random,
 circ.tests,
 circ.sim,
 circ.sim.plot,

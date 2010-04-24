@@ -1,8 +1,11 @@
 "error.bars" <-
-function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,...)  # x   data frame with 
+function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,...)  # x   data frame with 
     {
     if(is.null(stats)) {
     	x.stats <- describe(x)
+    	if (within) { x.smc <- smc(x,covar=TRUE)
+    	              x.stats$se <- sqrt((x.stats$sd^2 - x.smc)/x.stats$n)
+    	               }
     	if(is.null(dim(x))) { z <- 1} else {z <- dim(x)[2]}  #if we just have one variable
     	names <- colnames(x)
     	}  else { x.stats <- stats
@@ -44,3 +47,4 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    }
    #corrected July 25, 2009 to fix bug reported by Junqian Gordon Xu and then modified to be cleaner code
    #modified Sept 5, 2009 to handle data with all missing values (why we would want to that is a mystery, but was requested by Junqian Gordon Xu.)
+   #April 5, 2010: the within parameter was added to allow for error bars in repeated measure designs 

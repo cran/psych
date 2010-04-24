@@ -362,7 +362,7 @@ The factor model is an approximation of a correlation matrix by a matrix of lowe
 R = FF' + U^2
 \end{equation}
 
-The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Five alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=``"wls", fm="gls" and fm="ml"). In the discussion of the other algorithms, the calls shown are to to the \pfun{fa} function specifying the appropriate method.
+The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Five alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=``"wls", fm="gls" and fm="ml"). In the discussion of the other algorithms, the calls shown are to the \pfun{fa} function specifying the appropriate method.
 
 
 \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions. \iemph{min.res} is the default for the \pfun{fa} function.
@@ -635,7 +635,7 @@ Functions for examining the reliability of a single scale or a set of scales inc
 
 \begin{description}
 \item [alpha]   Internal consistency measures of reliability range from $\omega_h$ to $\alpha$ to $\omega_t$.  The \pfun{alpha} function reports two estimates: Cronbach's coefficient $\alpha$ and Guttman's $\lambda_6$.  Also reported are item - whole correlations, $\alpha$ if an item is omitted, and item means and standard deviations.
-\item [guttman] Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) ($\mu_0 \dots \mu_3$) as well as$\beta$ (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and $\omega_h$ and$\omega_t$ (McDonald, 1999; Zinbarg et al., 2005). 
+\item [guttman] Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) ($\mu_0 \dots \mu_3$) as well as $\beta$ (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and $\omega_h$ and$\omega_t$ (McDonald, 1999; Zinbarg et al., 2005). 
 \item [omega] Calculate McDonald's  omega estimates of general and total factor saturation. (\cite{rz:09} compare these coefficients with real and artificial data sets.)
 \item [cluster.cor] Given a n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.
 \item [score.items] Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale. If the input is a square matrix, then it is assumed that correlations or covariances were used, and the raw scores are not available. In addition, report Cronbach's alpha, coefficient G6*, the average r, the scale intercorrelations, and the item by scale correlations (both raw and corrected for item overlap and scale reliability). Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.
@@ -662,8 +662,53 @@ Note how the reliability of the 7 item scales with an incorrectly reversed item 
 keys <- c(1,1,1,1,1,1,1)
 alpha(attitude,keys)
 @
-
+\subsubsection{Using \pfun{omega} to find the reliability of a single scale}
 Two alternative estimates of reliability that take into account the hierarchical structure of the inventory are McDonald's $\omega_h$ and $\omega_t$.  These may be found using the \pfun{omega} function (See Figure~\ref{fig:omega.9}).
+
+
+McDonald has proposed coefficient omega (hierarchical) ($\omega_h$) as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
+\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's $\omega_h$ to Cronbach's  $\alpha$ and Revelle's $\beta$. They conclude that $\omega_h$ is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009)).   
+
+One way to find $\omega_h$ is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\pfun{schmid}) transformation to find general factor loadings, and then find $\omega_h$  
+
+$\omega_h$  differs slightly as a function of how the factors are estimated.  Four options are available, the default will do a minimum residual factor analysis, fm=``pa"  does a principle axes factor analysis (\pfun{factor.pa}), fm=``mle" uses the factanal function, and fm=``pc" does a principal components analysis (\pfun{principal}).  
+
+For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \pfun{score.items} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
+
+$\beta$, an alternative to $\omega$, is defined as the worst split half reliability.  It can be estimated by using \pfun{ICLUST} (Item Cluster analysis: a hierarchical clustering algorithm). For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005. 
+
+The \pfun{omega} function uses exploratory factor analysis to estimate the $\omega_h$ coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate $\omega_h$, is to always examine the pattern of the estimated general factor loadings prior to estimating $\omega_h$. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading $\omega_h$ estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
+
+
+Although $\omega_h$ is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the \pfun{schmid} extraction to treat the two subfactors as having equal loadings.  
+
+There are three possible options for this condition: setting the general factor loadings between the two lower order factors to be ``equal" which will be the $\sqrt{r_{ab}}$ where $r_{ab}$ is the oblique correlation between the factors) or to ``first" or ``second" in which case the general factor is equated with either the first or second group factor. A  message is issued suggesting that the model is not really well defined. This solution discussed in Zinbarg et al., 2007.  To do this in omega, add the option=``first" or option=``second" to the call.
+
+Although obviously not meaningful for a 1 factor solution, it is of course possible to find the sum of the loadings on the first (and only) factor, square them, and compare them to the overall matrix variance.  This is done, with appropriate complaints.
+
+
+In addition to $\omega_h$, another of McDonald's coefficients is $\omega_t$.  This is an estimate of the total reliability of a test. 
+
+McDonald's $\omega_t$, which is similar to Guttman's $\lambda_6$, (see \pfun{guttman}) uses the estimates of uniqueness $u^2$ from factor analysis to find $e_j^2$. This is based on a decomposition of the variance of a test score, $V_x$ into four parts: that due to a general factor, $\vec{g}$, that due to a set of group factors, $\vec{f}$,  (factors common to some but not all of the items), specific factors, $\vec{s}$ unique to each item, and $\vec{e}$, random error.  (Because specific variance can not be distinguished from random error unless the test is given at least twice,  some combine these both into error). 
+
+Letting $\vec{x} =  \vec{cg} + \vec{Af} + \vec {Ds} + \vec{e} $
+then the communality of item$_j$, based upon general as well as group factors,
+$h_j^2 = c_j^2 + \sum{f_{ij}^2}$
+and the unique variance for the item
+$u_j^2 = \sigma_j^2 (1-h_j^2)$
+may be used to estimate the test reliability.
+That is, if $h_j^2$ is the communality of item$_j$, based upon general as well as group factors,  then for standardized items, $e_j^2 = 1 - h_j^2$ and
+$$
+\omega_t = \frac{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}{V_x} = 1 - \frac{\sum(1-h_j^2)}{V_x} = 1 - \frac{\sum u^2}{V_x}
+$$
+Because $h_j^2 \geq r_{smc}^2$, $\omega_t \geq \lambda_6$.
+
+It is important to distinguish here between the two $\omega$ coefficients of McDonald, 1978 and Equation 6.20a of McDonald, 1999, $\omega_t$ and $\omega_h$.  While the former is based upon the sum of squared loadings on all the factors, the latter is based upon the sum of the squared loadings on the  general factor. 
+$$\omega_h = \frac{ \vec{1}\vec{cc'}\vec{1}}{V_x}$$
+
+Another estimate reported is the omega for an infinite length test with a structure similar to the observed test.  This is found by 
+$$\omega_{\inf} = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}$$
+
 
 \begin{figure}[htbp]
 \begin{center}

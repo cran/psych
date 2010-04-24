@@ -20,7 +20,8 @@ function(x,y=NULL,correct=TRUE) {
        -sum(tab * log(P)) }  #the ML criterion to be minimized
       
  if(is.null(y)) tab <- x else tab <- table(x,y)
- if(sum(tab) > 1) {warning("A cell entry of 0 was replaced with .5.  Check your data!")
+ if((sum(tab) > 1) && (min(tab) == 0) && correct) {
+    warning("A cell entry of 0 was replaced with .5.  Check your data!")
     tab[tab==0] <-.5  #correction for continuity
     }
   tot <- sum(tab)

@@ -14,7 +14,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,fm=fm,...) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,...) } else {
      
         fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}

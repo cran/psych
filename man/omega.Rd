@@ -35,20 +35,18 @@ McDonald has proposed coefficient omega (hierarchical (\eqn{\omega_h}) as an est
 
 One way to find \eqn{\omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}.  Here we present code to do that.  
 
-\eqn{\omega_h} differs as a function of how the factors are estimated.  Three options are available, pc="pa"  does a principle axes factor analysis (\link{factor.pa}), pc="mle" uses the factanal function, and pc="pc" does a principal components analysis (\link{principal}).  
+\eqn{\omega_h} differs as a function of how the factors are estimated.  Four options are available, the default does a minres factor solution, fm="pa"  does a principle axes factor analysis (\link{factor.pa}), fm="mle" uses the factanal function, and fm="pc" does a principal components analysis (\link{principal}).  
 
-For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.  Arbitrarly reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
+For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
 
-Output from omega is shown graphically using the  \code{\link{omega.graph}} function.  This requires Rgraphviz to be installed.  If Rgraphviz is not available, select plot=FALSE. 
-
-\eqn{\beta}, an alternative to \eqn{\omega}, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now available in R.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
+\eqn{\beta}, an alternative to \eqn{\omega}, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now part of the psych package.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
 The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
 
-Although omega is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  
+Although omega_h is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  
 
 There are three possible options for this condition: setting the general factor loadings between the two lower order factors to be "equal" which will be the sqrt(oblique correlations between the factors) or to "first" or "second" in which case the general factor is equated with either the first or second group factor. A  message is issued suggesting that the model is not really well defined. This solution discussed in Zinbarg et al., 2007.  To do this in omega, add the option="first" or option="second" to the call.
 
@@ -74,7 +72,7 @@ Because \eqn{h_j^2 \geq r_{smc}^2}, \eqn{\omega_t \geq \lambda_6}.
 It is important to distinguish here between the two \eqn{\omega} coefficients of McDonald, 1978 and Equation 6.20a of McDonald, 1999, \eqn{\omega_t} and \eqn{\omega_h}.  While the former is based upon the sum of squared loadings on all the factors, the latter is based upon the sum of the squared loadings on the  general factor. 
 \deqn{\omega_h = \frac{ \vec{1}\vec{cc'}\vec{1}}{V_x}}
 
-Another estimate reported is the omega for an infinite lenght test with a structure similar to the observed test.  This is found by 
+Another estimate reported is the omega for an infinite length test with a structure similar to the observed test.  This is found by 
 \deqn{\omega_limit = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}
 
 }
@@ -98,7 +96,7 @@ Another estimate reported is the omega for an infinite lenght test with a struct
 
 \references{ \url{http://personality-project.org/r/r.omega.html} \cr
 
-Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika (in press).
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154.
 
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
 
@@ -121,18 +119,17 @@ If the factor solution leads to an exactly orthogonal solution (probably only fo
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
 \examples{
 \dontrun{
-test.data <- Harman74.cor$cov
-if(!require(GPArotation) {message("Omega requires GPA rotation" )} else {my.omega <- omega(test.data,3)       
-print(my.omega,digits=2)
-}
+ test.data <- Harman74.cor$cov
+ if(!require(GPArotation)) {message("Omega requires GPA rotation" )} else {my.omega <- omega(test.data)       
+ print(my.omega,digits=2)}
+ 
 #create 9 variables with a hierarchical structure
-jen.data <- sim.hierarchical()
+v9 <- sim.hierarchical()
 #with correlations of
-jen.data
+round(v9,2)
 #find omega 
-#if(require(Rgraphviz)) {jen.omega <- omega(jen.data,digits=2)} else {
-jen.omega <- omega(jen.data,digits=2,plot=FALSE)
-jen.omega
+v9.omega <- omega(v9,digits=2)
+v9.omega
 
 #create 8 items with a two factor solution, showing the use of the flip option
 sim2 <- item.sim(8)
@@ -141,8 +138,8 @@ omega(sim2,2)  #this shows that in fact there is no general factor
 omega(sim2,2,option="first") #but, if we define one of the two group factors as a general factor, we get a falsely high omega 
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
-#if(require(Rgraphviz)) {omega(ability.cov$cov)} else omega(ability.cov$cov,plot=FALSE)
-}
+omega(ability.cov$cov)
+
 }
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

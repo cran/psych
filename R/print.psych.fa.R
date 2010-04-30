@@ -5,11 +5,11 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
    cat("\nCall: ")
    print(x$Call)
      
-     
+   	load <- x$loadings   
  if(is.null(cut)) cut <- 0   #caving into recommendations to print all loadings
- 	load <- x$loadings
+ 
     #but, if we are print factors of covariance matrices, they might be very small
-            cut <- min(cut,max(abs(load))/2)  
+     #       cut <- min(cut,max(abs(load))/2)   #removed following a request by  Reinhold Hatzinger
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
@@ -40,7 +40,8 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
     #they are now sorted, don't print the small loadings if cut > 0 
  if (cut > 0) {
           	ncol <- dim(loads)[2]-2
-	    	fx <- format(loads,digits=digits)
+          	rloads <- round(loads,digits)
+	    	fx <- format(rloads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")
 	    	 fx.1 <- fx[,1,drop=FALSE]    #drop = FALSE  preserves the rownames for single factors
 	    	 fx.2 <- fx[,3:(2+ncol)]
@@ -140,14 +141,19 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
             } }
             
        objective <- x$criteria[1]
-     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
+    if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits))}
     if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
     cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n") 
+    if(!is.null(x$rms)) {cat("\nThe root mean square of the residuals is ", round(x$rms,digits),"\n") }
+    if(!is.null(x$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$crms,digits),"\n") }
+    
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")
-   	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,2))}
+   	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}
+   	if(!is.null(x$RMSEA)) {cat("\nRMSEA and the", x$RMSEA[4]," confidence intervals are ",round(x$RMSEA[1:3],digits+1))  }
+   	if(!is.null(x$BIC)) {cat("\nBIC = ",round(x$BIC,digits))}
 
-cat("\nFit based upon off diagonal values =", round(x$fit.off,2))
+cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))
 
 if (x$fn != "principal") {
 if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))

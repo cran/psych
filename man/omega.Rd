@@ -4,11 +4,11 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin", ...)
+omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{m}{A correlation matrix or a data.frame/matrix of data }
+  \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
   \item{fm}{factor method  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="mle" for maximum likelihood.}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
@@ -17,9 +17,10 @@ omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega"
   \item{title}{Title for this analysis}
   \item{sl}{If plotting the results, should the Schmid Leiman solution be shown or should the hierarchical solution be shown? (default sl=TRUE)}
   \item{labels}{If plotting, what labels should be applied to the variables? If not specified, will default to the column names.}
-  \item{plot}{plot=TRUE (default) calls omega.graph, plot =FALSE does not}
+  \item{plot}{plot=TRUE (default) calls omega.diagram, plot =FALSE does not.  If Rgraphviz is available, then \code{\link{omega.graph}} may be used separately.}
   \item{n.obs}{Number of observations - used for goodness of fit statistic}
   \item{rotate}{What rotation to apply? The default is oblimin, the alternatives include simplimax, Promax,  cluster and target. target will rotate to an optional keys matrix (See \code{\link{target.rot}})}
+  \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
   
   \item{...}{Allows additional parameters to be passed through to the factor routines.  See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
 }
@@ -40,18 +41,20 @@ One way to find \eqn{\omega_h} is to do a factor analysis of the original data s
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
 
+
 \eqn{\beta}, an alternative to \eqn{\omega}, is defined as the worst split half reliability.  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now part of the psych package.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
 
 The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h}{omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
-A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.
+A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.  
+
+Diagnostic statistics that reflect the quality of the omega solution include a comparison of the relative size of the g factor eigen value to the other eigen values, the percent of the common variance for each item that is general factor variance (p2), the mean of p2, and the standard deviation of p2.  Further diagnostics can be done by describing (\link{describe}) the $schmid$sl results.
 
 Although omega_h is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  
 
 There are three possible options for this condition: setting the general factor loadings between the two lower order factors to be "equal" which will be the sqrt(oblique correlations between the factors) or to "first" or "second" in which case the general factor is equated with either the first or second group factor. A  message is issued suggesting that the model is not really well defined. This solution discussed in Zinbarg et al., 2007.  To do this in omega, add the option="first" or option="second" to the call.
 
 Although obviously not meaningful for a 1 factor solution, it is of course possible to find the sum of the loadings on the first (and only) factor, square them, and compare them to the overall matrix variance.  This is done, with appropriate complaints.
-
 
 In addition to \eqn{\omega_h}, another of McDonald's coefficients is \eqn{\omega_t}.  This is an estimate of the total reliability of a test. 
 
@@ -74,6 +77,8 @@ It is important to distinguish here between the two \eqn{\omega} coefficients of
 
 Another estimate reported is the omega for an infinite length test with a structure similar to the observed test.  This is found by 
 \deqn{\omega_limit = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}
+
+The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.  
 
 }
 \value{

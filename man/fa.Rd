@@ -10,8 +10,7 @@
 \description{Among the many ways to do factor analysis, one of the most conventional is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary. Another technique is to use Ordinary Least Squares to find the minimum residual (minres) solution.  A variation on minres is to do weighed least squares.  Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  
 }
 \usage{
-fa(r, nfactors=1, residuals = FALSE, rotate = "oblimin",n.obs = NA,
-scores = FALSE,SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres", ...)
+fa(r,nfactors=1,n.obs = NA, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, ...)
 
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="pa")
@@ -26,9 +25,9 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
 \arguments{
   \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
   \item{nfactors}{ Number of factors to extract, default is 1 }
-  \item{residuals}{Should the residual matrix be shown }
-  \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", and "geominT" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ, and "geominQ" or "cluster" are possible rotations or transformations of the solution.  The default is to do a oblimin transformation, although prior versions defaulted to varimax.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
+   \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", and "geominT" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ, and "geominQ" or "cluster" are possible rotations or transformations of the solution.  The default is to do a oblimin transformation, although prior versions defaulted to varimax.}
+  \item{residuals}{Should the residual matrix be shown }
   \item{scores}{If TRUE, estimate factor scores}
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. }
   \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
@@ -40,6 +39,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
+  \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -97,7 +97,11 @@ There are two varimax rotation functions.  One, Varimax, in the GPArotation pack
  \item{communality.iterations}{The history of the communality estimates (For principal axis only.) Probably only useful for teaching what happens in the process of iterative fitting.}
  \item{residual}{If residuals are requested, this is the matrix of residual correlations after the factor model is applied.} 
  
-\item{TLI}{The Tucker Lewis Index of factoring reliability whici is also known as the non-normed fit index.  }
+ \item{rms}{This is the sum of the squared (off diagonal residuals) divided by the degrees of freedom.  Comparable to an RMSEA which, because it is based upon  \eqn{\chi^2}{chi^2}, requires the number of observations to be specified.  The rms is an empirical value while the RMSEA is based upon normal theory and the non-central \eqn{\chi^2}{chi^2} distribution.}
+ 
+\item{TLI}{The Tucker Lewis Index of factoring reliability which is also known as the non-normed fit index.  }
+
+\item{BIC}{Based upon \eqn{\chi^2}{chi^2}}
 
 \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
 

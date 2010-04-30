@@ -19,10 +19,11 @@ function(x,y=NULL,correct=TRUE) {
       P <- binBvn(rho, cc, rc) 
        -sum(tab * log(P)) }  #the ML criterion to be minimized
       
- if(is.null(y)) tab <- x else tab <- table(x,y)
+ if(is.null(y)) {tab <- x} else {tab <- table(x,y)
  if((sum(tab) > 1) && (min(tab) == 0) && correct) {
     warning("A cell entry of 0 was replaced with .5.  Check your data!")
     tab[tab==0] <-.5  #correction for continuity
+    }
     }
   tot <- sum(tab)
   tab <- tab/tot
@@ -37,13 +38,13 @@ function(x,y=NULL,correct=TRUE) {
 "tetra.mat" <- 
 function(x,correct=TRUE) {nvar <- dim(x)[2]
 x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1
-if(max(x,na.rm=TRUE)>1) {stop("Tetrachoric correlations require dictomous data")}
+if(max(x,na.rm=TRUE) > 1) {stop("Tetrachoric correlations require dictomous data")}
 tau <- -qnorm(colMeans(x,na.rm=TRUE))
 mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 names(tau) <- colnames(x)
 for (i in 2:nvar) {
-  for (j in 1:i) {
+  for (j in 1:(i-1)) {
   tetra <-  tetra(x[,i],x[,j],correct=correct)
    mat[i,j] <- mat[j,i] <- tetra$rho
    }

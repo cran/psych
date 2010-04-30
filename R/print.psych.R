@@ -211,7 +211,7 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             cat("\nCohen Kappa and Weighted Kappa correlation coefficients and confidence boundaries \n")
            
             print(x$confid,digits=digits)
-            cat("\n Number of subjects =", x$n.obs)} else {
+            cat("\n Number of subjects =", x$n.obs,"\n")} else {
             cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
             print(x$cohen.kappa,digits) 
             }

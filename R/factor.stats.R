@@ -1,6 +1,9 @@
 "factor.stats" <- 
-function(r,f,phi=NULL,n.obs=NA) {
+function(r,f,phi=NULL,n.obs=NA,alpha=.1) {
+#revised June 21, 2010 to add RMSEA etc. 
+
 cl <- match.call()
+conf.level <- alpha 
  n <- dim(r)[2]  #number of variables
  if(dim(r)[1] !=n ) {n.obs = dim(r)[1]
                     r <- cor(r,use="pairwise")
@@ -16,6 +19,7 @@ cl <- match.call()
     rstar2 <- sum(residual*residual)
     result <- list(residual = residual)
  
+    result$dof <- dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     #r2.off <- r
     #diag(r2.off) <- 0
    # r2.off <- sum(r2.off^2)
@@ -24,6 +28,9 @@ cl <- match.call()
     rstar.off <- sum(residual^2)
     result$fit <-1-rstar2/r2
     result$fit.off <- 1-rstar.off/r2.off
+    result$sd <- sd(as.vector(residual))
+    if(dof > 0) result$crms <- sqrt(rstar.off/(2*dof))  #this is the empirical rmsea
+    if(dof > 0) result$rms <- sqrt(rstar.off/(2*n*(n-1)))  #this is the empirical rmsea
     
     
     
@@ -45,8 +52,10 @@ cl <- match.call()
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n   #this is what Tucker Lewis call F
     result$criteria <- c("objective"=result$objective,NA,NA)
-    if (!is.na(n.obs)) {result$STATISTIC <-  result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3)
-          if(!is.nan(result$STATISTIC))if (result$STATISTIC <0) {result$STATISTIC <- 0}  
+   
+    if (!is.na(n.obs)) {result$STATISTIC <-  chisq <- result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #from Tucker  and from factanal
+    # if (!is.na(n.obs)) {result$STATISTIC <-  chisq <- result$objective * ((n.obs-1)) #from Fox and sem
+          if(!is.nan(result$STATISTIC)) if (result$STATISTIC <0) {result$STATISTIC <- 0}  
    			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
    	result$Call <- cl
    	
@@ -54,17 +63,62 @@ cl <- match.call()
    	#Also known as the NNFI which is expressed in terms of Chisq
    	#NNFI <- (chisqNull/dfNull - chisq/df)/(chisqNull/dfNull - 1)
    	#first find the null model 
-   	F0 <- sum(diag((r))) - log(det(r)) -n  
-   	Fm <-  result$objective
+   	F0 <- sum(diag((r))) - log(det(r)) -n     
+   	Fm <-  result$objective   #objective function of model     
    	Mm <- Fm/( n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2))
    	M0 <- F0* 2 /(n*(n-1))
     nm <- ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #
    	result$null.model <- F0
    	result$null.dof <- n * (n-1) /2
    	if (!is.na(n.obs)) {result$null.chisq <-  F0 * ((n.obs-1) -(2 * n + 5)/6 )
-                  	result$TLI <- (M0 - Mm)/(M0 - 1/nm)
-                  	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$TLI <-1 }
-  
+                  	result$TLI <- (M0 - Mm)/(M0 - 1/nm)        #NNFI in Fox's sem
+                  	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$F0 <-1 
+     
+     #The estimatation of RMSEA and the upper and lower bounds is taken from John Fox's sem with minor modifications
+      if(!is.null(result$objective) && (result$dof >0)) {
+      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df * (N-1)  - 1/(N-1)
+   
+
+      
+        tail <- (1 - conf.level)/2 
+        N <- max <- n.obs
+        df <- result$dof
+        chi.sq.statistic <- RMSEA^2 * df * (N - 1) + df
+        max <- max(max,chi.sq.statistic)
+        while (max > 1){
+            res <- optimize(function(lam) (tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max))
+			if (is.na(res$objective) || res$objective < 0){
+				max <- 0
+				warning("cannot find upper bound of RMSEA")
+				break
+				}				
+            if (sqrt(res$objective) < tail/100) break
+            max <- max/2
+            }
+        lam.U <- if (max <= 1) NA else res$minimum
+      # max <- max(max,lam.U)
+      max <- lam.U
+        while (max > 1){
+            res <- optimize(function(lam) (1 - tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max))
+            if (sqrt(res$objective) < tail/100) break
+            max <- max/2
+			if (is.na(res$objective) || res$objective < 0){
+				max <- 0
+				warning("cannot find lower bound of RMSEA")
+				break
+				}				
+            }
+        lam.L <- if (max <= 1) NA else res$minimum  #lam is the ncp
+       #this RMSEA calculation is not right   
+        RMSEA.U <- sqrt(lam.U/((N-1)*df) )
+        RMSEA.L <- min(sqrt(lam.L/((N-1)*df) ),RMSEA)
+       result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, conf.level)
+       names(result$RMSEA) <- c("RMSEA","lower","upper","confidence")
+        result$BIC <- chisq - df * log(N) 
+        }
+      }  
+       
+        
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients

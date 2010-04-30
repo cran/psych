@@ -2,12 +2,15 @@
 #removed "x" from factanal call, June 14, 2007
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
+#corrected the sign of group factors to match the original factors
 "schmid" <-
-function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",...) 
+function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,...) 
 {
- #model is a correlation matrix, or if not, the correlation matrix is found
-      #nfactors is the number of factors to extract
+#if Phi is not Null, then we have been given a factor matrix, otherwise
+#model is a correlation matrix, or if not, the correlation matrix is found
+#nfactors is the number of factors to extract
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
+  if(is.null(Phi)) {  #the normal case
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
                                           model <- cor(model,use="pairwise")}
@@ -18,14 +21,21 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
      
         fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
     }}
-    orth.load <- loadings(fact)
+     orth.load <- loadings(fact)
+    } else {model <- as.matrix(model)
+            Phi <- as.matrix(Phi)
+            fact <- model %*% Phi  #find the orthogonal matrix from the oblique pattern and the Phi matrix
+            orth.load <- fact
+            nfactors <- dim(fact)[2]}
+   
     
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
     if(nfactors == 1) { message("Omega_h for 1 factor is not meaningful, just omega_t")
                         obminfact <-list(loadings= orth.load)
-                       
                        factr <- 1
-           } else {   #the normal case is nfactors > 2
+                       
+           } else {  #the normal case is nfactors > 2
+           
       if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
       if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
@@ -43,15 +53,18 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                    						    }
            		}  
     if(nfactors>1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
-    fload <- obminfact$loadings
-    #factr <- t(obminfact$Th) %*% (obminfact$Th)
-    factr <- obminfact$Phi
+    
+    if(!is.null(Phi)) { fload <- model
+                        factr <- Phi} else {
+                    	fload <- obminfact$loadings
+                                #factr <- t(obminfact$Th) %*% (obminfact$Th)
+                    	factr <- obminfact$Phi}
    
    if (nfactors ==1) {gload <- c(1)
               warning("Omega_h and Omega_assymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
-       #gfactor <- factanal( covmat = factr, factors = 1)
-       gfactor <- fa(factr)    #modified August, 2009
+      
+       gfactor <- fa(factr)   #The first factor of the factor intercorrelation matrix
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))
@@ -75,13 +88,18 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     Ig <- matrix(0, ncol = nfactors, nrow = nfactors)
     diag(Ig) <- gload
     primeload <- fload %*% Ig
-
+    g.percent <- gprimaryload^2/h2
+    colnames(g.percent) <- "p2"
     uniq2 <- 1 - uniq - primeload^2
     uniq2[uniq2<0] <- 0
-    sm <- sqrt(uniq2)
+    sm <-  sign(fload) * sqrt(uniq2)  #added June 1, 2010 to correctly identify sign of group factors
+    
+    
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
-    result <- list(sl = cbind(gprimaryload, sm,h2, u2), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,n.obs=n.obs )
+    if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
+        phi =factr, gloading = gload)} else{
+    result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
+        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs )}
    # class(result) <- c("psych" ,"fa")
     return(result)
 }

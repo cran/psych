@@ -5,7 +5,7 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,option="equal",...)
+schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,...)
 }
 
 \arguments{
@@ -16,6 +16,7 @@ schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,opt
   \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. The third option is the promax criterion}
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
   \item{option}{When asking for just two group factors, option can be for "equal", "first" or "second"}
+  \item{Phi}{If Phi is specified, then the analysis is done on a pattern matrix with the associated factor intercorrelation (Phi) matrix. This allows for reanalysess of published results}
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
 \details{Schmid Leiman orthogonalizations are typical in the ability domain, but are not seen as often in the non-cognitive personality domain.  S-L is one way of finding the loadings of items on the general factor for estimating omega. 
@@ -28,12 +29,14 @@ Requires the GPArotation package.
 
 Although 3 factors are the minimum number necessary to define the solution uniquely, it is occasionally useful to allow for a two factor solution.  There are three possible options for this condition: setting the general factor loadings between the two lower order factors to be "equal" which will be the sqrt(oblique correlations between the factors) or to "first" or "second" in which case the general factor is equated with either the first or second group factor. A  message is issued suggesting that the model is not really well defined. 
 
+A diagnostic tool for testing the appropriateness of a hierarchical model is p2 which is the percent of the common variance for each variable that is general factor variance.  In general, p2 should not have much variance. 
+
 
 
 }
 \value{
   
-  \item{sl }{loadings on g + nfactors group factors, communalities, uniqueness}
+  \item{sl }{loadings on g + nfactors group factors, communalities, uniqueness, percent of g2 of h2}
   \item{orthog }{original orthogonal factor loadings}
   \item{oblique}{oblique factor loadings}
   \item{phi }{correlations among the transformed factors}

@@ -8,7 +8,7 @@
 \description{Chi square and other goodness of fit statistics are found based upon the fit of a factor or components model to a correlation matrix.  Although these statistics are normally associated with a maximum likelihood solution, they can be found for minimal residual (OLS), principal axis, or principal component solutions as well.  Primarily called from within these functions, factor.stats can be used by itself. Measures of factorial adequacy and validity follow the paper by Grice, 2001.
 }
 \usage{
-factor.stats(r, f, phi=NULL, n.obs = NA)
+factor.stats(r, f, phi=NULL, n.obs = NA,alpha=.1)
 factor.scores(x,f)
 }
 
@@ -17,10 +17,10 @@ factor.scores(x,f)
   \item{x}{A data frame or matrix of raw data}
   \item{f}{A factor analysis loadings matrix or the output from a factor or principal components analysis}
   \item{phi}{A factor intercorrelation matrix if the factor solution was oblique}
-  \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.
+  \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.}
+  \item{alpha}{alpha level of confidence intervals for RMSEA}
 }
-}
-\details{Combines the goodness of fit tests used in factor.pa, factor.minres, and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions.
+\details{Combines the goodness of fit tests used in factor.pa, factor.minres, and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.
 }
 \value{ 
 \item{fit}{How well does the factor model reproduce the correlation matrix. (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
@@ -50,6 +50,9 @@ factor.scores(x,f)
 
 \item{score.cor}{The correlation matrix of course coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix.}
 
+\item{RMSEA}{The Root Mean Square Error of Approximation and the alpha confidence intervals. Based upon the chi square non-centrality parameter.}
+\item{rms}{The empirically found square root of the squared residuals.  This does not require sample size to be specified nor does it make assumptions about normality.}
+\item{crms}{While the rms uses the number of correlations to find the average, the crms uses the number of degrees of freedom.  Thus, there is a subtle penalty for having too complex a model.}
 }
 \author{William Revelle}
 

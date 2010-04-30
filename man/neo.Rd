@@ -17,7 +17,7 @@
     \item{ N5}{Impulsiveness }
     \item{ N6}{Vulnerability }
     \item{ E1}{Warmth }
-    \item{ E2}{Grgariousness }
+    \item{ E2}{Gregariousness }
     \item{ E3}{Assertiveness }
     \item{ E4}{Activity }
     \item{ E5}{Excitement-Seeking }

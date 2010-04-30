@@ -205,26 +205,31 @@ if(side %%2 > 0) {scale <- scale*(location$right[1] - location$left[1]) } else {
                sp <- spline(x,y,n=20)
                lines(sp$x,sp$y)
                arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 2*abs(sp$x[3]-sp$x[1]))
-     	       arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))}
+     	       arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))
+     	        text(sp$x[n/2],sp$y[n/2]-scale,labels,...) }
  if (side==2) {x <- c(location$left[1],location$left[1]-scale,location$left[1])
                y <- c(location$left[2]-scale/2,location$left[2],location$left[2]+scale/2)
                sp <- spline(y,x,n=20)
                lines(sp$y,sp$x)
                arrows(sp$y[3],sp$x[3],sp$y[1],sp$x[1],length = 2*abs(sp$x[2]-sp$x[1]))
-     	      arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[2]-sp$x[1]))}
+     	      arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[2]-sp$x[1]))
+     	      text(sp$y[n/2]-scale,sp$x[n/2],labels,...) 
+     	       }
  if (side==3) {x <- c(location$top[1]-scale/2,location$top[1],location$top[1]+scale/2)
                y <- c(location$top[2],location$top[2]+scale,location$top[2])
                sp <- spline(x,y,n=20)
                  lines(sp$x,sp$y)
                  arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 2*abs(sp$x[3]-sp$x[1]))
-     	         arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))}
+     	         arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))
+     	           text(sp$x[n/2],sp$y[n/2]+scale,labels,...)}
  if (side==4) {x <- c(location$right[1],location$right[1]+scale,location$right[1])
                y <- c(location$right[2]-scale/2,location$right[2],location$right[2]+scale/2)
                sp <- spline(y,x,n=20)
               
                lines(sp$y,sp$x)
                arrows(sp$y[3],sp$x[3],sp$y[1],sp$x[1],length =2* abs(sp$x[3]-sp$x[1]))
-     	arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[3]-sp$x[1]))}
+     	arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[3]-sp$x[1]))
+     	  text(sp$y[n/2]+scale,sp$x[n/2],labels,...)}
                
     }
     

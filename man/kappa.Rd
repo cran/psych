@@ -9,7 +9,7 @@ weighted.kappa is (probability of observed matches - probability of expected mat
 }
 \usage{
 cohen.kappa(x, w=NULL,n.obs=NULL,alpha=.05)  
-wkappa(x, w = NULL) #deprectated
+wkappa(x, w = NULL)    #deprectated
 }
 
 \arguments{
@@ -118,6 +118,14 @@ weights <- matrix(c(
     5, 6,
     6, 7), ncol=2,byrow=TRUE)
   cohen.kappa(twins)
+  
+#data may be explicitly categorical
+x <- c("red","yellow","blue","red")
+y <- c("red",  "blue", "blue" ,"red") 
+xy.df <- data.frame(x,y)
+ck <- cohen.kappa(xy.df)
+ck
+ck$agree
   
 #finally, input can be a data.frame of ratings from more than two raters
 ratings <- matrix(rep(1:5,4),ncol=4)

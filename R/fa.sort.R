@@ -47,8 +47,9 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
  
          #if the input was from omega, then sort the schmid leiman solution as well
          loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
-         nfactors <- dim(sl)[2]-3
-         loads$cluster <- apply(abs(sl[,2:(nfactors+1)]),1,which.max) +1
+         nfactors <- dim(sl)[2]-4  #g, h2, u2, p2
+         if(nfactors > 1) {
+         loads$cluster <- apply(abs(sl[,2:(nfactors+1)]),1,which.max) +1} else {loads$cluster <- rep(1,nitems) }
  		 ord <- sort(loads$cluster,index.return=TRUE)
   		sl[1:nitems,] <- sl[ord$ix,]
  		rownames(sl)[1:nitems] <- rownames(sl)[ord$ix]

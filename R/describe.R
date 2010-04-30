@@ -7,7 +7,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stat
     valid <- function(x) {sum(!is.na(x))}
     if(!na.rm) x <- na.omit(x)   #just complete cases
    		 
-    if (is.vector(x) )  {        #do it for vectors or 
+    if (is.null(dim(x)[2]))  {        #do it for vectors or 
     	    len  <- 1
     	    stats = matrix(rep(NA,9),ncol=9)    #create a temporary array
 			stats[1, 1] <-  valid(x )			

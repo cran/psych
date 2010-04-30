@@ -72,6 +72,14 @@ if(omega) {
    cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
    cat("The degrees of freedom for the model is",object$schmid$dof," and the fit was ",round(object$schmid$objective,digits),"\n")
    	if(!is.na(object$schmid$n.obs)) {cat("The number of observations was ",object$schmid$n.obs, " with Chi Square = ",round(object$schmid$STATISTIC,digits), " with prob < ", round(object$schmid$PVAL,digits),"\n")}
+   	
+    if(!is.null(object$stats$rms)) {cat("\nThe root mean square of the residuals is ", round(object$stats$rms,digits),"\n") }
+     if(!is.null(object$stats$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$stats$crms,digits),"\n") }
+    if(!is.null(object$schmid$RMSEA)) {cat("\nRMSEA and the ",object$schmid$RMSEA[4]  ,"confidence intervals are ",round(object$schmid$RMSEA[1:3],digits+1))  }
+   	if(!is.null(object$schmid$BIC)) {cat("\nBIC = ",round(object$schmid$BIC,digits))}	
+   	
+   	
+   	
            } 
 
 if(scores ) { 
@@ -100,7 +108,17 @@ if(fa) {
      if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
     cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
    	if(!is.na(object$n.obs)) {cat("The number of observations was ",object$n.obs, " with Chi Square = ",round(object$STATISTIC,digits), " with prob < ", signif(object$PVAL,digits),"\n")}
-    }
+   }
+    if(!is.null(object$null.chisq)) {cat(" with Chi Square of " ,round(object$null.chisq,digits)) }
+
+    if(!is.null(object$rms)) {cat("\nThe root mean square of the residuals is ", round(object$rms,digits),"\n") }
+    if(!is.null(object$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$crms,digits),"\n") }
+    
+   
+   	if(!is.null(object$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
+   	if(!is.null(object$RMSEA)) {cat("\nRMSEA and the", object$RMSEA[4]," confidence intervals are ",round(object$RMSEA[1:3],digits+1))  }
+   	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))
+
 }
 
 

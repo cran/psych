@@ -1,8 +1,15 @@
 "ICC" <- 
-  function(x,digits=2,alpha=.05) {
+  function(x,missing=TRUE,digits=2,alpha=.05) {
   cl <- match.call()
   if(is.matrix(x)) x <- data.frame(x)
+  n.obs.original <- dim(x)[1]
+  if(missing) { x1 <- try(na.fail(x))
+             if(class(x1) == as.character("try-error"))  {
+               x <- na.omit(x)
+               n.obs <- dim(x)[1]
+             stop("missing data were found for ",n.obs.original -n.obs, " cases \n Try again with na.omit  or set missing= FALSE and proceed at your own risk.")}}
   n.obs <- dim(x)[1]
+  if(n.obs < n.obs.original) message("Warning, missing data were found for ",n.obs.original -n.obs, " cases")
   nj <- dim(x)[2]
   x.s <- stack(x)
   x.df <- data.frame(x.s,subs=rep(paste("S",1:n.obs,sep=""),nj))

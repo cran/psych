@@ -4,15 +4,24 @@
 \description{Given two vectors of data, plot the means and show standard errors in both X and Y directions. 
 }
 \usage{
-error.crosses(x, y, labels = NULL, pos = NULL, arrow.len = 0.2, ...)
+error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A vector of summary statistics (from Describe) }
   \item{y}{ A second vector of summary statistics (also from Describe)}
-  \item{labels}{ name the pair }
+   \item{labels}{the names of each pair -- defaults to rownames of x }
+  \item{main}{The title for the graph}
+  \item{xlim}{xlim values if desired-- defaults to min and max mean(x) +/- 2 se}
+  \item{ylim}{ylim values if desired  -- defaults to min and max mean(y) +/- 2 se}
+  \item{xlab}{label for x axis -- grouping variable 1}
+  \item{ylab}{label for y axis -- grouping variable 2}
+ 
   \item{pos}{Labels are located where with respect to the mean?  }
+  \item{offset}{Labels are then offset from this location}
   \item{arrow.len}{ Arrow length }
+  \item{alpha}{alpha level of error bars }
+  \item{sd}{if sd is TRUE, then draw means +/- 1 sd)}
   \item{\dots}{ Other parameters for plot  }
 }
 \details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}

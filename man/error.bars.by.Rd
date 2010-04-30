@@ -5,7 +5,7 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x, group,by.var = FALSE,x.cat=TRUE, ylab = "NULL", xlab = "NULL",main=NULL, ylim = NULL, alpha = .05, labels = NULL, pos = NULL, arrow.len = 0.05, add = FALSE,bars=FALSE,within=FALSE, ...)
+error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,12 +18,14 @@ error.bars.by(x, group,by.var = FALSE,x.cat=TRUE, ylab = "NULL", xlab = "NULL",m
   \item{main}{title for figure}
   \item{ylim}{if specified, the limits for the plot, otherwise based upon the data}
   \item{alpha}{alpha level of confidence interval.  Default is 1- alpha =95\% confidence interval}
+  \item{sd}{sd=TRUE  will plot Standard Deviations instead of standard errors}
   \item{labels}{ X axis label }
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
   \item{bars}{Draw a barplot with error bars rather than a simple plot of the means}
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}
+  \item{colors}{groups will be plotted in different colors (mod n.groups) }
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 
 }

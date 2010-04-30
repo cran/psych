@@ -4,13 +4,14 @@
 \description{The basic factor or principal components model is that a correlation or covariance matrix may be reproduced by the product of a factor loading matrix times its transpose.  Find this reproduced matrix.  Used by \code{\link{factor.fit}}, \code{\link{VSS}}, \code{\link{ICLUST}}, etc.
 }
 \usage{
-factor.model(f)
+factor.model(f,Phi=NULL,U2=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{f}{ A matrix of loadings. }
-}
-
+  \item{Phi}{A matrix of factor correlations}
+  \item{U2}{Should the diagonal be model by ff' (U2 = TRUE) or replaced with 1's (U2 = FALSE)}
+  }
 \value{ A correlation or covariance matrix.
 }
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. 

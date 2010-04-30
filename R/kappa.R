@@ -63,10 +63,11 @@ cl <- match.call()
 p <- dim(x)[1]
 len <- p
 if (dim(x)[2]!= p) {
-x1 <- x[,1]
-x2 <- x[,2]
+x1 <- as.character(x[,1])
+x2 <- as.character(x[,2])
 
-labels <- levels(as.factor(c(x1,x2)))
+
+labels <- levels(as.factor(cbind(x1,x2)))
 len <- length(labels)
 x <- matrix(0,ncol=len,nrow=len)
 colnames(x) <- rownames(x) <- labels
@@ -75,6 +76,7 @@ x2f <- factor(x2,levels=labels)
 x <- table(x1f,x2f)
 #for (item in 1:p) {x[x1[item],x2[item]] <- x[x1[item],x2[item]] +1}
 }
+
 x <- as.matrix(x)
 tot <- sum(x)
 x <- x/tot  #convert to probabilities

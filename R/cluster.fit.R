@@ -13,10 +13,12 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE) {
         
         
          covar <- t(clusters) %*% original %*% clusters    #matrix algebra is our friend
-        var <- diag(covar)
-        sd.inv <- 1/sqrt(var)
-       ident.sd <- diag(sd.inv,ncol = length(sd.inv))
-    phi <- ident.sd %*% covar  %*% ident.sd
+       
+        phi <- cov2cor(covar)
+        # var <- diag(covar)
+       # sd.inv <- 1/sqrt(var)
+       #ident.sd <- diag(sd.inv,ncol = length(sd.inv))
+        # phi <- ident.sd %*% covar  %*% ident.sd
     
     
         phi.inv <- try(solve(phi),TRUE)
@@ -33,7 +35,7 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE) {
        fit2 <- 1-totalresid/totaloriginal } else {fit2 <- NULL} 
         
        clusters <- abs(clusters)               #why do I do this?
-       model.1 <- (load * clusters) %*%  t(load*clusters)
+       model.1 <- (load * clusters) %*%  t(load*clusters) #because the items are all ready signed
        residual <- original - model.1
        sqresid <- residual*residual            #square the residuals
         totalresid <- sum(sqresid)- diagonal * sum(diag(sqresid) )      #sum squared residuals - the main diagonal

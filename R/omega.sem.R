@@ -12,7 +12,7 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL){
   #first some basic setup parameters 
   
    num.var <- dim(factors)[1]   #how many variables?
-  if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
+  if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}  #g, h2,u2,p2
    gloading <- om.results$schmid$gloading
    vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }

@@ -67,8 +67,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-88 \cr
-Date: \tab 20010-04-24\cr
+Version: \tab 1.0-89 \cr
+Date: \tab 20010-06-21\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -233,6 +233,7 @@ Miscellaneous functions\cr
 \link{poly.mat}         \tab         Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
 \link{polychor.matrix}   \tab        Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
 \link{scaling.fits}     \tab         Compares alternative scaling solutions and gives goodness of fits \cr
+\link{tetrachor}   \tab            Finds tetrachoric correlations \cr
 \link{thurstone}       \tab          Thurstone Case V scaling \cr
 \link{tr}               \tab         Find the trace of a square matrix \cr
 \link{wkappa}          \tab          weighted and unweighted versions of Cohen's kappa \cr

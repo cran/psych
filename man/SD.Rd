@@ -4,7 +4,7 @@
 \description{Find the standard deviation of a vector, matrix, or data.frame.  In the latter two cases, return the sd of each column.  Unlike the sd function, return NA if there are no observations rather than throw an error.
 }
 \usage{
-SD(x, na.rm = TRUE)
+SD(x, na.rm = TRUE)   #deprecated
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,7 +13,8 @@ SD(x, na.rm = TRUE)
 }
 \details{Finds the standard deviation of a vector, matrix, or data.frame.  Returns NA if no cases.
 
-Just an adaptation of the stats:sd function to return the functionality found in R < 2.7.0 or R >= 2.8.0}
+Just an adaptation of the stats:sd function to return the functionality found in R < 2.7.0 or R >= 2.8.0
+Because this problem seems to have been fixed, SD will be removed eventually.}
 \value{The standard deviation
 }
 

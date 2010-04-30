@@ -5,11 +5,12 @@
 \description{The Intraclass correlation is used as a measure of association when studying the reliability of raters.  Shrout and Fleiss (1979) outline 6 different estimates, that depend upon the particular experimental design. All are implemented and given confidence limits.
 }
 \usage{
-ICC(x,digits=2,alpha=.05)
+ICC(x,missing=TRUE,digits=2,alpha=.05)
 }
 
 \arguments{
   \item{x}{a matrix or dataframe of ratings}
+  \item{missing}{if TRUE, remove missing data -- work on complete cases only}
   \item{digits}{Round the output to digits}
   \item{alpha}{The alpha level for significance for finding the confidence intervals}
 }

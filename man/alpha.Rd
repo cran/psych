@@ -75,7 +75,7 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 \author{William Revelle }
 
 
-\seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, }
+\seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{guttman}}, \code{\link{score.items}}, \code{\link{cluster.cor}}}
 \examples{
 r4 <- sim.congeneric()
 alpha(r4)

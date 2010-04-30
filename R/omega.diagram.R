@@ -7,8 +7,8 @@
 
 "omega.diagram" <-
   function(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=3,main=NULL,cex=NULL, ...) {
-   col <- c("black","red")
+    digits=1,e.size=.05,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE, ...) {
+     if(color.lines) { colors <- c("black","red")} else {colors <- c("black","black") }
   Phi <- NULL  #the default case
   if(is.null(cex)) cex <- 1
   om.results <- fa.sort(om.results)
@@ -20,7 +20,7 @@
          }
    
        nvar <- num.var <- dim(factors)[1]   #how many variables?
-   if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
+   if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}
 #first some basic setup parameters 
   
     gloading <- om.results$schmid$gloading
@@ -53,7 +53,7 @@
    		fact.rect[[f]] <- dia.ellipse(grouploc,(num.factors+1-f)*f.scale,colnames(factors)[f+start],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
      		for (v in 1:nvar)  {
      		
-    			if (abs(factors[v,f+start]) > cut) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,col=((sign(factors[v,f])<0) +1),labels=round(factors[v,f+start],digits))
+    			if (abs(factors[v,f+start]) > cut) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,col=colors[((sign(factors[v,f+start])<0) +1)],lty=((sign(factors[v,f+start])<0)+1),labels=round(factors[v,f+start],digits))
                                 
     }
 }
@@ -62,13 +62,13 @@
   g.ellipse <-  dia.ellipse(gloc,(num.var+1)/2,"g",xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
    if(!sl) { 
    for (f in 1:num.factors) {
-             dia.arrow(from=g.ellipse,to=fact.rect[[f]],col=((sign(gloading[f])<0) +1),labels=round(gloading[f],digits))
+             dia.arrow(from=g.ellipse,to=fact.rect[[f]],col=colors[((sign(gloading[f])<0) +1)],lty=((sign(factors[v,f+start])<0)+1),labels=round(gloading[f],digits))
                               
                             }
             
              } else {
               for (i in 1:nvar) {
-             dia.arrow(from=g.ellipse,to=var.rect[[i]]$left,col=((sign(gloading[f])<0) +1),labels=round(factors[i,1],digits))
+             dia.arrow(from=g.ellipse,to=var.rect[[i]]$left,col=colors[((sign(gloading[f])<0) +1)],lty=((sign(factors[v,f+start])<0)+1),labels=round(factors[i,1],digits))
                               
                             }
  

@@ -8,7 +8,7 @@
 #modified March 4, 2010 to allow for factoring of covariance matrices rather than correlation matrices
 #this itself is straight foward, but the summary stats need to be worked on
 "fa" <- 
-function(r,nfactors=1,residuals=FALSE,rotate="oblimin",n.obs = NA,scores=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -252,7 +252,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="oblimin",n.obs = NA,scores=FALSE,S
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
    
-   result <- factor.stats(r,loadings,Phi,n.obs)   #do stats as a subroutine common to several functions
+   result <- factor.stats(r,loadings,Phi,n.obs=n.obs,alpha=alpha)   #do stats as a subroutine common to several functions
 
     result$communality <- diag(model)
     result$uniquenesses <- diag(r-model)

@@ -2,7 +2,7 @@
 #modifed November 14, 2009 to add legends
 #
 "cor.plot" <- 
-function(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,...){
+function(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,labels=NULL,...){
 
 op <- par(no.readonly=TRUE)
 
@@ -16,8 +16,10 @@ if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningfu
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]
 nvar <- dim(r)[1]
+if(is.null(labels)) {
 if(is.null(rownames(r))) rownames(r) <- paste("V",1:nvar)
 if(is.null(colnames(r))) colnames(r) <- paste("V",1:nf)
+} else {rownames(r) <-  colnames(r) <- labels}
  max.len <- max(nchar(rownames(r)))/6
 #max.len <- max( strwidth(rownames(r)))
 if(is.null(zlim)) {zlim <- range(r)}

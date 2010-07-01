@@ -117,12 +117,13 @@ diag(model)<- 1                       # put ones along the diagonal
 
 #simulate major and minor factors
 "sim.minor" <-
-function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2)) {
-if(is.null(fbig)) {loads <- c(.8,.6) 
-loads <- sample(loads,nvar/nfact,replace=TRUE)} else {loads <- fbig}
-fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)
+function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) {
+if(is.null(fbig)) {loads <- c(.8,.6) } else {loads <- fbig}
+loads <- sample(loads,nvar/nfact,replace=TRUE)
+if(nfact == 1) {fx <- matrix(loads,ncol=1)} else {fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)}
+if(bipolar) fx <- 2*((sample(2,nvar,replace=TRUE) %%2)-.5) * fx
 fsmall  <- c(fsmall,rep(0,nvar/4))
-fs <- matrix(sample(fsmall,nvar*nvar/2,replace=TRUE),ncol=nvar/2)  
+fs <- matrix(sample(fsmall,nvar*floor(nvar/2),replace=TRUE),ncol=floor(nvar/2))  
 fload <- cbind(fx,fs)
 colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))
 rownames(fload) <- paste("V",1:nvar,sep="")
@@ -130,4 +131,36 @@ results <- sim(fload,n=n)
          results$fload <- fload
  class(results) <- c("psych", "sim")
  return(results)
+}
+
+
+#similuate various structures and summarize them
+"sim.omega" <-
+function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
+results <- matrix(NA,nrow=ntrials,ncol=7)
+for (i in 1:ntrials) {
+x <- sim.minor(nvar=nvar,nfact=nfact,n=n,fbig=fbig,fsmall=fsmall,bipolar=bipolar)
+if(n > 0) {
+om <- try(omega(x$observed,om.fact,flip=flip,plot=FALSE,option=option))
+          ic <- ICLUST(x$observed,1,plot=FALSE)} else {om <- try(omega(x$model,om.fact,flip=flip,plot=FALSE,option=option))
+          ic <- ICLUST(x$model,1,plot=FALSE)}
+
+results[i,1] <- om$omega_h
+     loads <- om$schmid$sl
+   p2 <- loads[,ncol(loads)]
+         	mp2 <- mean(p2)
+         	vp2 <- var(p2)
+         	
+       
+results[i,2] <-  mp2
+results[i,3] <-  sqrt(vp2)
+results[i,4] <- sqrt(vp2)/mp2
+results[i,5] <-ic$beta
+if(!is.null(om$schmid$RMSEA)) {results[i,6] <-om$schmid$RMSEA[1]} else {results[i,6] <- NA}
+if(!is.null(om$schmid$rms))results[i,7] <- om$schmid$rms
+
+
+}
+colnames(results) <- c("omega","mean p2","sd p2","coeff v","Beta","RMSEA","rms")
+return(results)
 }

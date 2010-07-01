@@ -89,7 +89,7 @@
 	
 	purified <- cluster.cor(p.sorted$clusters,r.mat,digits=digits,SMC=SMC)
 	class(loads$loadings) <- "loading"
-	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,G6 = loads$G6,fit=fits,results=iclust.results$results,cor=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified,call=cl)
+	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,G6 = loads$G6,fit=fits,results=iclust.results$results,cor=loads$cor,Phi=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,sorted=sorted,p.fit = p.fit,p.sorted = p.sorted,purified=purified,call=cl)
 	#if(plot && require(Rgraphviz)) {ICLUST.rgraph(result,labels=labels,title=title,digits=digits)}
 	if(plot) iclust.diagram(result,labels=labels,main=title,digits=digits)
 	class(result) <- c("psych","iclust")

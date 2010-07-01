@@ -16,7 +16,7 @@ function (loads,cut=.0)
   rownames(factor2cluster) <- rownames(l)
   colnames(factor2cluster) <- colnames(l)
    nitems <- colSums(abs(factor2cluster))
-   for (i in ncols:1) {if (nitems[i]<1) {factor2cluster <- factor2cluster[,-i]} }#remove columns with no variables
+   for (i in ncols:1) {if (nitems[i]<1) {factor2cluster <- factor2cluster[,-i,drop=FALSE]} }#remove columns with no variables
     return(factor2cluster)
 }
 

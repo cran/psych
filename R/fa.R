@@ -214,7 +214,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
    
     
    	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT") { 
-   	       
+   	       #varimax is from the stats package, Varimax is from GPArotations
    			rotated <- do.call(rotate,list(loadings,...))
    			loadings <- rotated$loadings
    			 Phi <- NULL} else { 
@@ -228,7 +228,10 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
      			                     
      			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ") {
      				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
-     				Phi <- NULL} else { ob  <- do.call(rotate,list(loadings,...) )
+     				Phi <- NULL} else { ob  <- try(do.call(rotate,list(loadings,...) ))
+     				          if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				                  ob <- Promax(loadings)}
+     				                 
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
      		                             }

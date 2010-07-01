@@ -6,14 +6,16 @@
 #thus, I am trying to combine these two approaches
 
 "fa.diagram" <-
-  function(fa.results,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
+  function(fa.results,Phi=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
     digits=1,e.size=.05,rsize=.15,side=2,main="Factor Analysis",cex=NULL, ...) {
    col <- c("black","red")
    if(is.null(cex)) cex <- 1
-  Phi <- NULL  #the default case
+  #Phi <- NULL  #the default case
  if(sort) fa.results <- fa.sort(fa.results) 
  if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)
-                if(!is.null(fa.results$Phi)) Phi <- fa.results$Phi} else {factors <- fa.results}
+                if(!is.null(fa.results$Phi)) {Phi <- fa.results$Phi} else {
+                       if(!is.null(fa.results$cor)) {Phi<- fa.results$cor} 
+                       }} else {factors <- fa.results}
    
        nvar <- dim(factors)[1]   #how many variables?
    if (is.null(nvar) ){nvar <- length(factors)
@@ -61,7 +63,7 @@
    }
    }
    
-   if(!is.null(fa.results$Phi)) { for (i in 2:num.factors) {
+   if(!is.null(Phi)) { for (i in 2:num.factors) {
      for (j in 1:(i-1)) {
      if(abs(Phi[i,j]) > cut) {
        # dia.curve(from=c(x.max-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(x.max -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}

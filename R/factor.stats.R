@@ -30,7 +30,7 @@ conf.level <- alpha
     result$fit.off <- 1-rstar.off/r2.off
     result$sd <- sd(as.vector(residual))
     if(dof > 0) result$crms <- sqrt(rstar.off/(2*dof))  #this is the empirical rmsea
-    if(dof > 0) result$rms <- sqrt(rstar.off/(2*n*(n-1)))  #this is the empirical rmsea
+    result$rms <- sqrt(rstar.off/(2*n*(n-1)))  #this is the empirical rmsea
     
     
     
@@ -98,6 +98,7 @@ conf.level <- alpha
         lam.U <- if (max <= 1) NA else res$minimum
       # max <- max(max,lam.U)
       max <- lam.U
+      if(is.na(max)) max <- N
         while (max > 1){
             res <- optimize(function(lam) (1 - tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max))
             if (sqrt(res$objective) < tail/100) break
@@ -134,14 +135,14 @@ conf.level <- alpha
      }   #these are the beta weights 
     }
       R2 <- diag(t(w) %*% f)
-     if(prod(R2) <0 ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
+     if(prod(R2) < 0 ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
                       R2[abs(R2) > 1] <- NA
-                      #added to 
+                      R2[R2 <= 0] <- NA
                      }
      #if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
-      r.scores <- cov2cor(t(w) %*% r %*% w)
+      r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 
-   	  result$R2 <-R2   #this is the multiple R2 of the scores with the factors
+   	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors
    	  
    	 # result$R2.corrected <- factor.indeterm(r,f)
    	 # result$R2.total <- R2.cor$R2

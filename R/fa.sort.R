@@ -1,17 +1,24 @@
 "fa.sort" <- 
 function(fa.results) {
   omega <- FALSE
-if(!is.null(class(fa.results))) {if(class(fa.results)[2] =="omega") {
- omega <- TRUE
-factors <- as.matrix(fa.results$schmid$oblique)
-sl <- fa.results$schmid$sl
-} else {  #the normal factor case
+if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the input a list structure from fa or omega or iclust
+   if(class(fa.results)[2] =="omega") {
+        omega <- TRUE
+        factors <- as.matrix(fa.results$schmid$oblique)
+        sl <- fa.results$schmid$sl
+         } else {  #the normal factor case is fa or iclust output
 
- Phi <- NULL  #the default case
- if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)
-                if(!is.null(fa.results$Phi)) Phi <- fa.results$Phi} else {factors <- fa.results}
- }
-}                
+      Phi <- NULL  #the default case
+      if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  { #make sure that we weren't just give a matrix to draw
+             factors <- as.matrix(fa.results$loadings)
+             if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}
+           } 
+           }
+           } else {
+                   factors <- fa.results}
+          
+ 
+
 nitems <- dim(factors)[1]
 nfactors <- dim(factors)[2]
 if(is.null(rownames(factors))) {rownames(factors) <- paste("V",1:nitems)}
@@ -68,15 +75,7 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
           		 
           fa.results$schmid$sl <- sl
          
-         
-         
-         
-         
-         
-         
-         
-         
-         
+       
          } else {if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors} else {
               fa.results <- factors} }
               

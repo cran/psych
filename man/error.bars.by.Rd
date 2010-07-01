@@ -5,7 +5,7 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),...)
+error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),lty=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,7 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,yli
   \item{bars}{Draw a barplot with error bars rather than a simple plot of the means}
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}
   \item{colors}{groups will be plotted in different colors (mod n.groups) }
+  \item{lty}{line type may be specified in the case of not plotting by variables}
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 
 }

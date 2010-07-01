@@ -6,7 +6,7 @@
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of small correlation matrices with a clear structure.  Meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,...)
+cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,labels=NULL,...)
 }
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{omega}}.  }
@@ -15,6 +15,7 @@ cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,...)
   \item{main}{A title. Defaults to ``correlation plot"}
   \item{zlim}{The range of values to color -- defaults to 0 to 1}
   \item{show.legend}{A legend (key) to the colors is shown on the right hand side}
+  \item{labels}{if NULL, use column and row names, otherwise use labels}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size)}
 }
 \details{When teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 

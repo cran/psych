@@ -1,8 +1,8 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,...)  # x   data frame with 
     {
     n.color <- length(colors)
-    lty = "solid"
+    if(is.null(lty)) lty = "solid"
     all.stats <- describe(x)
         min.x <- min(all.stats$min,na.rm=TRUE)
    		max.x <- max(all.stats$max,na.rm=TRUE)
@@ -85,7 +85,8 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	axis(1,1:z,colnames(x))
     	axis(2)
     	box()
-    	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1]) }
+    	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1]) 
+    	       }
     
     	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
@@ -127,12 +128,14 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     for (i in 1:n.vars) {	
    
     	if(!add) {
-    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",axes=FALSE,...)
+    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",axes=FALSE,lty=lty,...)
     		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats))) } else {axis(1)}
     		axis(2)
     		box() 
     		add <- TRUE
-    		} else {points(x.values,var.means[i,],typ="b",lty=((i-1) %% 8 +1),...) }
+    		} else {#points(x.values,var.means[i,],typ="b",lty=((i-1) %% 8 +1),...) 
+    		         points(x.values,var.means[i,],typ="b",lty=lty,...)
+    		}
     	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:z,sep="")}
    

@@ -18,7 +18,7 @@ target.rot(x,keys=NULL)
 }
 \details{Promax is a very direct adaptation of the stats::promax function.  The addition is that it will return the interfactor correlations as well as the loadings and rotation matrix. 
 
-In addition, it will take output from either the factanal, \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}}  functions and select just the loadings matrix for analysis.
+In addition, it will take output from either the factanal, \code{\link{fa}} or ealier (\code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}})  functions and select just the loadings matrix for analysis.
 
 The target.rot function is an adaptation of a function of Michael Browne's to do rotations to arbitrary target matrices.  Suggested by Pat Shrout. 
 
@@ -35,7 +35,7 @@ target.rot will not handle targets that have linear dependencies (e.g., a pure b
 \references{Hendrickson, A. E. and  White, P. O, 1964, British Journal of Statistical Psychology, 17, 65-70.
 }
 \author{William Revelle }
-\note{A direct adaptation of the stats:promax function following suggestions to the R-help list by Ulrich Keller and John Fox. Furthe  modified to do  targeted rotation similar to a function of Michael Browne.
+\note{A direct adaptation of the stats:promax function following suggestions to the R-help list by Ulrich Keller and John Fox. Further  modified to do  targeted rotation similar to a function of Michael Browne.
 
  
 }

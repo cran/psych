@@ -1,5 +1,5 @@
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE,ylabel=NULL,show.legend=TRUE)  { 
  cl <- match.call()
 	
 	ci <- 1.96
@@ -52,7 +52,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
 }}
    	}
    	
-   if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}
+   if(is.null(ylabel)) {if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}}
    
    values.sim <- describe(t(matrix(unlist(temp[["sim"]]),ncol=ntrials)))
   if(is.null(n.obs)) { values.samp <- describe(t(matrix(unlist(temp[["samp"]]),ncol=ntrials)))}
@@ -106,7 +106,7 @@ if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
 	if(is.null(n.obs)) {points(fa.values.samp$mean,type ="l",lty="dashed",pch=2,col="red")}
         } 
 
-
+if(show.legend) {
 if(is.null(n.obs)) {
 legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"), col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
        text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
@@ -115,7 +115,7 @@ legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resample
        legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
        text.col = "green4", lty = c("solid","dotted","solid","dotted"),
        merge = TRUE, bg = 'gray90')}
-       
+   }
 abline(h=1)
 if (fa!="pc") {abline(h=0) }
 results <- list(fa.values = fa.valuesx,fa.sim = fa.values.sim,pc.values=valuesx,pc.sim=values.sim,Call=cl)

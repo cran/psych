@@ -9,14 +9,14 @@ Two alternative solutions to such structures are found by the \code{\link{omega}
 
 Graphic presentations of these two alternatives are helpful in understanding the structure.  omega.graph  and omega.diagram draw both such structures.  Graphs are drawn directly onto the graphics window or expressed in ``dot" commands for conversion to graphics using implementations of Graphviz (if using omega.graph).
 
-Using Graphviz allows the user to clean up the Rgraphviz output. However, if Graphviz and Rgraphviz are not available, use omega.diagram.
+Using Graphviz allows the user to clean up the Rgraphviz output. However, if Graphviz and Rgraphviz are not available, use omega.diagram.  
 
 See the other structural diagramming functions, \code{\link{fa.diagram}} and \code{\link{structure.diagram}}. 
 
 In addition 
 }
 \usage{
-omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,simple=TRUE,errors=FALSE, digits=1,e.size=.05,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE, ...) 
+omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut,simple=TRUE,errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE, ...) 
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
 }
 
@@ -35,8 +35,9 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{title}{ Figure title }
     \item{main}{ main figure caption }
   \item{\dots}{Other options to pass into the graphics packages }
-  \item{e.size}{the size to draw the ellipses for the factors}
+  \item{e.size}{the size to draw the ellipses for the factors. This is scaled by the  number of variables.}
   \item{cut}{Minimum path coefficient to draw}
+  \item{gcut}{Minimum general factor path to draw}
   \item{simple}{draw just one path per item}
   \item{sort}{sort the solution before making the diagram}
   \item{side}{on which side should errors  be drawn?}

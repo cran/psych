@@ -5,7 +5,7 @@
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path).
 }
 \usage{
-fa.diagram(fa.results,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
+fa.diagram(fa.results,Phi=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
     digits=1,e.size=.05,rsize=.15,side=2,main="Factor Analysis",cex=NULL, ...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
@@ -14,7 +14,8 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fa.results}{The output of factor analysis or principal components analysis }
+  \item{fa.results}{The output of factor analysis, principal components analysis, or ICLUST analysis.  May also be a factor loading matrix from anywhere.}
+  \item{Phi}{Normally not specified (it is is found in the FA, pc, or ICLUST, solution), this may be given if the input is a loadings matrix.}
   \item{out.file}{ If it exists, a dot representation of the graph will be stored here (fa.graph)}
   \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
@@ -39,6 +40,8 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
 fa.diagram does not use Rgraphviz and is the preferred function.
 
 In fa.graph, although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram.
+
+The normal input is taken from the output of either \code{\link{fa}} or \code{\link{ICLUST}}.  It is also possible to just give a factor loading matrix as input.  In this case, supplying a Phi matrix of factor correlations is also possible.
 }
 \value{fa.diagram: A path diagram is drawn without using Rgraphviz.  This is probably the more useful function.
 
@@ -56,9 +59,14 @@ test.simple <- fa(item.sim(16),2,rotate="oblimin")
 #if(require(Rgraphviz)) {fa.graph(test.simple) } 
 fa.diagram(test.simple)
 data(bifactor)
-fa.diagram(fa(Thurstone,3,rotate="cluster"),cut=.4,digits=2)
+f3 <- fa(Thurstone,3,rotate="cluster")
+fa.diagram(f3,cut=.4,digits=2)
+f3l <- f3$loadings
+fa.diagram(f3l,main="input from a matrix")
+Phi <- f3$Phi
+fa.diagram(f3l,Phi=Phi,main="Input from a matrix")
+fa.diagram(ICLUST(Thurstone,2,title="Two cluster solution of Thurstone"),main="Input from ICLUST")
 }
-
 \keyword{ multivariate }
 \keyword{hplot}
 

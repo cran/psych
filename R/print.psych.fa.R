@@ -150,7 +150,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
     
    	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n")
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}
-   	if(!is.null(x$RMSEA)) {cat("\nRMSEA and the", x$RMSEA[4]," confidence intervals are ",round(x$RMSEA[1:3],digits+1))  }
+   	if(!is.null(x$RMSEA)) {cat("\nRMSEA index = ",round(x$RMSEA[1],digits+1), " and the", (1- x$RMSEA[4])*100,"% confidence intervals are ",round(x$RMSEA[2:3],digits+1))  }
    	if(!is.null(x$BIC)) {cat("\nBIC = ",round(x$BIC,digits))}
 
 cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))

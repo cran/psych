@@ -2,6 +2,7 @@
 \alias{sim}
 \alias{sim.simplex}
 \alias{sim.minor}
+\alias{sim.omega}
 \alias{sim.parallel}
 \alias{sim.rasch}
 \alias{sim.irt}
@@ -11,6 +12,7 @@
 \description{A number of functions in the psych package will generate simulated data.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
 \code{\link{sim.minor}} to simulate major and minor factors,
+\code{\link{sim.omega}} to test various examples of omega,
 \code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors,
 \code{\link{sim.rasch}} to create simulated rasch data, 
 \code{\link{sim.irt}} to create general 1 to 4 parameter IRT data by calling 
@@ -21,7 +23,8 @@
 \usage{
 sim(fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=TRUE)
 sim.simplex(nvar =12, r=.8,mu=NULL, n=0)
-sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2)) 
+sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
+sim.omega(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
 n = c(200,400)) 
 sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1)
@@ -39,7 +42,11 @@ sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL)
   \item{nvar}{Number of variables for a simplex structure}
   \item{nfact}{Number of large factors to simulate in sim.minor}
   \item{r}{the base correlation for a simplex}
-  \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then it will be used.}
+  \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
+  \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
+  \item{om.fact}{Number of  factors to extract in omega}
+  \item{flip}{In omega, should item signs be flipped if negative}
+  \item{option}{In omega, for the case of two factors, how to weight them?}
   \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
   \item{ntrials}{Number of replications per level}
   \item{low}{lower difficulty for sim.rasch}
@@ -58,6 +65,8 @@ The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12
 Two data structures that are particular challenges to exploratory factor analysis are the simplex structure and the presence of minor factors.  Simplex structures \code{\link{sim.simplex}} will typically occur in developmental or learning contexts and have a correlation structure of r between adjacent variables and r^n for variables n apart.  Although just one latent variable (r) needs to be estimated, the structure will have nvar-1 factors.  
 
 Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals.  
+
+Although coefficient \deqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function. 
 
 The four irt simulations, sim.rasch, sim.irt, sim.npl and sim.npn, simulate dichotomous items following the Item Response model.  sim.irt just calls either sim.npl (for logistic models) or sim.npn (for normal models) depending upon the specification of the model. 
 

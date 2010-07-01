@@ -1,5 +1,5 @@
 "omega" <-
-function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,...) {
+function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
@@ -29,7 +29,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
        fm <- "minres"} 
        } else { m.names <- rownames(m) }   #add the names if we have a factor input 
        
-       gf<-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs,Phi=Phi, ...)
+       gf<-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs,Phi=Phi,option=option, ...)
       if(!is.null(Phi)) { model <- m
                          nfactors <- dim(model)[2]
                           m <- factor.model(model,Phi=Phi,U2=FALSE)

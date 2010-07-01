@@ -11,6 +11,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
 #nfactors is the number of factors to extract
       if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
   if(is.null(Phi)) {  #the normal case
+      normal.case <- TRUE
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
                                           model <- cor(model,use="pairwise")}
@@ -19,14 +20,17 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
         fact <- principal(model, nfactors,n.obs=n.obs,...)
     } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,...) } else {
      
-        fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
+        #fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
+        stop("The method of factor extraction you specified is not avaialble")
+        
     }}
      orth.load <- loadings(fact)
     } else {model <- as.matrix(model)
             Phi <- as.matrix(Phi)
             fact <- model %*% Phi  #find the orthogonal matrix from the oblique pattern and the Phi matrix
             orth.load <- fact
-            nfactors <- dim(fact)[2]}
+            nfactors <- dim(fact)[2]
+            normal.case <-FALSE}
    
     
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
@@ -47,14 +51,14 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
      			                Phi <- obminfact$Phi} else {
            							  obminfact <- try(oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
-           							        message("\nThe oblimin solution failed, Promax used instead.\n")
+           							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi} }} 
                    						    }
            		}  
-    if(nfactors>1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
+    if(nfactors > 1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     
-    if(!is.null(Phi)) { fload <- model
+    if(!normal.case) { fload <- model
                         factr <- Phi} else {
                     	fload <- obminfact$loadings
                                 #factr <- t(obminfact$Th) %*% (obminfact$Th)
@@ -71,9 +75,11 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
       			 gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2])) 
       			 message("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")} else { if(option=="first") {
       			 gload[1] <- 1
-      			 gload[2] <- abs(factr[1,2])
+      			# gload[2] <- abs(factr[1,2])
+      			gload[2] <-  (factr[1,2])
       			 message("Three factors are required for identification -- general factor loading set to be 1 for group factor 1. Proceed with caution.")} else { gload[2] <- 1
-      			 gload[1] <- abs(factr[1,2]) 
+      			# gload[1] <- abs(factr[1,2]) 
+      			 gload[1] <- (factr[1,2]) 
       			 message("Three factors are required for identification -- general factor loadings are set to be 1 for group factor 2. Proceed with caution.")} }
       			 
        

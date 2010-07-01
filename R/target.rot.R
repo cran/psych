@@ -8,7 +8,8 @@ function (x,keys=NULL)
         return(x)
     dn <- dimnames(x)
     if(is.null(keys)) {Q <- factor2cluster(x)} else {Q <- keys}
-    
+    Q <- as.matrix(Q)
+    if(dim(Q)[2] < 2) {stop("Cluster structure produces 1 cluster. Rotation is not meaningful with less than 2 factors")}
     U <- lm.fit(x, Q)$coefficients
     d <- diag(solve(t(U) %*% U))
     U <- U %*% diag(sqrt(d))

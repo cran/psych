@@ -4,7 +4,7 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
 }
 \usage{
-omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL, ...)
+omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,8 +21,8 @@ omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega"
   \item{n.obs}{Number of observations - used for goodness of fit statistic}
   \item{rotate}{What rotation to apply? The default is oblimin, the alternatives include simplimax, Promax,  cluster and target. target will rotate to an optional keys matrix (See \code{\link{target.rot}})}
   \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
-  
-  \item{...}{Allows additional parameters to be passed through to the factor routines.  See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
+  \item{option}{In the two factor case (not recommended), should the loadings be equal, emphasize the first factor, or emphasize the second factor. See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
+  \item{...}{Allows additional parameters to be passed through to the factor routines.  }
 }
 
 \details{``Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 

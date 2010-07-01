@@ -4,7 +4,7 @@
 \description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original.  
 }
 \usage{
-fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE)
+fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",ntrials=20,error.bars=FALSE,smc=FALSE,ylabel=NULL,show.legend=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,6 +16,8 @@ fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Sc
  \item{ntrials}{Number of simulated analyses to perform}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
  \item{smc}{smc=TRUE finds eigen values after estimating communalities by using SMCs.  smc = FALSE finds eigen values after estimating communalities with the first factor.}
+ \item{ylabel}{Label for the y axis -- defaults to ``eigen values of factors and components", can be made empty to show many graphs}
+ \item{show.legend}{the default is to have a legend.  For multiple panel graphs, it is better to not show the legend}
 }
 \details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 

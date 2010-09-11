@@ -75,7 +75,7 @@ conf.level <- alpha
                   	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$F0 <-1 
      
      #The estimatation of RMSEA and the upper and lower bounds is taken from John Fox's sem with minor modifications
-      if(!is.null(result$objective) && (result$dof >0)) {
+      if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
       RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df * (N-1)  - 1/(N-1)
    
 

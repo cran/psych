@@ -1,3 +1,8 @@
+#vss is just an alias to VSS to be consistent with naming conventions
+"vss" <-
+function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+ {VSS(x,n,rotate,diagonal,fm,n.obs,plot,title,...)  }
+
 "VSS" <-
 function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
  

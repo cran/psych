@@ -1,4 +1,5 @@
 \name{VSS}
+\alias{vss}
 \alias{VSS}
 \alias{MAP}
 
@@ -6,6 +7,7 @@
 \description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice.
 }
 \usage{
+vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 }
 %- maybe also 'usage' for other objects documented here.

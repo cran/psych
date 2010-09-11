@@ -4,13 +4,14 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- vss <- scores <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <-  FALSE
+iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
    if(class(x)[2] =='vss')  vss <- TRUE
    if(class(x)[2] =='iclust')  iclust <- TRUE
    if(class(x)[2] =='omega')  omega <- TRUE
+    if(class(x)[2] =='omegaSem')  omegaSem <- TRUE
    if(class(x)[2] =='fa')  fac.pa <- TRUE
    if(class(x)[2] =='principal') principal <- fac.pa <- TRUE
    if(class(x)[2] == 'alpha') alpha <- TRUE
@@ -19,6 +20,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "r.test") r.test <- TRUE
    if(class(x)[2] == "cortest") cortest <- TRUE
    if(class(x)[2] == "score.items") scores <- TRUE
+    if(class(x)[2] == "mchoice") mchoice <- TRUE
    if(class(x)[2] == "cluster.cor") cluster.cor <- TRUE
    if(class(x)[2] == "cluster.loadings") cluster.loadings <- TRUE
    if(class(x)[2] == "guttman") gutt <- TRUE
@@ -30,6 +32,9 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "kappa")    kappa <- TRUE 
    if(class(x)[2] == "comorbid")    comorbid <- TRUE
    if(class(x)[2] == "tetra")    tetra <- TRUE
+   if(class(x)[2] == "poly")    poly <- TRUE
+   if(class(x)[2] == "irt.fa")    irt.fa <- TRUE
+   if(class(x)[2] == "irt.poly")    irt.poly <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -41,10 +46,12 @@ if(!is.null(x$Th)) {fac.pa <- TRUE}
 
 ## the following functions have their own print function
  if(omega)  print.psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)
+ if(omegaSem)  print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(vss) print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(fac.pa) print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(iclust) print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(stats) print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)
+
 
 ## 
 ##Now, for the smaller print jobs, just do it here.
@@ -103,7 +110,27 @@ if(r.test) {cat("Correlation tests \n")
 	  if(!is.null(x$item.cor) ) {
 	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
 	 print(round(x$item.corrected,digits=digits)) } 
+	 if(!is.null(x$response.freq)) {
+	 cat("\nNon missing response frequency for each item\n")
+	 print(round(x$response.freq,digit=digits))}
+	
   }
+  
+   if(mchoice) {
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Unstandardized) Alpha:\n")
+	print(x$alpha,digits=digits)
+  	cat("\nAverage item correlation:\n")
+  	print(x$av.r,digits=digits)
+	
+	
+	
+	 if(!is.null(x$item.stats)) {
+	 cat("\nitem statistics \n")
+	 print(round(x$item.stats,digit=digits))}
+  }
+  
   
 if(cluster.cor) {
     cat("Call: ")
@@ -156,6 +183,9 @@ cat("\n Reliability if an item is dropped:\n")
     print(x$alpha.drop,digits=digits)
 cat("\n Item statistics \n")
    print(x$item.stats,digits=digits)
+ if(!is.null(x$response.freq)) {
+	 cat("\nNon missing response frequency for each item\n")
+	 print(round(x$response.freq,digit=digits))}
 }
 
 
@@ -238,6 +268,19 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
           }
    }
   
+  
+    if(poly) {cat("Call: ")
+              print(x$Call)
+            cat("Polychoric correlations \n")
+            if(!is.null(x$twobytwo)) {
+              print(x$twobytwo,digits=digits)
+              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
+            
+            print(x$rho,digits)
+            cat("\n with tau of \n")
+            print(x$tau,digits)
+          }
+   }
   if(mat.reg) { cat("Call: ")
               print(x$Call)
             cat("\nMultiple Regression from matrix input \n")
@@ -291,6 +334,20 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
               
               }
          }
+  
+  if(irt.fa) {
+   cat("Item Response Analysis using Factor Analysis = ")
+   cat("\nCall: ")
+   print(x$Call)
+  print(round(x$coefficients,digits))
+  }
+  
+    if(irt.poly) {
+   cat("Item Response Analysis using Factor Analysis = ")
+   cat("\nCall: ")
+   print(x$Call)
+  print(round(x$coefficients,digits))
+  }
   
   
   }     #end of the not list condition

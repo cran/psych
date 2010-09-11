@@ -8,7 +8,7 @@ function(object,digits=2,items=FALSE,...) {
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
 #figure out which psych function called us 
- iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- mat.reg <- FALSE 
+ iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- mat.reg <- irt.fa <-  FALSE 
  
  if(length(class(object)) > 1)  { 
    if(class(object)[2] =='sim')  sim <- TRUE
@@ -22,6 +22,7 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
    if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
    if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
+   if(class(object)[2] == 'irt.fa') irt.fa <- TRUE
      } 
 result <- NULL
 if(!is.null(object$fn)) {fa <- TRUE}
@@ -173,6 +174,14 @@ print(object$total,digits=digits)
            print(round(object$R2,digits))
            
            }
+           
+  if(irt.fa) {
+   cat("Item Response Analysis using Factor Analysis = ")
+   cat("\nCall: ")
+   print(object$Call)
+  print(round(object$coefficients,digits))
+  print(object$stats,digits)
+  }
 invisible(result)
    }
   

@@ -15,7 +15,7 @@ require(MASS)
 } else { model <- f%*% t(f)}
 diag(model)<- 1                       # put ones along the diagonal
   nvar <- dim(f)[1]
-  if(is.null(rownames(fx))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} else {colnames(model) <- rownames(model) <- rownames(fx)}
+  if(is.null(rownames(model))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} #else {colnames(model) <- rownames(model) <- rownames(fx)}
  
   if(n>0) {
     mu <- rep(0,nvar)

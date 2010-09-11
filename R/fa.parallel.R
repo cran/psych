@@ -52,6 +52,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
 }}
    	}
    	
+   	
+   	
    if(is.null(ylabel)) {if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}}
    
    values.sim <- describe(t(matrix(unlist(temp[["sim"]]),ncol=ntrials)))
@@ -127,5 +129,61 @@ cat("Parallel analysis suggests that ")
 cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
 class(results) <- c("psych","parallel")
 return(invisible(results))}
+
+
+#a cut down plotting function
+"plot.fa.parallel" <- 
+function(x,n.obs,fa,show.legend,error.bars,main="Parallel Analysis Scree Plots",...) {
+if(missing(n.obs)) n.obs <- NULL
+if(missing(fa)) fa <- "both"
+if(missing(show.legend)) show.legend <- TRUE
+if(missing(error.bars)) error.bars <- FALSE
+ci <- 1.96
+arrow.len <- .05
+fa.valuesx <- x$fa.values
+fa.values.sim <- x$fa.sim
+valuesx <- x$pc.values
+values.sim <- x$pc.sim
+ymax <- max(valuesx,values.sim$mean)
+ylabel <-  "eigen values of principal factors"
+if (!is.null(valuesx)) {
+            plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4,col="blue") }
+           
+        	points(values.sim$mean,type ="l",lty="dotted",pch=2,col="red")
+        if(error.bars) {
+         for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- fa.values.sim$mean[i]
+         yse <-  fa.values.sim$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	
+        	  
+	
+		points(fa.values.sim$mean,type ="l",lty="dashed",pch=2,col="red")
+						 if(error.bars) {
+         for (i in 1:dim(values.sim)[1])  
+    	{
+    	 ycen <- fa.values.sim$mean[i]
+         yse <-  fa.values.sim$se[i]
+    	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
+    	
+    	
+					if (fa !="fa") 	points(fa.valuesx,type ="b",lty="solid",pch=2,col="blue")
+	points(fa.values.sim,type ="l",lty="dotted",pch=2,col="red")
+	if(is.null(n.obs)) {points(fa.values.sim$mean,type ="l",lty="dashed",pch=2,col="red")}
+           
+
+if(show.legend) {
+
+       legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
+       text.col = "green4", lty = c("solid","dotted","solid","dotted"),
+       merge = TRUE, bg = 'gray90')
+   }
+abline(h=1)
+if (fa!="pc") {abline(h=0) }
+}
+
+
+
 
  

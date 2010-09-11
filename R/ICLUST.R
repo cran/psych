@@ -16,6 +16,10 @@
 # print(ICLUST(r.mat),digits=2)
 
 #ICLUST is the main function and calls other routines
+"iclust" <- 
+ function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE ) {
+ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC )}
+
 
 "ICLUST" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE ) {#should allow for raw data, correlation or covariances

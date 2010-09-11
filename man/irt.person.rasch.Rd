@@ -5,7 +5,7 @@
 \alias{irt.person.rasch}
 \title{Item Response Theory estimate of theta (ability) using a Rasch (like) model}
 \description{Item Response Theory models individual responses to items by estimating individual ability (theta) and item difficulty (diff) parameters.  
-This is an early and crude attempt to capture this modeling procedure.
+This is an early and crude attempt to capture this modeling procedure. A better procedure is to use  \code{\link{irt.fa}}. 
 }
 \usage{
 irt.person.rasch(diff, items)
@@ -47,10 +47,9 @@ This is not an "official" way to do IRT, but is useful for basic item developmen
   
 
 \author{ William Revelle}
-\note{ Not recommended for serious use.  This code is under development. Much better functions are in the ltm and eRm packages,
+\note{ Not recommended for serious use.  This code is under development. Much better functions are in the ltm and eRm packages. Similar analyses can be done using \code{\link{irt.fa}}
 }
-\seealso{ \code{\link{sim.irt}}, \code{\link{sim.rasch}},  \code{\link{logistic}}, \code{\link{irt.item.diff.rasch}}
-}
+\seealso{ \code{\link{sim.irt}}, \code{\link{sim.rasch}},  \code{\link{logistic}}, \code{\link{irt.fa}}, \code{\link{tetrachoric}},  \code{\link{irt.item.diff.rasch}}   }
 
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line

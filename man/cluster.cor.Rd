@@ -3,7 +3,7 @@
 
 \title{Find correlations of composite variables from a larger matrix}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function. 
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{score.items}} which also gives item by cluster correlations.
 }
 \usage{
 cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
@@ -16,7 +16,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
  \item{digits}{round off answer to digits}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
 }
-\details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix using \code{\link{score.items}}.
+\details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
 
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  
@@ -41,7 +41,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 
 }
-\note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2009)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
+\note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
 }
 \seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha.scale}}, \code{\link{score.items}}}
 \examples{

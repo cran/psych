@@ -1,23 +1,27 @@
-\name{ICLUST}
+\name{iclust}
 \alias{ICLUST}
 \alias{iclust}
-\title{ICLUST: Item Cluster Analysis   -- Hierarchical cluster analysis using psychometric principles }
+\title{iclust: Item Cluster Analysis   -- Hierarchical cluster analysis using psychometric principles }
 \description{A common data reduction technique is to cluster cases (subjects). Less common, but particularly useful in psychological research, is to cluster items (variables). This may be thought of as an alternative to factor analysis, based upon a much simpler model. The cluster model is that the correlations between variables reflect that each item loads on at most one cluster, and that items that load on those clusters correlate as a function of their respective loadings on that cluster and items that define different clusters correlate as a function of their respective cluster loadings and the intercluster correlations. 
 Essentially, the cluster model is a Very Simple Structure factor model of complexity one (see \code{\link{VSS}}).
 
-This function applies the ICLUST algorithm to hierarchically cluster items to form composite scales. Clusters are combined if coefficients alpha and beta will increase in the new cluster.
+This function applies the iclust algorithm to hierarchically cluster items to form composite scales. Clusters are combined if coefficients alpha and beta will increase in the new cluster.
 
 Alpha, the mean split half correlation, and beta, the worst split half correlation, are estimates of the reliability and general factor saturation of the test.  (See also the \code{\link{omega}} function to estimate McDonald's coeffients   \eqn{\omega_h}{omega hierarchical} and   \eqn{\omega_t}{omega total})
 
 
 }
 \usage{
+iclust(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
+correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
+n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
 n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
 
-#ICLUST(r.mat)    #use all defaults
-#ICLUST(r.mat,nclusters =3)    #use all defaults and if possible stop at 3 clusters
+
+#iclust(r.mat)    #use all defaults
+#iclust(r.mat,nclusters =3)    #use all defaults and if possible stop at 3 clusters
 #ICLUST(r.mat, output =3)     #long output shows clustering history
 #ICLUST(r.mat, n.iterations =3)  #clean up solution by item reassignment
 }
@@ -56,7 +60,7 @@ Revelle (1979) proposed that hierachical cluster analysis could be used to estim
 Revelle and Zinbarg (2009) discuss alpha, beta, and omega, as well as other estimates of reliability. 
 
 
-The original ICLUST program was written in FORTRAN to run on CDC and IBM mainframes and was then modified to run in PC-DOS.  The R version of ICLUST is a completely new version  written for the psych package.  Please email me if you want help with this version of ICLUST or if you desire more features.
+The original ICLUST program was written in FORTRAN to run on CDC and IBM mainframes and was then modified to run in PC-DOS.  The R version of iclust is a completely new version  written for the psych package.  Please email me if you want help with this version of iclust or if you desire more features.
 
 A requested feature (not yet available) is to specify certain items as forming a cluster.  That is, to do confirmatory cluster analysis.  
 
@@ -74,7 +78,7 @@ b) (Va - N + Nra + Cab)/sqrt(Vab*Va)    (option cor.gen=FALSE)
 The default is to use cor.gen=TRUE.
 
 
-Although ICLUST will give what it thinks is the best solution in terms of the number of clusters to extract, the user will sometimes disagree.  To get more clusters than the default solution, just set the nclusters parameter to the number desired.  However, to get fewer than meet the alpha and beta criteria, it is sometimes necessary to set alpha=0 and beta=0 and then set the nclusters to the desired number.   
+Although iclust will give what it thinks is the best solution in terms of the number of clusters to extract, the user will sometimes disagree.  To get more clusters than the default solution, just set the nclusters parameter to the number desired.  However, to get fewer than meet the alpha and beta criteria, it is sometimes necessary to set alpha=0 and beta=0 and then set the nclusters to the desired number.   
 
 Clustering 24 tests of mental ability
 
@@ -118,7 +122,7 @@ See also  more extensive documentation at
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
 \author{William Revelle   }
         
-\note{ICLUST draws graphical displays using Rgraphiviz by default.  If Rgraphviz is not installed, ICLUST will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST will think it is available, try to produce a graph, and fail (ungracefully).  The solution to this problem is to specify plot=FALSE and the create graphs using the dot language.  See the last example.
+\note{iclust draws graphical displays with or without using Rgraphiviz. Rgraphviz produces slightly better graphics and will also export in the dot language for further massaging of the graphic. If Rgraphviz is not installed, ICLUST.graph will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST.graph will think it is available, try to produce a graph, and fail (ungracefully).  The solution to this problem is to specify plot=FALSE and the create graphs using the dot language.  See the last example. With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty, but more stable.
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 

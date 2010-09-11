@@ -158,7 +158,7 @@ if(sl) { eAttrs$dir<- edge.dir
 
 
 plot(clust.graph,nodeAttrs = nAttrs,edgeAttrs = eAttrs,attrs = attrs,main=title)   #not clear if the subGList makes any difference
-if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+if(!is.null(out.file) ){toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
 colnames(sem) <- c("Path","Parameter","Initial Value")
 return(sem=sem[1:k,])
    }

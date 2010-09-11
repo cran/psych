@@ -11,21 +11,35 @@
      if(color.lines) { colors <- c("black","red")} else {colors <- c("black","black") }
   Phi <- NULL  #the default case
   if(is.null(cex)) cex <- 1
-  if(sort) om.results <- fa.sort(om.results)   #usually sort, but sometimes it is better not to do so
+  
  
+ if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "omegaSem")) ) {
+      #  factors <- as.matrix(om.results$omega.efa$cfa.loads[,2:ncol(om.results$omega.efa$cfa.loads)])
+      if(sort) om.results$omega.efa$cfa.loads <- fa.sort(om.results$omega.efa$cfa.loads)
+      factors <- as.matrix(om.results$omega.efa$cfa.loads)
+        gloading <- om.results$omega.efa$cfa.loads[,1,drop=FALSE]
+        nvar <- num.var <- nrow(gloading)
+        num.factors <- ncol(factors) -1
+        sl=TRUE
+        main <- "Omega from SEM" 
+    
+        } else {
+ if(sort) om.results <- fa.sort(om.results)   #usually sort, but sometimes it is better not to do so
  if (sl) {factors <- as.matrix(om.results$schmid$sl) 
          if(is.null(main)) {main <- "Omega with Schmid Leiman Transformation" }
-         } else{factors <- as.matrix(om.results$schmid$oblique)
+         } else {factors <- as.matrix(om.results$schmid$oblique)
           if(is.null(main)) {main <- "Hierarchical (multilevel) Structure" }
          }
-   
-       nvar <- num.var <- dim(factors)[1]   #how many variables?
-   if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}
+       gloading <- om.results$schmid$gloading
+        nvar <- num.var <- dim(factors)[1]   #how many variables?
+   if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]
+       }
+ }
    
    e.size <- e.size * 10/ nvar   #this is an arbitrary setting that seems to work
 #first some basic setup parameters 
   
-    gloading <- om.results$schmid$gloading
+   
    
     vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }

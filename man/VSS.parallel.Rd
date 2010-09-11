@@ -1,7 +1,7 @@
 \name{VSS.parallel}
 \alias{VSS.parallel}
 \title{Compare real and random VSS solutions}
-\description{Another useful test for the number of factors is when the eigen values of a random matrix are greater than the eigen values of a a real matrix. Here we show VSS solutions to random data. 
+\description{Another useful test for the number of factors is when the eigen values of a random matrix are greater than the eigen values of a a real matrix. Here we show VSS solutions to random data. A better test is probably \code{\link{fa.parallel}}.
 }
 \usage{
 VSS.parallel(ncases, nvariables,scree=FALSE,rotate="none")

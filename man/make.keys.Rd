@@ -1,7 +1,7 @@
 \name{make.keys}
 \alias{make.keys}
 \title{ Create a keys matrix for use by score.items or cluster.cor}
-\description{ When scoring items by forming composite scales either from the raw data using \code{\link{score.items}} or from the correlatio matrix using \code{\link{cluster.cor}}, it is necessary to create a keys matrix.  This is just a short cut for doing so.
+\description{ When scoring items by forming composite scales either from the raw data using \code{\link{score.items}} or from the correlation matrix using \code{\link{cluster.cor}}, it is necessary to create a keys matrix.  This is just a short cut for doing so.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale.
 }
 \usage{
 make.keys(nvars, keys.list, key.labels = NULL, item.labels = NULL)
@@ -21,7 +21,7 @@ make.keys(nvars, keys.list, key.labels = NULL, item.labels = NULL)
  
   
 }
-\seealso{ \code{\link{score.items}}, \code{\link{cluster.cor}}, ~~~ }
+\seealso{ \code{\link{score.items}}, \code{\link{cluster.cor}} }
 \examples{
 data(attitude)
  key.list <- list(all=c(1,2,3,4,-5,6,7),
@@ -35,9 +35,9 @@ data(attitude)
  
  data(bfi)
  keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
- keys <- make.keys(25,keys.list,item.labels=colnames(bfi))
- scores <- score.items(keys,bfi,short=TRUE)
- scores
+ keys <- make.keys(25,keys.list,item.labels=colnames(bfi)[1:25])
+ scores <- score.items(keys,bfi[,1:25],short=TRUE)
+ summary(scores)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

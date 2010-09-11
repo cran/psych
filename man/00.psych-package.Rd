@@ -13,7 +13,7 @@ Psychometric applications include routines (\code{\link{fa}} for principal axes 
 
 The \code{\link{score.items}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
 
-Additional functions make for more convenient descriptions of item characteristics.  Functions under development include 1 and 2 parameter Item Response measures.
+Additional functions make for more convenient descriptions of item characteristics.  Functions under development include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning.
 
  A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{mat.regress}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
  
@@ -50,6 +50,8 @@ Graphical organizations of cluster and factor analysis output can be done using 
 
 4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{alpha}}, \code{\link{score.items}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}} (both omega hierarchical and omega total). Additional reliability estimates may be found in the \code{\link{guttman}} function.
 
+This can also be examined for a single dimension by applying \code{\link{irt.fa}} Item Response Theory techniques using factor analysis of the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlation matrices and converting the results into the standard two parameter parameterization of item difficulty and item discrimination.  Information functions for the items suggest where they are most effective.
+
 5) For some applications, data matrices are synthetically combined from sampling different items for different people.  So called Synthetic Aperture Personality Assessement (SAPA) techniques allow the formation of large correlation or covariance matrices even though no one person has taken all of the items. To analyze such data sets, it is easy to form item composites based upon the covariance matrix of the items, rather than original data set.  These matrices may then be analyzed using a number of functions (e.g., \code{\link{cluster.cor}},   \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}, \code{\link{mat.regress}}, and \code{\link{factor2cluster}}.
 
 6) More typically, one has a raw data set to analyze. \code{\link{alpha}} will report several reliablity estimates as well as item-whole correlations for items forming a single scale, \code{\link{score.items}} will score data sets on multiple scales, reporting the scale scores, item-scale and scale-scale correlations, as well as coefficient alpha,  alpha-1 and G6+. Using a `keys' matrix (created by \code{\link{make.keys}} or by hand), scales can have overlapping or independent items. \code{\link{score.multiple.choice}} scores multiple choice items or converts multiple choice items to dichtomous (0/1) format for other functions. 
@@ -67,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-90 \cr
-Date: \tab 20010-07-01\cr
+Version: \tab 1.0-91 \cr
+Date: \tab 2010-09-15\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -109,9 +111,9 @@ Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
 \link{fa}              \tab         Combined function for principal axis, minimum residual,  weighted least squares, and maximum likelihood factor analysis\cr
-\link{factor.pa}        \tab        Do a principal Axis factor analysis\cr
-\link{factor.minres}    \tab        Do a minimum residual factor analysis\cr
-\link{factor.wls}    \tab        Do a weighted least squares factor analysis\cr
+\link{factor.pa}        \tab        Do a principal Axis factor analysis   (deprecated)\cr
+\link{factor.minres}    \tab        Do a minimum residual factor analysis (deprecated)\cr
+\link{factor.wls}    \tab        Do a weighted least squares factor analysis (deprecated)\cr
 \link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
 \link{fa.diagram}     \tab          Show the results of a factor analysis without using Rgraphviz \cr
 \link{fa.sort}        \tab          Sort a factor or principal components output \cr
@@ -119,9 +121,11 @@ Data reduction through cluster and factor analysis\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
 \link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
-\code{\link{ICLUST}}   \tab          Apply the ICLUST algorithm\cr
+\code{\link{irt.fa}}   \tab          Apply factor analysis to dichotomous items to get IRT parameters \cr
+\code{\link{iclust}}   \tab          Apply the ICLUST algorithm\cr
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}   \tab          Graph the output from ICLUST using rgraphviz \cr
+\link{polychoric}        \tab          Find the polychoric correlations for items  and find item thresholds (uses J. Fox's polycor) \cr
 \link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor) \cr
 \link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
 \link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution (uses Rgraphviz) \cr 
@@ -129,6 +133,8 @@ Data reduction through cluster and factor analysis\cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
 \link{smc}             \tab          Find the Squared Multiple Correlation (used for initial communality estimates)\cr
+\link{tetrachoric}            \tab    Find tetrachoric correlations and item thresholds \cr
+\link{polyserial}            \tab    Find polyserial and biserial correlations for item validity studies \cr
 \link{VSS}            \tab           Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
 \link{VSS.parallel}    \tab          Do a parallel analysis to determine the number of factors for a random matrix\cr
 \link{VSS.plot}       \tab           Plot VSS output\cr
@@ -143,7 +149,7 @@ Functions for reliability analysis (some are listed above as well).
 \link{omega}           \tab          Calculate the omega estimates of reliability (requires the GPArotation package)\cr
 \link{ICC}          \tab             Intraclass correlation coefficients  \cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
-\link{glb.algebraic} \tab  The greates lower bound found by an algebraic solution (requires Rcsdp).  Written by  Andreas Moeltner
+\link{glb.algebraic} \tab  The greates lower bound found by an algebraic solution (requires Rcsdp).  Written by  Andreas Moeltner \cr
 }
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
@@ -157,6 +163,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{cluster.cor}       \tab        find correlations of composite variables from larger matrix\cr
 \link{cluster.loadings}  \tab        find correlations of items with  composite variables from a larger matrix\cr
 \link{eigen.loadings}    \tab        Find the loadings when doing an eigen value decomposition\cr
+\link{fa}        \tab        Do a minimal residual or principal axis factor analysis and estimate factor scores\cr
 \link{factor.pa}        \tab        Do a Principal Axis factor analysis and estimate factor scores\cr
 \link{factor2cluster}    \tab       extract cluster definitions from factor loadings\cr
 \link{factor.congruence}  \tab      Factor congruence coefficient\cr
@@ -166,6 +173,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{factor.rotate}   \tab         ``hand rotate" factors\cr
 \link{guttman}         \tab         8 different measures of reliability\cr
 \link{mat.regress}     \tab         standardized multiple regression from raw or correlation matrix input\cr
+\link{polyserial}         \tab      polyserial and biserial correlations with massive missing data\cr
 }
 
 Functions for generating simulated data sets \cr
@@ -200,6 +208,7 @@ Graphical functions that do not require Rgraphviz \cr
 \link{fa.diagram}        \tab           Draw the factor structure from a factor or principal components analysis \cr
 \link{omega.diagram}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
 \link{ICLUST.diagram}     \tab           Draw the tree diagram from ICLUST  \cr
+\link{plot.psych}        \tab           A call to plot various types of output (e.g. from irt.fa, fa, omega, iclust \cr
 }
 
 Circular statistics (for circadian data analysis) \cr
@@ -233,6 +242,7 @@ Miscellaneous functions\cr
 \link{poly.mat}         \tab         Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
 \link{polychor.matrix}   \tab        Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
 \link{scaling.fits}     \tab         Compares alternative scaling solutions and gives goodness of fits \cr
+\link{scrub}   \tab            Basic data cleaning \cr
 \link{tetrachor}   \tab            Finds tetrachoric correlations \cr
 \link{thurstone}       \tab          Thurstone Case V scaling \cr
 \link{tr}               \tab         Find the trace of a square matrix \cr

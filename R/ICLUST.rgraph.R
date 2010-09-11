@@ -65,7 +65,7 @@ function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
  cluster.vars <- subGraph(clust,clust.graph)
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")))
  plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=title) 
- if (!is.null(out.file)) {toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed) }
+ if (!is.null(out.file)) { toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed) }
    }
  
 #test with Harman data sets

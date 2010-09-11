@@ -1,10 +1,15 @@
 \name{omega}
 \alias{omega}
+\alias{omegaSem}
+\alias{omegaFromSem}
 \title{  Calculate McDonald's  omega estimates of general and total factor saturation }
-\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen).
+\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem package.  This is done by omegaSem and omegaFromSem.
 }
 \usage{
 omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
+omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...)
+omegaFromSem(m,s,flip=TRUE)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +28,7 @@ omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega"
   \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
   \item{option}{In the two factor case (not recommended), should the loadings be equal, emphasize the first factor, or emphasize the second factor. See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
   \item{...}{Allows additional parameters to be passed through to the factor routines.  }
+  \item{s}{The output from a sem analysis}
 }
 
 \details{``Many scales are assumed by their developers and users to be primarily a measure of one latent variable. When it is also assumed that the scale conforms to the effect indicator model of measurement (as is almost always the case in psychological assessment), it is important to support such an 
@@ -80,6 +86,12 @@ Another estimate reported is the omega for an infinite length test with a struct
 
 The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.  
 
+\code{\link{omega}} is an exploratory factor analysis function that uses a Schmid-Leiman transformation.  \code{\link{omegaSem}} first calls \code{\link{omega}} and then takes the Schmid-Leiman solution, converts this to a confirmatory sem model and then calls the sem package to conduct a confirmatory model.  \eqn{\omega_h} is then calculated from the CFA output. Although for well behaved problems, the efa and cfa solutions will be practically identical, the CFA solution will not always agree with the EFA solution. In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
+
+In addition, not all EFA solutions will produce workable CFA solutions.  Model misspecifications will lead to very strange CFA estimates. 
+
+\code{\link{omegaFromSem}} takes the output from a sem model and uses it to find 
+ \eqn{\omega_h}.  The estimate of factor indeterminacy, found by the multiple \eqn{R^2} of the variables with the factors, will not match that found by the EFA model.  In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
 }
 \value{
  
@@ -119,7 +131,10 @@ Maintainer: William Revelle  \email{  revelle@northwestern.edu  }
 
 The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as \code{\link{Promax}}.
 
-If the factor solution leads to an exactly orthogonal solution (probably only for demonstration data sets), then use the rotate="Promax" option to get a solution.}
+If the factor solution leads to an exactly orthogonal solution (probably only for demonstration data sets), then use the rotate="Promax" option to get a solution.
+
+\code{\link{omegaSem}} requires the sem package.  \code{\link{omegaFromSem}} uses the output from the sem package.
+}
 
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
 \examples{

@@ -16,14 +16,14 @@ table2df(x, count=NULL,labs = NULL)
 }
 \details{The original Galton (1888) of heights by cubits (arm length) is in tabular form. To show this as a correlation or as a scatter plot, it is useful to convert the table to a matrix or data frame of two columns.  
 
-This function may also be used to convert an item response pattern table into a data table.  e.g., the Bock data set.  
+This function may also be used to convert an item response pattern table into a data table.  e.g., the Bock data set \code{\link{bock}}.  
 }
 \value{A matrix (or data.frame) of sum(x) rows and two columns.
 }
 
 \author{William Revelle}
 
-\seealso{  \code{\link{cubits}}, data set bock }
+\seealso{  \code{\link{cubits}} and  \code{\link{bock}} data sets}
 \examples{
 data(cubits)
 cubit <- table2matrix(cubits,labs=c("height","cubit"))

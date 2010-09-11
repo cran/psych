@@ -28,7 +28,7 @@
     \item{lsat7}{reponses to 5 items for 1000 subjects on section 7}
        }
    }
-\details{The lsat6 data set is analyzed in the ltm package as well as by McDonald (1999). lsat7 is another 1000 subjects on part 7 of the LSAT. Both sets are described by Bock and Lieberman (1970). Both sets are useful examples of testing out IRT procedures and showing the use of tetrachoric correlations and item factor analysis.
+\details{The lsat6 data set is analyzed in the ltm package as well as by McDonald (1999). lsat7 is another 1000 subjects on part 7 of the LSAT. Both sets are described by Bock and Lieberman (1970). Both sets are useful examples of testing out IRT procedures and showing the use of \code{\link{tetrachoric}} correlations and item factor analysis using the \code{\link{irt.fa}} function.
     }
 \source{
 R. Darrell Bock and M. Lieberman (1970). Fitting a response model for dichotomously scored items. Psychometrika, 35(2):179-197.

@@ -34,7 +34,7 @@ Although written to create hierarchical structures, if the gload matrix is all 0
 \cr Jensen, A.R., Weng, L.J. (1994) What is a Good g? Intelligence, 18, 231-258.}
 \author{ William Revelle }
 
-\seealso{ \code{\link{omega}},   \code{\link{schmid}},  \code{\link{ICLUST}},  \code{\link{VSS}},  \code{\link{mvrnorm}} }
+\seealso{ \code{\link{omega}},   \code{\link{schmid}},  \code{\link{ICLUST}},  \code{\link{VSS}} for ways of analyzing these data.  Also see \code{\link{sim.structure}} to simulate a variety of structural models (e.g., multiple correlated factor models).  The simulation uses the  \code{\link{mvrnorm}} function from the MASS package.}
 \examples{
 
 gload <-  gload<-matrix(c(.9,.8,.7),nrow=3)    # a higher order factor matrix

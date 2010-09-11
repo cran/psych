@@ -43,6 +43,8 @@ More complete reliability analyses of a single scale can be done using the \code
 
 Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} will also score multiple scales and report more useful statistics. ``Standardized" alpha is calculated from the inter-item correlations and will differ from raw alpha. 
 
+Three alternative item-whole correlations are reported, two are conventional, one unique.  r is the correlation of the item with the entire scale, not correcting for item overlap.  r.drop is the correlation of the item with the scale composed of the remaining items.  Although both of these are conventional statistics, they have the disadvantage that a) item overlap inflates the first and b) the scale is different for each item when an item is dropped. Thus, the third alternative, r.cor, corrects for the item overlap by subtracting the item variance but then replaces this with the best estimate of common variance, the smc.
+
 }
 \value{
   \item{total }{a list containing}
@@ -56,8 +58,10 @@ Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} w
   \item{item.stats}{A data frame including}
   \item{r}{The correlation of each item with the total score (not corrected for item overlap)}
   \item{r.cor}{Item whole correlation corrected for item overlap and scale reliability}
+  \item{r.drop}{Item whole correlation for this item against the scale without this item}
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
+  \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
   
 }
 \references{
@@ -85,8 +89,12 @@ alpha(r9)
 #this is a case where alpha is a poor indicator of unidimensionality
 two.f <- sim.item(8)
 alpha(two.f,keys=c(rep(1,4),rep(-1,4))) 
-
-
+#an example with discrete item responses  -- show the frequencies
+items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
+a4 <- alpha(items$observed)  #item response analysis of congeneric measures
+a4
+#summary just gives Alpha
+summary(a4)
 }
 
 \keyword{ models }% at least one, from doc/KEYWORDS

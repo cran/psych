@@ -1,5 +1,5 @@
 "sim.congeneric" <- 
-function(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short=TRUE) { 
+function(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short=TRUE,categorical=FALSE, low=-3,high=3) { 
  n <- length(loads) 
 loading <- matrix(loads, nrow = n) 
 error <- diag(1, nrow = n) 
@@ -11,6 +11,12 @@ rownames(pattern) <- c(paste("V", seq(1:n), sep = ""))
 model <- pattern %*% t(pattern)
 if(!is.null(N)) {latent <- matrix(rnorm(N * (n + 1)), ncol = (n + 1)) 
        observed <- latent %*% t(pattern) 
+        if (categorical) {
+        
+    	observed = round(observed)       #round all items to nearest integer value
+		observed[(observed<= low)] <- low     
+		observed[(observed>high) ] <- high   
+		}
        colnames(latent) <-  c("theta", paste("e", seq(1:n), sep = ""))
        if(short) model <- cor(observed) }
 if (short) {return(model)}  else { if(!is.null(N)) {

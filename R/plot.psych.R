@@ -1,12 +1,24 @@
 "plot.psych" <-
 function(x,labels=NULL,...)
   {
+  
+   
    title <- x$title
-   vss <- iclust <- omega <- FALSE
-   if (!is.null(x$map)) {vss <- TRUE} 
-   if(!is.null(x$loadings)) {iclust <- TRUE}
-   if(!is.null(x$omega_h)) {omega <- TRUE}
-    
+   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <-  FALSE 
+   if(length(class(x)) > 1)  {
+   if(class(x)[2] =='irt.fa')  irt.fa <- TRUE
+    if(class(x)[2] =='irt.poly')  irt.poly <- TRUE
+   if(class(x)[2] =='vss')  vss <- TRUE
+   if(class(x)[2] =='iclust')  iclust <- TRUE 
+   if(class(x)[2] =='fa')  fa <- TRUE 
+   if(class(x)[2] =='principal')  principal <- TRUE 
+   if(class(x)[2] =='vss')  vss <- TRUE 
+    if(class(x)[2] =='omega')   omega <- TRUE 
+    if(class(x)[2] =='parallel')   parallel <- TRUE 
+ }
+ 
+
+  
     if (vss) {
    	    
   		n=dim(x)
@@ -37,8 +49,8 @@ function(x,labels=NULL,...)
  op <- par(no.readonly = TRUE) # the whole list of settable par's.
   cut <- 0
  if(iclust) { load <- x$loadings
-          cat("Use ICLUST.graph to see the  hierarchical structure\n") } else {load <- x$schmid$orthog 
-         cat("Use omega.graph to see the  hierarchical structure\n") }
+          cat("Use ICLUST.diagram to see the  hierarchical structure\n") } else {load <- x$schmid$orthog 
+         cat("Use omega.diagram to see the  hierarchical structure\n") }
   nc <- dim(load)[2]
   nvar <- dim(load)[1]
 ch.col=c("black","blue","red","gray","black","blue","red","gray")
@@ -58,4 +70,13 @@ if (nc > 2 ) {
  par(op) }
  
  
+if(irt.fa) plot.irt(x,...)
+
+if(irt.poly) plot.poly(x,...)
+
+if(fa) factor.plot(x,...)
+
+if(principal) factor.plot(x,...)
+
+if(parallel) plot.fa.parallel(x,...)
 }

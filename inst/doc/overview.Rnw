@@ -58,7 +58,7 @@
 \makeindex         % used for the subject index
 
 \title{An overview of the psych package}
-\author{William Revelle}
+\author{William Revelle\\Department of Psychology\\Northwestern University}
 
 %\affiliation{Northwestern University}
 %\acknowledgements{Written to accompany the psych package.  Comments should be directed to William Revelle \\  \url{revelle@northwestern.edu}}
@@ -72,7 +72,9 @@
 
 The \Rpkg{psych} package \citep{psych} has been developed at Northwestern University to include functions most useful for personality, psychometric,  and psychological research.  Some of the functions (e.g., \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels}, \pfun{error.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications include routines for five types of \iemph{factor analysis} (\pfun{fa} does  \iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{VSS}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis \pfun{fa.parallel} criteria.  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{ICLUST}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{ICLUST}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+Psychometric applications include routines for five types of \iemph{factor analysis} (\pfun{fa} does  \iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis \pfun{fa.parallel} criteria.  Item Response Theory models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination \pfun{irt.fa}.  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a bifactor solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \cite{cronbach:51}(\pfun{alpha}, \pfun{score.items}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function and the six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+
+Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt}.   
 
 
 This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
@@ -82,7 +84,8 @@ For a step by step tutorial in the use of the psych package and the base functio
 
 
 \section{Getting started} 
-Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For analyzing correlations of dichotomous data, the \Rpkg{polycor} package is required in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
+Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For some analyses of  correlations of dichotomous data, the \Rpkg{polycor} package is suggested in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  However, these functions have been supplement with \pfun{tetrachoric} and \pfun{polychoric} which do not require the  
+\Rpkg{polycor} package. These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
 
 
 \begin{Schunk}
@@ -187,6 +190,17 @@ head(sa.mat)
 tail(sa.mat)
 @
 
+\subsubsection{Basic data cleaning using \pfun{scrub}}
+If, after describing the data it is apparent that there were data entry errors that need to be globally replaced with NA,  or only certain ranges of data will be analyzed, the data can be ``cleaned" using the \pfun{scrub} function.
+
+Consider the \fun{attitude} data set (which does not need to be cleaned, but will be used as an example). All values of columns 3 - 5 that are less than 30, 40, or 50 respectively, or greater than 70 in any column will be replaced with NA.  In addition, any value exactly equal to 45 will be set to NA.  (max and isvalue are set to one value here, but they could be a different value for every column).
+
+<<print=FALSE,echo=TRUE>>= 
+x <- matrix(1:120,ncol=10,byrow=TRUE)
+new.x <- scrub(x,3:5,min=c(30,40,50),max=70,isvalue=45)
+new.x
+@
+Note that the number of subjects for those columns has decrease, and the minimums have gone up but the maximums down.  Data cleaning and examination for outliers should be a routine part of any data analysis.
 
 \subsection{Simple descriptive graphics}
 
@@ -344,15 +358,15 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \item [\pfun{factor.congruence}] The congruence between two factors is the cosine of the angle between them.  This is just the cross products of the loadings divided by the  sum of the squared loadings. This differs from the correlation coefficient in that the mean loading is not subtracted before taking the products. \pfun{factor.congruence} will find the cosines between two (or more) sets of factor loadings.
 
-\item [\pfun{VSS}] Very Simple Structure \cite{revelle:vss} applies a goodness of fit test to determine the optimal number of factors to extract. It can be thought of as a quasi-confirmatory model, in that it fits the very simple structure (all except the biggest c loadings per item are set to zero where c is the level of complexity of the item) of a factor pattern matrix to the original correlation matrix.  For items where the model is usually of complexity one, this is equivalent to making all except the largest loading for each item 0.  This is typically the solution that the user wants to interpret.  The analysis includes the \pfun{MAP} criterion of \cite{velicer:76} and a $\chi^2$ estimate.
+\item [\pfun{vss}] Very Simple Structure \cite{revelle:vss} applies a goodness of fit test to determine the optimal number of factors to extract. It can be thought of as a quasi-confirmatory model, in that it fits the very simple structure (all except the biggest c loadings per item are set to zero where c is the level of complexity of the item) of a factor pattern matrix to the original correlation matrix.  For items where the model is usually of complexity one, this is equivalent to making all except the largest loading for each item 0.  This is typically the solution that the user wants to interpret.  The analysis includes the \pfun{MAP} criterion of \cite{velicer:76} and a $\chi^2$ estimate.
 \item [\pfun{fa.parallel}] The parallel factors technique compares the observed eigen values of a correlation matrix with those from random data. 
-\item [\pfun{factor.plot}] will plot the loadings from a factor, principal components, or cluster analysis.  If there are more than two factors, then a SPLOM of the loadings is generated.
+\item [\pfun{factor.plot}] will plot the loadings from a factor, principal components, or cluster analysis (just a call to plot will suffice).  If there are more than two factors, then a SPLOM of the loadings is generated.
 
 \item[\pfun{fa.diagram}] replaces \pfun{fa.graph} and will draw a path diagram representing the factor structure.  It does not require Rgraphviz and thus  is probably preferred.
 \item[\pfun{fa.graph}] requires \fun{Rgraphviz} and will draw a graphic representation of the factor structure. If factors are correlated, this will be represented as well. 
 
 
-\item[\pfun{ICLUST} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
+\item[\pfun{iclust} ] is meant to do item cluster analysis using a hierarchical clustering algorithm specifically asking questions about the reliability of the clusters \citep{revelle:iclust}.  Clusters are formed until either coefficient $\alpha$ \cite{cronbach:51} or $\beta$ \cite{revelle:iclust} fail to increase.  
 \end{description}
 
 \subsubsection{Minimum Residual Factor Analysis}
@@ -367,19 +381,20 @@ The maximum likelihood solution to this equation is found by \fun{factanal} in t
 
 \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions. \iemph{min.res} is the default for the \pfun{fa} function.
 
-A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an independent clusters solution using the ``cluster" option on rotate (Table~\ref{tab:factor.minres}).  The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
+A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an oblique solution using the  default option on rotate which uses an oblimin transformation (Table~\ref{tab:factor.minres}).  Alternative rotations and transformations include ``none", ``varimax", ``quartimax", ``bentlerT", and ``geominT" (all of which are orthogonal rotations). as well as  ``promax", ``oblimin", ``simplimax", ``bentlerQ, and``geominQ" and  ``cluster" which are  possible oblique transformations of the solution. The default is to do a oblimin transformation, although prior versions defaulted to varimax. The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
 
+\begin{scriptsize}
 \begin{table}[htdp]
-\caption{Three correlated factors from the Thurstone 9 variable problem.  The solution is transformed obliquely using a targeted rotation towards an independent cluster solution. The extraction method was minimum residual.}
+\caption{Three correlated factors from the Thurstone 9 variable problem.  By default, the solution is transformed obliquely using oblimin. The extraction method is (by default) minimum residual.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
-f3t <- fa(Thurstone,3,n.obs=213,rotate="cluster",fm="minres")
+f3t <- fa(Thurstone,3,n.obs=213)
 f3t 
 @
 \end{center}
 \label{tab:factor.minres}
 \end{table}%
-
+\end{scriptsize}
 
 \subsubsection{Principal Axis Factor Analysis}
  An alternative, least squares algorithm, \pfun{factor.pa}, does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results. 
@@ -388,8 +403,9 @@ The solutions from the \pfun{fa}, the \pfun{factor.minres} and \pfun{factor.pa} 
  
 Using the Thurstone data set, three factors were requested  and then transformed into an independent clusters solution using \pfun{target.rot}  (Table~\ref{tab:Thurstone}).
 
+\begin{scriptsize}
 \begin{table}[htdp]
-\caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The extraction method was principal axis.}
+\caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The extraction method was principal axis. The transformation was a targeted transformation to a simple cluster solution.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
 data(bifactor)
@@ -400,32 +416,33 @@ f3o
 \end{center}
 \label{tab:Thurstone}
 \end{table}
-
+\end{scriptsize}
 
 \subsubsection{Weighted Least Squares Factor Analysis}
 
 Similar to the minres approach of minimizing the squared residuals, factor method ``wls" weights the squared residuals by their uniquenesses.  This tends to produce slightly smaller overall residuals. In the example of weighted least squares, the output is shown by using the \pfun{print} function with the cut option set to 0.  That is, all loadings are shown (Table~\ref{tab:Thurstone.wls}).
 
+\begin{scriptsize}
 \begin{table}[htdp]
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The factors were extracted using a weighted least squares algorithm.  All loadings are shown by using the cut=0 option in the \pfun{print.psych} function.}
-\begin{center}
+
 <<print=FALSE,echo=TRUE>>=
 data(bifactor)
 f3w <- fa(Thurstone,3,n.obs = 213,fm="wls")
 print(f3w,cut=0,digits=3)
 @
-\end{center}
 \label{tab:Thurstone.wls}
 \end{table}
+\end{scriptsize}
 
-The unweighted least squares solution may be shown graphically using the \pfun{factor.plot} function (Figure~\ref{fig:thurstone}. Factors were transformed obliquely using a targeted rotation to a simple cluster structure. 
+The unweighted least squares solution may be shown graphically using the \pfun{factor.plot} function which is called by the generic \fun{plot} function (Figure~\ref{fig:thurstone}. Factors were transformed obliquely using a oblimin.   These solutions may be shown as item by factor plots  (Figure~\ref{fig:thurstone} or by a structure diagram (Figure~\ref{fig:thurstone.diagram}.
 
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-factor.plot(f3t)
+plot(f3t)
 @
-\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{factor.plot}.  Factors were transformed to an oblique solution using  the \pfun{target.rot} function.}
+\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{plot}.  Factors were transformed to an oblique solution using  the oblimin function from the GPArotation package.}
 \label{fig:thurstone}
 \end{center}
 \end{figure}
@@ -436,7 +453,7 @@ factor.plot(f3t)
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 fa.diagram(f3t)
 @
-\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{fa.diagram}.  Factors were transformed to an oblique solution using  the \pfun{target.rot} function.}
+\caption{A graphic representation of the 3 oblique factors from the Thurstone data using \pfun{fa.diagram}.  Factors were transformed to an oblique solution using oblimin.}
 \label{fig:thurstone.diagram}
 \end{center}
 \end{figure}
@@ -447,7 +464,7 @@ A comparison of these three approaches suggests that the minres solution is more
 \subsubsection{Principal Components analysis}
 An alternative to factor analysis, which is unfortunately frequently confused with factor analysis, is principal components analysis.  Although the goals of PCA and FA are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem rotated using the \pfun{Promax} function. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices. Also note how the goodness of fit statistics, based upon the residual off diagonal elements, is much worse than the \pfun{fa} solution.
 
-
+\begin{scriptsize}
 \begin{table}[htdp]
 \caption{The Thurstone problem can also be analyzed using Principal Components Analysis.  Compare this to Table~\ref{tab:Thurstone}.  The loadings are higher for the PCA because the model accounts for the unique as well as the common variance.The fit of the off diagonal elements, however, is much worse than the \pfun{fa} results.}
 \begin{center}
@@ -459,7 +476,7 @@ p3p
 \end{center}
 \label{tab:pca}
 \end{table}
-
+\end{scriptsize}
 
 
 
@@ -489,35 +506,35 @@ om <- omega(Thurstone,n.obs=213)
 \end{center}
 \end{figure}
 
-\subsubsection{Item Cluster Analysis: ICLUST}
- An alternative to factor or components analysis is \iemph{cluster analysis}.  The goal of cluster analysis is the same as factor or components analysis (reduce the complexity of the data and attempt to identify homogeneous subgroupings).  Mainly used for clustering people or objects (e.g., projectile points if an anthropologist, DNA if a biologist, galaxies if an astronomer), clustering may be used for clustering items or tests as well.  Introduced to psychologists by \cite{tryon:39} in the 1930's, the cluster analytic literature exploded in the 1970s and 1980s \citep{blashfield:80,blashfield:88,everitt:74,hartigan:75}.  Much of the research is in taxonmetric applications in biology \cite{sneath:73,sokal:63} and marketing \citep{cooksey:06} where clustering remains very popular.  It is also used for taxonomic work in forming clusters of people in family  \citep{henry:05}   and clinical psychology \citep{martinent:07,mun:08}. Interestingly enough it has has had limited applications to psychometrics.  This is unfortunate, for as has been pointed out by e.g. \citep{tryon:35,loevinger:53}, the theory of factors, while mathematically compelling, offers little that the geneticist or behaviorist or perhaps even non-specialist finds compelling. \cite{cooksey:06} reviews why the \pfun{ICLUST} algorithm is particularly appropriate for scale construction in marketing. 
+\subsubsection{Item Cluster Analysis: iclust}
+ An alternative to factor or components analysis is \iemph{cluster analysis}.  The goal of cluster analysis is the same as factor or components analysis (reduce the complexity of the data and attempt to identify homogeneous subgroupings).  Mainly used for clustering people or objects (e.g., projectile points if an anthropologist, DNA if a biologist, galaxies if an astronomer), clustering may be used for clustering items or tests as well.  Introduced to psychologists by \cite{tryon:39} in the 1930's, the cluster analytic literature exploded in the 1970s and 1980s \citep{blashfield:80,blashfield:88,everitt:74,hartigan:75}.  Much of the research is in taxonmetric applications in biology \cite{sneath:73,sokal:63} and marketing \citep{cooksey:06} where clustering remains very popular.  It is also used for taxonomic work in forming clusters of people in family  \citep{henry:05}   and clinical psychology \citep{martinent:07,mun:08}. Interestingly enough it has has had limited applications to psychometrics.  This is unfortunate, for as has been pointed out by e.g. \citep{tryon:35,loevinger:53}, the theory of factors, while mathematically compelling, offers little that the geneticist or behaviorist or perhaps even non-specialist finds compelling. \cite{cooksey:06} reviews why the \pfun{iclust} algorithm is particularly appropriate for scale construction in marketing. 
  
 
-\emph{Hierarchical cluster analysis} \index{hierarchical cluster analysis} forms clusters that are nested within clusters.  The resulting \iemph{tree diagram} (also known somewhat pretentiously as a \iemph{rooted dendritic structure}) shows the nesting structure.  Although there are many hierarchical clustering algorithms in \R{} (e.g., \fun{agnes},  \fun{hclust}, and \pfun{ICLUST}), the one most applicable to the problems of scale construction is \pfun{ICLUST}  \citep{revelle:iclust}.
+\emph{Hierarchical cluster analysis} \index{hierarchical cluster analysis} forms clusters that are nested within clusters.  The resulting \iemph{tree diagram} (also known somewhat pretentiously as a \iemph{rooted dendritic structure}) shows the nesting structure.  Although there are many hierarchical clustering algorithms in \R{} (e.g., \fun{agnes},  \fun{hclust}, and \pfun{iclust}), the one most applicable to the problems of scale construction is \pfun{iclust}  \citep{revelle:iclust}.
 \begin{enumerate}
 \item Find the proximity (e.g. correlation) matrix,
 \item Identify the most similar pair of items
 \item Combine this most similar pair of items to form a new variable (cluster),
 \item Find the similarity of this cluster to all other items and clusters,
-\item Repeat  steps 2 and 3 until some criterion is reached (e.g., typicallly, if only one cluster remains or in \pfun{ICLUST} if there is a failure to increase reliability coefficients $\alpha$ or $\beta$). 
+\item Repeat  steps 2 and 3 until some criterion is reached (e.g., typicallly, if only one cluster remains or in \pfun{iclust} if there is a failure to increase reliability coefficients $\alpha$ or $\beta$). 
 \item Purify the solution by reassigning items to the most similar cluster center.
 \end{enumerate}
 
 
-ICLUST  forms clusters of items using a hierarchical clustering algorithm until one of two measures of internal consistency fails to increase \citep{revelle:iclust}. The number of clusters may be specified a priori, or found empirically. The resulting statistics include the average split half reliability, $\alpha$ \citep{cronbach:51}, as well as the worst split half reliability, $\beta$ \citep{revelle:iclust}, which is an estimate of the general factor saturation of the resulting scale.
+iclust  forms clusters of items using a hierarchical clustering algorithm until one of two measures of internal consistency fails to increase \citep{revelle:iclust}. The number of clusters may be specified a priori, or found empirically. The resulting statistics include the average split half reliability, $\alpha$ \citep{cronbach:51}, as well as the worst split half reliability, $\beta$ \citep{revelle:iclust}, which is an estimate of the general factor saturation of the resulting scale.
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 data(bfi)
-ic <- ICLUST(bfi)
+ic <- iclust(bfi[1:25])
 @
-\caption{Using the \pfun{ICLUST} function to find the cluster structure of 25 personality items.}
+\caption{Using the \pfun{iclust} function to find the cluster structure of 25 personality items (the three demographic variables were excluded from this analysis.}
 \label{fig:iclust}
 \end{center}
 \end{figure}
 
 \begin{table}[htdp]
-\caption{The summary statistics from an ICLUST analysis shows three large clusters and one item that is not grouped with the other clusters.}
+\caption{The summary statistics from an iclust analysis shows three large clusters and smaller cluster.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
 summary(ic)  #show the results
@@ -526,6 +543,16 @@ summary(ic)  #show the results
 \label{tab:iclust}
 \end{table}%
 
+The previous analysis was done using the Pearson correlation. A somewhat cleaner structure is obtained when using the \pfun{polychoric} function to find polychoric correlations.   
+
+\begin{Schunk}
+\begin{Sinput}
+data(bfi)
+r.poly <- polychoric(bfi[1:25])
+ic.poly <- iclust(r.poly)$rho
+iclust.diagram(ic.poly) 
+\end{Sinput}
+\end{Schunk}
 
 
 \subsection{Comparing factor/component/cluster solutions}
@@ -534,7 +561,7 @@ Cluster analysis, factor analysis, and principal components analysis all produce
 Consider the case of a four factor solution and four cluster solution to the Big Five problem.  
 
 <<print=FALSE,echo=TRUE>>=
-f4 <- fa(bfi,4,fm="pa")
+f4 <- fa(bfi[1:25],4,fm="pa")
 factor.congruence(f4,ic)
 @
 
@@ -558,7 +585,7 @@ Techniques most commonly used include
 
 5) Extracting factors as long as they are interpretable.
 	
-6) Using the Very Structure Criterion (\pfun{VSS} \citep{revelle:vss}.
+6) Using the Very Structure Criterion (\pfun{vss} \citep{revelle:vss}.
 
 7) Using Wayne Velicer's Minimum Average Partial (\pfun{MAP}) criterion \citep{velicer:76}. 
 
@@ -566,21 +593,21 @@ Techniques most commonly used include
 
 	
 
- Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simply runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.   The scree test is quite appealing but can lead to differences of interpretation as to when the scree "breaks".  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  VSS, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2). The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3 and is probably the worst of all criteria. 
+ Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simply runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.   The scree test is quite appealing but can lead to differences of interpretation as to when the scree "breaks".  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  vss, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2). The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3 and is probably the worst of all criteria. 
  
 An additional problem in determining the number of factors is what is considered a factor.  Many treatments of factor analysis assume that the residual correlation matrix after the factors of interest are extracted is composed of just random error.  An alternative concept is that the matrix is formed from major factors of interest but that there are also numerous minor factors of no substantive interest but that account for some of the shared covariance between variables.   The presence of such minor factors can lead one to extract too many factors and to reject solutions on statistical grounds of misfit that are actually very good fits to the data.  This problem is partially addressed later in the discussion of  simulating complex structures using \pfun{sim.structure} and of small extraneous factors using the \pfun{sim.minor} function.
  
  
 \subsubsection{Very Simple Structure}
-The \pfun{VSS} function compares the fit of a number of factor analyses with the loading matrix ``simplified" by deleting all except the c greatest loadings per item, where c is a measure of factor complexity cite{revelle:vss}.  Included in \pfun{VSS} is the MAP criterion (Minimum Absolute Partial correlation) of \cite{velicer:76}.   
+The \pfun{vss} function compares the fit of a number of factor analyses with the loading matrix ``simplified" by deleting all except the c greatest loadings per item, where c is a measure of factor complexity cite{revelle:vss}.  Included in \pfun{vss} is the MAP criterion (Minimum Absolute Partial correlation) of \cite{velicer:76}.   
 
-Using the Very Simple Structure criterion for the bfi data suggests that 4 factors are optimal (Figure~\ref{fig:vss}).
+Using the Very Simple Structure criterion for the bfi data suggests that 4 factors are optimal (Figure~\ref{fig:vss}). However, the MAP criterion suggests that 5 is optimal.  
 
 
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-vss <- VSS(bfi,title="Very Simple Structure of a Big 5 inventory")
+vss <- vss(bfi[1:25],title="Very Simple Structure of a Big 5 inventory")
 @
 \caption{The Very Simple Structure criterion for the number of factors compares solutions for various levels of item complexity and various numbers of factors.}
 \label{fig:vss}
@@ -596,9 +623,9 @@ An alternative way to determine the number of factors is to compare the solution
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-fa.parallel(bfi,main="Parallel Analysis of a Big 5 inventory")
+fa.parallel(bfi[1:25],main="Parallel Analysis of a Big 5 inventory")
 @
-\caption{Parallel analysis compares factor and principal components solutions to the real data as well as resampled data.}
+\caption{Parallel analysis compares factor and principal components solutions to the real data as well as resampled data. Although vss suggests 4 factors, MAP 5, parallel analysis suggests 6. One more demonstration of Kaiser's dictum.}
 \label{fig:parallel}
 \end{center}
 \end{figure}
@@ -614,7 +641,7 @@ $$
 \lambda_3 =  \frac{n}{n-1}\Bigl(1 - \frac{tr(\vec{V})_x}{V_x}\Bigr) = \frac{n}{n-1} \frac{V_x - tr(\vec{V}_x)}{V_x} = \alpha
 $$
 
-Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients $\beta$ (Revelle, 1979; see \pfun{ICLUST}) and $\omega_h$ (see \pfun{omega})  are more appropriate estimates of the general factor saturation. $\omega_t$is a better estimate of the reliability of the total test.  
+Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients $\beta$ (Revelle, 1979; see \pfun{iclust}) and $\omega_h$ (see \pfun{omega})  are more appropriate estimates of the general factor saturation. $\omega_t$is a better estimate of the reliability of the total test.  
 
 Guttman's $\lambda _6$ (G6) considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, $e_j^2$,  and is
 $$
@@ -662,20 +689,29 @@ Note how the reliability of the 7 item scales with an incorrectly reversed item 
 keys <- c(1,1,1,1,1,1,1)
 alpha(attitude,keys)
 @
+
+It is useful when considering items for a potential scale to examine the item distribution.  This is done in \pfun{score.items} as well as in \pfun{alpha}.
+
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE>>=
+items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
+alpha(items$observed)  #item response analysis of congeneric measures
+@
+\end{scriptsize}
 \subsubsection{Using \pfun{omega} to find the reliability of a single scale}
-Two alternative estimates of reliability that take into account the hierarchical structure of the inventory are McDonald's $\omega_h$ and $\omega_t$.  These may be found using the \pfun{omega} function (See Figure~\ref{fig:omega.9}).
+Two alternative estimates of reliability that take into account the hierarchical structure of the inventory are McDonald's $\omega_h$ and $\omega_t$.  These may be found using the \pfun{omega} function for an exploratory analysis (See Figure~\ref{fig:omega.9}) or \pfun{omegaSem} for a confirmatory analysis using the \Rpkg{sem} based upon the exploratory solution from \pfun{omega}.
 
 
 McDonald has proposed coefficient omega (hierarchical) ($\omega_h$) as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
-\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's $\omega_h$ to Cronbach's  $\alpha$ and Revelle's $\beta$. They conclude that $\omega_h$ is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009)).   
+\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's $\omega_h$ to Cronbach's  $\alpha$ and Revelle's $\beta$. They conclude that $\omega_h$ is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009) \url{http://personality-project.org/revelle/publications/revelle.zinbarg.08.pdf} ).   
 
 One way to find $\omega_h$ is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\pfun{schmid}) transformation to find general factor loadings, and then find $\omega_h$  
 
-$\omega_h$  differs slightly as a function of how the factors are estimated.  Four options are available, the default will do a minimum residual factor analysis, fm=``pa"  does a principle axes factor analysis (\pfun{factor.pa}), fm=``mle" uses the factanal function, and fm=``pc" does a principal components analysis (\pfun{principal}).  
+$\omega_h$  differs slightly as a function of how the factors are estimated.  Four options are available, the default will do a minimum residual factor analysis, fm=``pa"  does a principal axes factor analysis (\pfun{factor.pa}), fm=``mle" uses the factanal function, and fm=``pc" does a principal components analysis (\pfun{principal}).  
 
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \pfun{score.items} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
-$\beta$, an alternative to $\omega$, is defined as the worst split half reliability.  It can be estimated by using \pfun{ICLUST} (Item Cluster analysis: a hierarchical clustering algorithm). For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005. 
+$\beta$, an alternative to $\omega$, is defined as the worst split half reliability.  It can be estimated by using \pfun{iclust} (Item Cluster analysis: a hierarchical clustering algorithm). For a very complimentary review of why the iclust algorithm is useful in scale construction, see Cooksey and Soutar, 2005. 
 
 The \pfun{omega} function uses exploratory factor analysis to estimate the $\omega_h$ coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate $\omega_h$, is to always examine the pattern of the estimated general factor loadings prior to estimating $\omega_h$. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading $\omega_h$ estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
@@ -726,7 +762,15 @@ In the case of these simulated 9 variables, the amount of variance attributable 
 <<print=FALSE,echo=TRUE>>=
 om.9
 @
+\subsubsection{Estimating $\omega_h$ using Confirmatory Factor Analysis}
+The \pfun{omegaSem} function will do an exploratory analysis and then take the highest loading items on each factor and do a confirmatory factor analysis using the \Rpkg{sem} package.  These results can produce slightly different estimates of $\omega_h$, primarily because cross loadings are modeled as part of the general factor.
 
+<<print=FALSE,echo=TRUE>>=
+omegaSem(r9,n.obs=500)
+@
+
+
+\subsubsection{Other estimates of reliability}
 Other estimates of reliability are found by the \pfun{guttman} function. These are described in more detail in \cite{rz:09}. They include the 6 estimates from Guttman, four from TenBerge, and an estimate of the greatest lower bound. 
 <<print=FALSE,echo=TRUE>>=
 guttman(r9)
@@ -746,24 +790,29 @@ The printed output includes coefficients $\alpha$ and G6*, the average correlati
 
 First, create keys matrix using the \pfun{make.keys} function.   (The keys matrix could also be prepared externally using a spreadsheet and then copying it into \R{}). Although not normally necessary, show the keys to understand what is happening.
 
-Note that the number of items to specify in the \pfun{make.keys} function is the total number of items in the inventory.  That is, if scoring just 5 items from a 25 item inventory, \pfun{make.keys} should be told that there are 25 items. \pfun{make.keys} just changes a list of items on each scale to make up a scoring matrix. 
+Note that the number of items to specify in the \pfun{make.keys} function is the total number of items in the inventory.  That is, if scoring just 5 items from a 25 item inventory, \pfun{make.keys} should be told that there are 25 items. \pfun{make.keys} just changes a list of items on each scale to make up a scoring matrix.  Because the \pfun{bfi} data set has 25 items as well as 3 demographic items, the number of variables is specified as 28. 
 
+\begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
- keys <- make.keys(25,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
+ keys <- make.keys(nvars=28,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
  Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),
  Openness = c(21,-22,23,24,-25)),
  item.labels=colnames(bfi))
  keys
 @
+\end{scriptsize}
 
-The use of multiple key matrices for different inventories is facilitated by using the \pfun{super.matrix} function to combine matrices.  This allows convenient scoring of large data sets combining multiple inventories with keys based upon each individual inventory.  Pretend for the moment that the big 5 items were made up of two inventories, one consisting of the first 10 items, the second the last 15 items.  Then the following code would work:
+The use of multiple key matrices for different inventories is facilitated by using the \pfun{super.matrix} function to combine matrices.  This allows convenient scoring of large data sets combining multiple inventories with keys based upon each individual inventory.  Pretend for the moment that the big 5 items were made up of two inventories, one consisting of the first 10 items, the second the last 18 items. (15 personality items + 3 demographic items.) Then the following code would work:
+
+\begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
- keys.f <- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
-keys.l <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
+ keys.1<- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
+keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
  Openness = c(11,-12,13,14,-15)))
- keys <- super.matrix(keys.f,keys.l)
+ keys.25 <- super.matrix(keys.1,keys.2)
 @
-The resulting keys matrix is identical to that found above. 
+\end{scriptsize}
+The resulting keys matrix is identical to that found above except that it does not include the extra 3 demographic items.  This is useful when scoring the raw items because the response frequencies for each category are reported, and for the demographic data,  
 
 This use of making multiple key matrices and then combining them into one super matrix of keys is particularly useful when combining demographic information with items to be scores.  A set of demographic keys can be made and then these can be combined with the keys for the particular scales.
 
@@ -794,13 +843,72 @@ r.bfi <- cor(bfi,use="pairwise")
 scales <- cluster.cor(keys,r.bfi)
 summary(scales)
 @
-To find the correlations of the items with each of the scales (the ``structure" matrix) or the correlations of the items controlling for the other scales (the ``pattern" matrix), use the \pfun{cluster.loadings} function.
+To find the correlations of the items with each of the scales (the ``structure" matrix) or the correlations of the items controlling for the other scales (the ``pattern" matrix), use the \pfun{cluster.loadings} function.  To do both at once (e.g., the correlations of the scales as well as the item by scale correlations, it is also possible to just use \pfun{score.items}.
 
 \subsection{Item analysis}
 
-Basic item analysis starts with describing the data (\pfun{describe}, finding the number of dimensions using \pfun{factor.pa}, \pfun{VSS}, and parallel analysis \pfun{fa.parallel}.  Item whole correlations may then be found for scales scored on one dimension (\pfun{alpha} or many scales simultaneously (\pfun{score.items}).  Scales can be modified by changing the keys matrix (i.e., dropping particular items, changing the scale on which an item is to be scored). 
+Basic item analysis starts with describing the data (\pfun{describe}, finding the number of dimensions using factor analysis (\pfun{fa}), perhaps using the Very Simple Structure criterion  (\pfun{vss}), or perhaps parallel analysis \pfun{fa.parallel}.  Item whole correlations may then be found for scales scored on one dimension (\pfun{alpha} or many scales simultaneously (\pfun{score.items}).  Scales can be modified by changing the keys matrix (i.e., dropping particular items, changing the scale on which an item is to be scored). 
 
-\subsection{Multiple Regression from the correlation matrix}
+\section{Item Response Theory analysis}
+The use of Item Response Theory has become is said to be the ``new psychometrics".  The emphasis is upon item properties, particularly those of item difficulty or location and item discrimination.  These two parameters are easily found from classic techniques when using factor analyses of correlation matrices formed by \pfun{polychoric} or \pfun{tetrachoric} correlations.  The \pfun{irt.fa} function does this and then graphically displays item discrimination and item location as well as item and test information (see Figure~\ref{fig:irt}).
+
+If the correlations of all of the items reflect one underlying latent variable, then factor analysis of the matrix of tetrachoric correlations should allow for the identification of the regression slopes ($\alpha$) of the items on the latent variable.  These regressions are, of course just the factor loadings.  Item difficulty, $\delta_j$  and item discrimination, $\alpha_j$ may be found from factor analysis of the tetrachoric correlations where $\lambda_j$ is just the factor loading on the first factor and $\tau_j$ is the normal threshold reported by the \pfun{tetrachoric} function. 
+\begin{equation}
+\delta_j = \frac{D\tau}{\sqrt{1-\lambda_j^2}}, \;\;\;\;\;\; \;\;\;\;\;\; \;\;\;\;\;\;\; \alpha_j = \frac{\lambda_j}{\sqrt{1-\lambda_j^2}} 
+\label{eq:irt:diff}
+\end{equation}
+where D is a scaling factor used when converting to the parameterization of \iemph{logistic} model and is 1.702 in that case and 1 in the case of the normal ogive model.  Thus, in the case of the normal model, factor loadings ($\lambda_j$) and item medians ($\tau$) are just
+\begin{equation*}
+\lambda_j = \frac{\alpha_j}{\sqrt{1+\alpha_j^2}}, \;\;\;\;\;\; \;\;\;\;\;\; \;\;\;\;\;\;\;\tau_j = \frac{\delta_j}{\sqrt{1+\alpha_j^2}}.
+\end{equation*}
+
+
+
+Consider 9 dichotomous items representing one factor but differing in their levels of difficulty
+<<print=FALSE,echo=TRUE>>=
+set.seed(17)
+d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
+test <- irt.fa(d9$items)
+test 
+@
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+op <- par(mfrow=c(3,1))
+plot(test,type="ICC")
+plot(test,type="IIC")
+plot(test,type="test")
+op <- par(mfrow=c(1,1))
+@
+\caption{A graphic analysis of 9 dichotomous (simulated) items. The top panel shows the probability of item endorsement as the value of the latent trait increases.  Items differ in their location (difficulty) and discrimination (slope).  The middle panel shows the information in each item as a function of latent trait level.  An item is most informative when the probability of endorsement is 50\%.  The lower panel shows the total test information.  These items form a test that is most informative (most accurate) at the middle range of the latent trait.}
+\label{fig:irt}
+\end{center}
+\end{figure}
+
+\begin{scriptsize}
+Similar analyses can be done for polytomous items such as those of the bfi extraversion scale:
+<<print=FALSE,echo=TRUE>>=
+data(bfi)
+e.irt <- irt.fa(bfi[11:15])
+e.irt 
+@
+\end{scriptsize}
+The item information functions show that not all of items are equally good (Figure~\ref{fig:e.irt}):
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+plot(e.irt,type="IIC")
+@
+\caption{A graphic analysis of 5 extraversion items from the bfi. The curves represent the amount of information in the item as a function of the latent score for an individual.  That is, each item is maximally discriminating at a different part of the latent continuum.}
+\label{fig:e.irt}
+\end{center}
+\end{figure}
+
+More extensive IRT packages include the \Rpkg{ltm} and \Rpkg{eRm} and should be used for serious Item Response Theory analysis.
+
+
+\section{Multiple Regression from the correlation matrix}
 Although the standard multiple regression (using the \fun{lm} function in base R) uses the raw data, it is sometimes useful to do multiple regression from a correlation matrix.  This may be done using the \pfun{mat.regress} function.  
 
 Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{mat.regress}. Two things to notice.  \pfun{mat.regress} works on the \emph{correlation} or \emph{covariance} matrix, and thus if using the correlation matrix, will report standardized $\beta$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, statistical tests of significance are applied.
@@ -822,6 +930,10 @@ mat.regress(C,c(1:3),c(4:6), n.obs=700)
 \section{Simulation functions}
 It is particularly helpful, when teaching psychometric concepts, to be able to generate sample data sets that meet certain specifications.   By knowing ``truth" it is possible to see how well various algorithms can capture it. Several of the \pfun{sim} functions create artificial data sets with known structures. 
 
+A number of functions in the psych package will generate simulated data. These functions include \pfun{sim} for a factor simplex, and \pfun{sim.simplex} for a data simplex, \pfun{sim.circ} for a circumplex structure, \pfun{sim.congeneric} for a one factor factor congeneric model, \pfun{sim.dichot} to simulate dichotomous items, \pfun{sim.hierarchical} to create a hierarchical factor model, \pfun{sim.item} is  a more general item simulation, \pfun{sim.minor} to simulate major and minor factors, \pfun{sim.omega} to test various examples of omega, \pfun{sim.parallel} to compare the efficiency of various ways of determining the number of factors, \pfun{sim.rasch} to create simulated rasch data, \pfun{sim.irt}to create general 1 to 4 parameter IRT data by calling \pfun{sim.npl} 1 to 4 parameter logistic IRT or \pfun{sim.npn} 1 to 4 paramater normal IRT, \pfun{sim.structural} a general simulation of structural models, and \pfun{sim.anova} for ANOVA and lm simulations, and \pfun{sim.vss}. Some of these functions are separately documented and are listed here for ease of the help function. See each function for more detailed help.
+
+
+
 \begin{description}
 \item [\pfun{sim}]  The default version is to generate a four factor simplex structure over three occasions, although more general models are possible.
 \item [\pfun{sim.simple}]   Create major and minor factors.  The default is for 12 variables with 3 major factors and 6 minor factors.  
@@ -832,13 +944,60 @@ It is particularly helpful, when teaching psychometric concepts, to be able to g
 \item [\pfun{sim.item}]To create items that either have a simple structure or a circumplex structure.
 \item [\pfun{sim.dichot}] Create dichotomous item data with a simple or circumplex structure.
 \item[\pfun{sim.rasch}] Simulate a 1 parameter logistic (Rasch) model.
-\item[\pfun{sim.irt}] Simulate a 2 parameter logistic (2PL) model.
+\item[\pfun{sim.irt}] Simulate a 2 parameter logistic (2PL) or 2 parameter Normal model.  Will also do 3 and 4 PL and PN models.
 \end{description}
 
 
-These functions are described in more detail in the companion vignette: \href{"psych_for_sem.pdf"}{psych for sem}.
+Some of these functions are described in more detail in the companion vignette: \href{"psych_for_sem.pdf"}{psych for sem}.
+
+The default values for \pfun{sim.structure} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors.
+
+Two data structures that are particular challenges to exploratory factor analysis are the simplex structure and the presence of minor factors. Simplex structures \pfun{sim.simplex} will typically occur in developmental or learning contexts and have a correlation structure of r between adjacent variables and $r^n$ for variables n apart. Although just one latent variable (r) needs to be estimated, the structure will have nvar-1 factors.
+
+Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0. An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors. The challenge is thus to identify the major factors. \pfun{sim.minor} generates such structures. The structures generated can be thought of as having a a major factor structure with some small correlated residuals.
+
+Although coefficient $\omega_h$ is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors. In this situation, one of the factors is labelled as “general” and the omega estimate is too large. This situation may be explored using the \pfun{sim.omega} function.
+
+The four irt simulations, \pfun{sim.rasch}, \pfun{sim.irt}, \pfun{sim.npl} and \pfun{sim.npn}, simulate dichotomous items following the Item Response model. \pfun{sim.irt} just calls either \pfun{sim.npl} (for logistic models) or \pfun{sim.npn} (for normal models) depending upon the specification of the model.
+
+The logistic model is
+\begin{equation}
+P(x | \theta_i, \delta_j, \gamma_j, \zeta_j )= \gamma_j + \frac{\zeta_j - \gamma_j}{1+e^{\alpha_j(\delta_j - \theta_i}}.
+\end{equation}
+
+
+
+where $\gamma$ is the lower asymptote or guessing parameter, $\zeta$ is the upper asymptote (normally 1), $\alpha_j$ is item discrimination and $\delta_j$ is item difficulty. For the 1 Paramater Logistic (Rasch) model, gamma=0, zeta=1, alpha=1 and item difficulty is the only free parameter to specify.
+
+(Graphics of these may be seen in the demonstrations for the logistic function.)
+
+The normal model (\pfun{irt.npn} calculates the probability using \fun{pnorm} instead of the logistic function used in \pfun{irt.npl}, but the meaning of the parameters are otherwise the same. With the a = $\alpha$ parameter = 1.702 in the logiistic model the two models are practically identical.
 
 \section{Graphical Displays}
+
+Many of the functions in the \Rpkg{psych} package include graphic output and examples have been shown in the previous figures. After running \pfun{fa}, \pfun{iclust}, \pfun{omega}, \pfun{irt.fa}, plotting the resulting object is done by the \pfun{plot.psych} function as well as specific diagram functions.  e.g.,
+
+\begin{Schunk}
+\begin{Sinput}
+data(bifactor)
+f3 <- fa(Thurstone,3)  
+plot(f3)
+fa.diagram(f3)
+c <- iclust(Thurstone)
+plot(c)  #a pretty boring plot
+iclust.diagram(c)  #a better diagram
+c3 <- iclust(Thurstone,3)
+plot(c3)  #a more interesting plot
+data(bfi)
+e.irt <- irt.fa(bfi[11:15])
+plot(e.irt)
+ot <- omega(Thurstone)
+plot(ot)
+omega.diagram(ot)
+\end{Sinput}
+\end{Schunk}
+
+
 The ability to show path diagrams to represent factor analytic and structural models is discussed in somewhat more detail in the accompanying vignette, \href{"psych_for_sem.pdf"}{psych for sem}.   Basic routines to draw path diagrams are included in the \pfun{dia.rect} and accompanying functions.  These are used by the \pfun{fa.diagram}, \pfun{structure.diagram} and \pfun{iclust.diagram} functions.
 
 \begin{figure}[htbp]
@@ -880,7 +1039,7 @@ A number of data sets for demonstrating psychometric techniques are included in 
 
 \begin{description}
 \item[bifactor] Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger correlation matrix is a 14 * 14 matrix from their paper. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items. The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.
-\item [bfi]  25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. The data from 1000 subjects are included here as a demonstration set for scale construction and factor analysis.
+\item [bfi]  25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis and Item Response Theory analyses.
 \item [sat.act] Self reported scores on the SAT Verbal, SAT Quantitative and ACT were collected as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. Age, gender, and education are also reported. The data from 700 subjects are included here as a demonstration set for correlation and analysis.
 \item [epi.bfi] A small data set of 5 scales from the Eysenck Personality Inventory, 5 from a Big 5 inventory, a Beck Depression Inventory, and State and Trait Anxiety measures. Used for demonstrations of correlations, regressions, graphic displays.
 \item [iq] 14 multiple choice ability items were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. The data from 1000 subjects are included here as a demonstration set for scoring multiple choice inventories and doing basic item statistics.

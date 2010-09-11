@@ -27,55 +27,58 @@ function (nvar = 72 ,nsub = 500,
 		item[(item>high) ] <- high   
 		}
 	if (truncate) {item[item < cutpoint] <- 0  }
+	colnames(item) <- paste("V",1:nvar,sep="")
 	return (item) 
 	}  
 
 
 "sim.rasch" <-
-function (nvar = 5 , n = 500, low=-3,high=3,d=NULL, a=1) 
+function (nvar = 5 , n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1) 
 	{ 
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))}
-	theta <- rnorm(n)
-	item <- matrix(1/(1+exp(a*(-theta %+% t( d)))),n,nvar)
+	theta <- rnorm(n,mu,sd)
+	item <- matrix(t(1/(1+exp(a*t(-theta %+% t( d))))),n,nvar)
 	#now convert these probabilities to outcomes
-    item[] <- rbinom(n*nvar, 1, item)                  
+    item[] <- rbinom(n*nvar, 1, item)  
+   colnames(item) <- paste("V",1:nvar,sep="")
    result <- list(items=item,tau=d,theta=theta)
 	return (result) 
 	}  
 	
 	
 "sim.irt" <- 
-function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mod="logistic") 
+function (nvar = 5 ,n = 500,low=-3,high=3,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,mod="logistic") 
 	{ 
-	if(mod=="logistic") {result <- sim.npl(nvar,n,low,high,a,c,z,d)} else {result <- sim.npn(nvar,n,low,high,a,c,z,d)}
+	if(mod=="logistic") {result <- sim.npl(nvar,n,low,high,a,c,z,d,mu,sd)} else {result <- sim.npn(nvar,n,low,high,a,c,z,d,mu,sd)}
 	return (result) 
 	}  
 
 "sim.npn" <- 
-function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL) 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1) 
 	{ 
-	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n) # the latent variable
+	theta <- rnorm(n,mu,sd) # the latent variable
 	
-	item <- matrix(c+(z-c)*pnorm(a*(theta %+% t( -d))),n,nvar)
+	item <- matrix(t(c+(z-c)*pnorm(a*t(theta %+% t(- d)))),n,nvar)  #need to transpose and retranpose to get it right
 	#now convert these probabilities to outcomes
 	
     item[] <- rbinom(n*nvar, 1, item)
-	              
-   result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=d,theta=theta)
+	colnames(item) <- paste("V",1:nvar,sep="")        
+   result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	}  
 	
 	
 "sim.npl" <- 
-function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL) 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1) 
 	{ 
-	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n)
-	item <- matrix(c+(z-c)/(1+exp(a*(-theta %+% t( d)))),n,nvar)
-    item[] <- rbinom(n*nvar, 1, item) #now convert these probabilities to outcomes	          
-    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=d,theta=theta)
+	theta <- rnorm(n,mu,sd)
+	item <- matrix(t(c+(z-c)/(1+exp(a*t((-theta %+% t( d)))))),n,nvar)
+    item[] <- rbinom(n*nvar, 1, item) #now convert these probabilities to outcomes	  
+    colnames(item) <- paste("V",1:nvar,sep="")
+    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	} 

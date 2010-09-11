@@ -2,6 +2,7 @@
 function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,...)   #combines a splom, histograms, and correlations
 {
 
+
 "panel.jiggle" <- 
 function (x, y,  pch = par("pch"), 
    col.smooth = "red", span = 2/3, iter = 3, ...) 
@@ -150,7 +151,7 @@ op <- par(no.readonly = TRUE)  # save the whole list of settable par's.
      	                      pairs(x, diag.panel = panel.hist, upper.panel = panel.lm, lower.panel = panel.lm, ...)}
    			 }
    			   }
- par(op)
+ par(op) #restore the parameters
 }
 
  "panel.lm" <- 

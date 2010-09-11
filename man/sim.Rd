@@ -27,10 +27,10 @@ sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE)
 sim.omega(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
 n = c(200,400)) 
-sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1)
-sim.irt(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mod="logistic")
-sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL)
-sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL)
+sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
+sim.irt(nvar = 5, n = 500, low=-3, high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,mod="logistic")
+sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
+sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 }
 \arguments{
   \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
@@ -49,12 +49,13 @@ sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL)
   \item{option}{In omega, for the case of two factors, how to weight them?}
   \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
   \item{ntrials}{Number of replications per level}
-  \item{low}{lower difficulty for sim.rasch}
-  \item{high}{higher difficulty for sim.rasch}
+  \item{low}{lower difficulty for sim.rasch or sim.irt}
+  \item{high}{higher difficulty for sim.rasch or sim.irt}
   \item{a}{if not specified as a vector, the descrimination parameter a = \eqn{\alpha} will be set to 1.0 for all items}
-  \item{d}{ if not specified as a vector, item difficulties (d = \eqn{\delta} will range from low to high}
+  \item{d}{ if not specified as a vector, item difficulties (d = \eqn{\delta}) will range from low to high}
   \item{c}{the gamma parameter: if not specified as a vector, the guessing asymptote is set to 0}
   \item{z}{the zeta parameter: if not specified as a vector, set to 1} 
+  \item{sd}{the standard deviation for the underlying latent variable in the irt simulations}
   \item{mod}{which IRT model to use, mod="logistic" simulates a logistic function, otherwise, a normal function}
    }
 

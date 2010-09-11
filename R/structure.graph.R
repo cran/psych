@@ -295,7 +295,7 @@ obs.var <- subGraph(vars,clust.graph)
 if (!is.null(ymodel)) {observed <- list(list(graph=obs.xvar,cluster=TRUE,attrs=c(rank="sink")),list(graph=obs.yvar,cluster=TRUE,attrs=c(rank="source"))) } else {
                        observed <- list(list(graph=obs.xvar,cluster=TRUE,attrs=c(rank="max")))}
  plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=title) 
-if(!is.null(out.file) ){toDot(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+if(!is.null(out.file) ){toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
 
 #return(list(nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs))  #useful for debugging 
 

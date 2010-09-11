@@ -40,7 +40,7 @@ if(is.null(cut)) cut <- .2
          	vp2 <- var(p2)
          	p2 <- round(p2,digits)
 	    	print(cbind(fx[,1:(nfactor+sort)],h2,u2,p2),quote="FALSE")
-	    	#print(fx,quote="FALSE")
+	    	
 	   
        numfactors <- dim(x$schmid$sl)[2] -3
        eigenvalues <- diag(t(x$schmid$sl[,1:numfactors]) %*% x$schmid$sl[,1:numfactors])
@@ -87,4 +87,45 @@ if(is.null(cut)) cut <- .2
   #cat("\nMultiple R square of scores with factors      " ,round(x$stats$R2,digits))
   #cat("\nMinimum correlation of factor score estimates ", round(2*x$stats$R2 -1,digits),"\n")
    
+   }
+   
+   
+   
+   
+   "print.psych.omegaSem" <- 
+   function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
+     if(is.null(cut)) cut <- .2
+	 cat( x$title,"\n") 
+	 cat("Call: ")
+     print(x$Call)
+   print.psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
+   cat("\n Omega from a confirmatory model using sem = ", round(x$omega.efa$omega,digits),"\n")
+   cat("With loadings of \n")
+   loads <- x$omega.efa$cfa.loads
+   class(loads) <- NULL
+   nfactor <- ncol(loads)
+             tn <- colnames(loads)
+	        loads <- data.frame(loads)
+	        colnames(loads) <- tn  #this seems weird, but otherwise we lose the F* name
+	       
+           load.2 <- loads     
+	        h2 <- round(rowSums(load.2^2),digits)
+	        loads <- round(loads,digits)
+	    	fx <- format(loads,digits=digits)
+	    	nc <- nchar(fx[1,3], type = "c")  
+         	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
+            h2 <- round(rowSums(load.2^2),digits)
+         	u2 <- 1 - h2
+         	
+         	p2 <- loads[,ncol(loads)]
+         	mp2 <- mean(p2)
+         	vp2 <- var(p2)
+         	p2 <- round(p2,digits)
+	    	print(cbind(fx,h2,u2),quote="FALSE")
+	    
+	   loads <- as.matrix(load.2) 
+	   eigenvalues <- diag(t(loads) %*% loads)
+       cat("\nWith eigenvalues of:\n")
+       ev.rnd <- round(eigenvalues,digits)
+       print(ev.rnd,digits=digits)
    }

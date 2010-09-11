@@ -42,6 +42,8 @@ fa.diagram does not use Rgraphviz and is the preferred function.
 In fa.graph, although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram.
 
 The normal input is taken from the output of either \code{\link{fa}} or \code{\link{ICLUST}}.  It is also possible to just give a factor loading matrix as input.  In this case, supplying a Phi matrix of factor correlations is also possible.
+
+To specify the model for a structural equation confirmatory analysis of the results, use \code{\link{structure.diagram}} instead. 
 }
 \value{fa.diagram: A path diagram is drawn without using Rgraphviz.  This is probably the more useful function.
 
@@ -52,7 +54,8 @@ fa.graph: A graph is drawn using rgraphviz.  If an output file is specified, the
 }
 
  
-\seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}}
+\seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{structure.diagram}} to convert the factor diagram to sem modeling code.
+}
 \examples{
 
 test.simple <- fa(item.sim(16),2,rotate="oblimin")

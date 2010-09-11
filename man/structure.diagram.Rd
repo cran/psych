@@ -7,7 +7,7 @@
 \title{Draw a structural equation model specified by two measurement models and a structural model}
 \description{Graphic presentations of structural equation models are a very useful way to conceptualize sem and confirmatory factor models. Given a measurement model on x (xmodel) and on y (ymodel) as well as a path model connecting x and y (phi), draw the graph.  If ymodel is not specified, just draw the measurement model (xmodel + phi). If the Rx or Ry matrices are specified, show the correlations between the x variables, or y variables.
 
-Perhaps even more usefully, the function returns a model appropriate for running directly in the \emph{sem package} written by John Fox.
+Perhaps even more usefully, the function returns a model appropriate for running directly in the \emph{sem package} written by John Fox.  For this option to work directly, it is necessary to specfy that errrors=TRUE. 
 
 Input can be specified as matrices or the output from  \code{\link{fa}},  \code{\link{factor.pa}}, factanal,  or a rotation package such as \emph{GPArotation}.
 
@@ -51,7 +51,7 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
 
 The recommended function is structure.diagram which does not use Rgraphviz but which does not produce dot code either.  
 
-All three function return a matrix of commands suitable for using in the sem package.
+All three function return a matrix of commands suitable for using in the sem package.  (Specify errors=TRUE to get code that will run directly in the sem package.)
 
 The structure.graph output can be directed to an output file for post processing using the dot graphic language but requires that Rgraphviz is installed. 
 
@@ -66,7 +66,7 @@ The correlations between the Y variables (if Ry is specified)\cr
 A confirmatory factor model would specify just fx and Phi, a structural model would include fx, Phi, and fy.  The raw correlations could be shown by just including Rx and Ry.
 
 
-Other diagram functions include \code{\link{fa.diagram}}, \code{link{omega.diagram}}.  All of these functions use the various dia functions such as \code{\link{dia.rect}}, \code{\link{dia.ellipse}}, \code{\link{dia.arrow}}, \code{\link{dia.curve}}, \code{\link{dia.curved.arrow}}, and \code{\link{dia.shape}}.
+Other diagram functions include \code{\link{fa.diagram}}, \code{\link{omega.diagram}}.  All of these functions use the various dia functions such as \code{\link{dia.rect}}, \code{\link{dia.ellipse}}, \code{\link{dia.arrow}}, \code{\link{dia.curve}}, \code{\link{dia.curved.arrow}}, and \code{\link{dia.shape}}.
 }
 \value{
  \item{sem}{(invisible) a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.  }
@@ -77,7 +77,7 @@ Other diagram functions include \code{\link{fa.diagram}}, \code{link{omega.diagr
 
 \author{William Revelle}
 
-\seealso{  \code{\link{fa.graph}}, \code{\link{omega.graph}}, \code{\link{sim.structural}}}
+\seealso{  \code{\link{fa.graph}}, \code{\link{omega.graph}}, \code{\link{sim.structural}} to create artificial data sets with particular structural properties.}
 \examples{
 fx <- matrix(c(.9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)
 fy <- matrix(c(.6,.5,.4),ncol=1)

@@ -7,9 +7,12 @@
      raw.data <- FALSE
      C <- as.matrix(items)
      cov.scales <- t(keys) %*% C %*% keys
-     
-    } else {
+     response.freq <- NULL
+     } else {
     items <- as.matrix(items)
+    
+    response.freq <- response.frequencies(items)
+    
     item.means <- colMeans(items,na.rm=TRUE)
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
@@ -89,8 +92,8 @@
   rownames(alpha.scale) <- "alpha"
   rownames(av.r) <- "average.r"
   rownames(G6) <- "Lambda.6"
-   if (short | !raw.data) {results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,Call=cl)} else {
-   if(raw.data) {if (sum(miss.rep) >0) {results <-list(scores=scores,missing = miss.rep,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits),cor = round(cor.scales,digits) ,corrected = round(scale.cor,digits),G6=G6,item.corrected = item.rc ,Call=cl)} else{  
+   if (short | !raw.data) {results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,Call=cl)} else {
+   if(raw.data) {if (sum(miss.rep) >0) {results <-list(scores=scores,missing = miss.rep,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits),cor = round(cor.scales,digits) ,corrected = round(scale.cor,digits),G6=G6,item.corrected = item.rc,response.freq=response.freq ,Call=cl)} else{  
     results <- list(scores=scores,alpha=round(alpha.scale,digits), av.r=round(av.r,digits), n.items = num.item,  item.cor = round(item.cor,digits), cor = round(cor.scales,digits),corrected = round(scale.cor,digits),G6=G6,item.corrected = item.rc ,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
@@ -104,3 +107,4 @@
  #modified March, 2009 to better use the print.psych function
  #modified March 22, 2009 to add G6 and corrected for item overlap correlation
  #also allow for correlation/covariance matrix input
+ #modified Sept 3, 2010 to include response frequencies

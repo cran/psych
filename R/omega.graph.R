@@ -5,6 +5,7 @@
 #modified June 2 to clarify the Rgraphviz issue
 #modified July 12 to fix label problem
 #take the output from omega and graph it
+#fixed Sept 16 to draw sl solutions correctly
 "omega.graph" <-
 function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
@@ -19,7 +20,7 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
   #first some basic setup parameters 
   
    num.var <- dim(factors)[1]   #how many variables?
-  if (sl) {num.factors <- dim(factors)[2] -3 } else {num.factors <- dim(factors)[2]}
+  if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}
    gloading <- om.results$schmid$gloading
    vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }

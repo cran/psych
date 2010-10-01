@@ -33,7 +33,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
            
            if (is.null(ylab)) ylab <- "Dependent Variable"
           
-           ylim=c(0,max.x+2*max.se)
+           if(missing(ylim)) ylim=c(0,max.x+2*max.se)
            if(by.var)  {
            if (is.null(xlab)) xlab <- "Variables"
            mp <- barplot(t(group.means),beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main)

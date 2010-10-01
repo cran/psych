@@ -22,7 +22,7 @@ The difficulty parameter, \eqn{\delta} may be found from the \eqn{\tau} paramete
 
 Similar analyses may be done with discrete item responses using polychoric correlations and distinct estimates of item difficulty (location)  for each item response.
 
-The results may be shown graphically using plot.   For plotting there are three options: type = "ICC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
+The results may be shown graphically using plot.   For plotting there are three options: type = "ICC" will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
 
 The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}} or \code{\link{polychoric}}, then that result can be processed directly.
 }

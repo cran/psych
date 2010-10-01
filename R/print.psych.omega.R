@@ -99,7 +99,8 @@ if(is.null(cut)) cut <- .2
 	 cat("Call: ")
      print(x$Call)
    print.psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
-   cat("\n Omega from a confirmatory model using sem = ", round(x$omega.efa$omega,digits),"\n")
+   cat("\n Omega Hierarchical from a confirmatory model using sem = ", round(x$omega.efa$omega,digits))
+    cat("\n Omega Total  from a confirmatory model using sem = ", round(x$omega.efa$omega.tot,digits),"\n")
    cat("With loadings of \n")
    loads <- x$omega.efa$cfa.loads
    class(loads) <- NULL

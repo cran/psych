@@ -11,7 +11,7 @@ schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,opt
 \arguments{
   \item{model}{ A correlation matrix }
   \item{nfactors}{ Number of factors to extract }
-  \item{fm}{ fm="pa" for principal axes, fm="pc" for principal components, fm = "minres" for minimum residual (OLS), pc="mle" for maximum likelihood }
+  \item{fm}{the default is to do minres. fm="pa" for principal axes, fm="pc" for principal components, fm = "minres" for minimum residual (OLS), pc="ml" for maximum likelihood }
   \item{digits}{if digits not equal NULL, rounds to digits}
   \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. The third option is the promax criterion}
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
@@ -49,7 +49,7 @@ A diagnostic tool for testing the appropriateness of a hierarchical model is p2 
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
 jen <- sim.hierarchical()  #create a hierarchical demo
-if(!require(GPA.rotation)) {message("I am sorry, you must have GPArotation installed to use schmid.")} else {jen <- schmid(jen,digits=2)   #use the oblimin rotation
+if(!require(GPArotation)) {message("I am sorry, you must have GPArotation installed to use schmid.")} else {p.jen <- schmid(jen,digits=2)   #use the oblimin rotation
 p.jen <- schmid(jen,rotate="promax") #use the promax rotation
 }
 }

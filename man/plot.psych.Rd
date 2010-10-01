@@ -22,7 +22,7 @@ plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),...)
   \item{ylab}{Label for the y axis}
   \item{ylim}{Specify the limits for the y axis}
   \item{main}{Main title for graph}
-  \item{type}{ICC plots items, IIC plots item information, test plots test information, defaults to IIC}
+  \item{type}{ICC plots items, IIC plots item information, test plots test information, defaults to IIC for plot.irt, to ICC for plot.poly}
   \item{D}{The discrimination parameter}
   \item{...}{other calls to plot}
 }

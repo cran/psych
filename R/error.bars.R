@@ -22,7 +22,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     if(is.null(ylim)) {if(is.na(max.x) | is.na(max.se) | is.na(min.x) | is.infinite(max.x)| is.infinite(min.x) | is.infinite(max.se)) {
                         ylim=c(0,1)} else {
                           if(bars) {
-                                   ylim=c(0,max.x+2*max.se)
+                                   ylim=c(min(0,min.x- 2*max.se),max.x+2*max.se)
                                    } else {
                                            ylim=c(min.x - 2*max.se,max.x+2*max.se)
                                            }}

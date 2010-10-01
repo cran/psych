@@ -107,7 +107,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
         L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
         return(L)
     } ## now start the main function
- 
+ if (fm == "mle") fm <- "ml"  #to correct any confusion
  if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
@@ -172,7 +172,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
           eigens <- eigens$values
        } 
        
-       if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")) { 
+       if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle")) { 
        uls <- fit(r,nfactors,fm,covar=covar)
        
        e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  

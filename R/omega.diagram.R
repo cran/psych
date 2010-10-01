@@ -47,16 +47,18 @@
    var.rect <- list()
    fact.rect <- list()
     max.len <- max(nchar(rownames(factors)))*rsize
-   cex <-  min(cex,20/nvar)
-  plot(0,type="n",xlim=c(-max.len/2,nvar+1),ylim=c(1,nvar+1),asp=1,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
-   if (sl) {vloc <- (nvar+1)/2
-            gloc <- 1
-            grouploc <- nvar
+   cex <-  min(cex,40/nvar)
+   xleft <-  -max.len/2 #0#
+   xright <- nvar + 1  # or hard code to 3?
+  plot(0,type="n",xlim=c(xleft-max.len,xright+1),ylim=c(1,nvar+1),frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
+   if (sl) {vloc <- (xright)/2
+            gloc <- xleft
+            grouploc <-xright
             start <- 1
             end <- num.factors+1} else {
-            vloc <- 1
-            gloc <- nvar
-            grouploc <- (nvar+1)/2
+            vloc <- xleft
+            gloc <- xright
+            grouploc <- (xright)/2
             start <- 0
             end <- num.factors
             }

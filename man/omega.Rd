@@ -15,7 +15,7 @@ omegaFromSem(m,s,flip=TRUE)
 \arguments{
   \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
-  \item{fm}{factor method  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="mle" for maximum likelihood.}
+  \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="ml" for maximum likelihood.}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
   \item{digits}{if specified, round the output to digits}

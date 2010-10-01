@@ -50,7 +50,7 @@ rn <- rownames(m)
 g <- s$A[1:nvar,nvar+n.fact]
 
 
-cfa.loads <- cbind(g,s$A[1:nvar,(nvar+1):(nvar+n.fact-1)])  #this puts g last
+cfa.loads <- cbind(g,s$A[1:nvar,(nvar+1):(nvar+n.fact-1)])  #this puts g first
 
 if(flip) { 
 	flipper <- rep(1,nvar)
@@ -69,10 +69,13 @@ rownames(cfa.loads)  <- rn
 rownames(w)  <- rn
 
 gR2 <- diag(t(w) %*% cfa.loads)
-
-om.sem <- sum(g)^2/sum(m)
+Vt <- sum(m)
+omh.sem <- sum(g)^2/Vt
+h2 <- sum(rowSums(cfa.loads^2))
+uniq <- tr(m) - h2
+omt.sem <- (Vt - uniq)/Vt
 class(cfa.loads) <- "loadings"
-results <- list(omega=om.sem,cfa.loads=cfa.loads,gR2=gR2)
+results <- list(omega=omh.sem,omega.tot = omt.sem,cfa.loads=cfa.loads,gR2=gR2)
 return(results)
 }
 

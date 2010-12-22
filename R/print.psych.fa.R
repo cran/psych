@@ -13,6 +13,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
+  	u2.order <- 1:nitems  #used if items are sorted
  if(sort) {
  		#first sort them into clusters
   		#first find the maximum for each row and assign it to that cluster
@@ -27,10 +28,12 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
   		items <- table(loads$cluster)   #how many items are in each cluster?
   		first <- 1
   		item <- loads$item
-		for (i in 1:length(items)) {
+  		
+		for (i in 1:length(items)) {# i is the factor number
 		if(items[i] > 0 ) {
 				last <- first + items[i]- 1
 				ord <- sort(abs(loads[first:last,i+2]),decreasing=TRUE,index.return=TRUE)
+				u2.order[first:last] <- item[ord$ix+first-1]
    				loads[first:last,3:(nfactors+2)] <- load[item[ord$ix+first-1],]
    				loads[first:last,1] <- item[ord$ix+first-1]
    				rownames(loads)[first:last] <- rownames(loads)[ord$ix+first-1]
@@ -51,7 +54,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
          	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
          
          	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
-         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses} else {u2 <- (1 - h2)}
+         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]}  else {u2 <- (1 - h2)}
          	#h2 <- round(h2,digits)
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {
@@ -63,7 +66,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 	       ncol <- dim(loads)[2]-2
 	    	load.2 <- as.matrix(loads[,3:(ncol+2)])
 	     if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
-         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses} else {u2 <- (1 - h2)}
+         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]} else {u2 <- (1 - h2)}
          	#h2 <- round(h2,digits)
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {
@@ -182,3 +185,4 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 } 
  }  #end of print.psych.fa
 
+#modified November 22, 2010 to get the communalities correct for sorted loadings, but does this work for covariances?

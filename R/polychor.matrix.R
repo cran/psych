@@ -22,7 +22,7 @@ if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor pa
    
  "phi2poly.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
+
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)
@@ -61,20 +61,13 @@ if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor pa
 "poly.mat" <- 
 function(x,short=TRUE,std.err=FALSE,ML=FALSE) {
 .Deprecated("polychoric",msg="poly.mat is deprecated.  Please use the polychoric function instead.")
-	if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}  #John Fox's Polycor package
-xm <- as.matrix(x)   
-xm <- xm - min(xm)  + 1   #correction to make all values positive!
-xm.cat <- matrix(as.factor(xm),ncol=dim(xm)[2])
-colnames(xm.cat) <- colnames(xm)
-r.het <- hetcor(xm.cat,std.err=std.err,ML=ML)
-rownames(r.het$correlations) <- colnames(r.het$correlations) <- colnames(xm)
-if(short) {return(r.het$correlations)} else {return(r.het)}
+return(polychoric(x))	
 }
 
 
 "phi2polychor.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
+
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)

@@ -47,9 +47,9 @@
  
 "Yule2poly" <-
     function(Q,m) { #find the phi equivalent to a Yule Q with fixed marginals
-    if(!require(polycor)) {stop("Yule2poly requires the polycor package")}
+    
     t <- Yule.inv(Q,m)
-    r <- polychor(t)
+    r <- tetrachoric(t)
     return(r)
     }
     

@@ -2,6 +2,7 @@
 #modifed March 20, 2009 to return smcs * variance if covariance matrix is desired
 #modified April 8, 2009 to remove bug introduced March 10 when using covar from data
 #modified Jan 14, 2010 to test if matrix before cov2cor call.
+#modified October 2, 2010 to convert smcs < 0 to 0 -- this is situation encountered with extreme missingness in sapa matrices
 "smc" <-
 function(R,covar =FALSE) {
 failed=FALSE
@@ -18,6 +19,8 @@ failed=FALSE
  message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
  if(max(smc) > 1.0) {message("In smc, smcs > 1 were set to 1.0")
    smc[smc>1]  <- 1.0}
+   if(min(smc) < 0.0) {message("In smc, smcs < 0 were set to .0")
+   smc[smc < 0]  <- 0}
  if(covar) {smc <- smc * vari}}
  return(smc)
  }

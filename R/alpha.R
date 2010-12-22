@@ -60,7 +60,7 @@
      
      #  
         item.means <- colMeans(x, na.rm=na.rm )
-        item.sd <-  SD(x,na.rm=na.rm)
+        item.sd <-  sd(x,na.rm=na.rm)
         if(nsub > nvar) {
         	alpha.total <- data.frame(alpha.total,mean=mean.t,sd=sdev)
         	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","mean","sd")
@@ -80,3 +80,4 @@
      
     }
   #modified Sept 8, 2010 to add r.drop feature  
+  #modified November 2, 2010 to use sd instead of SD

@@ -173,21 +173,45 @@ function(x,y) {
 
 
 
-#Sept 11, 2010
-"mixedcor" <-
-function(x,y) {
-nx <- dim(x)[2]
-ny <- dim(y)[2]
-nxy <- nx +ny
-rx <- cor(x,use="pairwise")
-ry <- tetrachoric(y)
-rxy <- polyserial(x,y)
-tmixed <- cbind(rx,t(rxy))
-lmixed <- cbind(rxy,ry$rho)
-rho <- rbind(tmixed,lmixed)
-colnames(rho) <- c(colnames(x),colnames(y))
-rownames(rho) <- colnames(rho)
-tau <- ry$tau
-mixed <- list(rho=rho,tau=tau)
+#December 22,2010
+#meant to combine continuous, polytomous and dichotomous correlations
+"mixed.cor" <-
+function(x=NULL,p=NULL,d=NULL) {
+if(!is.null(x)) {nx <- dim(x)[2]} else {nx <- 0}
+if(!is.null(p)) {np <- dim(p)[2]} else {np <- 0}
+if(!is.null(d))  {nd <- dim(d)[2]} else {nd <- 0}
+if(is.null(nx)) nx <- 1
+if(is.null(np)) np <- 1
+if(is.null(nd)) nd <- 1
+npd  <- nx +np + nd
+if(nx > 1) {rx <- cor(x,use="pairwise")} else {if (nx == 1) {
+rx <- 1
+names(rx) <- colnames(x)} else {rx <- NULL}}
+if(np > 1) {rp <- polychoric(p)}    else {if (np == 1) {
+	rho <- 1
+	names(rho) <- colnames(p)
+	rp <- list(rho=rho,tau=NULL)}  else {rp <- NULL}}
+if(nd > 1) {rd <- tetrachoric(d)}   else {if (nd == 1) {rd <- list(rho=1,tau=NULL)}  else {rd <- NULL}}
+if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all three to exist
+		tmixed <- cbind(rx,t(rxp))
+		lmixed <- cbind(rxp,rp$rho)
+		rho <- rbind(tmixed,lmixed)
+		if(nd > 0) { rxd <- biserial(x,d)
+			rpd <- biserial(p,d)
+			topright <- t(cbind(rxd,rpd))
+			tmixed <- cbind(rho,topright)
+			lmixed <- cbind(t(topright),rd$rho)
+			rho <- rbind(tmixed,lmixed)
+				} else {#this is the case for no t/f items
+		                }} else {
+		   #this is the case for no polytomous items
+		  if(nd > 0) { rxd <- biserial(x,d)
+				topright <- t(rpd)
+				tmixed <- cbind(rho,topright)
+				lmixed <- cbind(t(topright),rd$rho)
+				rho <- rbind(tmixed,lmixed) } else {rho <- rx}
+				}} 
+colnames(rho) <- rownames(rho)
+mixed <- list(rho=rho,rx=rx,poly=rp,tetra=rd)
 return(mixed)
 }

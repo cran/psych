@@ -127,8 +127,9 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
            } else {
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
      				if(!covar) {
-     				sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
-                     r <- r/(sds %o% sds) #if we remove this, then we need to fix the communality estimates
+     				r <- cov2cor(r)  #probably better to do it this way (11/22/2010)
+     				#sds <- sqrt(diag(r))    #convert covariance matrices to correlation matrices
+                    # r <- r/(sds %o% sds) #if we remove this, then we need to fix the communality estimates
                     }
                     } #added June 9, 2008
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}

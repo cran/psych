@@ -27,8 +27,9 @@ William Revelle
 \seealso{\code{\link{tetrachoric}}, \code{\link{irt.fa}}
 }
 \examples{
+if(require(mvtnorm)) {
 draw.tetra(.5,1,1)
-draw.tetra(.8,2,1)
+draw.tetra(.8,2,1)} else {print("draw.tetra requires the mvtnorm package")}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -7,7 +7,7 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") for a list of all functions.
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") for a list of all functions.  Two vignettes are included as part of the package.  The overview provides examples of using psych in many applications.  
 
 Psychometric applications include routines (\code{\link{fa}} for principal axes (\code{\link{factor.pa}}), minimum residual (minres: \code{\link{factor.minres}}), and weighted least squares (\code{link{factor.wls}}  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
 
@@ -30,7 +30,7 @@ Additional functions make for more convenient descriptions of item characteristi
 \details{Two vignettes (overview.pdf) and psych_for_sem.pdf) are useful introductions to the package. They may be found as vignettes in R or may be downloaded from \url{http://personality-project.org/r/book/overview.pdf} and \url{http://personality-project.org/r/book/psych_for_sem.pdf}. 
 
 The psych package was originally a combination of multiple source files maintained at the \url{http://personality-project.org/r} repository: ``useful.r", VSS.r., ICLUST.r, omega.r, etc.``useful.r" is a set of routines for easy data entry (\code{\link{read.clipboard}}),
-simple descriptive statistics (\code{\link{describe}}), and splom plots combined with correlations (\code{\link{pairs.panels}}, adapted from the help files of pairs).  It is now a single package.
+simple descriptive statistics (\code{\link{describe}}), and splom plots combined with correlations (\code{\link{pairs.panels}}, adapted from the help files of pairs).  Those files have now been replaced with a single package.
 
 The \code{\link{VSS}} routines allow for testing the number of factors (\code{\link{VSS}}), showing plots (\code{\link{VSS.plot}}) of goodness of fit, and basic routines for estimating the number of factors/components to extract by using the \code{\link{MAP}}'s procedure, the examining the scree plot (\code{\link{VSS.scree}}) or comparing with the scree of an equivalent matrix of random numbers (\code{\link{VSS.parallel}}). 
 
@@ -50,7 +50,7 @@ Graphical organizations of cluster and factor analysis output can be done using 
 
 4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{alpha}}, \code{\link{score.items}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}} (both omega hierarchical and omega total). Additional reliability estimates may be found in the \code{\link{guttman}} function.
 
-This can also be examined for a single dimension by applying \code{\link{irt.fa}} Item Response Theory techniques using factor analysis of the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlation matrices and converting the results into the standard two parameter parameterization of item difficulty and item discrimination.  Information functions for the items suggest where they are most effective.
+This can also be examined by applying \code{\link{irt.fa}} Item Response Theory techniques using factor analysis of the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlation matrices and converting the results into the standard two parameter parameterization of item difficulty and item discrimination.  Information functions for the items suggest where they are most effective.
 
 5) For some applications, data matrices are synthetically combined from sampling different items for different people.  So called Synthetic Aperture Personality Assessement (SAPA) techniques allow the formation of large correlation or covariance matrices even though no one person has taken all of the items. To analyze such data sets, it is easy to form item composites based upon the covariance matrix of the items, rather than original data set.  These matrices may then be analyzed using a number of functions (e.g., \code{\link{cluster.cor}},   \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}, \code{\link{mat.regress}}, and \code{\link{factor2cluster}}.
 
@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-92 \cr
-Date: \tab 2010-09-31\cr
+Version: \tab 1.0-93 \cr
+Date: \tab 2010-12-23\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -135,6 +135,7 @@ Data reduction through cluster and factor analysis\cr
 \link{smc}             \tab          Find the Squared Multiple Correlation (used for initial communality estimates)\cr
 \link{tetrachoric}            \tab    Find tetrachoric correlations and item thresholds \cr
 \link{polyserial}            \tab    Find polyserial and biserial correlations for item validity studies \cr
+\link{mixed.cor}          \tab       Form a correlation matrix from continuous, polytomous, and dichotomous items \cr
 \link{VSS}            \tab           Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
 \link{VSS.parallel}    \tab          Do a parallel analysis to determine the number of factors for a random matrix\cr
 \link{VSS.plot}       \tab           Plot VSS output\cr

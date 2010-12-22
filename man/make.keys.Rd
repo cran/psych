@@ -21,7 +21,7 @@ make.keys(nvars, keys.list, key.labels = NULL, item.labels = NULL)
  
   
 }
-\seealso{ \code{\link{score.items}}, \code{\link{cluster.cor}} }
+\seealso{ \code{\link{score.items}},  \code{\link{cluster.cor}} }
 \examples{
 data(attitude)
  key.list <- list(all=c(1,2,3,4,-5,6,7),
@@ -30,13 +30,13 @@ data(attitude)
  keys <- make.keys(7,key.list,item.labels = colnames(attitude))
  keys
  
- scores <- score.items(keys,attitude,short=TRUE)
+ scores <- score.items(keys,attitude)
  scores
  
  data(bfi)
  keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
  keys <- make.keys(25,keys.list,item.labels=colnames(bfi)[1:25])
- scores <- score.items(keys,bfi[,1:25],short=TRUE)
+ scores <- score.items(keys,bfi[,1:25])
  summary(scores)
 
 }

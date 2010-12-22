@@ -1,5 +1,6 @@
 \name{irt.fa}
 \alias{irt.fa}
+\alias{irt.select}
 
 \title{Item Response Analysis by factor analysis of tetrachoric/polychoric correlations}
 \description{
@@ -7,9 +8,11 @@ Although factor analysis and Item Response Theory seem to be very different mode
 }
 \usage{
 irt.fa(x,...)
+irt.select(x,y)
 }
 \arguments{
   \item{x}{A data matrix of dichotomous or discrete items, or the result of \code{\link{tetrachoric}} or \code{\link{polychoric}}   }
+  \item{y}{the subset of variables to pick from the rho and tau output of a previous irt.fa analysis to allow for further analysis.}
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{
@@ -25,11 +28,16 @@ Similar analyses may be done with discrete item responses using polychoric corre
 The results may be shown graphically using plot.   For plotting there are three options: type = "ICC" will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
 
 The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}} or \code{\link{polychoric}}, then that result can be processed directly.
+
+The output is best seen in terms of graphic displays.  Plot the output from irt.fa to see item and test information functions.  
+
+The select.irt function is a helper function to allow for selecting a subset of a prior analysis for further analysis. First run irt.fa, then select a subset of variables to be analyzed in a subsequent irt.fa analysis.
 }
 \value{
- \item{coefficients }{A data frame of Item difficulty, discrimination, tau and the factor loadings}
- \item{stats }{A list of statistics for the factor analyis}
- \item{rho}{The tetrachoric/polychoric correlation matrix}
+ \item{irt }{A list of Item location (difficulty) and discrimination}
+ \item{fa }{A list of statistics for the factor analyis}
+\item{rho}{The tetrachoric/polychoric correlation matrix}
+\item{tau}{The tetrachoric/polychoric cut points}
 
 }
 \references{
@@ -66,6 +74,18 @@ op <- par(mfrow=c(2,2))
 plot(d4,type="ICC")
 par(op)
 
+
+#using the iq data set for an example of real items
+#first need to convert the responses to tf
+data(iqitems)
+iq.keys <- c(4,4,3,1,4,3,2,3,1,4,1,3,4,3)
+iq.tf <- score.multiple.choice(iq.keys,iqitems,score=FALSE)  #just the responses
+iq.irt <- irt.fa(iq.tf)
+plot(iq.irt)
+#select a subset of these variables
+small.iq.irt <- irt.select(iq.irt,c(1,5,9,10,11,13))
+small.irt <- irt.fa(small.iq.irt)
+plot(small.irt)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -1,5 +1,22 @@
 "draw.tetra" <- 
 function(r,t1,t2,shade=TRUE) {
+
+ binBvn <- function(rho, rc, cc) {
+        row.cuts <- c(-Inf, rc, Inf)
+        col.cuts <- c(-Inf, cc, Inf)
+        P <- matrix(0, 2, 2)
+        R <- matrix(c(1, rho, rho, 1), 2, 2)
+        for (i in 1:2) {
+            for (j in 1:2) {
+                P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
+                  upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
+                  corr = R)
+            }
+        }
+        P
+    }
+
+
 def.par <- par(no.readonly = TRUE) # save default, for resetting...
 if(missing(r)) r <- .5
 if(missing(t1)) t1 <- 1
@@ -40,6 +57,13 @@ polygon(poly ,density=10,angle=90)
          }
 text(0,0,paste("rho = ",r))
 
+if(require(mvtnorm)) {
+HR <- 1 - pnorm(t1)
+SR <- 1 - pnorm(t2)
+P <- binBvn(r,HR,SR)
+ph <- phi(P)
+text(0,-.3,paste("phi = " ,round(ph,2)))}
+
 text(xloc,yloc+.1,expression(X > tau))
 text(xloc,yloc-.1,expression(Y > Tau))
 text(-xloc,yloc+.1,expression( X < tau))
@@ -74,6 +98,10 @@ if(shade) {
 	xvals <- dnorm(yvals)
 	polygon(c(xvals,rev(xvals)),c(yvals,rep(t2,length(xvals))),density=10,angle=45)
           }
+          
+#figure out the equivalent phi 
+
+
 par(def.par)  #reset to the original values
 }
 

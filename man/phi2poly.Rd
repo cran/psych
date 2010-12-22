@@ -22,12 +22,12 @@ phi2poly(ph, cp, cc)
   \item{cp}{ probability of the predictor -- the so called selection ratio }
   \item{cc}{probability of the criterion -- the so called success rate. }
 }
-\details{Uses John Fox's polycor package, which in turn requires the mvtnorm package
+\details{requires the mvtnorm package
 }
 \value{a polychoric correlation
 }
 \author{ William Revelle}
-\seealso{  \code{\link{polychor.matrix}}, \code{\link{Yule2phi.matrix}}, \code{\link{phi2poly.matrix}} }
+\seealso{ \code{\link{tetrachoric}}, \code{\link{polychor.matrix}}, \code{\link{Yule2phi.matrix}}, \code{\link{phi2poly.matrix}} }
 \examples{
 #phi2poly(.3,.5,.5)
 #phi2poly(.3,.3,.7)

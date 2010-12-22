@@ -8,7 +8,7 @@ rownames(twobytwo) <- c("D2","d2")} else { colnames(twobytwo) <- c(labels[1],pas
                                           rownames(twobytwo) <- c(labels[2],paste("-",labels[2],sep=""))}
 phi <- phi(twobytwo)
 Yule <- Yule(twobytwo)
-tetra<- polychor(twobytwo)
+tetra<- tetrachoric(twobytwo)
 answer <- list(twobytwo=twobytwo,phi=phi,Yule=Yule,tetra=tetra,Call=cl)
 class(answer) <- c("psych","comorbid")
 return(answer)

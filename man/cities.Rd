@@ -36,9 +36,16 @@ Note that the 2 dimensional MDS solution does not perfectly capture the data fro
 
 data(cities)
 city.location[,1] <- -city.location[,1]
-if(require(maps)) {map("usa")
-title("MultiDimensional Scaling of US cities")
-points(city.location)} else {plot(city.location, xlab="Dimension 1", ylab="Dimension 2",main ="multidimensional scaling of US cities")}
+#not run
+#an overlay map can be added if the package maps is available
+#
+#
+#libary(maps)
+#map("usa")
+#title("MultiDimensional Scaling of US cities")
+#points(city.location)
+
+plot(city.location, xlab="Dimension 1", ylab="Dimension 2",main ="Multidimensional scaling of US cities")
 city.loc <- cmdscale(cities, k=2) #ask for a 2 dimensional solution  round(city.loc,0) 
 city.loc <- -city.loc 
 city.loc <- rescale(city.loc,mean(city.location),sd(city.location))

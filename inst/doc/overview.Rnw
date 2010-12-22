@@ -203,7 +203,9 @@ new.x
 Note that the number of subjects for those columns has decrease, and the minimums have gone up but the maximums down.  Data cleaning and examination for outliers should be a routine part of any data analysis.
 
 \subsection{Simple descriptive graphics}
+Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.bi} will show group means with 95\% confidence boundaries.  
 
+\subsubsection{Scatter Plot Matrices}
 Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the \iemph{lowess} locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the first and second principal components is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).
 
 \begin{description}
@@ -233,7 +235,7 @@ pairs.panels(flat[15:18],bg=c("red","black","white","blue")[maps$Film],pch=21,ma
 \end{center}
 \end{figure}
 
-
+\subsubsection{Means and error bars}
 Additional descriptive graphics include the ability to draw \iemph{error bars} on sets of data, as well as to draw error bars in both the x and y directions for paired data.  These are the functions
 
 \begin{description}
@@ -267,6 +269,20 @@ error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("Male","Female"),yl
 \end{center}
 \end{figure}
 
+\subsubsection{Back to back histograms}
+The \pfun{bi.bars} function summarize the characteristics of two groups (e.g., males and females) on a second variable (e.g., age) by drawing back to back histograms (see Figure~\ref{fig:bibars}). 
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+data(bfi)
+with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
+@
+\caption{A bar plot of the age distribution for males and females shows the use of \pfun{bi.bars}.  The data are males and females from 2800 cases collected using the SAPA procedure and are available as part of the \pfun{bfi} data set. }
+\label{fig:bibars}
+\end{center}
+\end{figure}
+
+\subsubsection{Correlational structure}
 It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data in the \pfun{bifactor} data set which has a clear 3 factor solution (Figure~\ref{fig:cor.plot}) or a simulated data set of 24 variables with a circumplex structure  (Figure~\ref{fig:cor.plot.circ}).
 
 \begin{figure}[htbp]
@@ -328,6 +344,24 @@ To test whether a matrix of correlations differs from what would be expected if 
 <<print=FALSE,echo=TRUE>>=
 cortest(sat.act)
 @
+
+\subsection{Polychoric, tetrachoric, polyserial, and biserial correlations}
+
+The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.  
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+draw.tetra()
+@
+\caption{The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values.}
+\label{fig:tetra}
+\end{center}
+\end{figure}
+
+Other estimated correlations based upon the assumption of bivariate normality with cut points include the \pfun{biserial} and \pfun{polyserial} correlation.  
+
+If the data are a mix of continuous, polytomous and dichotomous variables, the \pfun{mixed.cor} function will calculate the appropriate mixture of Pearson, polychoric, tetrachoric, biserial, and polyserial correlations.
 
 \section{Item and scale analysis}
 
@@ -905,7 +939,10 @@ plot(e.irt,type="IIC")
 \end{center}
 \end{figure}
 
+These procedures can be generalized to more than one factor by specifying the number of factors in \pfun{irt.fa}.  The plots can be limited to those items with discriminations greater than some value of cut.  
+
 More extensive IRT packages include the \Rpkg{ltm} and \Rpkg{eRm} and should be used for serious Item Response Theory analysis.
+
 
 
 \section{Multiple Regression from the correlation matrix}

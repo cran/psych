@@ -1,8 +1,10 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,legend=0,...)  # x   data frame with 
     {
     n.color <- length(colors)
     if(is.null(lty)) lty = "solid"
+    legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
+    
     all.stats <- describe(x)
         min.x <- min(all.stats$min,na.rm=TRUE)
    		max.x <- max(all.stats$max,na.rm=TRUE)
@@ -36,7 +38,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
            if(missing(ylim)) ylim=c(0,max.x+2*max.se)
            if(by.var)  {
            if (is.null(xlab)) xlab <- "Variables"
-           mp <- barplot(t(group.means),beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main)
+           mp <- barplot(t(group.means),beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main,col=colors,...)
             for(i in 1:n.var) {
              for (j in 1:n.groups) {
          	 xcen <- group.means[i,j]
@@ -46,7 +48,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
        if(is.finite(xse) && xse>0)    arrows(mp[j,i],xcen-ci*xse,mp[j,i],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
           }} } else {
            if (is.null(xlab)) xlab <- "Grouping Variable"
-           mp <- barplot(group.means,beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main)
+           mp <- barplot(group.means,beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main,col=colors,...)
             for(i in 1:n.var) {
              for (j in 1:n.groups) {
          	 xcen <- group.means[i,j]
@@ -56,9 +58,13 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
           }} }
          
          
-          axis(2)
+          axis(2,...)
           box()
-           
+            if(legend >0  ){
+       if(!is.null(v.labels)) {lab <- v.labels} else {lab <- paste("V",1:n.var,sep="")} 
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.var),
+       text.col = "green4", lty = seq(1:8),
+       merge = TRUE, bg = 'gray90')}
            
            
            } else {   #the normal case is to not use bars
@@ -73,19 +79,19 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
      
      if(!by.var) {
       
-      if (is.null(xlab)) xlab <- "Independent Variable"
-    for (g in 1:n.group) {
+      	if (is.null(xlab)) xlab <- "Independent Variable"
+    	for (g in 1:n.group) {
    	 	x.stats <- group.stats[[g]]
    	 	if (within) { x.smc <- group.smc[[g]]  
     	              if(sd) {x.stats.$se <- sqrt(x.stats$sd^2* (1- x.smc))} else { x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)}
     	               }
 
-    	#if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1])
-    	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE)
-    	axis(1,1:z,colnames(x))
-    	axis(2)
+    	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
+    	#if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE, pch=14+g,...)
+    	axis(1,1:z,colnames(x),...)
+    	axis(2,...)
     	box()
-    	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1]) 
+    	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1], pch=14+g) 
     	       }
     
     	
@@ -106,6 +112,13 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
      add <- TRUE
      lty <- "dashed"
      }   #end of g loop 
+     
+       if(legend >0  ){
+       if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:n.group,sep="")} 
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.group),
+       text.col = "green4", lty = seq(1:8),
+       merge = TRUE, bg = 'gray90')
+   }
     }    else  { # end of not by var loop
     
     #alternatively, do it by variables rather than by groups
@@ -128,13 +141,13 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     for (i in 1:n.vars) {	
    
     	if(!add) {
-    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",axes=FALSE,lty=lty,...)
-    		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats))) } else {axis(1)}
-    		axis(2)
+    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
+    		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats)),...) } else {axis(1)}
+    		axis(2,...)
     		box() 
     		add <- TRUE
-    		} else {#points(x.values,var.means[i,],typ="b",lty=((i-1) %% 8 +1),...) 
-    		         points(x.values,var.means[i,],typ="b",lty=lty,...)
+    		} else {points(x.values,var.means[i,],typ="b",lty=((i-1) %% 8 +1),col = colors[(i-1) %% n.color + 1], pch=14 + i,...) 
+    		        # points(x.values,var.means[i,],typ="b",lty=lty,...)
     		}
     	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:z,sep="")}
@@ -146,15 +159,22 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
       
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
-    	   if(sd) {ci <- 1} else { ci <- qt(1-alpha,group.stats[[g]]$n)}
+    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha,group.stats[[g]]$n)}
     	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)}  else {
     	    
     	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)} 
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
     		}
-  
-     lty <- "dashed"
+ 
+     #lty <- "dashed"
      }   #end of i loop 
+      if(legend >0  ){
+       if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")} 
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.vars),
+       text.col = "green4", lty = seq(1:8),
+       merge = TRUE, bg = 'gray90')
+   }
     }  #end of by var is true loop
+   
     } # end of if not bars condition
    }

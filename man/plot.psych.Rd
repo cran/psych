@@ -11,8 +11,8 @@
 }
 \usage{
 plot.psych(x,labels=NULL,...)
-plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),...)
-plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),...)
+plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,...)
+plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +24,7 @@ plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),...)
   \item{main}{Main title for graph}
   \item{type}{ICC plots items, IIC plots item information, test plots test information, defaults to IIC for plot.irt, to ICC for plot.poly}
   \item{D}{The discrimination parameter}
+  \item{cut}{Only plot item responses with discrimiantion greater than cut}
   \item{...}{other calls to plot}
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "ICC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.

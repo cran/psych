@@ -5,7 +5,7 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),lty=NULL,...)
+error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),lty=NULL,legend=0,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,6 +20,7 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,yli
   \item{alpha}{alpha level of confidence interval.  Default is 1- alpha =95\% confidence interval}
   \item{sd}{sd=TRUE  will plot Standard Deviations instead of standard errors}
   \item{labels}{ X axis label }
+  \item{v.labels}{For a bar plot legend, these are the variable labels}
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
@@ -27,6 +28,7 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,yli
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}
   \item{colors}{groups will be plotted in different colors (mod n.groups) }
   \item{lty}{line type may be specified in the case of not plotting by variables}
+  \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 
 }
@@ -34,7 +36,11 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,yli
 
 This function was originally just a wrapper for \code{\link{error.bars}} but has been written to allow groups to be organized either as the x axis or as separate lines.
 
-If desired, a barplot with error bars can be shown. Many find this type of plot to be uninformative (e.g.,   http://biostat.mc.vanderbilt.edu/DynamitePlots )
+If desired, a barplot with error bars can be shown. Many find this type of plot to be uninformative (e.g.,   http://biostat.mc.vanderbilt.edu/DynamitePlots ) and recommend the more standard dot plot. 
+
+Note in particular, if choosing to draw barplots, the starting value is 0.0 and setting the ylim parameter can lead to some awkward results if 0 is not included in the ylim range.  Did you really mean to draw a bar plot in this case?
+
+
 }
 \value{Graphic output showing the means + x\% confidence intervals for each group.  For ci=1.96, and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region.
 
@@ -45,13 +51,26 @@ These confidence regions are based upon normal theory and do not take into accou
 \examples{
 
 data(sat.act)
-error.bars.by(sat.act[1:4],sat.act$gender)
-error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"),main="SAT V and SAT Q by gender")  #draw a barplot
+#The generic plot of variables by group
+error.bars.by(sat.act[1:4],sat.act$gender,legend=7)
+#a bar plot
+error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"),main="SAT V and SAT Q by gender",ylim=c(0,800),colors=c("red","blue"),legend=5,v.labels=c("SATV","SATQ"))  #draw a barplot
+#a bar plot of SAT by age -- not recommended, see the next plot
+error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE,xlab="Education",main="95 percent confidence limits of Sat V and Sat Q", ylim=c(0,800),v.labels=c("SATV","SATQ"),legend=5,colors=c("red","blue") )
+#a better graph uses points not bars
+error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education",legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),main="self reported SAT scores by education")  #plot SAT V and SAT Q by education
 
-error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE,xlab="Education",main="95 percent confidence limits of Sat V and Sat Q") 
-
-error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education")  #plot SAT V and SAT Q by education
-
+#now for a more complicated examples using 25 big 5 items scored into 5 scales
+#and showing age trends by decade 
+#this shows how to convert many levels of a grouping variable (age) into more manageable levels.
+data(bfi)   #The Big 5 data
+#first create the keys 
+ keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
+ keys <- make.keys(28,keys.list,item.labels=colnames(bfi))
+ #then create the scores 
+ scores <- score.items(keys,bfi,min=1,max=6) #set the right limits for item reversals
+ #now draw the results by age
+ error.bars.by(scores$scores,round(bfi$age/10)*10,by.var=TRUE,main="BFI age trends",legend=3,labels=colnames(scores$scores),xlab="Age",ylab="Mean item score")
 
 }
 

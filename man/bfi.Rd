@@ -41,15 +41,25 @@
 \details{The first 25 items are organized by five putative factors: Agreeableness, Conscientiousness, Extraversion, Neuroticism, and Opennness.  The scoring key is created using  \code{\link{make.keys}}, the scores are found using  \code{\link{score.items}}.
 
 These five factors are a useful example of using \code{\link{irt.fa}} to do Item Response Theory based latent factor analysis of the \code{\link{polychoric}} correlation matrix.  The endorsement plots for each item, as well as the item information functions reveal that the items differ in their quality.
+
+The item data were collected using a 6 point response scale: 
+1 Very Inaccurate
+2 Moderately Inaccurate
+3 Slightly Inaccurate
+4 Slightly Accurate
+5Moderately Accurate
+6 Very Accurate
+
+as part of the Synthetic Apeture Personality Assessment (SAPA) project.  To see an example of the data collection technique, visit \url{http://test.personality-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
+
 }
 \source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010.
 }
 \references{Goldberg, L.R. (1999) A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In Mervielde, I. and Deary, I. and De Fruyt, F. and Ostendorf, F. (eds) Personality psychology in Europe. 7. Tilburg University Press. Tilburg, The Netherlands.
 
-Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
+Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. }
 
-
-}
+\seealso{\code{\link{bi.bars}} to show the data by age and gender, \code{\link{irt.fa}} for item factor analysis applying the irt model.} 
 \examples{
 data(bfi)
 describe(bfi)
@@ -58,6 +68,6 @@ describe(bfi)
  score.items(keys,bfi)
  scores <- score.items(keys[1:27,],bfi[1:27]) #don't score age 
  scores
-
+ 
 }
 \keyword{datasets}

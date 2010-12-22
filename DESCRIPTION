@@ -1,6 +1,6 @@
 Package: psych
-Version: 1.0-92
-Date: 2010-09-31
+Version: 1.0-93
+Date: 2010-12-22
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Author: William Revelle <revelle@northwestern.edu>
@@ -9,19 +9,21 @@ Description: A number of routines for personality, psychometrics and
         experimental psychology.  Functions are primarily for scale
         construction using factor analysis, cluster analysis and
         reliability analysis, although others provide basic descriptive
-        statistics. Functions for simulating particular item and test
-        structures are included. Several functions serve as a useful
-        front end for structural equation modeling.  Graphical displays
-        of path diagrams, factor analysis and structural equation
-        models are created using basic graphics. Some of the functions
-        are written to support a book on psychometrics as well as
-        publications in personality research. For more information, see
-        the personality-project.org/r webpage.
+        statistics. Item Response Theory is done using factor analysis
+        of tetrachoric and polychoric correlations. Functions for
+        simulating particular item and test structures are included.
+        Several functions serve as a useful front end for structural
+        equation modeling.  Graphical displays of path diagrams, factor
+        analysis and structural equation models are created using basic
+        graphics. Some of the functions are written to support a book
+        on psychometrics as well as publications in personality
+        research. For more information, see the
+        personality-project.org/r webpage.
 License: GPL (>= 2)
-Suggests: polycor, GPArotation, sem, MASS,graph,Rgraphviz,mvtnorm,
-        Rcsdp
+Suggests: MASS, GPArotation, graph, Rgraphviz,mvtnorm, polycor, sem,
+        Rcsdp, lavaan
 URL: http://personality-project.org/r,
         http://personality-project.org/r/psych.manual.pdf
-Packaged: 2010-09-22 02:44:10 UTC; bill
+Packaged: 2010-12-23 16:39:35 UTC; bill
 Repository: CRAN
-Date/Publication: 2010-09-22 19:37:15
+Date/Publication: 2010-12-23 18:17:33

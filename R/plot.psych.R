@@ -70,9 +70,11 @@ if (nc > 2 ) {
  par(op) }
  
  
-if(irt.fa) plot.irt(x,...)
+if(irt.fa) {
+  
+ plot.irt(x,labels=labels,...)}
 
-if(irt.poly) plot.poly(x,...)
+if(irt.poly) { plot.poly(x,labels=labels,...)}
 
 if(fa) factor.plot(x,...)
 

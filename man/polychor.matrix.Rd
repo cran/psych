@@ -4,7 +4,7 @@
 \alias{phi2poly.matrix}
 \alias{Yule2phi.matrix}
 \title{Phi or Yule coefficient matrix  to polychoric coefficient matrix}
-\description{Given a matrix of phi or Yule correlation coefficients and a vector of marginals,  use John Fox's polycor function to convert these to polychoric correlations.   
+\description{Given a matrix of phi or Yule correlation coefficients and a vector of marginals, use the polychoric function to convert these to polychoric correlations.   
 
 Some older correlation matrices were reported as matrices of Phi or of Yule correlations.  That is, correlations were found from the two by two table of counts:
  \cr
@@ -37,12 +37,12 @@ Yule2phi.matrix(x, v)
 \author{ William Revelle}
 
 \examples{
-if(require(polycor)) {demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
+demo <- phi.demo() #compare the phi (lower off diagonal and polychoric correlations (upper off diagonal)
 #show the result from poly.mat
-round(demo$tetrachoric,2)
+round(demo$tetrachoric$rho,2)
 #show the result from phi2poly
 #tetrachorics above the diagonal, phi below the diagonal 
-round(demo$phis,2) }
+round(demo$phis,2) 
 
 
 }

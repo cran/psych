@@ -1,5 +1,5 @@
 "ICC" <- 
-  function(x,missing=TRUE,digits=2,alpha=.05) {
+  function(x,missing=TRUE,alpha=.05) {
   cl <- match.call()
   if(is.matrix(x)) x <- data.frame(x)
   n.obs.original <- dim(x)[1]
@@ -38,7 +38,6 @@
   df21d <- (n.obs-1)*(nj-1)
   p21 <- 1-pf(F21,df21n,df21d)
   F31 <- F21
-  # results <- list(ICC1=round(ICC1,digits),ICC2=round(ICC2,digits),ICC3 = round(ICC3,digits),ICC12=round(ICC12,digits),ICC22=round(ICC22,digits),ICC32=round(ICC32,digits))
   
   
  # results <- t(results)
@@ -105,7 +104,7 @@
  
 
  #clean up the output
- results[,2:8] <- round(results[,2:8],digits)
+ results[,2:8] <- results[,2:8]
  result <- list(results=results,summary=s.aov,stats=stats,MSW=MSW,Call=cl,n.obs=n.obs,n.judge=nj)
  class(result) <- c("psych","ICC")
  return(result)

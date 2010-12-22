@@ -2,6 +2,7 @@
 \alias{structure.diagram}
 \alias{structure.graph}
 \alias{structure.sem}
+\alias{lavaan.diagram}
 
 
 \title{Draw a structural equation model specified by two measurement models and a structural model}
@@ -17,11 +18,14 @@ As an option, for those without Rgraphviz installed, structure.sem will just cre
 
 structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option. structure.graph will be removed eventually.
 
+lavaan.diagram will draw either cfa or sem results from the lavaan package.
+
 }
 \usage{
 structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,main="Structural model", ...)
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
+lavaan.diagram(fit,model="cfa",...) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -33,6 +37,8 @@ structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0
   \item{out.file}{name a file to send dot language instructions. }
   \item{labels}{variable labels if not specified as colnames for the matrices}
   \item{cut}{Draw paths for values > cut }
+  \item{fit}{The output from a lavaan cfa or sem}
+  \item{model}{"cfa" will draw the lavaan cfa results, "sem" the sem results}
   \item{errors}{draw an error term for observerd variables }
   \item{simple}{Just draw one path per x or y variable }
   \item{regression}{Draw a regression diagram (observed variables cause Y)}
@@ -65,6 +71,7 @@ The correlations between the Y variables (if Ry is specified)\cr
 
 A confirmatory factor model would specify just fx and Phi, a structural model would include fx, Phi, and fy.  The raw correlations could be shown by just including Rx and Ry.
 
+\code{\link{lavaan.diagram}} may be called from the \code{\link{diagram}} function which also will call  \code{\link{fa.diagram}}, \code{\link{omega.diagram}} or  \code{\link{iclust.diagram}}, depending upon the class of the fit.
 
 Other diagram functions include \code{\link{fa.diagram}}, \code{\link{omega.diagram}}.  All of these functions use the various dia functions such as \code{\link{dia.rect}}, \code{\link{dia.ellipse}}, \code{\link{dia.arrow}}, \code{\link{dia.curve}}, \code{\link{dia.curved.arrow}}, and \code{\link{dia.shape}}.
 }

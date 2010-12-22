@@ -17,7 +17,7 @@ ad/bc is the odds ratio and Q = (OR-1)/(OR+1)
 Yule's coefficient of colligation is Y = (sqrt(OR) - 1)/(sqrt(OR)+1)
 Yule.inv finds the cell entries for a particular Q and the marginals (a+b,c+d,a+c, b+d).  This is useful for converting old tables of correlations into more conventional \code{\link{phi}} or polychoric correlations.
 \cr
-Yule2phi and Yule2poly convert the Yule Q with set marginals to the correponding phi or polychoric correlation.
+Yule2phi and Yule2poly convert the Yule Q with set marginals to the correponding phi or tetrachoric correlation.
 }
 \usage{
 Yule(x,Y=FALSE)  #find Yule given a two by two table of frequencies
@@ -47,13 +47,13 @@ Warrens, Matthijs (2008), On Association Coefficients for 2x2 Tables and Propert
 \author{ William Revelle }
 \note{Yule.inv is currently done by using the optimize function, but presumably could be redone by solving a quadratic equation.
 }
-\seealso{ See Also as \code{\link{phi}}, \code{\link{Yule2poly.matrix}}, \code{\link{Yule2phi.matrix}} }
+\seealso{ See Also as \code{\link{phi}}, \code{\link{tetrachoric}},  \code{\link{Yule2poly.matrix}}, \code{\link{Yule2phi.matrix}} }
 \examples{
 Nach <- matrix(c(40,10,20,50),ncol=2,byrow=TRUE)
 Yule(Nach)
 Yule.inv(.81818,c(50,70,60,60))
 Yule2phi(.81818,c(50,70,60,60))
-if(require(polycor)) Yule2poly(.81818,c(50,70,60,60))
+Yule2poly(.81818,c(50,70,60,60))
 phi(Nach)  #much less
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -13,7 +13,7 @@
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.
 }
 \usage{
-pairs.panels(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE, jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE, ...)
+pairs.panels(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,6 +25,7 @@ pairs.panels(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits 
   \item{lm}{Plot the linear fit rather than the LOESS smoothed fits.}
   \item{digits}{ the number of digits to show}
   \item{pch}{The plot character (defaults to 20 which is a '.').}
+  \item{cor}{If plotting regressions, should correlations be reported?}
   \item{jiggle}{Should the points be jittered before plotting?}
   \item{factor}{factor for jittering (1-5)}
   \item{hist.col}{What color should the histogram on the diagonal be?}

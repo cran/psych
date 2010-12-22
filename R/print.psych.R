@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- FALSE
+iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -35,6 +35,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "poly")    poly <- TRUE
    if(class(x)[2] == "irt.fa")    irt.fa <- TRUE
    if(class(x)[2] == "irt.poly")    irt.poly <- TRUE
+   if(class(x)[2] == "mardia")    mardia <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -95,8 +96,12 @@ if(r.test) {cat("Correlation tests \n")
  if(scores) {
     cat("Call: ")
     print(x$Call)
-	cat("\n(Unstandardized) Alpha:\n")
+    if(x$raw) {
+	cat("\n(Unstandardized) Alpha:\n") } else {cat("\n(Standardized) Alpha:\n") }
+	
 	print(x$alpha,digits=digits)
+	if(!is.null(x$alpha.ob)) {cat("\nStandardized Alpha of observed scales:\n")
+	print(x$alpha.ob,digits=digits)}
   	cat("\nAverage item correlation:\n")
   	print(x$av.r,digits=digits)
 	cat("\n Guttman 6* reliability: \n")
@@ -105,10 +110,13 @@ if(r.test) {cat("Correlation tests \n")
 	 print(x$beta,digits) }	          
  	
 	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 	if(!is.null(x$alpha.ob)) {cat("\nNote that these are the correlations of the complete scales based on the correlation matrix,\n not the observed scales based on the raw items.\n")}
+	 	
 	 print(x$corrected,digits) 
 	 
 	  if(!is.null(x$item.cor) ) {
 	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
+	   
 	 print(round(x$item.corrected,digits=digits)) } 
 	 if(!is.null(x$response.freq)) {
 	 cat("\nNon missing response frequency for each item\n")
@@ -229,7 +237,7 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
  if(ICC) {cat("Call: ")
               print(x$Call)
             cat("\nIntraclass correlation coefficients \n")
-            print(x$results)
+            print(x$results,digits=digits)
             cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
 
    }
@@ -251,7 +259,8 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
               print(x$Call)
             cat("Comorbidity table \n")
             print(x$twobytwo,digits=digits)
-            cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra,digits))
+            cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra$rho,digits))
+            cat("\nand normal thresholds of ",round(-x$tetra$tau,digits))
           
    }
    
@@ -274,7 +283,7 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             cat("Polychoric correlations \n")
             if(!is.null(x$twobytwo)) {
               print(x$twobytwo,digits=digits)
-              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
+              cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
             
             print(x$rho,digits)
             cat("\n with tau of \n")
@@ -339,14 +348,34 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
    cat("Item Response Analysis using Factor Analysis = ")
    cat("\nCall: ")
    print(x$Call)
-  print(round(x$coefficients,digits))
+    nf <- length(x$irt$difficulty)
+    for(i in 1:nf) {temp <- data.frame(discrimination=x$irt$discrimination[,i],location=x$irt$difficulty[[i]])
+    cat("\nItem discrimination and location for factor ",colnames(x$irt$discrimination)[i],"\n")
+    print(round(temp,digits))}
+ # print(round(x$coefficients,digits))
   }
   
     if(irt.poly) {
    cat("Item Response Analysis using Factor Analysis = ")
    cat("\nCall: ")
    print(x$Call)
-  print(round(x$coefficients,digits))
+    
+    nf <- length(x$irt$difficulty)
+    for(i in 1:nf) {temp <- data.frame(discrimination=x$irt$discrimination[,i],location=x$irt$difficulty[[i]])
+    cat("\nItem discrimination and location for factor ",colnames(x$irt$discrimination)[i],"\n")
+    print(round(temp,digits))}
+  #print(round(x$coefficients,digits))
+  }
+  
+  if(mardia) {
+   cat("Call: ")
+     print(x$Call) 
+     cat("\nMardia tests of multivariate skew and kurtosis\n")
+     cat("Use describe(x) the get univariate tests")
+      cat("\nn.obs =",x$n.obs,"  num.vars = ",x$n.var,"\n")
+     cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability = ", signif(x$p.skew,digits)) 
+     cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability = ", signif(x$p.small,digits)) 
+     cat("\nb2p = ", round(x$b2p,digits),"  kurtosis = ",round(x$kurtosis,digits)," with probability = ",signif(x$p.kurt,digits ))
   }
   
   

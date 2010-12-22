@@ -1,5 +1,5 @@
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,...)   #combines a splom, histograms, and correlations
 {
 
 
@@ -53,7 +53,7 @@ function(x, ...)
 #Beginning of the main function
 #the organization gets around the problem of passing parameters to pairs by calling different routines
 
-op <- par(no.readonly = TRUE)  # save the whole list of settable par's.
+#op <- par(no.readonly = TRUE)  # save the whole list of settable par's.  #this doesn't seem to help
     par(pch = pch)
     
     if(!lm) {if (density) { #the basic default is here
@@ -140,7 +140,16 @@ op <- par(no.readonly = TRUE)  # save the whole list of settable par's.
     
     
     } else { #lm is TRUE
-    
+        if(cor) {if (density) {
+        	if(ellipses) {if (jiggle) {  pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm.ellipse , ...)
+                       } else {
+     			pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm.ellipse, ...)}} else {
+     			pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm, ...)   }
+     	
+     		} else {if(ellipses) {pairs(x, diag.panel = panel.hist, upper.panel = panel.cor, lower.panel = panel.lm.ellipse, ...)} else {
+     	                      pairs(x, diag.panel = panel.hist, upper.panel = panel.cor, lower.panel = panel.lm, ...)}
+   			 }
+   			   }  else {
         if (density) {
         	if(ellipses) {if (jiggle) {  pairs(x, diag.panel = panel.hist.density, upper.panel = panel.jiggle, lower.panel = panel.lm.ellipse , ...)
                        } else {
@@ -151,7 +160,8 @@ op <- par(no.readonly = TRUE)  # save the whole list of settable par's.
      	                      pairs(x, diag.panel = panel.hist, upper.panel = panel.lm, lower.panel = panel.lm, ...)}
    			 }
    			   }
- par(op) #restore the parameters
+   	}
+#par(op) #restore the parameters
 }
 
  "panel.lm" <- 

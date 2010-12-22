@@ -6,14 +6,14 @@
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of small correlation matrices with a clear structure.  Meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,labels=NULL,...)
+cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,...)
 }
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{omega}}.  }
   \item{colors}{Defaults to FALSE (grey), but colors=TRUE will use topo.colors}
   \item{n}{The number of levels of shading to use.  Defaults to 10}
   \item{main}{A title. Defaults to ``correlation plot"}
-  \item{zlim}{The range of values to color -- defaults to 0 to 1}
+  \item{zlim}{The range of values to color -- defaults to -1 to 1}
   \item{show.legend}{A legend (key) to the colors is shown on the right hand side}
   \item{labels}{if NULL, use column and row names, otherwise use labels}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size)}
@@ -40,10 +40,10 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 }
 \examples{
 data(bifactor)
-cor.plot(Thurstone,TRUE, main="9 cognitive variables from Thurstone")
-cor.plot(mat.sort(Thurstone),TRUE, main="9 cognitive variables from Thurstone (sorted by factor loading) ")
+cor.plot(Thurstone,TRUE, zlim=c(0,1),main="9 cognitive variables from Thurstone")
+cor.plot(mat.sort(Thurstone),TRUE,zlim=c(0,1), main="9 cognitive variables from Thurstone (sorted by factor loading) ")
 simp <- sim.circ(24)
-cor.plot(cor(simp),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
+cor.plot(cor(simp),colors=TRUE,,main="24 variables in a circumplex")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

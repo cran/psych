@@ -1,35 +1,65 @@
-\name{skew}
+\name{mardia}
+\alias{mardia}
 \alias{skew}
 \alias{kurtosi}
 
-\title{ Calculate skew or kurtosis for a vector, matrix, or data.frame}
-\description{Find the skew and kurtosis for each variable in a data.frame or matrix.  Unlike skew and kurtosis in e1071, this calculates a different skew for each variable or column of a data.frame/matrix.
+\title{ Calculate univariate or multivariate (Mardia's test) skew and kurtosis for a vector, matrix, or data.frame}
+\description{Find the skew and kurtosis for each variable in a data.frame or matrix.  Unlike skew and kurtosis in e1071, this calculates a different skew for each variable or column of a data.frame/matrix. mardia applies Mardia's tests for multivariate skew and kurtosis
 }
 \usage{
 skew(x, na.rm = TRUE)
-kurtosi(x, na.rm = TRUE)
+kurtosi(x, na.rm = TRUE,type=1)
+mardia(x,na.rm = TRUE,plot=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A data.frame or matrix }
   \item{na.rm}{ how to treat missing data }
+  \item{type}{type=1 gives an unbiased estimate of kurtosis, type 2 gives a biased estimate}.
+  \item{plot}{Plot the expected normal distribution values versus the Mahalanobis distance of the subjects.}
 }
-\details{given a matrix or data.frame x, find the skew or kurtosis for each column.
+\details{given a matrix or data.frame x, find the skew or kurtosis for each column (for skew and kurtosis) or the multivariate skew and kurtosis in the case of mardia.
+
+As of revision 1.0.93, kurtosi by default gives an unbiased estimate of the kurtosis (DeCarlo, 1997). Prior versions used a different equation which produced a biased estimate.  (See the kurtosis function in the e1071 package for the distinction between these two formulae.  The default, type 1 is what is called type 2 in e1071.  The other is their type 3.)  For comparison with previous releases, specifying type = 2 will give the old estimate.
 }
-\value{if input is a matrix or data.frame, skew (kurtosi) is a vector of skews (kurtosi)}
+\value{
+\item{skew}{if input is a matrix or data.frame, skew is a vector of skews}
+\item{kurtosi}{if input is a matrix or data.frame, kurtosi is a vector of kurtosi}
+\item{bp1}{Mardia's bp1 estimate of multivariate skew}
+\item{bp2}{Mardia's bp2 estimate of multivariate kurtosis}
+\item{skew}{Mardia's skew statistic}
+\item{small.skew}{Mardia's small sample skew statistic}
+\item{p.skew}{Probability of skew}
+\item{p.small}{Probability of small.skew}
+\item{kurtosis}{Mardia's multivariate kurtosis statistic}
+\item{p.kurtosis}{Probability of kurtosis statistic}
+\item{D}{Mahalanobis distance of cases from centroid}
+}
+
+\references{
+
+
+L.DeCarlo. 1997) On the meaning and use of kurtosis, Psychological Methods, 2(3):292-307,
+
+
+K.V. Mardia (1970). Measures of multivariate skewness and kurtosis with applications. Biometrika, 57(3):pp. 519-30, 1970.}
+
 \author{William Revelle }
 
 \note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.
 
 }
 
-\seealso{\code{\link{describe}}, \code{\link{describe.by}},   }
+\seealso{\code{\link{describe}}, \code{\link{describe.by}}, mult.norm in QuantPsyc, Kurt in QuantPsyc}
 
 
 \examples{
 round(skew(attitude),2)
 round(kurtosi(attitude),2)
-
+mardia(attitude)
+x <- matrix(rnorm(1000),ncol=10)
+describe(x)
+mardia(x)
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

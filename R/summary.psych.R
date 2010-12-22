@@ -86,7 +86,10 @@ if(omega) {
 if(scores ) { 
 cat("Call: ")
 print(object$Call)
-cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (unstandardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
+if(object$raw) {
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (unstandardized) alpha on the diagonal \n corrected correlations above the diagonal:\n") } else {
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (standardized) alpha on the diagonal \n corrected correlations above the diagonal:\n") } 
+
 	 print(object$corrected,digits) 
 	 result <- object$corrected
 	 }
@@ -110,14 +113,16 @@ if(fa) {
     cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
    	if(!is.na(object$n.obs)) {cat("The number of observations was ",object$n.obs, " with Chi Square = ",round(object$STATISTIC,digits), " with prob < ", signif(object$PVAL,digits),"\n")}
    }
-    if(!is.null(object$null.chisq)) {cat(" with Chi Square of " ,round(object$null.chisq,digits)) }
+
 
     if(!is.null(object$rms)) {cat("\nThe root mean square of the residuals is ", round(object$rms,digits),"\n") }
     if(!is.null(object$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$crms,digits),"\n") }
     
    
    	if(!is.null(object$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
-   	if(!is.null(object$RMSEA)) {cat("\nRMSEA and the", object$RMSEA[4]," confidence intervals are ",round(object$RMSEA[1:3],digits+1))  }
+  
+   	if(!is.null(object$RMSEA)) {cat("\nRMSEA index = ",round(object$RMSEA[1],digits+1), " and the", (1- object$RMSEA[4])*100,"% confidence intervals are ",round(object$RMSEA[2:3],digits+1))  }
+   
    	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))
 
 }

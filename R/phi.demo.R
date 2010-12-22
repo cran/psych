@@ -18,16 +18,14 @@ pairs.panels(d.mat,main="Phi coefficients for extreme cut point normal data")
 trunc.cor<- cor(d.mat)                 #find the Pearson correlations
 freq <- mean(d.mat)                    #find the frequencies of scores
 
-#now, convert the upper diagonal to polychorics using John Fox's polychor and my phi2poly
-if(require(polycor)) {
- #first demonstrate the poly.mat function
- tetra <- poly.mat(d.mat[,3:7])
+
+ #first demonstrate the polychoric function
+ tetra <- tetrachoric(d.mat[,3:7],correct=FALSE)
  
 for (i in 4:length(d.mat)) {
    for (j in 3:i) {
        trunc.cor[j,i]<- phi2poly(trunc.cor[i,j],freq[i],freq[j]) 
        }}
-  return(list(tetrachoric=tetra, phis=trunc.cor))} else {message("I am sorry, this function requires the polycor package")}
-
+  return(list(tetrachoric=tetra, phis=trunc.cor))
 }
 

@@ -133,7 +133,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 \note{Thanks to Erich Studerus for some very helpful suggestions about various rotation and factor scoring algorithms, and to  Gumundur Arnkelsson  for suggestions about factor scores for singular matrices.}
 
-\seealso{ \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}}
+\seealso{ \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}} }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")

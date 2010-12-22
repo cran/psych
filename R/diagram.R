@@ -2,7 +2,23 @@
 
 #The diagram function is the generic function (actually empty) that allows a clearer help file
 #the entire set of functions for diagramming are all prefixed as dia. 
-"diagram" <- function() {}
+"diagram" <- function(fit,...) {
+#first, figure out which psych function was called
+ fa <- principal <- vss <- iclust <- omega <- lavaan <-  FALSE
+if(length(class(fit)) == 1) {if (class(fit)=="lavaanModel") lavaan <- TRUE } 
+if(length(class(fit)) > 1)  {
+   if(class(fit)[2] =='fa')  fa <- TRUE
+   if(class(fit)[2] =='vss')  vss <- TRUE
+   if(class(fit)[2] =='iclust')  iclust <- TRUE
+   if(class(fit)[2] =='omega')  omega <- TRUE
+   if(class(fit)[2] =='principal')  principal <- TRUE
+   }
+if(fa) {fa.diagram(fit,...) }
+if(principal) {fa.diagram(fit,...) }
+if(iclust) {iclust.diagram(fit,...)}
+if(omega) {omega.diagram(fit,...)}
+if(lavaan) {lavaan.diagram(fit,...)} 
+}
 
 
 "dia.rect" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...) {
@@ -181,7 +197,7 @@
  	 	lines(sp$y[1:(n/2-shift)],sp$x[1:(n/2-shift)])
      	lines(sp$y[(n/2+shift):n],sp$x[(n/2+shift):n])
      	arrows(sp$y[3],sp$x[3],sp$y[1],sp$x[1],length = .5*abs(sp$x[2]-sp$x[1]))
-     	arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = .5*abs(sp$x[2]-sp$x[1]))
+     	#arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = .5*abs(sp$x[2]-sp$x[1]))
   		text(sp$y[n/2],sp$x[n/2],labels,...)  
   		} else {
   		 x <- c(from[1],(from[1]+to[1])/2,to[1])

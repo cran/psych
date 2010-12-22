@@ -2,7 +2,7 @@
 #modifed November 14, 2009 to add legends
 #
 "cor.plot" <- 
-function(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1),show.legend=TRUE,labels=NULL,...){
+function(r,colors=FALSE, n=10,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,...){
 
 op <- par(no.readonly=TRUE)
 

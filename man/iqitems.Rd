@@ -24,7 +24,9 @@
     \item{\code{iq49}}{Matrix Reasoning 9}
   }
 }
-\details{14 items were sampled from 54 items given as part of the SAPA project  (Revelle, Wilt and Rosenthal, 2009) to develop online measures of ability.  
+\details{14 items were sampled from 54 items given as part of the SAPA project  (Revelle, Wilt and Rosenthal, 2009) to develop online measures of ability. 
+
+This data set may be used to demonstrate item response functions, \code{\link{tetrachoric}} correlations, or \code{\link{irt.fa}}.
 }
 \source{\url{http://personality-project.org} 
 }
@@ -35,5 +37,10 @@
 data(iqitems)
 iq.keys <- c(4,4,3,1,4,3,2,3,1,4,1,3,4,3)
 score.multiple.choice(iq.keys,iqitems)
+#convert them to true false 
+iq.scrub <- scrub(iqitems,isvalue=0)  #first get rid of the zero responses
+iq.tf <-  score.multiple.choice(iq.keys,iq.scrub,score=FALSE) #convert to wrong (0) and correct (1) for analysis
+describe(iq.tf)
+
 }
 \keyword{datasets}

@@ -14,7 +14,8 @@
    }
  
  
+   
 "r2t" <- 
    function(rho,n) {
-   t <- rho*sqrt(n-2)/sqrt(1-rho^2) }
+   return( rho*sqrt((n-2)/(1-rho^2))) }
    

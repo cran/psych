@@ -1,6 +1,6 @@
 "phi2poly" <-
 function(ph,cp,cc) {
-	if (!require(polycor)) {stop("I am sorry, you need to have loaded the polychor package to use phi2poly")}
+	
      #ph is the phi coefficient
      #cp is the selection ratio of the predictor
      #cc is the success rate of the criterion
@@ -17,6 +17,6 @@ function(ph,cp,cc) {
      p[1,2]<- r.marg[1]*c.marg[2]- ph*sqrt(prod(r.marg,c.marg))
      p[2,1]<- r.marg[2]*c.marg[1]- ph*sqrt(prod(r.marg,c.marg))
      
-     result<-polychor(p ) 
+     result<-tetrachoric(p )$rho 
      return(result)}
 

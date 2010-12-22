@@ -22,12 +22,12 @@ comorbidity(d1, d2, com, labels = NULL)
 }
 
 \author{William Revelle }
-\note{Requires the polycor package}
+
 
  
 \seealso{  \code{\link{phi}},  \code{\link{Yule}} }
 \examples{
-if(require(polycor)) {comorbidity(.2,.15,.1,c("Anxiety","Depression")) }
+comorbidity(.2,.15,.1,c("Anxiety","Depression")) 
 }
 
 \keyword{multivariate }

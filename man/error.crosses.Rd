@@ -1,16 +1,16 @@
 \name{error.crosses}
 \alias{error.crosses}
 \title{ Plot x and y error bars }
-\description{Given two vectors of data, plot the means and show standard errors in both X and Y directions. 
+\description{Given two vectors of data (X and Y), plot the means and show standard errors in both X and Y directions. 
 }
 \usage{
 error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ A vector of summary statistics (from Describe) }
-  \item{y}{ A second vector of summary statistics (also from Describe)}
-   \item{labels}{the names of each pair -- defaults to rownames of x }
+  \item{x}{ A vector of data or summary statistics (from Describe) }
+  \item{y}{ A second vector of data or summary statistics (also from Describe)}
+  \item{labels}{the names of each pair -- defaults to rownames of x }
   \item{main}{The title for the graph}
   \item{xlim}{xlim values if desired-- defaults to min and max mean(x) +/- 2 se}
   \item{ylim}{ylim values if desired  -- defaults to min and max mean(y) +/- 2 se}
@@ -36,18 +36,36 @@ The second example shows how error crosses can be done for multiple variables wh
 \seealso{To draw error bars for single variables  \code{\link{error.bars}}, or by groups \code{\link{error.bars.by}}, or to find descriptive statistics \code{\link{describe}}  or descriptive statistics by a grouping variable \code{\link{describe.by}}  }
 \examples{
 
+#just draw one pair of variables
 desc <- describe(attitude)
 x <- desc[1,]
 y <- desc[2,]
-plot(x$mean,y$mean,xlab=rownames(x),ylab=rownames(y))   #in graphics window
-error.crosses(x,y)    #in graphics window
+error.crosses(x,y,xlab=rownames(x),ylab=rownames(y))   
+
 #now for a bit more complicated plotting 
-desc <- describe.by(attitude,(attitude[,7]>41)) #select a high and low group
-g1 <- desc$'FALSE'
-g2 <- desc$'TRUE'
-plot(g1$mean,g2$mean,xlab = "Low Advance",ylab="High Advance",xlim=c(30,80),ylim=c(50,80))
-error.crosses(g1,g2,labels=rownames(g1),pos=rep(1,7))
-title("Attitudes grouped by high and low scores on Advance")
+data(bfi)
+desc <- describe.by(bfi[1:25],bfi$gender) #select a high and low group
+error.crosses(desc$'1',desc$'2',ylab="female scores",xlab="male scores",main="BFI scores by gender")
+ abline(a=0,b=1)
+ 
+#do it from summary statistics  (using standard errors) 
+g1.stats <- data.frame(n=c(10,20,30),means=c(10,12,18),se=c(2,3,5))
+g2.stats <- data.frame(n=c(15,20,25),means=c(6,14,15),se =c(1,2,3))
+error.crosses(g1.stats,g2.stats)
+
+#Or, if you prefer to draw +/- 1 sd. instead of 95% confidence
+g1.stats <- data.frame(n=c(10,20,30),means=c(10,12,18),sd=c(2,3,5))
+g2.stats <- data.frame(n=c(15,20,25),means=c(6,14,15),sd =c(1,2,3))
+error.crosses(g1.stats,g2.stats,sd=TRUE)
+
+#and seem even fancy plotting: This is taken from a study of mood
+#four films were given (sad, horror, neutral, happy)
+#with a pre and post test
+data(affect)
+colors <- c("black","red","white","blue")
+films <- c("Sad","Horror","Neutral","Happy")
+map.mat <- describe.by(maps[10:17],maps$Film,mat=TRUE)
+ error.crosses(map.mat[c(1:4,17:20),],map.mat[c(5:8,21:24),],labels=films[map.mat$group1],xlab="Energetic Arousal",ylab="Tense Arousal",col=colors[map.mat$group1],pch=16,cex=2)
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

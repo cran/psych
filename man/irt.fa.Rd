@@ -31,7 +31,7 @@ The normal input is just the raw data.  If, however, the correlation matrix has 
 
 The output is best seen in terms of graphic displays.  Plot the output from irt.fa to see item and test information functions.  
 
-The select.irt function is a helper function to allow for selecting a subset of a prior analysis for further analysis. First run irt.fa, then select a subset of variables to be analyzed in a subsequent irt.fa analysis.
+The \code{link{irt.select}} function is a helper function to allow for selecting a subset of a prior analysis for further analysis. First run irt.fa, then select a subset of variables to be analyzed in a subsequent irt.fa analysis.
 }
 \value{
  \item{irt }{A list of Item location (difficulty) and discrimination}

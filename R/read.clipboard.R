@@ -33,9 +33,9 @@ function(header=TRUE,sep='\t',...) {  #same as read.clipboard(sep='\t')
 
 
 #adapted from John Fox's read.moments function
-#modified October 31 to be able to read row names as first column
+#modified October 31, 2010 to be able to read row names as first column
 "read.clipboard.lower" <-
-function( diag = TRUE,names=NULL,...) {
+function( diag = TRUE,names=FALSE,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
    if (!MAC ) {
           con <- file("clipboard")
@@ -43,14 +43,9 @@ function( diag = TRUE,names=NULL,...) {
           xij <- scan(con,what="char")
            close(con)
     m <- length(xij)
-    d <- if (diag)    1  else -1
-    n <- floor((sqrt(1 + 8 * m) - d)/2) #solve the quadratic for n
-    if (m == n * (n + d)/2) {rowlab <- FALSE} else {
-         if (m == (n * (n + d)/2 + n)) {rowlab <- TRUE}  else {
-         stop("wrong number of elements (cannot make square matrix)")} }
-   # if(!rowlab) {if (m != n * (n + d)/2)   stop("wrong number of elements (cannot make square matrix)")} else {
-                 # if (m != (n * (n + d)/2 + n)) stop ("wrong number of  elements (cannot make a square matrix with row numbers")} 
-   if(rowlab) {if(is.null(names)) names <- xij[cumsum(seq(1:n))] 
+    d <- if (diag |names)    1  else -1
+    n <- floor((sqrt(1 + 8 * m) - d)/2) 
+   if(names)  {name <- xij[cumsum(1:n)]     
                xij <- xij[-cumsum(seq(1:n))]}
    xij <- as.numeric(xij)
    X <- diag(n)
@@ -58,15 +53,15 @@ function( diag = TRUE,names=NULL,...) {
   diagonal <- diag(X) 
    X <- t(X) + X 
     diag(X) <- diagonal
-   if(is.null(names)) names <- paste("V",1:n,sep="")
-    rownames(X) <- colnames(X) <- names
+   if(!names) name <- paste("V",1:n,sep="")
+    rownames(X) <- colnames(X) <- name
     return(X)
    }
    
 
 
 "read.clipboard.upper" <-
-function( diag = TRUE,names=NULL,...) {
+function( diag = TRUE,names=FALSE,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
   if (!MAC ) {
           con <- file("clipboard")
@@ -74,21 +69,20 @@ function( diag = TRUE,names=NULL,...) {
           xij <- scan(con,what="char")
            close(con)
     m <- length(xij)
-    d <- if (diag)    1  else -1
-    n <- floor((sqrt(1 + 8 * m) - d)/2) #solve the quadratic for n
-     if (m == n * (n + d)/2) {rowlab <- FALSE} else {
-         if (m == (n * (n + d)/2 + n)) {rowlab <- TRUE}  else {
-         stop("wrong number of elements (cannot make square matrix)")} }   
-     if(rowlab) {if(is.null(names)) names <- xij[cumsum(seq(1:n))] 
-               xij <- xij[-cumsum(seq(1:n))]}
+    d <- if (diag | names)    1  else -1
+    
+    n <- floor((sqrt(1 + 8 * m) - d )/2) #solve the quadratic for n
+    
+     if(names) { name <- xij[c(1,1+cumsum(n:2))]
+               xij <- xij[-c(1,1+cumsum(n:2))]} 
    xij <- as.numeric(xij)
     X <- diag(n)
     X[lower.tri(X, diag = diag)] <- xij
   diagonal <- diag(X) 
    X <- t(X) + X 
     diag(X) <- diagonal
-   if(is.null(names)) names <- paste("V",1:n,sep="")
-    rownames(X) <- colnames(X) <- names
+   if(!names) name <- paste("V",1:n,sep="")
+    rownames(X) <- colnames(X) <- name
     return(X)
    }
    

@@ -1,6 +1,5 @@
  "Yule2poly.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)
@@ -41,7 +40,6 @@ function(x,v) {
 
 "Yule2phi.matrix" <-
 function(x,v) {
-if (!require(polycor)) {stop("I am sorry, you need to have loaded the polycor package")}
  sizex <- dim(x)[2]
  if (!is.vector(v)) v <- as.vector(v)
  nv <- length(v)

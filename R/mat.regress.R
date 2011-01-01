@@ -22,11 +22,12 @@ function(m,x,y,n.obs=NULL)  {
      	ac.matrix <- C[x,x]
      	b.matrix <- m[x,y]
      	bc.matrix <- C[x,y]
-     	
-        beta <- solve(a.matrix,b.matrix)       #solve the equation bY~aX
-        beta <- as.matrix(beta)
-     	if (length(y) >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
-     	                      if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
+     	if(numx == 1 ) {beta <- matrix(b.matrix,nrow=1)
+     	                } else   #this is the case of a single x 
+       { beta <- solve(a.matrix,b.matrix)       #solve the equation bY~aX
+        beta <- as.matrix(beta) }
+     	if (numy >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
+     	                if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
      	 
      	R2 <- colSums(beta * b.matrix) } else { colnames(beta) <- colnames(m)[1]
      	 R2 <- sum(beta * b.matrix)
@@ -52,7 +53,8 @@ function(m,x,y,n.obs=NULL)  {
      	                     pF <- 1 - pf(F,k,df)
      	                     shrunkenR2 <- 1-(1-R2)*(n.obs-1)/df    	                     }
      	
-     	beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix)) #this puts the betas into the raw units
+     	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
+     	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix))} #this puts the betas into the raw units
         
      	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Call = cl)} else {
      	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Call = cl)}
@@ -62,3 +64,4 @@ function(m,x,y,n.obs=NULL)  {
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests
 #modified yet again August 15 , 2008 to convert covariances to correlations
+#modified January 3, 2011 to work in the case of a single predictor 

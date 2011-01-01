@@ -12,8 +12,8 @@
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
 read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimited
-read.clipboard.lower(diag=TRUE,names=NULL,...)  #read in a matrix given the lower off diagonal
-read.clipboard.upper(diag=TRUE,names=NULL,...)
+read.clipboard.lower(diag=TRUE,names=FALSE,...)  #read in a matrix given the lower off diagonal
+read.clipboard.upper(diag=TRUE,names=FALSE,...)
 read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  #read in data using a fixed format width (see read.fwf for instructions)
 
 }
@@ -22,7 +22,7 @@ read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  #read in data using a fix
   \item{header}{Does the first row have variable labels }
   \item{sep}{What is the designated separater between data fields?}
   \item{diag}{for upper or lower triangular matrices, is the diagonal specified or not}
-  \item{names}{for read.clipboard.lower or upper, what colnames to use if not defined in the first column}
+  \item{names}{for read.clipboard.lower or upper, are colnames in the  the first column}
   \item{widths}{how wide are the columns in fixed width input.  The default is to read 10 columns of size 1. }
   \item{\dots}{ Other parameters to pass to read }
 }

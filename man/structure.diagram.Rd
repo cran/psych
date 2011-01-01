@@ -25,7 +25,7 @@ lavaan.diagram will draw either cfa or sem results from the lavaan package.
 structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,main="Structural model", ...)
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
-lavaan.diagram(fit,model="cfa",...) 
+lavaan.diagram(fit,...) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,7 +38,6 @@ lavaan.diagram(fit,model="cfa",...)
   \item{labels}{variable labels if not specified as colnames for the matrices}
   \item{cut}{Draw paths for values > cut }
   \item{fit}{The output from a lavaan cfa or sem}
-  \item{model}{"cfa" will draw the lavaan cfa results, "sem" the sem results}
   \item{errors}{draw an error term for observerd variables }
   \item{simple}{Just draw one path per x or y variable }
   \item{regression}{Draw a regression diagram (observed variables cause Y)}

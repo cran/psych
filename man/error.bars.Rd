@@ -30,7 +30,7 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
 
 If within=TRUE, the error bars are corrected for the correlation with the other variables by reducing the variance by a factor of (1-smc).  This allows for comparisons between variables.
 
-The error bars are normally calculated from the data using the describe function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).
+The error bars are normally calculated from the data using the describe function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).  However, in this case, the error bars will be one s.e. rather than a function of the alpha level.
 
 If sd is TRUE, then the error bars will represent one standard deviation from the mean rather than be a function of alpha and the standard errors.
   
@@ -77,10 +77,20 @@ error.bars(attitude,add=TRUE,arrow.len=.2)
 #use statistics from somewhere else
 my.stats <- data.frame(values=c(1,4,8),means=c(10,12,18),se=c(2,3,5))
 error.bars(stats=my.stats,type="b",main="data with confidence intervals")
+#note that in this case, the error bars are 1 s.e.  To modify that, change the s.e.
 
-#use describe and then plot the results
-ds <- describe(attitude)
-error.bars(stats=ds)
+#Consider the case where we get stats from describe
+temp <- describe(attitude)
+error.bars(stats=temp)
+#these error bars will be just one s.e.
+
+#adjust the s.e. to vary by alpha level
+alpha <- .05
+temp[,"se"] <- temp[,"se"] * qt(1-alpha/2,temp[,"n"])
+error.bars(stats=temp)
+#show these do not differ from the other way by overlaying the two
+error.bars(attitude,add=TRUE)
+
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

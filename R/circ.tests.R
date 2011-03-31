@@ -1,5 +1,6 @@
 "circ.tests" <-
 function(loads,loading=TRUE,sorting=TRUE) {
+ cl <- match.call()
 
 circ.gap <- function(loads,loading=TRUE,sorting=TRUE) {
 if (loading) {l <- loads$loadings} else { 
@@ -57,5 +58,7 @@ if (loading) {l <- loads$loadings} else {
    fisher.test <- circ.fisher(loads,loading)
    rotation.test <- circ.rt(loads,loading)
    variance.test <- circ.v2(loads,loading)
-   circ.tests <- list(gaps=gap.test,fisher=fisher.test,RT=rotation.test,VT=variance.test)
+   circ.tests <- list(gaps=gap.test,fisher=fisher.test,RT=rotation.test,VT=variance.test,Call=cl)
+   class(circ.tests) <- c("psych","circ")
+   return(circ.tests)
 }

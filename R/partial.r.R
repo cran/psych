@@ -1,5 +1,6 @@
 "partial.r" <-
-function(m,x,y,digits=2)  {
+function(m,x,y)  {
+ cl <- match.call()
    if(dim(m)[1]!=dim(m)[2]) {n.obs <- dim(m)[1]
                     m <- cor(m,use="pairwise") }
   if(!is.matrix(m)) m <- as.matrix(m)
@@ -26,6 +27,8 @@ function(m,x,y,digits=2)  {
         X.resid <- sd %*% X.resid %*% sd
        
         colnames(X.resid) <- rownames(X.resid) <- colnames(m)[x]
-        return(round(X.resid,2))
+        
+        class(X.resid)  <- c("psych","partial.r")
+        return(X.resid)
      	}
 

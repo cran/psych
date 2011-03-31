@@ -23,14 +23,17 @@
 \usepackage{gensymb}
 \usepackage{longtable}
 %\usepackage{geometry}   
-\usepackage{Sweave}  
-%\usepackage{/Library/Frameworks/R.framework/Versions/2.7/Resources/share/texmf/Sweave}
-%\usepackage[ae]{Rd}
-%\usepackage[usenames]{color}
-%\usepackage{setspace}
 \usepackage{amssymb}    
 \usepackage{amsmath}
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{Sweave}  
+%\usepackage{/Volumes/'Macintosh HD'/Library/Frameworks/R.framework/Versions/2.13/Resources/share/texmf/tex/latex/Sweave}
+%\usepackage[ae]{Rd}
+%\usepackage[usenames]{color}
+%\usepackage{setspace}
+
+
 \bibstyle{apacite}
 \bibliographystyle{apa}   %this one plus author year seems to work?
 %\usepackage{hyperref}
@@ -214,8 +217,10 @@ Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pf
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<print=FALSE,echo=TRUE, eps=FALSE>>=
+png('pairspanels.png')
 pairs.panels(sat.act)
+dev.off()
 @
 \caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. Note the extreme outlier for the ACT.  }
 \label{fig:pairs.panels}
@@ -226,9 +231,11 @@ Another example of \pfun{pairs.panels} is to show differences between experiment
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<print=FALSE,echo=TRUE, eps=FALSE>>=
 data(affect)
+png('affect.png')
 pairs.panels(flat[15:18],bg=c("red","black","white","blue")[maps$Film],pch=21,main="Affect varies by movies (study 'flat')")
+dev.off()
 @
 \caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. The coloring represent four different movie conditions. }
 \label{fig:pairs.panels2}
@@ -283,12 +290,12 @@ with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
 \end{figure}
 
 \subsubsection{Correlational structure}
-It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data in the \pfun{bifactor} data set which has a clear 3 factor solution (Figure~\ref{fig:cor.plot}) or a simulated data set of 24 variables with a circumplex structure  (Figure~\ref{fig:cor.plot.circ}).
+It is also possible to see the structure in a correlation matrix by forming a matrix shaded to represent the magnitude of the correlation.  This is useful when considering the number of factors in a data set.  Consider the \pfun{Thurstone} data set which has a clear 3 factor solution (Figure~\ref{fig:cor.plot}) or a simulated data set of 24 variables with a circumplex structure  (Figure~\ref{fig:cor.plot.circ}).
 
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-data(bifactor)
+
 cor.plot(Thurstone,color=TRUE,main="9 cognitive variables from Thurstone")
 @
 \caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color. }
@@ -442,7 +449,6 @@ Using the Thurstone data set, three factors were requested  and then transformed
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The extraction method was principal axis. The transformation was a targeted transformation to a simple cluster solution.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
-data(bifactor)
 f3 <- fa(Thurstone,3,n.obs = 213,fm="pa")
 f3o <- target.rot(f3)
 f3o
@@ -461,7 +467,6 @@ Similar to the minres approach of minimizing the squared residuals, factor metho
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The factors were extracted using a weighted least squares algorithm.  All loadings are shown by using the cut=0 option in the \pfun{print.psych} function.}
 
 <<print=FALSE,echo=TRUE>>=
-data(bifactor)
 f3w <- fa(Thurstone,3,n.obs = 213,fm="wls")
 print(f3w,cut=0,digits=3)
 @
@@ -503,7 +508,6 @@ An alternative to factor analysis, which is unfortunately frequently confused wi
 \caption{The Thurstone problem can also be analyzed using Principal Components Analysis.  Compare this to Table~\ref{tab:Thurstone}.  The loadings are higher for the PCA because the model accounts for the unique as well as the common variance.The fit of the off diagonal elements, however, is much worse than the \pfun{fa} results.}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
-data(bifactor)
 p3p <-principal(Thurstone,3,n.obs = 213,rotate="Promax")
 p3p
 @
@@ -859,8 +863,10 @@ To see the additional information (the raw correlations, the individual scores, 
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<print=FALSE,echo=TRUE,eps=FALSE>>=
+png('scores.png')
 pairs.panels(scores$scores)
+dev.off()
 @
 \caption{A graphic analysis of the Big Five scales found by using the score.items function.}
 \label{default}
@@ -993,7 +999,7 @@ Two data structures that are particular challenges to exploratory factor analysi
 
 Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0. An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors. The challenge is thus to identify the major factors. \pfun{sim.minor} generates such structures. The structures generated can be thought of as having a a major factor structure with some small correlated residuals.
 
-Although coefficient $\omega_h$ is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors. In this situation, one of the factors is labelled as “general” and the omega estimate is too large. This situation may be explored using the \pfun{sim.omega} function.
+Although coefficient $\omega_h$ is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors. In this situation, one of the factors is labelled as ``general'' and the omega estimate is too large. This situation may be explored using the \pfun{sim.omega} function.
 
 The four irt simulations, \pfun{sim.rasch}, \pfun{sim.irt}, \pfun{sim.npl} and \pfun{sim.npn}, simulate dichotomous items following the Item Response model. \pfun{sim.irt} just calls either \pfun{sim.npl} (for logistic models) or \pfun{sim.npn} (for normal models) depending upon the specification of the model.
 
@@ -1016,7 +1022,6 @@ Many of the functions in the \Rpkg{psych} package include graphic output and exa
 
 \begin{Schunk}
 \begin{Sinput}
-data(bifactor)
 f3 <- fa(Thurstone,3)  
 plot(f3)
 fa.diagram(f3)
@@ -1072,16 +1077,17 @@ dia.curved.arrow(mr,lr$top)
 
 
 \section{Data sets}
-A number of data sets for demonstrating psychometric techniques are included in the \Rpkg{psych} package. These include six data sets in \pfun{bifactor} showing a hierarchical factor structure (five cognitive examples, \pfun{Thurstone}, \pfun{Thurstone.33}, \pfun{Holzinger}, \pfun{Bechtoldt.1}, \pfun{Bechtoldt.2}, and  one from health psychology \pfun{Reise}). One of these (\pfun{Thurstone}) is used as an example in the \Rpkg{sem} package as well as \cite{mcdonald:tt}. The original data are from \cite{thurstone:41} and reanalyzed by \cite{bechtoldt:61}.  Personality item data representing five personality factors on 25 items (\pfun{bfi}) or 13 personality inventory scores (\pfun{epi.bfi}), and 14 multiple choice iq items (\pfun{iqitems}).  The \pfun{vegetables} example has paired comparison preferences for 9 vegetables. This is an example of Thurstonian scaling used by \cite{guilford:54} and \cite{nunnally:67}. Other data sets include \pfun{cubits}, \pfun{peas}, and \pfun{heights} from Galton.
+A number of data sets for demonstrating psychometric techniques are included in the \Rpkg{psych} package. These include six data sets showing a hierarchical factor structure (five cognitive examples, \pfun{Thurstone}, \pfun{Thurstone.33}, \pfun{Holzinger}, \pfun{Bechtoldt.1}, \pfun{Bechtoldt.2}, and  one from health psychology \pfun{Reise}). One of these (\pfun{Thurstone}) is used as an example in the \Rpkg{sem} package as well as \cite{mcdonald:tt}. The original data are from \cite{thurstone:41} and reanalyzed by \cite{bechtoldt:61}.  Personality item data representing five personality factors on 25 items (\pfun{bfi}) or 13 personality inventory scores (\pfun{epi.bfi}), and 14 multiple choice iq items (\pfun{iqitems}).  The \pfun{vegetables} example has paired comparison preferences for 9 vegetables. This is an example of Thurstonian scaling used by \cite{guilford:54} and \cite{nunnally:67}. Other data sets include \pfun{cubits}, \pfun{peas}, and \pfun{heights} from Galton.
 
 \begin{description}
-\item[bifactor] Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger correlation matrix is a 14 * 14 matrix from their paper. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items. The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.
+\item[Thurstone] Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger correlation matrix is a 14 * 14 matrix from their paper. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items. The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.
 \item [bfi]  25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis and Item Response Theory analyses.
 \item [sat.act] Self reported scores on the SAT Verbal, SAT Quantitative and ACT were collected as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. Age, gender, and education are also reported. The data from 700 subjects are included here as a demonstration set for correlation and analysis.
 \item [epi.bfi] A small data set of 5 scales from the Eysenck Personality Inventory, 5 from a Big 5 inventory, a Beck Depression Inventory, and State and Trait Anxiety measures. Used for demonstrations of correlations, regressions, graphic displays.
 \item [iq] 14 multiple choice ability items were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project. The data from 1000 subjects are included here as a demonstration set for scoring multiple choice inventories and doing basic item statistics.
 \item [galton] Two of the earliest examples of the correlation coefficient were Francis Galton's data sets on the relationship between mid parent and child height and the similarity of parent generation peas with child peas. \pfun{galton} is the data set for the Galton height. \pfun{peas} is the data set Francis Galton used to ntroduce the correlation coefficient with an analysis of the similarities of the parent and child generation of 700 sweet peas.
-\item [miscellaneous] \pfun{cities} is a matrix of airline distances between 11 US cities and may be used for demonstrating multiple dimensional scaling.  \pfun{vegetables} is a classic data set for demonstrating Thurstonian scaling and is the preference matrix of 9 vegetables from Guilford (1954). Used by Guiford, Nunnally, and Nunnally and Bernstein, this data set allows for examples of basic scaling techniques. 
+\item[Dwyer] \cite{dwyer:37} introduced a method for \emph{factor extension} (see \pfun{fa.extension} that finds loadings on factors from an original data set for additional (extended) variables.  This data set includes his example.
+\item [miscellaneous] \pfun{cities} is a matrix of airline distances between 11 US cities and may be used for demonstrating multiple dimensional scaling.  \pfun{vegetables} is a classic data set for demonstrating Thurstonian scaling and is the preference matrix of 9 vegetables from \cite{guilford:54}. Used by \cite{guilford:54,nunnally:67,nunnally:bernstein:84}, this data set allows for examples of basic scaling techniques. 
 \end{description}
  
  
@@ -1109,7 +1115,7 @@ sessionInfo()
 @
 
 \newpage
-%\bibliography{/Volumes/WR/bill/Documents/Active/book/all}
+%\bibliography{/Volumes/WR//Documents/book/all}
 %\bibliography{all} 
 \begin{thebibliography}{}
 
@@ -1151,6 +1157,12 @@ Cooksey, R. and Soutar, G. (2006).
 Cronbach, L.~J. (1951).
 \newblock Coefficient alpha and the internal structure of tests.
 \newblock {\em Psychometrika}, 16:297--334.
+
+\bibitem[\protect\astroncite{Dwyer}{1937}]{dwyer:37}
+Dwyer, P.~S. (1937).
+\newblock The determination of the factor loadings of a given test from the
+  known factor loadings of other tests.
+\newblock {\em Psychometrika}, 2(3):173--178.
 
 \bibitem[\protect\astroncite{Everitt}{1974}]{everitt:74}
 Everitt, B. (1974).
@@ -1242,15 +1254,23 @@ Nunnally, J.~C. (1967).
 \newblock {\em Psychometric theory}.
 \newblock McGraw-Hill, New York,.
 
+\bibitem[\protect\astroncite{Nunnally and
+  Bernstein}{1984}]{nunnally:bernstein:84}
+Nunnally, J.~C. and Bernstein, I.~H. (1984).
+\newblock {\em Psychometric theory}.
+\newblock McGraw-Hill, New York,, 3rd edition.
+
 \bibitem[\protect\astroncite{Revelle}{1979}]{revelle:iclust}
 Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
-\bibitem[\protect\astroncite{Revelle}{2010}]{psych}
-Revelle, W. (2010).
+\bibitem[\protect\astroncite{Revelle}{2011}]{psych}
+Revelle, W. (2011).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
-\newblock R package version 1.0-86.
+\newblock Northwestern University, Evanston, 1.0-95 edition.
+\newblock R package version 1.0-95.
+
 
 \bibitem[\protect\astroncite{Revelle and Rocklin}{1979}]{revelle:vss}
 Revelle, W. and Rocklin, T. (1979).

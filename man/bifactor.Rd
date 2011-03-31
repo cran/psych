@@ -1,4 +1,4 @@
-\name{bifactor}
+\name{Bechtoldt}
 \alias{bifactor}
 \alias{Bechtoldt.1}
 \alias{Bechtoldt.2}
@@ -12,7 +12,16 @@
 \title{Seven data sets showing a bifactor solution.}
 \description{Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger data sets are   original 14 * 14 matrix from their paper as well as a 9 *9 matrix used as an example by Joreskog. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items.  The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.  
 }
-\usage{data(bifactor)}
+\usage{
+data(Thurstone)
+data(Thurstone.33)
+data(Holzinger)
+data(Holzinger.9)
+data(Bechtoldt)
+data(Bechtoldt.1)
+data(Bechtoldt.2)
+data(Reise)
+}
 
 \details{Holzinger and Swineford (1937) introduced the bifactor model (one general factor and several group factors) for mental abilities.  This is a nice demonstration data set of a hierarchical factor structure that can be analyzed using the \code{\link{omega}} function or using sem. The bifactor model is typically used in measures of cognitive ability.
 
@@ -29,6 +38,7 @@ More recent applications of the bifactor model are to the measurement of psychol
 The five factors from Reise et al. reflect Getting care quickly (1-3), Doctor communicates well (4-7), Courteous and helpful staff (8,9), Getting needed care (10-13), and  Health plan customer service (14-16). 
 
 The two Bechtoldt data sets are two samples from Thurstone and Thurstone (1941).  They include 17 variables, 9 of which were used by McDonald to form the Thurstone data set. The sample sizes are 212 and 213 respectively. The six proposed factors reflect  memory, verbal, words,  space, number and reasoning with three markers for all expect the rote memory factor. 9 variables from this set appear in the Thurstone data set.
+
 
 Two more data sets with  similar structures are found in the \code{\link{Harman}} data set.  
 
@@ -75,7 +85,7 @@ Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of
 
 }
 \examples{
-data(bifactor)
+
 if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotation") } else {
 holz <- omega(Holzinger,4, title = "14 ability tests from Holzinger-Swineford")
 bf <- omega(Reise,5,title="16 health items from Reise") 

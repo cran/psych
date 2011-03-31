@@ -41,18 +41,20 @@ To interpret the values of these various tests, it is useful to compare the part
 \note{ Of the 10 criterion discussed in Acton and Revelle (2004), these tests operationalize the four most useful.
 
 }
-\seealso{  \code{\link{circ.simulation}}, \code{\link{sim.circ}} }
+\seealso{To understand the results of the circ.tests it it best to compare it to simulated values.  Thus, see  \code{\link{circ.simulation}}, \code{\link{sim.circ}} }
 \examples{
 circ.data <- circ.sim(24,500)
 circ.fa <- factor.pa(circ.data,2)
-#plot(circ.fa$loadings)
+plot(circ.fa,title="Circumplex Structure")
 ct <- circ.tests(circ.fa)
 #compare with non-circumplex data
 simp.data <- item.sim(24,500)
 simp.fa <- factor.pa(simp.data,2)
-#plot(simp.fa$loadings)
+plot(simp.fa,title="Simple Structure")
 st <- circ.tests(simp.fa)
-print(rbind(ct,st),digits=2)
+res <- rbind(ct[1:4],st[1:4])
+rownames(res) <- c("circumplex","Simple")
+print(res,digits=2)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -45,8 +45,8 @@ a
  test.sdt <- function(n) {
  hits <- 1:n
  misses <- (n-1):0
- #fa <- sample(10,n,replace=TRUE)
- fa <- n/4
+ fa <- sample(n,n,replace=TRUE)
+# fa <- n/4
  cr <- n-fa
  test.sdt <- data.frame(hits,misses,fa,cr)
  }
@@ -80,10 +80,11 @@ a
  
  dprime <- qnorm(H) - qnorm(F)
  beta <- dnorm(qnorm(H))/dnorm(qnorm(F)) #definitional
- beta.w <- exp(-qnorm(H)^2/2+qnorm(F)/2 ) #pallier     
+ cprime <-  -.5*(qnorm(H) + qnorm(F))/dprime   #macmillan
+ beta.w <- exp(-qnorm(H)^2/2+qnorm(F)/2 ) #pallier  = beta    
  Aprime <- .5 +(H-F)*(1+H-F)/(4*H*(1-F)) #Grier
  Bprime <- sign(H-F) * ((H*(1-H) - F*(1-F))/((H*(1-H) + F*(1-F)) ))
  bprime <- ((1-H)*(1-F)-H*F)/((1-H)*(1-F)+H*F)
- sdt <- data.frame(x=x,dprime=dprime,beta=beta,lnBeta=log(beta),Aprime=Aprime,Bprime=Bprime,brime=bprime,beta.w = beta.w)
+ sdt <- data.frame(x=x,dprime=dprime,beta=beta,cprime=cprime,lnBeta=log(beta),Aprime=Aprime,Bprime=Bprime,brime=bprime,beta.w = beta.w)
 return(sdt)
  }

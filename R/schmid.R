@@ -6,6 +6,7 @@
 "schmid" <-
 function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,...) 
 {
+ cl <- match.call()
 #if Phi is not Null, then we have been given a factor matrix, otherwise
 #model is a correlation matrix, or if not, the correlation matrix is found
 #nfactors is the number of factors to extract
@@ -68,7 +69,8 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
               warning("Omega_h and Omega_assymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
       
-       gfactor <- fa(factr)   #The first factor of the factor intercorrelation matrix
+       gfactor <- fa(factr,fm=fm)   #The first factor of the factor intercorrelation matrix
+                  #added fm=fm  March 5, 2011
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))
@@ -91,8 +93,9 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     h2 <- 1 - u2                         
     uniq <- 1 - fload^2
     guniq <- 1 - gprimaryload^2
-    Ig <- matrix(0, ncol = nfactors, nrow = nfactors)
-    diag(Ig) <- gload
+    #Ig <- matrix(0, ncol = nfactors, nrow = nfactors)
+    #diag(Ig) <- gload
+    Ig <- diag(drop(gload))   #3/5/11
     primeload <- fload %*% Ig
     g.percent <- gprimaryload^2/h2
     colnames(g.percent) <- "p2"
@@ -103,9 +106,9 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     
     colnames(sm) <- paste("F",1:nfactors,"*",sep="")
     if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload)} else{
+        phi =factr, gloading = gload,Call=cl)} else{
     result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs )}
-   # class(result) <- c("psych" ,"fa")
+        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,Call=cl )}
+    class(result) <- c("psych" ,"schmid")
     return(result)
 }

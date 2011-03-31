@@ -9,10 +9,12 @@
 }
 \usage{
 simulation.circ(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))
+circ.sim.plot(x.df)
 }
 \arguments{
   \item{samplesize}{a vector of sample sizes to simulate }
   \item{numberofvariables}{vector of the number of variables to simulate }
+  \item{x.df}{A data frame resulting from \code{\link{simulation.circ}} }
  
   
  }

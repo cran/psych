@@ -18,7 +18,7 @@ function(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))  {
       pc.sim <- principal(r.sim,2)
       pc.elipse <- principal(r.elipse,2)
       case <- case + 1
-      results.ls[[case]] <- list(numberofvariables[nv],samplesize[ss],circ.tests(pc.circ),circ.tests(pc.elipse),circ.tests(pc.sim))
+      results.ls[[case]] <- list(numberofvariables[nv],samplesize[ss],circ.tests(pc.circ)[1:4],circ.tests(pc.elipse)[1:4],circ.tests(pc.sim)[1:4])
      }
      }
      results.mat <- matrix(unlist(results.ls),ncol=14,byrow=TRUE)

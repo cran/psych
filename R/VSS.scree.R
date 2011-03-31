@@ -3,26 +3,33 @@ function(rx,main="scree plot") {
  nvar <- dim(rx)[2]
  if (nvar != dim(rx)[1]) {rx <- cor(rx,use="pairwise")}
  values <-  eigen(rx)$values
-plot(values,type="b", main = main )
+plot(values,type="b", main = main,ylab="Eigen values of components",xlab=" component number")
 abline(h=1) }
 
 
 
 "scree" <-
-function(rx,factors=TRUE,main="Scree plot",add=FALSE) {
+function(rx,factors=TRUE,pc=TRUE,main="Scree plot",hline=NULL,add=FALSE) {
  nvar <- dim(rx)[2]
  if (nvar != dim(rx)[1]) {rx <- cor(rx,use="pairwise")}
-values <-  eigen(rx)$values
+if(pc) {values <-  eigen(rx)$values
+        if(factors) {ylab="Eigen values of factors and components"
+         xlab="factor or component number"} else {ylab="Eigen values of components"
+         xlab=" component number"}
+        } else {values <- fa(rx)$values
+                ylab="Eigen values of factors"
+                xlab=" factor number"
+                                           factors <- FALSE }
 max.value <- max(values)
 
-if(!add) {plot(values,type="b", main = main ,pch=16,ylim=c(0,max.value),ylab="Eigen values of factors and components",xlab="factor or component number")} else {
+if(!add) {plot(values,type="b", main = main ,pch=16,ylim=c(0,max.value),ylab=ylab,xlab=xlab)} else {
           points(values,type="b",  ,pch=16)  }
 if(factors) {
    fv <- fa(rx)$values
    points(fv,type="b",pch=21,lty="dotted")}
-abline(h=1)
+if(is.null(hline)) {abline(h=1)} else {abline(h=hline) }
 
- legend("topright", c("PC ","FA"),pch=c(16,21),
+if(factors & pc) { legend("topright", c("PC ","FA"),pch=c(16,21),
        text.col = "green4", lty = c("solid","dotted"),
-       merge = TRUE, bg = 'gray90')
+       merge = TRUE, bg = 'gray90')}
        }

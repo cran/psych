@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <-  FALSE
+iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <- partial <- extension <- circ  <- schmid <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -13,6 +13,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] =='omega')  omega <- TRUE
     if(class(x)[2] =='omegaSem')  omegaSem <- TRUE
    if(class(x)[2] =='fa')  fac.pa <- TRUE
+  if(class(x)[2] == "schmid")         schmid <- TRUE
    if(class(x)[2] =='principal') principal <- fac.pa <- TRUE
    if(class(x)[2] == 'alpha') alpha <- TRUE
    if(class(x)[2] == 'describe') describe <- TRUE
@@ -36,6 +37,9 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "irt.fa")    irt.fa <- TRUE
    if(class(x)[2] == "irt.poly")    irt.poly <- TRUE
    if(class(x)[2] == "mardia")    mardia <- TRUE
+  if(class(x)[2] == "partial.r")    partial <- TRUE
+  if(class(x)[2] == "extension")    extension <- TRUE
+  if(class(x)[2] == "circ")         circ <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -47,12 +51,13 @@ if(!is.null(x$Th)) {fac.pa <- TRUE}
 
 ## the following functions have their own print function
  if(omega)  print.psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)
- if(omegaSem)  print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)
+ if(omegaSem)print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)
+ if(schmid) print.psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(vss) print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(fac.pa) print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(iclust) print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(stats) print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)
-
+ if(extension) print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)
 
 ## 
 ##Now, for the smaller print jobs, just do it here.
@@ -92,7 +97,19 @@ if(r.test) {cat("Correlation tests \n")
             print(x$Call)
             cat(" Chi Square value" ,round(x$chi,digits)," with df = ",x$df, "  with probability <", signif(x$p,digits) )
          }
-                                
+
+if(partial) {cat("partial correlations \n")
+            print(round(unclass(x),digits))
+         }
+         
+if(circ)    {cat("Tests of circumplex structure \n")
+            cat("Call:")
+             print(x$Call)
+             res <- data.frame(x[1:4]) 
+             print(res,digits=2)
+             }
+
+             
  if(scores) {
     cat("Call: ")
     print(x$Call)
@@ -371,7 +388,7 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
    cat("Call: ")
      print(x$Call) 
      cat("\nMardia tests of multivariate skew and kurtosis\n")
-     cat("Use describe(x) the get univariate tests")
+     cat("Use describe(x) the to get univariate tests")
       cat("\nn.obs =",x$n.obs,"  num.vars = ",x$n.var,"\n")
      cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability = ", signif(x$p.skew,digits)) 
      cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability = ", signif(x$p.small,digits)) 

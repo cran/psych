@@ -5,7 +5,7 @@
 \description{Cattell's scree test is one of most simple ways of testing the number of components or factors in  a correlation matrix. Here we plot the  eigen values of a correlation matrix as well as the eigen values of a factor analysis.
 }
 \usage{
-scree(rx,factors=TRUE,main="Scree plot",add=FALSE) 
+scree(rx,factors=TRUE,pc=TRUE,main="Scree plot",hline=NULL,add=FALSE) 
 VSS.scree(rx, main = "scree plot")
 
 }
@@ -13,7 +13,9 @@ VSS.scree(rx, main = "scree plot")
 }
 \arguments{
   \item{rx}{ a correlation matrix or a data matrix. If data, then correlations are found using pairwise deletions. }
- \item{factors}{If true, draw the scree for factors and components}
+ \item{factors}{If true, draw the scree for factors }
+ \item{pc}{If true, draw the scree for components}
+ \item{hline}{if null, draw a horizontal line at 1, otherwise draw it at hline (make negative to not draw it)}
  \item{main}{ Title }
  \item{add}{Should multiple plots be drawn?}
 }

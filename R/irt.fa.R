@@ -227,25 +227,29 @@ item <- x
 if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
            
 nf <- length(x$irt$difficulty)}
-
+temp <- list()
 #if there was more than 1 factor, repeat the figure nf times
-for(f in 1:nf) {discrimination=item$irt$discrimination[,f]
-  location=item$irt$difficulty[[f]]
+  
 x <- NULL
 if(missing(ylim)) ylim <- c(0,1)
-nvar <- length(discrimination)
-ncat <- dim(location)[2]
+nvar <- length(item$irt$discrimination[,1])
+ncat <- dim(item$irt$difficulty[[1]])[2]
 if(missing(type)) {type = "IIC"}   
 
 if(missing(D)) {D <- 1.702
 if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
 x <- seq(-3,3,.1)}
-difficulty <- location[,1:ncat]
+
 
 if(D==1) {if(missing(xlab)) xlab <- "Latent Trait (logistic scale)"}
 if(missing(xlab)) xlab <- "Latent Trait"
 
 if(is.null(x)) x <- seq(-4,4,.1)
+
+for(f in 1:nf) {discrimination=item$irt$discrimination[,f]
+  location=item$irt$difficulty[[f]]
+  difficulty <- location[,1:ncat]
+  
 if(type=="ICC") {
 if(missing(main)) main <- "Item parameters from factor analysis"
 if(missing(ylab)) ylab <- "Probability of Response"
@@ -308,19 +312,23 @@ for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
 	text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,colnames(item$rho)[i]) } else {text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,paste("-",colnames(item$rho)[i],sep=""))}
 	}}
 	} }
+	if (type !="ICC")  {temp[[f]] <- testInfo}
 	}
 	
+	
+	#This next piece of code is being developed and currently does nothing
+ if (type !="ICC")  {result <- matrix(NA,nvar,nf)
+ 
+    	for (f in 1:nf) {
+     		 for (j in 1:nvar) {
+    			result[i,f] <- NA  
+    				}
+    				}
+     class(result) <- c("psych","polyinfo")
+     return(result)}
+     
 }
 
-"irt.select" <- function(x,y) {
-  if(is.null(dim(x$tau))) {typ="tet"} else {typ="poly"}
-  rho <- x$rho[y,y]
-  tau <- x$tau[y]
-  n.obs <- x$n.obs
-  result <- list(rho=rho,tau=tau,n.obs=n.obs)
-  class(result) <- c("psych",typ)
-return(result)
-}
 
 "irt.select" <- function(x,y) {
   if(is.null(dim(x$tau))) {typ="tet"} else {typ="poly"}

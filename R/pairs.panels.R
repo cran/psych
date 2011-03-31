@@ -54,6 +54,8 @@ function(x, ...)
 #the organization gets around the problem of passing parameters to pairs by calling different routines
 
 #op <- par(no.readonly = TRUE)  # save the whole list of settable par's.  #this doesn't seem to help
+old.par <- par(no.readonly = TRUE) # save default, for resetting... 
+
     par(pch = pch)
     
     if(!lm) {if (density) { #the basic default is here
@@ -161,7 +163,7 @@ function(x, ...)
    			 }
    			   }
    	}
-#par(op) #restore the parameters
+par(old.par) #reset the parameters
 }
 
  "panel.lm" <- 

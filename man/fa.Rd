@@ -75,6 +75,7 @@ Of the various rotation/transformation options, varimax, Varimax, quartimax, ben
 
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
+When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. 
 }
 \value{
   \item{values }{Eigen values of the common factor solution}
@@ -133,7 +134,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 \note{Thanks to Erich Studerus for some very helpful suggestions about various rotation and factor scoring algorithms, and to  Gumundur Arnkelsson  for suggestions about factor scores for singular matrices.}
 
-\seealso{ \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}} }
+\seealso{ \code{\link{principal}},  \code{link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}}, \code{\link{fa.extension}}  }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")
@@ -162,7 +163,6 @@ factor.congruence(list(mle,pa,uls,wls))
 
 #an example of where the ML and PA and MR models differ is found in Thurstone.33.
 #compare the first two factors with the 3 factor solution 
-data(bifactor)
 Thurstone.33 <- as.matrix(Thurstone.33)
 mle2 <- factanal(covmat=Thurstone.33,factors=2,rotation="none")
 mle3 <- factanal(covmat=Thurstone.33,factors=3 ,rotation="none")

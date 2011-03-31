@@ -5,7 +5,7 @@
 "diagram" <- function(fit,...) {
 #first, figure out which psych function was called
  fa <- principal <- vss <- iclust <- omega <- lavaan <-  FALSE
-if(length(class(fit)) == 1) {if (class(fit)=="lavaanModel") lavaan <- TRUE } 
+if(length(class(fit)) == 1) {if (class(fit)=="lavaan") lavaan <- TRUE } 
 if(length(class(fit)) > 1)  {
    if(class(fit)[2] =='fa')  fa <- TRUE
    if(class(fit)[2] =='vss')  vss <- TRUE

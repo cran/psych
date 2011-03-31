@@ -37,8 +37,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
      "fit" <- function(S,nf,fm,covar) {
           S.smc <- smc(S,covar)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
-           if(!covar &&(sum(S.smc) == nf)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
-                    #initial communality estimates are variance - smc 
+           if(!covar &&(sum(S.smc) == nf) && (nf > 1)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
+                    #initial communality estimates are variance - smc  unless smc = 1 
                     
            if(fm=="ml")  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
                           	lower = .005, upper = 1,

@@ -18,14 +18,14 @@ As an option, for those without Rgraphviz installed, structure.sem will just cre
 
 structure.diagram will draw the diagram without using Rgraphviz and is probably the preferred option. structure.graph will be removed eventually.
 
-lavaan.diagram will draw either cfa or sem results from the lavaan package.
+lavaan.diagram will draw either cfa or sem results from the lavaan package (> .4.0)
 
 }
 \usage{
 structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,main="Structural model", ...)
 structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
-lavaan.diagram(fit,...) 
+lavaan.diagram(fit,title,...) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

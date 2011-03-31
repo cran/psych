@@ -1,6 +1,7 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,legend=0,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,lines=TRUE, legend=0,...)  # x   data frame with 
     {
+    if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
     if(is.null(lty)) lty = "solid"
     legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
@@ -43,7 +44,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
              for (j in 1:n.groups) {
          	 xcen <- group.means[i,j]
     	 	 xse  <- group.se[i,j]
-    	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha,group.n[i,j])}
+    	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha/2,group.n[i,j])}
     	 	
        if(is.finite(xse) && xse>0)    arrows(mp[j,i],xcen-ci*xse,mp[j,i],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
           }} } else {
@@ -53,7 +54,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
              for (j in 1:n.groups) {
          	 xcen <- group.means[i,j]
     	 	 xse  <- group.se[i,j]
-    	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha,group.n[i,j])}
+    	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha/2,group.n[i,j])}
         if(is.finite(xse) && xse>0)     arrows(mp[i,j],xcen-ci*xse,mp[i,j],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
           }} }
          
@@ -86,12 +87,12 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	              if(sd) {x.stats.$se <- sqrt(x.stats$sd^2* (1- x.smc))} else { x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)}
     	               }
 
-    	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
-    	#if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",lty=((g-1) %% 8 +1),axes=FALSE, pch=14+g,...)
+    	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ=typ,lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
+    	#if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ = typ,lty=((g-1) %% 8 +1),axes=FALSE, pch=14+g,...)
     	axis(1,1:z,colnames(x),...)
     	axis(2,...)
     	box()
-    	} else {points(x.stats$mean,typ="b",lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1], pch=14+g) 
+    	} else {points(x.stats$mean,typ = typ,lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1], pch=14+g) 
     	       }
     
     	
@@ -104,7 +105,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	
     	 if(sd) {xse <- x.stats$sd[i] } else {xse  <- x.stats$se[i]}
     	
-    	if(sd) {ci <- 1} else { ci <- qt(1-alpha,x.stats$n[i])}
+    	if(sd) {ci <- 1} else { ci <- qt(1-alpha/2,x.stats$n[i])}
     	  if(is.finite(xse) & xse>0)  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 
     	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
@@ -141,13 +142,13 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     for (i in 1:n.vars) {	
    
     	if(!add) {
-    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="b",axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
+    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
     		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats)),...) } else {axis(1)}
     		axis(2,...)
     		box() 
     		add <- TRUE
-    		} else {points(x.values,var.means[i,],typ="b",lty=((i-1) %% 8 +1),col = colors[(i-1) %% n.color + 1], pch=14 + i,...) 
-    		        # points(x.values,var.means[i,],typ="b",lty=lty,...)
+    		} else {points(x.values,var.means[i,],typ = typ,lty=((i-1) %% 8 +1),col = colors[(i-1) %% n.color + 1], pch=14 + i,...) 
+    		        # points(x.values,var.means[i,],typ = typ,lty=lty,...)
     		}
     	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:z,sep="")}
@@ -159,7 +160,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
       
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
-    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha,group.stats[[g]]$n)}
+    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n)}
     	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)}  else {
     	    
     	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)} 
@@ -178,3 +179,6 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
    
     } # end of if not bars condition
    }
+   
+   #corrected Feb 2, 2011 to plot alpha/2 rather than alpha 
+   #modifed Feb 2, 2011 to not plot lines if they are not desired.

@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL, na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -17,7 +17,7 @@
     nsub <- dim(x)[1]
     response.freq <- NULL
     if (nsub !=nvar)  {
-         response.freq <- response.frequencies(x)
+         response.freq <- response.frequencies(x,max=max)
          C <- cov(x,use="pairwise") 
          if(!is.null(keys)) {
          			keys<- as.vector(keys)
@@ -81,3 +81,4 @@
     }
   #modified Sept 8, 2010 to add r.drop feature  
   #modified November 2, 2010 to use sd instead of SD
+  #January 30, 2011  - added the max category parameter (max)

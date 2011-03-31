@@ -5,7 +5,7 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),lty=NULL,legend=0,...)
+error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,ylim= NULL, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, pos=NULL,arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),lty=NULL,lines=TRUE, legend=0,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,8 +28,9 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,y
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}
   \item{colors}{groups will be plotted in different colors (mod n.groups) }
   \item{lty}{line type may be specified in the case of not plotting by variables}
+  \item{lines}{By default, when plotting different groups, connect the groups with a line of type = lty.  If lines is FALSE, then do not connect the groups}
   \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
-  \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
+  \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
 
 }
 \details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors.  

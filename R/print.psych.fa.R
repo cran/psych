@@ -41,7 +41,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           		 }  
          }    #end of sort 		 
     #they are now sorted, don't print the small loadings if cut > 0 
- if (cut > 0) {
+
           	ncol <- dim(loads)[2]-2
           	rloads <- round(loads,digits)
 	    	fx <- format(rloads,digits=digits)
@@ -50,9 +50,10 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 	    	 fx.2 <- fx[,3:(2+ncol)]
 	    	 load.2 <- as.matrix(loads[,3:(ncol+2)])
          	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
-         	fx <- data.frame(V=fx.1,fx.2)
+         if(sort) {	fx <- data.frame(V=fx.1,fx.2)
          	if(dim(fx)[2] <3) colnames(fx) <- c("V",colnames(x$loadings)) #for the case of one factor
-         
+         } else {fx <- data.frame(fx.2)
+            colnames(fx) <- colnames(x$loadings)}
          	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
          	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]}  else {u2 <- (1 - h2)}
          	#h2 <- round(h2,digits)
@@ -62,19 +63,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 	    	print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } else {
 	    	cat("Unstandardized loadings based upon covariance matrix\n") 
 	    	print(cbind(fx,h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
-	    } else {
-	       ncol <- dim(loads)[2]-2
-	    	load.2 <- as.matrix(loads[,3:(ncol+2)])
-	     if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
-         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]} else {u2 <- (1 - h2)}
-         	#h2 <- round(h2,digits)
-         	vtotal <- sum(h2 + u2)
-           if(isTRUE(all.equal(vtotal,nitems))) {
-           cat("Standardized loadings based upon correlation matrix\n")
-	       print(cbind(round(loads[-(1:2)],digits),h2,u2),quote="FALSE",digits=digits) } else {
-	    	cat("Unstandardized loadings based upon covariance matrix\n") 
-	    	print(cbind(round(loads[-c(1:2)],digits),h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
-	    }	
+	   
  		
       	   #adapted from print.loadings
       	  if(is.null(x$Phi)) {if(nfactors > 1)  {vx <- colSums(load.2^2) } else {vx <- sum(load.2^2)
@@ -83,8 +72,8 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           
           names(vx) <- colnames(x$loadings)
           varex <- rbind("SS loadings" =   vx)
-           varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
-           if (nfactors > 1) 
+          varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
+         if (nfactors > 1) 
                       varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/vtotal))
                       
              cat("\n")

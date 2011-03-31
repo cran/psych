@@ -23,7 +23,8 @@
     item.means <- colMeans(items,na.rm=TRUE)
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
-     miss.rep <- rowSums(is.na(items))
+    # miss.rep <- rowSums(is.na(items))
+     miss.rep <- (is.na(items) +0) %*% abs(keys)
     
    
     num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
@@ -139,3 +140,4 @@
  #modified Sept 3, 2010 to include response frequencies
  #modified November 11, 2010 to allow for data with lots of missingness to be scored without imputing means or medians  
  #need to rethink the short option.  Why bother since summary and print don't show scores anyway
+ #added missing score to count missing responses for each scale instead of just the overall.

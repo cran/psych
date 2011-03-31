@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-94 \cr
-Date: \tab 2011-01-01\cr
+Version: \tab 1.0-95 \cr
+Date: \tab 2011-03-31\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -117,6 +117,7 @@ Data reduction through cluster and factor analysis\cr
 \link{fa.graph}        \tab         Show the results of a factor analysis or principal components analysis graphically\cr
 \link{fa.diagram}     \tab          Show the results of a factor analysis without using Rgraphviz \cr
 \link{fa.sort}        \tab          Sort a factor or principal components output \cr
+\link{fa.extension}   \tab          Apply the Dwyer extension for factor loadingss \cr
 \link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
 \link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr
@@ -129,6 +130,8 @@ Data reduction through cluster and factor analysis\cr
 \link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor) \cr
 \link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
 \link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution (uses Rgraphviz) \cr 
+\link{partial.r}        \tab         Partial variables from a correlation matrix \cr
+\link{predict}          \tab         Predict factor/component scores for new data \cr
 \link{schmid}            \tab        Apply the Schmid Leiman transformation to a correlation matrix\cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
@@ -148,6 +151,7 @@ Functions for reliability analysis (some are listed above as well).
 \link{alpha}      \tab         Find coefficient alpha and Guttman Lambda 6 for a scale (see also \link{score.items})\cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
 \link{omega}           \tab          Calculate the omega estimates of reliability (requires the GPArotation package)\cr
+\link{omegaSem}           \tab       Calculate the omega estimates of reliability  using a Confirmatory model (requires the sem package)\cr
 \link{ICC}          \tab             Intraclass correlation coefficients  \cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{glb.algebraic} \tab  The greates lower bound found by an algebraic solution (requires Rcsdp).  Written by  Andreas Moeltner \cr
@@ -174,7 +178,8 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{factor.rotate}   \tab         ``hand rotate" factors\cr
 \link{guttman}         \tab         8 different measures of reliability\cr
 \link{mat.regress}     \tab         standardized multiple regression from raw or correlation matrix input\cr
-\link{polyserial}         \tab      polyserial and biserial correlations with massive missing data\cr
+\link{polyserial}       \tab      polyserial and biserial correlations with massive missing data\cr
+\link{tetrachoric}      \tab    Find tetrachoric correlations and item thresholds \cr
 }
 
 Functions for generating simulated data sets \cr
@@ -266,7 +271,7 @@ Functions that are under development and not recommended for casual use \cr
 Data sets included in the psych package \cr
 \tabular{ll}{
 \link{bfi}          \tab           represents 25 personality items thought to represent five factors of personality \cr
-\link{bifactor}     \tab           8 different data sets with a bifactor structure  \cr
+\link{Thurstone}     \tab           8 different data sets with a bifactor structure  \cr
 \link{cities}        \tab          The airline distances between 11 cities (used to demonstrate MDS) \cr
 \link{epi.bfi}        \tab         13 personality scales \cr
 \link{iqitems}        \tab         14 multiple choice iq items \cr

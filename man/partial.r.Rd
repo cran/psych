@@ -5,14 +5,14 @@
 \description{A straightforward application of matrix algebra to remove the effect of the variables in the y set from the x set. Input may be either a data matrix or a correlation matrix.  Variables in x and y are specified by location.
 }
 \usage{
-partial.r(m, x, y, digits = 2)
+partial.r(m, x, y)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{A data or correlation matrix}
   \item{x}{The variable numbers associated with the X set. }
   \item{y}{The variable numbers associated with the Y set}
-  \item{digits}{ Report correlations to digits of accuracy (default =2) }
+  
 }
 \details{It is sometimes convenient to partial the effect of a number of variables (e.g., sex, age, education) out of the correlations of another set of variables.  This could be done laboriously by finding the residuals of various multiple correlations, and then correlating these residuals.  The matrix algebra alternative is to do it directly. 
 }
@@ -29,7 +29,5 @@ round(jen[1:5,1:5],2)
 par.r <- partial.r(jen,c(1,3,5),c(2,4))
 par.r
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{multivariate}
 

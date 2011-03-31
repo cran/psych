@@ -21,6 +21,7 @@ function(x, trim=.2,na.rm=TRUE) {
    if (is.matrix(x) | is.data.frame(x)) {ans <- apply(x,2,win.mean,trim=trim,na.rm=na.rm) } }
    return(ans)
 }
+
 "winsor.var" <-
 function(x, trim=.2,na.rm=TRUE) {  
     if(is.vector(x) ) {
@@ -67,12 +68,11 @@ function(x,trim=.2, na.rm=TRUE) {
    
  "win.var" <- 
 function(x,trim=.2, na.rm=TRUE) {
-    if ((trim < 0) | (trim>0.5) ) 
-        stop("trimming must be reasonable")
+    if ((trim < 0) | (trim > 0.5) )   {stop("trimming must be reasonable")}
      if (trim < .5) {
    ans <-  var(wins(x,trim =trim,na.rm=na.rm),na.rm=na.rm)
-   return(ans)} else {return(median(x,na.rm=TRUE))} 
-   }
-        
- 
- 
+          return(ans)
+    } else {return(median(x,na.rm=TRUE))
+    }
+
+}

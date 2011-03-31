@@ -22,7 +22,7 @@ Predicted factor/components scores.
 
 \author{William Revelle
 }
-
+\note{Thanks to Reinhold Hatzinger for the suggestion and request}
 \seealso{ \code{\link{fa}}, \code{\link{principal}}
 }
 \examples{

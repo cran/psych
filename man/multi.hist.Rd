@@ -18,10 +18,12 @@ May be used for single variables.
   \item{main}{title for each panel}
 }
 
+
 \author{ William Revelle }
 
+\seealso{ \code{\link{bi.bars}} for drawing pairwise histograms}
 \examples{
-#multi.hist(attitude[-1]) 
+multi.hist(attitude[-1]) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

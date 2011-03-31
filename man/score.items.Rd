@@ -68,6 +68,7 @@ By default, missing values are replaced with the corresponding median value for 
   \item{corrected}{The correlations of all scales (below the diagonal), alpha on the diagonal, and the unattenuated correlations (above the diagonal)}
   \item{item.corrected}{The item by scale correlations for each item, corrected for item overlap by replacing the item variance with the smc for that item}
  \item{response.freq}{The response frequency (based upon number of non-missing responses) for each alternative.}
+ \item{missing}{How many items were not answered  for each scale }
 }
 
 \note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Apeture Personality Assessment study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 

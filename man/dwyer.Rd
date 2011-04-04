@@ -24,6 +24,6 @@ data(Dwyer)
 Ro <- Dwyer[1:7,1:7]
 Roe <- Dwyer[1:7,8]
 fo <- fa(Ro,2,rotate="none")
-fa.extension(Ro,Roe,fo)
+fa.extension(Roe,fo)
 }
 \keyword{datasets}

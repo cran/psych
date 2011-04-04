@@ -66,7 +66,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                     	factr <- obminfact$Phi}
    
    if (nfactors ==1) {gload <- c(1)
-              warning("Omega_h and Omega_assymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
+              warning("Omega_h and Omega_asymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
       
        gfactor <- fa(factr,fm=fm)   #The first factor of the factor intercorrelation matrix

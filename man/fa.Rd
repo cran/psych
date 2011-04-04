@@ -10,7 +10,7 @@
 \description{Among the many ways to do latent variable factor analysis, one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  
 }
 \usage{
-fa(r,nfactors=1,n.obs = NA, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, ...)
+fa(r,nfactors=1,n.obs = NA, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...)
 
 factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="pa")
@@ -40,6 +40,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
+  \item{oblique.scores}{If factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (which is what factanal seems to do). } 
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -52,13 +53,13 @@ Principal axes factor analysis has a long history in exploratory analysis and is
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge. 
 
-A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable sollution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
+A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
 
 The algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
 
 The minimum residual (minres) solution is an unweighted least squares solution that takes a slightly different approach.  It uses the \code{\link{optim}} function and adjusts the diagonal elements of the correlation matrix to mimimize the squared residual when the factor model is the eigen value decomposition of the reduced matrix.  MINRES and PA will both work when ML will not, for they can be used when the matrix is singular. At least on a number of test cases, the MINRES solution is slightly more similar to the ML solution than is the PA solution.  To a great extent, the minres and wls solutions follow ideas in the \code{\link{factanal}} function.  
 
-The weighted least squares (wls) solution weights the residual matrix by 1/ diagonal of the inverse of the correlation matrix.  This has the effect of weighting items with low communalities more than those with high commumnalities. \
+The weighted least squares (wls) solution weights the residual matrix by 1/ diagonal of the inverse of the correlation matrix.  This has the effect of weighting items with low communalities more than those with high communalities. 
 
 The generalized least squares (gls) solution weights the residual matrix by the inverse of the correlation matrix.  This has the effect of weighting those variables with low communalities even more than those with high communalities.
 
@@ -66,9 +67,13 @@ The maximum likelihood solution takes yet another approach and finds those commu
 
 Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. The wls and gls solutions have slightly larger eigen values, but slightly worse fits of the off diagonal residuals than do the minres or maximum likelihood solutions.  
 
-Although for items, it is typical to find factor scores by scoring the salient items (using, e.g.,\code{\link{score.items}} factor scores can be estimated by regression. There are multiple approaches that are possible (see Grice, 2001) and the one taken here is Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.
+Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{score.items}}) factor scores can be estimated by regression. There are multiple approaches that are possible (see Grice, 2001) and the one taken here is Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
 
-For dichotomous items, it is recommended to analyze the \code{\link{tetrachoric}} correlations rather than the Pearson correlations.
+In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix and \code{\link{factanal}}  seems to find them from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = FALSE will produce factor score estimate that match those of \code{\link{factanal}}.
+
+It is sometimes useful to extend the factor solution to variables that were not factored.  This may be done using \code{\link{fa.extension}}. Factor extension is typically done in the case where some variables were not appropriate to factor, but factor loadings on the original factors are still desired.
+
+For dichotomous items, it is recommended to analyze the \code{\link{tetrachoric}} correlations rather than the Pearson correlations.  This is done automatically when using  \code{\link{irt.fa}} function.  In this case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results.
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT and geominT do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ, and geominQ are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
@@ -76,6 +81,8 @@ Of the various rotation/transformation options, varimax, Varimax, quartimax, ben
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
 When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. 
+
+
 }
 \value{
   \item{values }{Eigen values of the common factor solution}

@@ -15,8 +15,8 @@ glb.fa(r,key=NULL)
 }
 
 \arguments{
-  \item{r}{A correlation matrix or raw data matrix.}
-  \item{key}{a vector of -1, 0, 1 to select or reverse items}
+  \item{r}{A correlation or covariance matrix or raw data matrix.}
+  \item{key}{a vector of -1, 0, 1 to select or reverse key items}
  
 }
 \details{Surprisingly, 105 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. The guttman function includes the six estimates discussed by Guttman (1945), four of ten Berge and Zergers (1978), as well as Revelle's \eqn{\beta} (1979) using \code{\link{ICLUST}}. The companion function, \code{\link{omega}} calculates omega hierarchical (\eqn{\omega_h})  and omega total (\eqn{\omega_t}). 
@@ -71,7 +71,9 @@ Although superior to \eqn{\lambda_1}, \eqn{\lambda_5} underestimates the correct
 
 Guttman's final bound considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
 \deqn{\lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}
-}{\lambda 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx}
+}{\lambda 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx}.
+
+The smc is found from all the items.  A modification to Guttman \eqn{\lambda_6}, \eqn{\lambda_6*} reported by the \code{\link{score.items}} function is to find the smc from the entire pool of items given, not just the items on the selected scale.  
 
 
 

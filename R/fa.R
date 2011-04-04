@@ -7,8 +7,9 @@
 #modified June 24, 2009 to add ml fitting
 #modified March 4, 2010 to allow for factoring of covariance matrices rather than correlation matrices
 #this itself is straight foward, but the summary stats need to be worked on
+#modified April 4, 2011 to allow for factor scores of oblique or orthogonal solutios
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -265,10 +266,12 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
     result$loadings <- loadings
     result$fm <- fm  #remember what kind of analysis we did
     
-    if(!is.null(Phi)) {result$Phi <- Phi}
+    if(!is.null(Phi) && oblique.scores) {result$Phi <- Phi
+                       Structure <- loadings %*% Phi} else {Structure <- loadings
+                       }
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
     
-    if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
+    if(scores) {result$scores <- factor.scores(x.matrix,Structure) }
     result$factors <- nfactors 
     result$fn <- "fa"
     result$fm <- fm
@@ -279,4 +282,5 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
     #modified October 30, 2008 to sort the rotated loadings matrix by the eigen values.
     #modified Spring, 2009 to add multiple ways of doing factor analysis
     #corrected, August, 2009 to count the diagonal when doing GLS or WLS - this mainly affects (improves) the chi square
+    #modified April 4, 2011 to find the factor scores of the oblique factors
  

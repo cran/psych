@@ -60,6 +60,8 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
        
       gsq <- (sum(gload))^2
       uniq <- sum(gf$sl[,(nfactors+3)])
+      if((nfactors == 1) && (fm=="pc")) {gsq <- Vt - uniq
+                                        warning("omega_h is not meaningful for a principal components analysis with one component")}   #weird condition when using fm=pc and 1 factor
       om.tot <- (Vt-uniq)/Vt
       om.limit <- gsq/(Vt-uniq)  
       alpha <- ((Vt-Vitem)/Vt)*(nvar/(nvar-1))
@@ -82,4 +84,4 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      if(plot)  omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
       return(omega)
       }
-
+#April 4, 2011  added a check for fm=pc and nfactors == 1 to solve problem of omega_h < omega_t -- probably not a good idea.  removed

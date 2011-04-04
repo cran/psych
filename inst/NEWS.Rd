@@ -1,15 +1,15 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.0.96 (2011-03-30)}{
+\section{Changes in psych version 1.0.97 (2011-04-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.0.96 is the development release of the psych package.  The released version is 1.0.95.
+      \item Version 1.0.97 is the development release of the psych package.  The released version is 1.0.96.
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
     }
   }
-  \subsection{To do: }{
+  \subsection{To do}{
     \itemize{
       \item Suggestions are welcome, but the current list includes:
       \item Add confirmatory clustering to ICLUST
@@ -19,7 +19,25 @@
       \item Add the ability to create multiple groups in sim.irt functions
       \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
       \item Add labels to factor.plot for more than 2 factors?
+      \item Add a polychoric and tetrachoric option to fa.parallel
+      \item Add a graphic output for fa.extension.
     }
+  }
+  } 
+  \section{Changes in psych version 1.0.96 (2011-04-04)}{
+  \subsection{Additions}{
+  \itemize{
+   \item Factor extension (fa.extension) now can extend an omega as well as a normal factor analysis.
+    \item Modified fa so that the factor scores are found for the oblique factors rather than the orthogonal factors. This now produces factor scores that have roughly the same correlations as do the factors.  Factor score statistics remain the same. This leads to a different set of factor scores than factanal finds, for it reports the factor scores for the orthogonal factors. 
+   
+    \item Modified response.frequencies to incorporate a very nice suggestion by Joshua Wiley to identify unique item responses that are not necessarily integers.  
+   }
+  }
+  \subsection{Bugs Fixed}{
+   \itemize{
+      \item Modified fa.extension to correctly find extended oblique loadings.
+      \item check added to omega for bizarre case of 1 factor extracted through PC.  (This should not be done, for it makes no sense, but nonetheless, it was leading to omega_h > omega_t.) A warning for this condition is now issued and omega_h = omega_t.  Reported by Alison Lewis.
+   }
   }
   }
 \section{Changes in psych version 1.0.95 (2011-03-30)}{

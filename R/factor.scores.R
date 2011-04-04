@@ -1,5 +1,6 @@
 "factor.scores" <- function(x,f) {
-     if(!is.matrix(f)) f <- loadings(f)
+    
+     if(!is.matrix(f)) {f <- loadings(f) }
      r <- cor(x,use="pairwise")   #find the correlation matrix from the data
      w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
      if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
@@ -11,6 +12,7 @@
      scores <- scale(x) %*% w    #standardize the data before doing the regression
      return(scores) }
      #how to treat missing data?  see score.item
+    
      
      
      

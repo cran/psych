@@ -56,24 +56,36 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
  
  
   #introduce a function to get cell frequencies and compensate for possible different number of response alternatives
-  
-  response.frequencies <- function(items,max=10) {
-    min.item <- min(items,na.rm=TRUE)
-	max.item <- max(items,na.rm=TRUE)
-	if((max.item - min.item >  max) || (nlevels(factor(items[,1])) > max)) {frequency <- NULL} else {  #don't do this for continuous variables or those with many categories
-	n.var <- dim(items)[2]
-	n.cases <- dim(items)[1]
-	dummy <- matrix(rep(min.item:max.item,n.var),ncol=n.var)
-	colnames(dummy) <- names(items)
-	xdum <- rbind(items,dummy)
-	frequency <- apply(xdum,2,table)
-	frequency <- t(frequency -1)
-	responses <- rowSums(frequency)
-	frequency <- frequency/responses
-	miss <- 1 - responses/n.cases
-	frequency <- cbind(frequency,miss)}
-	return(frequency)
-	}
+ 
+
+response.frequencies <-
+    function (items, max = 10)
+{
+    min.item <- min(items, na.rm = TRUE)
+    max.item <- max(items, na.rm = TRUE)
+    uniqueitems <- unique(as.vector(unlist(items)))
+    if ((max.item - min.item > max) ||
+        (nlevels(factor(items[, 1])) > max) ||
+        length(uniqueitems) > max) {
+        frequency <- NULL
+    }
+    else {
+        n.var <- dim(items)[2]
+        n.cases <- dim(items)[1]
+        dummy <- matrix(rep(uniqueitems, n.var), ncol = n.var)
+        colnames(dummy) <- names(items)
+        xdum <- rbind(items, dummy)
+        frequency <- apply(xdum, 2, table)
+        frequency <- t(frequency - 1)
+        responses <- rowSums(frequency)
+        frequency <- frequency/responses
+        miss <- 1 - responses/n.cases
+        frequency <- cbind(frequency, miss)
+    }
+    return(frequency)
+}
+	
  #version of Sept 19, 2007
  #revised Sept 3, 2010 to count missing responses
  #revised Sept 7, 2010 to correctly handle missing data in terms of finding alpha and correlation
+ #revised April 3, 2011 to incorporate very nice suggestion by Joshua Wiley to handle unique categories

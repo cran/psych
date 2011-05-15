@@ -24,8 +24,8 @@ A graphic demonstration of the \code{\link{tetrachoric}} correlation. Used for t
 William Revelle
 }
 
-\seealso{\code{\link{tetrachoric}}, \code{\link{irt.fa}}
-}
+\seealso{\code{\link{tetrachoric}} to find tetrachoric correlations, \code{\link{irt.fa}} and \code{\link{fa.poly}} to use them in factor analyses, \code{\link{scatter.hist}} to show correlations and histograms. }
+
 \examples{
 if(require(mvtnorm)) {
 draw.tetra(.5,1,1)

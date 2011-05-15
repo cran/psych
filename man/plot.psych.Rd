@@ -11,8 +11,8 @@
 }
 \usage{
 plot.psych(x,labels=NULL,...)
-plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,...)
-plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,...)
+plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
+plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,11 +25,14 @@ plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,...)
   \item{type}{ICC plots items, IIC plots item information, test plots test information, defaults to IIC for plot.irt, to ICC for plot.poly}
   \item{D}{The discrimination parameter}
   \item{cut}{Only plot item responses with discrimiantion greater than cut}
+  \item{keys}{Used in plotting irt results from irt.fa.}
   \item{...}{other calls to plot}
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "ICC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
 
 These are calls to the generic plot function that are intercepted for objects of type "psych".  More precise plotting control is available in the separate plot functions.  plot may be used for psych objects returned from \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{ICLUST}}, \code{\link{omega}}, as well as  \code{\link{principal}} 
+
+Objects from \code{\link{irt.fa}} are plotted according to "type" (Item informations, item characteristics, or test information).  In addition, plots for selected items may be done if using the keys matrix.  Plots of irt information return two invisible objects, the average area under the curve (the average information) for each item as well as where the item is most informative.
 
 }
 \value{Graphic output for factor analysis, cluster analysis and item response analysis. 

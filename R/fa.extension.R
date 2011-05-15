@@ -1,6 +1,7 @@
 "fa.extension" <-
   function(Roe,fo,correct=TRUE) {
  cl <- match.call()
+
  if(!is.null(class(fo)[2])) {if(class(fo)[2]=="fa") {
           if(!is.null(fo$Phi)) {Phi <- fo$Phi} else {Phi <- NULL}
           w <- fo$weights

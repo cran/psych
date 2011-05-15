@@ -9,7 +9,7 @@ if (!sl) {warning("OmegaSem only works for Bifactor models, sl set to TRUE ")
     sl <- TRUE}
 
     cl <- match.call() 
-om <- omega(m,nfactors,fm,key,flip, digits,title,sl,labels, plot,n.obs,rotate,Phi,option,...)
+om <- omega(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi=Phi,option=option,...)
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired

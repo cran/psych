@@ -462,7 +462,7 @@ f3o
 
 Similar to the minres approach of minimizing the squared residuals, factor method ``wls" weights the squared residuals by their uniquenesses.  This tends to produce slightly smaller overall residuals. In the example of weighted least squares, the output is shown by using the \pfun{print} function with the cut option set to 0.  That is, all loadings are shown (Table~\ref{tab:Thurstone.wls}).
 
-\begin{scriptsize}
+\begin{tiny}
 \begin{table}[htdp]
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The factors were extracted using a weighted least squares algorithm.  All loadings are shown by using the cut=0 option in the \pfun{print.psych} function.}
 
@@ -472,7 +472,7 @@ print(f3w,cut=0,digits=3)
 @
 \label{tab:Thurstone.wls}
 \end{table}
-\end{scriptsize}
+\end{tiny}
 
 The unweighted least squares solution may be shown graphically using the \pfun{factor.plot} function which is called by the generic \fun{plot} function (Figure~\ref{fig:thurstone}. Factors were transformed obliquely using a oblimin.   These solutions may be shown as item by factor plots  (Figure~\ref{fig:thurstone} or by a structure diagram (Figure~\ref{fig:thurstone.diagram}.
 
@@ -574,9 +574,11 @@ ic <- iclust(bfi[1:25])
 \begin{table}[htdp]
 \caption{The summary statistics from an iclust analysis shows three large clusters and smaller cluster.}
 \begin{center}
+\begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 summary(ic)  #show the results
 @
+\end{scriptsize}
 \end{center}
 \label{tab:iclust}
 \end{table}%
@@ -592,21 +594,48 @@ iclust.diagram(ic.poly)
 \end{Sinput}
 \end{Schunk}
 
+\subsection{Confidence intervals using bootstrapping techniques}
+Exploratory factoring techniques are sometimes criticized because of the lack of statistical information on the solutions.  Overall estimates of goodness of fit including $\chi^{2}$ and RMSEA are found in the \pfun{fa} and \pfun{omega} functions.  Confidence intervals for the factor loadings may be found by doing multiple bootstrapped iterations  of the original analysis.  This is done by setting the n.iter parameter to the desired number of iterations.  This can be done for factoring of Pearson correlation matrices as well as polychoric/tetrachoric matrices  (See Table~\ref{tab:bootstrap}).. 
+
+\begin{table}[htdp]
+\caption{An example of bootstrapped confidence intervals on 10 items from the Big 5 inventory.}
+\begin{scriptsize}
+\begin{center}
+<<print=FALSE,echo=TRUE>>= 
+f2 <- fa(bfi[1:10],2,n.iter=20)
+f2
+@
+\end{center}
+\end{scriptsize}
+\label{tab:bootstrap}
+\end{table}%
+
+
 
 \subsection{Comparing factor/component/cluster solutions}
-Cluster analysis, factor analysis, and principal components analysis all produce structure matrices (matrices of correlations between the dimensions and the variables) that can in turn be compared in terms of the \iemph{congruence coefficient}  which is just  cosine of the angle between the dimensions. This is done using the \pfun{factor.congruence} function.
+Cluster analysis, factor analysis, and principal components analysis all produce structure matrices (matrices of correlations between the dimensions and the variables) that can in turn be compared in terms of the \iemph{congruence coefficient}  which is just  cosine of the angle between the dimensions. This is done using the \pfun{factor.congruence} function. (See table~\ref{tab:congruence}).
 
 Consider the case of a four factor solution and four cluster solution to the Big Five problem.  
+
+
 
 <<print=FALSE,echo=TRUE>>=
 f4 <- fa(bfi[1:25],4,fm="pa")
 factor.congruence(f4,ic)
 @
 
-Now consider the solutions to the Thurstone problem, considering the factor, component, and bifactor solution. Note the use of the list of solutions to compare.
+\begin{table}[htdp]
+\caption{Congruence coefficients for factor, component, and bifactor solutions for the Thurstone problem.}
+\begin{scriptsize}
+\begin{center}
 <<print=FALSE,echo=TRUE>>=
 factor.congruence(list(f3t,f3o,om,p3p))
 @
+\end{center}
+\end{scriptsize}
+\label{tab:congruence}
+\end{table}%
+
 
 \subsection{Determining the number of dimensions to extract.}
 How many dimensions to use to represent a correlation matrix is an unsolved problem in psychometrics.  There are many solutions to this problem, none of which is uniformly the best.  Henry Kaiser once said that ``a solution to the number-of factors problem in factor analysis is easy, that he used to make up one every morning before breakfast. But the problem, of course is to find \emph{the} solution, or at least a solution that others will regard quite highly not as the best" \cite{horn:79}.
@@ -659,20 +688,44 @@ vss
 \subsubsection{Parallel Analysis}
 An alternative way to determine the number of factors is to compare the solution to random data with the same properties as the real data set.  If the input is a data matrix, the comparison includes random samples from the real data, as well as normally distributed random data with the same number of subjects and variables. For the BFI data, parallel analysis suggests that 6 factors might be most appropriate (Figure~\ref{fig:parallel}). It is interesting to compare \pfun{fa.parallel} with the \fun{paran} from the \Rpkg{paran} package.  This latter uses smcs to estimate communalities.  Simulations of known structures with a particular number of major factors but with  the presence of trivial, minor (but not zero) factors, show that using smcs  will tend to lead to too many factors.  
 \begin{figure}[htbp]
+\begin{scriptsize}
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 fa.parallel(bfi[1:25],main="Parallel Analysis of a Big 5 inventory")
 @
+
 \caption{Parallel analysis compares factor and principal components solutions to the real data as well as resampled data. Although vss suggests 4 factors, MAP 5, parallel analysis suggests 6. One more demonstration of Kaiser's dictum.}
 \label{fig:parallel}
 \end{center}
+\end{scriptsize}
 \end{figure}
 
+A more tedious problem in terms of computation is to do parallel analysis of \iemph{polychoric} correlation matrices.  This is done by \pfun{fa.parallel.poly}.  By default the number of replications is 20.  
+
+\subsection{Factor extension}
+Sometimes we are interested in the relationship of the factors in one space with the variables in a different space.  One solution is to find factors in both spaces separately and then find the structural relationships between them.  This is the technique of structural equation modeling in packages such as \Rpkg{sem} or \Rpkg{lavaan}.  An alternative is to use the concept of \iemph{factor extension} developed by \citep{dwyer:37}.  Consider the case of 16 variables created to represent one two dimensional space.  If factors are found from eight of these variables, they may then be extended to the additional eight variables (See Figure~\ref{fig:fa.extension}).  
+
+
+\begin{figure}[htbp]
+\begin{center}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+v16 <- sim.item(16)
+s <- c(1,3,5,7,9,11,13,15)
+f2 <- fa(v16[,s],2)
+fe <- fa.extension(cor(v16)[s,-s],f2)
+fa.diagram(f2,fe=fe)
+@
+\caption{Factor extension applies factors from one set (those on the left)  to another set  of variables (those on the right).  \pfun{fa.extension} is particularly useful when one wants to define the factors with one set of variables and then apply those factors to another set.  \pfun{fa.diagram} is used to show the structure.  }
+\label{fig:fa.extension}
+\end{center}
+\end{figure}
+
+Another way to examine the overlap between two sets is the use of \iemph{set correlation} found by \pfun{set.cor} (discussed later). 
 
 \subsection{Reliability analysis}
 
 
-Surprisingly, 105 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's $\alpha$  (1951) underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
+Surprisingly, 107 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's $\alpha$  (1951) underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
 
 $\alpha$ (Cronbach, 1951) is the same as Guttman's $\lambda3$ (Guttman, 1945) and may be found by
 $$
@@ -683,8 +736,8 @@ Perhaps because it is so easy to calculate and is available in most commercial p
 
 Guttman's $\lambda _6$ (G6) considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, $e_j^2$,  and is
 $$
-\lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}
-.$$
+\lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}.
+$$
 
 The squared multiple correlation is a lower bound for the item communality and as the number of items increases, becomes a better estimate.
 
@@ -938,26 +991,30 @@ The item information functions show that not all of items are equally good (Figu
 \begin{figure}[htbp]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-plot(e.irt,type="IIC")
+e.info  <- plot(e.irt,type="IIC")
 @
-\caption{A graphic analysis of 5 extraversion items from the bfi. The curves represent the amount of information in the item as a function of the latent score for an individual.  That is, each item is maximally discriminating at a different part of the latent continuum.}
+\caption{A graphic analysis of 5 extraversion items from the bfi. The curves represent the amount of information in the item as a function of the latent score for an individual.  That is, each item is maximally discriminating at a different part of the latent continuum. Print e.info to see the average information for each item.}
 \label{fig:e.irt}
 \end{center}
 \end{figure}
 
-These procedures can be generalized to more than one factor by specifying the number of factors in \pfun{irt.fa}.  The plots can be limited to those items with discriminations greater than some value of cut.  
 
+These procedures can be generalized to more than one factor by specifying the number of factors in \pfun{irt.fa}.  The plots can be limited to those items with discriminations greater than some value of cut.  An invisible object is returned when plotting the output from  \pfun{irt.fa} that includes the average information for each item that has loadings greater than cut.  
+
+<<print=FALSE,echo=TRUE>>=
+print(e.info,sort=TRUE)
+@
 More extensive IRT packages include the \Rpkg{ltm} and \Rpkg{eRm} and should be used for serious Item Response Theory analysis.
 
 
 
-\section{Multiple Regression from the correlation matrix}
-Although the standard multiple regression (using the \fun{lm} function in base R) uses the raw data, it is sometimes useful to do multiple regression from a correlation matrix.  This may be done using the \pfun{mat.regress} function.  
+
+\section{Set Correlation and Multiple Regression from the correlation matrix}
+An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{set.cor} function.  \pfun{set.cor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
 
 Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{mat.regress}. Two things to notice.  \pfun{mat.regress} works on the \emph{correlation} or \emph{covariance} matrix, and thus if using the correlation matrix, will report standardized $\beta$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, statistical tests of significance are applied.
 
 <<print=FALSE,echo=TRUE>>=
-data(sat.act)
 
 C <- cov(sat.act,use="pairwise")
 model1 <- lm(ACT~ gender + education + age, data=sat.act)
@@ -966,9 +1023,9 @@ summary(model1)
 Compare this with the output from \pfun{mat.regress}.
 <<print=FALSE,echo=TRUE>>=
 #compare with mat.regress
-mat.regress(C,c(1:3),c(4:6), n.obs=700)
+set.cor(c(4:6),c(1:3),C, n.obs=700)
 @
-
+Note that the \pfun{set.cor} analysis also  reports the amount of shared variance between the predictor set and the criterion (dependent) set.  This set correlation is symmetric. That is, the $R^{2}$ is the same independent of the direction of the relationship.
 
 \section{Simulation functions}
 It is particularly helpful, when teaching psychometric concepts, to be able to generate sample data sets that meet certain specifications.   By knowing ``truth" it is possible to see how well various algorithms can capture it. Several of the \pfun{sim} functions create artificial data sets with known structures. 
@@ -1115,7 +1172,7 @@ sessionInfo()
 @
 
 \newpage
-%\bibliography{/Volumes/WR//Documents/book/all}
+%\bibliography{/Volumes/WR/Documents/Active/book/all} 
 %\bibliography{all} 
 \begin{thebibliography}{}
 
@@ -1145,6 +1202,17 @@ Cattell, R.~B. (1966).
 Cattell, R.~B. (1978).
 \newblock {\em The scientific use of factor analysis}.
 \newblock Plenum Press, New York.
+
+\bibitem[\protect\astroncite{Cohen}{1982}]{cohen:set}
+Cohen, J. (1982).
+\newblock Set correlation as a general multivariate data-analytic method.
+\newblock {\em Multivariate Behavioral Research}, 17(3).
+
+\bibitem[\protect\astroncite{Cohen et~al.}{2003}]{cohen:03}
+Cohen, J., Cohen, P., West, S.~G., and Aiken, L.~S. (2003).
+\newblock {\em Applied multiple regression/correlation analysis for the
+  behavioral sciences}.
+\newblock L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
 
 \bibitem[\protect\astroncite{Cooksey and Soutar}{2006}]{cooksey:06}
 Cooksey, R. and Soutar, G. (2006).
@@ -1270,7 +1338,6 @@ Revelle, W. (2011).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston, 1.0-95 edition.
 \newblock R package version 1.0-95.
-
 
 \bibitem[\protect\astroncite{Revelle and Rocklin}{1979}]{revelle:vss}
 Revelle, W. and Rocklin, T. (1979).

@@ -5,8 +5,8 @@
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path).
 }
 \usage{
-fa.diagram(fa.results,Phi=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main="Factor Analysis",cex=NULL, ...) 
+fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL, ...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis",graphviz=TRUE, ...)
@@ -16,6 +16,7 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
 \arguments{
   \item{fa.results}{The output of factor analysis, principal components analysis, or ICLUST analysis.  May also be a factor loading matrix from anywhere.}
   \item{Phi}{Normally not specified (it is is found in the FA, pc, or ICLUST, solution), this may be given if the input is a loadings matrix.}
+  \item{fe.results}{the results of a factor extension analysis (if any)}
   \item{out.file}{ If it exists, a dot representation of the graph will be stored here (fa.graph)}
   \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
@@ -31,7 +32,7 @@ fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{edge.font}{what font should be used for edges in fa.graph  }
   \item{rank.direction}{ parameter passed to Rgraphviz-- which way to draw the graph }
   \item{digits}{ Number of digits to show as an edgelable }
-  \item{main}{ Graphic title }
+  \item{main}{ Graphic title, defaults to "factor analyis" or "factor analysis and extension" }
   \item{graphviz}{Should we try to use Rgraphviz for output?}
   \item{\dots}{ other parameters }
 }
@@ -61,7 +62,6 @@ fa.graph: A graph is drawn using rgraphviz.  If an output file is specified, the
 test.simple <- fa(item.sim(16),2,rotate="oblimin")
 #if(require(Rgraphviz)) {fa.graph(test.simple) } 
 fa.diagram(test.simple)
-data(bifactor)
 f3 <- fa(Thurstone,3,rotate="cluster")
 fa.diagram(f3,cut=.4,digits=2)
 f3l <- f3$loadings

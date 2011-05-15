@@ -1,6 +1,6 @@
 Package: psych
-Version: 1.0-96
-Date: 2011-04-04
+Version: 1.0-97
+Date: 2011-05-15
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Author: William Revelle <revelle@northwestern.edu>
@@ -25,6 +25,6 @@ Suggests: MASS, GPArotation, graph, Rgraphviz,mvtnorm, polycor, sem,
 LazyData: true
 URL: http://personality-project.org/r,
         http://personality-project.org/r/psych.manual.pdf
-Packaged: 2011-04-06 15:12:17 UTC; revelle
+Packaged: 2011-05-15 16:14:58 UTC; revelle
 Repository: CRAN
-Date/Publication: 2011-04-06 18:13:42
+Date/Publication: 2011-05-15 17:07:48

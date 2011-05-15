@@ -177,6 +177,8 @@ print(object$total,digits=digits)
            print(round(object$R,digits))
             cat("\nMultiple R2 \n") 
            print(round(object$R2,digits))
+             cat("\nCohen's set correlation R2 \n") 
+           print(round(object$Rset,digits))
            
            }
            

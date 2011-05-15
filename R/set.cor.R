@@ -1,5 +1,5 @@
-"mat.regress" <-
-function(y,x,data,z=NULL,n.obs=NULL)  {
+"set.cor" <-
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #seriously rewritten, March 24, 2009 to make much simpler
@@ -8,7 +8,7 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
    cl <- match.call()
   if(!is.matrix(data)) data <- as.matrix(data)
   if(dim(data)[1]!=dim(data)[2]) {n.obs=dim(data)[1]
-                    C <- cov(data,use="pairwise")
+                    C <- cov(data,use=use)
                     m <- cov2cor(C)}  else {
                     C <-data
                     m <- cov2cor(C)}
@@ -18,31 +18,42 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
         xy <- c(x,y)
         numx <- length(x)
      	numy <- length(y)
+     	numz <- 0
         nxy <- numx+numy
         m.matrix <- m[c(x,y),c(x,y)]
-     	a.matrix <- m[x,x]
-     	ac.matrix <- C[x,x]
-     	b.matrix <- m[x,y]
-     	bc.matrix <- C[x,y]
-     	y.matrix <- m[y,y]
-     	if(numx == 1 ) {beta <- matrix(b.matrix,nrow=1)
+     	x.matrix <- m[x,x,drop=FALSE]
+     	xc.matrix <- C[x,x,drop=FALSE]
+     	xy.matrix <- m[x,y,drop=FALSE]
+     	xyc.matrix <- C[x,y,drop=FALSE]
+     	y.matrix <- m[y,y,drop=FALSE]
+     	if(!is.null(z)){numz <- length(z)
+     	                zm <- m[z,z,drop=FALSE]
+     	                 za <- m[x,z,drop=FALSE]
+     	                 zb <- m[y,z,drop=FALSE]
+     	                 x.matrix <- x.matrix - za %*% solve(zm) %*% t(za)
+     	                 y.matrix <- y.matrix - zb %*% solve(zm) %*% t(zb)
+     	                xy.matrix <- xy.matrix - za  %*% solve(zm) %*% t(zb)
+     	                m.matrix <- cbind(rbind(y.matrix,xy.matrix),rbind(t(xy.matrix),x.matrix))
+     	                
+     	                 }
+     	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)
      	                } else   #this is the case of a single x 
-       { beta <- solve(a.matrix,b.matrix)       #solve the equation bY~aX
+       { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
         beta <- as.matrix(beta) }
      	if (numy >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
      	                if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
      	 
-     	 R2 <- colSums(beta * b.matrix) } else { colnames(beta) <- colnames(data)[1]
-     		 R2 <- sum(beta * b.matrix)
+     	 R2 <- colSums(beta * xy.matrix) } else { colnames(beta) <- colnames(data)[y]
+     		 R2 <- sum(beta * xy.matrix)
      	 	names(beta) <- colnames(data)[x]
      		 names(R2) <- colnames(data)[y]}
-     	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(a.matrix) )
+     	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
      	            } else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
-     	            } else {Rset <- 1 - det(m.matrix)/(det(a.matrix) * det(y.matrix))}
+     	            } else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))}
      	            }
      	if(!is.null(n.obs)) {k<- length(x)
      	                     
-     	                     uniq <- (1-smc(a.matrix))
+     	                     uniq <- (1-smc(x.matrix))
      	                     se.beta <- list() 
      	                     for (i in 1:length(y)) {
      	                     df <- n.obs-k-1
@@ -51,7 +62,7 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
      	                     colnames(se) <- colnames(beta)
      	                     rownames(se) <- rownames(beta)
      	                     tvalue <- beta/se
-     	                     se <- t(t(se) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix))
+     	                     se <- t(t(se) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))
      	                     
      	                prob <- 2*(1- pt(abs(tvalue),df))
      	                     SE2 <- 4*R2*(1-R2)^2*(df^2)/((n.obs^2-1)*(n.obs+3))
@@ -62,17 +73,26 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
      	                     
      	               #find the shrunken R2 for set cor  (taken from CCAW p 615)
      	                     u <- numx * numy
-     	                     m1 <- n.obs - numx * numy - (numx + numy +3)/2 
-     	                     s <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2))
+     	                     m1 <- n.obs - max(numy ,(numx+numz)) - (numx + numy +3)/2 
+     	                    
+     	                     s <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2)) 
+     	                    
      	                     v <- m1 * s + 1 - u/2
      	                     R2set.shrunk <- 1 - (1-Rset) * ((v+u)/v)^s
+     	                     L <- 1-Rset
+     	                     L1s <- L^(-1/s)
+     	                     Rset.F <- (L1s-1)*(v/u)
+     	                     df.m <- n.obs -  max(numy ,(numx+numz)) -1 -(numx + numy +1)/2
+     	                      s1 <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2-5)) #see cohen p 321
+     	                     if(numx^2*numy^2 < 5) s1 <- 1
+     	                     df.v <- df.m * s1 + 1 - numx * numy/2
      	                              }
      	
      	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
-     	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix))} #this puts the betas into the raw units
+     	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
      	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,Call = cl)} else {
-     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Call = cl)}
+     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,Call = cl)}
      	class(mat.regress) <- c("psych","mat.regress")
      	return(mat.regress)
      	}
@@ -80,4 +100,4 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
 #modified July 9, 2008 to give statistical tests
 #modified yet again August 15 , 2008 to convert covariances to correlations
 #modified January 3, 2011 to work in the case of a single predictor 
-#modiefied April 25, 2011 to add the set correlation (from Cohen)
+#modified April 25, 2011 to add the set correlation (from Cohen)

@@ -2,22 +2,29 @@
 \alias{omega}
 \alias{omegaSem}
 \alias{omegaFromSem}
+\alias{omegah}
 \title{  Calculate McDonald's  omega estimates of general and total factor saturation }
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem package.  This is done by omegaSem and omegaFromSem.
 }
 \usage{
-omega(m, nfactors=3, fm = "minres",key = NULL, flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
+omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE,digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
 omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...)
 omegaFromSem(m,s,flip=TRUE)
+omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) 
+
 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
+ \item{n.iter}{How many replications to do in omega for bootstrapped estimates}
   \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="ml" for maximum likelihood.}
+  \item{poly}{should the correlation matrix be found using polychoric/tetrachoric or normal Pearson correlations}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
+ 
+  \item{p}{probability of two tailed conference boundaries}
   \item{digits}{if specified, round the output to digits}
   \item{title}{Title for this analysis}
   \item{sl}{If plotting the results, should the Schmid Leiman solution be shown or should the hierarchical solution be shown? (default sl=TRUE)}

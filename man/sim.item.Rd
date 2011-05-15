@@ -32,7 +32,9 @@ item.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.
 }
 \details{This simulation was originally developed to compare the effect of skew on the measurement of affect (see Rafaeli and Revelle, 2005).  It has been extended to allow for a general simulation of affect or personality items with either a simple structure or a circumplex structure.  Items can be continuous normally distributed, or broken down into n categories (e.g, -2, -1, 0, 1, 2).  Items can be distorted by limiting them to these ranges, even though the items have a mean of (e.g., 1).  
 
-The addition of item.dichot allows for testing structures with dichotomous items of different difficulty (endorsement) levels.  Two factor data with either simple structure or circumplex structure are generated for two sets of items, one giving a score of 1 for all items greater than the low (easy) value, one giving a 1 for all items greater than the high (hard) value. The default values for low and high are 0.  That is, all items are assumed to have a 50 percent endorsement rate.  To examine the effect of item difficulty, low could be   -1, high  1. This will lead to item endorsements of .84 for the easy and .16 for the hard.  Within each set of difficulties, the first 1/4 are assigned to the first factor factor, the second to the second factor, the third to the first factor (but with negative loadings) and the fourth to the second factor (but with negative loadings).  
+The addition of item.dichot allows for testing structures with dichotomous items of different difficulty (endorsement) levels.  Two factor data with either simple structure or circumplex structure are generated for two sets of items, one giving a score of 1 for all items greater than the low (easy) value, one giving a 1 for all items greater than the high (hard) value. The default values for low and high are 0.  That is, all items are assumed to have a 50 percent endorsement rate.  To examine the effect of item difficulty, low could be   -1, high  1. This will lead to item endorsements of .84 for the easy and .16 for the hard.  Within each set of difficulties, the first 1/4 are assigned to the first factor factor, the second to the second factor, the third to the first factor (but with negative loadings) and the fourth to the second factor (but with negative loadings). 
+
+It is useful to compare the results of sim.item with sim.hierarchical.  sim.item will produce a general factor that runs through all the items as well as two orthogonal factors.  This produces a data set that is hard to represent with standard rotation techniques.  Extracting 3 factors without rotation and then rotating the 2nd and 3rd factors reproduces the correct solution.  But simple oblique rotation of 3 factors, or an \code{\link{omega}} analysis do not capture the underlying structure.  See the last example.
 }
 \value{
   A data matrix of (nsub) subjects by (nvar) variables.  
@@ -53,6 +55,15 @@ plot(factor.pa(circ.sim(16,500),2)$loadings,main="Circumplex Structure") #circum
 plot(factor.pa(item.sim(16,500),2)$loadings,main="Simple Structure") #simple structure
 #
 cluster.plot(factor.pa(item.dichot(16,low=0,high=1),2))
+
+#not run
+#x12 <- sim.item(12,gloading=.6)
+#f3 <- fa(x12,3,rotate="none")
+#f3  #observe the general factor
+#oblimin(f3$loadings[,2:3])  #show the 2nd and 3 factors.
+#f3 <- fa(x12,3)   #now do it with oblimin rotation
+#f3  # not what one naively expect.
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

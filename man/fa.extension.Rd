@@ -18,7 +18,7 @@ fa.extension(Roe,fo,correct=TRUE)
 
 This could be done by estimating the factor scores and then finding the covariances of the extension variables with the factor scores. But if the original data are not available, but just the covariance or correlation matrix is, then the use of \code{\link{fa.extension}} is most appropriate. 
 
-The factor analysis results from either \code{\link{fa}} or \code{\link{omega}} functions applied to the original correlation matrix is extended to the extended variables given the correlations (Re) of the extended variables with the original variables.
+The factor analysis results from either \code{\link{fa}} or \code{\link{omega}} functions applied to the original correlation matrix is extended to the extended variables given the correlations (Roe) of the extended variables with the original variables.
 
 \code{\link{fa.extension}} assumes that the original factor solution was found by the \code{\link{fa}} function.
 
@@ -44,7 +44,7 @@ For a very nice discussion of the relationship between factor scores, correlatio
 Ro <- Dwyer[1:7,1:7]
 Roe <- Dwyer[1:7,8]
 fo <- fa(Ro,2,rotate="none")
-fa.extension(Roe,fo)
+fe <- fa.extension(Roe,fo)
 
 #an example from simulated data
 set.seed(42) 
@@ -53,7 +53,8 @@ set.seed(42)
  Ro <- R[c(1,2,4,5,7,8,10,11),c(1,2,4,5,7,8,10,11)]
  Roe <- R[c(1,2,4,5,7,8,10,11),c(3,6,9,12)]
  fo <- fa(Ro,2)
- fa.extension(Roe,fo)
+ fe <- fa.extension(Roe,fo)
+ fa.diagram(fo,fe=fe)
  
  #create two correlated factors
  fx <- matrix(c(.9,.8,.7,.85,.75,.65,rep(0,12),.9,.8,.7,.85,.75,.65),ncol=2)
@@ -63,7 +64,8 @@ set.seed(42)
  Ro <- R[c(1,2,4,5,7,8,10,11),c(1,2,4,5,7,8,10,11)]
  Roe <- R[c(1,2,4,5,7,8,10,11),c(3,6,9,12)]
  fo <- fa(Ro,2)
- fa.extension(Roe,fo)
+ fe <- fa.extension(Roe,fo)
+ fa.diagram(fo,fe=fe)
  
  #an example of extending an omega analysis
  

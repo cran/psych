@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <- partial <- extension <- circ  <- schmid <-  FALSE
+iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- fa.ci <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <- partial <- extension <- circ  <- schmid <- poly.info <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -13,6 +13,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] =='omega')  omega <- TRUE
     if(class(x)[2] =='omegaSem')  omegaSem <- TRUE
    if(class(x)[2] =='fa')  fac.pa <- TRUE
+   if(class(x)[2] =='fa.ci')  fa.ci <- TRUE
   if(class(x)[2] == "schmid")         schmid <- TRUE
    if(class(x)[2] =='principal') principal <- fac.pa <- TRUE
    if(class(x)[2] == 'alpha') alpha <- TRUE
@@ -40,6 +41,7 @@ if(length(class(x)) > 1)  {
   if(class(x)[2] == "partial.r")    partial <- TRUE
   if(class(x)[2] == "extension")    extension <- TRUE
   if(class(x)[2] == "circ")         circ <- TRUE
+  if(class(x)[2] == "polyinfo")         poly.info <- TRUE
      } 
 else {     
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -58,6 +60,7 @@ if(!is.null(x$Th)) {fac.pa <- TRUE}
  if(iclust) print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(stats) print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)
  if(extension) print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)
+  if(fa.ci) print.psych.fa.ci(x,digits=digits,all=all)
 
 ## 
 ##Now, for the smaller print jobs, just do it here.
@@ -333,7 +336,14 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
            print(signif(x$probF,digits+1))
             cat("\n degrees of freedom of regression \n") 
             print(x$df)
+           
            }
+            cat("\n Cohen's Set Correlation R2 \n")
+            print(x$Rset,digits=digits)
+            cat("\n Shrunken Set Correlation R2 \n")
+            print(x$Rset.shrunk,digits=digits)
+            cat("\n F of Cohen's Set Correlation \n")
+            print(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits )
 
    }
  if(parallel) { cat("Call: ")
@@ -356,13 +366,13 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
               print(round(x$pc.values,digits))}
              
               if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
-              print(round(x$pc.sim$mean,digits))}
+              print(round(x$pc.sim$mean,digits=digits))}
               
               }
          }
   
   if(irt.fa) {
-   cat("Item Response Analysis using Factor Analysis = ")
+   cat("Item Response Analysis using Factor Analysis \n")
    cat("\nCall: ")
    print(x$Call)
     nf <- length(x$irt$difficulty)
@@ -373,7 +383,7 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
   }
   
     if(irt.poly) {
-   cat("Item Response Analysis using Factor Analysis = ")
+   cat("Item Response Analysis using Factor Analysis  \n")
    cat("\nCall: ")
    print(x$Call)
     
@@ -383,6 +393,39 @@ cat("the number of factors = ",fa.test, " and the number of components = ",pc.te
     print(round(temp,digits))}
   #print(round(x$coefficients,digits))
   }
+  
+  if(poly.info) {cat("Item Response Analysis using Factor Analysis  \n")
+     cat(" Average information (area under the curve) \n")
+     AUC <-x$AUC
+     max.info <-x$max.info
+     if(dim(AUC)[2]==1) {item <- 1:length(AUC) } else {item <- 1:dim(AUC)[1]}
+     if(sort) {
+ 		#first sort them into clusters
+  		#first find the maximum for each row and assign it to that cluster
+  		 cluster <- apply(AUC,1,which.max)
+ 		 ord <- sort(cluster,index.return=TRUE)
+  		 AUC <-  AUC[ord$ix,,drop=FALSE]
+  		 max.info <-  max.info[ord$ix,,drop=FALSE]
+      #now sort column wise
+      #now sort the AUC that have their highest AUC on each cluster
+
+  		items <- table(cluster)   #how many items are in each cluster?
+  		first <- 1
+    	for (i in 1:length(items)) {# i is the factor number
+		if(items[i] > 0 ) {
+				last <- first + items[i]- 1
+				ord <- sort(abs(AUC[first:last,i]),decreasing=TRUE,index.return=TRUE)
+				
+   				AUC[first:last,] <- AUC[item[ord$ix+first-1],]
+   				max.info[first:last,] <- max.info[item[ord$ix+first-1],]
+   				rownames(AUC)[first:last] <- rownames(max.info)[first:last]  <- rownames(AUC)[ord$ix+first-1]
+   		 		first <- first + items[i]  }
+          		 }  
+         }    #end of sort 		 
+     print(AUC,digits=digits)
+     cat("\nMaximum value is at \n")
+     print(max.info,digits=digits)
+    }
   
   if(mardia) {
    cat("Call: ")

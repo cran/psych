@@ -5,10 +5,10 @@ citEntry(entry="Manual",
 	     Organization = "Northwestern University",        
          address      = "Evanston, Illinois",
          year         = 2011,
-         note         = "R package version 1.0-95",
+         note         = "R package version 1.0-97",
          url          = "http://personality-project.org/r/psych.manual.pdf",
          textVersion = 
          paste("Revelle, W. (2011)", 
                "psych: Procedures for Personality and Psychological Research",
-               "Northwestern University, Evanston, http://personality-project.org/r/psych.manual.pdf, 1.0-95")
+               "Northwestern University, Evanston, http://personality-project.org/r/psych.manual.pdf, 1.0-97")
                )

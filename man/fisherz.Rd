@@ -41,9 +41,9 @@ round(zs,2)
  n <- 30
  r <- seq(0,.9,.1)
  rc <- matrix(r.con(r,n),ncol=2)
-t <- r*sqrt(n-2)/sqrt(1-r^2)
+ t <- r*sqrt(n-2)/sqrt(1-r^2)
  p <- (1-pt(t,n-2))/2
- r.rc <- r.rc <- data.frame(r=r,z=fisherz(r),lower=rc[,1],upper=rc[,2],t=t,p=p)
+ r.rc <- data.frame(r=r,z=fisherz(r),lower=rc[,1],upper=rc[,2],t=t,p=p)
  round(r.rc,2)
 
 }

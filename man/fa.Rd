@@ -3,17 +3,20 @@
 \alias{factor.pa}
 \alias{factor.minres}
 \alias{factor.wls}
+\alias{fac}
+\alias{fa.poly}
 
 
 
 \title{MinRes (minimum residual) Factor analysis as well as Factor Analysis by Principal Axis, Weighted Least Squares or Maximum Likelihood }
-\description{Among the many ways to do latent variable factor analysis, one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  
+\description{Among the many ways to do latent variable factor analysis, one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
 }
 \usage{
-fa(r,nfactors=1,n.obs = NA, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...)
+fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=TRUE,...)
 
-factor.pa(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
-scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="pa")
+fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores=FALSE, residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...)
+
+fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE, impute="median", min.err = .001, max.iter=50, symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, oblique.scores=TRUE,...)
 
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres")
@@ -24,9 +27,11 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
 
 \arguments{
   \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
+  \item{x}{For fa.poly.ci, only raw data may be used}
   \item{nfactors}{ Number of factors to extract, default is 1 }
-  \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
+  \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", and "geominT" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ, and "geominQ" or "cluster" are possible rotations or transformations of the solution.  The default is to do a oblimin transformation, although prior versions defaulted to varimax.}
+ \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{If TRUE, estimate factor scores}
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. }
@@ -40,6 +45,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
+  \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
   \item{oblique.scores}{If factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (which is what factanal seems to do). } 
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
@@ -73,7 +79,7 @@ In the oblique case, the factor loadings are referred to as Pattern coefficients
 
 It is sometimes useful to extend the factor solution to variables that were not factored.  This may be done using \code{\link{fa.extension}}. Factor extension is typically done in the case where some variables were not appropriate to factor, but factor loadings on the original factors are still desired.
 
-For dichotomous items, it is recommended to analyze the \code{\link{tetrachoric}} correlations rather than the Pearson correlations.  This is done automatically when using  \code{\link{irt.fa}} function.  In this case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results.
+For dichotomous items or polytomous items, it is recommended to analyze the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations rather than the Pearson correlations.  This is done automatically when using  \code{\link{irt.fa}} or \code{\link{fa.poly}}  functions.  In the first case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results. In the later case, a typical factor loadings matrix is returned, but the tetrachoric/polychoric correlation matrix and item statitics are saved for reanalysis by \code{\link{irt.fa}}
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT and geominT do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ, and geominQ are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
@@ -81,6 +87,10 @@ Of the various rotation/transformation options, varimax, Varimax, quartimax, ben
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
 When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. 
+
+The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. 
+
+\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so).  Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 
 }
@@ -139,9 +149,11 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 }
 \author{ William Revelle }
 
-\note{Thanks to Erich Studerus for some very helpful suggestions about various rotation and factor scoring algorithms, and to  Gumundur Arnkelsson  for suggestions about factor scores for singular matrices.}
+\note{Thanks to Erich Studerus for some very helpful suggestions about various rotation and factor scoring algorithms, and to  Gumundur Arnkelsson  for suggestions about factor scores for singular matrices.
 
-\seealso{ \code{\link{principal}},  \code{link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}}, \code{\link{fa.extension}}  }
+The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals.  }
+
+\seealso{ \code{\link{principal}},  \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}}, \code{\link{fa.extension}}  }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")

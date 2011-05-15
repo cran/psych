@@ -2,7 +2,7 @@
 function(x,labels=NULL,...)
   {
   
-   
+   result <- NULL
    title <- x$title
    vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <-  FALSE 
    if(length(class(x)) > 1)  {
@@ -70,15 +70,16 @@ if (nc > 2 ) {
  par(op) }
  
  
-if(irt.fa) {
-  
- plot.irt(x,labels=labels,...)}
+if(irt.fa) {result <- plot.irt(x,labels=labels,...)}
 
-if(irt.poly) { plot.poly(x,labels=labels,...)}
+if(irt.poly) { result <-  plot.poly(x,labels=labels,...)}
 
 if(fa) factor.plot(x,...)
 
 if(principal) factor.plot(x,...)
 
 if(parallel) plot.fa.parallel(x,...)
+
+if(!is.null(result))  {class(result) <- c("psych","polyinfo")
+   invisible(result)}
 }

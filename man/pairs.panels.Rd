@@ -48,7 +48,7 @@ Whe plotting more than about 100-200 cases, it is useful to use the show.points=
 If lm=TRUE, then the scatter plots are drawn above and below the diagonal, each with a linear regression fit.  Useful to show the difference between regression lines.
 }
 
-\seealso{  \code{\link{pairs}}, \code{\link{cor.plot}} }
+\seealso{  \code{\link{pairs}} which is the base from which pairs.panels is derived, \code{\link{cor.plot}} to do a heat map of correlations, and \code{\link{scatter.hist}} to draw a single correlation plot with histograms and best fitted lines. }
 \examples{
 
 pairs.panels(attitude)   #see the graphics window

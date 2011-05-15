@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.0.97 (2011-04-30)}{
+\section{Changes in psych version 1.0.98 (2011-06-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.0.97 is the development release of the psych package.  The released version is 1.0.96.
+      \item Version 1.0.98 is the development release of the psych package.  The released version is 1.0.97.
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -19,11 +19,35 @@
       \item Add the ability to create multiple groups in sim.irt functions
       \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
       \item Add labels to factor.plot for more than 2 factors?
-      \item Add a polychoric and tetrachoric option to fa.parallel
-      \item Add a graphic output for fa.extension.
+      \item Add goodness of fit tests for fa.extension applied to the extension variables.
+      \item Add a graph of standard errors as an option in the plot(irt.fa) 
+      function
+      \item fix ICLUST so that it converts covar matrices to correlations. 
+      \item Resolve why the denomiator df in set.cor does not precisely match the Cohen example.
     }
   }
   } 
+\section{Changes in psych version 1.0.97 (2011-05-15)}{
+  \subsection{Additions}{
+  \itemize{
+  \item Added a polychoric and tetrachoric option to fa.parallel
+  \item Added a keys option to plot.psych  (plot.poly and plot.irt) to allow for plotting information functions for selected items while retaining the factor loadings from the complete set. (Requested by Ben Schalet.)
+  \item Added a summary of the graphic output for irt.fa that includes the average information for each item as well as where the item is most informative. (Suggested by David Condon.)
+  \item Integrated the interactions between fa, fa.poly, irt.fa, fa.diagram, plot, etc. to make commands more consistent.
+  \item added a factor analysis for tetrachoric or polychoric correlations (fa.poly) that will work without doing an irt analysis using irt.fa.
+  \item Added bootstrapped confidence intervals for loadings and correlations in factor  analysis (fa), for reliability estimates in omega (omega) and fa.poly.(Originally requested by Steve Miller and Renee Engeln-Maddox polychoric correlations, extended to the omega case.)
+   \item Modified fa.diagram to include graphic output for fa.extension.
+  \item Added Cohen's set correlation to the mat.regress function. (Requested my Amanda Uliaszek.)
+  \item Changed the order of the parameters in the mat.regress function to be more consistent with the y~x notation of most regression functions.
+  \item  Added an oblique.scores option to principal.  This means that if oblique rotations are done (not the default) then the scores from principal will be oblique as well.  
+   }
+  }
+  \subsection{Bugs Fixed}{
+   \itemize{
+    \item None yet
+   }
+  }
+  }
   \section{Changes in psych version 1.0.96 (2011-04-04)}{
   \subsection{Additions}{
   \itemize{

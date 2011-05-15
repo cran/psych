@@ -13,7 +13,7 @@ for (nfact in factors) {
    for (trials in 1:ntrials) {
    x <- sim.minor(nvar=nvar,nfact=nfact,n=nsub)$observed
    fp <- fa.parallel(x)
-   fps <- fa.parallel(x,smc=TRUE) 
+   fps <- fa.parallel(x,SMC=TRUE) 
    result[k,1] <- nfact
    result[k,2] <- nvar
    result[k,3] <- trials

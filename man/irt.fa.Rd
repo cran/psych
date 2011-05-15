@@ -27,11 +27,15 @@ Similar analyses may be done with discrete item responses using polychoric corre
 
 The results may be shown graphically using plot.   For plotting there are three options: type = "ICC" will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
 
-The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}} or \code{\link{polychoric}}, then that result can be processed directly.
+The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}} or \code{\link{polychoric}}, then that result can be processed directly.  Because irt.fa saves the rho and tau matrices from the analysis, subsequent analyses of the same data set are much faster if the input is the object returned on the first run.
 
 The output is best seen in terms of graphic displays.  Plot the output from irt.fa to see item and test information functions.  
 
-The \code{link{irt.select}} function is a helper function to allow for selecting a subset of a prior analysis for further analysis. First run irt.fa, then select a subset of variables to be analyzed in a subsequent irt.fa analysis.
+The \code{\link{irt.select}} function is a helper function to allow for selecting a subset of a prior analysis for further analysis. First run irt.fa, then select a subset of variables to be analyzed in a subsequent irt.fa analysis.  Perhaps a better approach is to just plot and find the information for selected items.  
+
+The plot function for an irt.fa object will plot ICC (item characteristic curves), IIC (item information curves), or test information curves. In addition, by using the "keys" option,  these three kinds of plots can be done for selected items. This is particularly useful when trying to see the information characteristics of short forms of tests based upon the longer form factor analysis.
+
+The plot function will also return (invisibly) the average information (area under the curve) for each item.  These may be then printed or printed in sorted order using the sort option in print.
 }
 \value{
  \item{irt }{A list of Item location (difficulty) and discrimination}
@@ -70,6 +74,7 @@ set.seed(17)
 items <- sim.congeneric(N=500,short=FALSE,categorical=TRUE) #500 responses to 4 discrete items
 d4 <- irt.fa(items$observed)  #item response analysis of congeneric measures
 
+
 op <- par(mfrow=c(2,2))
 plot(d4,type="ICC")
 par(op)
@@ -86,6 +91,9 @@ plot(iq.irt)
 small.iq.irt <- irt.select(iq.irt,c(1,5,9,10,11,13))
 small.irt <- irt.fa(small.iq.irt)
 plot(small.irt)
+#find the information for three subset of iq items
+keys <- make.keys(14,list(all=1:14,some=c(1,5,9,10,11,13),others=c(1:5)))
+plot(iq.irt,keys=keys)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -97,7 +97,7 @@ cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
 
  } #else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz") }
  
- fa.diagram(fa(item.sim(16),2) ,main="Principal factor of a simple structure") 
+ fa.diagram(fa(item.sim(16),2)) 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
   	v9 <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
   	omega.diagram(v9,sl=FALSE,main="Omega with hierarchical factors")
@@ -112,7 +112,11 @@ cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
 		colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 	 example.model <- structure.diagram(X6,phi21,Y3,main="Symbolic structural model")
 
-
+   R <- cor(sim.item(16))
+    ss <- c(1,3,5,7,9,11,13,15)
+   f <- fa(R[ss,ss],2)
+   foe <- fa.extension(R[ss,-ss],f)
+   fa.diagram(f,fe=foe)
   
   out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}

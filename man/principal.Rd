@@ -4,7 +4,7 @@
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median")
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median",oblique.scores=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,6 +16,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=F
   \item{scores}{If TRUE, find component scores}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values} 
+  \item{oblique.scores}{If TRUE (default), then the component scores are based upon the structure matrix.  If FALSE, upon the pattern matrix.}
 }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 
@@ -29,7 +30,7 @@ Rotations and transformations are either part of psych (Promax and cluster), of 
 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
-Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores can be estimated either by regression (which is done) or just multiplying the data by  the components.  The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.  This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.    
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  By default, the regression weights are found from the Structure matrix, not the Pattern matrix. 
 }
 \value{
   

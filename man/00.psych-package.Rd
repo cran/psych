@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-96 \cr
-Date: \tab 2011-04-04\cr
+Version: \tab 1.0-97 \cr
+Date: \tab 2011-05-15\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -120,6 +120,7 @@ Data reduction through cluster and factor analysis\cr
 \link{fa.extension}   \tab          Apply the Dwyer extension for factor loadingss \cr
 \link{principal}       \tab         Do an eigen value decomposition to find the principal components of a matrix\cr
 \link{fa.parallel}     \tab         Scree test and Parallel analysis \cr
+\link{fa.parallel.poly}     \tab     Scree test and Parallel analysis for polychoric matrices \cr
 \link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
 \code{\link{irt.fa}}   \tab          Apply factor analysis to dichotomous items to get IRT parameters \cr
@@ -135,6 +136,7 @@ Data reduction through cluster and factor analysis\cr
 \link{schmid}            \tab        Apply the Schmid Leiman transformation to a correlation matrix\cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
+\link{set.cor}             \tab       Find Cohen's set correlation between two sets of variables \cr
 \link{smc}             \tab          Find the Squared Multiple Correlation (used for initial communality estimates)\cr
 \link{tetrachoric}            \tab    Find tetrachoric correlations and item thresholds \cr
 \link{polyserial}            \tab    Find polyserial and biserial correlations for item validity studies \cr
@@ -169,6 +171,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{cluster.loadings}  \tab        find correlations of items with  composite variables from a larger matrix\cr
 \link{eigen.loadings}    \tab        Find the loadings when doing an eigen value decomposition\cr
 \link{fa}        \tab        Do a minimal residual or principal axis factor analysis and estimate factor scores\cr
+\link{fa.extension}        \tab      Extend a factor analysis to a set of new variables\cr
 \link{factor.pa}        \tab        Do a Principal Axis factor analysis and estimate factor scores\cr
 \link{factor2cluster}    \tab       extract cluster definitions from factor loadings\cr
 \link{factor.congruence}  \tab      Factor congruence coefficient\cr

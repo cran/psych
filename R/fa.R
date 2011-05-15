@@ -7,8 +7,85 @@
 #modified June 24, 2009 to add ml fitting
 #modified March 4, 2010 to allow for factoring of covariance matrices rather than correlation matrices
 #this itself is straight foward, but the summary stats need to be worked on
-#modified April 4, 2011 to allow for factor scores of oblique or orthogonal solutios
+#modified April 4, 2011 to allow for factor scores of oblique or orthogonal solution
+#In May, 2011, fa was added as a wrapper to do iterations, and the original fa function was changed to fac.  The functionality of fa has not changed.
+
 "fa" <- 
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores=FALSE, residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=TRUE,...) {
+ cl <- match.call()
+  if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
+                                 if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
+                                 }
+  
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+ fl <- f$loadings  #this is the original
+ nvar <- dim(fl)[1]
+ 
+ if(n.iter > 1) {
+ if(is.na(n.obs) ) {n.obs <- f$n.obs} 
+ replicates <- list()
+ rep.rots <- list()
+ for (trials in 1:n.iter) {
+ if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with correlation
+                                      mu <- rep(0, nvar)
+                                      x <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, 
+                                   empirical = FALSE)
+
+                            } else {x <- r[sample(n.obs,n.obs,replace=TRUE),]}
+  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+  if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
+                  replicates[[trials]] <- t.rot$loadings
+                   if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
+                    rep.rots[[trials]] <- phis[lower.tri(phis)]}}  else 
+                    {replicates[[trials]] <- fs$loadings}
+  }
+replicates <- matrix(unlist(replicates),ncol=nfactors*nvar,byrow=TRUE)
+if(!is.null( f$Phi) ) {rep.rots <- matrix(unlist(rep.rots),ncol=nfactors*(nfactors-1)/2,byrow=TRUE) 
+       z.rot <- fisherz(rep.rots)
+       means.rot <- fisherz2r(colMeans(z.rot,na.rm=TRUE))
+      sds.rot <- apply(z.rot,2,sd, na.rm=TRUE)
+      sds.rot <- fisherz2r(sds.rot)
+      ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
+      ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot
+      ci.rot.lower <- fisherz2r(ci.rot.lower)
+      ci.rot.upper <- fisherz2r(ci.rot.upper)
+      ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)
+} else  {rep.rots <- NULL
+         means.rot <- NULL
+         sds.rot <- NULL
+         z.rot <- NULL
+         ci.rot <- NULL }
+z.replicates <- fisherz(replicates)  #convert to z scores
+
+means <- matrix(colMeans(z.replicates,na.rm=TRUE),ncol=nfactors)
+sds <-  matrix(apply(z.replicates,2,sd,na.rm=TRUE),ncol=nfactors)
+
+ci.lower <-  means + qnorm(p/2) * sds
+ci.upper <- means + qnorm(1-p/2) * sds
+means <- fisherz2r(means)
+sds <- fisherz2r(sds)
+ci.lower <- fisherz2r(ci.lower)
+ci.upper <- fisherz2r(ci.upper)
+ci <- data.frame(lower = ci.lower,upper=ci.upper)
+class(means) <- "loadings"
+#class(sds) <- "loadings"
+
+colnames(means) <- colnames(sds) <- colnames(fl)
+rownames(means) <- rownames(sds) <- rownames(fl)
+results <- list(fa = f,means = means,sds = sds,ci = ci, means.rot=means.rot,sds.rot=sds.rot,ci.rot=ci.rot,Call= cl,replicates=replicates,rep.rots=rep.rots)
+class(results) <- c("psych","fa.ci")
+} else {results <- f
+       class(results) <- c("psych","fa")
+       }
+return(results)
+
+ }
+ #written May 1 2011
+
+
+#the main function 
+
+"fac" <- 
 function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal

@@ -1,6 +1,8 @@
 "print.psych.omega" <- 
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
-
+xx <- x
+if(!is.null(x$ci)) {
+x <- x$om} 
 if(is.null(cut)) cut <- .2
 	 cat( x$title,"\n") 
 	 cat("Call: ")
@@ -87,7 +89,21 @@ if(is.null(cut)) cut <- .2
   #cat("\nMultiple R square of scores with factors      " ,round(x$stats$R2,digits))
   #cat("\nMinimum correlation of factor score estimates ", round(2*x$stats$R2 -1,digits),"\n")
    
-   }
+   
+   #now, see if there are any confidence intervals to report
+   if(!is.null(xx$ci)) {
+  	 cat("\n Estimates and bootstrapped confidence intervals\n")
+  	 li <- data.frame(lower=xx$ci$ci[,1],estimate=xx$ci$means,upper=xx$ci$ci[,2])
+  	 li[1,2] <- x$omega_h
+  	 li[2,2] <- x$alpha
+  	 li[3,2] <- x$omega.tot
+  	 li[4,2] <- x$G6
+  	 li[5,2] <- x$omega.lim
+  	 
+
+   print(li,digits=digits)} 
+  }
+
    
    
    

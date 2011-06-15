@@ -20,11 +20,13 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL)
   
 }
 \details{
- Cohen (1982) introduced the set correlation, a multivariate generalization of the multiple correlation.  Set correlation is the amount of shared variance (R2) between two sets of variables.  With the addition of a third, covariate set, set correlation will find multivariate R2, as well as partial and semi partial R2.  (The semi and bipartial options are not yet implemented.) Details on set correlation may be found in Cohen (1982) Cohen, Cohen, Aiken and West (2003).  
+ Cohen (1982) introduced the set correlation, a multivariate generalization of the multiple correlation to measure the overall relationship between two sets of variables. It is an application of canoncial correlation (Hotelling, 1936) and \eqn{1 - \prod(1-\rho_i^2)} where \eqn{\rho_i^2} is the squared canonical correlation.  Set correlation is the amount of shared variance (R2) between two sets of variables.  With the addition of a third, covariate set, set correlation will find multivariate R2, as well as partial and semi partial R2.  (The semi and bipartial options are not yet implemented.) Details on set correlation may be found in Cohen (1982) Cohen, Cohen, Aiken and West (2003).  
  
-  Although it is more common to calculate multiple regression from raw data, it is,  of course, possible to do so from a set of correlations.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor) and  y (criterion) variables. The program will find the correlations if given raw data.
+ Unfortunately, the R2 is sensitive to one of the canonical correlations being very high.  An alternative, T2, is the proportion of additive variance and is the average of the squared canonicals.  (Cohen et al., 2003), see also Cramer and Nicewander (1979).  This average, because it includes some very small canonical correlations, will tend to be too small.  Cohen et al. admonition is appropriate: "In the final analysis, however, analysts must be guided by their substantive and methodological conceptions of the problem at hand in their choice of a measure of association." ( p613). 
+ 
+  Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a set of correlations.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor) and  y (criterion) variables. The program will find the correlations if given raw data.
   
-  The output is a set of multiple correlations, one for each dependent variable in the y set. 
+  The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
   
   An additional output is the R2 found using Cohen's set correlation (Cohen, 1982).  This is a measure of how much variance and the x and y set share.  
   
@@ -56,18 +58,35 @@ J. Cohen (1982)  Set correlation as a general mulitivariate data-analytic method
 
 J. Cohen, P. Cohen, S.G. West, and L.S. Aiken. (2003) Applied multiple regression/correlation analysis for the behavioral sciences. L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
 
+H. Hotelling. (1936) Relations between two sets of variates. Biometrika 28(3/4):321-377.
+
+
+E.Cramer and W A. Nicewander (1979) Some symmetric, invariant measures of multivariate association. Psychometrika, 44:43-54.
+
+
 
 }
 
 \note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to set.cor from mat.regress to reflect the estimation of the set correlation. 
 
-The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621
+The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621 but does match the formula on page 615, except for the typo in the estimation of F (see Cohen 1982).   The difference seems to be that they are adding in a correction factor of df 2 = df2 + df1.  
 
 }
 
-\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}} }
+\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package.  }
 \examples{
 
+#the Kelly data from Hoteling
+kelly <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0.4248, 
+1, 0.1487, 0.2489, 0.2843), words = c(0.042, 0.1487, 1, 0.6693, 
+0.4662), symbols = c(0.0215, 0.2489, 0.6693, 1, 0.6915), meaningless = c(0.0573, 
+0.2843, 0.4662, 0.6915, 1)), .Names = c("speed", "power", "words", 
+"symbols", "meaningless"), class = "data.frame", row.names = c(NA, 
+-5L))
+
+kelly
+
+set.cor(1:2,3:5,kelly)
 
 set.cor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)
 #now try partialling out some variables

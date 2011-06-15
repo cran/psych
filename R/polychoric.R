@@ -16,12 +16,12 @@ function(x,y=NULL,taux,tauy,correct=TRUE) {
 
     P <- matrix(0, nr,nc)
     R <- matrix(c(1,rho,rho,1),2,2)
-    diag(R) <- 1
+   # diag(R) <- 1
     for (i in 1:nr) {
         for (j in 1:nc) {
             P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
-                corr = R)
+                corr = R)   #should we specify the algorithm to TVPACK or Miwa
         }}
     P   #the estimated n x n predicted by rho, rc, cc
 }

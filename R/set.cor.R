@@ -48,9 +48,21 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
      	 	names(beta) <- colnames(data)[x]
      		 names(R2) <- colnames(data)[y]}
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
-     	            } else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
-     	            } else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))}
+     	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
+     	             } else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
+     	            Myx <-  xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)
+     	            } else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))
+     	            if(numy > numx) {
+     	            Myx <- solve(x.matrix) %*% xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)} else { Myx <- solve(y.matrix) %*% t(xy.matrix )%*% solve(x.matrix) %*% (xy.matrix)}
+     	           }
+     	            cc2 <- eigen(Myx)$values
+     	            cc <- sqrt(cc2)
+     	            T <- sum(cc2)/length(cc2) 
+     	            
+     	            
+     	            
      	            }
+     	           
      	if(!is.null(n.obs)) {k<- length(x)
      	                     
      	                     uniq <- (1-smc(x.matrix))
@@ -75,26 +87,32 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
      	                     u <- numx * numy
      	                     m1 <- n.obs - max(numy ,(numx+numz)) - (numx + numy +3)/2 
      	                    
-     	                     s <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2)) 
-     	                    
+     	                     s <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2-5)) 
+     	                     if(numx*numy ==4) s <- 1
+     	                   
      	                     v <- m1 * s + 1 - u/2
      	                     R2set.shrunk <- 1 - (1-Rset) * ((v+u)/v)^s
      	                     L <- 1-Rset
      	                     L1s <- L^(-1/s)
      	                     Rset.F <- (L1s-1)*(v/u)
-     	                     df.m <- n.obs -  max(numy ,(numx+numz)) -1 -(numx + numy +1)/2
+     	                     df.m <- n.obs -  max(numy ,(numx+numz))  -(numx + numy +3)/2
      	                      s1 <- sqrt((numx ^2 * numy^2 -4)/(numx^2 + numy^2-5)) #see cohen p 321
      	                     if(numx^2*numy^2 < 5) s1 <- 1
-     	                     df.v <- df.m * s1 + 1 - numx * numy/2
+     	                     df.v <- df.m * s1 + 1 - numx * numy/2 #which is just v
+     	                    # df.v <- (u+v)  #adjusted for bias to match the CCAW results
+     	                    #Rset.F <- Rset.F * (u+v)/v 
+     	                   
+     	                    Chisq <- -(n.obs - 1 -(numx + numy +1)/2)*log((1-cc2))
+     	                   
      	                              }
      	
      	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,Call = cl)} else {
-     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,Call = cl)}
-     	class(mat.regress) <- c("psych","mat.regress")
-     	return(mat.regress)
+     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,Call = cl)} else {
+     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,Call = cl)}
+     	class(set.cor) <- c("psych","set.cor")
+     	return(set.cor)
      	}
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests

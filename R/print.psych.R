@@ -4,7 +4,7 @@
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
-iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- fa.ci <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- mat.reg <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <- partial <- extension <- circ  <- schmid <- poly.info <-  FALSE
+iclust <- omega <- omegaSem <- vss <- scores <- mchoice <- fac.pa <- fa.ci <- principal <- gutt <- sim <- alpha <- describe <- corr.test <- r.test <- cortest <-  cluster.cor <- cluster.loadings <-comorbid <- kappa <- thurstone <- stats <- ICC <- set.cor <- parallel <- tetra <- poly <-  irt.fa <- irt.poly <- mardia <- partial <- extension <- circ  <- schmid <- poly.info <-  FALSE
 #first, figure out which psych function was called
 if(length(class(x)) > 1)  {
    if(class(x)[2] =='sim')  sim <- TRUE
@@ -29,7 +29,7 @@ if(length(class(x)) > 1)  {
    if(class(x)[2] == "thurstone") thurstone <- TRUE
    if(class(x)[2] == "ICC") ICC <- TRUE
    if(class(x)[2] == "stats") stats <- TRUE
-   if(class(x)[2] == "mat.regress") mat.reg <- TRUE
+   if(class(x)[2] == "set.cor") set.cor <- TRUE
    if(class(x)[2] == "parallel") parallel <- TRUE
    if(class(x)[2] == "kappa")    kappa <- TRUE 
    if(class(x)[2] == "comorbid")    comorbid <- TRUE
@@ -310,7 +310,7 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             print(x$tau,digits)
           }
    }
-  if(mat.reg) { cat("Call: ")
+  if(set.cor) { cat("Call: ")
               print(x$Call)
             cat("\nMultiple Regression from matrix input \n")
            cat("\nBeta weights \n")
@@ -338,12 +338,20 @@ cat("\n Goodness of fit of model  ", round(x$GF,digits))
             print(x$df)
            
            }
-            cat("\n Cohen's Set Correlation R2 \n")
-            print(x$Rset,digits=digits)
-            cat("\n Shrunken Set Correlation R2 \n")
-            print(x$Rset.shrunk,digits=digits)
-            cat("\n F of Cohen's Set Correlation \n")
-            print(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits )
+            cat("\nVarious estimates of between set correlations\n")
+            cat("Squared Canonical Correlations \n")
+            print(x$cancor2,digits=digits)
+            cat("Chisq of canonical correlations \n")
+            print(x$Chisq,digits=digits)
+            cat("\n Average squared canonical correlation = ",round(x$T,digits=digits))
+          
+            cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
+            #print(x$Rset,digits=digits)
+           if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
+           # print(x$Rset.shrunk,digits=digits)
+            cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
+           
+          #  print(x$T,digits=digits)
 
    }
  if(parallel) { cat("Call: ")

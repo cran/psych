@@ -217,11 +217,12 @@ Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pf
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE, eps=FALSE>>=
-png('pairspanels.png')
+<<pairspanels>>=
+png( 'pairspanels.png' )
 pairs.panels(sat.act)
 dev.off()
 @
+\includegraphics{pairspanels}
 \caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. Note the extreme outlier for the ACT.  }
 \label{fig:pairs.panels}
 \end{center}
@@ -231,12 +232,12 @@ Another example of \pfun{pairs.panels} is to show differences between experiment
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE, eps=FALSE>>=
-data(affect)
+<<affect>>=
 png('affect.png')
 pairs.panels(flat[15:18],bg=c("red","black","white","blue")[maps$Film],pch=21,main="Affect varies by movies (study 'flat')")
 dev.off()
 @
+\includegraphics{affect}
 \caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. The coloring represent four different movie conditions. }
 \label{fig:pairs.panels2}
 \end{center}
@@ -595,7 +596,7 @@ iclust.diagram(ic.poly)
 \end{Schunk}
 
 \subsection{Confidence intervals using bootstrapping techniques}
-Exploratory factoring techniques are sometimes criticized because of the lack of statistical information on the solutions.  Overall estimates of goodness of fit including $\chi^{2}$ and RMSEA are found in the \pfun{fa} and \pfun{omega} functions.  Confidence intervals for the factor loadings may be found by doing multiple bootstrapped iterations  of the original analysis.  This is done by setting the n.iter parameter to the desired number of iterations.  This can be done for factoring of Pearson correlation matrices as well as polychoric/tetrachoric matrices  (See Table~\ref{tab:bootstrap}).. 
+Exploratory factoring techniques are sometimes criticized because of the lack of statistical information on the solutions.  Overall estimates of goodness of fit including $\chi^{2}$ and RMSEA are found in the \pfun{fa} and \pfun{omega} functions.  Confidence intervals for the factor loadings may be found by doing multiple bootstrapped iterations  of the original analysis.  This is done by setting the n.iter parameter to the desired number of iterations.  This can be done for factoring of Pearson correlation matrices as well as polychoric/tetrachoric matrices  (See Table~\ref{tab:bootstrap}). 
 
 \begin{table}[htdp]
 \caption{An example of bootstrapped confidence intervals on 10 items from the Big 5 inventory.}
@@ -916,11 +917,12 @@ To see the additional information (the raw correlations, the individual scores, 
 
 \begin{figure}[htbp]
 \begin{center}
-<<print=FALSE,echo=TRUE,eps=FALSE>>=
+<<scores>>=
 png('scores.png')
 pairs.panels(scores$scores)
 dev.off()
 @
+\includegraphics{scores}
 \caption{A graphic analysis of the Big Five scales found by using the score.items function.}
 \label{default}
 \end{center}
@@ -1010,9 +1012,13 @@ More extensive IRT packages include the \Rpkg{ltm} and \Rpkg{eRm} and should be 
 
 
 \section{Set Correlation and Multiple Regression from the correlation matrix}
-An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{set.cor} function.  \pfun{set.cor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
+An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{set.cor} function.  Set correlation is $$R^{2} = 1 - \prod(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
 
-Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{mat.regress}. Two things to notice.  \pfun{mat.regress} works on the \emph{correlation} or \emph{covariance} matrix, and thus if using the correlation matrix, will report standardized $\beta$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, statistical tests of significance are applied.
+ \pfun{set.cor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
+
+Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{mat.regress}. Two things to notice.  \pfun{mat.regress} works on the \emph{correlation} or  \emph{covariance}  or \emph{raw data} matrix, and thus if using the correlation matrix, will report standardized $\beta$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, or if the analysis is done on raw data, statistical tests of significance are applied.
+
+For this example, the analysis is done on the correlation matrix rather than the raw data.
 
 <<print=FALSE,echo=TRUE>>=
 

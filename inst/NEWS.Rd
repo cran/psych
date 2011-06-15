@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.0.98 (2011-06-30)}{
+\section{Changes in psych version 1.0.99 (2011-06-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.0.98 is the development release of the psych package.  The released version is 1.0.97.
+      \item Version 1.0.99 is the development release of the psych package.  The released version is 1.0.98.
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -23,10 +23,23 @@
       \item Add a graph of standard errors as an option in the plot(irt.fa) 
       function
       \item fix ICLUST so that it converts covar matrices to correlations. 
-      \item Resolve why the denomiator df in set.cor does not precisely match the Cohen example.
+      \item Find canonical loadings. 
+      \item get better items for the iq example items (in progress)
     }
   }
   } 
+\section{Changes in psych version 1.0.98 (2011-06-10)}{
+  \subsection{Additions}{
+  \itemize{
+ 	 \item Improvements to set.cor to report the canonical correlations and their chi squares.  Also added a plot function to set.cor so that it will plot the eigen values of the canonical correllations.
+     }
+  }
+   \subsection{Bugs Fixed}{
+   \itemize{
+    \item Resolved why the denomiator df in set.cor does not precisely match the Cohen example.  This seems to be because Systat is doing an unbiased estimator and is thus multiplying by (u+v)/v.
+   }
+  }
+  }  
 \section{Changes in psych version 1.0.97 (2011-05-15)}{
   \subsection{Additions}{
   \itemize{

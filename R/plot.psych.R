@@ -4,7 +4,7 @@ function(x,labels=NULL,...)
   
    result <- NULL
    title <- x$title
-   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <-  FALSE 
+   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <-  FALSE 
    if(length(class(x)) > 1)  {
    if(class(x)[2] =='irt.fa')  irt.fa <- TRUE
     if(class(x)[2] =='irt.poly')  irt.poly <- TRUE
@@ -14,7 +14,8 @@ function(x,labels=NULL,...)
    if(class(x)[2] =='principal')  principal <- TRUE 
    if(class(x)[2] =='vss')  vss <- TRUE 
     if(class(x)[2] =='omega')   omega <- TRUE 
-    if(class(x)[2] =='parallel')   parallel <- TRUE 
+   if(class(x)[2] =='parallel')   parallel <- TRUE 
+    if(class(x)[2] =='set.cor')   set.cor <- TRUE 
  }
  
 
@@ -70,6 +71,7 @@ if (nc > 2 ) {
  par(op) }
  
  
+if(set.cor) plot(x$cancor2,typ="b",ylab="Squared Canonical Correlation",xlab="Canonical variate",main="Scree of canonical correlations" ,ylim=c(0,1),...)
 if(irt.fa) {result <- plot.irt(x,labels=labels,...)}
 
 if(irt.poly) { result <-  plot.poly(x,labels=labels,...)}

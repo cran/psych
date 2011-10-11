@@ -14,11 +14,12 @@ failed=FALSE
                                  if (!is.matrix(R)) R <- as.matrix(R)
                                  R <- cov2cor(R)
                                  }
+if(!covar) { R <- cor.smooth(R) }                              
  R.inv <- try(solve(R),TRUE)
  if(class(R.inv)== as.character("try-error")) {smc <- rep(1,p)
  message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
  if(max(smc) > 1.0) {message("In smc, smcs > 1 were set to 1.0")
-   smc[smc>1]  <- 1.0}
+   smc[smc >1 ]  <- 1.0}
    if(min(smc) < 0.0) {message("In smc, smcs < 0 were set to .0")
    smc[smc < 0]  <- 0}
  if(covar) {smc <- smc * vari}}

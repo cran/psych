@@ -7,7 +7,7 @@
  Internal consistency measures of reliability range from \eqn{\omega_h}{omega_hierchical} to \eqn{\alpha}{alpha} to \eqn{\omega_t}{omega_total}.  This function reports two estimates: Cronbach's coefficient \eqn{\alpha}{alpha} and Guttman's \eqn{\lambda_6}{lambda_6}.  Also reported are item - whole correlations, \eqn{\alpha}{alpha} if an item is omitted, and item means and standard deviations.
 }
 \usage{
-alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE)
+alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,check.keys=TRUE)
 }
 
 \arguments{
@@ -17,6 +17,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE)
   \item{cumulative}{should means reflect the sum of items or the mean of the items.  The default value is means.}
   \item{max}{the number of categories/item to consider if reporting category frequencies.  Defaults to 10, passed to \code{link{response.frequencies}} }
   \item{na.rm}{The default is to remove missing values and find pairwise correlations}
+  \item{check.keys}{if TRUE, then find the first principal component and reverse key items with negative loadings.  Give a warning if this happens. }
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 

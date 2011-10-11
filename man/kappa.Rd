@@ -65,6 +65,12 @@ Unfortunately, to make it more confusing, the weights described by Cohen are a f
 
 \examples{
 
+#rating data (with thanks to Tim Bates)
+rater1 = c(1,2,3,4,5,6,7,8,9) # rater one's ratings
+rater2 = c(1,3,1,6,1,5,5,6,7) # rater one's ratings
+cohen.kappa(x=cbind(rater1,rater2))
+
+#data matrix taken from Cohen
 cohen <- matrix(c(
 0.44, 0.07, 0.09,
 0.05, 0.20, 0.05,
@@ -108,6 +114,7 @@ weights <- matrix(c(
  
  cohen.kappa(fleiss,weights,n.obs=200)
  
+ #another example is comparing the scores of two sets of twins
  #data may be a 2 column matrix
  #compare weighted and unweighted
  #also look at the ICC for this data set.

@@ -1,7 +1,7 @@
 "factor.pa" <- 
 function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="pa") {
  cl <- match.call()
- 
+ .Deprecated("fa",msg="factor.pa is deprecated.  Please use the fa function with fm=pa")
  ##first some functions that are internal to factor.minres
   #this does the ULS fitting  
   "fit.residuals.ols" <- function(Psi,S,nf) {

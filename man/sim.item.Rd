@@ -49,12 +49,12 @@ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for 
 \examples{
 
 round(cor(circ.sim(nvar=8,nsub=200)),2)
-plot(factor.pa(circ.sim(16,500),2)$loadings,main="Circumplex Structure") #circumplex structure
+plot(fa(circ.sim(16,500),2)$loadings,main="Circumplex Structure") #circumplex structure
 #
 #
-plot(factor.pa(item.sim(16,500),2)$loadings,main="Simple Structure") #simple structure
+plot(fa(item.sim(16,500),2)$loadings,main="Simple Structure") #simple structure
 #
-cluster.plot(factor.pa(item.dichot(16,low=0,high=1),2))
+cluster.plot(fa(item.dichot(16,low=0,high=1),2))
 
 #not run
 #x12 <- sim.item(12,gloading=.6)

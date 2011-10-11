@@ -75,14 +75,14 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))
       			 gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2])) 
-      			 message("Three factors are required for identification -- general factor loadings set to be equal. Proceed with caution.")} else { if(option=="first") {
+      			 message("\nThree factors are required for identification -- general factor loadings set to be equal. \nProceed with caution. \nThink about redoing the analysis with alternative values of the 'option' setting.\n")} else { if(option=="first") {
       			 gload[1] <- 1
       			# gload[2] <- abs(factr[1,2])
       			gload[2] <-  (factr[1,2])
-      			 message("Three factors are required for identification -- general factor loading set to be 1 for group factor 1. Proceed with caution.")} else { gload[2] <- 1
+      			 message("\nThree factors are required for identification -- general factor loading set to be 1 for group factor 1. \nProceed with caution. \nThink about redoing the analysis with alternative values of the 'option' setting.\n")} else { gload[2] <- 1
       			# gload[1] <- abs(factr[1,2]) 
       			 gload[1] <- (factr[1,2]) 
-      			 message("Three factors are required for identification -- general factor loadings are set to be 1 for group factor 2. Proceed with caution.")} }
+      			 message("\nThree factors are required for identification -- general factor loadings are set to be 1 for group factor 2.\nProceed with caution. \nThink about redoing the analysis with alternative values of the 'option' setting.\n")} }
       			 
        
               }  

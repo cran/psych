@@ -9,8 +9,8 @@
 It is also possible to specify a measurement model for a set of x variables separately from a set of y variables.  They are then combined into one model with the correlation structure between the two sets.
 }
 \usage{
-sim.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		
-make.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)  #deprecated
+sim.structure(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	
+sim.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0)  #deprecated
 
 }
 \arguments{
@@ -19,9 +19,17 @@ make.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE)  #deprecated
   \item{fy}{The measurement model for y}
   \item{f}{ The measurement model}
   \item{n}{ Number of cases to simulate.  If n=0, the population matrix is returned.}
-  \item{raw}{if raw=TRUE, raw data are returned as well.}
+  \item{uniq}{The uniquenesses if creating a covariance matrix}
+  \item{raw}{if raw=TRUE, raw data are returned as well for n > 0.}
+  \item{items}{TRUE if simulating items, FALSE if simulating scales}
+  \item{low}{Restrict the item difficulties to range from low to high}
+  \item{high}{Restrict the item difficulties to range from low to high}
+  \item{d}{A vector of item difficulties, if NULL will range uniformly from low to high}
+  \item{cat}{Number of categories when creating binary (2) or polytomous items}
+  \item{mu}{A vector of means, defaults to 0}
  }
 \details{Given the measurement model, fx and the structure model Phi, the model is  f %*% Phi %*%  t(f).   Reliability is f %*% t(f).
+If creating a correlation matrix, (uniq=NULL) then the diagonal is set to 1, otherwise the diagonal is diag(model) + uniq and the resulting structure is a covariance matrix.
 
 Given the model, raw data are generated using the mvnorm function.
 
@@ -30,9 +38,9 @@ A special case of a structural model are one factor models such as parallel test
       
 }
 \value{
-  \item{model }{The implied population correlation matrix} 
+  \item{model }{The implied population correlation or covariance matrix} 
   \item{reliability }{The population reliability values}
-  \item{r}{The sample correlation matrix} 
+  \item{r}{The sample correlation or covariance matrix} 
   \item{observed}{If raw=TRUE, a sample data matrix}
 }
 \references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/}    }

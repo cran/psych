@@ -18,9 +18,10 @@ function(x,labels=NULL,...)
     if(class(x)[2] =='set.cor')   set.cor <- TRUE 
  }
  
+switch(class(x)[2],
 
   
-    if (vss) {
+   vss = {
    	    
   		n=dim(x)
   		symb=c(49,50,51,52)              #plotting sym
@@ -43,10 +44,9 @@ function(x,labels=NULL,...)
 		points(x$cfit.3,pch=symb[3])
 		lines(x$cfit.4)
 		points(x$cfit.4,pch=symb[4])
- }	
+ },	
  
-
- if(iclust | omega) {
+iclust = {
  op <- par(no.readonly = TRUE) # the whole list of settable par's.
   cut <- 0
  if(iclust) { load <- x$loadings
@@ -68,19 +68,43 @@ if (nc > 2 ) {
  abline(v=0)}
  if(is.null(labels)) labels <- paste(1:nvar)
  if(nc <3) text(load,labels,pos=1)
- par(op) }
+ par(op) },
+ 
+ omega = {
+ op <- par(no.readonly = TRUE) # the whole list of settable par's.
+  cut <- 0
+ if(iclust) { load <- x$loadings
+          cat("Use ICLUST.diagram to see the  hierarchical structure\n") } else {load <- x$schmid$orthog 
+         cat("Use omega.diagram to see the  hierarchical structure\n") }
+  nc <- dim(load)[2]
+  nvar <- dim(load)[1]
+ch.col=c("black","blue","red","gray","black","blue","red","gray")
+
+	cluster <- rep(nc+1,nvar)
+	cluster <- apply( abs(load)  ,1,which.max)
+	cluster[(apply(abs(load),1,max) < cut)] <- nc+1
+	
+if (nc > 2 ) {
+ pairs(load,pch = cluster+19,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster]) }
+ else {
+ plot(load,pch = cluster+20,col=ch.col[cluster],bg=ch.col[cluster],...) 
+ abline(h=0)
+ abline(v=0)}
+ if(is.null(labels)) labels <- paste(1:nvar)
+ if(nc <3) text(load,labels,pos=1)
+ par(op) },
  
  
-if(set.cor) plot(x$cancor2,typ="b",ylab="Squared Canonical Correlation",xlab="Canonical variate",main="Scree of canonical correlations" ,ylim=c(0,1),...)
-if(irt.fa) {result <- plot.irt(x,labels=labels,...)}
+set.cor ={ plot(x$cancor2,typ="b",ylab="Squared Canonical Correlation",xlab="Canonical variate",main="Scree of canonical correlations" ,ylim=c(0,1),...)},
+irt.fa =  {result <- plot.irt(x,labels=labels,...)},
 
-if(irt.poly) { result <-  plot.poly(x,labels=labels,...)}
+irt.poly = { result <-  plot.poly(x,labels=labels,...)},
 
-if(fa) factor.plot(x,...)
+fa =  {factor.plot(x,...)},
 
-if(principal) factor.plot(x,...)
+principal = {factor.plot(x,...)},
 
-if(parallel) plot.fa.parallel(x,...)
+parallel = {plot.fa.parallel(x,...)} )
 
 if(!is.null(result))  {class(result) <- c("psych","polyinfo")
    invisible(result)}

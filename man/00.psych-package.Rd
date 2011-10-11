@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.0-97 \cr
-Date: \tab 2011-05-15\cr
+Version: \tab 1.1-09 \cr
+Date: \tab 2011-09-01\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -127,6 +127,7 @@ Data reduction through cluster and factor analysis\cr
 \code{\link{iclust}}   \tab          Apply the ICLUST algorithm\cr
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}   \tab          Graph the output from ICLUST using rgraphviz \cr
+\link{kaiser}     \tab           Apply kaiser normalization before rotating \cr
 \link{polychoric}        \tab          Find the polychoric correlations for items  and find item thresholds (uses J. Fox's polycor) \cr
 \link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor) \cr
 \link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
@@ -218,6 +219,8 @@ Graphical functions that do not require Rgraphviz \cr
 \link{omega.diagram}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
 \link{ICLUST.diagram}     \tab           Draw the tree diagram from ICLUST  \cr
 \link{plot.psych}        \tab           A call to plot various types of output (e.g. from irt.fa, fa, omega, iclust \cr
+\link{cor.plot}        \tab            A heat map display of correlations \cr
+\link{spider}          \tab            Spider and radar plots (circular displays of correlations)
 }
 
 Circular statistics (for circadian data analysis) \cr
@@ -234,6 +237,8 @@ Miscellaneous functions\cr
 \cr
 \tabular{ll}{
 \link{comorbidity}   \tab             Convert base rate and comorbity to phi, Yule and tetrachoric\cr
+\link{df2latex}   \tab               Convert a data.frame or matrix to a LaTeX table \cr
+\link{dummy.code}     \tab          Convert categorical data to dummy codes \cr
 \link{fisherz}      \tab             Apply the Fisher r to z transform\cr
 \link{fisherz2r}    \tab             Apply the Fisher z to r transform\cr
 \link{ICC}          \tab             Intraclass correlation coefficients  \cr

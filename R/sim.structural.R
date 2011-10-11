@@ -1,26 +1,37 @@
-"sim.structure" <-
-function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
+"sim.structure" <- "sim.structural" <-
+function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0) {
  cl <- match.call()
 require(MASS)
 
+
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
     f <- super.matrix(fx,fy)} }
-  
-            
+  f <- as.matrix(f)
+  if(!is.null(Phi)) {if(length(Phi)==1) Phi <- matrix(c(1,Phi,Phi,1),2,2)}
+   #these are parameters for simulating items
+   nf <- ncol(f)
+   nvar <- nrow(f)
+if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar/nf-1))
+            d <- rep(d,nf)} else {if(length(d)==1) d <- rep(d,nvar)}
+	a <- rep(1,nvar)         
   
   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
   if(!is.null(Phi)) {
   model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
 } else { model <- f%*% t(f)}
-diag(model)<- 1                       # put ones along the diagonal
+if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}                      # put ones along the diagonal unless uniq is specified 
   nvar <- dim(f)[1]
   if(is.null(rownames(model))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} #else {colnames(model) <- rownames(model) <- rownames(fx)}
  
   if(n>0) {
-    mu <- rep(0,nvar)
+    mu <- rep(mu,nvar)
   	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
+  	
+  	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
+  	         observed[] <- rbinom(n*nvar, cat, observedp)}
   r <- cor(observed) } 
+
   	reliability <- diag(f %*% t(f))
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
@@ -29,44 +40,17 @@ diag(model)<- 1                       # put ones along the diagonal
   class(results) <- c("psych", "sim")
  return(results)}
  
- 
-"sim.structural" <-
-function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,raw=FALSE) {
-require(MASS)
- cl <- match.call()
- if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
-    f <- super.matrix(fx,fy)} }
   
-  if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
-                    Phi <- 1}
-  if(!is.null(Phi)) {
-  
-  model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
-} else { model <- f%*% t(f)}
-diag(model)<- 1                       # put ones along the diagonal
-  nvar <- dim(f)[1]
-  if(is.null(rownames(model))) {colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")} #else {colnames(model) <- rownames(model) <- rownames(fx)}
-  if(n>0) {
-    mu <- rep(0,nvar)
-  	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
-  r <- cor(observed) } 
-  	reliability <- diag(f %*% t(f))
-  if(n<1) {results <- list(model=model,reliability=reliability) } else {
-  if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
-             results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
-  results$Call <- cl
-  class(results) <- c("psych", "sim")
- return(results)}
- 
- 
 "sim" <-
-function (fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=TRUE) {
+function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
  cl <- match.call()
 require(MASS)
 #set up some default values 
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    if(is.null(Phi)) {Phi <- diag(1,4,4)
-                     Phi <- .8^abs(row(Phi) -col(Phi))}
+                     Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
+                     diag(Phi) <- max((alpha + lambda),1)
+	                Phi <- cov2cor(Phi)}
    if(is.null(mu)) {mu <- c(0,.5,1,2)}                   }
     if(is.null(fy)) {f <- fx} else {
     f <- super.matrix(fx,fy)} 
@@ -96,11 +80,13 @@ diag(model)<- 1                       # put ones along the diagonal
  return(results)}
  
  	
-	"sim.simplex" <-
-	function(nvar =12, r=.8,mu=NULL, n=0) {
+"sim.simplex" <-
+	function(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0) {
 	 cl <- match.call()
 	R <- matrix(0,nvar,nvar)
-	R[] <- r^abs(col(R)-row(R))
+	R[] <- alpha^abs(col(R)-row(R))*beta + lambda^2
+	diag(R) <- max((alpha * beta) + lambda,1)
+	R <- cov2cor(R)
 	colnames(R) <- rownames(R) <- paste("V",1:nvar,sep="")
 	require(MASS)
 	if(is.null(mu)) {mu <- rep(0,nvar)} 

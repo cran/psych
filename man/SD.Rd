@@ -26,7 +26,7 @@ This function will probably be removed as 2.7.0 becomes outdated.}
 
 \examples{
 data(attitude)
-sd(attitude) #all complete
+apply(attitude,2,sd) #all complete
 attitude[,1] <- NA
 SD(attitude) #missing a column
 describe(attitude)

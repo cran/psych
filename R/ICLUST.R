@@ -26,7 +26,7 @@ ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,cor.gen=TRUE) 
  cl <- match.call()
- if(is.null(labels)) {labels <- colnames(r.mat)} else {if(!labels) labels<- NULL}
+ if(is.null(labels)) {labels <- colnames(r.mat)} else {if((length(labels)==1) && (!labels)) labels <- NULL}  #modified October 11, 2011
  
  ICLUST.debug <- FALSE
  

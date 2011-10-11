@@ -1,4 +1,5 @@
 #corrected May 7, 2007 
+#modified October ,2011 to use apply for mean and sd
 "skew" <- 
 function (x, na.rm = TRUE) 
 {
@@ -12,8 +13,8 @@ function (x, na.rm = TRUE)
         } else {
     
     skewer <- rep(NA,dim(x)[2])
-    if (is.matrix(x)) {mx <- colMeans(x,na.rm=na.rm)} else {mx <- mean(x,na.rm=na.rm)}
-    sdx <- sd(x,na.rm=na.rm)
+    if (is.matrix(x)) {mx <- colMeans(x,na.rm=na.rm)} else {mx <- apply(x,2,mean,na.rm=na.rm)}
+    sdx <- apply(x,2,sd,na.rm=na.rm)
     for (i in 1:dim(x)[2]) {
     skewer[i] <- sum((x[,i] - mx[i])^3,  na.rm = na.rm)/((length(x[,i]) - sum(is.na(x[,i]))) * sdx[i]^3)
             }
@@ -33,14 +34,14 @@ function (x, na.rm = TRUE,type=1)
        if (is.matrix(x) ) { mx <- colMeans(x,na.rm=na.rm)} else {mx <- mean(x,na.rm=na.rm)}
        
          sdx <- sd(x,na.rm=na.rm)
-        kurt <- sum((x - mx)^4)/(length(x) *sd(x)^4)  -3
+        kurt <- sum((x - mx)^4)/(length(x) *sdx^4)  -3
         } else {
     
     kurt <- rep(NA,dim(x)[2])
   #  mx <- mean(x,na.rm=na.rm)
-  if (is.matrix(x) ) { mx <- colMeans(x,na.rm=na.rm)} else {mx <- mean(x,na.rm=na.rm)}
+ mx <-apply(x,2 ,mean,na.rm=na.rm)
     
-    sdx <- sd(x,na.rm=na.rm)
+    sdx <- apply(x,2,sd,na.rm=na.rm)
    
     for (i in 1:dim(x)[2]) {
     n <- length(x[!is.na(x[,i]),i])

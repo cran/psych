@@ -1,7 +1,7 @@
 "factor.wls" <- 
 function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="wls") {
  cl <- match.call()
- 
+ .Deprecated("fa",msg="factor.wls is deprecated.  Please use the fa function with fm=wls.")
  #this does the WLS or ULS fitting  depending upon fm 
   "fit.residuals" <- function(Psi,S,nf,S.inv,fm) {
               diag(S) <- 1- Psi

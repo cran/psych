@@ -6,7 +6,7 @@
 \description{Finds predicted factor/component scores from a factor analysis or components analysis of data set A predicted to data set B.  Predicted factor scores use the weights matrix used to find estimated factor scores, predicted components use the loadings matrix.
 }
 \usage{
-predict.psych(object, data,old.data,...)
+\method{predict}{psych}(object, data,old.data,...)
 }
 
 \arguments{
@@ -28,7 +28,7 @@ Predicted factor/components scores.
 \examples{
 set.seed(42)
 x <- sim.item(12,500)
-f2 <- fa(x[1:250,],2,scores=TRUE)  # a two factor solution
+f2 <- fa(x[1:250,],2,scores="regression")  # a two factor solution
 p2 <- principal(x[1:250,],2,scores=TRUE)  # a two component solution
 round(cor(f2$scores,p2$scores),2)  #correlate the components and factors from the A set
 #find the predicted scores (The B set)

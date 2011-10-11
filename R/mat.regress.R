@@ -73,11 +73,11 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
         
      	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,Call = cl)} else {
      	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Call = cl)}
-     	class(mat.regress) <- c("psych","mat.regress")
+     	class(mat.regress) <- c("psych","set.cor")
      	return(mat.regress)
      	}
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests
 #modified yet again August 15 , 2008 to convert covariances to correlations
 #modified January 3, 2011 to work in the case of a single predictor 
-#modiefied April 25, 2011 to add the set correlation (from Cohen)
+#modified April 25, 2011 to add the set correlation (from Cohen)

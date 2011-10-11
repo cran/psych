@@ -1,7 +1,6 @@
 \name{factor.stats}
 \Rdversion{1.1}
 \alias{factor.stats}
-\alias{factor.scores}
 
 \title{Find various goodness of fit statistics for factor analysis and principal components }
 
@@ -9,12 +8,10 @@
 }
 \usage{
 factor.stats(r, f, phi=NULL, n.obs = NA,alpha=.1)
-factor.scores(x,f)
 }
 
 \arguments{
   \item{r}{A correlation matrix or a data frame of raw data}
-  \item{x}{A data frame or matrix of raw data}
   \item{f}{A factor analysis loadings matrix or the output from a factor or principal components analysis}
   \item{phi}{A factor intercorrelation matrix if the factor solution was oblique}
   \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.}
@@ -34,7 +31,12 @@ factor.scores(x,f)
   
   \item{STATISTIC}{If the number of observations is specified or found, this is a chi square based upon the objective function, f.  Using the formula from \code{\link{factanal}}(which seems to be Bartlett's test) :
  \cr
- \eqn{\chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f }{chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f } }
+ \eqn{\chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f }{ chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f } 
+ 
+ Note that this is different from the chi square reported by the sem package which seems to use 
+ \eqn{\chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f }{chi^2 = (n.obs - 1 )* f } 
+ 
+ }
  
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  
@@ -50,7 +52,8 @@ factor.scores(x,f)
 
 \item{score.cor}{The correlation matrix of course coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix.}
 
-\item{RMSEA}{The Root Mean Square Error of Approximation and the alpha confidence intervals. Based upon the chi square non-centrality parameter.}
+\item{RMSEA}{The Root Mean Square Error of Approximation and the alpha confidence intervals. Based upon the chi square non-centrality parameter.
+This is found as \eqn{\sqrt{f/dof - 1(/-1)}}{sqrt((f/df - 1(N-1))} }
 \item{rms}{The empirically found square root of the squared residuals.  This does not require sample size to be specified nor does it make assumptions about normality.}
 \item{crms}{While the rms uses the number of correlations to find the average, the crms uses the number of degrees of freedom.  Thus, there is a subtle penalty for having too complex a model.}
 }
@@ -63,13 +66,13 @@ Grice, James W.,2001, Computing and evaluating factor scores,  Psychological Met
  } 
  
 \seealso{
-\code{\link{factor.pa}} for principal axis factor analysis, \code{\link{factor.minres}} for minimum residual factor analysis, and \code{\link{principal}} for principal components.
+\code{\link{fa}} with fm="pa" for principal axis factor analysis, \code{\link{fa}} with fm="minres" for minimum residual factor analysis (default).  \code{\link{factor.pa}} also does principal axis factor analysis, but is deprecated, as is \code{\link{factor.minres}} for minimum residual factor analysis. See \code{\link{principal}} for principal components.
 }
 \examples{
 v9 <- sim.hierarchical()
-f3 <- factor.minres(v9,3)
+f3 <- fa(v9,3)
 factor.stats(v9,f3,n.obs=500)
-f3o <- factor.pa(v9,3,rotate="Promax")
+f3o <- fa(v9,3,fm="pa",rotate="Promax")
 factor.stats(v9,f3o,n.obs=500)
 
 

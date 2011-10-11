@@ -1,5 +1,4 @@
 \name{Bechtoldt}
-\alias{bifactor}
 \alias{Bechtoldt.1}
 \alias{Bechtoldt.2}
 \alias{Bechtoldt}
@@ -24,6 +23,9 @@ data(Reise)
 }
 
 \details{Holzinger and Swineford (1937) introduced the bifactor model (one general factor and several group factors) for mental abilities.  This is a nice demonstration data set of a hierarchical factor structure that can be analyzed using the \code{\link{omega}} function or using sem. The bifactor model is typically used in measures of cognitive ability.
+
+There are several ways to analyze such data.  One is to use the \code{\link{omega}} function to do a hierarchical factoring using the schmid-leiman transformation.  Another is to a regular factor analysis and use either a \code{\link{bifactor}} or  \code{\link{biquartimin}} rotation. These latter two functions implement the Jennrich and Bentler  (2011) bifactor and biquartimin transformations.
+
 
 The 14 variables are ordered to reflect 3 spatial tests, 3 mental speed tests, 4 motor speed tests, and 4 verbal tests.  The sample size is 355.
 
@@ -90,7 +92,9 @@ if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotatio
 holz <- omega(Holzinger,4, title = "14 ability tests from Holzinger-Swineford")
 bf <- omega(Reise,5,title="16 health items from Reise") 
 omega(Reise,5,labels=colnames(Reise),title="16 health items from Reise")
-thur.bf <- omega(Thurstone,title="9 variables from Thurstone")
+thur.om <- omega(Thurstone,title="9 variables from Thurstone") #compare with
+thur.bf   <- fa(Thurstone,3,rotate="biquartimin")
+factor.congruence(thur.om,thur.bf)
 }
 }
 \keyword{datasets}

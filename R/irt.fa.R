@@ -1,10 +1,10 @@
 "irt.fa" <- 
-function(x,...) {
+function(x,nfactors=1,correct=TRUE,plot=TRUE,...) {
 cl <- match.call()
 if (is.matrix(x) | is.data.frame(x)) {
 	n.obs <- dim(x)[1]
 	tx <- table(as.matrix(x))
-	if(dim(tx)[1] ==2) {tet <- tetrachoric(x)
+	if(dim(tx)[1] ==2) {tet <- tetrachoric(x,correct=correct)
 	    typ = "tet"} else {tet <- polychoric(x)
 	    typ = "poly"}
 
@@ -14,11 +14,14 @@ if (is.matrix(x) | is.data.frame(x)) {
    			n.obs <- x$n.obs
    			typ <- class(x)[2]
    			if (typ == "irt.fa") typ <- "tet"
+   			 
    			  }  else {stop("x must  be a data.frame or matrix or the result from tetra or polychoric")}
               }
-t <- fa(r,n.obs=n.obs,...)
+t <- fa(r,nfactors=nfactors,n.obs=n.obs,...)
 nf <- dim(t$loadings)[2]
  diffi <- list() 
+     #flag <- which(abs(t$loadings) > 1,arr.ind=TRUE)
+     #this throws an error if a Heywood case
      for (i in 1:nf) {diffi[[i]]  <- tau/sqrt(1-t$loadings[,i]^2)
      }
      
@@ -33,247 +36,14 @@ nlevels <- dim(diffi[[1]])[2]
 #colnames(coeff) <- c(paste("Location",1:nlevels,sep=""),"Discrimination",paste("tau",1:nlevels,sep=""),"Loading") } else {
 #colnames(coeff) <- c("Location","Discrimination","tau","Loading")}
 result <- list(irt=irt,fa = t,rho=r,tau=tau,n.obs=n.obs,Call=cl)
-if(typ =="tet") {
-class(result) <- c("psych","irt.fa")} else {class(result) <- c("psych","irt.poly")}
+switch(typ,
+ tet = { class(result) <- c("psych","irt.fa")},
+ tetra ={class(result) <- c("psych","irt.fa")},
+ poly = {class(result) <- c("psych","irt.poly")})
+if(plot) {pr <- plot(result) 
+result$plot <- pr}
 return(result)
 }
 
 
-"plot.irt" <- 
-function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,...) {
-if(!is.null(keys)) {nkeys <- dim(keys)[2]
-   nvar = dim(keys)[1]
-	discrim <- x$irt$discrimination
-	nf <- dim(discrim)[2]
-	new.dis <- matrix(rep(discrim,nf*nkeys),ncol=nkeys*nf,nrow=nvar) * rep(keys,nf)
-	difficulty <- x$irt$difficulty
-	new.diff <- rep(difficulty,nkeys)
-	x$irt$discrimination <- new.dis
-	x$irt$difficulty <- new.diff}
-item <- x
-temp <- list()
-if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
-           
-nf <- length(x$irt$difficulty)}
-#if there was more than 1 factor, repeat the figure nf times
-for(f in 1:nf) {if((is.data.frame(item)) | (is.matrix(item))) {discrimination <- item[,1]
-     location <- item[,f+1]
-    } else {
-  discrimination=item$irt$discrimination[,f]
-  location=item$irt$difficulty[[f]] }
-x <- NULL 
-nvar <- length(discrimination)
-if(is.null(labels) ) labels = 1:nvar
-if(missing(type)) {type = "IIC"}   
 
-if(missing(D)) {D <- 1.702
-if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
-x <- seq(-3,3,.1)}
-
-if(D==1) {if(missing(xlab)) xlab <- "Latent Trait (logistic scale)"}
-if(missing(xlab)) xlab <- "Latent Trait"
-
-if(is.null(x)) x <- seq(-4,4,.1)
-lenx <- length(x)
-if(type=="ICC") {
-if(missing(main)) main <- "Item parameters from factor analysis"
-if(missing(ylab)) ylab <- "Probability of Response"
-ii <- 1 
-while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main)
-text(location[ii],.53,labels[ii])
-for(i in (ii+1):nvar) {
-   if(abs(discrimination[i])  > cut) {
-	lines(x,logistic(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ])
-	text(location[i],.53,labels[i])}
-	}
-	}  else {
-	tInfo <- matrix(0,ncol=nvar,nrow=length(x))
-	for(i in 1:nvar) {
-	   if(abs(discrimination[i])  > cut) {
-	tInfo[,i] <- logisticInfo(x,a=discrimination[i]*D,d=location[i])} else {tInfo[,i] <- 0}
-	}
-	AUC <- colSums(tInfo)
-	max.info <- apply(tInfo,2,which.max)
-	if(type=="test") {
-		if(missing(main)) main <- "Test information -- item parameters from factor analysis"
-		testInfo <- rowSums(tInfo)
-		if(missing(ylab)) ylab <- "Test Information"
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab="Test Information",main=main)} else {
-		if(missing(ylab)) ylab <- "Item Information"
-	if(missing(main)) main <- "Item information from factor analysis"
-	ii <- 1 
-while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,max(tInfo)+.03),ylab=ylab,xlab=xlab,type="l",main=main)
-text(location[ii],max(tInfo[,ii])+.03,labels[1])
-for(i in (ii+1):nvar) {
-    if(abs(discrimination[i])  > cut) {
-	lines(x,logisticInfo(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ])
-	text(location[i],max(tInfo[,i])+.02,labels[i])
-	}}} 
-	if (type !="ICC")  {temp[[f]] <- list(AUC=AUC,max.info=max.info)}
-	}
-	devAskNewPage(ask = TRUE)}	
-	devAskNewPage(ask = FALSE)
-	if(type!="ICC") {
-     AUC <- matrix(NA,ncol=nf,nrow=nvar)
-     max.info <- matrix(NA,ncol=nf,nrow=nvar) 
-       for(f in 1:nf) {
-     AUC[,f] <- temp[[f]]$AUC
-     
-	max.info[,f] <- temp[[f]]$max.info}
-	AUC <- AUC/lenx  #quasi normalize it 
-	max.info <- (max.info - lenx/2)*6/(lenx-1)
-	max.info[max.info < -2.9] <- NA
-	colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)
-    rownames(AUC) <- rownames(max.info) <- rownames(item$rho)
-    
-    result <- list(AUC=AUC,max.info=max.info)
-	invisible(result)				
-     class(result) <- c("psych","polyinfo")
-   invisible(result)}
-	
-}
-
-
-"logisticInfo" <-  
-function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
-
-
-
-"plot.poly" <- 
-function(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...) {
-if(!is.null(keys)) {nkeys <- dim(keys)[2]
-   nvar = dim(keys)[1]
-	discrim <- x$irt$discrimination
-	nf <- dim(discrim)[2]
-	new.dis <- matrix(rep(discrim,nf*nkeys),ncol=nkeys*nf,nrow=nvar) * rep(keys,nf)
-	difficulty <- x$irt$difficulty
-	new.diff <- rep(difficulty,nkeys)
-	x$irt$discrimination <- new.dis
-	x$irt$difficulty <- new.diff}
-item <- x
-if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
-           
-nf <- length(x$irt$difficulty)}
-temp <- list()
-#if there was more than 1 factor, repeat the figure nf times
-  
-x <- NULL
-if(missing(ylim)) ylim <- c(0,1)
-nvar <- length(item$irt$discrimination[,1])
-ncat <- dim(item$irt$difficulty[[1]])[2]
-if(missing(type)) {type = "IIC"}   
-
-if(missing(D)) {D <- 1.702
-if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
-x <- seq(-3,3,.1)
-}
-
-
-if(D==1) {if(missing(xlab)) xlab <- "Latent Trait (logistic scale)"}
-if(missing(xlab)) xlab <- "Latent Trait"
-
-if(is.null(x)) x <- seq(-4,4,.1)
-
-lenx <- length(x)
-
-for(f in 1:nf) {discrimination=item$irt$discrimination[,f]
-  location=item$irt$difficulty[[f]]
-  difficulty <- location[,1:ncat]
-  
-if(type=="ICC") {
-if(missing(main)) main <- "Item parameters from factor analysis"
-if(missing(ylab)) ylab <- "Probability of Response"
-
-for(i in 1:nvar) {
- if (abs(discrimination[i]) > cut) {
-	if(discrimination[i] > 0 ) {
-		plot(x,logistic(x,a=-D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main,...) 
-		text(0,.70,colnames(item$rho)[i])} else { 
-		plot(x,logistic(x,a=-D*discrimination[i],d=-location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main,...)
-		text(max(0),.7,paste("-",colnames(item$rho)[i],sep=""))
-			}
-  for (j in 2:(ncat-1))  { 
-		if(discrimination[i] > 0 ) {
-			lines(x,(-logistic(x,a=D*discrimination[i],d=location[i,j])+logistic(x,a=D*discrimination[i],d=location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ])
-			} else {lines(x,(-logistic(x,a=-D*discrimination[i],d= -location[i,j])+logistic(x,a=-D*discrimination[i],d=-location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ])}
-			}
-	if(discrimination[i] > 0 ) {
-	lines(x,(logistic(x,a=D*discrimination[i],d=location[i,ncat])))
-	} else {lines(x,(logistic(x,a=-D*discrimination[i],d=-location[i,ncat]))) }
-	}}
-
-	}  else {
-	
-	#item and test information
-	x <- as.matrix(x,ncol=1)
-	
-	tInfo <- apply(x,1,logisticInfo,a=discrimination,d=sign(discrimination) * difficulty)  
-	tInfo <- array(unlist(tInfo),dim=c(nvar,ncat,length(x)))  #this is now an array with items levels and x 
-   
-	testInfo <- matrix(NA,ncol=nvar,nrow=length(x))
-	for (xi in 1:length(x)) {
-	for (i in 1:nvar) {
-
-	if (abs(discrimination[i]) > cut) {
-	testInfo[[xi,i]] <- sum(tInfo[i,,xi]) } else {testInfo[[xi,i]] <- 0}}
-	}
-	
-	
-	if(type=="test") { 
-
-	
-	if(missing(main)) main <- "Test information for factor "
-	main1 <- paste(main,'  ',f)
-	if(missing(ylab)) ylab <- "Test Information"
-	rsInfo <- rowSums(testInfo)
-	 plot(x,rsInfo,typ="l",ylim=c(0,max(rsInfo)),ylab=ylab,xlab=xlab,main=main1)
-	 } else { 
-	if(missing(ylab)) ylab <- "Item Information"
-	if(missing(main)) main <- "Item information from factor analysis"
-	
-	ii <- 1 
-while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main)
-	#xmax <- which
-if(discrimination[ii] > 0 ) {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,colnames(item$rho)[ii])} else {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,paste("-",colnames(item$rho)[ii],sep=""))}
-for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
-	lines(x,testInfo[,i],lty=c(1:6)[(i %% 6) + 1 ])
-	if(discrimination[i] > 0 ) {
-	text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,colnames(item$rho)[i]) } else {text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,paste("-",colnames(item$rho)[i],sep=""))}
-	}}
-	} }
-	if (type !="ICC")  {temp[[f]] <- testInfo}
-	}  #end of 1:nf loop
-	
-
-    if(type!="ICC") {
-     AUC <- matrix(NA,ncol=nf,nrow=nvar)
-     max.info <- matrix(NA,ncol=nf,nrow=nvar) 
-       for(f in 1:nf) {
-     AUC[,f] <- colSums(temp[[f]])
-     
-	max.info[,f] <- apply(temp[[f]],2,which.max) }
-	AUC <- AUC/lenx  #quasi normalize it 
-	max.info <- (max.info - lenx/2)*6/(lenx-1)
-	max.info[max.info < -2.9] <- NA
-	colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)
-    rownames(AUC) <- rownames(max.info) <- rownames(item$rho)
-    
-    result <- list(AUC=AUC,max.info=max.info)
-	invisible(result)				
-     class(result) <- c("psych","polyinfo")
-   invisible(result)}
-}
-
-
-"irt.select" <- function(x,y) {
-  if(is.null(dim(x$tau))) {typ="tet"} else {typ="poly"}
-  rho <- x$rho[y,y]
-  tau <- x$tau[y]
-  n.obs <- x$n.obs
-  result <- list(rho=rho,tau=tau,n.obs=n.obs)
-  class(result) <- c("psych",typ)
-return(result)
-}

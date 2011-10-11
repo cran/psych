@@ -6,6 +6,6 @@ function (x, na.rm = TRUE)
     else if (is.vector(x)) 
         sqrt(var(x, na.rm = na.rm,use="pair"))
     else if (is.data.frame(x)) 
-        sapply(x, SD, na.rm = na.rm)
+        apply(x,2, SD, na.rm = na.rm)
     else sqrt(var(as.vector(x), na.rm = na.rm,use="pair"))
 }

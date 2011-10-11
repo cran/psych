@@ -7,12 +7,12 @@
 \description{Although the print.psych function will sort factor analysis loadings, sometimes it is useful to do this outside of the print function. fa.sort takes the output from the fa or principal functions and sorts the loadings for each factor.  Items are located in terms of their greatest loading.
 }
 \usage{
-fa.sort(fa.results)
+fa.sort(fa.results,polar=FALSE)
 }
 
 \arguments{
-  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}. 
-}
+  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}. }
+  \item{polar}{Sort by polar coordinates of first two factors (FALSE)}
 }
 \details{
 The fa.results$loadings are replaced with sorted loadings.

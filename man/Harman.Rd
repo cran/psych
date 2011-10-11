@@ -27,6 +27,8 @@ As pointed out by Jan DeLeeuw, the Burt data set is a subset of 8 variables from
 
 Other example data sets that are useful demonstrations of factor analysis are the seven bifactor examples  in \code{\link{bifactor}} and the 24 ability measures in \code{\link{Harman74.cor}}
 
+There are several other Harman  examples in the psych package (i.e., \link{Harman.8}) as well as in the dataseta and  GPArotation packages.  The Harman 24 mental tests problem is in the basic datasets package at \link{Harman74.cor}.  
+
 }
 \source{Harman (1967 p 164 and p 244.)
 }

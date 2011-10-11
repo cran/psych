@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.0.99 (2011-06-30)}{
+\section{Changes in psych version 1.1.10 (2011-10-01)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.0.99 is the development release of the psych package.  The released version is 1.0.98.
+      \item Version 1.1.10 is the development release of the psych package.  The released version is 1.1.09.  The second digit reflects the year (i.e., 2011), the third set the month (i.e., 1.1.09 was released in September of 2011).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -15,23 +15,67 @@
       \item Add confirmatory clustering to ICLUST
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
-      \item Implement the other ways of doing factor scores (Bartlett, etc.)
       \item Add the ability to create multiple groups in sim.irt functions
       \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
       \item Add labels to factor.plot for more than 2 factors?
       \item Add goodness of fit tests for fa.extension applied to the extension variables.
-      \item Add a graph of standard errors as an option in the plot(irt.fa) 
-      function
       \item fix ICLUST so that it converts covar matrices to correlations. 
-      \item Find canonical loadings. 
+      \item Find canonical loadings in set.cor
       \item get better items for the iq example items (in progress)
+      \item add CVE estimate (see Reise 2010)
+      \item Add omega factor extension figure option (requested by Sylia Wilson)
+      \item Fix bug in describe.by for the case of NULL categories for the by variable. (Reported by Nipa Phojanamongkolkij).
     }
   }
-  } 
+  }   
+\section{Changes in psych version 1.1.10 (2011-10-15)}{
+  \subsection{Additions}{
+  \itemize{ 
+  \item Started to modify all calls to sd and mean to use apply to respond to their deprecation for data.frames and matrices
+  \item Changed the release numbering system to reflect year and month of release.  
+  \item Added a parcels function to form item parcels of size 2 or size 3.
+  \item Added a jitter option to the factor.plot function.
+  \item Added 3 more factor scoring options to the factor.scores function and changed the default scoring option in fa to be the tenBerge
+  \item Added the kaiser function to do kaiser normalization.
+  \item Added the df2latex function to make LaTeX tables.
+    \item Added plot.circular to draw radar and spider plots
+  	\item Added a short function to create dummy codes (dummy.code)
+    \item Added a score.irt function to find IRT based scores. 
+    \item Added a table of information by attribute level to be (silently) produced  in the plot(irt.fa) function.
+    \item Added bifactor and biquartimin as  rotation options to fa (based on the Jennrich and Bentler 2011 papers).
+    \item Implemented an improvement to print.psych function to use switch.  (Following a suggestion by Joshua Wiley ). This does not change the functionality, but makes the code easier to debug and to change.
+     \item Added an option to alpha  to automatically flip items if they seem to be negatively correlated with total score.  (Suggested by Jeremy Miles).
+     \item Serious modification to cor.plot to allow for colorRamp data.  Makes much prettier correlation plots. (Suggested by David Condon and Joshua Wilt).
+ 	 \item Modified sim and sim.simplex to create State Trait Auto Regressive simplex structures (suggested by Deepika Anand).
+     \item Added a correct option to irt.fa (passes correct to tetrachoric).
+     \item Added the ability for omega to be rerun on the same correlation matrix found by previous omega runs.  This speeds up analyses of large matrices but particularly that of tetrachoric/polychoric matrices.
+     \item Modified headtail so that it will not choke on mixed numeric and string data
+     \item Added a smoothing option to the tetachoric correlation function to smooth the resulting matrix if it is not positive definite.
+     \item Added cor.smooth to do a principal components based smoothing for correlations.
+     \item Added global=TRUE option to polychoric (and tetrachoric) correlations. If global=FALSE, each correlation is found using the pairwise taus.  This seems to match John Fox's polycor function.  If global=TRUE, the taus are the datawise values. This will differ from polycor in the case of a great deal of missing data.  Somewhat faster and perhaps more appropriate given that we are trying to find a global solution. 
+     \item Added a correction for multiple tests to the p values in the \code{\link{corr.test}} function and added a new function to just report probabilities \code{\link{corr.p}}
+     }
+     }
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item Fixed a very subtle bug in score.items for the case of impute="none" where some subjects have no non-missing data. This affected the estimate of the average number of items (num.ob.item) per scale. Reported by Ben Schalet.
+    \item Fixed bug in factor.stats that gave much too narrow confidence intervals for RMSEA (Thanks to Rick Zinbarg and Ashley Kendall for pointing out the problem).
+    \item revised factor extension to properly handle oblique solutions
+    \item fa now reports the call correctly -- since introduction of iterations it had reported the wrong call
+    \item Fixed mixed.cor so that it can handle several special cases.
+    \item Perhaps finally fixed pairs.panels so it leaves us with the original parameter settings
+    \item Fixed a problem in print.psych such that mat.regress output would not print.  (Reported by Ben Schalet.)
+    \item Fixed plot.poly so that it correctly plots the ICC results, particularly for negatively keyed items.
+    \item Fixed fa so that the covar option works.  (It had been killed when iterations were introduced.)
+    \item Modified fa, fa.irt, factor.stats, factor.scores so that they handle bad data more gracefully.  
+   }
+  }
+}
 \section{Changes in psych version 1.0.98 (2011-06-10)}{
   \subsection{Additions}{
   \itemize{
  	 \item Improvements to set.cor to report the canonical correlations and their chi squares.  Also added a plot function to set.cor so that it will plot the eigen values of the canonical correllations.
+ 	 \item Added the cushny data set to show the original drug data from student.
      }
   }
    \subsection{Bugs Fixed}{
@@ -50,7 +94,7 @@
   \item added a factor analysis for tetrachoric or polychoric correlations (fa.poly) that will work without doing an irt analysis using irt.fa.
   \item Added bootstrapped confidence intervals for loadings and correlations in factor  analysis (fa), for reliability estimates in omega (omega) and fa.poly.(Originally requested by Steve Miller and Renee Engeln-Maddox polychoric correlations, extended to the omega case.)
    \item Modified fa.diagram to include graphic output for fa.extension.
-  \item Added Cohen's set correlation to the mat.regress function. (Requested my Amanda Uliaszek.)
+  \item Added Cohen's set correlation to the mat.regress function. (Requested by Amanda Uliaszek.)
   \item Changed the order of the parameters in the mat.regress function to be more consistent with the y~x notation of most regression functions.
   \item  Added an oblique.scores option to principal.  This means that if oblique rotations are done (not the default) then the scores from principal will be oblique as well.  
    }

@@ -13,7 +13,7 @@ If the input is an object of class "kmeans", then the cluster centers are plotte
 
 
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
-factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,...)
+factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,amount=.02,...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -24,6 +24,8 @@ factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,...)
   \item{cut}{ Assign items to clusters if the absolute loadings are > cut }
   \item{labels}{If row.names exist they will be added to the plot, or, if they don't, labels can be specified.  If labels =NULL, and there are no row names, then variables are labeled by row number.)}
   \item{title}{ Any title}
+  \item{jiggle}{When plotting with factor loadings that are almost identical, it is sometimes useful to "jiggle" the points by jittering them. The default is to not jiggle.}
+  \item{amount}{if jiggle=TRUE, then how much should the points be jittered?}
   \item{...}{Further options to plot}
   
 }

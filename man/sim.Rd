@@ -8,6 +8,9 @@
 \alias{sim.irt}
 \alias{sim.npl}
 \alias{sim.npn}
+\alias{sim.poly}
+\alias{sim.poly.npl}
+\alias{sim.poly.npn}
 \title{Functions to simulate psychological/psychometric data.}
 \description{A number of functions in the psych package will generate simulated data.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
@@ -18,11 +21,14 @@
 \code{\link{sim.irt}} to create general 1 to 4 parameter IRT data by calling 
 \code{\link{sim.npl}} 1 to 4 parameter logistic IRT or 
 \code{\link{sim.npn}} 1 to 4 paramater normal IRT,
+\code{\link{sim.poly}} to create polytomous ideas by calling
+\code{\link{sim.poly.npn}} 1-4 parameter polytomous normal theory items or
+\code{\link{sim.poly.npl}} 1-4 parameter polytomous logistic items
 \code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
-sim(fx=NULL,Phi=NULL,fy=NULL,n=0,mu=NULL,raw=TRUE)
-sim.simplex(nvar =12, r=.8,mu=NULL, n=0)
+sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
+sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
 sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
 sim.omega(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
@@ -31,6 +37,9 @@ sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
 sim.irt(nvar = 5, n = 500, low=-3, high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,mod="logistic")
 sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
+sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="normal") 
+sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
 }
 \arguments{
   \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
@@ -41,7 +50,9 @@ sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
   \item{raw}{if raw=TRUE, raw data are returned as well.}
   \item{nvar}{Number of variables for a simplex structure}
   \item{nfact}{Number of large factors to simulate in sim.minor}
-  \item{r}{the base correlation for a simplex}
+  \item{alpha}{the base correlation for an autoregressive simplex}
+  \item{lambda}{the trait component of a State Trait Autoregressive Simplex}
+  \item{beta}{Test reliability of a STARS simplex}
   \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
   \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
   \item{om.fact}{Number of  factors to extract in omega}
@@ -57,13 +68,16 @@ sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
   \item{z}{the zeta parameter: if not specified as a vector, set to 1} 
   \item{sd}{the standard deviation for the underlying latent variable in the irt simulations}
   \item{mod}{which IRT model to use, mod="logistic" simulates a logistic function, otherwise, a normal function}
+  \item{cat}{Number of categories to simulate in sim.poly}
    }
 
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.
 
-The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors.  
+The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 
 Two data structures that are particular challenges to exploratory factor analysis are the simplex structure and the presence of minor factors.  Simplex structures \code{\link{sim.simplex}} will typically occur in developmental or learning contexts and have a correlation structure of r between adjacent variables and r^n for variables n apart.  Although just one latent variable (r) needs to be estimated, the structure will have nvar-1 factors.  
+
+An alternative version of the simplex is the State-Trait-Auto Regressive Structure (STARS) which has both a simplex state structure, with autoregressive path alpha and a trait structure with path lambda. This simulated in  \code{\link{sim.simplex}} by specifying a non-zero lambda value.
 
 Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals.  
 
@@ -78,7 +92,7 @@ For the 3PL or 3PN models, items also differ in their guessing parameter c =\eqn
 For the 4PL and 4PN models, the upper asymptote, z= \eqn{\zeta} is also specified.  \cr
 (Graphics of these may be seen in the demonstrations for the \code{\link{logistic}} function.)
 
-The normal model (irt.npn calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logitistic model the two models are practically identical.
+The normal model (irt.npn calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logistic model the two models are practically identical.
 
 Other simulation functions in psych are:
 
@@ -139,7 +153,11 @@ cor.plot(R$model) #show it graphically
 
 simp <- sim.simplex()
 #show the simplex structure using cor.plot
-cor.plot(simp,colors=TRUE)
+cor.plot(simp,colors=TRUE,main="A simplex structure")
+#Show a STARS model 
+simp <- sim.simplex(alpha=.8,lambda=.8)
+#show the simplex structure using cor.plot
+cor.plot(simp,colors=TRUE,main="State Trait Auto Regressive Simplex" )
 }
 
 

@@ -24,6 +24,7 @@
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
     # miss.rep <- rowSums(is.na(items))
+
      miss.rep <- (is.na(items) +0) %*% abs(keys)
     
    
@@ -49,7 +50,9 @@
            neg.item <- max + min - neg.item
            sub.item <- cbind(pos.item,neg.item)
            scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
-           num.ob.item[scale] <- mean(rowSums(!is.na(sub.item)))
+           rs <- rowSums(!is.na(sub.item))
+           num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
+          # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
            		} # end of scale loop
            # we now need to treat the data as if we had done correlations at input
             C <- cov(items,use="pairwise")
@@ -99,7 +102,8 @@
       item.rc <- C %*% keys /sqrt(corrected.var*item.var) }
     colnames(item.rc) <- slabels
    
-   
+
+      
   
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
@@ -117,6 +121,7 @@
   rownames(alpha.scale) <- "alpha"
   rownames(av.r) <- "average.r"
   rownames(G6) <- "Lambda.6"
+
    if (!raw.data) { 
      if(impute =="none") {
        rownames(alpha.ob) <- "alpha.observed"

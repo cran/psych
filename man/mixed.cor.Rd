@@ -4,12 +4,13 @@
 \description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixed.cor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
 }
 \usage{
-mixed.cor(x = NULL, p = NULL, d = NULL)
+mixed.cor(x = NULL, p = NULL, d = NULL,smooth=TRUE)
 }
 \arguments{
   \item{x}{A set of continuous variables (may be missing)}
   \item{p}{A set of polytomous items (may be missing)}
   \item{d}{A set of dichotomous items (may be missing)}
+  \item{smooth}{If TRUE, then smooth the correlation matix if it is non-positive definite}
 }
 \details{
 This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
@@ -35,7 +36,7 @@ W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-c
 
 
 
-\seealso{ \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{score.items}}
+\seealso{ \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{score.items}}, \code{\link{score.irt}}
 }
 \examples{
 data(bfi) 

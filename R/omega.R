@@ -29,7 +29,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
        fm <- "minres"} 
        } else { m.names <- rownames(m) }   #add the names if we have a factor input 
        
-       gf<-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs,Phi=Phi,option=option, ...)
+      gf <-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs,Phi=Phi,option=option, ...)
       if(!is.null(Phi)) { model <- m
                          nfactors <- dim(model)[2]
                           m <- factor.model(model,Phi=Phi,U2=FALSE)
@@ -78,7 +78,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
    
    omega.model <- omega.sem(omega,sl=sl)
      
-     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,gstats = general.stats,call=cl,title=title,model=omega.model)
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,gstats = general.stats,call=cl,title=title,R = m,model=omega.model)
 
       class(omega) <- c("psych","omega")
      if(plot)  omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
@@ -91,14 +91,26 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
 "omega" <- 
 function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) {
  cl <- match.call()
-  if(dim(m)[1] == dim(m)[2] ) {if(is.na(n.obs) && (n.iter>1)) stop("You must specify the number of subjects if giving a correlation matrix")
+  if(is.data.frame(m) || is.matrix(m)) {if(dim(m)[1] == dim(m)[2] ) {if(is.na(n.obs) && (n.iter>1)) stop("You must specify the number of subjects if giving a correlation matrix")
                                  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
-  if(poly) {pol <- polychoric(m)
-            om <- omegah(m=pol$rho,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=pol$n.obs,rotate=rotate,Phi = Phi,option=option,...) #call omega with the appropriate parameters
-            } else {
- om <- omegah(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi = Phi,option=option,...) #call omega with the appropriate parameters
-         }
+                  }
+ if(!is.data.frame(m) && !is.matrix(m)) {  n.obs=m$n.obs
+                if(poly) {
+                      pol <- list(rho=m$rho,tau = m$tau,n.obs=m$n.obs)
+                        
+                           m <- m$rho
+                          } else { m <- m$R 
+                          }
+                          } else { #new data
+
+          if(poly) { pol <- polychoric(m)
+                     m <- pol$rho
+                     n.obs <- pol$n.obs}  }       
+            om <- omegah(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi = Phi,option=option,...) #call omega with the appropriate parameters
+    
+
+       
  if(is.na(n.obs) ) {n.obs <- om$stats$n.obs} 
  replicates <- list()
  if(n.iter > 1) {for (trials in 1:n.iter) {
@@ -129,8 +141,13 @@ ci <- rbind(fisherz2r(ci[1:4,]),ci[5,])
 rownames(ci) <- c("omega_h","alpha","omega_tot","G6","omega_lim")
 colnames(replicates) <- names(means) <- names(sds) <- rownames(ci) 
 conf <- list(means = means,sds = sds,ci = ci,Call= cl,replicates=replicates)
-
-results <- list(om = om,ci=conf) } else {results <- om}
+om$Call=cl
+results <- list(om = om,ci=conf) } else {om$call=cl
+                                         if(poly) {om$rho <- pol$rho
+                                                   om$tau <- pol$tau
+                                                   om$n.obs <- pol$n.obs
+                                                   }
+                                         results <- om}
 class(results) <- c("psych","omega")
 return(results)
  }

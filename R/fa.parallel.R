@@ -19,10 +19,10 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
  	
  	 
   				
-   valuesx  <- eigen(rx)$values 
+   valuesx  <- eigen(rx)$values #these are the PC values
    if(SMC) {diag(rx) <- smc(rx)
    fa.valuesx <- eigen(rx)$values} else {
-   fa.valuesx  <- fa(rx,fm=fm,warnings=FALSE)$values}
+   fa.valuesx  <- fa(rx,fm=fm,warnings=FALSE)$values}  #these are the FA values
  
   temp <- list(samp =list(),samp.fa <- list(),sim=list(),sim.fa=list())
    

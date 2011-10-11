@@ -12,8 +12,8 @@
 The biserial correlation is between a continuous y variable and a dichotmous x variable, which is assumed to have resulted from a dichotomized normal variable. Biserial is a special case of the polyserial correlation, which is the inferred latent correlation between a continuous variable (X) and a ordered categorical variable (e.g., an item response). Input for these later two are data frames or matrices.
 }
 \usage{
-tetrachoric(x,correct=TRUE)
-polychoric(x,polycor=FALSE, ML = FALSE, std.err=FALSE) 
+tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE)
+polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE, std.err=FALSE) 
 biserial(x,y)  
 polyserial(x,y) 
 poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE) #deprecated  use polychoric instead
@@ -32,6 +32,9 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 }
 \item{y}{A (matrix or dataframe) of discrete scores. In the case of tetrachoric, these should be dichotomous, for polychoric not too many levels, for biserial they should be discrete (e.g., item responses) with not too many (<10?) categories.}
 \item{correct}{Correct for continuity in the case of zero entry cell for tetrachoric}
+\item{smooth}{if TRUE and if the tetrachoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
+
+\item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution. This will make a difference in the presence of lots of missing data. } 
   
 \item{polycor}{If polycor=TRUE and the polycor package is installed, then use it when finding the polychoric correlations.  }
 
@@ -67,7 +70,11 @@ A biserial correlation (not to be confused with the point-biserial correlation w
 The 'ad hoc' polyserial correlation, rps is just \eqn{r = r * sqrt(n-1)/n) \sigma y /\sum(zpi) } where zpi are the ordinates of the normal curve at the normal equivalent of the cut point boundaries between the item responses. (Olsson, 1982) 
 
 
-All of these were inspired by (and adapted from) John Fox's polychor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package.
+All of these were inspired by (and adapted from) John Fox's polychor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package. 
+
+Particularly for tetrachoric correlations from sets of data with missing data, the matrix will sometimes not be positive definite.  Various smoothing alternatives are possible, the one done here is to do an eigen value decomposition of the correlation matrix, set all negative eigen values to   10 * .Machine$double.eps, normalize the positive eigen values to sum to the number of variables, and then reconstitute the correlation matrix.   A warning is issued when this is done.
+
+For combinations of continous, categorical, and dichotomous variables, see \code{\link{mixed.cor}}.
 }
 
 \value{
@@ -94,7 +101,7 @@ William Revelle
 
 
 
-\seealso{ See also the  polychor function in the polycor package. \code{\link{irt.fa}} uses the tetrachoric function to do item analysis with the \code{\link{fa}} factor analysis function.
+\seealso{\code{\link{mixed.cor}} to find the correlations between mixtures of continuous, polytomous, and dichtomous variables.  See also the  polychor function in the polycor package. \code{\link{irt.fa}} uses the tetrachoric function to do item analysis with the \code{\link{fa}} factor analysis function.
 \code{\link{draw.tetra}} shows the logic behind a tetrachoric correlation (for teaching purpuses.)
 }
 \examples{
@@ -111,7 +118,7 @@ tetrachoric(matrix(c(24875,265,47,0),2,2),FALSE) #Do not apply continuity correc
 tetrachoric(c(0.02275000, 0.0227501320, 0.500000000))
 tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000)) } else {message("Sorry, you must have mvtnorm installed")}
 
-# 4 plots comparing biserial to 
+# 4 plots comparing biserial to point biserial and latent Pearson correlation
 set.seed(42)
 x.4 <- sim.congeneric(loads =c(.9,.6,.3,0),N=1000,short=FALSE)
 y  <- x.4$latent[,1]

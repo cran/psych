@@ -7,8 +7,8 @@
 \description{Give limited output (print) or somewhat more detailed (summary) for most of the functions in psych. 
 }
 \usage{
-print.psych(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...)
-summary.psych(object,digits=2,items=FALSE,...)
+\method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,...)
+\method{summary}{psych}(object,digits=2,items=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,16 +19,18 @@ summary.psych(object,digits=2,items=FALSE,...)
   \item{all}{if all=TRUE, then the object is declassed and all output from the function is printed}
   \item{cut}{Cluster loadings < cut will not be printed.  For the factor analysis functions (fa and factor.pa etc.), cut defaults to 0, for ICLUST  to .3, for omega to .2.}
   \item{sort}{Cluster loadings are in sorted order}
+  \item{short}{Controls how much to print} 
   \item{...}{More options to pass to summary and print}
 }
 \details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available,  ask for the structure of the particular object: (str(theobject).
 
-Alternatively, to get complete output, unclass(theobject) and then print it.
+Alternatively, to get complete output, unclass(theobject) and then print it. This may be done by using the all=TRUE option.
 
 As an added feature, if the promax function is applied to a factanal loadings matrix, the normal output just provides the rotation matrix.  print.psych will provide the factor correlations. (Following a suggestion by John Fox and Uli Keller to the R-help list).  The alternative is to just use the Promax function directly on the factanal object.
 
 }
 \value{ Various psych functions produce copious output.  This is a way to summarize the most important parts of the output of the score.items, cluster.scores, and ICLUST functions.  See those ( \code{\link{score.items}}, \code{\link{cluster.cor}}, \code{\link{cluster.loadings}}, or \code{\link{ICLUST}}) for details on what is produced.
+
   
 }
 

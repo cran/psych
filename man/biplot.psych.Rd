@@ -4,7 +4,8 @@
 \description{Applies the biplot function to the output of \code{\link{fa}}  or \code{\link{principal}}. Will plot factor scores and factor loadings in the same graph.  If the number of factors > 2, then all pairs of factors are plotted. Factor score histograms are plotted on the diagonal. The input is the resulting object from \code{\link{fa}}  or \code{\link{principal}} with the scores=TRUE option. 
 }
 \usage{
-biplot.psych(x, labels=NULL,cex=c(.75,1),main="Biplot",hist.col="cyan",xlim=c(-3,3),ylim=c(-3,3),...)
+\method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot",hist.col="cyan",xlim=c(-3,3),ylim=c(-3,3),...)
+% biplot.psych(x, labels=NULL,cex=c(.75,1),main="Biplot",hist.col="cyan",xlim=c(-3,3),ylim=c(-3,3),...)
 }
 
 \arguments{

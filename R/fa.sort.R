@@ -1,5 +1,5 @@
 "fa.sort" <- 
-function(fa.results) {
+function(fa.results,polar=FALSE) {
   omega <- FALSE
 if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the input a list structure from fa or omega or iclust
    if(class(fa.results)[2] =="omega") {
@@ -21,6 +21,11 @@ if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the in
 
 nitems <- dim(factors)[1]
 nfactors <- dim(factors)[2]
+
+if(polar) { pol.ord <- polar(factors)[,1]
+      factors[1:nitems,] <- factors[pol.ord,]
+ 		rownames(factors)[1:nitems] <- rownames(factors)[pol.ord ] } else {
+ 		
 if(is.null(rownames(factors))) {rownames(factors) <- paste("V",1:nitems)}
 
 loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
@@ -48,7 +53,8 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
    				rownames(factors)[first:last] <- rownames(factors)[ord$ix+first-1]
    		 		first <- first + items[i]  }
           		 }  
-          		 
+ 
+ }
          
  if(omega) {fa.results$schmid$oblique <- factors
  

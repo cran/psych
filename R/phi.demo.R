@@ -16,7 +16,7 @@ for (i in 1:length(cuts)) {
 d.mat<- data.frame(latent,observed,trunc)  #combine into a data frame
 pairs.panels(d.mat,main="Phi coefficients for extreme cut point normal data") 
 trunc.cor<- cor(d.mat)                 #find the Pearson correlations
-freq <- mean(d.mat)                    #find the frequencies of scores
+freq <- apply(d.mat,2,mean)                    #find the frequencies of scores
 
 
  #first demonstrate the polychoric function

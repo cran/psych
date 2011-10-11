@@ -82,3 +82,43 @@ function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
     result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	} 
+
+
+"sim.poly" <- 
+function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="normal") 
+	{ 
+	if(mod=="normal") {result <- sim.poly.npn(nvar,n,low,high,a,c,z,d,mu,sd,cat)} else {result <- sim.poly.npl(nvar,n,low,high,a,c,z,d,mu,sd,cat)}
+	return (result) 
+	}  	
+	
+"sim.poly.npn" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
+	{ 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n,mu,sd) # the latent variable
+	
+	item <- matrix(t(c+(z-c)*pnorm(a*t(theta %+% t(- d)))),n,nvar)  #need to transpose and retranpose to get it right
+	#now convert these probabilities to outcomes
+	item[] <- rbinom(n*nvar, cat, item)
+   
+	colnames(item) <- paste("V",1:nvar,sep="")        
+   result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	}  	
+	
+"sim.poly.npl" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
+	{ 
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n,mu,sd)
+	item <- matrix(t(c+(z-c)/(1+exp(a*t((-theta %+% t( d)))))),n,nvar)
+	item[] <- rbinom(n*nvar, cat, item)
+
+      
+    colnames(item) <- paste("V",1:nvar,sep="")
+     
+    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	} 

@@ -1,9 +1,10 @@
 "factor.stats" <- 
 function(r,f,phi=NULL,n.obs=NA,alpha=.1) {
 #revised June 21, 2010 to add RMSEA etc. 
+#revised August 25, 2011 to add cor.smooth for smoothing
 
 cl <- match.call()
-conf.level <- alpha 
+conf.level <- alpha     
  n <- dim(r)[2]  #number of variables
  if(dim(r)[1] !=n ) {n.obs = dim(r)[1]
                     r <- cor(r,use="pairwise")
@@ -36,21 +37,25 @@ conf.level <- alpha
     
     result$factors <- nfactors
   
-    diag(model) <- diag(r)   
-     model.inv <- try(solve(model),silent=TRUE)
-    if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
-       ev.mod <- eigen(model)
-       ev.mod$values[ev.mod$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-       model <- ev.mod$vectors %*% diag(ev.mod$values) %*% t(ev.mod$vectors)
-       diag(model)  <- 1
-       #model.inv <- solve(model)
-       }
+    diag(model) <- diag(r)  
+    model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
+    #cor.smooth approach  added August 25,2011
+   #  model.inv <- try(solve(model),silent=TRUE)
+   # if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
+   #    ev.mod <- eigen(model)
+   #   ev.mod$values[ev.mod$values < .Machine$double.eps] <- 100 * .Machine$double.eps
+   #   model <- ev.mod$vectors %*% diag(ev.mod$values) %*% t(ev.mod$vectors)
+   #    diag(model)  <- 1
+   #    #model.inv <- solve(model)
+   #    }
    
      m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n   #this is what Tucker Lewis call F
+    if(is.infinite(result$objective)) {result$objective <- rstar2
+                                       message("The determinant of the smoothed correlation was zero.\nThis means the objective function is not defined.\nChi square is based upon observed residuals.")}
     result$criteria <- c("objective"=result$objective,NA,NA)
    
     if (!is.na(n.obs)) {result$STATISTIC <-  chisq <- result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #from Tucker  and from factanal
@@ -63,7 +68,9 @@ conf.level <- alpha
    	#Also known as the NNFI which is expressed in terms of Chisq
    	#NNFI <- (chisqNull/dfNull - chisq/df)/(chisqNull/dfNull - 1)
    	#first find the null model 
-   	F0 <- sum(diag((r))) - log(det(r)) -n     
+   	F0 <- sum(diag((r))) - log(det(r)) -n  
+   	if(is.infinite(F0))  {F0 <- r2
+   	                     message("The determinant of the smoothed correlation was zero.\nThis means the objective function is not defined for the null model either.\nThe Chi square is thus based upon observed correlations.")}
    	Fm <-  result$objective   #objective function of model     
    	Mm <- Fm/( n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2))
    	M0 <- F0* 2 /(n*(n-1))
@@ -73,21 +80,26 @@ conf.level <- alpha
    	if (!is.na(n.obs)) {result$null.chisq <-  F0 * ((n.obs-1) -(2 * n + 5)/6 )
                   	result$TLI <- (M0 - Mm)/(M0 - 1/nm)        #NNFI in Fox's sem
                   	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$F0 <-1 
-     
-     #The estimatation of RMSEA and the upper and lower bounds is taken from John Fox's sem with minor modifications
+    
+     #The estimatation of RMSEA and the upper and lower bounds are taken from John Fox's summary.sem with minor modifications
       if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
-      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df * (N-1)  - 1/(N-1)
+      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)  
    
 
       
-        tail <- (1 - conf.level)/2 
+        tail <- conf.level/2    #this had been incorrectly listed as (1-conf.level)/2  which gave extraordinarily narrow confidence boundaries, fixed August 25, 2011
         N <- max <- n.obs
         df <- result$dof
-        chi.sq.statistic <- RMSEA^2 * df * (N - 1) + df
-        max <- max(max,chi.sq.statistic)
+        #chi.sq.statistic <- RMSEA^2 * df * (N - 1) + df
+        
+        #why isn't this  just chi.sq?
+        chi.sq.statistic <- chisq
+        max <- max(max,chi.sq.statistic) +2* max
         while (max > 1){
-            res <- optimize(function(lam) (tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max))
-			if (is.na(res$objective) || res$objective < 0){
+            res <- try(optimize(function(lam) (tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max)),silent=TRUE)
+             if(class(res)=="try-error") {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
+                                        res <- NULL}
+			if (is.null(res) || is.na(res$objective) || res$objective < 0){
 				max <- 0
 				warning("cannot find upper bound of RMSEA")
 				break
@@ -99,8 +111,11 @@ conf.level <- alpha
       # max <- max(max,lam.U)
       max <- lam.U
       if(is.na(max)) max <- N
-        while (max > 1){
-            res <- optimize(function(lam) (1 - tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max))
+        while (max > 1){        #this just iterates in to get a value
+            res <- try(optimize(function(lam) (1 - tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max)),silent=TRUE)
+             if(class(res)=="try-error") {message("In factor.stats, I could not find the RMSEA lower bound. Sorry about that")
+                                        res <- NULL}
+            if (is.null(res)) {break}
             if (sqrt(res$objective) < tail/100) break
             max <- max/2
 			if (is.na(res$objective) || res$objective < 0){
@@ -111,19 +126,20 @@ conf.level <- alpha
             }
         lam.L <- if (max <= 1) NA else res$minimum  #lam is the ncp
        #this RMSEA calculation is not right   
-        RMSEA.U <- sqrt(lam.U/((N-1)*df) )
-        RMSEA.L <- min(sqrt(lam.L/((N-1)*df) ),RMSEA)
+        RMSEA.U <- sqrt(lam.U/((N)*df) )   #lavaan uses sqrt(lam.U/((N)*df) )  sem uses sqrt(lam.U/((N-1)*df) )
+        RMSEA.L <- min(sqrt(lam.L/((N)*df) ),RMSEA)
        result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, conf.level)
        names(result$RMSEA) <- c("RMSEA","lower","upper","confidence")
         result$BIC <- chisq - df * log(N) 
         }
       }  
-       
+  
         
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
-      w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
+   	 r <- cor.smooth(r)
+      w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
      if(class(w)=="try-error") {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps

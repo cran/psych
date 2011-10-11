@@ -26,11 +26,11 @@ For a very nice discussion of the relationship between factor scores, correlatio
 }
 \value{Factor Loadings of the exended variables on the original factors}
 
-\references{Paul S. Dwyer (1937), The determination of the factor loadings of a given test from the known factor loadings of other tests. Psychometrika, 3, 173-178
+\references{Paul S. Dwyer (1937) The determination of the factor loadings of a given test from the known factor loadings of other tests. Psychometrika, 3, 173-178
 
  Gorsuch, Richard L. (1997) New procedure for extension analysis in exploratory factor analysis,  Educational and Psychological Measurement, 57, 725-740
  
- Horn, John L. (1973) On extension analysis and ite relation to correlations between variables and factor scores.  Multivariate Behavioral Research, 8, (4), 477-489.
+ Horn, John L. (1973) On extension analysis and its relation to correlations between variables and factor scores.  Multivariate Behavioral Research, 8, (4), 477-489.
 }
 \author{William Revelle
 }

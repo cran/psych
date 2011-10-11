@@ -23,7 +23,7 @@ if (nc > 2 ) {
  
  
   "factor.plot" <- 
-function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,...) {
+function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,...) {
 if(missing(title) ) {if (class(ic.results)[2] == "fa") title = "Factor Analysis"
                      if (class(ic.results)[2] == "principal") title = "Principal Component Analysis"
                      }
@@ -39,6 +39,7 @@ cluster <- rep(nc+1,nvar)
 cluster <- apply( abs(load)  ,1,which.max)
 cluster[(apply(abs(load),1,max) < cut)] <- nc+1
 }
+if(jiggle) load <- jitter(load,amount=amount)
 if (nc > 2 ) {
  pairs(load,pch = cluster+19,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster],main=title) }
  else {

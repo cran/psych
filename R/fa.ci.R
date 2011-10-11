@@ -1,16 +1,16 @@
 
  
 "print.psych.fa.ci" <-
-function(x,digits=2,all=FALSE)  {
+function(x,digits=2,all=FALSE,...)  {
 cat("Factor Analysis with confidence intervals using method = ",x$f$fm )
    cat("\nCall: ")
    print(x$Call)
    print(x$fa)
-   nfactors <-dim(x$fa$loadings)[2]
+  nfactors <-dim(x$fa$loadings)[2]
    c("\n Confidence intervals\n")
   
    lc <- lci <- data.frame(unclass(x$fa$loadings),x$ci)
-   
+  
    for(i in 1:nfactors) {
    lci[,(i-1)*3 +2 ] <- lc[,i] 
    lci[,(i-1)*3 +1 ] <- lc[,i+nfactors] 

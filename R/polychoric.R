@@ -2,7 +2,7 @@
 #polyc does all the work but does not work in cases of incomplete tables
 #thus, the polychor function is used
 "polyc" <- 
-function(x,y=NULL,taux,tauy,correct=TRUE) {
+function(x,y=NULL,taux,tauy,global=TRUE) {
  binBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
 { if (min(rc) < -9999) rc <- rc[-1]
   if (min(cc) < - 9999) cc <- cc[-1]
@@ -27,13 +27,21 @@ function(x,y=NULL,taux,tauy,correct=TRUE) {
 }
  f <- function(rho,rc,cc) { 
       P <- binBvn(rho, rc, cc) 
-       -sum(tab * log(P)) }  #the ML criterion to be minimized
+       -sum(tab * log(P)) }  #the  criterion to be minimized
       
   tab <- table(x,y)  
   tot <- sum(tab)
   tab <- tab/tot
   
-  rho <- optimize(f,interval=c(-1,1),rc=taux, cc=tauy)
+ if(global) { rho <- optimize(f,interval=c(-1,1),rc=taux, cc=tauy)#this uses the global taux and tauy
+       } else { #use item row and column information for this pair, rather than global values
+   #this seems to match the polycor function
+    csum <- colSums(tab)
+    rsum <- rowSums(tab)
+     cc <-  qnorm(cumsum(csum))[-length(csum)]
+     rc <-  qnorm(cumsum(rsum))[-length(rsum)]
+    rho <- optimize(f,interval=c(-1,1),rc=rc, cc=cc)
+ }
   result <- list(rho=rho$minimum,objective=rho$objective)
   return(result)
   }
@@ -42,7 +50,7 @@ function(x,y=NULL,taux,tauy,correct=TRUE) {
 
 #Basically just is used to find the thresholds and then does the polychoric r for a matrix
 "polychoric" <- 
-function(x,polycor=FALSE,ML = FALSE, std.err = FALSE) {
+function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE) {
 if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
 if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
  polycor <- FALSE}
@@ -54,7 +62,7 @@ xt <- table(x)
 nvalues <- length(xt)  #find the number of response alternatives 
 if(nvalues > 10) stop("You have more than 10 categories for your items, polychoric is probably not needed")
 xmin <- min(x,na.rm=TRUE)
-xfreq <- apply(x- xmin+ 1,2,tabulate,nbins=nvalues)
+xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
 tau <- qnorm(apply(xfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
@@ -70,7 +78,7 @@ x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to o
 for (i in 2:nvar) {
   for (j in 1:(i-1)) {
 if(!polycor) {
-poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j])  
+poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j],global=global)  
 mat[i,j] <- mat[j,i] <- poly$rho } else {
 #To use John Fox's version which requires the polycor package
   poly <- polychor(x[,i],x[,j],ML = ML,std.err = std.err)  #uses John Fox's function
@@ -78,7 +86,8 @@ mat[i,j] <- mat[j,i] <- poly$rho } else {
    }
    }
    diag(mat) <- 1
-  tau <- t(tau)
+ if(smooth) {mat <- cor.smooth(mat) }
+ tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
  class(result) <- c("psych","poly")
   return(result) 

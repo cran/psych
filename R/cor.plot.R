@@ -1,8 +1,10 @@
 #developed April 24, 2009
 #modifed November 14, 2009 to add legends
+#completely revised June 20, 2011 to do more reds for less than 0, blues for above 0
+#also switched to using layout to make legend clearer
 #
 "cor.plot" <- 
-function(r,colors=FALSE, n=10,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,...){
+function(r,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,...){
 
 op <- par(no.readonly=TRUE)
 
@@ -23,38 +25,41 @@ if(is.null(colnames(r))) colnames(r) <- paste("V",1:nf)
  max.len <- max(nchar(rownames(r)))/6
 #max.len <- max( strwidth(rownames(r)))
 if(is.null(zlim)) {zlim <- range(r)}
-if(colors) {gr <- topo.colors(n)
- ord <- n:1
- gr <- gr[ord]} else {
-gr <- grey((n:0)/n)}
+if(colors) { 
+    gr <- colorRampPalette(c("red","white","blue")) #added June 20
+    colramp  <- gr(n)
+      } else {
+    colramp <- grey((n:0)/n)}
 ord1 <- seq(nvar,1,-1)
 if(nvar != nf) {  r <- t(r) }
 
-r <- r[,ord1]
-#par.original <- par(c("mar", "las", "mfrow"))$mar
-   # on.exit(par(par.original))
-#mar <- par.original
-mar <- c(5,5)
-par(mar = c(mar[1]+max.len,mar[1]+max.len, 4, 4))
-if(show.legend) {leg <- seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/(nvar-1))
-#leg <- matrix(c(rep(NA,nvar),leg),ncol=2)
-#colnames(leg)  <- c("","key")
-leg <- matrix(leg,ncol=1)
-colnames(leg)  <- "key"
- r <- rbind(r,t(leg))
-}
-image(r,col=gr,axes=FALSE,main=main,zlim=zlim)
+r <- r[,ord1] #reorder the columns to allow image to work
+MAR <- 5
+par(mar = c(MAR +max.len,MAR+max.len, 4, .5))
+
+if(show.legend) {   #set it up to do two plots
+     layout(matrix(c(1,2),nrow=1),widths=c(.9,.1),heights=c(1,1))
+    }
+
+image(r,col=colramp,axes=FALSE,main=main,zlim=zlim)
 box()
 at1 <- (0:(nf-1))/(nf-1)
 at2 <- (0:(nvar-1)) /(nvar-1)
-if(show.legend) {
-   at1 <- (0:(nf))/(nf)
-   abline(v=(nf-.5)/nf)
-   axis(4,at=at2,labels=round(leg,2),las=2,...)}
-  
 if(max.len>.5) {axis(1,at=at1,labels=rownames(r),las=2,...)
               axis(2,at=at2,labels=colnames(r),las=1,...)} else {
               axis(1,at=at1,labels=rownames(r),...)
               axis(2,at=at2,labels=colnames(r),las=1,...)}
-if (show.legend) {par(op)}  #return the parameters to where we started is the default case
+at1 <- (0:(nf-1))/(nf-1)
+
+if(show.legend) {
+    leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)
+#screen(2) 
+   par(mar=c(MAR,0, 4,3)) 
+   image(leg,col=colramp,axes=FALSE,zlim=zlim)  
+   at2 <- seq(0,1,1/n.legend)
+    labels =seq(zlim[1],zlim[2],(zlim[2]-zlim[1])/(length(at2)-1))
+    axis(4,at=at2,labels =labels,las=2,...)
+   }  
+par(op)  #return the parameters to where we started 
 }
+

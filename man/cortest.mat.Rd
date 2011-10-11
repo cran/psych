@@ -9,17 +9,18 @@
 }
 \usage{
 cortest.normal(R1, R2 = NULL, n1 = NULL, n2 = NULL, fisher = TRUE)
-cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE)   #same as cortest.normal 
+cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE,cor=TRUE)   #same as cortest.normal 
 cortest.mat(R1,R2=NULL,n1=NULL,n2 = NULL)
 cortest.jennrich(R1,R2,n1=NULL, n2=NULL)
 }
 
 \arguments{
-  \item{R1}{A correlation matrix. (If R1 is not rectangular, the correlations are found). }
-  \item{R2}{A correlation matrix.  If R2 is not rectangular, the correlations are found. If R2 is NULL, then the test is just whether R1 is an identity matrix. }
+  \item{R1}{A correlation matrix. (If R1 is not rectangular, and cor=TRUE, the correlations are found). }
+  \item{R2}{A correlation matrix.  If R2 is not rectangular, and cor=TRUE, the correlations are found. If R2 is NULL, then the test is just whether R1 is an identity matrix. }
   \item{n1}{Sample size of R1 }
   \item{n2}{Sample size of R2 }
   \item{fisher}{Fisher z transform the correlations? }
+  \item{cor}{By default, if the input matrices are not symmetric, they are converted to correlation matrices.  That is, they are treated as if they were the raw data.  If cor=FALSE, then the input matrices are taken to be correlation matrices.} 
 }
 \details{There are several ways to test if a matrix is the identity matrix. The most well known is the chi square test  of Bartlett (1951) and Box (1949). A very straightforward test, discussed by Steiger (1980) is to find the sum of the squared correlations or the sum of the squared Fisher transformed correlations.  Under the null hypothesis that all the correlations are equal, this sum is distributed as chi square.   
 

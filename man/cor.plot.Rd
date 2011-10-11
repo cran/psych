@@ -3,30 +3,32 @@
 \alias{cor.plot}
 \title{Create an image plot for a correlation or factor matrix}
 
-\description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of small correlation matrices with a clear structure.  Meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
+\description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-cor.plot(r,colors=FALSE, n=10,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,...)
+cor.plot(r,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,...)
 }
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{omega}}.  }
-  \item{colors}{Defaults to FALSE (grey), but colors=TRUE will use topo.colors}
-  \item{n}{The number of levels of shading to use.  Defaults to 10}
-  \item{main}{A title. Defaults to ``correlation plot"}
+  \item{colors}{Defaults to TRUE and colors use colors from the colorRampPalette from red through white to blue, but colors=FALSE will use a grey scale}
+  \item{n}{The number of levels of shading to use.  Defaults to 51}
+  \item{main}{A title. Defaults to "correlation plot"}
   \item{zlim}{The range of values to color -- defaults to -1 to 1}
   \item{show.legend}{A legend (key) to the colors is shown on the right hand side}
   \item{labels}{if NULL, use column and row names, otherwise use labels}
+  \item{n.legend}{How many categories should be labelled in the legend?}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size)}
 }
-\details{When teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
+\details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
 
 The difference of mat.plot with a regular image plot is that the primary diagonal goes from the top left to the lower right. 
-
-The zlim parameter defaults to 0 to 1.  This means that negative correlations are treated as zero.  This is advantageous when showing general factor structures, because it makes the 0 white.  
+-1 to 1 and the color choice is more reasonable.  Setting it as c(0,1) will lead to negative correlations  treated as zero.  This is advantageous when showing general factor structures, because it makes the 0 white.  
 
 The default shows a legend for the color coding on the right hand side of the figure.
 
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
+
+Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1).
 }
 
 \author{William Revelle
@@ -39,11 +41,11 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 \seealso{ \code{\link{fa}}, \code{\link{mat.sort}}
 }
 \examples{
-data(bifactor)
-cor.plot(Thurstone,TRUE, zlim=c(0,1),main="9 cognitive variables from Thurstone")
+cor.plot(Thurstone,main="9 cognitive variables from Thurstone") #just blue implies positive manifold
+cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone")
 cor.plot(mat.sort(Thurstone),TRUE,zlim=c(0,1), main="9 cognitive variables from Thurstone (sorted by factor loading) ")
 simp <- sim.circ(24)
-cor.plot(cor(simp),colors=TRUE,,main="24 variables in a circumplex")
+cor.plot(cor(simp),main="24 variables in a circumplex")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -53,7 +53,7 @@ Alpha is a poor estimate of the general factor saturation of a test (see Revelle
 
 Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  
 
-By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project where most scales are estimated from random sub samples of the items from the scale. 
+By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
 
 
 }
@@ -69,9 +69,10 @@ By default, missing values are replaced with the corresponding median value for 
   \item{item.corrected}{The item by scale correlations for each item, corrected for item overlap by replacing the item variance with the smc for that item}
  \item{response.freq}{The response frequency (based upon number of non-missing responses) for each alternative.}
  \item{missing}{How many items were not answered  for each scale }
+ \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Apeture Personality Assessment study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
 } 
 \references{
@@ -102,12 +103,13 @@ data(bfi)
  scores <- score.items(keys[1:27,],bfi[1:27],min=1,max=6)
  scores
  
- #compare this output to that for the impute="none" option.
- #first make many of the items missing
+ #compare this output to that for the impute="none" option for SAPA type data
+ #first make many of the items missing in a missing pattern way
  missing.bfi <- bfi
- missing.bfi[sample(dim(bfi)[1],500),sample(dim(bfi)[2],10)] <- NA
+ missing.bfi[1:1000,3:8] <- NA
+ missing.bfi[1001:2000,c(1:2,9:10)] <- NA
  scores <- score.items(keys,missing.bfi,impute="none",min=1,max=6)
- summary(scores)
+ scores
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

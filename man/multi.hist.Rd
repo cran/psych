@@ -23,7 +23,7 @@ May be used for single variables.
 
 \seealso{ \code{\link{bi.bars}} for drawing pairwise histograms}
 \examples{
-multi.hist(attitude[-1]) 
+multi.hist(sat.act) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

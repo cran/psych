@@ -9,8 +9,8 @@ n.y <- dim(y)[2]
 n.k <- dim(x)[2]
 if (n.k != dim(y)[1]) {warning("Matrices should be comparable")}
 #first find sum vectors
-x <- rowSums(x)
-y <- colSums(y)
+x <- rowSums(x,na.rm=FALSE)
+y <- colSums(y,na.rm=FALSE)
 one <- as.vector(rep(1,n.y))  #to duplicate x n.y times
 one.y <- as.vector(rep(1,n.x)) #to duplicate y n.x times
 xy  <- x %*% t(one) + t(y %*% t(one.y) )  #sum the vectors in a rectangular array

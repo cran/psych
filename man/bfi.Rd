@@ -47,7 +47,7 @@ The item data were collected using a 6 point response scale:
 2 Moderately Inaccurate
 3 Slightly Inaccurate
 4 Slightly Accurate
-5Moderately Accurate
+5 Moderately Accurate
 6 Very Accurate
 
 as part of the Synthetic Apeture Personality Assessment (SAPA) project.  To see an example of the data collection technique, visit \url{http://test.personality-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.

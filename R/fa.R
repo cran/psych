@@ -11,13 +11,13 @@
 #In May, 2011, fa was added as a wrapper to do iterations, and the original fa function was changed to fac.  The functionality of fa has not changed.
 
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores=FALSE, residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=TRUE,...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=TRUE,...) {
  cl <- match.call()
   if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
  nvar <- dim(fl)[1]
  
@@ -75,6 +75,7 @@ rownames(means) <- rownames(sds) <- rownames(fl)
 results <- list(fa = f,means = means,sds = sds,ci = ci, means.rot=means.rot,sds.rot=sds.rot,ci.rot=ci.rot,Call= cl,replicates=replicates,rep.rots=rep.rots)
 class(results) <- c("psych","fa.ci")
 } else {results <- f
+        results$Call <- cl
        class(results) <- c("psych","fa")
        }
 return(results)
@@ -86,7 +87,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -111,7 +112,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
  #this next section is taken (with minor modification to make ULS, WLS or GLS) from factanal        
  #it does the iterative calls to fit.residuals 
  #modified June 7, 2009 to add gls fits
- #Modified December 11, 2009 to use first derivatives from formula rather than emprical.  this seriously improves the speed.
+ #Modified December 11, 2009 to use first derivatives from formula rather than emprical.  This seriously improves the speed.
      "fit" <- function(S,nf,fm,covar) {
           S.smc <- smc(S,covar)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
@@ -189,9 +190,10 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
  if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
+     x.matrix <- r
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
-               if(scores) {x.matrix <- r
+              
              if(missing) { #impute values 
         x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
         miss <- which(is.na(x.matrix),arr.ind=TRUE)
@@ -200,7 +202,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
        x.matrix[miss]<- item.means[miss[,2]]} else {
        item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
         x.matrix[miss]<- item.med[miss[,2]]}
-        }}
+        }
     		if(!covar) {r <- cor(r,use="pairwise")} else {r <- cov(r,use="pairwise")} # if given a rectangular matrix, then find the correlation or covariance first
            } else {
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
@@ -290,13 +292,15 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
     
     f.loadings <- loadings #used to pass them to factor.stats 
     if(rotate != "none") {if (nfactors > 1) {
-   
+
     
-   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT") { 
+   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" |rotate =="bifactor" ||rotate =="targetT" ) { 
+   	if (!require(GPArotation)) {stop("I am sorry, to do these rotations requires the GPArotation package to be installed")}
    	       #varimax is from the stats package, Varimax is from GPArotations
    			rotated <- do.call(rotate,list(loadings,...))
    			loadings <- rotated$loadings
    			 Phi <- NULL} else { 
+   			
      			if ((rotate=="promax")|(rotate=="Promax") ) {pro <- Promax(loadings)
      			                loadings <- pro$loadings
      			                Phi <- pro$Phi} else {
@@ -305,7 +309,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
      			              	loadings <- pro$loadings
      			                Phi <- pro$Phi} else {
      			                     
-     			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ") {
+     			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ" |rotate == "biquartimin" |rotate == "targetQ" |rotate == "TargetQ" ) {
      				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
      				Phi <- NULL} else { ob  <- try(do.call(rotate,list(loadings,...) ))
      				          if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
@@ -348,7 +352,9 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores=FALSE,residuals=FALSE,S
                        }
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
     
-    if(scores) {result$scores <- factor.scores(x.matrix,Structure) }
+    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores) } else {result$scores <- factor.scores(x.matrix,f=Structure,method=scores)}
+    result$weights <- result$scores$weights
+    result$scores <- result$scores$scores
     result$factors <- nfactors 
     result$fn <- "fa"
     result$fm <- fm

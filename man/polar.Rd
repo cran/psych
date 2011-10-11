@@ -32,7 +32,7 @@ Hofstee, W. K. B., de Raad, B., & Goldberg, L. R. (1992). Integration of the big
 \examples{
 
 circ.data <- circ.sim(24,500)
-circ.fa <- factor.pa(circ.data,2)
+circ.fa <- fa(circ.data,2)
 circ.polar <- round(polar(circ.fa),2)
 circ.polar
 #compare to the graphic

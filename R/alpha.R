@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -19,10 +19,18 @@
     if (nsub !=nvar)  {
          response.freq <- response.frequencies(x,max=max)
          C <- cov(x,use="pairwise") 
+         if(check.keys && is.null(keys)) {
+            p1 <- principal(x)
+            if(any(p1$loadings <0)) warning("Some items were negatively correlated with total scale and were automatically reversed")
+            keys <- 1- 2* (p1$loadings < 0 ) }
+            
          if(!is.null(keys)) {
          			keys<- as.vector(keys)
         			 key.d <- diag(keys)
-                     C <- key.d %*% C %*% key.d}
+                     C <- key.d %*% C %*% key.d
+                      signkey <- strtrim(keys,1)
+            		 signkey[signkey=="1"] <- ""
+                     colnames(x) <- paste(colnames(x),signkey,sep="")}
          total <- rowSums(x,na.rm=na.rm)
         if(cumulative) { mean.t <- mean(total,na.rm=na.rm)
          sdev <- sd(total,na.rm=na.rm) } else { mean.t <- mean(total/nvar,na.rm=na.rm)
@@ -31,7 +39,7 @@
                                                if(!is.null(keys)) {key.d <- diag(keys)
                             C <- key.d %*% C %*% key.d}}
          R <- cov2cor(C)
-         drop.item <-list()
+         drop.item <- list()
          alpha.total <- alpha.1(C,R)
          if(nvar > 2) {
          for (i in 1:nvar) {
@@ -60,7 +68,7 @@
      
      #  
         item.means <- colMeans(x, na.rm=na.rm )
-        item.sd <-  sd(x,na.rm=na.rm)
+        item.sd <-  apply(x,2,sd,na.rm=na.rm)
         if(nsub > nvar) {
         	alpha.total <- data.frame(alpha.total,mean=mean.t,sd=sdev)
         	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","mean","sd")
@@ -74,11 +82,13 @@
         	}
        	rownames(stats) <- colnames(x)
        	
-        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,call=cl,title=title)
+        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,call=cl,title=title)
         class(result) <- c("psych","alpha")
         return(result)
      
     }
   #modified Sept 8, 2010 to add r.drop feature  
+  #modified October 12, 2011 to add apply to the sd function
   #modified November 2, 2010 to use sd instead of SD
   #January 30, 2011  - added the max category parameter (max)
+  #June 20, 2011 -- revised to add the check.keys option as suggested by Jeremy Miles

@@ -34,6 +34,7 @@ function(header=TRUE,sep='\t',...) {  #same as read.clipboard(sep='\t')
 
 #adapted from John Fox's read.moments function
 #modified October 31, 2010 to be able to read row names as first column
+#corrected September 2, 2011 to be able to read row names as first column but without the diagonal
 "read.clipboard.lower" <-
 function( diag = TRUE,names=FALSE,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
@@ -46,7 +47,9 @@ function( diag = TRUE,names=FALSE,...) {
     d <- if (diag |names)    1  else -1
     n <- floor((sqrt(1 + 8 * m) - d)/2) 
    if(names)  {name <- xij[cumsum(1:n)]     
-               xij <- xij[-cumsum(seq(1:n))]}
+               xij <- xij[-cumsum(seq(1:n))]
+                d <- if (diag )    1  else -1
+                n <- floor((sqrt(1 + 8 * (m-n)) - d)/2) }
    xij <- as.numeric(xij)
    X <- diag(n)
     X[upper.tri(X, diag = diag)] <- xij
@@ -54,7 +57,8 @@ function( diag = TRUE,names=FALSE,...) {
    X <- t(X) + X 
     diag(X) <- diagonal
    if(!names) name <- paste("V",1:n,sep="")
-    rownames(X) <- colnames(X) <- name
+    if(!names) name <- paste("V",1:n,sep="")
+    if(names && !diag) {rownames(X) <- colnames(X) <- c(name,paste("V",n,sep="")) } else  {rownames(X) <- colnames(X) <- name }
     return(X)
    }
    

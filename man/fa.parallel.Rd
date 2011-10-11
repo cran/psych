@@ -8,7 +8,7 @@
 \usage{
 fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres") 
-plot.poly.parallel(x,show.legend=TRUE,...)
+\method{plot}{poly.parallel}(x,show.legend=TRUE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

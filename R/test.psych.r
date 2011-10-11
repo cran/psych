@@ -19,12 +19,12 @@ for (i in first:last) {
 	pc <-   principal(test.data)
 	pc2 <-    principal(test.data,2)
 	if(i < 3) {
-			fa2 <- factor.pa(test.data,2)
+			fa2 <- fa(test.data,2)
 			fp <-    fa.parallel(test.data)
 			vss2 <- VSS(test.data)
 			vsspc <- VSS(test.data,fm="pc")
 		} else {
-			fa2 <- factor.pa(test.data,2,n.obs=200)
+			fa2 <- fa(test.data,2,n.obs=200)
 			cluster.plot(fa2)
 			fp <-    fa.parallel(test.data,n.obs=200)
 			vss2 <- VSS(test.data,n.obs=200)
@@ -54,7 +54,7 @@ for (i in first:last) {
   circ <-  sim.circ(nvar=24)
   cor.plot(cor(circ),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
   simple.par <- fa.parallel(simple)
-  fa.simple <- factor.pa(simple,2)
+  fa.simple <- fa(simple,2)
   cor.plot(fa.simple,TRUE,n=4)
   fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE)
  
@@ -70,13 +70,13 @@ for (i in first:last) {
 #a test example of a singular matrix
 IRIS <- iris[,1:4]
 IRIS[,5] <- iris[,1]+iris[,2]
-f.iris <-fa(IRIS,5,scores=TRUE)
+f.iris <- fa(IRIS,5,scores="tenBerge") #this is get around the failure of tenBerge for a singular matrix
 p.iris <- principal(IRIS,5,scores=TRUE)
 #this will fail if not using minres or pa
   
 
    
-cluster.plot(factor.pa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
+cluster.plot(fa(sim.circ(nvar=24),nf=2),title="two circumplex factors")
  pairs.panels(cong) 
  #this section tests various functions that use Rgraphviz (if it is installed) 
 #  if(require(Rgraphviz))       

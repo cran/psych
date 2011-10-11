@@ -53,10 +53,11 @@ function(x, ...)
 #Beginning of the main function
 #the organization gets around the problem of passing parameters to pairs by calling different routines
 
-#op <- par(no.readonly = TRUE)  # save the whole list of settable par's.  #this doesn't seem to help
-old.par <- par(no.readonly = TRUE) # save default, for resetting... 
 
-    par(pch = pch)
+old.par <- par(no.readonly = TRUE) # save default, for resetting... 
+on.exit(par(old.par))     #and when we quit the function, restore to original values
+   
+   par(pch = pch)
     
     if(!lm) {if (density) { #the basic default is here
       if (smooth) {

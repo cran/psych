@@ -29,3 +29,5 @@ function (x,keys=NULL)
 #if keys is null, this is the Promax function
 #if keys are not null, this becomes a targeted rotation function similar to that suggested by Michael Brown
 #created April 6, 2009 with the assistance of Pat Shrout and Steve Miller
+
+

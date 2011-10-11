@@ -42,7 +42,7 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
  for(i in 1:nvar) {
  keys.kmean[i,best.kmeans$cluster[i]] <- 1 }  
  
-  f1 <- factor.pa(r,SMC=FALSE)  #one factor solution
+  f1 <- fa(r,SMC=FALSE)  #one factor solution
   load <- f1$loadings
    ord.load <- order(load)
     key.fa <- matrix(rep(0,nvar*2),ncol=2)

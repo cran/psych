@@ -49,18 +49,15 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
      		 names(R2) <- colnames(data)[y]}
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
      	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
-     	             } else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
+     	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
      	            Myx <-  xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)
-     	            } else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))
+     	            cc2 <- cc <- T <- NULL} else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))
      	            if(numy > numx) {
      	            Myx <- solve(x.matrix) %*% xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)} else { Myx <- solve(y.matrix) %*% t(xy.matrix )%*% solve(x.matrix) %*% (xy.matrix)}
      	           }
      	            cc2 <- eigen(Myx)$values
      	            cc <- sqrt(cc2)
-     	            T <- sum(cc2)/length(cc2) 
-     	            
-     	            
-     	            
+     	            T <- sum(cc2)/length(cc2)             
      	            }
      	           
      	if(!is.null(n.obs)) {k<- length(x)

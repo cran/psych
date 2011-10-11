@@ -141,6 +141,8 @@ The default rotation uses oblimin from the GPArotation package.  Alternatives in
 If the factor solution leads to an exactly orthogonal solution (probably only for demonstration data sets), then use the rotate="Promax" option to get a solution.
 
 \code{\link{omegaSem}} requires the sem package.  \code{\link{omegaFromSem}} uses the output from the sem package.
+
+\code{\link{omega}} may be run on raw data, a correlation matrix, a polychoric correlation matrix (found by e.g., polychoric), or the output of a previous omega run.  This last case is particularly useful when working with categorical data using the poly=TRUE option.  For in this case, most of the time is spent in finding the correlation matrix.  The matrix is saved as part of the omega output and may be used as input for subsequent runs.  A similar feature is found in \code{\link{irt.fa}} where the output of one analysis can be taken as the input to the subsequent analyses.
 }
 
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}

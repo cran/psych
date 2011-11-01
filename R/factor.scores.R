@@ -113,7 +113,9 @@
    
 "invMatSqrt" <- function(x) {
    e <- eigen(x)
-    e$values[e$values < 0] <- 100 * .Machine$double.eps
+   if(is.complex(e$values)) {warning("complex eigen values detected by invMatSqrt, results are suspect")
+                 result <- x
+                 break} else { e$values[e$values < 0] <- 100 * .Machine$double.eps}
    inv.sqrt.ev <- 1/sqrt(e$values)   #need to put in a check here for postive semi definite
    result <- e$vectors %*% diag(inv.sqrt.ev) %*% t(e$vectors)
    result}

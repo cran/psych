@@ -41,7 +41,7 @@ conf.level <- alpha
     model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
     #cor.smooth approach  added August 25,2011
    #  model.inv <- try(solve(model),silent=TRUE)
-   # if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
+   #  if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
    #    ev.mod <- eigen(model)
    #   ev.mod$values[ev.mod$values < .Machine$double.eps] <- 100 * .Machine$double.eps
    #   model <- ev.mod$vectors %*% diag(ev.mod$values) %*% t(ev.mod$vectors)
@@ -142,6 +142,9 @@ conf.level <- alpha
       w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
      if(class(w)=="try-error") {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
+     if(is.complex(ev$values)) {warning("complex eigen values detected by factor stats, results are suspect")
+                
+                 } else { 
      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
        diag(r)  <- 1
@@ -149,9 +152,9 @@ conf.level <- alpha
      if(class(w)=="try-error") {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
      w <- diag(1,dim(r)[1])
      }   #these are the beta weights 
-    }
+    }}
       R2 <- diag(t(w) %*% f)
-     if(prod(R2) < 0 ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
+     if(prod(R2) < 0 ) {message("The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor extraction method\n")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }

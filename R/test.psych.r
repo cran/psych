@@ -50,6 +50,8 @@ for (i in first:last) {
   } #end loop
     #a few more tests
   
+  cat("\n Testing cor plot and sim.item\n")
+   set.seed(42)   #this way our simulaton will be consistent
   simple <- sim.item(nvar=24)
   circ <-  sim.circ(nvar=24)
   cor.plot(cor(circ),colors=TRUE,zlim=c(-1,1),main="24 variables in a circumplex")
@@ -60,13 +62,17 @@ for (i in first:last) {
  
  simple.scores <-  score.items(fa.simple.keys$clusters,simple)
  pairs.panels(simple.scores$scores)
-   f4 <- sim.VSS()
+ 
+
+ cat("\n Test of sim.VSS\n")
+   f4 <- sim.VSS()  
     psych.d <- NULL 
   #the next test, phi.demo, throws multiple warnings that are from the polycor package and can not be found
   #if (!require(polycor)) { warning("psycho.demo requires the polycor package")  psych.d <- NULL  } else  {psych.d <- phi.demo() } 
   cong <- sim.congeneric()
+  
  #test of factoring and scoring singular data
-
+cat("\n Test of a singular matrix\n")
 #a test example of a singular matrix
 IRIS <- iris[,1:4]
 IRIS[,5] <- iris[,1]+iris[,2]

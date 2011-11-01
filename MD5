@@ -1,4 +1,4 @@
-063dce0b13341bc105d9b87da1ef3075 *DESCRIPTION
+b68ca02f7d5f47c90fd08faeea2b55fc *DESCRIPTION
 c8b9e9f61eb0e466e00d696f143f3ceb *NAMESPACE
 13d9ab3fbb68605e336eaf29f98bd80a *R/BASS.R
 55da70d9c9bec31f46ff865582d29dc6 *R/CTA_lrn.R
@@ -49,7 +49,7 @@ cc02fcc5fa8037be825df30e51b03990 *R/cosiner.R
 6e67a08b17214985065f99c4a66a78ea *R/cosinor.R
 ba2fba76a2ec3f67e761efaa1adafca8 *R/count.pairwise.R
 76ec20e866c197c84bb745e773456b50 *R/cta.R
-c9ad6d42754609c0991d4e1b65c22815 *R/describe.R
+9fca270b6b073ec5de5137a9fad9771c *R/describe.R
 05039899e92b330ac037461a096b5c7c *R/describe.by.R
 eafc20d0ce2e06600a7e02f1ee6790e5 *R/df2latex.R
 20df3f56d978a562f0ab65e6afb13ad6 *R/dia.cone.R
@@ -77,8 +77,8 @@ c851365f569d8fc0194bd0f6840529ff *R/factor.fit.R
 ad444cb90847320b119c3084637d6262 *R/factor.pa.R
 5a07e267d2e957b5061cb96b77354d31 *R/factor.residuals.R
 164d244029600b098965441242d4d249 *R/factor.rotate.R
-7ba69041cae0879bce4390154f62979d *R/factor.scores.R
-d48fa2807d4d98b5ddc9039824974d45 *R/factor.stats.R
+266bd0279528cbf02fd8c8c8fa1e2723 *R/factor.scores.R
+8569696685ee0574bbaad722e5a958fd *R/factor.stats.R
 a3e3ead9300983972dc0ac98abf0ac3f *R/factor.wls.R
 0d1019a4b6a5a7e8b824999cf51d0714 *R/factor2cluster.R
 1584d6052d521ef153f482f0293f94d5 *R/fisherz.R
@@ -183,7 +183,7 @@ acb92c9f667cc7950ad2b74e12320722 *R/super.matrix.R
 a0c781092a59b3984e4f098785161744 *R/table2matrix.R
 32c13fb2b31de9b27184e32f09c4b0ef *R/target.rot.R
 d749df7eb65ddfd8050bd0b676665366 *R/tenberge.R
-86038623c9dfa84e95949bb3b88bd5c0 *R/test.psych.r
+0dbd84c1644741ee4f0a8636dcd13f26 *R/test.psych.r
 506e95e56ea17347ca235fec4bdf3f99 *R/tetrachor.R
 78c92616b47e4883cf7bc609591e1740 *R/thurstone.R
 037b8034c66e5dbd6debc30de16c855b *R/toDotty.R
@@ -221,11 +221,11 @@ f992e8de136cb36c0ec86d6dbf4801e6 *data/iqitems.rda
 750cfdfc8737a90915fd746403696f5d *data/sat.act.rda
 e9421dca7adc88289073257ad3107939 *data/vegetables.rda
 be1f947a90a3357f994b848d7c95a811 *inst/CITATION
-b3192f27061bc7ff2398d5d758ab702b *inst/NEWS.Rd
+a47c050ba99c9e8653b0fe22aeaa3797 *inst/NEWS.Rd
 76b102cfcda17f3a49b568f1e93d6643 *inst/doc/overview.Rnw
-9f7690f84699668af65a78122d2aa733 *inst/doc/overview.pdf
+145964d17d4d242e876bd18d46b81714 *inst/doc/overview.pdf
 45ead99ba7762a7b5105e6bd9f619a50 *inst/doc/psych_for_sem.Rnw
-367976200a6b0ef358be41045be0e66b *inst/doc/psych_for_sem.pdf
+cc7e43c3387c59571f786af0659fc319 *inst/doc/psych_for_sem.pdf
 aac84b83cf16d66b58d194d76f5ce4c4 *man/00.psych-package.Rd
 d1c648092201e2fd2185c5aa2bdd2d9b *man/Gorsuch.Rd
 38283587a00406c7dd39de042339d4f0 *man/Harman.8.Rd

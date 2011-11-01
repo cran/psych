@@ -34,7 +34,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stat
               { x[[i]] <- as.numeric(x[[i]])
               rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")}
             if(!is.numeric(unclass(x[[i]])))
-                stop("non-numeric argument to 'pairs'")
+                stop("non-numeric argument to 'describe'")
         }
         
     stats[,2] <- apply(x, 2,mean,na.rm=na.rm )

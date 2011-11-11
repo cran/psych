@@ -1,5 +1,5 @@
 "cluster.cor" <-
-function(keys,r.mat,correct=TRUE,SMC=TRUE) { #function to extract clusters according to the key vector
+function(keys,r.mat,correct=TRUE,digits=2,SMC=TRUE) { #function to extract clusters according to the key vector
 				#default is to correct for attenuation and show this above the diagonal
 				#find the correlation matrix of scales made up of items defined in a keys matrix (e.g., extracted by factor2cluster) 
                 #takes as input the keys matrix as well as a correlation matrix of all the items
@@ -31,13 +31,12 @@ function(keys,r.mat,correct=TRUE,SMC=TRUE) { #function to extract clusters accor
 # row.max <- pmax(abs(row.range[1,]),abs(row.range[2,]))  #find the largest absolute similarity
  
  if (correct) {cluster.corrected <- correct.cor(cluster.correl,t(key.alpha))
- result <- list(cor=cluster.correl,sd=sqrt(var),corrected= cluster.corrected,alpha=key.alpha,av.r = key.av.r,size=key.var,G6 =key.lambda6,Call=cl)
+ result <- list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),corrected= round(cluster.corrected,digits),alpha=round(key.alpha,digits),av.r = round(key.av.r,digits),size=key.var,G6 =key.lambda6,Call=cl)
  }  #correct for attenuation
  else {
-result <- list(cor=cluster.correl,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,G6 =key.lambda6,Call=cl)}
+result <- list(cor=round(cluster.correl,digits),sd=round(sqrt(var),digits),alpha=key.alpha,av.r = round(key.av.r,2),size=key.var,G6 =key.lambda6,Call=cl)}
  class(result) <- c ("psych", "cluster.cor")
  return(result)}
 #revised August 21, 2007 to add a smidgen to 1.0 in the looking for NAs.
 #revised June 14, 2008 to add average.r
 #revised August 25, 2009 to add lambda6
-#revised December 2011 to remove digits -- this is all handled in the print function

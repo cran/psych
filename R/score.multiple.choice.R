@@ -1,7 +1,6 @@
  "score.multiple.choice" <-  
   function(key,data,score=TRUE,totals=FALSE,ilabels=NULL, missing=TRUE,impute="median", digits=2,short=TRUE) {
   #convert a data matrix or data with multiple choice responses to correct/incorrect
-     cl <- match.call()
   if(!is.matrix(data)) {if(!is.data.frame(data)) {stop("data must be either a data frame or matrix!")} else data <- as.matrix(data)}
   nvar <- dim(data)[2]
   
@@ -47,9 +46,9 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
     item.stats <- cbind(key,response.freq,item.cor,item.stats)
     colnames(item.stats)[alternatives+2] <- "r"
    
-   if(short) {results <- list(item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)} else 
+   if(short) {results <- list(item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits))} else 
    if (sum(miss.rep) >0) {results <-list(scores=scores,missing = miss.rep,item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits))} else{  
-    results <- list(scores=scores,item.stats=item.stats,alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)}  
+    results <- list(scores=scores,item.stats=item.stats,alpha=round(alpha.scale,digits), av.r=round(av.r,digits))}  
 
  class(results) <- c("psych","mchoice")
  return(results) } else {return (items)}  

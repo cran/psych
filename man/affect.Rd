@@ -12,11 +12,11 @@
 
 \details{These are data from two studies conducted in the Personality, Motivation and Cognition Laboratory at Northwestern University.  Both studies used a similar methodology: 
 
-Collection of pretest data using 5 scales from the Eysenck Personality Inventory and items taken from the Motivational State Questionnaire (see \code{link{msq}}. In addition, state and trait anxiety measures were given.  In the ``maps" study, the Beck Depression Inventory was given also.
+Collection of pretest data using 5 scales from the Eysenck Personality Inventory and items taken from the Motivational State Questionnaire. In addition, state and trait anxiety measures were given.  In the ``maps" study, the Beck Depression Inventory was given also.
 
-Then subjects were randomly assigned to one of four movie conditions: 1: Frontline.  A documentary about the liberation of the Bergen-Belsen concentration camp.  2: Halloween.  A horror film.  3: National Geographic, a nature film about the Serengeti plain.  4: Parenthood.  A comedy.  Each film clip was shown for 9 minutes.  Following this the MSQ was given again.  
+Then subjects were randomly assigned to one of four movie conditions: Frontline.  A documentary about the liberation of the Bergen-Belsen concentration camp. Halloween.  A horror film.  3: National Geographic, a nature film about the Serengeti plain.  4: Parenthood.  A comedy.  Each film clip was shown for 9 minutes.  Following this the MSQ was given again.  
 
-Data from the MSQ were scored for Energetic and Tense Arousal (EA and TA) as well as Positive and Negative Affect (PA and NA).  
+Data from the MSQ was scored for Energetic and Tense Arousal (EA and TA) as well as Positive and Negative Affect (PA and NA).  
 
 Study flat had 170 participants, study maps had 160.
 
@@ -24,7 +24,7 @@ These studies are described in more detail in various publications from the PMC 
 
 
 }
-\source{Data collected at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
+\source{Data collecte at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
 }
 \references{
 

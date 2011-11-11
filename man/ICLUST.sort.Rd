@@ -1,18 +1,18 @@
 \name{ICLUST.sort}
 \alias{ICLUST.sort}
 \title{Sort items by absolute size of cluster loadings}
-\description{Given a cluster analysis or factor analysis loadings matrix, sort the items by the (absolute) size of each column of loadings.  Used as part of ICLUST and SAPA analyses. The columns are rearranged by the 
+\description{Given a cluster analysis or factor analysis loadings matrix, sort the items by the (absolute) size of each column of loadings.  Used as part of ICLUST and SAPA analyses.
 }
 \usage{
-ICLUST.sort(ic.load, cut = 0, labels = NULL,keys=FALSE,clustsort=TRUE)
+ICLUST.sort(ic.load, cut = 0, labels = NULL,keys=FALSE)
 }
+
 \arguments{
   \item{ic.load}{ The output from a factor or principal components analysis, or from ICLUST, or a matrix of loadings.}
   \item{cut}{Do not include items in clusters with absolute loadings less than cut}
   \item{labels}{labels for each item.}
  
   \item{keys}{should cluster keys be returned? Useful if clusters scales are to be scored.}
-  \item{clustsort}{TRUE will will sort the clusters by their eigenvalues}
 }
 \details{When interpreting cluster or factor analysis outputs, is is useful to group the items in terms of which items have their biggest loading on each factor/cluster and then to sort the items by size of the absolute factor loading.
 

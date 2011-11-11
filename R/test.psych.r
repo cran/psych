@@ -58,11 +58,9 @@ for (i in first:last) {
   simple.par <- fa.parallel(simple)
   fa.simple <- fa(simple,2)
   cor.plot(fa.simple,TRUE,n=4)
-  #fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE) #why this way
- # simple.scores <-  score.items(fa.simple.keys$clusters,simple)
-  fa.simple.keys <- factor2cluster(fa.simple)
-  simple.scores <-  score.items(fa.simple.keys,simple)
+  fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE)
  
+ simple.scores <-  score.items(fa.simple.keys$clusters,simple)
  pairs.panels(simple.scores$scores)
  
 

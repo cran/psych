@@ -22,7 +22,6 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
    if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
    if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
-   if(class(object)[2] == 'set.cor') mat.reg <- TRUE
    if(class(object)[2] == 'irt.fa') irt.fa <- TRUE
      } 
 result <- NULL
@@ -47,16 +46,16 @@ if(iclust) { cat("ICLUST (Item Cluster Analysis)")
      print(object$call)
     cat( object$title,"\n") 
  	cat("\nPurified Alpha:\n")
-	print(object$purified$alpha,digits)
-	cat("\n Guttman Lambda6* \n")
+	print(object$purified$alpha)
+	cat("\n Guttman Lambda6  * \n")
 	print(object$G6,digits)
 	cat("\nOriginal Beta:\n")
-	print(object$beta,digits)
+	print(object$beta)
 	cat("\nCluster size:\n")
-	print(object$purified$size,digits)
+	print(object$purified$size)
 
 if(!is.null(object$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
-print(object$purified$corrected,digits)  }
+print(object$purified$corrected)  }
 
 } 
 
@@ -142,23 +141,23 @@ if(items) {
     
 	if(!is.null(object$item.cor) ) {
 		cat("\nItem by scale correlations:\n")
-		print(object$item.cor,digits) } 
+		print(object$item.cor) } 
 
 	if (!is.null(object$p.sorted$sorted)) {
  		cat("\nItem by Cluster Structure matrix:\n")
- 		print(object$p.sorted$sorted,digits) }
+ 		print(object$p.sorted$sorted) }
  
  	if (!is.null(object$purified$pattern)) {
  		cat("\nItem by Cluster Pattern matrix:\n")
-		 print(object$purified$pattern,digits) }
+		 print(object$purified$pattern) }
 		 
    if(vss) {
       cat("\nVelicer MAP\n")
-      print(object$map,digits)
+      print(round(object$map,2))
        cat("\nVery Simple Structure Complexity 1\n")
-       print(object$cfit.1,digits)
+       print(round(object$cfit.1,2))
        cat("\nVery Simple Structure Complexity 2\n")
-       print(object$cfit.2,digits)
+       print(round(object$cfit.2,2))
       }
 	
 	}  #end if items
@@ -169,22 +168,19 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 }
  
-  if(mat.reg) {
-   if(object$raw) {cat("\nMultiple Regression from raw data \n")} else {
-            cat("\nMultiple Regression from matrix input \n")}
-
+  if(mat.reg) { cat("\nMultiple Regression for matrix input \nCall: ")
               print(object$Call)
             cat("\nMultiple Regression from matrix input \n")
            cat("\nBeta weights \n")
-           print(object$beta,digits)
+           print(round(object$beta,digits))
            cat("\nMultiple R \n") 
-           print(object$R,digits)
+           print(round(object$R,digits))
             cat("\nMultiple R2 \n") 
-           print(object$R2,digits)
+           print(round(object$R2,digits))
              cat("\nCohen's set correlation R2 \n") 
-           print(object$Rset,digits)
+           print(round(object$Rset,digits))
            cat("\nSquared Canonical Correlations\n")
-           print(object$cancor2,digits)
+           print(round(object$cancor,digits))
            
            }
            

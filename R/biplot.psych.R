@@ -3,12 +3,9 @@
 function(x, labels=NULL,cex=c(.75,1),main="Biplot",hist.col="cyan",xlim=c(-3,3),ylim=c(-3,3),...) {
 if(is.null(x$scores)) stop("Biplot requires factor/component scores:")
 oldop <- par(no.readonly = TRUE)  
-if(is.null(labels)) {if(nrow(x$scores) >100) {labels = rep(".",dim(x$scores)[1] )} else {labels = rep("o",dim(x$scores)[1] )}}
+if(is.null(labels)) {labels = rep("o",dim(x$scores)[1] )}
 n.dims <- dim(x$loadings)[2]
-
-if (n.dims == 2) {
- 
-  biplot(x$scores[,1:2],x$loadings[,1:2],xlabs=labels, cex=cex,main=main,...) } else {
+if (n.dims == 2) { biplot(x$scores[,1:2],x$loadings[,1:2],xlabs=labels, cex=cex,main=main,...) } else {
 	op1 <- par(mfrow=c(n.dims,n.dims), mar=c(2,3,3,2))
 	for (i in 1:n.dims) {
    		for (j in 1:n.dims){ 

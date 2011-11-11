@@ -67,8 +67,6 @@ In comparing irt.fa to the ltm function in the ltm package or to the analysis re
 
 \code{\link{irt.fa}} reports parameters in normal units.  To convert them to conventional IRT parameters, multiply by 1.702.  In addition, the location parameter is expressed in terms of difficulty (high positive scores imply lower frequency of response.)
 
-The results of \code{\link{irt.fa}}  can be used by \code{\link{score.irt}} for irt based scoring.  First run \code{\link{irt.fa}} and then score the results using a two parameter model using \code{\link{score.irt}}.  
-
 }
 
 \seealso{\code{\link{fa}}, \code{\link{sim.irt}}, \code{\link{tetrachoric}}, \code{\link{polychoric}} as well as \code{\link{plot.psych}} for plotting the IRT item curves.

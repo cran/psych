@@ -53,7 +53,7 @@ The item data were collected using a 6 point response scale:
 as part of the Synthetic Apeture Personality Assessment (SAPA) project.  To see an example of the data collection technique, visit \url{http://test.personality-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
 
 }
-\source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010 ( \url{http://test.personality-project.org}).
+\source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010.
 }
 \references{Goldberg, L.R. (1999) A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In Mervielde, I. and Deary, I. and De Fruyt, F. and Ostendorf, F. (eds) Personality psychology in Europe. 7. Tilburg University Press. Tilburg, The Netherlands.
 

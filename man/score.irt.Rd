@@ -62,19 +62,15 @@ score.irt is just a wrapper to score.irt.poly and score.irt.2
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
 test <- irt.fa(d9$items)
 scores <- score.irt(test,d9$items)
-scores.df <- data.frame(scores,true=d9$theta) #combine the estimates with the true thetas.
-pairs.panels(scores.df,pch=".") #with all the data, why bother ?
-title("Comparing IRT and classical with complete data",line=3)
-
+scores.df <- data.frame(scores,d9$theta) #combine the estimates with the true thetas.
+pairs.panels(scores.df) #with all the data, why bother 
 #now delete some of the data
 d9$items[1:333,1:3] <- NA
 d9$items[334:666,4:6] <- NA
 d9$items[667:1000,7:9] <- NA
 scores <- score.irt(test,d9$items)
-scores.df <- data.frame(scores,true=d9$theta) #combine the estimates with the true thetas.
-pairs.panels(scores.df, pch=".") #with missing data, the theta estimates are noticably better.
-title("Comparing IRT and classical with random missing data",line=3)
-
+scores.df <- data.frame(scores,d9$theta) #combine the estimates with the true thetas.
+pairs.panels(scores.df) #with missing data, the theta estimates are noticably better.
 
 v9 <- sim.irt(9,1000,-2.,2.,mod="normal") #dichotomous items
 items <- v9$items
@@ -88,10 +84,8 @@ items[334:666,3:7] <- NA
 items[667:1000,1:4] <- NA
 scores <- score.irt(test,items)
 unitweighted <- score.irt(items=items,keys=rep(1,9))
-scores.df <- data.frame(v9$theta[ord],scores,unitweighted) #combine the estimates with the true thetas.
-colnames(scores.df) <- c("True theta","irt theta","total","fit","rasch","total","fit")
-pairs.panels(scores.df,pch=".") #with missing data, the theta estimates are noticably better estimates of the generating theta than calling them all equal
-title("Comparing IRT and classical with missing data",line=3)
+scores.df <- data.frame(scores,v9$theta[ord],unitweighted) #combine the estimates with the true thetas.
+pairs.panels(scores.df) #with missing data, the theta estimates are noticably better estimates of the generating theta
  
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

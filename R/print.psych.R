@@ -45,7 +45,7 @@ corr.test = {cat("Call:")
               print(round(x$r,digits))
               cat("Sample Size \n")
               print(x$n)
-              cat("Probability values (Enteries above the diagonal are adjusted for multiple tests when appropriate.) \n")
+              cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")
              print(round(x$p,digits))
          },
 
@@ -278,7 +278,8 @@ comorbid = {cat("Call: ")
    
 set.cor= { cat("Call: ")
               print(x$Call)
-            cat("\nMultiple Regression from matrix input \n")
+            if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
+            cat("\nMultiple Regression from matrix input \n")}
            cat("\nBeta weights \n")
            print(round(x$beta,digits))
            cat("\nMultiple R \n") 
@@ -316,10 +317,10 @@ set.cor= { cat("Call: ")
             cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
             #print(x$Rset,digits=digits)
            if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
-           # print(x$Rset.shrunk,digits=digits)
+          
             cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
            }
-          #  print(x$T,digits=digits)
+
 
    },
    

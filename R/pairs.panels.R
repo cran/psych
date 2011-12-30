@@ -1,5 +1,7 @@
+#Adapted from the help for pairs
+#modified December 15, 2011 to add the rug option
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE,...)   #combines a splom, histograms, and correlations
 {
 
 
@@ -36,7 +38,8 @@ function(x,...) {
   if(class(tryd) != "try-error") {
   
      d$y <- d$y/max(d$y)
-   lines(d)}
+   lines(d)
+  if(rug) rug(x)}
 }
 
 "panel.hist" <-
@@ -48,11 +51,14 @@ function(x, ...)
     breaks <- h$breaks; nB <- length(breaks)
   y <- h$counts; y <- y/max(y)
     rect(breaks[-nB], 0, breaks[-1], y,col=hist.col)
+ if(rug) rug(x)
 }
 
 #Beginning of the main function
 #the organization gets around the problem of passing parameters to pairs by calling different routines
-
+#this is truly clunky, but I don't know how else to do it
+#It is possible that the trick I use for rug would work for other options.
+#rug is a variable that is local to the entire function but is used only in the hist and hist.density functions.
 
 old.par <- par(no.readonly = TRUE) # save default, for resetting... 
 on.exit(par(old.par))     #and when we quit the function, restore to original values
@@ -64,7 +70,7 @@ on.exit(par(old.par))     #and when we quit the function, restore to original va
         if (scale) { 
             if(ellipses) {
               if(show.points) { 
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor.scale, lower.panel = panel.smoother, ...)  } else {
+            pairs(x,diag.panel = panel.hist.density, upper.panel = panel.cor.scale, lower.panel = panel.smoother,...)  } else {
             pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor.scale, lower.panel = panel.smoother.no, ...)}}  else {
             if(show.points) {
              pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor.scale, lower.panel = panel.smoother.noellipse, ...)}  else {

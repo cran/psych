@@ -5,11 +5,15 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
   #seriously rewritten, March 24, 2009 to make much simpler
   #minor additons, October, 20, 2009 to allow for print and summary function
   #major addition in April, 2011 to allow for set correlation
+  #added calculation of residual matrix December 30, 2011
    cl <- match.call()
+   
   if(!is.matrix(data)) data <- as.matrix(data)
-  if(dim(data)[1]!=dim(data)[2]) {n.obs=dim(data)[1]
+  if(dim(data)[1]!=dim(data)[2]) {n.obs=dim(data)[1]   #this does not take into account missing data
                     C <- cov(data,use=use)
-                    m <- cov2cor(C)}  else {
+                    m <- cov2cor(C)
+                    raw <- TRUE}  else {
+                    raw <- FALSE
                     C <-data
                     m <- cov2cor(C)}
                    
@@ -38,8 +42,11 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
      	                 }
      	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)
      	                } else   #this is the case of a single x 
-       { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
-        beta <- as.matrix(beta) }
+      				 { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
+       					 beta <- as.matrix(beta) }
+       				 
+       	yhat <- t(xy.matrix) %*% solve(x.matrix) %*% (xy.matrix)
+       	resid <- y.matrix - yhat
      	if (numy >1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
      	                if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
      	 
@@ -106,8 +113,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
      	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,Call = cl)} else {
-     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,Call = cl)}
+     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,Call = cl)} else {
+     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,Call = cl)}
      	class(set.cor) <- c("psych","set.cor")
      	return(set.cor)
      	}

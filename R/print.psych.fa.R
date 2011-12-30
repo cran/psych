@@ -60,9 +60,9 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
          	#h2 <- round(h2,digits)
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {
-           cat("Standardized loadings based upon correlation matrix\n")
+           cat("Standardized loadings (pattern matrix) based upon correlation matrix\n")
 	    	print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } else {
-	    	cat("Unstandardized loadings based upon covariance matrix\n") 
+	    	cat("Unstandardized loadings (pattern matrix) based upon covariance matrix\n") 
 	    	print(cbind(fx,h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
 	   
  		
@@ -84,7 +84,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           #now, if we did covariances show the standardized coefficients as well
 	    	
 	    	if(!isTRUE(all.equal(vtotal,nitems))) {  #total variance accounted for is not just the number of items in the matrix
-	    	cat('\n Standardized loadings\n')
+	    	cat('\n Standardized loadings (pattern matrix)\n')
 	    	 
 	    	 fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")
@@ -120,7 +120,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
   
     
     if(!is.null(x$Phi))  { 
-       cat ("\n With factor correlations of \n" )
+      if(!is.null(x$fn) ) { if(x$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}}
        colnames(x$Phi) <- rownames(x$Phi) <- colnames(x$loadings)
        print(round(x$Phi,digits))} else {
        if(!is.null(x$rotmat)) {
@@ -128,13 +128,13 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
              ui <- solve(U)
            Phi <- t(ui) %*% ui
           Phi <- cov2cor(Phi) 
-           cat ("\n With factor correlations of \n" )
+         if(!is.null(x$fn) ) { if(x$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}}
        colnames(Phi) <- rownames(Phi) <- colnames(x$loadings)
        print(round(Phi,digits))
             } }
             
        objective <- x$criteria[1]
-    if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")
+    if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}
     if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
     cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n",...) 

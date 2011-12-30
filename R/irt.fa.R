@@ -39,9 +39,12 @@ result <- list(irt=irt,fa = t,rho=r,tau=tau,n.obs=n.obs,Call=cl)
 switch(typ,
  tet = { class(result) <- c("psych","irt.fa")},
  tetra ={class(result) <- c("psych","irt.fa")},
- poly = {class(result) <- c("psych","irt.poly")})
+ poly = {class(result) <- c("psych","irt.poly")},
+ irt.poly = {class(result) <- c("psych","irt.poly")})
+
 if(plot) {pr <- plot(result) 
 result$plot <- pr}
+
 return(result)
 }
 

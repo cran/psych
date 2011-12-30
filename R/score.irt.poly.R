@@ -78,9 +78,10 @@ discrim.vect <- rep(discrim,each=cat)
  fit <- rep(NA,n.obs)
  theta <- rep(NA,n.obs)
  item.f <- t(items)
- item.f[abs(discrim) < cut] <- NA
+ item.f[abs(discrim) < cut] <- NA  #this does not change the item, just the temp version of the item
  item.f <- t(item.f)
- total <- rowMeans(t(t(item.f )* sign(discrim)),na.rm=TRUE)
+
+ total <- rowMeans(t(t(item.f )* as.vector(sign(discrim))),na.rm=TRUE) #fixed 11/11/11 to be as.vector
  count <- rowSums(!is.na(item.f))
  
  for (subj in 1:n.obs) {

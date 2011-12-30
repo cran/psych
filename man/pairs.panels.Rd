@@ -13,7 +13,7 @@
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.
 }
 \usage{
-\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE, ...)
+\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,6 +30,7 @@
   \item{factor}{factor for jittering (1-5)}
   \item{hist.col}{What color should the histogram on the diagonal be?}
   \item{show.points}{If FALSE, do not show the data points, just the data ellipses and smoothed functions}
+  \item{rug}{if TRUE (default) draw a rug under the histogram, if FALSE, don't draw the rug}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 

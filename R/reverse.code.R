@@ -31,40 +31,26 @@ return(x)
     if (missing(max))  max <- Inf
     if (missing(isvalue))   isvalue <- Inf
     if (missing(where))  where <- 1:dim(x)[2]
-    if(missing(newvalue)) newvalue <- rep(NA,length(isvalue))
+    maxlength <- max(length(isvalue),length(min),length(max),length(where))
+    if(missing(newvalue)) newvalue <- rep(NA,maxlength)
     if (length(min) == 1)   min <- rep(min, dim(x)[2])
     if (length(max) == 1)  max <- rep(max, dim(x)[2])
+    if(length(isvalue) ==1) isvalue <- rep(isvalue,maxlength)
+    if(length(newvalue) ==1) newvalue <- rep(newvalue,maxlength)
    # if (length(isvalue) == 1)  isvalue <- rep(isvalue, (length(where)))
-    for(k in 1: length(isvalue)) {
-    for (i in where) {
+    for(k in 1: maxlength) {
+    i <- where[k]
         x[(!is.na(x[, i]) & (x[, i] < min[k])), i] <- newvalue[k]
         x[(!is.na(x[, i]) & (x[, i] > max[k])), i] <- newvalue[k]
         x[(!is.na(x[, i]) & (x[, i] == isvalue[k])), i] <- newvalue[k]
        }
-    }
+   
     return(x)
 }
 #added Sept 11, 2010
 #modified December 6, 2010 to allow recoding
+#modified December 3, 2011 to be more general
 
-#does not work
-"scrubber" <- 
-function(x,who,where,min,max,isvalue) {
-if(missing(who)) who <- 1:dim(x)[1]
-if(missing(min)) min <- -Inf
-if(missing(max)) max <-  Inf
-if(missing(isvalue)) isvalue <- Inf
-if(missing(where)) where <- 1:dim(x)[2]
-if(length(min) == 1) min <- rep(min,(length(where)))	
-if(length(max) == 1) max <- rep(max,(length(where)))	
-if(length(isvalue) == 1) isvalue <- rep(isvalue,(length(where)))	
-k <- 1
-for(i in where) {
-x[(!is.na(x[who,i]) &&(who[x[who,i] < min[k]])),i]<- NA
-x[(!is.na(x[who,i]) &&(x[who,i] > max[k])),i]<- NA
-#x[(!is.na(x[who,i]) &&(x[who,i] == isvalue[k])),i]<- NA
-k <- k+1}
-return(x)}
-#added Sept 11, 2010
+
 
 

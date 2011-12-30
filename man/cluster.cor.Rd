@@ -6,14 +6,14 @@
  Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{score.items}} which also gives item by cluster correlations.
 }
 \usage{
-cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
+cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{keys}{ A matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
- \item{digits}{round off answer to digits}
+ 
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
 }
 \details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.

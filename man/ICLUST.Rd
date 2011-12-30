@@ -14,10 +14,10 @@ Alpha, the mean split half correlation, and beta, the worst split half correlati
 \usage{
 iclust(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
+n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE)
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
+n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE)
 
 
 #iclust(r.mat)    #use all defaults
@@ -46,7 +46,8 @@ n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE)
   \item{plot}{Should ICLUST.rgraph be called automatically for plotting (requires Rgraphviz default=TRUE)}
   \item{weighted}{Weight the intercluster correlation by the size of the two clusters (TRUE) or do not weight them (FALSE)}
   \item{cor.gen}{When correlating clusters with subclusters, base the correlations on the general factor (default) or general + group (cor.gen=FALSE)}
-  \item{SMC}{When estimating cluster-item correlations, use the smcs as the estimate of an item communality (SMC=TRUE) or use the maximum correlation (SMC=FALSE).  }
+  \item{SMC}{When estimating cluster-item correlations, use the smcs as the estimate of an item communality (SMC=TRUE) or use the maximum correlation (SMC=FALSE).}  
+  \item{purify}{Should clusters be defined as the original groupings (purify = FAlSE) or by the items with the highest loadings on those original clusters? (purify = TRUE)  }
   
 }
 \details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 
@@ -98,7 +99,7 @@ To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.h
 
 }
 \value{
- \item{title }{Name of this run}
+ \item{title }{Name of this analysis}
  \item{results}{A list containing the step by step cluster history, including which pair was grouped, what were the alpha and betas of the two groups and of the combined group.  
   
   Note that the alpha values are ``standardized alphas'' based upon the correlation matrix, rather than the raw alphas that will come from \code{\link{score.items}}
@@ -106,11 +107,14 @@ To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.h
   The print.psych and summary.psych functions will print out just the must important results.}
  \item{corrected}{The raw and corrected for alpha reliability cluster intercorrelations.}
  \item{clusters}{a matrix of -1,0, and 1 values to define cluster membership.}
- \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.
+ \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.  These are sorted by importance (the eigenvalues of the clusters). The cluster membership from the original (O) and purified (P) clusters are indicated along with the cluster structure matrix.
    
    To show just the most salient items, use the cutoff option in \code{\link{print.psych}} }
  \item{cluster.fit, structure.fit, pattern.fit}{There are a number of ways to evaluate how well any factor or cluster matrix reproduces the original matrix. Cluster fit considers how well the clusters fit if only correlations with clusters are considered.  Structure fit evaluates R = CC' while pattern fit evaluate R = C  inverse (phi) C'  where C is the cluster loading matrix, and phi is the intercluster correlation matrix.}
+ \item{pattern}{The pattern matrix loadings.   Pattern is just C  inverse (phi).}
 }
+
+
 
 \references{Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
 
@@ -122,7 +126,11 @@ See also  more extensive documentation at
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
 \author{William Revelle   }
         
-\note{iclust draws graphical displays with or without using Rgraphiviz. Rgraphviz produces slightly better graphics and will also export in the dot language for further massaging of the graphic. If Rgraphviz is not installed, ICLUST.graph will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST.graph will think it is available, try to produce a graph, and fail (ungracefully).  The solution to this problem is to specify plot=FALSE and the create graphs using the dot language.  See the last example. With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty, but more stable.
+\note{iclust draws graphical displays with or without using Rgraphiviz. Rgraphviz produces slightly better graphics and will also export in the dot language for further massaging of the graphic. If Rgraphviz is not installed, ICLUST.graph will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST.graph will think it is available, try to produce a graph, and fail (ungracefully).    
+
+ With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty as using Rgraphviz, but more stable.
+ 
+To view the cluster structure more closely, it is possible to save the graphic output as a pdf and then magnify this using a pdf viewer.  This is useful when clustering a large number of variables.
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
@@ -134,8 +142,8 @@ ic.out <- ICLUST(test.data,nclusters =4)  #use all defaults and stop at 4 cluste
 ic.out1 <- ICLUST(test.data,beta=3,beta.size=3)  #use more stringent criteria
 print(ic.out1)
 plot(ic.out)    #this shows the spatial representation
-ic.no.graph <- ICLUST(test.data,plot=FALSE)
-dot.graph <- ICLUST.graph(ic.no.graph,out.file="test.ICLUST.graph.dot")   #use a dot graphics viewer
+ic.graph <- ICLUST(test.data)  #this draws to the graphics screen using iclust.diagram 
+dot.graph <- ICLUST.graph(ic.graph,out.file="test.ICLUST.graph.dot")   #use a dot graphics viewer on the out.file
 
 
 }

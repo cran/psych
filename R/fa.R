@@ -17,7 +17,7 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
                                  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
  nvar <- dim(fl)[1]
  
@@ -32,7 +32,7 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
                                    empirical = FALSE)
 
                             } else {x <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,...) #call fa with the appropriate parameters
   if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
                   replicates[[trials]] <- t.rot$loadings
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
@@ -348,8 +348,10 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     result$fm <- fm  #remember what kind of analysis we did
     
     if(!is.null(Phi) && oblique.scores) {result$Phi <- Phi
-                       Structure <- loadings %*% Phi} else {Structure <- loadings
-                       }
+                       Structure <- loadings %*% Phi} else {Structure <- loadings}
+                       class(Structure) <- "loadings"
+                       result$Structure <- Structure #added December 12, 2011
+                      
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
     
     if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores) } else {result$scores <- factor.scores(x.matrix,f=Structure,method=scores)}
@@ -366,4 +368,5 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     #modified Spring, 2009 to add multiple ways of doing factor analysis
     #corrected, August, 2009 to count the diagonal when doing GLS or WLS - this mainly affects (improves) the chi square
     #modified April 4, 2011 to find the factor scores of the oblique factors
+    #modified December 12, 2011 to report structure coefficients as well as pattern (loadings)
  

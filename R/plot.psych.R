@@ -3,8 +3,8 @@ function(x,labels=NULL,...)
   {
   
    result <- NULL
-   title <- x$title
-   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <-  FALSE 
+  
+   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <- residuals <-   FALSE 
    if(length(class(x)) > 1)  {
    if(class(x)[2] =='irt.fa')  irt.fa <- TRUE
     if(class(x)[2] =='irt.poly')  irt.poly <- TRUE
@@ -16,6 +16,8 @@ function(x,labels=NULL,...)
     if(class(x)[2] =='omega')   omega <- TRUE 
    if(class(x)[2] =='parallel')   parallel <- TRUE 
     if(class(x)[2] =='set.cor')   set.cor <- TRUE 
+    if(class(x)[2] =='residuals')  residuals <- TRUE 
+    
  }
  
 switch(class(x)[2],
@@ -30,7 +32,7 @@ switch(class(x)[2],
 		x$cfit.3<- x$vss.stats$cfit.3
 		x$cfit.4<- x$vss.stats$cfit.4
 	
-
+  title <- x$title
 		title(main=title)
 		x$cfit.2[1]<-NA
 		x$cfit.3[1]<-NA
@@ -104,7 +106,10 @@ fa =  {factor.plot(x,...)},
 
 principal = {factor.plot(x,...)},
 
-parallel = {plot.fa.parallel(x,...)} )
+parallel = {plot.fa.parallel(x,...)},
+
+residuals = {plot.residuals(x,...)} )
+
 
 if(!is.null(result))  {class(result) <- c("psych","polyinfo")
    invisible(result)}

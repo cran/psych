@@ -38,7 +38,7 @@ The procedure used here is to first find the item difficulties assuming theta = 
 Then find theta given those deltas
 Then find beta given delta and theta.
 
-This is not an "official" way to do IRT, but is useful for basic item development.
+This is not an "official" way to do IRT, but is useful for basic item development. See \code{\link{irt.fa}} and \code{\link{score.irt}}  for far better options. 
 
 }
 \value{ a data.frame with estimated ability (theta) and quality of fit. (for irt.person.rasch)
@@ -47,7 +47,7 @@ This is not an "official" way to do IRT, but is useful for basic item developmen
   
 
 \author{ William Revelle}
-\note{ Not recommended for serious use.  This code is under development. Much better functions are in the ltm and eRm packages. Similar analyses can be done using \code{\link{irt.fa}}
+\note{ Not recommended for serious use.  This code is under development. Much better functions are in the ltm and eRm packages. Similar analyses can be done using \code{\link{irt.fa}} and \code{\link{score.irt}}. 
 }
 \seealso{ \code{\link{sim.irt}}, \code{\link{sim.rasch}},  \code{\link{logistic}}, \code{\link{irt.fa}}, \code{\link{tetrachoric}},  \code{\link{irt.item.diff.rasch}}   }
 

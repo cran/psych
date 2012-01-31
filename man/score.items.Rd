@@ -74,6 +74,8 @@ By default, missing values are replaced with the corresponding median value for 
 
 \note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
+An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  
+
 } 
 \references{
 Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{http://personality-project.org/r/book}
@@ -90,7 +92,8 @@ Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revel
 \author{ William Revelle }
 
 \seealso{\code{\link{make.keys}} for a convenient way to create the keys file,  \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}, \code{\link{guttman}} for item/scale analysis.
-In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test.}
+
+In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores.}
 \examples{
 
 #see  the example including the bfi data set

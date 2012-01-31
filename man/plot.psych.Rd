@@ -2,6 +2,7 @@
 \alias{plot.psych}
 \alias{plot.poly}
 \alias{plot.irt}
+\alias{plot.residuals}
 
 
 
@@ -13,6 +14,7 @@
 \method{plot}{psych}(x,labels=NULL,...)
 \method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
 \method{plot}{poly}(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
+\method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
 %plot.psych(x,labels=NULL,...)
 %plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
 %plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
@@ -29,6 +31,7 @@
   \item{D}{The discrimination parameter}
   \item{cut}{Only plot item responses with discrimiantion greater than cut}
   \item{keys}{Used in plotting irt results from irt.fa.}
+  \item{qq}{if TRUE, plot qq plot of residuals, otherwise plot a cor.plot of residuals}
   \item{...}{other calls to plot}
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "IIC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
@@ -58,19 +61,19 @@ It is also possible to create irt like plots based upon just a scoring key and i
 test.data <- Harman74.cor$cov
 f4 <- fa(test.data,4)
 plot(f4)
-
+plot(resid(f4))
+plot(resid(f4),main="Residuals from a 4 factor solution",qq=FALSE)
 #not run
 #data(bfi)
 #e.irt <- irt.fa(bfi[11:15])  #just the extraversion items
 #plot(e.irt)   #the information curves
 #
-#ic <- iclust(test.data,3)   #shows hierarchical structure 
-#plot(ic)                    #plots loadings
+ic <- iclust(test.data,3)   #shows hierarchical structure 
+plot(ic)                    #plots loadings
 #
 
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ multivariate }
 

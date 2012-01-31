@@ -7,7 +7,7 @@
 \description{Give limited output (print) or somewhat more detailed (summary) for most of the functions in psych. 
 }
 \usage{
-\method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,...)
+\method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...)
 \method{summary}{psych}(object,digits=2,items=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -19,7 +19,8 @@
   \item{all}{if all=TRUE, then the object is declassed and all output from the function is printed}
   \item{cut}{Cluster loadings < cut will not be printed.  For the factor analysis functions (fa and factor.pa etc.), cut defaults to 0, for ICLUST  to .3, for omega to .2.}
   \item{sort}{Cluster loadings are in sorted order}
-  \item{short}{Controls how much to print} 
+  \item{short}{Controls how much to print}
+  \item{lower}{For square matrices, just print the lower half of the matrix} 
   \item{...}{More options to pass to summary and print}
 }
 \details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available,  ask for the structure of the particular object: (str(theobject).

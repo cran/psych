@@ -6,15 +6,15 @@
  Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{score.items}} which also gives item by cluster correlations.
 }
 \usage{
-cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
+cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE, impute=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{keys}{ A matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
- \item{digits}{round off answer to digits}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
+ \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
 }
 \details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
 
@@ -22,7 +22,7 @@ cluster.cor(keys, r.mat, correct = TRUE,digits=2,SMC=TRUE)
  
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
  
- If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations.  
+ If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations. If impute=TRUE (the default), a warning is issued and the correlations are imputed based upon the average correlations of the non-missing elements of each scale. 
  
  Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{score.items}}.  They will differ substantially only if the items differ a great deal in their variances.   
 }

@@ -21,7 +21,7 @@ if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the in
 
 nitems <- dim(factors)[1]
 nfactors <- dim(factors)[2]
-
+total.ord <- rep(NA,nitems)
 if(polar) { pol.ord <- polar(factors)[,1]
       factors[1:nitems,] <- factors[pol.ord,]
  		rownames(factors)[1:nitems] <- rownames(factors)[pol.ord ] } else {
@@ -36,6 +36,7 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
  		 ord <- sort(loads$cluster,index.return=TRUE)
   		factors[1:nitems,] <- factors[ord$ix,]
  		rownames(factors)[1:nitems] <- rownames(factors)[ord$ix]
+        total.ord <- ord$ix
  		
  		 
   #now sort column wise
@@ -51,6 +52,7 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
    				factors[first:last,] <- factors[item[ord$ix+first-1],]
    				loads[first:last,1] <- item[ord$ix+first-1]
    				rownames(factors)[first:last] <- rownames(factors)[ord$ix+first-1]
+   				total.ord[first:last] <- total.ord[ord$ix+first-1 ]
    		 		first <- first + items[i]  }
           		 }  
  
@@ -84,6 +86,6 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
        
          } else {if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors} else {
               fa.results <- factors} }
-              
+       if(is.list(fa.results))  fa.results$order <- total.ord 
           return(fa.results)
          }     

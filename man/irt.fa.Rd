@@ -2,9 +2,9 @@
 \alias{irt.fa}
 \alias{irt.select}
 
-\title{Item Response Analysis by factor analysis of tetrachoric/polychoric correlations}
+\title{Item Response Analysis by Exploratory Factor Analysis of tetrachoric/polychoric correlations}
 \description{
-Although factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
+Although exploratory factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
 }
 \usage{
 irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,...)
@@ -19,10 +19,10 @@ irt.select(x,y)
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{
-\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.
+\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Exploratory factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.
 
 
-The tetrachoric correlation matrix of dichotomous items may be factored using a (e.g.) minimum residual factor analyis function \code{\link{fa}} and the resulting loadings, \eqn{\lambda_i} are transformed to discriminations by
+The tetrachoric correlation matrix of dichotomous items may be factored using a (e.g.) minimum residual factor analysis function \code{\link{fa}} and the resulting loadings, \eqn{\lambda_i} are transformed to discriminations by
 \eqn{\alpha = \frac{\lambda_i}{\sqrt{1-\lambda_i^2}} }{a = \lambda / (sqrt(1-\lambda^2)}.
 
 The difficulty parameter, \eqn{\delta} is found from the \eqn{\tau} parameter of the \code{\link{tetrachoric}} or \code{\link{polychoric}} function.
@@ -66,6 +66,8 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 In comparing irt.fa to the ltm function in the ltm package or to the analysis reported in Kamata and Bauer (2008) the discrimination parameters are not identical, because the irt.fa reports them in units of the normal curve while ltm and Kamata and Bauer report them in logistic units.  In addition, Kamata and Bauer do their factor analysis using a logistic error model.  Their results match the irt.fa results (to the 2nd or 3rd decimal) when examining their analyses using a normal model.  (With thanks to Akihito Kamata for sharing that analysis.) 
 
 \code{\link{irt.fa}} reports parameters in normal units.  To convert them to conventional IRT parameters, multiply by 1.702.  In addition, the location parameter is expressed in terms of difficulty (high positive scores imply lower frequency of response.)
+
+The results of \code{\link{irt.fa}}  can be used by \code{\link{score.irt}} for irt based scoring.  First run \code{\link{irt.fa}} and then score the results using a two parameter model using \code{\link{score.irt}}.  
 
 }
 

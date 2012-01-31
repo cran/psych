@@ -1,10 +1,10 @@
 \name{principal}
 \alias{principal}
-\title{ Principal components analysis }
-\description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components for n principal components.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
+\title{ Principal components analysis (PCA)}
+\description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components analysis (PCA) for n principal components of either a correlation or covariance matrix.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=FALSE,missing=FALSE,impute="median",oblique.scores=TRUE)
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FALSE, scores=FALSE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,14 +13,17 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, scores=F
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
   \item{rotate}{"none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
+  \item{covar}{If false, find the correlation matrix from the raw data or convert to a correlation matrix if given a square matrix as input.}
   \item{scores}{If TRUE, find component scores}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values} 
   \item{oblique.scores}{If TRUE (default), then the component scores are based upon the structure matrix.  If FALSE, upon the pattern matrix.}
-}
+  \item{method}{Which way of finding component scores should be used. The default is "regression"}
+  \item{...}{other parameters to pass to functions such as factor.scores}
+  }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 
-There are a number of data reduction techniques including principal components and factor analysis.  Both PC and FA attempt to approximate a given correlation or covariance matrix of rank n with matrix of lower rank (p).  \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n.  For principal components, the item uniqueness is assumed to be zero and all elements of the correlation matrix are fitted. That is, \eqn{_nR_n \approx _{n}F_{kk}F_n'}{nRn = nFk kFn' }  The primary empirical difference between a components versus a factor model is the treatment of the variances for each item.  Philosophically, components are weighted composites of observed variables while in the factor model, variables are weighted composites of the factors.
+There are a number of data reduction techniques including principal components analysis (PCA) and factor analysis (EFA).  Both PC and FA attempt to approximate a given correlation or covariance matrix of rank n with matrix of lower rank (p).  \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n.  For principal components, the item uniqueness is assumed to be zero and all elements of the correlation or covariance matrix are fitted. That is, \eqn{_nR_n \approx _{n}F_{kk}F_n'}{nRn = nFk kFn' }  The primary empirical difference between a components versus a factor model is the treatment of the variances for each item.  Philosophically, components are weighted composites of observed variables while in the factor model, variables are weighted composites of the factors.
 
 For a n x n correlation matrix, the n principal components completely reproduce the correlation matrix.  However, if just the first k principal components are extracted, this is the best k dimensional approximation of the matrix.
 
@@ -31,6 +34,8 @@ Rotations and transformations are either part of psych (Promax and cluster), of 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
 Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  By default, the regression weights are found from the Structure matrix, not the Pattern matrix. 
+
+Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings. 
 }
 \value{
   
@@ -65,6 +70,8 @@ Although for items, it is typical to find component scores by scoring the salien
 
 Grice, James W.  (2001), Computing and evaluating factor scores. Psychological Methods, 6, 430-450
 
+Jolliffe, I. (2002)  Principal Component Analysis (2nd ed). Springer.
+
 Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 }
 
@@ -77,7 +84,10 @@ mr <- fa(Harman74.cor$cov,4,rotate="varimax")  #minres factor analysis
 pa <- fa(Harman74.cor$cov,4,rotate="varimax",fm="pa")  # principal axis factor analysis
 round(factor.congruence(list(pc,mr,pa)),2)
 
-
+pc2 <- principal(Harman.5,2,rotate="varimax",scores=TRUE)
+pc2
+round(cor(Harman.5,pc2$scores),2)  #compare these correlations to the loadings 
+biplot(pc2,main="Biplot of the Harman.5 socio-economic variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

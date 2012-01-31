@@ -1,9 +1,10 @@
 #adapted from John Fox's Polychor
 #polyc does all the work but does not work in cases of incomplete tables
 #thus, the polychor function is used
-"polyc" <- 
-function(x,y=NULL,taux,tauy,global=TRUE) {
- binBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
+#moved these first two function out of the polyc function in the hope that they will be compiled just once and perhaps get a speed increase
+#doesn't seem to make a difference although it does make the code a bit easier to read
+
+ polyBinBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
 { if (min(rc) < -9999) rc <- rc[-1]
   if (min(cc) < - 9999) cc <- cc[-1]
   if (max(rc) > 9999) rc <- rc[-length(rc)]
@@ -25,22 +26,28 @@ function(x,y=NULL,taux,tauy,global=TRUE) {
         }}
     P   #the estimated n x n predicted by rho, rc, cc
 }
- f <- function(rho,rc,cc) { 
-      P <- binBvn(rho, rc, cc) 
+
+
+ polyF <- function(rho,rc,cc,tab) { 
+      P <- polyBinBvn(rho, rc, cc) 
        -sum(tab * log(P)) }  #the  criterion to be minimized
+
+"polyc" <- 
+function(x,y=NULL,taux,tauy,global=TRUE) {
+
       
   tab <- table(x,y)  
   tot <- sum(tab)
   tab <- tab/tot
   
- if(global) { rho <- optimize(f,interval=c(-1,1),rc=taux, cc=tauy)#this uses the global taux and tauy
+ if(global) { rho <- optimize(polyF,interval=c(-1,1),rc=taux, cc=tauy,tab)#this uses the global taux and tauy
        } else { #use item row and column information for this pair, rather than global values
    #this seems to match the polycor function
     csum <- colSums(tab)
     rsum <- rowSums(tab)
      cc <-  qnorm(cumsum(csum))[-length(csum)]
      rc <-  qnorm(cumsum(rsum))[-length(rsum)]
-    rho <- optimize(f,interval=c(-1,1),rc=rc, cc=cc)
+    rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc)
  }
   result <- list(rho=rho$minimum,objective=rho$objective)
   return(result)
@@ -75,21 +82,31 @@ mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
 
+#cat("\n Finding Polychoric correlations\n" )
 for (i in 2:nvar) {
-  for (j in 1:(i-1)) {
+progressBar(i^2/2,nvar^2/2,"Polychoric")
+  for (j in 1:(i-1)) { 
+ if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
 if(!polycor) {
 poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j],global=global)  
 mat[i,j] <- mat[j,i] <- poly$rho } else {
 #To use John Fox's version which requires the polycor package
   poly <- polychor(x[,i],x[,j],ML = ML,std.err = std.err)  #uses John Fox's function
   mat[i,j] <- mat[j,i] <- poly }
+  } else {mat[i,j] <- mat[j,i] <- NA}
    }
-   }
+   } 
    diag(mat) <- 1
+  if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
+                        smooth <- FALSE}
+                     
  if(smooth) {mat <- cor.smooth(mat) }
  tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
+  flush(stdout())
+ cat("\n") #put in to clear the progress bar
  class(result) <- c("psych","poly")
   return(result) 
   }
-  
+
+

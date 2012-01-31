@@ -3,6 +3,7 @@
 \alias{sim.simplex}
 \alias{sim.minor}
 \alias{sim.omega}
+\alias{sim.general}
 \alias{sim.parallel}
 \alias{sim.rasch}
 \alias{sim.irt}
@@ -11,8 +12,11 @@
 \alias{sim.poly}
 \alias{sim.poly.npl}
 \alias{sim.poly.npn}
+\alias{sim.poly.ideal}
+\alias{sim.poly.ideal.npl}
+\alias{sim.poly.ideal.npn}
 \title{Functions to simulate psychological/psychometric data.}
-\description{A number of functions in the psych package will generate simulated data.  These functions include
+\description{A number of functions in the psych package will generate simulated data with particular structures.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
 \code{\link{sim.minor}} to simulate major and minor factors,
 \code{\link{sim.omega}} to test various examples of omega,
@@ -23,12 +27,17 @@
 \code{\link{sim.npn}} 1 to 4 paramater normal IRT,
 \code{\link{sim.poly}} to create polytomous ideas by calling
 \code{\link{sim.poly.npn}} 1-4 parameter polytomous normal theory items or
-\code{\link{sim.poly.npl}} 1-4 parameter polytomous logistic items
+\code{\link{sim.poly.npl}} 1-4 parameter polytomous logistic items, and 
+\code{\link{sim.poly.ideal}} which creates data following an ideal point or unfolding model by calling 
+\code{\link{sim.poly.ideal.npn}} 1-4 parameter polytomous normal theory ideal point model or 
+\code{\link{sim.poly.ideal.npl}} 1-4 parameter polytomous logistic ideal point model.
+
 \code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
 sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
 sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
+sim.general(nvar=9,nfact =3, g=.3,r=.3,n=0) 
 sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
 sim.omega(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
@@ -37,9 +46,13 @@ sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
 sim.irt(nvar = 5, n = 500, low=-3, high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,mod="logistic")
 sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
-sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="normal") 
+sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
 sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
 sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+sim.poly.ideal(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
+sim.poly.ideal.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+sim.poly.ideal.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,theta=NULL) 
+
 }
 \arguments{
   \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
@@ -49,7 +62,9 @@ sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,ca
   \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
   \item{raw}{if raw=TRUE, raw data are returned as well.}
   \item{nvar}{Number of variables for a simplex structure}
-  \item{nfact}{Number of large factors to simulate in sim.minor}
+  \item{nfact}{Number of large factors to simulate in sim.minor,number of group factors in sim.general,sim.omega}
+  \item{g}{General factor correlations in sim.general}
+  \item{r}{group factor correlations in sim.general}
   \item{alpha}{the base correlation for an autoregressive simplex}
   \item{lambda}{the trait component of a State Trait Autoregressive Simplex}
   \item{beta}{Test reliability of a STARS simplex}
@@ -68,10 +83,13 @@ sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,ca
   \item{z}{the zeta parameter: if not specified as a vector, set to 1} 
   \item{sd}{the standard deviation for the underlying latent variable in the irt simulations}
   \item{mod}{which IRT model to use, mod="logistic" simulates a logistic function, otherwise, a normal function}
-  \item{cat}{Number of categories to simulate in sim.poly}
+  \item{cat}{Number of categories to simulate in sim.poly.  If cat=2, then this is the same as simulating t/f items and sim.poly is functionally equivalent to sim.irt}
+  \item{theta}{The underlying latent trait value for each simulated subject}
    }
 
-\details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.
+\details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
+
+The simulations documented here are a miscellaneous set of functions that will be documented in other help files eventually.
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 
@@ -81,7 +99,9 @@ An alternative version of the simplex is the State-Trait-Auto Regressive Structu
 
 Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals.  
 
-Although coefficient \deqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function. 
+Another structure worth considering is direct modeling of a general factor with several group factors.  This is done using \code{\link{sim.general}}.
+
+Although coefficient \eqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function. 
 
 The four irt simulations, sim.rasch, sim.irt, sim.npl and sim.npn, simulate dichotomous items following the Item Response model.  sim.irt just calls either sim.npl (for logistic models) or sim.npn (for normal models) depending upon the specification of the model. 
 
@@ -93,6 +113,8 @@ For the 4PL and 4PN models, the upper asymptote, z= \eqn{\zeta} is also specifie
 (Graphics of these may be seen in the demonstrations for the \code{\link{logistic}} function.)
 
 The normal model (irt.npn calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logistic model the two models are practically identical.
+
+In parallel to the dichotomous IRT simulations are the poly versions which simulate polytomous item models.  They have the additional parameter of how many categories to simulate.  In addition, the \code{\link{sim.poly.ideal}} functions will simulate an ideal point or unfolding model in which the response probability varies by the distance from each subject's ideal point.  Some have claimed that this is a more appropriate model of the responses to personality questionnaires.  It will lead to simplex like structures which may be fit by a two factor model.  The middle items form one factor, the extreme a bipolar factor.
 
 Other simulation functions in psych are:
 

@@ -1,4 +1,4 @@
-"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman")) {
+"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components")) {
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
      if(!is.matrix(f)) {Phi <- f$Phi
@@ -15,17 +15,14 @@
    switch(method,   
     "Thurstone" = { w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
      if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
-     r <- cor.smooth(r)}
-          #ev <- eigen(r)
-          # ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-          # r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
-          #diag(r)  <- 1
-          # r <- cor.smooth(r)
+               r <- cor.smooth(r)}
+        
       w <- try(solve(r,f),silent=TRUE)
       if(class(w)=="try-error") {message("I was unable to calculate the factor score weights, factor loadings used instead")
                w <- f}
       colnames(w) <- colnames(f)
        rownames(w) <- rownames(f)
+
        }, 
       
     "tenBerge" = { #Following Grice equation 8 to estimate scores for oblique solutions
@@ -70,8 +67,13 @@
     colnames(w) <- colnames(f)
     rownames(w) <- rownames(f)
     },
-    "none" = {w <- NULL}
+    "none" = {w <- NULL},
+    
+    "components" = {
+    w <- f }
     )
+    
+    
     
     #now find a few fit statistics
     if(is.null(w)) {results <- list(scores=NULL,weights=NULL)} else {
@@ -97,6 +99,7 @@
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
      }
      }
+   
      return(results) }
      #how to treat missing data?  see score.item
     

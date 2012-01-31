@@ -1,8 +1,10 @@
 #adapted from John Fox's Polychor
 #this does all the work
-"tetrac" <- 
-function(x,y=NULL,taux,tauy,correct=TRUE,global=TRUE) {
- binBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
+
+ #the following two functions are called repeatedly by tetrac and are put here to speed up the process
+ 
+"tetraBinBvn" <-
+ function (rho,rc,cc)    #adapted from John Fox's polychor
 { row.cuts <- c(-Inf, rc, Inf)
     col.cuts <- c(-Inf, cc, Inf)
     P <- matrix(0, 2,2)
@@ -15,13 +17,24 @@ function(x,y=NULL,taux,tauy,correct=TRUE,global=TRUE) {
         }}
     P   #the estimated 2 x 2 predicted by rho, rc, cc
 }
- f <- function(rho,cc,rc) { 
-      P <- binBvn(rho, cc, rc) 
+
+"tetraF" <-
+ function(rho,cc,rc,tab) { 
+      P <- tetraBinBvn(rho, cc, rc) 
        -sum(tab * log(P)) }  #the ML criterion to be minimized
+
+"tetrac" <- 
+function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
+
       
  if(is.null(y)) {tab <- x} else {tab <- table(x,y)}
+ if(length(tab) < 4) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")
+           
+            result <- list(rho=NA,tau=c(NA,NA),objective=NA)
+              }  else {
+ 
  if((sum(tab) > 1) && (min(tab) == 0) && correct) {
-    warning("A cell entry of 0 was replaced with .5.  Check your data!")
+    warning("For i = ", i," j = ",j, "  A cell entry of 0 was replaced with .5.  Check your data!")
     tab[tab==0] <-.5  #correction for continuity
 
     }
@@ -33,8 +46,8 @@ function(x,y=NULL,taux,tauy,correct=TRUE,global=TRUE) {
   rc <- qnorm(colSums(tab))[1]
   cc <- qnorm(rowSums(tab))[1]
   } 
-  rho <- optimize(f,interval=c(-1,1),rc=rc,cc=cc)
-  result <- list(rho=rho$minimum,tau=c(cc,rc),objective=rho$objective)
+  rho <- optimize(tetraF,interval=c(-1,1),rc=rc,cc=cc,tab=tab)
+  result <- list(rho=rho$minimum,tau=c(cc,rc),objective=rho$objective) }
   return(result)
   }
   
@@ -50,13 +63,19 @@ tau <- -qnorm(colMeans(x,na.rm=TRUE))
 mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 names(tau) <- colnames(x)
+#cat("\nFinding the tetrachoric correlations\n")
 for (i in 2:nvar) {
+progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   for (j in 1:(i-1)) {
-  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],correct=correct,global=global)
-   mat[i,j] <- mat[j,i] <- tetra$rho
+  if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
+  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global)
+   mat[i,j] <- mat[j,i] <- tetra$rho} else {mat[i,j] <- mat[j,i] <- NA}
    }
    }
    diag(mat) <- 1
+   if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
+                        smooth <- FALSE}
+                     
   if(smooth) {mat <- cor.smooth(mat) }  #makes it positive semidefinite 
   result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
   
@@ -83,9 +102,11 @@ for (i in 2:nvar) {
         for (j in 1:ny) {tetra <-  tetrac(x[,i],y[,j],taux[i],tauy[j],correct=correct)
         mat[i,j] <- tetra$rho }
          }
-        
+       
     result <-   list(rho = mat,tau = taux,tauy= tauy,n.obs=n.obs)
      }
+ flush(stdout()) 
+  cat("\n" )  #put in to clear the progress bar
   return(result) 
   }
   
@@ -105,6 +126,10 @@ for (i in 2:nvar) {
  #the public function
  "tetrachoric" <- 
  function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE) {
+ 
+
+
+
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
  cl <- match.call() 
  if (!is.matrix(x) && !is.data.frame(x)) {
@@ -114,7 +139,7 @@ for (i in 2:nvar) {
   }}
   nvar <- dim(x)[2]
   n.obs <- dim(x)[1]
- if (n.obs == nvar) {result <- tetrac(x,correct=correct,global=FALSE)} else {
+ if (n.obs == nvar) {result <- tetrac(x,correct=correct,i=1,j=1,global=FALSE)} else {
  result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global)}
  
  result$Call <- cl
@@ -143,22 +168,28 @@ for (i in 2:nvar) {
  
   #does the work
 "biserialc" <-
-function(x,y) {
+function(x,y,i,j) {
 cc <- complete.cases(x,y)
 x <- x[cc]
 y <- y[cc]
 yf <- as.factor(y)
 lev <- levels(yf)
-if(length(lev)!=2) {stop("y is not a dichotomous variable")}
-
+if(length(lev)!=2) {#stop("y is not a dichotomous variable")
+                   warning("For x = ",i, " y = ", j, " y is not dichotomous")
+                    r <- NA} else {
 ty <- table(y)
  tot <- sum(ty)
  tab <- ty/tot
+ if(length(tab) < 2) {r <- NA
+                    warning("For x = ",i, " y = ", j, " no variance for y   r set to NA")} else { #this treats the case of no variance in the dichotmous variable
  zp <- dnorm(qnorm(tab[2]))
  hi <- mean(x[y==lev[2]],na.rm=TRUE)
  lo <- mean(x[y==lev[1]],na.ram=TRUE)
 # r <- (hi - lo)*sqrt(prod(tab))/(sd(x,na.rm=TRUE))  #point biserial
  r <- (hi - lo)*(prod(tab))/(zp * sd(x,na.rm=TRUE))
+ if(!is.na(r) && r >1) { r <- 1   #in case we are correlating a dichotomous variable with itself 
+          warning("For x = ",i, " y = ", j, " x seems to be dichotomous, not continuous")
+  }}}
  return(r)
 }
  
@@ -173,20 +204,27 @@ if(is.null(ny)) ny <- 1
 mat <- matrix(NA,nrow=ny,ncol=nx)
 colnames(mat) <- colnames(x)
 rownames(mat) <- colnames(y)
+#cat("\n Finding the biserial correlations\n")
 for(i in 1:ny) {
+progressBar(i*(i-1)/2,ny^2/2,"Biserial")
    for (j in 1:nx) {
-    mat[i,j] <- biserialc(x[,j],y[,i])
+    mat[i,j] <- biserialc(x[,j],y[,i],j,i)
     }}
+  flush(stdout())
+  cat("\n" )  #put in to clear the progress bar
    return(mat)
 }
 
 
 "polyserial" <-
 function(x,y) {
+# y <- matrix(y)
    min.item <- min(y, na.rm = TRUE)
-    max.item <- max(y, na.rm = TRUE)
-     n.var <- dim(y)[2]
-        n.cases <- dim(y)[1]
+   max.item <- max(y, na.rm = TRUE)
+ if(is.null(ncol(y)))  {n.var <- 1
+                        n.cases <- length(y)
+                } else {n.var <- ncol(y)
+        n.cases <- dim(y)[1]}
         dummy <- matrix(rep(min.item:max.item, n.var), ncol = n.var)
         colnames(dummy) <- names(y)
         xdum <- rbind(y, dummy)
@@ -198,6 +236,7 @@ function(x,y) {
         len <- dim(frequency)[2]
         tau <- dnorm(qnorm(frequency[,-len,drop=FALSE]))
         stau <- rowSums(tau)
+  
     rxy <- cor(x,y,use="pairwise")
     sdy <- apply(y,2,sd,na.rm=TRUE)
     rps <- t(rxy) * sqrt((n.cases-1)/n.cases) * sdy/stau
@@ -208,52 +247,6 @@ function(x,y) {
 
 
 
-#December 22,2010
-#revised July 15, 2011 to work for the various special cases
-#meant to combine continuous, polytomous and dichotomous correlations
-#revised October 12, 2011 to get around the sd of vectors problem
-"mixed.cor" <-
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE) {
-if(!is.null(x)) {nx <- dim(x)[2]} else {nx <- 0}
-if(!is.null(p)) {np <- dim(p)[2]} else {np <- 0}
-if(!is.null(d))  {nd <- dim(d)[2]} else {nd <- 0}
-if(is.null(nx)) nx <- 1
-if(is.null(np)) np <- 1
-if(is.null(nd)) nd <- 1
-npd  <- nx +np + nd
-if(nx > 0) {rx <- cor(x,use="pairwise")} else {rx <- NULL
-   rho <- NULL}
-if(np > 1) {rp <- polychoric(p,smooth=smooth)}    else {if (np == 1) {
-	rho <- 1
-	names(rho) <- colnames(p)
-	rp <- list(rho=rho,tau=NULL)}  else {rp <- NULL}}
-if(nd > 1) {rd <- tetrachoric(d,smooth=smooth)}   else {if (nd == 1) {rd <- list(rho=1,tau=NULL)}  else {rd <- NULL}}
-
-if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all three to exist
-		tmixed <- cbind(rx,t(rxp))
-		lmixed <- cbind(rxp,rp$rho)
-		rho <- rbind(tmixed,lmixed)} else {rho <- rx}  #we now have x and p
-		
-		if(nd > 0) { rxd <- biserial(x,d)
-		    if(np > 0) {rpd <- biserial(p,d) 
-			            topright <- t(cbind(rxd,rpd)) 
-			            } else {
-			        topright <- t(rxd)}
-			tmixed <- cbind(rho,topright) 
-			lmixed <- cbind(t(topright),rd$rho)
-			rho <- rbind(tmixed,lmixed) }
-
-		} else {  #the case of nx =0
-		   if( (np > 0) & (nd >0 )) {rpd <- biserial(p,d)
-		       tmixed <- cbind(rp$rho,t(rpd))
-		       lmixed <- cbind(rpd,rd$rho)
-		       rho <- rbind(tmixed,lmixed)
-		       }
-		    }
-colnames(rho) <- rownames(rho)
-mixed <- list(rho=rho,rx=rx,poly=rp,tetra=rd)
-return(mixed)
-}
 
 
 

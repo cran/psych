@@ -29,7 +29,7 @@ The \code{\link{irt.fa}} function is also an alternative. This will find \code{\
 }
 
 \author{William Revelle }
-\note{ Under development. Not recommended for public consumption.  See \code{\link{irt.fa}} for a better option. 
+\note{ Under development. Not recommended for public consumption.  See \code{\link{irt.fa}} and \code{\link{score.irt}}  for far better options. 
 }
 \seealso{ \code{\link{irt.fa}}, \code{\link{irt.person.rasch}} }
 

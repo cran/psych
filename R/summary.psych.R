@@ -22,6 +22,7 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
    if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
    if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
+   if(class(object)[2] == 'set.cor') mat.reg <- TRUE
    if(class(object)[2] == 'irt.fa') irt.fa <- TRUE
      } 
 result <- NULL
@@ -39,6 +40,7 @@ if(!is.null(object$fn)) {fa <- TRUE}
  cat("\nThe Velicer MAP criterion achieves a minimum of ")
  vss.map <- round(max(object$map) ,digits) 
  cat(vss.map," with " ,which.min(object$map), " factors\n ") 
+ 
  }
  
 if(iclust) { cat("ICLUST (Item Cluster Analysis)") 
@@ -46,16 +48,16 @@ if(iclust) { cat("ICLUST (Item Cluster Analysis)")
      print(object$call)
     cat( object$title,"\n") 
  	cat("\nPurified Alpha:\n")
-	print(object$purified$alpha)
-	cat("\n Guttman Lambda6  * \n")
+	print(object$purified$alpha,digits)
+	cat("\n Guttman Lambda6* \n")
 	print(object$G6,digits)
 	cat("\nOriginal Beta:\n")
-	print(object$beta)
+	print(object$beta,digits)
 	cat("\nCluster size:\n")
-	print(object$purified$size)
+	print(object$purified$size,digits)
 
 if(!is.null(object$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
-print(object$purified$corrected)  }
+print(object$purified$corrected,digits)  }
 
 } 
 
@@ -115,16 +117,19 @@ if(fa) {
    }
 
 
-    if(!is.null(object$rms)) {cat("\nThe root mean square of the residuals is ", round(object$rms,digits),"\n") }
+    if(!is.null(object$rms)) {cat("\nThe root mean square of the residuals (RMSA) is ", round(object$rms,digits),"\n") }
     if(!is.null(object$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$crms,digits),"\n") }
     
    
-   	if(!is.null(object$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
+   	if(!is.null(object$TLI)) {cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
   
    	if(!is.null(object$RMSEA)) {cat("\nRMSEA index = ",round(object$RMSEA[1],digits+1), " and the", (1- object$RMSEA[4])*100,"% confidence intervals are ",round(object$RMSEA[2:3],digits+1))  }
    
-   	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))
-
+   	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))}
+  if(!is.null(object$Phi)) {
+   if(object$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}
+       colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
+       print(round(object$Phi,digits))}
 }
 
 
@@ -141,23 +146,23 @@ if(items) {
     
 	if(!is.null(object$item.cor) ) {
 		cat("\nItem by scale correlations:\n")
-		print(object$item.cor) } 
+		print(object$item.cor,digits) } 
 
 	if (!is.null(object$p.sorted$sorted)) {
  		cat("\nItem by Cluster Structure matrix:\n")
- 		print(object$p.sorted$sorted) }
+ 		print(object$p.sorted$sorted,digits) }
  
  	if (!is.null(object$purified$pattern)) {
  		cat("\nItem by Cluster Pattern matrix:\n")
-		 print(object$purified$pattern) }
+		 print(object$purified$pattern,digits) }
 		 
    if(vss) {
       cat("\nVelicer MAP\n")
-      print(round(object$map,2))
+      print(object$map,digits)
        cat("\nVery Simple Structure Complexity 1\n")
-       print(round(object$cfit.1,2))
+       print(object$cfit.1,digits)
        cat("\nVery Simple Structure Complexity 2\n")
-       print(round(object$cfit.2,2))
+       print(object$cfit.2,digits)
       }
 	
 	}  #end if items
@@ -168,29 +173,49 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 }
  
-  if(mat.reg) { cat("\nMultiple Regression for matrix input \nCall: ")
+  if(mat.reg) {
+   if(object$raw) {cat("\nMultiple Regression from raw data \n")} else {
+            cat("\nMultiple Regression from matrix input \n")}
+
               print(object$Call)
             cat("\nMultiple Regression from matrix input \n")
            cat("\nBeta weights \n")
-           print(round(object$beta,digits))
+           print(object$beta,digits)
            cat("\nMultiple R \n") 
-           print(round(object$R,digits))
+           print(object$R,digits)
             cat("\nMultiple R2 \n") 
-           print(round(object$R2,digits))
+           print(object$R2,digits)
              cat("\nCohen's set correlation R2 \n") 
-           print(round(object$Rset,digits))
+           print(object$Rset,digits)
            cat("\nSquared Canonical Correlations\n")
-           print(round(object$cancor,digits))
+           print(object$cancor2,digits)
            
            }
            
   if(irt.fa) {
-   cat("Item Response Analysis using Factor Analysis = ")
-   cat("\nCall: ")
+     cat("\nItem Response Theory using factor analysis with Call: ")
    print(object$Call)
-  print(round(object$coefficients,digits))
-  print(object$stats,digits)
-  }
+   
+ 	nfactors <- dim(object$fa$loadings)[2]
+    objective <- object$fa$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
+    cat("\nThe degrees of freedom for the model is",object$fa$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(object$fa$n.obs)) {cat("The number of observations was ",object$fa$n.obs, " with Chi Square = ",round(object$fa$STATISTIC,digits), " with prob < ", signif(object$fa$PVAL,digits),"\n")}
+  
+    if(!is.null(object$fa$rms)) {cat("\nThe root mean square of the residuals (RMSA) is ", round(object$fa$rms,digits),"\n") }
+    if(!is.null(object$fa$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$fa$crms,digits),"\n") }
+    
+   
+   	if(!is.null(object$fa$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(object$fa$TLI,digits+1))}
+  
+   	if(!is.null(object$fa$RMSEA)) {cat("\nRMSEA index = ",round(object$fa$RMSEA[1],digits+1), " and the", (1- object$fa$RMSEA[4])*100,"% confidence intervals are ",round(object$fa$RMSEA[2:3],digits+1))  }
+   
+   	if(!is.null(object$fa$BIC)) {cat("\nBIC = ",round(object$fa$BIC,digits))}
+    if(!is.null(object$fa$Phi)) {
+   if(object$fa$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}
+       colnames(object$fa$Phi) <- rownames(object$fa$Phi) <- colnames(object$fa$loadings)
+       print(round(object$fa$Phi,digits))}
+}
 invisible(result)
    }
   

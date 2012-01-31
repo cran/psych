@@ -101,7 +101,7 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
 length.labels <-  0    # a filler for now
 #plot.new() is necessary if we have not plotted before
 #strwd <- try(strwidth(xvars),silent=TRUE)
-strwd <- try(length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8)
+strwd <- try(length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8,silent=TRUE)  #although this throws an error if the window is not already open, we don't show it
 #if (class(strwd) == "try-error" ) {plot.new() } 
 if (class(strwd) == "try-error" ) {length.labels = max(nchar(xvars),3)/1.8 } 
 #length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8

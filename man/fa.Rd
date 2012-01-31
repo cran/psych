@@ -8,8 +8,8 @@
 
 
 
-\title{MinRes (minimum residual) Factor analysis as well as Factor Analysis by Principal Axis, Weighted Least Squares or Maximum Likelihood }
-\description{Among the many ways to do latent variable factor analysis, one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
+\title{Exploratory Factor analysis using MinRes (minimum residual) as well as EFA by Principal Axis, Weighted Least Squares or Maximum Likelihood }
+\description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
 }
 \usage{
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=TRUE,...)
@@ -105,7 +105,8 @@ Some correlation matrices that arise from using pairwise deletion or from tetrac
   \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
   \item{rotation}{which rotation was requested?}
   \item{n.obs}{number of observations specified or found}
-  \item{loadings}{An item by factor loading matrix of class ``loadings"  Suitable for use in other programs (e.g., GPA rotation or factor2cluster. To show these by sorted order, use \code{\link{print.psych}} with sort=TRUE}
+  \item{loadings}{An item by factor (pattern) loading matrix of class ``loadings"  Suitable for use in other programs (e.g., GPA rotation or factor2cluster. To show these by sorted order, use \code{\link{print.psych}} with sort=TRUE}
+  \item{Structure}{An item by factor structure matrix of class ``loadings". This is just the loadings (pattern) matrix times the factor intercorrelation matrix.}
   \item{fit}{How well does the factor model reproduce the correlation matrix. This is just \eqn{\frac{\Sigma r_{ij}^2 - \Sigma r^{*2}_{ij} }{\Sigma r_{ij}^2}
 }{(sum(r^2ij - sum(r*^2ij))/sum(r^2ij}  (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
   \item{fit.off}{how well are the off diagonal elements reproduced?}

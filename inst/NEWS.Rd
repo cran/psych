@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.1.12 (2011-12-01)}{
+\section{Changes in psych version 1.2.130 (2012-01-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.1.12 is the development release of the psych package.  The released version is 1.1.1111  The second digit reflects the year (i.e., 2011), the third set the month (i.e., 1.1.11 was released in November of 2011, the last two digits reflect the day).
+      \item Version 1.2.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.1.12.  The second digit reflects the year (i.e., 2011), the third set the month (i.e., 1.1.12 was released in December of 2011, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -25,9 +25,83 @@
       \item add CVE estimate (see Reise 2010)
       \item Add omega factor extension figure option (requested by Sylia Wilson)
       \item Fix bug in describe.by for the case of NULL categories for the by variable. (Reported by Nipa Phojanamongkolkij).
+      \item Add an option to fa.diagram to plot a general factor ala omega.
+      \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
+     \item add option to do subject density and item density plot to IRT plot.
+      \item note that the df in set.cor should reflect the number of cases actually used
+      \item improve documentation of fa to explain how oblique SS are found.
+      \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
+      \item add the ability to add labels to lavaan.diagram
+     
     }
   }
-  }   
+  } 
+  \section{Changes in psych version 1.2.1 (2012-1-31)}{
+   \subsection{Additions}{
+  \itemize{
+    \item Modified scrub to be a bit easier to use (suggested by Josh Wilt)
+   \item Added a check in mixed.cor so that if the data are incorrect, announce it first, rather than waiting until late in the process. 
+   \item Added a progress indicator to particularly slow functions (e.g. tetrachoric, polychoric, biserial).  This will show up when using these functions in other functions (such as irt.fa or mixed.cor). 
+   \item Modified cluster.cor so that in the case of correlations that are NA, it will not find smcs of the raw correlation matrix.  In addition, it will impute scale level correlations based upon the average between scale correlation (previously it was reporting an NA).  Requested by David Condon.
+   \item Added the helper function lower.mat to print the lower submatrix.  Added this as an option to the print.psych function.
+   \item Modified mixed.cor so that it will automatically (if desired) find the Pearson, polychoric, and tetrachoric correlation matrices and then reorganize the matrix back to the original form.
+   \item Minor modifications to tetrachoric and polychoric to give slightly more helpful error messages in the case of missing data and corrections for continuity.
+   \item Minor modifications to summary to give cleaner summary stats for fa and irt.fa analyses.
+   \item Added a residual and plot.residuals function to plot either qq plots of the residuals, or a cor.plot of the residuals.
+  }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item Fixed a few references that were working but doing partial matching in print.psych, test.psych, pairs.panels (e.g, in print.psych digit=digits was changed to digits=digits, test.psych nf was changed to nfactors, col was changed to col.smooth in pairs.panels). This had been flagged by linux checking as a note about "partial matching" for a long time. Finally figured out what it meant.
+ \item corrected biplot.psych to properly take the xlim and ylim parameters (reported by Andreas M. Brandmaier)
+ \item Correction to tetrachoric (and related functions) to return NA in the case of no cases for x or y.  (Reported by David Condon)
+ \item Fixed fa so that the score.oblique option actually works. (Reported by Jessica Jaynes).
+   }
+   } 
+  }
+  
+  \section{Changes in psych version 1.1.12 (2011-12-30)}{
+   \subsection{Additions}{
+  \itemize{ 
+ 
+  \item Modified scrub to be more general.
+  \item Added factor structure as an object in the fa function and modified the print.psych.fa function to note that it is the pattern matrix being reported. 
+  \item Modified the ICLUST output so that the eigenvalues reflect the independent contribution of each cluster. 
+  \item Added a comment and an option to ICLUST.sort about the order in which clusters are sorted (suggested by Gudmundur Arnkelsson).
+  \item Added the rug option to pairs.panels.  This will, by default draw a rug underneath the histograms.
+  \item Added a covar option to principal to find principal components from covariance matrices as well as correlation matrices.
+  \item Cleaned up the objects returned from fa.parallel.poly to more closely match those from fa.parallel. 
+  \item Added the ability to find and report residual correlations in set.cor. Minor formatting corrections to set.cor and mat.regress.
+  
+  }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+  \item  Fixed a bug in fa such that the oblique.scores option did not work. 
+  \item  fa.parallel.poly was ignoring the fm parameter and was not printing correctly.
+   }
+   } 
+  }
+
+
+\section{Changes in psych version 1.1.1122 (2011-11-22)}{
+   \subsection{Additions}{
+  \itemize{ 
+  \item Added various rotation options to principal to match those in fa.
+  \item Added "components" as an option to factor score to  score principal components using just the component loadings.  This is most appropriate when not rotating the components.
+  \item Added the Harman.5 (socio-demographic) data set to allow comparisons with SAS. 
+  }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+  \item The way component scores were found had changed from "regression" to "tenBerge" without being documented.  Changed the documentation and added the method of scoring as an option.  Problem reported by Alexander Weiss.  
+   }
+   } 
+  }
+  
 \section{Changes in psych version 1.1.1111 (2011-11-11)}{
   \subsection{Additions}{
   \itemize{ 
@@ -625,6 +699,15 @@
     }
   }
 }
+
+\section{Changes in psych version 1.0.42 (2007-03-24)}{
+  \subsection{Additions}{
+    \itemize{
+      \item A relatively stable release. 
+    }
+  }
+}
+
 \section{Changes in psych version 1.0.40 (2007-08-15)}{
   \subsection{Additions}{
     \itemize{
@@ -633,6 +716,14 @@
       \item circ.simulation
       \item item.sim
       \item polar converts two dimensional factor loadings to polar coordinates.
+    }
+  }
+}
+
+\section{Changes in psych version 1.0.17 (2007-05-06)}{
+  \subsection{Additions}{
+    \itemize{
+      \item The first release to CRAN
     }
   }
 }

@@ -150,3 +150,20 @@ if(!is.null(om$schmid$rms))results[i,7] <- om$schmid$rms
 colnames(results) <- c("omega","mean p2","sd p2","coeff v","Beta","RMSEA","rms")
 return(results)
 }
+
+
+
+"sim.general" <- 
+function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
+require(MASS)
+  r1 <- matrix(r,nvar/nfact,nvar/nfact)
+  R <- matrix(g,nvar,nvar)
+  rf <- super.matrix(r1,r1)
+  if(nfact>2) {for (f in 1:(nfact-2)){
+  rf <- super.matrix(r1,rf)}}
+  R <- R + rf
+  diag(R) <- 1
+  colnames(R) <- rownames(R) <- paste((paste("V",1:(nvar/nfact),sep="")),rep(1:nfact,each=(nvar/nfact)),sep="gr")
+  if(n > 0) {x <-  mvrnorm(n = n, mu=rep(0,nvar), Sigma = R, tol = 1e-06,empirical = FALSE)
+   return(x)} else {
+  return(R)} }

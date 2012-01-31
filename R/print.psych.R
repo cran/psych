@@ -3,7 +3,7 @@
 #added the switch capability, August 25, 2011 following suggestions by Joshua Wiley
 
 "print.psych" <-
-function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,...) { 
+function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...) { 
 
 if(length(class(x)) > 1)  { value <- class(x)[2] } else {
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -104,7 +104,7 @@ scores =  {
 	 print(round(x$item.corrected,digits=digits)) } 
 	 if(!is.null(x$response.freq)) {
 	 cat("\nNon missing response frequency for each item\n")
-	 print(round(x$response.freq,digit=digits))}
+	 print(round(x$response.freq,digits=digits))}
 	 }
 	
   },
@@ -121,7 +121,7 @@ mchoice =  {
 	
 	 if(!is.null(x$item.stats)) {
 	 cat("\nitem statistics \n")
-	 print(round(x$item.stats,digit=digits))}
+	 print(round(x$item.stats,digits=digits))}
   },
   
   
@@ -177,16 +177,16 @@ alpha = {
    print(x$item.stats,digits=digits)
 	 if(!is.null(x$response.freq)) {
 	 cat("\nNon missing response frequency for each item\n")
-	 print(round(x$response.freq,digit=digits))}
+	 print(round(x$response.freq,digits=digits))}
 },
 
 
 guttman =  {
   cat("Call: ")
     print(x$Call)
- cat ("\nAlternative estimates of reliability\n")
+ cat("\nAlternative estimates of reliability\n")
  cat("Beta = ", round(x$beta,digits), " This is an estimate of the worst split half reliability")  
- cat ("\nGuttman bounds \nL1 = ",round(x$lambda.1,digits), "\nL2 = ", round(x$lambda.2,digits), "\nL3 (alpha) = ", round(x$lambda.3,digits),"\nL4 (max) = " ,round(x$lambda.4,digits), "\nL5 = ", round(x$lambda.5,digits), "\nL6 (smc) = " ,round(x$lambda.6,digits), "\n")
+ cat("\nGuttman bounds \nL1 = ",round(x$lambda.1,digits), "\nL2 = ", round(x$lambda.2,digits), "\nL3 (alpha) = ", round(x$lambda.3,digits),"\nL4 (max) = " ,round(x$lambda.4,digits), "\nL5 = ", round(x$lambda.5,digits), "\nL6 (smc) = " ,round(x$lambda.6,digits), "\n")
  cat("TenBerge bounds \nmu0 = ",round(x$tenberge$mu0,digits), "mu1 = ", round(x$tenberge$mu1,digits), "mu2 = " ,round(x$tenberge$mu2,digits), "mu3 = ",round(x$tenberge$mu3,digits) , "\n")
  cat("\nalpha of first PC = ",round( x$alpha.pc,digits), "\nestimated greatest lower bound based upon communalities= ", round(x$glb,digits),"\n")
  #cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
@@ -254,8 +254,7 @@ comorbid = {cat("Call: ")
             if(!is.null(x$twobytwo)) {
               print(x$twobytwo,digits=digits)
               cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
-            
-            print(x$rho,digits)
+           if(is.matrix(x$rho) &&  lower) {lower.mat(x$rho,digits)} else { print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
           }
@@ -269,16 +268,25 @@ comorbid = {cat("Call: ")
               print(x$twobytwo,digits=digits)
               cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
             
-            print(x$rho,digits)
+            if(lower) {lower.mat(x$rho,digits) } else {print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
           }
    },
    
+mixed= { cat("Call: ")
+          print(x$Call)
+    if(lower) {if(length(x$rho)>1) print(lower.mat(x$rho),digits=digits)} else {print(x$rho,digits)}
+   },
    
+residuals = { 
+   if (lower) {lower.mat(x,digits=digits)} else {print(x,digits)}
+	},   
+	
 set.cor= { cat("Call: ")
               print(x$Call)
-            cat("\nMultiple Regression from matrix input \n")
+            if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
+            cat("\nMultiple Regression from matrix input \n")}
            cat("\nBeta weights \n")
            print(round(x$beta,digits))
            cat("\nMultiple R \n") 
@@ -316,10 +324,10 @@ set.cor= { cat("Call: ")
             cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
             #print(x$Rset,digits=digits)
            if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
-           # print(x$Rset.shrunk,digits=digits)
+          
             cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
            }
-          #  print(x$T,digits=digits)
+
 
    },
    

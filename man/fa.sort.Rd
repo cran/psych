@@ -4,7 +4,7 @@
 
 \title{Sort factor analysis or principal components analysis loadings}
 
-\description{Although the print.psych function will sort factor analysis loadings, sometimes it is useful to do this outside of the print function. fa.sort takes the output from the fa or principal functions and sorts the loadings for each factor.  Items are located in terms of their greatest loading.
+\description{Although the print.psych function will sort factor analysis loadings, sometimes it is useful to do this outside of the print function. fa.sort takes the output from the fa or principal functions and sorts the loadings for each factor.  Items are located in terms of their greatest loading.  The new order is returned as an element in the fa list.
 }
 \usage{
 fa.sort(fa.results,polar=FALSE)
@@ -19,7 +19,11 @@ The fa.results$loadings are replaced with sorted loadings.
 }
 \value{ A sorted factor analysis, principal components analysis, or omega loadings matrix. 
 
-These sorted values are used internally by the various diagram functions.  
+These sorted values are used internally by the various diagram functions. 
+
+The values returned are the same as  \code{\link{fa}}, except in sorted order.  In addition, the order is returned as an additional element in the fa list.
+
+ 
 
 }
 

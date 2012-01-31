@@ -85,7 +85,7 @@ function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 
 
 "sim.poly" <- 
-function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="normal") 
+function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
 	{ 
 	if(mod=="normal") {result <- sim.poly.npn(nvar,n,low,high,a,c,z,d,mu,sd,cat)} else {result <- sim.poly.npl(nvar,n,low,high,a,c,z,d,mu,sd,cat)}
 	return (result) 
@@ -93,7 +93,7 @@ function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5
 	
 "sim.poly.npn" <- 
 function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
-	{ 
+	{ cat <- cat - 1
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
 	theta <- rnorm(n,mu,sd) # the latent variable
@@ -109,7 +109,7 @@ function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5
 	
 "sim.poly.npl" <- 
 function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
-	{ 
+	{ cat <- cat - 1
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
 	theta <- rnorm(n,mu,sd)
@@ -122,3 +122,63 @@ function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5
     result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	} 
+	
+"sim.poly.ideal" <- 
+function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
+	{ 
+	if(mod=="normal") {result <- sim.poly.ideal.npn(nvar,n,low,high,a,c,z,d,mu,sd,cat)} else {result <- sim.poly.ideal.npl(nvar,n,low,high,a,c,z,d,mu,sd,cat)}
+	return (result) 
+	}  	
+
+	
+"sim.poly.ideal.npl.absolute" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
+	{ cat <- cat -1  #binomial is based upon one fewer than categories
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n,mu,sd)
+	item <- matrix(t(c+(z-c)/(1+exp(a*t(abs(-theta %+% t( d)))))),n,nvar)
+	item[] <- rbinom(n*nvar, cat, item)
+
+      
+    colnames(item) <- paste("V",1:nvar,sep="")
+     
+    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	} 
+	
+"sim.poly.ideal.npl" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5,theta=NULL) 
+	{ cat <- cat -1  #binomial is based upon one fewer than categories
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	if(is.null(a)) {a <- rep(1,nvar)}
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)}
+	item <- 2*matrix((c+(z-c)*exp(a*t(-theta %+% t( d)))/(1+2*exp(a*t(-theta %+% t( d))) + exp(a*t(2*(-theta %+% t( d)))))),n,nvar,byrow=TRUE)
+    p <- item
+	item[] <- rbinom(n*nvar, cat, item)
+
+      
+    colnames(item) <- paste("V",1:nvar,sep="")
+     browser()
+    result <- list(p=p,items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	} 
+	
+
+
+"sim.poly.ideal.npn" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) {
+warning("Not ready for prime time")
+	 cat <- cat -1  #binomial is based upon one fewer than categories
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	if(is.null(a)) {a <- rep(1,nvar)}
+	theta <- rnorm(n,mu,sd) # the latent variable
+	
+	item <- matrix(t(c+(z-c)*pnorm(abs(a*t(theta %+% t(- d))))),n,nvar)  #need to transpose and retranpose to get it right
+	#now convert these probabilities to outcomes
+	item[] <- rbinom(n*nvar, cat, item)
+   
+	colnames(item) <- paste("V",1:nvar,sep="")        
+   result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	}  	

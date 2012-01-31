@@ -16,7 +16,7 @@ score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL, m
   \item{totals}{total=FALSE: find the average number correct \cr
                 total=TRUE: find the total number correct}
   \item{ilabels}{item labels }
-  \item{missing}{missing=TRUE: missing values are replaced with means or medians \cr   mising=FALSE  missing values are not scored }
+  \item{missing}{missing=TRUE: missing values are replaced with means or medians \cr   missing=FALSE  missing values are not scored }
   \item{impute}{impute="median", replace missing items with the median score
                \cr impute="mean": replace missing values with the item mean}
   \item{digits}{ How many digits of output }
@@ -25,7 +25,11 @@ score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL, m
 }
 \details{Basically combines \code{\link{score.items}} with a conversion from multiple choice to right/wrong.
 
-The item-whole correlation is inflated because of item overlap.}
+The item-whole correlation is inflated because of item overlap.
+
+The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{http://test.personality-project.org}.
+
+}
 
 \value{
 

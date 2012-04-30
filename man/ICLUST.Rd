@@ -52,7 +52,7 @@ n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,pu
 }
 \details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 
 
-The results are best visualized using  \code{\link{ICLUST.graph}}, the results of which can be saved as a dot file for the Graphviz program.  \url{http://www.graphviz.org/}.  With the installation of Rgraphviz, ICLUST will automatically provide cluster graphs.
+The results are best visualized using  \code{\link{ICLUST.graph}}, the results of which can be saved as a dot file for the Graphviz program.  \url{http://www.graphviz.org/}. The \code{\link{iclust.diagram}} is called automatically to produce cluster diagrams.  The resulting diagram is not quite as pretty as what can be achieved in dot code but is quite adequate if you don't want to use an external graphics program. With the installation of Rgraphviz, ICLUST can also provide cluster graphs.
 
  A common problem in the social sciences is to construct scales or composites of items to measure constructs of theoretical interest and practical importance. This process frequently involves administering a battery of items from which those that meet certain criteria are selected. These criteria might be rational, empirical,or factorial. A similar problem is to analyze the adequacy of scales that already have been formed and to decide whether the putative constructs are measured properly. Both of these problems have been discussed in numerous texts,  as well as in myriad articles. Proponents of various methods have argued for the importance of face validity, discriminant validity, construct validity, factorial homogeneity, and theoretical importance. 
  
@@ -83,19 +83,16 @@ Although iclust will give what it thinks is the best solution in terms of the nu
 
 Clustering 24 tests of mental ability
 
- A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order. The default is to produce graphics using the Rgraphviz package (from BioConductor).  Because this package is sometimes hard to install, there is an alternative option to write the output out using the dot language.  This will create a  graphic suitable for any viewing program that uses the dot language.  \code{\link{ICLUST.graph}} produces the dot code for Graphviz.  Somewhat lower resolution graphs with fewer options are available in the \code{\link{ICLUST.rgraph}} function which requires Rgraphviz.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g., OmniGraffle)
+ A sample output using the 24 variable problem by Harman can be represented both graphically and in terms of the cluster order. The default is to produce graphics using the \code{\link{diagram}} functions.  An alternative is to use the Rgraphviz package (from BioConductor).  Because this package is sometimes hard to install, there is an alternative option (\code{\link{ICLUST.graph}} to write  dot language instructions for subsequent processing.  This will create a  graphic instructions suitable for any viewing program that uses the dot language.  \code{\link{ICLUST.rgraph}} produces the dot code for Graphviz.  Somewhat lower resolution graphs with fewer options are available in the \code{\link{ICLUST.rgraph}} function which requires Rgraphviz.  Dot code can be viewed directly in Graphviz or can be tweaked using commercial software packages (e.g., OmniGraffle)
  
 
-
-Note that for this problem, with the default parameters, the data form one large cluster. (This is consistent with the Very Simple Structure (\code{\link{VSS}}) output as well, which shows a clear one factor solution for complexity 1 data.)  
+Note that for the Harman 24 variable problem, with the default parameters, the data form one large cluster. (This is consistent with the Very Simple Structure (\code{\link{VSS}}) output as well, which shows a clear one factor solution for complexity 1 data.)  
 
 An alternative solution is to ask for a somewhat more stringent set of criteria and require an increase in the size of beta for all clusters greater than 3 variables.  This produces a 4 cluster solution.
 
 It is also possible to use the original parameter settings, but ask for a 4 cluster solution.
 
-At least for the Harman 24 mental ability measures, it is interesting to compare the cluster pattern matrix with the oblique rotation solution from a factor analysis.  The factor congruence of a four factor oblique pattern solution with the four cluster solution is > .99 for three of the four clusters and > .97 for the fourth cluster.  
-
-To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.html} or use \code{\link{ICLUST.rgraph}} (requires Rgraphviz). 
+At least for the Harman 24 mental ability measures, it is interesting to compare the cluster pattern matrix with the oblique rotation solution from a factor analysis.  The factor congruence of a four factor oblique pattern solution with the four cluster solution is > .99 for three of the four clusters and > .97 for the fourth cluster.  The cluster pattern matrix (returned as an invisible object in the output)
 
 }
 \value{
@@ -107,11 +104,12 @@ To see the graphic output go to \url{http://personality-project.org/r/r.ICLUST.h
   The print.psych and summary.psych functions will print out just the must important results.}
  \item{corrected}{The raw and corrected for alpha reliability cluster intercorrelations.}
  \item{clusters}{a matrix of -1,0, and 1 values to define cluster membership.}
- \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.  These are sorted by importance (the eigenvalues of the clusters). The cluster membership from the original (O) and purified (P) clusters are indicated along with the cluster structure matrix.
+ \item{purified}{A list of the cluster definitions and cluster loadings of the purified solution.  These are sorted by importance (the eigenvalues of the clusters). The cluster membership from the original (O) and purified (P) clusters are indicated along with the cluster structure matrix.  These item loadings are the same as those found by the \code{\link{score.items}} function and are found by correcting the item-cluster correlation for item overlap by summing the item-cluster covariances with all except that item and then adding in the smc for that item. These resulting correlations are then corrected for scale reliability.  
    
    To show just the most salient items, use the cutoff option in \code{\link{print.psych}} }
  \item{cluster.fit, structure.fit, pattern.fit}{There are a number of ways to evaluate how well any factor or cluster matrix reproduces the original matrix. Cluster fit considers how well the clusters fit if only correlations with clusters are considered.  Structure fit evaluates R = CC' while pattern fit evaluate R = C  inverse (phi) C'  where C is the cluster loading matrix, and phi is the intercluster correlation matrix.}
- \item{pattern}{The pattern matrix loadings.   Pattern is just C  inverse (phi).}
+ \item{pattern}{The pattern matrix loadings.   Pattern is just C  inverse (Phi).  The pattern matrix is conceptually equivalent to that of a factor analysis, in that the pattern coefficients are b weights of the cluster to the variables, while the normal cluster loadings are correlations of the items with the cluster.  The four cluster and four factor pattern matrices for the Harman problem are very similar.}
+ 
 }
 
 
@@ -126,25 +124,24 @@ See also  more extensive documentation at
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
 \author{William Revelle   }
         
-\note{iclust draws graphical displays with or without using Rgraphiviz. Rgraphviz produces slightly better graphics and will also export in the dot language for further massaging of the graphic. If Rgraphviz is not installed, ICLUST.graph will issue a warning message but continue.  If, however, Rgraphviz is not properly installed, ICLUST.graph will think it is available, try to produce a graph, and fail (ungracefully).    
+\note{iclust draws graphical displays with or without using Rgraphiviz. Because of difficulties installing Rgraphviz on many systems, the default it not even try using it.  With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty as using Rgraphviz, but more stable. However, Rgraphviz can be used by using \code{\link{ICLUST.rgraph}} to  produces slightly better graphics. It is also possible to export dot code in the dot language for further massaging of the graphic. This may be done using \code{\link{ICLUST.graph}}.  This last option is probably preferred for nice graphics which can be massaged in any dot code program (e.g., graphviz \url{http://graphviz.org}  or a commercial program such as OmniGraffle. 
 
- With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty as using Rgraphviz, but more stable.
- 
+
 To view the cluster structure more closely, it is possible to save the graphic output as a pdf and then magnify this using a pdf viewer.  This is useful when clustering a large number of variables.
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
 \examples{
 test.data <- Harman74.cor$cov
-ic.out <- ICLUST(test.data)
+ic.out <- iclust(test.data,title="ICLUST of the Harman data")
 summary(ic.out)
-ic.out <- ICLUST(test.data,nclusters =4)  #use all defaults and stop at 4 clusters
-ic.out1 <- ICLUST(test.data,beta=3,beta.size=3)  #use more stringent criteria
-print(ic.out1)
-plot(ic.out)    #this shows the spatial representation
-ic.graph <- ICLUST(test.data)  #this draws to the graphics screen using iclust.diagram 
-dot.graph <- ICLUST.graph(ic.graph,out.file="test.ICLUST.graph.dot")   #use a dot graphics viewer on the out.file
-
+ic.out4 <- iclust(test.data,nclusters =4,title="Force 4 clusters")  #use all defaults and stop at 4 clusters
+summary(ic.out4)
+ic.out1 <- iclust(test.data,beta=3,beta.size=3)  #use more stringent criteria
+ic.out  #more complete output 
+plot(ic.out4)    #this shows the spatial representation
+dot.graph <- ICLUST.graph(ic.out,out.file="test.ICLUST.graph.dot")   #use a dot graphics viewer on the out.file
+fa.diagram(ic.out4$pattern,Phi=ic.out4$Phi,main="Pattern taken from iclust")  #show the equivalent of a factor solution
 
 }
 \keyword{multivariate}% at least one, from doc/KEYWORDS

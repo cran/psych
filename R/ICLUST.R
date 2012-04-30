@@ -31,7 +31,7 @@ ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
  
 	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,correct.cluster=correct.cluster,reverse=reverse,beta.min=beta.min,output=output,digits=digits,weighted=weighted,cor.gen=cor.gen,SMC=SMC) 
 	
-	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") }    #cluster correlation matrices, find correlations if not square matrix
+	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") } else {r.mat <- cov2cor(r.mat)}    #cluster correlation matrices, find correlations if not square matrix -- added the conversion from covariances to correlations, March, 2012
 	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
 	nvar <- dim(r.mat)[2] 
 	if(nvar < 3 ) {message("Cluster analysis of items is only meaningful for more than 2 variables. Otherwise, you will find one cluster that is just the composite of the two.  Beta = Alpha = 2*r/(1+r).  Have you made a mistake? \n Try calling the alpha function to give some trivial statistics.")

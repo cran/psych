@@ -45,7 +45,8 @@ corr.test = {cat("Call:")
               print(round(x$r,digits))
               cat("Sample Size \n")
               print(x$n)
-              cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")
+              if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
+                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
              print(round(x$p,digits))
          },
 
@@ -254,7 +255,7 @@ comorbid = {cat("Call: ")
             if(!is.null(x$twobytwo)) {
               print(x$twobytwo,digits=digits)
               cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
-           if(is.matrix(x$rho) &&  lower) {lower.mat(x$rho,digits)} else { print(x$rho,digits)}
+           if(is.matrix(x$rho) &&  lower) {lowerMat (x$rho,digits)} else { print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
           }
@@ -268,7 +269,7 @@ comorbid = {cat("Call: ")
               print(x$twobytwo,digits=digits)
               cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
             
-            if(lower) {lower.mat(x$rho,digits) } else {print(x$rho,digits)}
+            if(lower) {lowerMat (x$rho,digits) } else {print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
           }
@@ -276,11 +277,11 @@ comorbid = {cat("Call: ")
    
 mixed= { cat("Call: ")
           print(x$Call)
-    if(lower) {if(length(x$rho)>1) print(lower.mat(x$rho),digits=digits)} else {print(x$rho,digits)}
+    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}
    },
    
 residuals = { 
-   if (lower) {lower.mat(x,digits=digits)} else {print(x,digits)}
+   if (lower) {lowerMat (x,digits=digits)} else {print(x,digits)}
 	},   
 	
 set.cor= { cat("Call: ")

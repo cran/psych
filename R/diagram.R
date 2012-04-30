@@ -20,16 +20,17 @@ if(omega) {omega.diagram(fit,...)}
 if(lavaan) {lavaan.diagram(fit,...)} 
 }
 
-
+#modified April 19, 20121 to handle long names more gracefully
 "dia.rect" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...) {
      text(x=x, y = y, labels = labels,  cex = cex,   ...)
       xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
     xs <- .10 * xrange
-    ys <- .10 * xrange
+    ys <- .10 * yrange
      #len <- max(nchar(labels)*cex*.2/2,cex*.25)*xs
-     len <- max(strwidth(labels),strwidth("abc"))/1.8
-     vert <- min(cex*.3 * ys,.3)
+     len <- max(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user")) /1.95
+     vert <- max(strheight(labels,units="user",cex=cex,...),strheight("abc",units="user"))/1.95
+    # vert <- min(cex*.3 * ys,.3)
      rect(x-len,y-vert,x+len,y+vert)
      left <- c(x-len,y)
      right <- c(x+len,y)

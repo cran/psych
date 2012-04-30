@@ -13,7 +13,7 @@
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.
 }
 \usage{
-\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, ...)
+\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2,method="pearson", pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +24,7 @@
   \item{ellipses}{TRUE draws correlation ellipses}
   \item{lm}{Plot the linear fit rather than the LOESS smoothed fits.}
   \item{digits}{ the number of digits to show}
+  \item{method}{method parameter for the correlation ("pearson","spearman","kendall")}
   \item{pch}{The plot character (defaults to 20 which is a '.').}
   \item{cor}{If plotting regressions, should correlations be reported?}
   \item{jiggle}{Should the points be jittered before plotting?}
@@ -41,8 +42,9 @@ To show different groups with different colors, use a plot character (pch) betwe
 
 When plotting more than about 10 variables, it is useful to set the gap parameter to something less than 1 (e.g., 0).  Alternatively, consider using \code{\link{cor.plot}}
 
-Whe plotting more than about 100-200 cases, it is useful to use the show.points=FALSE option.
+In addition, when plotting more than about 100-200 cases, it is useful to set the plotting character to be a point. (pch=".")
 
+Sometimes it useful to draw the correlation ellipses and best fitting lowess without the points. (points.false=TRUE).
 }
 \value{A scatter plot matrix (SPLOM) is drawn in the graphic window. The lower off diagonal draws scatter plots, the diagonal histograms, the upper off diagonal reports the Pearson correlation (with pairwise deletion).
 
@@ -61,10 +63,12 @@ pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],pch=21,main="Fi
 #demonstrate not showing the data points
 data(sat.act)
 pairs.panels(sat.act,show.points=FALSE)
-
+#better yet is to show the points as a period
+pairs.panels(sat.act,pch=".")
 #show many variables with 0 gap between scatterplots
 data(bfi)
 pairs.panels(bfi,show.points=FALSE,gap=0)
+
 
 }
 \keyword{multivariate }% at least one, from doc/KEYWORDS

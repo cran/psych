@@ -11,7 +11,7 @@
 #In May, 2011, fa was added as a wrapper to do iterations, and the original fa function was changed to fac.  The functionality of fa has not changed.
 
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=TRUE,...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,...) {
  cl <- match.call()
   if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
@@ -87,7 +87,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -339,7 +339,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     if(nfactors < 1) nfactors <- n
    
    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,alpha=alpha)   #do stats as a subroutine common to several functions
-
+    result$rotation <- rotate
     result$communality <- diag(model)
     result$uniquenesses <- diag(r-model)
     result$values <-  eigens

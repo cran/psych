@@ -2,11 +2,11 @@
 #based upon fa.graph with some ideas taken from the diagram and shape packages of Karline Soetaert 
 #version of September 30, 2009
 #developed to replace Rgraphviz which is too much of a pain to install
-#Rgraphviz uses a NEL  (Node, Edge, Label) represenation while diagram uses a complete linking matrix
+#Rgraphviz uses a NEL  (Node, Edge, Label) representation while diagram uses a complete linking matrix
 #thus, I am trying to combine these two approaches
 
 "fa.diagram" <-
-  function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,
+  function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
     digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL, ...) {
    col <- c("black","red")
    if(missing(main)) if(is.null(fe.results)) {main <- "Factor Analysis" } else {main <- "Factor analysis and extension"}
@@ -53,21 +53,27 @@
    max.len <- max(strwidth(rownames(factors)),strwidth("abc"))/1.8  #slightly more accurate, but needs to be called after plot is opened
     limx=c(-max.len/2,x.max)  
      cex <-  min(cex,20/x.max)
- 
+ if(g) {left <- .3*x.max     #where should the variable boxes go?  It depends upon g
+        middle <- .6*x.max
+        gf <- 2 } else {left <- 0
+        middle <- .5*x.max
+        gf <- 1}  
  for (v in 1:nvar) { 
- 	 var.rect[[v]] <- dia.rect(0,top -v - max(0,n.evar-nvar)/2  ,rownames(factors)[v],xlim=limx,ylim=limy,cex=cex,...)
+ 	 var.rect[[v]] <- dia.rect(left,top -v - max(0,n.evar-nvar)/2  ,rownames(factors)[v],xlim=limx,ylim=limy,cex=cex,...)
      }
    f.scale <- (top)/(num.factors+1)
    f.shift <- max(nvar,n.evar)/num.factors
-   for (f in 1:num.factors) {
-   		fact.rect[[f]] <- dia.ellipse(.5*x.max,(num.factors+1-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,...)
+   if(g) {fact.rect[[1]] <- dia.ellipse(-max.len/2,top/2,colnames(factors)[1],xlim=limx,ylim=limy,e.size=e.size,...)
+          	for (v in 1:nvar)  {if(simple && (abs(factors[v,1]) == max(abs(factors[v,])) )  && (abs(factors[v,1]) > cut) | (!simple && (abs(factors[v,1]) > cut))) { 
+    			dia.arrow(from=fact.rect[[1]],to=var.rect[[v]]$left,labels =round(factors[v,1],digits),col=((sign(factors[v,1])<0) +1),lty=((sign(factors[v,1])<0)+1))
+    	 }}}
+   for (f in gf:num.factors) {
+   		fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,...)
      		for (v in 1:nvar)  {
      		
     			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
     			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1))
-    			
-
-    }
+    			 }
    }
    }
    

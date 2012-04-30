@@ -4,14 +4,17 @@
 \description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixed.cor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
 }
 \usage{
-mixed.cor(x = NULL, p = NULL, d = NULL,smooth=TRUE,ncat=8)
+mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE, ncat=8, polycor=FALSE)
 }
 \arguments{
   \item{x}{A set of continuous variables (may be missing) or, if p and d are missing, the variables to be analyzed.}
   \item{p}{A set of polytomous items (may be missing)}
   \item{d}{A set of dichotomous items (may be missing)}
   \item{smooth}{If TRUE, then smooth the correlation matix if it is non-positive definite}
+  \item{correct}{When finding tetrachoric correlations, should 0 values be corrected for continuity?}
+  \item{global}{For polychorics, should the global values of the tau parameters be used, or should the pairwise values be used.  Set to local if errors are occurring.}
   \item{ncat}{The number of categories beyond which a variable is considered "continuous".}
+  \item{polycor}{Should the polycor function from the polychor package be used?}
 }
 \details{
 This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
@@ -29,7 +32,11 @@ Note that the variables may be organized by type of data: first continuous, then
 }
 
 \author{William Revelle}
-\note{Note that the variables must be organized by type of data: first continuous, then polytomous, then dichotomous.  }
+\note{mixed.cor was designed for the SAPA project with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
+
+When finding correlations between dummy coded SAPA data (e.g., of occupations), the real correlations are all slightly less than zero because of the ipsatized nature of the data.  This leads to a non-positive definite correlation matrix because the matrix is no longer of full rank. Smoothing will correct this, even though this might not be desired.  Turn off smoothing in this case.
+
+ Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  }
 
 \references{
 W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-cognition link. In A.Gruszka, G. Matthews, and B. Szymura, editors,  Handbook of Individual Differences in Cognition: Attention, Memory and Executive
@@ -46,7 +53,7 @@ r
 #compare to raw Pearson
 #note that the biserials and polychorics are not attenuated
 rp <- cor(bfi[c(1:5,26,28)],use="pairwise")
-lower.mat(rp)
+lowerMat(rp)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -1,6 +1,6 @@
 #changed October 12, 2011 to use apply because mean and sd are deprecated for data.frames
 "describe" <-
-function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stats after dropping non-numeric data
+function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3)   #basic stats after dropping non-numeric data
                                                  #slightly faster if we don't do skews
 {                      
  cl <- match.call()
@@ -18,9 +18,9 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stat
 			stats[1,9] <- mean(x,na.rm=na.rm, trim=trim)
 			stats[1, 4] <-  min(x, na.rm=na.rm )
 			stats[1, 5] <-  max(x, na.rm=na.rm )
-			stats[1, 6] <-  skew(x,na.rm=na.rm  )
+			stats[1, 6] <-  skew(x,na.rm=na.rm,type=type  )
 			stats[1,7] <-  mad(x,na.rm=na.rm) 
-			stats[1,8] <-  kurtosi(x,na.rm=na.rm) 
+			stats[1,8] <-  kurtosi(x,na.rm=na.rm,type=type) 
 			vars <- 1
     	} else {
     	
@@ -38,8 +38,8 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1)   #basic stat
         }
         
     stats[,2] <- apply(x, 2,mean,na.rm=na.rm )
-    if (skew) {stats[, 6] <-  skew(x,na.rm=na.rm  )
-               stats[,8] <- kurtosi(x,na.rm=na.rm)}
+    if (skew) {stats[, 6] <-  skew(x,na.rm=na.rm,type=type  )
+               stats[,8] <- kurtosi(x,na.rm=na.rm,type=type)}
      stats[,10] <- apply(x,2,sd,na.rm=na.rm)
     			stats[,7] <-   apply(x,2,mad, na.rm=na.rm)
 			stats[, 4] <-  apply(x,2,min, na.rm=na.rm )

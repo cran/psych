@@ -1,7 +1,8 @@
 \name{ICLUST.graph}
 \alias{ICLUST.graph}
+\alias{iclust.graph}
 \title{ create control code for ICLUST graphical output}
-\description{Given a cluster structure determined by \code{\link{ICLUST}}, create dot code to describe the \code{\link{ICLUST}} output.  To use the dot code, use either \url{http://www.graphviz.org/} Graphviz or a commercial viewer (e.g., OmniGraffle).
+\description{Given a cluster structure determined by \code{\link{ICLUST}}, create dot code to describe the \code{\link{ICLUST}} output.  To use the dot code, use either \url{http://www.graphviz.org/} Graphviz or a commercial viewer (e.g., OmniGraffle).  This function parallels \code{\link{ICLUST.rgraph}} which uses Rgraphviz.  
 }
 \usage{
 ICLUST.graph(ic.results, out.file,min.size=1, short = FALSE,labels=NULL,
@@ -29,6 +30,8 @@ size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 12),
 ICLUST.graph takes the output from \code{\link{ICLUST}} results and processes it to provide a pretty picture of the results.  Original variables shown as rectangles and ordered on the left hand side (if rank direction is RL) of the graph.  Clusters are drawn as ellipses and include the alpha, beta, and size of the cluster.  Edges show the cluster intercorrelations.
 
 It is possible to trim the output to not show all cluster information. Clusters < min.size are shown as small ovals without alpha, beta, and size information.
+
+Although it would be nice to process the dot code directly in R, the Rgraphviz package is difficult to use on all platforms and thus the dot code is written directly.
 
 }
 

@@ -62,8 +62,9 @@ round(r.rc,2)
 
 r.test(50,r)
 r.test(30,.4,.6)       #test the difference between two independent correlations
-r.test(103,.4,.5,.1)   #Steiger case A
-r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B 
+r.test(103,.4,.5,.1)   #Steiger case A of dependent correlations 
+#for complicated tests, it is probably better to specify correlations by name
+r.test(n=103,r12=.5,r34=.6,r13=.7,r23=.5,r14=.5,r24=.8)   #steiger Case B 
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

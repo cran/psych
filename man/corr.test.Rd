@@ -2,7 +2,7 @@
 \alias{corr.test}
 \alias{corr.p}
 \title{Find the correlations, sample sizes, and probability values between elements of a matrix or data.frame.   }
-\description{Although the cor function finds the correlations for a matrix, it does not report probability values. corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal.
+\description{Although the cor function finds the correlations for a matrix, it does not report probability values. corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests.  
 }
 \usage{
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm")
@@ -22,7 +22,7 @@ corr.p(r,n,adjust="holm")
 \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}
 }{t = r* sqrt(n-1)/sqrt(1-r^2) }
 
-The probability values may be adjusted using the Holm (or other) correction.  If the matrix is symmetric (no y data), then the original p values are reported below the diagonal and the adjusted above the diagonal.  Otherwise, all probabilities are adjusted (unless adjust="none").
+The probability values may be adjusted using the Holm (or other) correction.  If the matrix is symmetric (no y data), then the original p values are reported below the diagonal and the adjusted above the diagonal.  Otherwise, all probabilities are adjusted (unless adjust="none").  This is made explicit in the output.
 }
 \value{
   \item{r}{The matrix of correlations}
@@ -37,8 +37,10 @@ In particular, see \code{\link{p.adjust}} for a discussion of p values associate
 \examples{
 data(sat.act)
 corr.test(sat.act)
+corr.test(sat.act[1:3],sat.act[4:6]) #reports all values corrected for multiple tests
+
+corr.test(sat.act[1:3],sat.act[4:6],adjust="none")  #don't adjust the probabilities
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{multivariate }
-\keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ models }

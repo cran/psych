@@ -5,7 +5,7 @@
 #doesn't seem to make a difference although it does make the code a bit easier to read
 
  polyBinBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
-{ if (min(rc) < -9999) rc <- rc[-1]
+{ if (min(rc) < -9999) rc <- rc[-1]          
   if (min(cc) < - 9999) cc <- cc[-1]
   if (max(rc) > 9999) rc <- rc[-length(rc)]
   if (max(cc)  > 99999) cc <- cc[-length(cc)]
@@ -35,20 +35,28 @@
 "polyc" <- 
 function(x,y=NULL,taux,tauy,global=TRUE) {
 
-      
   tab <- table(x,y)  
   tot <- sum(tab)
   tab <- tab/tot
   
  if(global) { rho <- optimize(polyF,interval=c(-1,1),rc=taux, cc=tauy,tab)#this uses the global taux and tauy
        } else { #use item row and column information for this pair, rather than global values
-   #this seems to match the polycor function
+      #this seems to match the polycor function
+      #the next five lines are taken directly from John Fox's polycor function
+      zerorows <- apply(tab, 1, function(x) all(x == 0))
+	zerocols <- apply(tab, 2, function(x) all(x == 0))
+	zr <- sum(zerorows)
+	#if (0 < zr) warning(paste(zr, " row", suffix <- if(zr == 1) "" else "s"," with zero marginal", suffix," removed", sep=""))
+	zc <- sum(zerocols)
+	#if (0 < zc) warning(paste(zc, " column", suffix <- if(zc == 1) "" else "s", " with zero marginal", suffix, " removed", sep=""))
+	tab <- tab[!zerorows, ,drop=FALSE]  
+	tab <- tab[, !zerocols, drop=FALSE] 
     csum <- colSums(tab)
     rsum <- rowSums(tab)
      cc <-  qnorm(cumsum(csum))[-length(csum)]
      rc <-  qnorm(cumsum(rsum))[-length(rsum)]
-    rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc)
- }
+    rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc,tab)
+        }
   result <- list(rho=rho$minimum,objective=rho$objective)
   return(result)
   }
@@ -64,10 +72,11 @@ if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor
  cl <- match.call() 
 nvar <- dim(x)[2]
 nsub <- dim(x)[1]
-x <-as.matrix(x)
+x <- as.matrix(x)
 xt <- table(x)
-nvalues <- length(xt)  #find the number of response alternatives 
-if(nvalues > 10) stop("You have more than 10 categories for your items, polychoric is probably not needed")
+#nvalues <- length(xt)  #find the number of response alternatives 
+nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
+if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
 xmin <- min(x,na.rm=TRUE)
 xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)

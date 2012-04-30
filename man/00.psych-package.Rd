@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.2.1 \cr
-Date: \tab 20112-01-30\cr
+Version: \tab 1.2.4 \cr
+Date: \tab 2012-04-15\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:

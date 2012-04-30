@@ -1,7 +1,9 @@
 \name{cosinor}
 \alias{cosinor}
 \alias{circadian.mean}
+\alias{circular.mean}
 \alias{circadian.cor}
+\alias{circular.cor} 
 \alias{circadian.linear.cor}
 \title{Functions for analysis of circadian or diurnal data}
 \description{Circadian data are periodic with a phase of 24 hours. These functions  find the best fitting phase angle (cosinor), the circular mean,  circular correlation with circadian data, and the linear by circular correlation} 
@@ -9,7 +11,9 @@
 \usage{
 cosinor(angle,x=NULL,code=NULL,period=24,plot=FALSE,opti=FALSE)
 circadian.mean(angle, hours=TRUE)
-circadian.cor(angle, hours=TRUE)
+circular.mean(angle) #angles in radians
+circadian.cor(angle,hours=TRUE)  #angles in radians
+circular.cor(angle) #angles in radians
 circadian.linear.cor(angle,x,hours=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -26,6 +30,8 @@ circadian.linear.cor(angle,x,hours=TRUE)
 When data represent angles (such as the hours of peak alertness or peak tension during the day), we need to apply circular statistics rather than the more normal linear statistics (see Jammalamadaka (2006) for a very clear set of examples of circular statistics). The generalization of the mean to circular data is to convert each angle into a vector, average the x and y coordinates, and convert the result back to an angle. The generalization of Pearson correlation to circular statistics is straight forward and is implemented in cor.circular in the circular package and in \code{\link{circadian.cor}} here.  Just as the Pearson r is a ratio of covariance to the square root of the product of two variances, so is the circular correlation.  The circular covariance of two circular vectors is defined as the average product of the sines of the deviations from the circular mean.  The variance is thus the average squared sine of the angular deviations from the circular mean.  Circular statistics are used for data that vary over a period (e.g., one day) or over directions (e.g., wind direction or bird flight).  Jammalamadaka and Lund (2006)  give a very good example of the use of circular statistics in calculating wind speed and direction.  
 
 The code from CircStats and circular was adapted to allow for analysis of data from various studies of mood over the day.
+
+\code{\link{circular.mean}} and \code{\link{circular.cor}} are just \code{\link{circadian.mean}} and \code{\link{circadian.cor}}but with input given in radians rather than hours.
 
 The cosinor function will either iteratively fit cosines of the angle to the observed data (opti=TRUE) or use the circular by linear regression to estimate the best fitting phase angle.  If cos.t <- cos(time) and sin.t = sin(time) (expressed in hours), then beta.c and beta.s may be found by regression and the phase is \eqn{sign(beta.c) * acos(beta.c/\sqrt(beta.c^2 + beta.s^2)) * 12/pi}
 

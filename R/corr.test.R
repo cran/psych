@@ -2,8 +2,10 @@
 function(x,y=NULL,use="pairwise",method="pearson",adjust="holm") {
 cl <- match.call()
 if(is.null(y)) {r <- cor(x,use=use,method=method)
+ sym <- TRUE
 n <- t(!is.na(x)) %*% (!is.na(x))
 } else {r <- cor(x,y,use=use,method=method)
+  sym=FALSE
 n <- t(!is.na(x)) %*% (!is.na(y))}
 if(use=="complete") n <- min(n)
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
@@ -17,7 +19,7 @@ if (adjust !="none") {
   } else {
   p[] <- p.adjust(p)  #the case of an asymmetric matrix 
 } }
-result <- list(r = r,n=n,t=t,p=p,Call=cl)
+result <- list(r = r,n=n,t=t,p=p,adjust=adjust,sym =sym, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
 }

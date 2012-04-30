@@ -12,9 +12,9 @@
 \description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
 }
 \usage{
-fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=TRUE,...)
+fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=FALSE,...)
 
-fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=TRUE,...)
+fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE, impute="median", min.err = .001, max.iter=50, symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, oblique.scores=TRUE,...)
 
@@ -46,7 +46,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
-  \item{oblique.scores}{When factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (which is what factanal seems to do). } 
+  \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -81,7 +81,7 @@ In the oblique case, the factor loadings are referred to as Pattern coefficients
 
 It is sometimes useful to extend the factor solution to variables that were not factored.  This may be done using \code{\link{fa.extension}}. Factor extension is typically done in the case where some variables were not appropriate to factor, but factor loadings on the original factors are still desired.
 
-For dichotomous items or polytomous items, it is recommended to analyze the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations rather than the Pearson correlations.  This is done automatically when using  \code{\link{irt.fa}} or \code{\link{fa.poly}}  functions.  In the first case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results. In the later case, a typical factor loadings matrix is returned, but the tetrachoric/polychoric correlation matrix and item statitics are saved for reanalysis by \code{\link{irt.fa}}
+For dichotomous items or polytomous items, it is recommended to analyze the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations rather than the Pearson correlations.  This is done automatically when using  \code{\link{irt.fa}} or \code{\link{fa.poly}}  functions.  In the first case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results. In the later case, a typical factor loadings matrix is returned, but the tetrachoric/polychoric correlation matrix and item statistics are saved for reanalysis by \code{\link{irt.fa}}
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
@@ -90,7 +90,7 @@ The "bifactor" rotation implements the Jennrich and Bentler (2011) bifactor rota
 
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
-When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. 
+When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. The factor analysis results are available, however, as an object in the irt.fa output.   
 
 The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. The default is to have n.iter =1 and thus not do bootstrapping.
 
@@ -135,9 +135,10 @@ Some correlation matrices that arise from using pairwise deletion or from tetrac
 
 \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
 
-\item{r.scores}{The correlations of the factor score estimates, if they were to be found.}
+\item{r.scores}{The correlations of the factor score estimates using the regression model, if they were to be found.  Comparing these correlations with that of the scores themselves will show, if an alternative estimate of factor scores is used (e.g., the tenBerge method), the problem of factor indeterminacy.  For these correlations will not necessarily be the same.  }
 
-\item{weights}{The beta weights to find the factor score estimates}
+\item{weights}{The beta weights to find the factor score estimates.  These are also used by the \code{\link{predict.psych}} function to find predicted factor scores for new cases.  }
+\item{scores}{The factor scores as requested.  Note that these scores reflect the choice of the way scores should be estimated (see scores in the input).  That is, simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see factor.scores).  The correlation between factor score estimates (r.scores) is based upon using the regression/Thurstone approach.  The actual correlation between scores will reflect the rotation algorithm chosen and may be found by correlating those scores.}
 
 \item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
 

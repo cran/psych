@@ -5,7 +5,7 @@
 "psych.misc" <-
 function() {}
 
-"lower.mat" <- 
+"lowerMat" <- 
 function(R,digits=2) {
    lowleft <- lower.tri(R,diag=TRUE)
    nvar <- ncol(R)
@@ -28,6 +28,12 @@ function(R,digits=2) {
 	print(fx[(k+1):nvar,(k+1):min((k1+k),nvar)],quote=FALSE)}
 	}}
 	
+"lowerCor" <- 
+function(x,digits=2,use="pairwise",method="pearson") {
+   R <- cor(x,use=use)
+   lowerMat(R,digits)
+   invisible(R)
+   }
 	
 	
 #adapted from utils::txtProgressBar 

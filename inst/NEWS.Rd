@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.2.130 (2012-01-30)}{
+\section{Changes in psych version 1.2.5 (2012-04-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.2.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.1.12.  The second digit reflects the year (i.e., 2011), the third set the month (i.e., 1.1.12 was released in December of 2011, the last two digits reflect the day of any modifications).
+      \item Version 1.2.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.4.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.4 was released in April of 2012, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -19,7 +19,7 @@
       \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
       \item Add labels to factor.plot for more than 2 factors?
       \item Add goodness of fit tests for fa.extension applied to the extension variables.
-      \item fix ICLUST so that it converts covar matrices to correlations. 
+     
       \item Find canonical loadings in set.cor
       \item get better items for the iq example items (in progress)
       \item add CVE estimate (see Reise 2010)
@@ -33,9 +33,39 @@
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram
      
+     \item modify structure  diagram so that the error arrows are to the left for lr printing
     }
   }
   } 
+  
+   \section{Changes in psych version 1.2.4 (2012-4-30)}{
+   \subsection{Additions}{
+\itemize{
+ \item (Note that 1.2.3 was not released but was replaced with 1.2.4)
+ \item fixed ICLUST so that it converts covar matrices to correlations. 
+ \item Modified pairs.panels so that the method of correlation can be specified (suggested by Carsten Dormann)
+ \item added error values to the structure.diagram/lavaan diagram as an option (suggested by José Luis Cañadas )
+ \item Changed the oblique.scores option in fa to be FALSE (use the structure the matrix) following a request by Niels Waller.
+   \item Fixed the size of the boxes in dia.rect so that omega.diagram and  fa.diagram provide reasonable size boxes for long names (requested by Erich Studerus)
+    \item modified output of corr.test so that it announces whether or not it is adjusting the probability values for multiple tests.
+  \item added the ability to export dot.plot commands without requiring Rgraphviz. (requested by Erich Studerus).  Although just implemented for fa.graph, omega.diagram functions can be exported using fa.graph applied to the schmid$sl object from omega.
+  \item Added 3 options to the skew and kurtosis functions, and thus to the describe and describe.by functions as well.  (Suggested by Bruce Dudek).
+  \item Added the ability to plot general factors (ala omega) in the fa.diagram function.
+  \item Added the function lowerCor to find correlations (with pairwise deletion as a default) and print out the lowerMat of the results.
+    }
+  
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+\item A documentation error in r.test was fixed (reported by Nicholas S. Holtzman).  The example of Steiger case B was incorrectly ordered and thus led to incorrect results. Specifying by name (rather than location) is now recommended.
+ \item In fa, the rotation was not returned, fixed.  (reported by Niels Waller)
+ \item predict.psych would not work for a single case (reported by Jonathan Williams).  Fixed.  Also made the documentation a bit clearer to explain the way the factor scores are standardized.
+ \item By adding a global-local parameter to mixed.cor it now seems to work on those data sets with badly distributed polytomous data. (Reported by Eric Smith and David Condon.)
+   }
+   } 
+  }
+  
   \section{Changes in psych version 1.2.1 (2012-1-31)}{
    \subsection{Additions}{
   \itemize{
@@ -43,7 +73,7 @@
    \item Added a check in mixed.cor so that if the data are incorrect, announce it first, rather than waiting until late in the process. 
    \item Added a progress indicator to particularly slow functions (e.g. tetrachoric, polychoric, biserial).  This will show up when using these functions in other functions (such as irt.fa or mixed.cor). 
    \item Modified cluster.cor so that in the case of correlations that are NA, it will not find smcs of the raw correlation matrix.  In addition, it will impute scale level correlations based upon the average between scale correlation (previously it was reporting an NA).  Requested by David Condon.
-   \item Added the helper function lower.mat to print the lower submatrix.  Added this as an option to the print.psych function.
+   \item Added the helper function lowerMat to print the lower submatrix.  Added this as an option to the print.psych function.
    \item Modified mixed.cor so that it will automatically (if desired) find the Pearson, polychoric, and tetrachoric correlation matrices and then reorganize the matrix back to the original form.
    \item Minor modifications to tetrachoric and polychoric to give slightly more helpful error messages in the case of missing data and corrections for continuity.
    \item Minor modifications to summary to give cleaner summary stats for fa and irt.fa analyses.

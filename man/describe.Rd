@@ -7,7 +7,7 @@ There are many summary statistics available in R; this function
   Range is most useful for the first pass in a data set, to check for coding errors. 
 }
 \usage{
-describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1)
+describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,type=3)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1)
   \item{skew}{ Should the skew and kurtosis be calculated? }
   \item{ranges}{ Should the range be calculated? }
   \item{trim}{trim=.1 -- trim means by dropping the top and bottom trim fraction}
+  \item{type}{Which estimate of skew and kurtosis should be used?  (See details.) }
 }
 \details{In basic data analysis it is vital to get basic descriptive statistics. 
 Procedures such as \code{\link{summary}} and hmisc::describe do so.  The describe function in the \code{\link{psych}} package is meant to produce the most frequently requested stats in psychometric and psychology studies, and to produce them in an easy to read data.frame. The results from describe can be used in graphics functions (e.g., \code{\link{error.crosses}}).
@@ -29,7 +30,15 @@ In a typical study, one might read the data in from the clipboard (\code{\link{r
 
 na.rm=FALSE is equivalent to describe(na.omit(x))  
 
+When finding the skew and the kurtosis, there are three different options available.  These match the choices available in skewness and kurtosis found in the e1071 package (see Joanes and Gill (1998) for the advantages of each one). 
 
+If we define \eqn{m_r = [\sum(X- mx)^r]/n}{m_r = [sum(X- mx)^r]/n} then 
+
+Type 1 finds skewness and kurtosis by \eqn{g_1 = m_3/(m_2)^{3/2} } and \eqn{g_2 = m_4/(m_2)^2 -3}.  
+
+Type 2 is \eqn{G1 = g1 * \sqrt{n *(n-1)}/(n-2)} and \eqn{G2 = (n-1)*[(n+1)g2 +6]/((n-2)(n-3))}.  
+
+Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2} m_4/m_2^2)}.  
 }
 \value{
  A data.frame of the relevant statistics: \cr
@@ -55,6 +64,11 @@ na.rm=FALSE is equivalent to describe(na.omit(x))
 
 Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 }
+
+
+
+\references{Joanes, D.N. and Gill, C.A (1998).  Comparing measures of sample skewness and kurtosis.  The Statistician, 47, 183-189.}
+
 \seealso{ \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{pairs.panels}}, \code{\link{read.clipboard}}, \code{\link{error.crosses}} }
 \examples{
 data(sat.act)

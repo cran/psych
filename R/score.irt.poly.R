@@ -1,5 +1,6 @@
+#revised August 31, 2012 to allow for estimation of all 0s or all 1s
 "score.irt.2" <- 
-function(stats,items,keys=NULL,cut=.3,bounds=c(-3.5,3.5)) {
+function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
 #find the person  parameter
  irt.2par <- function(x,delta,beta,scores) {
@@ -28,28 +29,53 @@ items.f <- t(items.f)
 
  total <- rowMeans(t(t(items.f)*sign(discrim)),na.rm=TRUE)
  count <- rowSums(!is.na(items.f))
- 
+
  for (i in 1:n.obs) {
- 	
- 	if (count[i]>0)  {myfit <- optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,]) #how to do an apply?
+ 	progressBar(i,n.obs,"score.IRT")
+ 	if (count[i]>0) {if((sum(items.f[i,],na.rm=TRUE) ==0 )  | (prod(items.f[i,],na.rm=TRUE) ==  1 )) { if(sum(items.f[i,],na.rm=TRUE) ==0 ) {
+ 	p <- log(1-(1-items.f[i,])/(1+exp(discrim*(diff))) )  #logistic
+ 	#p <- log(1-(pnorm(items.f[i,]*discrim*diff)))  #normals
+   pall <- exp(sum(p,na.rm=TRUE))
+   
+   theta[i] <- qnorm(pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
+   fit[i] <- 0 
+  # cat ("\nThe case of all wrong",i,theta[i])
+
+ 	} else {
+ 		p <- log((items.f[i,])/(1+exp(discrim*(diff))) )
+   pall <- exp(sum(p,na.rm=TRUE))
+   theta[i] <- qnorm(1-pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
+   fit[i] <- 0 
+
+
+ 	#cat("\nthe case of all right",i,theta[i]) 
+ }
+ 	} else { #cat("the normal case",i )
+  myfit <-optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,]) #how to do an apply?
      		theta[i] <- myfit$minimum    
-     		fit[i] <- myfit$objective  #fit of optimizing program
-     		} else {
-            theta[i] <- NA
+     		fit[i] <- myfit$objective  #fit of optimizing program 
+     		}} else  {#cat("\nno items",i)
+
+     		 theta[i] <- NA
   		      fit[i]  <- NA 
-    			}    #end if else
+ 	                    
+ 	        }  #end if count ... else          
+ 	                     	          
     }  #end loop 
+    theta [theta < bounds[1]] <- bounds[1]
+    theta[theta > bounds[2]] <- bounds[2]
 	scores[,f] <- theta
 	scores[,nf + f] <- total
 	scores[,2*nf + f] <- fit
-	}#end of f loop
+	} #end of f loop
+	
 	colnames(scores) <- paste(rep(c("theta","total","fit"),each=nf),1:nf,sep="")
 	return(scores)
 }
 	
 
 "score.irt.poly" <- 
-function(stats,items,keys=NULL,cut=.3,bounds=c(-3.5,3.5)) {
+function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
 #find the person  parameter
 #created July 4, 2011
@@ -112,7 +138,7 @@ discrim.vect <- rep(discrim,each=cat)
 	return(scores)
 	}
 
-"score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-3.5,3.5)) {
+"score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
 if (length(class(stats)) > 1) {
     switch(class(stats)[2],
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds) },
@@ -168,3 +194,35 @@ if(dim(tau)[1] < dim(tau)[2]) tau <- t(tau) #rows are variables, columns are sub
 }
 return(tau)
 }
+
+
+#added August 6, 2012
+"irt.responses" <-
+function(theta,items, breaks = 11,show.missing=FALSE,show.legend=TRUE,legend.location="topleft",colors=NULL,...) {
+#if(is.null(colors)) colors =c("gray0", "blue3", "red3", "darkgreen", "gold2", "gray50", "cornflowerblue", "mediumorchid2")
+if(is.null(colors)) colors =c("black", "blue", "red", "darkgreen", "gold2", "gray50", "cornflowerblue", "mediumorchid2")
+#legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
+#uniqueitems <- unique(as.vector(unlist(items)))
+item.counts <- names(table(as.vector(unlist(items))))
+uniqueitems <- as.numeric(item.counts)
+nalt <- length(uniqueitems) + 1 #include the missing value from response.frequencies
+nvar <- ncol(items) 
+theta.min <- min(theta,na.rm=TRUE)
+theta.max <- max(theta,na.rm=TRUE)
+binrange <- cut(theta, breaks = breaks)
+binnums <- as.numeric(binrange)
+items <- as.matrix(items)
+stats <- by(items,binnums,function(x) response.frequencies(x,uniqueitems=uniqueitems))
+stats.m <- unlist(stats)
+stats.m <- matrix(stats.m,ncol=nvar*nalt,byrow=TRUE)
+theta <- seq(theta.min,theta.max,length.out=breaks)
+for (i in 1:nvar) {
+plot(theta,stats.m[,i],ylim=c(0,1),typ="l",xlab="theta",ylab="P(response)",main=paste(colnames(items)[i]),col=colors[1],...)
+	for(j in 1:(nalt-2+show.missing)) {
+			points(theta,stats.m[,i+nvar*j],typ="l",lty=(j+1),col=colors[j+1 ],...)
+		}
+	 if(show.legend) { legend(legend.location, paste(item.counts[1:(nalt-1 + show.missing)]), text.col = colors[1:(nalt-1+show.missing)], lty = 1:(nalt-1+show.missing), ncol=4,bty="n")}
+	}}
+
+
+ 

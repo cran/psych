@@ -45,7 +45,7 @@ The example data set is taken from the Synthetic Aperture Personality Assessment
 \seealso{  \code{\link{score.items}}, \code{\link{omega}}}
 \examples{
 data(iqitems)
-iq.keys <- c(4,4,3,1,4,3,2,3,1,4,1,3,4,3)
+iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
 score.multiple.choice(iq.keys,iqitems)
 #just convert the items to true or false 
 iq.tf <- score.multiple.choice(iq.keys,iqitems,score=FALSE)

@@ -14,7 +14,7 @@ footer <- paste("\\end{tabular}
 \\end{table}%")
 
 #now put the data into it
- if(is.numeric(digits) ) x <- round(x,digits=digits)
+ if(is.numeric(x) ) x <- round(x,digits=digits)
  names1 <- paste(colnames(x)[1:(nvar-1)], " & ")
  lastname <- paste(colnames(x)[nvar],"\\cr \n")
  allnames <- c("  &  ",names1,lastname,"\\cr \n")

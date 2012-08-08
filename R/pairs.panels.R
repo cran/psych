@@ -289,7 +289,7 @@ function (x, y,   pch = par("pch"),
 old.par <- par(no.readonly = TRUE) # save default, for resetting... 
 on.exit(par(old.par))     #and when we quit the function, restore to original values
    
-   par(pch = pch)
+par(pch = pch)
 #method <- method   #make method global for this function
     if(!lm) {if (density) { #the basic default is here
       if (smooth) {

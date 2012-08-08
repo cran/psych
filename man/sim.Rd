@@ -38,8 +38,8 @@
 sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
 sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
 sim.general(nvar=9,nfact =3, g=.3,r=.3,n=0) 
-sim.minor(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
-sim.omega(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
+sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
+sim.omega(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
 n = c(200,400)) 
 sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
@@ -63,7 +63,8 @@ sim.poly.ideal.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,s
   \item{raw}{if raw=TRUE, raw data are returned as well.}
   \item{nvar}{Number of variables for a simplex structure}
   \item{nfact}{Number of large factors to simulate in sim.minor,number of group factors in sim.general,sim.omega}
-  \item{g}{General factor correlations in sim.general}
+  \item{g}{General factor correlations in sim.general and general factor loadings in sim.omega and sim.minor}
+  \item{sem}{Should the sim.omega function do both an EFA omega as well as a CFA omega using the sem package?}
   \item{r}{group factor correlations in sim.general}
   \item{alpha}{the base correlation for an autoregressive simplex}
   \item{lambda}{the trait component of a State Trait Autoregressive Simplex}
@@ -97,11 +98,11 @@ Two data structures that are particular challenges to exploratory factor analysi
 
 An alternative version of the simplex is the State-Trait-Auto Regressive Structure (STARS) which has both a simplex state structure, with autoregressive path alpha and a trait structure with path lambda. This simulated in  \code{\link{sim.simplex}} by specifying a non-zero lambda value.
 
-Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals.  
+Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals. To make these simulations complete, the possibility of a general factor is considered.  For simplicity, sim.minor allows one to specify a set of loadings to be sampled from for g, fmajor and fminor.  Alternatively, it is possible to specify the complete factor matrix.
 
 Another structure worth considering is direct modeling of a general factor with several group factors.  This is done using \code{\link{sim.general}}.
 
-Although coefficient \eqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function. 
+Although coefficient \eqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function with general left as NULL.  If there is a general factor, then results from \code{\link{sim.omega}} suggests that omega estimated either from EFA or from SEM does a pretty good job of identifying it but that the EFA approach using Schmid-Leiman transformation is somewhat more robust than the SEM approach. 
 
 The four irt simulations, sim.rasch, sim.irt, sim.npl and sim.npn, simulate dichotomous items following the Item Response model.  sim.irt just calls either sim.npl (for logistic models) or sim.npn (for normal models) depending upon the specification of the model. 
 
@@ -149,6 +150,8 @@ sim.minor will generate such data sets with big factors with loadings of .6 to .
 
 \code{\link{sim.anova}}    Simulate a 3 way balanced ANOVA or linear model, with or without repeated measures. Useful for teaching research  methods and generating teaching examples. 
 
+
+\code{\link{sim.multilevel}}  To understand some of the basic concepts of multilevel modeling, it is useful to create multilevel structures.  The correlations of aggregated data is sometimes called an 'ecological correlation'.  That group level and individual level correlations are independent makes such inferences problematic.  This simulation allows for demonstrations that correlations within groups do not imply, nor are implied by, correlations between group means. 
 
 
 }

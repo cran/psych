@@ -60,11 +60,11 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
  
 
 response.frequencies <-
-    function (items, max = 10)
+    function (items, max = 10,uniqueitems=NULL)
 {
     min.item <- min(items, na.rm = TRUE)
     max.item <- max(items, na.rm = TRUE)
-    uniqueitems <- unique(as.vector(unlist(items)))
+   if(is.null(uniqueitems))  uniqueitems <- unique(as.vector(unlist(items)))
     if ((max.item - min.item > max) ||
         (nlevels(factor(items[, 1])) > max) ||
         length(uniqueitems) > max) {
@@ -90,3 +90,4 @@ response.frequencies <-
  #revised Sept 3, 2010 to count missing responses
  #revised Sept 7, 2010 to correctly handle missing data in terms of finding alpha and correlation
  #revised April 3, 2011 to incorporate very nice suggestion by Joshua Wiley to handle unique categories
+ #revised August 4, 2012 to allow the specification of unique items-- useful for irt.responses

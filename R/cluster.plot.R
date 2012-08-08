@@ -24,6 +24,12 @@ if (nc > 2 ) {
  
   "factor.plot" <- 
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,...) {
+fa.plot(ic.results,cluster=cluster,cut=cut,labels=labels,title=title,jiggle=jiggle,amount=amount,...)
+}
+
+
+ "fa.plot" <- 
+function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,...) {
 if(missing(title) ) {if (class(ic.results)[2] == "fa") title = "Factor Analysis"
                      if (class(ic.results)[2] == "principal") title = "Principal Component Analysis"
                      }

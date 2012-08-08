@@ -16,12 +16,12 @@
 #ICLUST is the main function and calls other routines
 "iclust" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE, 
- correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE ) {
-ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC,purify)}
+ correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {
+ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC,purify,diagonal)}
 
 
 "ICLUST" <- 
- function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE ) {#should allow for raw data, correlation or covariances
+ function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {#should allow for raw data, correlation or covariances
 
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,cor.gen=TRUE) 
  cl <- match.call()
@@ -51,7 +51,7 @@ ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	cluster.beta <- iclust.results$results[colnames(sorted.cluster.keys),"beta"]
 		names(cluster.beta) <- colnames(sorted.cluster.keys)} else {sorted.cluster.keys <- iclust.results$clusters} #these are fine
 	
-	fits <- cluster.fit(r.mat,as.matrix(loads$loadings),iclust.results$clusters)  #check this 
+	fits <- cluster.fit(r.mat,as.matrix(loads$loadings),iclust.results$clusters,diagonal)  #check this 
 	sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut) #sort the loadings (again?) This is done for sorted output if desired
 	
 	if(is.matrix(sorted.cluster.keys) ) {cluster.beta <- iclust.results$results[colnames(sorted.cluster.keys),"beta"]
@@ -84,7 +84,7 @@ ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 			loads <- cluster.loadings(clusters,r.mat,SMC=SMC) 
 			 } else {
 			change <- sum(abs(clusters)-abs(old.clusters)) }  #how many items are changing?
-			fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters)
+			fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,diagonal)
 		old.clusters <- clusters
 		print(paste("iterations ",steps," change in clusters ", change, "current fit " , fit$clusterfit))
 		if ((abs(change) < 1) | (fit$clusterfit <= old.fit)) {break}    #stop iterating if it gets worse or there is no change in cluster definitions
@@ -92,7 +92,7 @@ ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 					}
 		}
    
-	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters)
+	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,diagonal)
 	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut,keys=TRUE)   #at this point, the clusters have been cleaned up, but are not in a sorted order.  Sort them
 	
 	purified <- cluster.cor(p.sorted$clusters,r.mat,SMC=SMC)

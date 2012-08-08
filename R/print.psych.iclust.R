@@ -64,6 +64,6 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
  if(!is.null(x$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
 print(round(x$purified$corrected,digits=digits))  }
 
-cat("\nCluster fit = ",round(x$fit$clusterfit,digits), "  Pattern fit = ",round(x$fit$patternfit,digits),"\n")
+cat("\nCluster fit = ",round(x$fit$clusterfit,digits), "  Pattern fit = ",round(x$fit$patternfit,digits), " RMSR = ",round(x$fit$patternrmse,digits), "\n")
 
    }# end of if ICLUST

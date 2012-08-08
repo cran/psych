@@ -6,7 +6,7 @@
 }
 \usage{
 score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",  min = NULL, max = NULL, digits = 2)
-response.frequencies(items,max=10)
+response.frequencies(items,max=10,uniqueitems=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,7 @@ response.frequencies(items,max=10)
   \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores.  }
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
+  \item{uniqueitems}{If specified, the set of possible unique response categories}
   \item{digits}{ Number of digits to report }
 
   
@@ -55,7 +56,7 @@ Correlations between scales are attenuated by a lack of reliability.  Correcting
 
 By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
 
-
+\code{\link{score.items}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
 }
 \value{ 
  \item{scores }{Sum or average scores for each subject on the k scales}

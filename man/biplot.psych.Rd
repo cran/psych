@@ -25,7 +25,7 @@ Uses the generic biplot function to take the output of a factor analysis \code{\
 \author{William Revelle}
 
 
-\seealso{\code{\link{fa}}, \code{\link{principal}}, \code{\link{factor.plot}}, \code{\link{pairs.panels}}
+\seealso{\code{\link{fa}}, \code{\link{principal}}, \code{\link{fa.plot}}, \code{\link{pairs.panels}}
 
 }
 \examples{

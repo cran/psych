@@ -20,7 +20,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     if(is.null(main)) {if(sd) {main <- paste("Means + Standard Deviations") } else {main <- paste(1-alpha,"% confidence limits",sep="")} }
     
     if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
-    group.stats <- describe.by(x,group,mat=TRUE)   
+    group.stats <- describeBy(x,group,mat=TRUE)   
            n.var <- dim(all.stats)[1]
            n.groups <- length(group.stats[[1]])/n.var
            group.means <- matrix(group.stats$mean,ncol=n.groups,byrow=TRUE)
@@ -70,7 +70,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
            
            } else {   #the normal case is to not use bars
            
-    group.stats <- describe.by(x,group)
+    group.stats <- describeBy(x,group)
     n.group <- length(group.stats)
      if(within) {group.smc <- by(x,group,smc) }
      z <- dim(x)[2]

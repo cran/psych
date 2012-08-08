@@ -25,7 +25,8 @@ If the correlations are not independent (i.e., they are from the same sample) th
   \item{z}{z test of the difference between two independent correlations}
 }
 
-\seealso{\code{\link{p.rep.r}}, \code{\link{cor.test}} } 
+\seealso{\code{\link{r.test}} for more tests of independent as well as dependent (paired) tests. \code{\link{p.rep.r}} for the probability of replicating a particular correlation.
+ \code{\link{cor.test}} from stats for testing a single correlation and   \code{\link{corr.test}} for finding the values and probabilities of multiple correlations.  See also  \code{\link{set.cor}} to do multiple correlations from matrix input.} 
 \author{ William Revelle}
 
 \examples{

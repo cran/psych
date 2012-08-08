@@ -27,7 +27,7 @@ A sorted correlation matrix, suitable for showing with \code{\link{cor.plot}}.
 
 \seealso{ \code{\link{fa}}, \code{\link{cor.plot}}
 }
-\examples{data(bifactor)
+\examples{data(Bechtoldt.1)
 sorted <- mat.sort(Bechtoldt.1,fa(Bechtoldt.1,5))
 cor.plot(sorted)
 }

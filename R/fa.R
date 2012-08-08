@@ -219,8 +219,11 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     r.mat <- r
     Phi <- NULL 
     colnames(r.mat) <- rownames(r.mat) <- colnames(r)
-     if(SMC) { 
-      if(nfactors < n/2)   {diag(r.mat) <- smc(r,covar=covar) }  else {if (warnings) message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")}  }
+     if(is.logical(SMC) )  {if(SMC) { 
+      if(nfactors < n/2)   {diag(r.mat) <- smc(r,covar=covar) }  else {
+           if (warnings) message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")
+           }  
+    } else { diag(r.mat) <- SMC}}
     orig <- diag(r)
    
    

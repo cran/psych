@@ -24,7 +24,7 @@ switch(value,
  stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extension = { print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  fa.ci = { print.psych.fa.ci(x,digits=digits,all=all,... )},
-
+ 
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
@@ -279,6 +279,14 @@ mixed= { cat("Call: ")
           print(x$Call)
     if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}
    },
+
+paired.r = {cat("Call: ")
+            print(x$Call)
+        print(x$test)
+        if(is.null(x$z)) {cat("t =",round(x$t,digits))  
+         } else {cat("z =",round(x$z,digits)) }
+         cat("  With probability = ",round(x$p,digits))
+         },
    
 residuals = { 
    if (lower) {lowerMat (x,digits=digits)} else {print(x,digits)}
@@ -461,8 +469,27 @@ bifactor = {
  #	cat("Omega H asymptotic:   " ,round(x$omega.lim,digits),"\n")
  	cat("Omega Total           " ,round(x$omega.tot,digits),"\n")
  	print(x$f,digits=digits,sort=sort)
- 	
+ 	},
    
-     }
+statsBy ={
+ cat("Statistics within and between groups  ")
+   cat("\nCall: ")
+   print(x$Call)
+ cat("Intraclass Correlation 1 (Percentage of variance due to groups) \n")
+ print(round(x$ICC1,digits))
+cat("Intraclass Correlation 2 (Reliability of group differences) \n")
+print(round(x$ICC2,digits))
+cat("eta^2 between groups  \n")
+print(round(x$etabg^2,digits))
+if(!short) {cat("Correlation between groups \n")
+lowerMat(x$rbg)
+cat("Correlation within groups \n")
+lowerMat(x$rwg)
+}
+},
+iclust.sort = { nvar <- ncol(x$sort) 
+   x$sort[4:nvar] <- round(x$sort[4:nvar],digits)
+   print(x$sort)
+},
   )   #end of switch 
 }  #end function

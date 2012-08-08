@@ -2,7 +2,7 @@
 \alias{cor2dist}
 \title{Convert correlations to distances (necessary to do multidimensional scaling of correlation data)}
 
-\description{A minor helper function to convert correlations (ranging from -1 to 1) to distances (ranging from 0 to 2). \eqn{d = \sqrt(2(1-r))}. 
+\description{A minor helper function to convert correlations (ranging from -1 to 1) to distances (ranging from 0 to 2). \eqn{d = \sqrt{(2(1-r))}}. 
 }
 \usage{
 cor2dist(x)
@@ -26,12 +26,6 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 For an example of doing multidimensional scaling on data that are normally factored, see Revelle (in prep)
 }
 
-
-
-
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 
 \keyword{ multivariate }
 \keyword{ models}

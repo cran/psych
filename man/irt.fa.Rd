@@ -102,7 +102,8 @@ par(op)
 #using the iq data set for an example of real items
 #first need to convert the responses to tf
 data(iqitems)
-iq.keys <- c(4,4,3,1,4,3,2,3,1,4,1,3,4,3)
+iq.keys <- c(4,4,4, 6, 6,3,4,4,  5,2,2,4,  3,2,6,7)
+
 iq.tf <- score.multiple.choice(iq.keys,iqitems,score=FALSE)  #just the responses
 iq.irt <- irt.fa(iq.tf)
 print(iq.irt,short=FALSE) #show the IRT as well as factor analysis output
@@ -113,7 +114,7 @@ small.iq.irt <- irt.select(iq.irt,c(1,5,9,10,11,13))
 small.irt <- irt.fa(small.iq.irt)
 plot(small.irt)
 #find the information for three subset of iq items
-keys <- make.keys(14,list(all=1:14,some=c(1,5,9,10,11,13),others=c(1:5)))
+keys <- make.keys(16,list(all=1:16,some=c(1,5,9,10,11,13),others=c(1:5)))
 plot(iq.irt,keys=keys)
 
 #compare output to the ltm package or Kamata and Bauer   -- these are in logistic units 

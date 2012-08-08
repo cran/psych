@@ -29,7 +29,7 @@ progressBar(value,max,label=NULL)
 }
 \value{ The lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3 (lowerMat) or a series of dots (progressBar).
 
-lowerCor prints the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix with the use parameter.}
+lowerCor prints the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters.}
 
 \examples{
 lowerMat(Thurstone)

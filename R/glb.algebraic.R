@@ -2,7 +2,8 @@
 #March, 2010
 "glb.algebraic"<- 
 function(Cov,LoBounds=NULL, UpBounds=NULL)
-{ cl<-match.call()
+{ if(!require(Rcsdp)) {stop("Rcsdp must be installed to find the glb.algebraic")}
+cl<-match.call()
   # check input
   p<-dim(Cov)[2]
  if (dim(Cov)[1] != p) Cov <- cov(Cov) #find the covariances

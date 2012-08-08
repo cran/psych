@@ -12,7 +12,7 @@
 }
 \usage{
 \method{plot}{psych}(x,labels=NULL,...)
-\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
+\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,ylim=NULL,...)
 \method{plot}{poly}(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
 \method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
 %plot.psych(x,labels=NULL,...)
@@ -38,7 +38,7 @@
 
 These are calls to the generic plot function that are intercepted for objects of type "psych".  More precise plotting control is available in the separate plot functions.  plot may be used for psych objects returned from \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{ICLUST}}, \code{\link{omega}}, as well as  \code{\link{principal}} 
 
-A "jiggle" parameter is available in the factor.plot function (called from plot.psych when the type is a factor or cluster.  If jiggle=TRUE, then the points are jittered slightly (controlled by amount) before plotting.  This option is useful when plotting items with identical factor loadings (e.g., when comparing hypothetical models).
+A "jiggle" parameter is available in the fa.plot function (called from plot.psych when the type is a factor or cluster.  If jiggle=TRUE, then the points are jittered slightly (controlled by amount) before plotting.  This option is useful when plotting items with identical factor loadings (e.g., when comparing hypothetical models).
 
 Objects from \code{\link{irt.fa}} are plotted according to "type" (Item informations, item characteristics, or test information).  In addition, plots for selected items may be done if using the keys matrix.  Plots of irt information return three invisible objects, a summary of information for each item at  levels of the trait, the average area under the curve (the average information) for each item as well as where the item is most informative.
 
@@ -55,7 +55,7 @@ It is also possible to create irt like plots based upon just a scoring key and i
 
  
 }
-\seealso{ \code{\link{VSS.plot}} and \code{\link{factor.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{factor.pa}}, or \code{\link{principal}}   
+\seealso{ \code{\link{VSS.plot}} and \code{\link{fa.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{factor.pa}}, or \code{\link{principal}}   
 }
 \examples{
 test.data <- Harman74.cor$cov

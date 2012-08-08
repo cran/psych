@@ -24,11 +24,16 @@ r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL, n2 = 
 
 2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores. 
 
-3) For sample size n, and correlations ra= r12, rb= r23 and r13 specified, test for the difference of two dependent correlations. 
+3) For sample size n, and correlations r12, r13 and r23 test for the difference of two dependent correlations (r12 vs r13).  
 
 4) For sample size n, test for the difference between two dependent correlations involving different variables.
 
-For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23.
+For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23. Consider the example  the example from Steiger: 
+where Masculinity at time 1 (M1) correlates with Verbal Ability .5 (r12), femininity at time 1 (F1) correlates with Verbal ability  r13 =.4, and M1 correlates with F1 (r23= .1).  Then, given the correlations: r12 = .4, r13 = .5, and r23 = .1, t = -.89 for n =103, i.e.,
+r.test(n=103, r12=.4, r13=.5,r23=.1)  
+
+
+
 }
 \value{
   
@@ -63,6 +68,7 @@ round(r.rc,2)
 r.test(50,r)
 r.test(30,.4,.6)       #test the difference between two independent correlations
 r.test(103,.4,.5,.1)   #Steiger case A of dependent correlations 
+r.test(n=103, r12=.4, r13=.5,r23=.1)  
 #for complicated tests, it is probably better to specify correlations by name
 r.test(n=103,r12=.5,r34=.6,r13=.7,r23=.5,r14=.5,r24=.8)   #steiger Case B 
 

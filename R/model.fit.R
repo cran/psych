@@ -64,8 +64,8 @@ model.fit <- function(R,model,N, digits=5, conf.level=.90, ...) {
         }
     else coeff <- NULL
     BIC <- chisq - df * log(N)
-   # SRMR <- sqrt(sum(standardized.residuals(object)^2 * upper.tri(diag(n), diag=TRUE))/(n*(n + 1)/2))
-   SRMR <- NA
+    SRMR <- sqrt(sum(standardized.residuals(object)^2 * lower.tri(diag(n), diag=TRUE))/(n*(n + 1)/2))
+ 
    norm.res <- NA
     ans <- list(chisq=chisq, df=df, chisqNull=chisqNull, dfNull=dfNull,
         GFI=GFI, AGFI=AGFI, RMSEA=RMSEA, NFI=NFI, NNFI=NNFI, CFI=CFI, BIC=BIC, SRMR=SRMR, 

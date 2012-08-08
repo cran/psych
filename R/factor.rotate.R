@@ -13,7 +13,7 @@ function(f,angle,col1=1,col2=2,plot=FALSE,...)  {
      rot[col1,col2]<- -sin(theta)
      rot[col2,col1]<-  sin(theta)
      result <- f %*% rot
-     if(plot) {factor.plot(result,...)
+     if(plot) {fa.plot(result,...)
         abline(a=0,b=tan(-theta),lty="dashed")
         abline(a=0,b=tan(-theta+ pi/2),lty="dashed") }
      return(result) }

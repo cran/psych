@@ -1,4 +1,4 @@
-"dia.cone" <- function(x=0, y=-2, theta=45, arrow=TRUE,curves=TRUE,ADD=FALSE,labels=NULL,xlim = c(-1, 1), ylim=c(-1,1),... ) {
+"dia.cone" <- function(x=0, y=-2, theta=45, arrow=TRUE,curves=TRUE,add=FALSE,labels=NULL,xlim = c(-1, 1), ylim=c(-1,1),... ) {
  segments = 51
  extend = 1.1
 
@@ -16,7 +16,7 @@ ys =.3 * xs
     ellipse <- unit.circle
     ellipse[, 1] <- ellipse[, 1] * xs + x
     ellipse[, 2] <- ellipse[, 2] * ys + y + height
-    if(!ADD) {plot.new()
+    if(!add) {plot.new()
               plot.window(xlim=xlim*2,ylim=ylim,...)}
     lines(ellipse, ...)
   

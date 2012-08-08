@@ -34,7 +34,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see factor.scores). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
-  \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. }
+  \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. If SMC is a vector of length the number of variables, then these values are used as starting values in the case of fm='pa'. }
   \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values}
@@ -55,13 +55,13 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
 
 The fa function will do factor analyses using one of four different algorithms: minimum residual (minres), principal axes, weighted least squares, or maximum likelihood.
 
-Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until sum(diag(FF')) does not change (very much).  The current limit of max.iter =50 seems to work for most problems, but the Holzinger-Harmon 24 variable problem needs about 203 iterations to converge for a 5 factor solution.  
+Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until \eqn{\sum(diag(FF'))} does not change (very much).  The current limit of max.iter =50 seems to work for most problems, but the Holzinger-Harmon 24 variable problem needs about 203 iterations to converge for a 5 factor solution.  
 
 Not all factor programs that do principal axes do iterative solutions.  The example from the SAS manual (Chapter 26) is such a case. To achieve that solution, it is necessary to specify that the max.iterations = 1.  Comparing that solution to an iterated one (the default) shows that iterations improve the solution.  In addition, fm="minres" or fm="mle" produces even better solutions for this example.  
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller residuals) solutions.
 
-A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).
+A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
 
 The iterated principal axes algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
 
@@ -146,7 +146,11 @@ Some correlation matrices that arise from using pairwise deletion or from tetrac
 
  }
 
-\note{SPSS will sometimes use a Kaiser normalization before rotating.  This will lead to different solutions than reported here.  To get the Kaiser normalized loadings, use \code{\link{kaiser}}}
+\note{SPSS will sometimes use a Kaiser normalization before rotating.  This will lead to different solutions than reported here.  To get the Kaiser normalized loadings, use \code{\link{kaiser}}.
+
+The communality for a variable is the amount of variance accounted for by all of the factors.  That is to say, for orthogonal factors, it is the sum of the squared factor loadings (rowwise).  The communality is insensitive to rotation.  However, if an oblique solution is found, then the communality is not the sum of squared pattern coefficients. In both cases (oblique or orthogonal) the communality is the diagonal of the reproduced correlation matrix where \eqn{_nR_n =  _{n}P_{k  k}\Phi_{k k}P_n'}{nRn = nPk k\Phi k kPn' }  where P is the pattern matrix and \eqn{\Phi} is the factor intercorrelation matrix.  Similarly, the eigen values are the diagonal of the product \eqn{ _k\Phi_{kk}P'_{nn}P_{k}
+}{\Phi_{k k}P'_nnP_k}.
+}
 
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
 
@@ -163,7 +167,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals.  }
 
-\seealso{ \code{\link{principal}},  \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{predict.psych}}, \code{\link{fa.extension}}  }
+\seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis.  }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")
@@ -177,29 +181,30 @@ print(uls,sort=TRUE)
 #then compare with a maximum likelihood solution using factanal
 mle <- factanal(covmat=Harman74.cor$cov,factors=4)
 factor.congruence(list(mle,pa,pc,uls,wls))
-#note that the order of factors and the sign of some of factors differ 
+#note that the order of factors and the sign of some of factors may differ 
 
 #finally, compare the unrotated factor, ml, uls, and  wls solutions
-wls <- factor.wls(Harman74.cor$cov,4,rotate="none")
-pa <- factor.pa(Harman74.cor$cov,4,rotate="none")
-mle <-  factanal(factors=4,covmat=Harman74.cor$cov,rotation="none")
-uls <- factor.minres(Harman74.cor$cov,4,rotate="none")
-
-factor.congruence(list(mle,pa,uls,wls))
-#note that the order of factors and the sign of some of factors differ 
+wls <- fa(Harman74.cor$cov,4,rotate="none",fm="wls")
+pa <- fa(Harman74.cor$cov,4,rotate="none",fm="pa")
+minres <-  factanal(factors=4,covmat=Harman74.cor$cov,rotation="none")
+mle <- fa(Harman74.cor$cov,4,rotate="none",fm="mle")
+uls <- fa(Harman74.cor$cov,4,rotate="none",fm="uls")
+factor.congruence(list(minres,mle,pa,wls,uls))
+#in particular, note the similarity of the mle and min res solutions
+#note that the order of factors and the sign of some of factors may differ 
 
 
 
 #an example of where the ML and PA and MR models differ is found in Thurstone.33.
 #compare the first two factors with the 3 factor solution 
 Thurstone.33 <- as.matrix(Thurstone.33)
-mle2 <- factanal(covmat=Thurstone.33,factors=2,rotation="none")
-mle3 <- factanal(covmat=Thurstone.33,factors=3 ,rotation="none")
-pa2 <- factor.pa(Thurstone.33,2,rotate="none")
-pa3 <- factor.pa(Thurstone.33,3,rotate="none")
+mle2 <- fa(Thurstone.33,2,rotate="none",fm="mle")
+mle3 <- fa(Thurstone.33,3 ,rotate="none",fm="mle")
+pa2 <- fa(Thurstone.33,2,rotate="none",fm="pa")
+pa3 <- fa(Thurstone.33,3,rotate="none",fm="pa")
 mr2 <- fa(Thurstone.33,2,rotate="none")
 mr3 <- fa(Thurstone.33,3,rotate="none")
-factor.congruence(list(mle2,mle3,pa2,pa3,mr2,mr3))
+factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
 }
 
 \keyword{ multivariate }

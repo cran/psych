@@ -1,18 +1,25 @@
 "plot.irt" <- 
-function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,...) {
+function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,ylim=NULL,...) {
 item <- x
 temp <- list()
 sumtemp <- list()
+byKeys <- FALSE
 if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
            
 nf <- length(x$irt$difficulty)}
 #if there was more than 1 factor, repeat the figure nf times
-for(f in 1:nf) {if((is.data.frame(item)) | (is.matrix(item))) {discrimination <- item[,1]
-     location <- item[,f+1]
+#or, if there is one factor but multiple keys
+if(!is.null(keys)) {
+   nkeys = ncol(keys)
+   if (nf < nkeys) {byKeys <- TRUE
+                nf <- nkeys}
+   }
+for(f in 1:nf) {if((is.data.frame(item)) | (is.matrix(item))) {if(byKeys) {discrimination <- item[,1]} else {discrimination <- item[,f]}
+     if(byKeys) {location <- item[,2]} else {location <- item[,f+1]}
     } else {
-  discrimination=item$irt$discrimination[,f]
+  if(byKeys) {discrimination=item$irt$discrimination[,1]} else {discrimination=item$irt$discrimination[,f]}
   if(!is.null(keys)) discrimination <- discrimination *abs( keys[,f])
-  location=item$irt$difficulty[[f]] }
+  if(byKeys) {location=item$irt$difficulty[[1]]} else {location=item$irt$difficulty[[f]] }}
 x <- NULL 
 nvar <- length(discrimination)
 if(is.null(labels)) {if(!is.null(rownames(item$irt$discrimination)))  {labels = rownames(item$irt$discrimination)} else {labels <- 1:nvar}}
@@ -68,8 +75,9 @@ if(type=="ICC") {
 	if(missing(main)) main <- "Item information from factor analysis"
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,max(tInfo)+.03),ylab=ylab,xlab=xlab,type="l",main=main)
-text(location[ii],max(tInfo[,ii])+.03,labels[1])
+    if(is.null(ylim)) {ylimit=c(0,max(tInfo)+.03)} else {ylimit <- ylim}
+	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main)
+text(location[ii],max(tInfo[,ii])+.03,labels[ii])
 for(i in (ii+1):nvar) {
     if(abs(discrimination[i])  > cut) {
 	lines(x,logisticInfo(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ])
@@ -93,7 +101,7 @@ for(i in (ii+1):nvar) {
 	AUC <- AUC/lenx  #quasi normalize it 
 	max.info <- (max.info - lenx/2)*6/(lenx-1)
 	max.info[max.info < -2.9] <- NA
-	colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)
+	if(byKeys) {colnames(AUC) <- colnames(max.info) <- colnames(keys)} else {colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)}
     rownames(AUC) <- rownames(max.info) <- rownames(item$rho)
     
    
@@ -117,9 +125,18 @@ function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
 function(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,...) {
 
 item <- x
+byKeys <- FALSE
 if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
            
 nf <- length(x$irt$difficulty)}
+#if there was more than 1 factor, repeat the figure nf times
+#or, if there is one factor but multiple keys
+if(!is.null(keys)) {
+   nkeys = ncol(keys)
+   if (nf < nkeys) {byKeys <- TRUE
+                nf <- nkeys}
+                }
+
 temp <- list()
 sumtemp <- list()
  
@@ -146,9 +163,9 @@ lenx <- length(x)
 sumInfo <- matrix(NA,ncol=nvar,nrow=length(summaryx))
 
 #if there was more than 1 factor, repeat the figure nf times
-for(f in 1:nf) {discrimination=item$irt$discrimination[,f]
+for(f in 1:nf) {if(byKeys) {discrimination=item$irt$discrimination[,1]} else {discrimination=item$irt$discrimination[,f]}
  if(!is.null(keys)) discrimination <- discrimination * abs(keys[,f])
-  location=item$irt$difficulty[[f]]
+ if(byKeys) {location=item$irt$difficulty[[1]]} else { location=item$irt$difficulty[[f]]}
   difficulty <- location[,1:ncat]
   
 
@@ -262,7 +279,8 @@ for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
 	                                              
 	max.info <- (max.info - lenx/2)*6/(lenx-1)
 	max.info[max.info < -2.9] <- NA
-	colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)
+
+	if(byKeys) {colnames(AUC) <- colnames(max.info) <- colnames(keys)} else {colnames(AUC) <- colnames(max.info) <- colnames(item$irt$discrimination)}
     rownames(AUC) <- rownames(max.info) <- rownames(item$rho)
     
     result <- list(AUC=AUC,max.info=max.info,sumInfo=sumtemp)

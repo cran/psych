@@ -1,5 +1,6 @@
 \name{cluster.plot}
 \alias{cluster.plot}
+\alias{fa.plot}
 \alias{factor.plot}
 
 \title{Plot factor/cluster loadings and assign items to clusters by their highest loading.}
@@ -13,8 +14,8 @@ If the input is an object of class "kmeans", then the cluster centers are plotte
 
 
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title = "Cluster plot",...)
-factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,amount=.02,...)
-
+fa.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,amount=.02,...)
+factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,amount=.02,...)  #deprecated
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

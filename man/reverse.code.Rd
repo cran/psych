@@ -30,4 +30,3 @@ new[1:3,]
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{multivariate}
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

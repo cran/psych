@@ -16,8 +16,8 @@ om <- omega(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=t
       #if Phi is not null, this implies that we have been given a factor matrix  -- added May 30, 2010
       
 sem.model <- om$model
-if(is.na(n.obs)) {warning("n.obs must be specified to use omegaSem.  n.obs arbitrarily set to 500")
-               n.obs <- 500}
+
+if(is.na(n.obs)) {n.obs <- om$gstats$n.obs}
 
  if(dim(m)[1] != dim(m)[2]) {
                             n.obs <- dim(m)[1]
@@ -38,6 +38,7 @@ results <- list(omegaSem=om,omega.efa=omega.efa,sem=sem.om,Call=cl)
 class(results) <- c("psych", "omegaSem")
 return(results)
 }
+#modified Sept 1 to pass the number of observations to SEM
 
 
 "omegaFromSem" <- 

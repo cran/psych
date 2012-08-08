@@ -102,9 +102,9 @@ irt.fa =  {result <- plot.irt(x,labels=labels,...)},
 
 irt.poly = { result <-  plot.poly(x,labels=labels,...)},
 
-fa =  {factor.plot(x,...)},
+fa =  {fa.plot(x,...)},
 
-principal = {factor.plot(x,...)},
+principal = {fa.plot(x,...)},
 
 parallel = {plot.fa.parallel(x,...)},
 

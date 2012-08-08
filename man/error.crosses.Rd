@@ -26,14 +26,16 @@ error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL
 }
 \details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}
 
-The second example shows how error crosses can be done for multiple variables where the grouping variable is found dynamically. 
+The second example shows how error crosses can be done for multiple variables where the grouping variable is found dynamically. The \code{\link{errorCircles}} example shows how to do this in one step.
 }
 
 \author{ William Revelle \cr     
  \email{revelle@northwestern.edu}
 }
 
-\seealso{To draw error bars for single variables  \code{\link{error.bars}}, or by groups \code{\link{error.bars.by}}, or to find descriptive statistics \code{\link{describe}}  or descriptive statistics by a grouping variable \code{\link{describe.by}}  }
+\seealso{To draw error bars for single variables  \code{\link{error.bars}}, or by groups \code{\link{error.bars.by}}, or to find descriptive statistics \code{\link{describe}}  or descriptive statistics by a grouping variable \code{\link{describeBy}} and \code{\link{statsBy}}. 
+
+A much improved version is now called \code{\link{errorCircles}}. }
 \examples{
 
 #just draw one pair of variables
@@ -44,7 +46,7 @@ error.crosses(x,y,xlab=rownames(x),ylab=rownames(y))
 
 #now for a bit more complicated plotting 
 data(bfi)
-desc <- describe.by(bfi[1:25],bfi$gender) #select a high and low group
+desc <- describeBy(bfi[1:25],bfi$gender) #select a high and low group
 error.crosses(desc$'1',desc$'2',ylab="female scores",xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
  

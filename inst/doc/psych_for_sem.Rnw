@@ -541,7 +541,7 @@ This makes much better sense, and in fact (as hoped) recovers the original struc
 
 \subsection{Extract a bifactor solution using \pfun{omega} and then test that model using \fun{sem}}
 
-A bifactor solution has previously been shown (Figure~\ref{fig:om:bi}).  The output from the \pfun{omega} function includes the sem commands for the analysis. As an example of doing this with real rather than simulated data, consider 9 variables from Thurstone.  For completeness, the \fun{std.coef} from \Rpkg{sem} is used as well as the \fun{summary} function.
+A bifactor solution has previously been shown (Figure~\ref{fig:om:bi}).  The output from the \pfun{omega} function includes the sem commands for the analysis. As an example of doing this with real rather than simulated data, consider 9 variables from Thurstone.  For completeness, the \fun{stdCoef} from \Rpkg{sem} is used as well as the \fun{summary} function.
 
 \subsubsection{sem of Thurstone 9 variable problem}
 The \Rpkg{sem} manual includes an example of a hierarchical solution to 9 mental abilities originally reported by Thurstone and used in the SAS manual for PROC CALIS and discussed in detail by \cite{mcdonald:tt}. The data matrix, as reported by Fox may be found in the \pfun{Thurstone} data set (which is ``lazy loaded''). Using the commands just shown, it is possible to analyze this data set using a bifactor solution (Figure~\ref{fig:thurstone:bi}).
@@ -561,7 +561,7 @@ om.th.bi  <- omega(Thurstone,digits=3)
 <<print=FALSE,echo=TRUE>>=
 sem.bi <- sem(om.th.bi$model,Thurstone,213) #use the model created by omega
 summary(sem.bi,digits=2)
-std.coef(sem.bi,digits=2)
+stdCoef(sem.bi,digits=2)
 @
 \end{scriptsize}
 
@@ -569,7 +569,7 @@ std.coef(sem.bi,digits=2)
 Compare this solution to the one reported below, and to the \Rpkg{sem} manual.
 
 \subsection{Examining a hierarchical solution}
-A hierarchical solution to this data set was previously found by the \pfun{omega} function (Figure~\ref{fig:om:hi}).  The output of that analysis can be used as a model for a \fun{sem} analysis.  Once again, the \fun{std.coef} function helps see the structure. Alternatively, using the \pfun{omega} function on the \pfun{Thurstone} data  will create the model for this particular data set.
+A hierarchical solution to this data set was previously found by the \pfun{omega} function (Figure~\ref{fig:om:hi}).  The output of that analysis can be used as a model for a \fun{sem} analysis.  Once again, the \fun{stdCoef} function helps see the structure. Alternatively, using the \pfun{omega} function on the \pfun{Thurstone} data  will create the model for this particular data set.
 
 
 \begin{figure}[htbp]
@@ -586,7 +586,7 @@ om.hi <- omega(Thurstone,digits=3,sl=FALSE)
 <<print=FALSE,echo=TRUE>>=
 sem.hi <- sem(om.hi$model,Thurstone,213)
 summary(sem.hi,digits=2)
-std.coef(sem.hi,digits=2)
+stdCoef(sem.hi,digits=2)
 anova(sem.hi,sem.bi)
 @
 \end{scriptsize}
@@ -597,7 +597,6 @@ Similar analyses can be done with other data that are organized hierarchically. 
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
-data(bifactor)
 om.holz.bi <- omega(Holzinger,4)
 sem.holz.bi <- sem(om.holz.bi$model,Holzinger,355)
 om.holz.hi <- omega(Holzinger,4,sl=FALSE)
@@ -613,7 +612,6 @@ The function \pfun{omegaSem} combines both an exploratory factor analysis using 
 An example is found from  the Thurstone data set of 9 cognitive variables:
 \begin{scriptsize}
 <<print=TRUE,echo=TRUE>>=
-data(bifactor)
 om.sem <- omegaSem(Thurstone,n.obs=213)
 @
 \end{scriptsize}
@@ -702,15 +700,15 @@ Reise, S., Morizot, J., and Hays, R. (2007).
 \newblock {\em Quality of Life Research}, 16(0):19--31.
 
 \bibitem[\protect\astroncite{Revelle}{2011}]{psych}
-Revelle, W. (2011).
+Revelle, W. (2012).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.1.12.
+\newblock R package version 1.2.8.
 
-\bibitem[\protect\astroncite{Rosseel}{2010}]{lavaan}
-Rosseel, Y. (2010).
+\bibitem[\protect\astroncite{Rosseel}{2011}]{lavaan}
+Rosseel, Y. (2011).
 \newblock {\em lavaan: Latent Variable Analysis}.
-\newblock R package version 0.4-3.
+\newblock R package version 0.4-11.
 
 \bibitem[\protect\astroncite{Schmid and Leiman}{1957}]{schmid:57}
 Schmid, J.~J. and Leiman, J.~M. (1957).

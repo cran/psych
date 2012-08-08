@@ -2,11 +2,11 @@
 #modifed November 14, 2009 to add legends
 #completely revised June 20, 2011 to do more reds for less than 0, blues for above 0
 #also switched to using layout to make legend clearer
+#modified May 5, 2012 to add the keep.par option to allow more control of small graphics
 #
 "cor.plot" <- 
-function(r,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,...){
-
-op <- par(no.readonly=TRUE)
+function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,...){
+if(keep.par) op <- par(no.readonly=TRUE)
 
 if(is.null(main)) {main <- "Correlation plot" }
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {if(class(r)[2] =="omega") {r <- r$schmid$sl
@@ -15,6 +15,7 @@ r <- r[,1:(nff-2)]}  else {r <- r$loadings}
 } }
 r <- as.matrix(r)
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
+r <- t(r)  # flip the matrix because grid requires it
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]
 nvar <- dim(r)[1]
@@ -45,12 +46,16 @@ image(r,col=colramp,axes=FALSE,main=main,zlim=zlim)
 box()
 at1 <- (0:(nf-1))/(nf-1)
 at2 <- (0:(nvar-1)) /(nvar-1)
-if(max.len>.5) {axis(1,at=at1,labels=rownames(r),las=2,...)
-              axis(2,at=at2,labels=colnames(r),las=1,...)} else {
-              axis(1,at=at1,labels=rownames(r),...)
-              axis(2,at=at2,labels=colnames(r),las=1,...)}
+#if(nvar != nf) {  r <- t(r) }
+if(max.len>.5) {axis(2,at=at2,labels=colnames(r),las=1,...)
+              axis(1,at=at1,labels=rownames(r),las=2,...)} else {
+              axis(2,at=at2,labels=colnames(r),...)
+              axis(1,at=at1,labels=rownames(r),las=1,...)}
 at1 <- (0:(nf-1))/(nf-1)
 
+if(numbers) {rx <- rep(at1,ncol(r))
+ ry <-rep(at2,each=ncol(r))
+ text(rx,ry,round(r*100))}
 if(show.legend) {
     leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)
 #screen(2) 
@@ -60,6 +65,6 @@ if(show.legend) {
     labels =seq(zlim[1],zlim[2],(zlim[2]-zlim[1])/(length(at2)-1))
     axis(4,at=at2,labels =labels,las=2,...)
    }  
-par(op)  #return the parameters to where we started 
+if(keep.par) par(op)  #return the parameters to where we started 
 }
 

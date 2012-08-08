@@ -19,10 +19,10 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,...) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm) } else {
      
         #fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
-        stop("The method of factor extraction you specified is not avaialble")
+        stop("The method of factor extraction you specified is not available")
         
     }}
      orth.load <- loadings(fact)
@@ -46,16 +46,22 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
            							 } else {
+           							        if(rotate=="TargetQ") {obminfact <- do.call(rotate,list(orth.load,...)) 
+           							       loadings <- obminfact$loadings
+     			                            Phi <- obminfact$Phi
+     			                       } else {
+           							     
            							 if ((rotate == "cluster") | (rotate == "target")) {obminfact <- varimax(orth.load)            			
 								obminfact <- target.rot(obminfact,...)
      			              	loadings <- obminfact$loadings
-     			                Phi <- obminfact$Phi} else {
+     			                Phi <- obminfact$Phi
+     			                 } else {
            							  obminfact <- try(oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
-                   						    Phi <- obminfact$Phi} }} 
-                   						    }
+                   						    Phi <- obminfact$Phi} }} }
+                   						 }
            		}  
     if(nfactors > 1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     

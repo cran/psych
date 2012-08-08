@@ -187,14 +187,14 @@ msq.scores <- score.items(keys,msq[1:75])
 
 #show a circumplex structure 
 fcirc <- fa(msq.scores$scores[,5:12],2)  
-factor.plot(fcirc,labels=colnames(msq.scores$scores)[5:12])
+fa.plot(fcirc,labels=colnames(msq.scores$scores)[5:12])
 #extend this solution to EA/TA  NA/PA space
 fe  <- fa.extension(cor(msq.scores$scores[,5:12],msq.scores$scores[,1:4]),fcirc)
 fa.diagram(fcirc,fe=fe,main="Extending the circumplex structure to  EA/TA and PA/NA ")
 
 #show the 2 dimensional structure
 f2 <- fa(msq[1:70],2)
-factor.plot(f2,labels=colnames(msq)[1:70],title="2 dimensions of affect")
+fa.plot(f2,labels=colnames(msq)[1:70],title="2 dimensions of affect")
 
 #sort them by polar coordinates
 round(polar(f2),2)

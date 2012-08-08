@@ -9,9 +9,9 @@
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{score.irt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. 
 }
 \usage{
-score.irt(stats, items, keys=NULL,cut = 0.3,bounds=c(-3.5,3.5))  #the higher order call just calls 
-score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-3.5,3.5))  #for dichotomous items 
-score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-3.5,3.5)) #for polytomous items
+score.irt(stats, items, keys=NULL,cut = 0.3,bounds=c(-5,5))  #the higher order call just calls 
+score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-5,5))  #for dichotomous items 
+score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-5,5)) #for polytomous items
 irt.stats.like(items,stats,keys=NULL,cut=.3) #to create irt like statistics for plotting
 irt.tau(x)
 }
@@ -26,7 +26,7 @@ irt.tau(x)
 }
 \details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
-The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item.  
+The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item. In this case, the scores are estimated by finding the probability of missing every item taken, converting this to a quantile score based upon the normal distribution, and then assigning a z value equivalent to 1/2 of that quantile.  Similarly, if a person gets all the items they take correct, their score is defined as the quantile of the z equivalent to the probability of getting all of the items correct, and then moving up the distribution half way.  If these estimates exceed either the upper or lower bounds, they are adjusted to those boundaries. 
 
 There are several more elegant packages in R that provide Full Information Maximum Likeliood IRT based estimates.  The estimates from score.irt do not do so.  However, the score.irt seems to do a good job of recovering the basic structure.
 

@@ -30,22 +30,27 @@ function(R,digits=2) {
 	
 "lowerCor" <- 
 function(x,digits=2,use="pairwise",method="pearson") {
-   R <- cor(x,use=use)
+   R <- cor(x,use=use,method=method)
    lowerMat(R,digits)
    invisible(R)
    }
 	
 	
-#adapted from utils::txtProgressBar 
+#adapted from utils::txtProgressBar
+#modified August 10, 2012 to print just 100 times. 
 "progressBar" <- 
 function(value,max,label=NULL) {
+if(class(stdout())[1]=="terminal")  #only print to the screen, not to a file
+ { pc <- round(100 * value/max)
+if(ceiling(100 * value/max)==floor(100 * value/max)) {
 width <- 80
 char="."
 nw <- nchar(char, "w")
 nb <- round(width * value/max )
-        pc <- round(100 * value/max)
+       
         cat(paste(c("\r  ",label," |", rep.int(" ", nw * width + 6)), collapse = ""))
         cat(paste(c("\r  ",label," |", rep.int(char, nb), rep.int(" ", 
-            nw * (width - nb)), sprintf("| %3d%%", pc)), collapse = ""))
+            nw * (width - nb)), sprintf("| %3d%%", pc)), collapse = ""))}
+            }
 }
 

@@ -74,12 +74,15 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           names(vx) <- colnames(x$loadings)
           varex <- rbind("SS loadings" =   vx)
           varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
-         if (nfactors > 1) 
+         if (nfactors > 1) {
                       varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/vtotal))
+                       varex <- rbind(varex, "Proportion Explained"=  vx/sum(vx))
+                      varex <- rbind(varex, "Cumulative Proportion"=  cumsum(vx/sum(vx))) 
+                      }
                       
              cat("\n")
-  
-    print(round(varex, digits))
+            print(round(varex, digits))
+           
                       
           #now, if we did covariances show the standardized coefficients as well
 	    	
@@ -111,11 +114,11 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
            
           varex <- rbind("SS loadings" =   vx)
           varex <- rbind(varex, "Proportion Var" =  vx/nitems)
-           if (nfactors > 1) 
-                      varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nitems))
-    cat("\n")
-  
+           if (nfactors > 1) {varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nitems))
+                              varex <- rbind(varex, "Cum. factor Var"=  cumsum(vx/sum(vx)))}
+    cat("\n") 
     print(round(varex, digits))
+     
     	    	}
   
     

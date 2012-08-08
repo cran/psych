@@ -40,6 +40,8 @@ Promax is a very direct adaptation of the stats::promax function.  The addition 
 
 In addition, it will take output from either the factanal, \code{\link{fa}} or earlier (\code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}})  functions and select just the loadings matrix for analysis.
 
+TargetQ implements Michael Browne's algorithm and allows specification of NA values. The Target input is a list (see examples.)
+
 The target.rot function is an adaptation of a function of Michael Browne's to do rotations to arbitrary target matrices.  Suggested by Pat Shrout. 
 
 The default for target.rot is to rotate to an independent cluster structure (every items is assigned to a group with its highest loading.) 
@@ -74,9 +76,18 @@ Promax(m3)  #example of taking the output from factanal
 #compare this rotation with the solution from a targeted rotation aimed for an independent cluster solution
 target.rot(m3)
 #now try a bifactor solution
-f3.bi <- fa(jen,3,rotate="bifactor")
-f3.bi
-f3.biq <- fa(jen,3,rotate="biquartimin")
+fa(jen,3,rotate="bifactor")
+fa(jen,3,rotate="biquartimin")
+# compare an oblimin with a target rotation
+ Targ <- make.keys(9,list(f1=1:3,f2=4:6,f3=7:9))
+ Targ <- scrub(Targ,isvalue=1)  #fix the 0s, allow the NAs to be estimated
+ Targ <- list(Targ)  #input must be a list
+#show the target
+ Targ
+ fa(Thurstone,3,rotate="TargetQ",Target=Targ)  #targeted rotation
+#compare with oblimin
+fa(Thurstone,3)
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

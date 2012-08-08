@@ -20,7 +20,7 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL)
   
 }
 \details{
- Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a set of correlations.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The program will find the correlations if given raw data.
+ Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a matrix of correlations or covariances.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The function will find the correlations if given raw data.
   
   The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
   

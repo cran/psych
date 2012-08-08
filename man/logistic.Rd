@@ -62,7 +62,7 @@ text(-3,.3,"c=.2")
  text(-1.,.4,2)
  text(0,.4,3)
  text(1.,.4,4)
-  text(2.,.5,5)
+  text(2.,.4,5)
 } 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

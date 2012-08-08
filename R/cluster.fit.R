@@ -26,7 +26,7 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE) {
        model2 <- pattern  %*% t(load) 
        residual <- original - model2
        sqresid <- residual*residual
-       totalresid <- sum(sqresid) -diagonal * sum(diag(sqresid))
+       totalresid <- sum(sqresid) -(1-diagonal) * sum(diag(sqresid))   #changed Sept 2, 2012 to make more sense (i.e. don't count diagonal if diagonal is false)
        patternrmse <- sqrt(totalresid/(2*df))
        fit2 <- 1-totalresid/totaloriginal } else {fit2 <- NULL 
            patternrmse <- 0} 

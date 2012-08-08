@@ -2,23 +2,26 @@
 #omega.graph without the graph
 
 "omega.sem" <-
-function(om.results,out.file=NULL,sl=TRUE,labels=NULL){
+function(om.results,out.file=NULL,sl=TRUE,labels=NULL,nf=3){
+if(is.list(om.results)) {
+   if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else {factors <- as.matrix(om.results$schmid$oblique)}
    
-     
-     
-    
-   if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else{factors <- as.matrix(om.results$schmid$oblique)}
-  
   #first some basic setup parameters 
   
    num.var <- dim(factors)[1]   #how many variables?
   if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}  #g, h2,u2,p2
+  
    gloading <- om.results$schmid$gloading
-   vars <- paste("V",1:num.var,sep="")  
+   
+    } else {factors <- om.results
+    num.var <- nrow(factors)
+    gloading <- factors[,1]
+    num.factors <-nf+1}
+    
+    if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
+      vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
-   if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
- 
- 
+   
    
    if (sl) {
             sem <- matrix(rep(NA,6*(2*num.var + num.factors)),ncol=3)  #used for sem diagram

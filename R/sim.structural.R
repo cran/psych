@@ -5,7 +5,7 @@ require(MASS)
 
 
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
-    f <- super.matrix(fx,fy)} }
+    f <- superMatrix(fx,fy)} }
   f <- as.matrix(f)
   if(!is.null(Phi)) {if(length(Phi)==1) Phi <- matrix(c(1,Phi,Phi,1),2,2)}
    #these are parameters for simulating items
@@ -53,7 +53,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 	                Phi <- cov2cor(Phi)}
    if(is.null(mu)) {mu <- c(0,.5,1,2)}                   }
     if(is.null(fy)) {f <- fx} else {
-    f <- super.matrix(fx,fy)} 
+    f <- superMatrix(fx,fy)} 
   
    if(is.null(mu)) {mu <- rep(0,ncol(fx))} 
    
@@ -103,15 +103,21 @@ diag(model)<- 1                       # put ones along the diagonal
 
 #simulate major and minor factors
 "sim.minor" <-
-function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) {
+function(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) {
 if(is.null(fbig)) {loads <- c(.8,.6) } else {loads <- fbig}
+
 loads <- sample(loads,nvar/nfact,replace=TRUE)
 if(nfact == 1) {fx <- matrix(loads,ncol=1)} else {fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)}
 if(bipolar) fx <- 2*((sample(2,nvar,replace=TRUE) %%2)-.5) * fx
+if(!is.null(g)) {if (length(g) < nvar) {g <- sample(g,nvar,replace=TRUE)}
+        fx <- cbind(g,fx)
+        }
 fsmall  <- c(fsmall,rep(0,nvar/4))
 fs <- matrix(sample(fsmall,nvar*floor(nvar/2),replace=TRUE),ncol=floor(nvar/2))  
 fload <- cbind(fx,fs)
-colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))
+if(is.null(g)) {
+colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))} else {
+    colnames(fload) <- c("g",paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))}
 rownames(fload) <- paste("V",1:nvar,sep="")
 results <- sim(fload,n=n)
          results$fload <- fload
@@ -120,37 +126,92 @@ results <- sim(fload,n=n)
 }
 
 
-#similuate various structures and summarize them
+#simulate various structures and summarize them
 "sim.omega" <-
-function(nvar=12,nfact=3,n=0,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
-results <- matrix(NA,nrow=ntrials,ncol=7)
+function(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
+results <- matrix(NA,nrow=ntrials,ncol=12)
+colnames(results) <- c("n","om.model","omega","ev.N","e.f1","omega.f1","Beta","omegaCFA","omegaSem","rms","RMSEA","coeff.v")
 for (i in 1:ntrials) {
-x <- sim.minor(nvar=nvar,nfact=nfact,n=n,fbig=fbig,fsmall=fsmall,bipolar=bipolar)
+x <- try(sim.minor(nvar=nvar,nfact=nfact,n=n,g=g,fbig=fbig,fsmall=fsmall,bipolar=bipolar))
+if(is.null(g)) {omega.model <- 0} else {gsum <- colSums(x$fload)[1]
+    omega.model <- gsum^2/sum(x$model)}
+results[i,"om.model"] <- omega.model
+observed.cor <- cor(x$observed)
+ev <- eigen(observed.cor)$values
+f1 <- fa(observed.cor)$loadings
+om.fa <- sum(f1)^2/sum(observed.cor)
+e.f1 <- sum(f1^2)/nvar
+    sem.model <- omega.sem(x$fload,sl=TRUE,nf=nfact)  #this is the model based upon the true values
+    if(!require(sem)) {stop("You must have the sem package installed to use omegaSem")
+ } else {sem.om <- sem(sem.model,observed.cor, n) }
+ 
+  omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
+    if(omega.cfa$omega >1) omega.cfa$omega <- NA
+  results[i,"omegaCFA"] <- omega.cfa$omega
+results[i,"n"] <- n
 if(n > 0) {
-om <- try(omega(x$observed,om.fact,flip=flip,plot=FALSE,option=option))
-          ic <- ICLUST(x$observed,1,plot=FALSE)} else {om <- try(omega(x$model,om.fact,flip=flip,plot=FALSE,option=option))
-          ic <- ICLUST(x$model,1,plot=FALSE)}
-
-results[i,1] <- om$omega_h
-     loads <- om$schmid$sl
-   p2 <- loads[,ncol(loads)]
+   if (sem) {om <- try(omegaSem(x$observed,om.fact,flip=flip,plot=FALSE,option=option))} else {
+om <- try(omega(x$observed,om.fact,flip=flip,plot=FALSE,option=option))}
+          ic <- suppressWarnings(ICLUST(x$observed,1,plot=FALSE))} else {
+           if (sem) {om <- try(omegaSem(x$model,om.fact,flip=flip,plot=FALSE,option=option))} else {om <- try(omega(x$model,om.fact,flip=flip,plot=FALSE,option=option))}
+          ic <- suppressWarnings(ICLUST(x$model,1,plot=FALSE))}
+results
+if(sem) {results[i,"omega"] <- om$omegaSem$omega_h
+                loads <- om$omegaSem$schmid$sl
+     
+} else {results[i,"omega"] <- om$omega_h
+loads <- om$schmid$sl
+}  
+ p2 <- loads[,ncol(loads)]
          	mp2 <- mean(p2)
-         	vp2 <- var(p2)
-         	
+         	vp2 <- var(p2)       	
        
-results[i,2] <-  mp2
-results[i,3] <-  sqrt(vp2)
-results[i,4] <- sqrt(vp2)/mp2
-results[i,5] <-ic$beta
-if(!is.null(om$schmid$RMSEA)) {results[i,6] <-om$schmid$RMSEA[1]} else {results[i,6] <- NA}
-if(!is.null(om$schmid$rms))results[i,7] <- om$schmid$rms
+#results[i,"p2"] <-  mp2
+#results[i,"p2.sd"] <-  sqrt(vp2)
 
+results[i,"coeff.v"] <- sqrt(vp2)/mp2
+results[i,"Beta"] <-  ic$beta
+results[i,"ev.N"] <- ev[1]/nvar
+results[i,"e.f1"] <- e.f1
+results[i,"omega.f1"] <- om.fa
+
+
+if(sem) {
+        if(!is.null(om$omegaSem$schmid$RMSEA)) {results[i,"RMSEA"] <-om$omegaSem$schmid$RMSEA[1]} else {results[i,"RMSEA"] <- NA}
+         if(!is.null(om$omegaSem$schmid$rms))results[i,"rms"] <- om$omegaSem$schmid$rms
+        results[i,"omegaSem"] <- om$omega.efa$omega
+        if(results[i,"omegaSem"] > 1) {warning("Bad result from sem   case = ",i) 
+                             results[i,"omegaSem"] <- NA}
+        } else { 
+if(!is.null(om$schmid$RMSEA)) {results[i,"RMSEA"] <- om$schmid$RMSEA[1]} else {results[i,"RMSEA"] <- NA}
+if(!is.null(om$schmid$rms)) results[i,"rms"] <- om$schmid$rms
+     results[i,"omegaSem"] <- NA}
 
 }
-colnames(results) <- c("omega","mean p2","sd p2","coeff v","Beta","RMSEA","rms")
+
+if(n==0) {results <- results[,-which(colnames(results)=="RMSEA")] #drop RMSEA if there are no cases
+if(!sem) results <- results[,-which(colnames(results)=="omegaSem")] 
+} else {if(!sem) results <- results[,-which(colnames(results)=="omegaSem")] }
+
 return(results)
 }
 
+"sim.omega.2" <- function(nvar=12,nfact=3,n=c(100,200,400,800),g=c(0,.1,.2,.3,.4,.5),sem=TRUE,fbig=c(.7,.6),fsmall=c(-.2,.2),bipolar=FALSE,ntrials=10) {
+result <- list() 
+k <- 1
+for (ni in 1:length(n)) {
+for (gi in 1:length(g)) {
+result[[k]] <- sim.omega(nvar=nvar,nfact=nfact,n=n[ni],g =g[gi],fbig=fbig,fsmall=fsmall,bipolar=bipolar,ntrials=ntrials,sem=sem)
+k <- k+1
+}
+}
+cnames <- colnames(result[[1]])
+#result <- unlist(result)
+#if(sem) {result <- matrix(result,ncol=10,byrow=TRUE)} else {result <- matrix(result,ncol=9,byrow=TRUE) }
+#colnames(result) <- cnames
+
+return(result)
+}
 
 
 "sim.general" <- 
@@ -158,9 +219,9 @@ function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
 require(MASS)
   r1 <- matrix(r,nvar/nfact,nvar/nfact)
   R <- matrix(g,nvar,nvar)
-  rf <- super.matrix(r1,r1)
+  rf <- superMatrix(r1,r1)
   if(nfact>2) {for (f in 1:(nfact-2)){
-  rf <- super.matrix(r1,rf)}}
+  rf <- superMatrix(r1,rf)}}
   R <- R + rf
   diag(R) <- 1
   colnames(R) <- rownames(R) <- paste((paste("V",1:(nvar/nfact),sep="")),rep(1:nfact,each=(nvar/nfact)),sep="gr")

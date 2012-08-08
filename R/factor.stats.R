@@ -177,7 +177,7 @@ conf.level <- alpha
    	 result$valid <- diag(valid)
    	 result$score.cor <- cluster.correl} else {sd.inv <- 1/sqrt(covar)
    	                                           if(dim(sd.inv)[1] == 1) sd.inv <- diag(sd.inv)
-   	                                           valid <- t(f) %*% keys * sd.inv
+   	                                           valid <- try(t(f) %*% keys * sd.inv)
    	                                           result$valid <- valid}
    	 result$weights <- w  #the beta weights for factor scores
    	class(result) <- c("psych","stats")

@@ -14,10 +14,10 @@ Alpha, the mean split half correlation, and beta, the worst split half correlati
 \usage{
 iclust(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE)
+n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
 correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE)
+n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
 
 
 #iclust(r.mat)    #use all defaults
@@ -48,6 +48,7 @@ n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,pu
   \item{cor.gen}{When correlating clusters with subclusters, base the correlations on the general factor (default) or general + group (cor.gen=FALSE)}
   \item{SMC}{When estimating cluster-item correlations, use the smcs as the estimate of an item communality (SMC=TRUE) or use the maximum correlation (SMC=FALSE).}  
   \item{purify}{Should clusters be defined as the original groupings (purify = FAlSE) or by the items with the highest loadings on those original clusters? (purify = TRUE)  }
+  \item{diagonal}{Should the diagonal be included in the fit statistics.  The default is not to include it.  Prior to 1.2.8, the diagonal was included.} 
   
 }
 \details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 
@@ -93,6 +94,8 @@ An alternative solution is to ask for a somewhat more stringent set of criteria 
 It is also possible to use the original parameter settings, but ask for a 4 cluster solution.
 
 At least for the Harman 24 mental ability measures, it is interesting to compare the cluster pattern matrix with the oblique rotation solution from a factor analysis.  The factor congruence of a four factor oblique pattern solution with the four cluster solution is > .99 for three of the four clusters and > .97 for the fourth cluster.  The cluster pattern matrix (returned as an invisible object in the output)
+
+In September, 2012, the fit statistics (pattern fit and cluster fit) were slightly modified to (by default) not consider the diagonal (diagonal=FALSE).  Until then, the diagonal was included in the cluster fit statistics.  The pattern fit is analogous to factor analysis and is based upon the model = P x Structure where Structure is Pattern * Phi.  Then R* = R - model and fit is the ratio of sum(r*^2)/sum(r^2) for the off diagonal elements.  
 
 }
 \value{

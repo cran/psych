@@ -2,7 +2,8 @@
 "biplot.psych" <-
 function(x, labels=NULL,cex=c(.75,1),main="Biplot",hist.col="cyan",xlim=c(-3,3),ylim=c(-3,3),...) {
 if(is.null(x$scores)) stop("Biplot requires factor/component scores:")
-oldop <- par(no.readonly = TRUE)  
+old.par <- par(no.readonly=TRUE)
+on.exit(par(old.par)) 
 if(is.null(labels)) {if(nrow(x$scores) >100) {labels = rep(".",dim(x$scores)[1] )} else {labels = rep("o",dim(x$scores)[1] )}}
 n.dims <- dim(x$loadings)[2]
 
@@ -21,7 +22,7 @@ if (n.dims == 2) {
         biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim,ylim=ylim,...)}
                            }
                         }
-                        par(oldop) }
+                        }
 }
 #corrected 1:17:12 following suggestion by Andreas M. Brandmaier
 	

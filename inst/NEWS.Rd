@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.2.5 (2012-04-30)}{
+\section{Changes in psych version 1.2.9 (2012-08-31)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.2.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.4.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.4 was released in April of 2012, the last two digits reflect the day of any modifications).
+      \item Version 1.2.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.8.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.8 was released in August of 2012, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -18,25 +18,97 @@
       \item Add the ability to create multiple groups in sim.irt functions
       \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
       \item Add labels to factor.plot for more than 2 factors?
-      \item Add goodness of fit tests for fa.extension applied to the extension variables.
-     
+      \item Add goodness of fit tests for fa.extension applied to the extension variables. 
       \item Find canonical loadings in set.cor
-      \item get better items for the iq example items (in progress)
-      \item add CVE estimate (see Reise 2010)
+      
       \item Add omega factor extension figure option (requested by Sylia Wilson)
       \item Fix bug in describe.by for the case of NULL categories for the by variable. (Reported by Nipa Phojanamongkolkij).
-      \item Add an option to fa.diagram to plot a general factor ala omega.
       \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
      \item add option to do subject density and item density plot to IRT plot.
       \item note that the df in set.cor should reflect the number of cases actually used
-      \item improve documentation of fa to explain how oblique SS are found.
-      \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
-      \item add the ability to add labels to lavaan.diagram
      
+      \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
+      \item add the ability to add labels to lavaan.diagram    
      \item modify structure  diagram so that the error arrows are to the left for lr printing
+     \item add the von Neumann test of successive differences
+    
     }
   }
   } 
+  
+  \section{Changes in psych version 1.2.8 (2012-8-25)}{
+   \subsection{Additions}{
+\itemize{
+ \item Updated the overview vignette
+ \item Added the ability to do target rotations (TargetQ) in omega.
+  \item Improved documentation of fa to explain how oblique SS are found.
+  \item A better set of items is used for the iq example (iqitems).
+  \item add CVE estimate to fa (see Reise 2010) (had already done this for omega).
+  \item Changed ICLUST.sort so that it can sort the loadings of principal (requested by Gudmundur Arnkelsson and then print them with the number of digits requested in the print command. 
+  \item Modified score.irt so that subjects who miss all items or pass all items are given an estimate based upon the (product) of the difficulty of the items they miss (pass) and then adjusted based upon half the quantile difference from 0 (if they miss all items) and 100 (if they pass all items).
+  \item Modified sim.omega to allow for specifying a general factor.  This allows for tests of not just the bias in the case of no general factor, but also the ability to detect a general factor.  Also modified it to include calls to omegaSem.
+   \item modified iclust.diagram so that cluster names can be specified rather than all start with C1 ... Cn  (requested by Michael Kubovy)
+   \item Slightly improved the documentation for r.test so it is clear which correlation is which. 
+   \item Modified iclust so that the fit statistic is based upon the off-diagonal elements unless otherwise specified.  Use diagonal =TRUE to get fits matching previous analyses. 
+   \item Modified the print.psych.iclust function to print out the Root Mean Square Residual correlation.  (It was previously reported in iclust output, but not printed.)
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+       \item  fixed a bug in score.items, such that if the number of subjects is equal to the number of items, no scores were returned.  Reported by Jeromy Anglim. 
+    \item Modified factor.stats so that rare condition of an exact fit in omega does not lead to an error.
+    \item Fixed plot.irt so that item labels are correct
+    \item Modified omegaSem to pass n.obs to sem 
+    \item Fixed df2latex so that it will on text variables as well as numeric variables   
+   }
+   } 
+  }
+  
+  \section{Changes in psych version 1.2.7 (2012-7-31)}{
+   \subsection{Additions}{
+\itemize{
+  \item Improved statsBy to find within and between group correlations.
+  \item Added a data set, withinBetween, to graphically show the issue of multilevel correlations.
+  \item Added a simulation function to generate multilevel data (sim.multilevel)
+  \item Added a function (irt.responses) to plot responses as a function of the latent score for multiple choice alternatives.
+  \item Modified progressBar so that it only shows dots when using the console, but not when using a text file for output (i.e., with Sweave).
+    }
+  
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+       \item fixed plot.poly and plot.irt so that multiple scales for one factor can be plotted.
+   }
+   } 
+  }
+  
+\section{Changes in psych version 1.2.6 (2012-6-20)}{
+   \subsection{Additions}{
+\itemize{
+   \item Slight modification to cor.plot to allow for better control of multiple plots on the same page. 
+   \item Added the ability to put values into the cor.plot output (numbers=TRUE)
+   \item Added a function (lowerUpper) to combine two symmetric matrices and output one as the above diagonal entries, and the other as the below diagonal entries of a square matrix. 
+   \item Added a function (topBottom) to act like headTail but to do it without ellipses. 
+   \item In a gradual switch to camelCase, changed the name of headtail to headTail, and describe.by to describeBy. Warning messages are issued about the change.
+   \item Added a function, statsBy, to find summary statistics (means, sample sizes, standard deviations) by a grouping variable.  Similar to describeBy but somewhat easier to use. Also will report (as an option) the pooled within group correlations. 
+   \item Added a function to find sample size weighted correlations, cor.wt.  Useful for SAPA types of analysis. 
+   \item Modified superMatrix to take list input so that more than two matrices can be combined at once (suggested by David Condon).
+   \item Added errorCircles, a greatly improved version of error.crosses. 
+   \item Added the option to specify starting communalities in the fa function (requested by David Gosar). 
+    }
+  
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+\item cor.plot was actually switching row and colnames (but since it is mainly used on symmetric matrices, this was not a problem).  Fixed.
+\item principal failed when handling missing data in data.frame. Fixed. (reported by Neil Stewart)
+
+   }
+   } 
+  }
   
    \section{Changes in psych version 1.2.4 (2012-4-30)}{
    \subsection{Additions}{

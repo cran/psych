@@ -10,7 +10,8 @@
   num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
     if (!missing) items <-  na.omit(items) 
     n.subjects <- dim(items)[1]
-    if ((dim(items)[1] == dim(items)[2])) { #this is the case of scoring correlation matrices instead of raw data
+    if ((dim(items)[1] == dim(items)[2]) & !((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1))) { #this is the case of scoring correlation matrices instead of raw data
+   # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
      raw.data <- FALSE
      C <- as.matrix(items)
      cov.scales <- t(keys) %*% C %*% keys

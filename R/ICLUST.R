@@ -1,7 +1,7 @@
 #ICLUST  - a function to form homogeneous item composites
 # originally based upon Revelle, W. (1979). Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74.
-# but much changed over the year
-# psudo code
+# but much changed over the years
+# pseudo code
 #	find similarity matrix
 #		original is either covariance or correlation
 #		corrected is disattenuated
@@ -14,13 +14,13 @@
 
 
 #ICLUST is the main function and calls other routines
-"iclust" <- 
- function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE, 
- correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {
-ICLUST(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC,purify,diagonal)}
-
-
 "ICLUST" <- 
+ function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE, 
+ correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {
+iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC,purify,diagonal)}
+
+
+"iclust" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {#should allow for raw data, correlation or covariances
 
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,cor.gen=TRUE) 

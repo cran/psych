@@ -126,7 +126,7 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
    f <- fa(R[ss,ss],2)
    foe <- fa.extension(R[ss,-ss],f)
    fa.diagram(fa.results=f,fe.results=foe)
-  
+
   out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}
 

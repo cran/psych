@@ -1,8 +1,8 @@
 "irt.fa" <- 
-function(x,nfactors=1,correct=TRUE,plot=TRUE,...) {
+function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,...) {
 cl <- match.call()
 if (is.matrix(x) | is.data.frame(x)) {
-	n.obs <- dim(x)[1]
+	if(is.null(n.obs)) n.obs <- dim(x)[1]
 	tx <- table(as.matrix(x))
 	if(dim(tx)[1] ==2) {tet <- tetrachoric(x,correct=correct)
 	    typ = "tet"} else {tet <- polychoric(x)
@@ -11,8 +11,8 @@ if (is.matrix(x) | is.data.frame(x)) {
 	r <- tet$rho
 	tau <- tet$tau}  else {if (!is.null(x$rho)) { r <- x$rho
    			tau <- x$tau
-   			n.obs <- x$n.obs
-   			typ <- class(x)[2]
+   			if(is.null(n.obs)) {n.obs <- x$n.obs} 
+             typ <- class(x)[2]
    			if (typ == "irt.fa") typ <- "tet"
    			 
    			  }  else {stop("x must  be a data.frame or matrix or the result from tetra or polychoric")}
@@ -48,5 +48,24 @@ result$plot <- pr}
 return(result)
 }
 
+#convert a factor analysis output to an IRT output
+#December 9, 2012
+"fa2irt" <- function(f,rho,plot=TRUE,n.obs=NULL) {
+cl <- match.call()
+tau <- rho$tau
+r <- rho$rho
+nf <- ncol(f$loadings)
+diffi <- list() 
+     #flag <- which(abs(t$loadings) > 1,arr.ind=TRUE)
+     #this throws an error if a Heywood case
+     for (i in 1:nf) {diffi[[i]]  <- tau/sqrt(1-f$loadings[,i]^2)
+     }
+discrim <- f$loadings/sqrt(1-f$loadings^2)
+irt <- list(difficulty=diffi,discrimination=discrim)
+result <- list(irt=irt,fa = f,rho=r,tau=tau,n.obs=n.obs,Call=cl)
 
-
+if(class(rho)[2] == "poly" ) {class(result) <-  c("psych","irt.poly") } else {class(result) <- c("psych","irt.fa")}
+if(plot) {pr <- plot(result) 
+result$plot <- pr}
+return(result)
+}

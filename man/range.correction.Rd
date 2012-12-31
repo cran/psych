@@ -9,17 +9,16 @@ Let R the unrestricted correlaton, r the restricted correlation, S the unrestric
  R = rS/(s sqrt(1-r^2 + r^2(S^2/s^2)).
 }
 \usage{
-rangeCorrection(r, sdu, sdr)
+rangeCorrection(r,sdu,sdr,sdxu=NULL,sdxr=NULL,case=2)
 }
 
 \arguments{
-  \item{r}{The observed correlation
-}
-  \item{sdu}{The unrestricted standard deviation)
-}
-  \item{sdr}{
-The restricted standard deviation
-}
+  \item{r}{The observed correlation}
+  \item{sdu}{The unrestricted standard deviation)}
+  \item{sdr}{The restricted standard deviation}
+  \item{sdxu}{Unrestricted standard deviation for case 4}
+  \item{sdxr}{Restricted standard deviation for case 4}
+  \item{case}{Which of the four Thurstone/Stauffer cases to use}
 }
 \details{
 Can be used to find correlations in a restricted sample as well as the unrestricted sample.  Not the same as the correction to reliability for restriction of range.

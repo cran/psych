@@ -9,15 +9,15 @@
 #this itself is straight foward, but the summary stats need to be worked on
 #modified April 4, 2011 to allow for factor scores of oblique or orthogonal solution
 #In May, 2011, fa was added as a wrapper to do iterations, and the original fa function was changed to fac.  The functionality of fa has not changed.
-
+#Revised November, 2012 to add the minchi option for factoring.  This minimizes the sample size weighted residual matrix
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,...) {
  cl <- match.call()
   if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
  nvar <- dim(fl)[1]
  
@@ -26,13 +26,13 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
  replicates <- list()
  rep.rots <- list()
  for (trials in 1:n.iter) {
- if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with correlation
+ if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with observed correlation
                                       mu <- rep(0, nvar)
                                       x <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, 
                                    empirical = FALSE)
 
                             } else {x <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,...) #call fa with the appropriate parameters
+  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,...) #call fa with the appropriate parameters
   if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
                   replicates[[trials]] <- t.rot$loadings
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
@@ -87,7 +87,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -103,8 +103,10 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
          model <- loadings %*% t(loadings)
        #weighted least squares weights by the importance of each variable   
        if(fm == "wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 #this last is the uls case
-       if(fm == "minres") diag(residual) <- 0   #this is minimum residual factor analysis, ignore the diagonal
-       }}  # the uls solution usually seems better?
+       if(fm == "minres") {diag(residual) <- 0}   #this is minimum residual factor analysis, ignore the diagonal
+       if(fm=="minchi") {residual <- residual * np.obs
+                         diag(residual) <- 0 }   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
+       }}  # the uls solution usually seems better than wls or gls?
         # 
          error <- sum(residual)
          }
@@ -134,7 +136,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     result <- list(loadings=Lambda,res=res,S=S)
     }
     
- ## the next two functions are taken directly from the factanal function in order to include maximum likelihood as one of the estimate procedures
+ ## the next two functions are taken directly from the factanal function in order to include maximum likelihood as one of the estimation procedures
  
    FAfn <- function(Psi, S, nf)
     {
@@ -166,6 +168,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
         load <- diag(sqrt(Psi)) %*% load
         g <- load %*% t(load) + diag(Psi) - S     # g <- model - data
+        if(fm=="minchi") {g <- g*np.obs}
         diag(g)/Psi^2                             #normalized 
     }
           
@@ -186,15 +189,18 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
         return(L)
     } ## now start the main function
+    #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
  if (fm == "mle") fm <- "ml"  #to correct any confusion
- if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres") & (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres")  & (fm != "minchi")& (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
      x.matrix <- r
     n <- dim(r)[2]
-    if (n!=dim(r)[1]) {  n.obs <- dim(r)[1]
+    if (n!=dim(r)[1]) {  matrix.input <- FALSE  #return the correlation matrix in this case
+                       n.obs <- dim(r)[1]
+     
               
-             if(missing) { #impute values 
+        if(missing) { #impute values 
         x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
         miss <- which(is.na(x.matrix),arr.ind=TRUE)
         if(impute=="mean") {
@@ -203,8 +209,16 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        item.med   <- apply(x.matrix,2,median,na.rm=TRUE) #replace missing with medians
         x.matrix[miss]<- item.med[miss[,2]]}
         }
+    		#if(fm=="minchi") 
+    		np.obs <- count.pairwise(r)    #used if we want to do sample size weighting
     		if(!covar) {r <- cor(r,use="pairwise")} else {r <- cov(r,use="pairwise")} # if given a rectangular matrix, then find the correlation or covariance first
-           } else {
+           } else { matrix.input <- TRUE #don't return the correlation matrix
+                   if(fm=="minchi") { 
+                       if(is.null(np.obs)) {fm <- "minres"
+                                message("factor method minchi does not make sense unless we know the sample size, minres used instead")
+                            }
+                   }
+                    if(is.na(n.obs) && !is.null(np.obs))         n.obs <- max(as.vector(np.obs))
      				if(!is.matrix(r)) {  r <- as.matrix(r)}
      				if(!covar) {
      				r <- cov2cor(r)  #probably better to do it this way (11/22/2010)
@@ -212,8 +226,9 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                     # r <- r/(sds %o% sds) #if we remove this, then we need to fix the communality estimates
                     }
                     } #added June 9, 2008
-    if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0)}
-
+                    #does this next line actually do anything?
+    if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0,r=r)}
+    
    
    
     r.mat <- r
@@ -245,7 +260,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
          	diag(r.mat) <- new
         	 err <- abs(comm-comm1)
         	 if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa,\n Try again with SMC=FALSE \n exiting factor.pa")
-          break}
+                             break}
         	 comm <- comm1
         	 comm.list[[i]] <- comm1
          	i <- i + 1
@@ -256,7 +271,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
           eigens <- eigens$values
        } 
        
-       if((fm == "wls") | (fm=="minres") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle")) { 
+       if((fm == "wls") | (fm=="minres") |(fm=="minchi") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle")) { 
        uls <- fit(r,nfactors,fm,covar=covar)
        
        e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  
@@ -272,8 +287,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        
        # a weird condition that happens with poor data
        #making the matrix symmetric solves this problem
-       if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
-       loadings <- matrix(as.real(loadings),ncol=nfactors) } 
+       if(!is.double(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
+       loadings <- matrix(as.double(loadings),ncol=nfactors) } 
        #make each vector signed so that the maximum loading is positive  -  should do after rotation
        #Alternatively, flip to make the colSums of loading positive
    
@@ -285,9 +300,15 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
      } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
              colnames(loadings) <- "MR1" }
      
- 
- 
-    if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {if (fm=="ml")  {colnames(loadings) <- paste("ML",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}}
+    
+    switch(fm, 
+    wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
+    pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
+    gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
+    ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
+    minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+    minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
+    
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
    
@@ -328,7 +349,14 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     signed[signed==0] <- 1
     loadings <- loadings %*% diag(signed)  #flips factors to be in positive direction but loses the colnames
     if(!is.null(Phi)) {Phi <- diag(signed) %*% Phi %*% diag(signed) }  #added October 20, 2009 to correct bug found by Erich Studerus
-     if(fm == "wls") {colnames(loadings) <- paste("WLS",1:nfactors,sep='')	} else {if (fm=="pa")  {colnames(loadings) <- paste("PA",1:nfactors,sep='')} else  {if (fm=="gls")  {colnames(loadings) <- paste("GLS",1:nfactors,sep='')} else {if (fm=="ml")  {colnames(loadings) <- paste("ML",1:nfactors,sep='')} else {colnames(loadings) <- paste("MR",1:nfactors,sep='')} }}}
+  
+    switch(fm, 
+    wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
+    pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
+    gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
+    ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
+    minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+    minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008
        
@@ -341,7 +369,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
    
-   result <- factor.stats(r,loadings,Phi,n.obs=n.obs,alpha=alpha)   #do stats as a subroutine common to several functions
+   result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)
     result$uniquenesses <- diag(r-model)
@@ -361,6 +389,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     result$weights <- result$scores$weights
     result$scores <- result$scores$scores
     result$factors <- nfactors 
+    result$r <- r   #save the correlation matrix 
+    result$np.obs <- np.obs
     result$fn <- "fa"
     result$fm <- fm
     result$Call <- cl

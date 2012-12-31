@@ -1,14 +1,16 @@
 \name{irt.fa}
 \alias{irt.fa}
 \alias{irt.select}
+\alias{fa2irt}
 
 \title{Item Response Analysis by Exploratory Factor Analysis of tetrachoric/polychoric correlations}
 \description{
 Although exploratory factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
 }
 \usage{
-irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,...)
+irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,...)
 irt.select(x,y)
+fa2irt(f,rho,plot=TRUE,n.obs=NULL)
 }
 \arguments{
   \item{x}{A data matrix of dichotomous or discrete items, or the result of \code{\link{tetrachoric}} or \code{\link{polychoric}}   }
@@ -16,10 +18,13 @@ irt.select(x,y)
   \item{correct}{If true, then correct the tetrachoric correlations for continuity.  (See \code{\link{tetrachoric}}).  }
   \item{plot}{If TRUE, automatically call the \code{\link{plot.irt}} or \code{\link{plot.poly}} functions.}
   \item{y}{the subset of variables to pick from the rho and tau output of a previous irt.fa analysis to allow for further analysis.}
+  \item{n.obs}{The number of subjects used in the initial analysis if doing a second analysis of a correlation matrix.  In particular, if using the fm="minchi" option, this should be the matrix returned by \code{\link{count.pairwise}}.} 
+  \item{f}{The object returned from \code{\link{fa}} }
+  \item{rho}{The object returned from \code{\link{polychoric}} or \code{\link{tetrachoric}}.  This will include both a correlation matrix and the item difficulty levels.}
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{
-\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Exploratory factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.
+\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Exploratory factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.  In this case, if it is desired to use the fm="minchi" factoring method, the number of observations needs to be specified as the matrix resulting from \code{\link{count.pairwise}}.
 
 
 The tetrachoric correlation matrix of dichotomous items may be factored using a (e.g.) minimum residual factor analysis function \code{\link{fa}} and the resulting loadings, \eqn{\lambda_i} are transformed to discriminations by
@@ -77,7 +82,7 @@ See also \code{\link{score.irt}} for scoring items based upon these parameter es
 
 }
 \examples{
-
+\dontrun{
 set.seed(17)
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
 test <- irt.fa(d9$items)
@@ -116,7 +121,7 @@ plot(small.irt)
 #find the information for three subset of iq items
 keys <- make.keys(16,list(all=1:16,some=c(1,5,9,10,11,13),others=c(1:5)))
 plot(iq.irt,keys=keys)
-
+}
 #compare output to the ltm package or Kamata and Bauer   -- these are in logistic units 
 ls <- irt.fa(lsat6)
 #library(ltm)

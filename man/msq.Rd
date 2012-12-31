@@ -109,7 +109,7 @@
    
   }
 }
-\details{The Motivational States Questionnaire (MSQ) is composed of 72 items, which represent the full affective range (Revelle & Anderson, 1996). The MSQ consists of 20 items taken from the Activation-Deactivation Adjective Check List (Thayer, 1986), 18 from the Positive and Negative Affect Schedule (PANAS, Watson, Clark, & Tellegen, 1988) along with the items used by Larsen and Diener (1992). The response format was a four-point scale that corresponds to Russell and Carroll's (1999) "ambiguous--likely-unipolar format" and that asks the respondents to indicate their current standing (``at this moment") with the following rating scale:\cr
+\details{The Motivational States Questionnaire (MSQ) is composed of 72 items, which represent the full affective range (Revelle & Anderson, 1998). The MSQ consists of 20 items taken from the Activation-Deactivation Adjective Check List (Thayer, 1986), 18 from the Positive and Negative Affect Schedule (PANAS, Watson, Clark, & Tellegen, 1988) along with the items used by Larsen and Diener (1992). The response format was a four-point scale that corresponds to Russell and Carroll's (1999) "ambiguous--likely-unipolar format" and that asks the respondents to indicate their current standing (``at this moment") with the following rating scale:\cr
 0----------------1----------------2----------------3
 \cr
 Not at all		A little		Moderately     	Very much \cr
@@ -120,9 +120,13 @@ Procedure. The data were collected over nine years, as part of a series of studi
 
 The EA and TA scales are from Thayer, the PA and NA scales are from Watson et al. (1988).
 Scales and items:
+
 Energetic Arousal: Active, Energetic, Vigorous, Wakeful, Wideawake, Full of Pep, Lively, -sleepy, -tired, - drowsy  (ADACL)
+
 Tense Arousal: Intense, Jittery, fearful, tense, clutched up, -quiet, -still, - placid, - calm, -at rest  (ADACL)
+
 Positive Affect: active, excited, strong, inspired, determined, attentive, interested, enthusiastic, proud, alert  (PANAS)
+
 Negative Affect: jittery, nervous, scared, afraid, guilty, ashamed, distressed, upset, hostile, irritable  (PANAS)
 
 The next set of circumplex scales were taken (I think) from Larsen and Diener (1992).  
@@ -137,28 +141,28 @@ Activated NA: jittery, anxious, nervous, fearful, distressed.
 
 Keys for these separate scales are shown in the examples.  
 
-In addition to the MSQ, there are 5 scales from the Eysenck Personality Inventory.(Extraversion, Impulsivity, Sociability, Neuroticism, Lie).  The Imp and Soc are subsets of the the total extraversion scale. 
+In addition to the MSQ, there are 5 scales from the Eysenck Personality Inventory (Extraversion, Impulsivity, Sociability, Neuroticism, Lie).  The Imp and Soc are subsets of the the total extraversion scale. 
 
 }
-\source{Data collecte at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
+\source{Data collected at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
 }
 \references{
 
-
-
 Rafaeli, Eshkol and Revelle, William (2006), A premature consensus: Are happiness and sadness truly opposite affects? Motivation and Emotion, 30, 1, 1-12.
 
-Revelle, W. and  Anderson, K.J. (1997) Personality, motivation and cognitive performance: Final report to the Army Research Institute on  contract MDA 903-93-K-0008
+Revelle, W. and  Anderson, K.J. (1998) Personality, motivation and cognitive performance: Final report to the Army Research Institute on  contract MDA 903-93-K-0008. (\url{http://www.personality-project.org/revelle/publications/ra.ari.98.pdf}).
 
 Thayer, R.E. (1989)  The biopsychology of mood and arousal.
 Oxford University Press. New York, NY. 
 
 Watson,D., Clark,  L.A.  and Tellegen, A. (1988)  Development and validation of brief measures of positive and negative affect: The PANAS scales. Journal of Personality and Social Psychology, 54(6):1063-1070.
 
-
 }	
 
+\seealso{\code{\link{affect}} for an example of the use of some of these adjectives in a mood manipulation study.
 
+\code{\link{make.keys}} and  \code{\link{score.items}} for instructions on how to score multiple scales, and \code{\link{fa}} and \code{\link{fa.extension}} for instructions on how to do factor analyses or factor extension.
+}
 
 \examples{
 data(msq)

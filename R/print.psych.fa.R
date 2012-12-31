@@ -141,17 +141,22 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}
     if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
     cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n",...) 
+     
+     
     if(!is.null(x$rms)) {cat("\nThe root mean square of the residuals (RMSR) is ", round(x$rms,digits),"\n") }
     if(!is.null(x$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$crms,digits),"\n",...) }
-    
-   	if(!is.na(x$n.obs)) {cat("The number of observations was ",x$n.obs, " with Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)
+     if((!is.null(x$nh)) && (!is.na(x$nh))) {cat("\nThe harmonic number of observations is " ,round(x$nh)) }
+     if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
+   	if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with MLE Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
+  
+     
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}
    	if(!is.null(x$RMSEA)) {cat("\nRMSEA index = ",round(x$RMSEA[1],digits+1), " and the", (1- x$RMSEA[4])*100,"% confidence intervals are ",round(x$RMSEA[2:3],digits+1),...)  }
    	if(!is.null(x$BIC)) {cat("\nBIC = ",round(x$BIC,digits))}
 
-cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))
+ 	if(!is.null(x$fit)) cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))
 
-if (x$fn != "principal") {
+if ((!is.null(x$fn)) && (x$fn != "principal")) {
 if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 
 
@@ -176,6 +181,7 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
  
   
 } 
- }  #end of print.psych.fa
+   #end of print.psych.fa
 
 #modified November 22, 2010 to get the communalities correct for sorted loadings, but does this work for covariances?
+#modified November 18, 2012 to print the empirical chi squares

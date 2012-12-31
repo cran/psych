@@ -3,7 +3,7 @@
 \docType{data}
 \title{Correlations of eight physical variables (from Harman, 1966)}
 
-\description{A classic data set from Harman (1966) reporting the correlations of eight physical variables.  Used by Harman for demonstrations of factor analysis (both principal axis and minimum residual). 
+\description{A classic data set from Harman (1976) reporting the correlations of eight physical variables.  Used by Harman for demonstrations of factor analysis (both principal axis and minimum residual). 
 }
 \usage{data(Harman.8)}
 \format{
@@ -33,13 +33,13 @@ Factor analysis by minimizing residuals (minres).  Psychometrika, 31(3):351-368.
 }
 \references{
 
-Harman, Harry Horace (1976) Modern factor analysis, 3d ed., rev, University of Chicago Press
-     Chicago.
-H.~Harman and W.~Jones. (1966)
+Harman, Harry Horace (1976) Modern factor analysis, 3d ed., rev, University of Chicago Press. Chicago.
+
+Harman, Harry Horace and Jones, W. (1966)
 Factor analysis by minimizing residuals (minres).  Psychometrika, 31(3):351-368.
 }
 
-\seealso{ \code{\link{Harman}} and \code{\link{Harman74.cor}}
+\seealso{ \code{\link{Harman}}, \code{\link{Harman.political}} and \code{\link{Harman74.cor}}
 }
 \examples{
 data(Harman.8)

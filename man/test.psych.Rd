@@ -39,7 +39,7 @@ When version 1.1.10 was released, it caused errors when compiling and testing on
 
 
 \examples{
-test <- test.psych()
+#test <- test.psych()
 #not run
 #test.psych(all=TRUE)
 

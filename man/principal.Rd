@@ -75,7 +75,7 @@ Jolliffe, I. (2002)  Principal Component Analysis (2nd ed). Springer.
 Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 }
 
-\seealso{\code{\link{VSS}} (to test for the number of components or factors to extract), \code{\link{VSS.scree}} and \code{\link{fa.parallel}} to show a scree plot and compare it with random resamplings of the data), \code{\link{factor2cluster}} (for course coding keys), \code{\link{fa}} (for factor analysis), \code{\link{factor.congruence}} (to compare solutions)}
+\seealso{\code{\link{VSS}} (to test for the number of components or factors to extract), \code{\link{VSS.scree}} and \code{\link{fa.parallel}} to show a scree plot and compare it with random resamplings of the data), \code{\link{factor2cluster}} (for course coding keys), \code{\link{fa}} (for factor analysis), \code{\link{factor.congruence}} (to compare solutions), \code{\link{predict.psych}} to find factor/component scores for a new data set based upon the weights from an original data set. }
 \examples{
 #Four principal components of the Harmon 24 variable problem
 #compare to a four factor principal axes solution using factor.congruence

@@ -1,14 +1,15 @@
 citHeader("To cite the psych package in publications use:")
 citEntry(entry="Manual",
-         title = "psych: Procedures for Psychological, Psychometric, and Personality Research",
+         title ="psych: Procedures for Psychological, Psychometric, and Personality Research",
          author = "William Revelle",
-	     Organization = "Northwestern University",        
-         address      = "Evanston, Illinois",
+	     Organization = " Northwestern University",        
+         address      = " Evanston, Illinois",
          year         = 2012,
-         note         = "R package version 1.2.8",
+         note         = "R package version 1.2.12",
          url          = "http://personality-project.org/r/psych.manual.pdf",
-         textVersion = 
-         paste("Revelle, W. (2012)", 
-               "psych: Procedures for Personality and Psychological Research",
-               "Northwestern University, Evanston",
-                "http://personality-project.org/r/psych.manual.pdf",vers,".",sep=""))
+         textVersion =  
+         paste("Revelle, W. (2012) ", 
+               "psych: Procedures for Personality and Psychological Research, ",
+               "Northwestern University, Evanston, Illinois, USA, ",
+                "http://personality-project.org/r/psych.manual.pdf ",
+                " Version = 1.2.12",".",sep="") )

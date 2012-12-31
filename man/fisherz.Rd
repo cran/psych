@@ -2,16 +2,20 @@
 \alias{fisherz}
 \alias{fisherz2r}
 \alias{r.con}
-\alias{r2t} 
+\alias{r2t}
+\alias{r2d}
+\alias{d2r}
 
 \title{ Fisher r to z and z to r and confidence intervals}
-\description{convert a correlation to a z score or z to r using the Fisher transformation or find the confidence intervals for a specified correlation
+\description{Convert a correlation to a z score or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r.  
 }
 \usage{
 fisherz(rho)
 fisherz2r(z)
 r.con(rho,n,p=.95,twotailed=TRUE)
 r2t(rho,n)
+r2d(rho)
+d2r(d)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,13 +24,16 @@ r2t(rho,n)
   \item{n}{Sample size for confidence intervals}
   \item{p}{Confidence interval}
   \item{twotailed}{Treat p as twotailed p}
+  \item{d}{an effect size (Cohen's d)}
 }
 
 \value{ z value corresponding to r  (fisherz) \\
 r corresponding to z (fisherz2r) \\
 lower and upper p confidence intervals (r.con) \\
 t with n-2 df (r2t)
+r corresponding to effect size d or d corresponding to r.
 }
+
 
 \author{
 Maintainer: William Revelle  \email{revelle@northwestern.edu }

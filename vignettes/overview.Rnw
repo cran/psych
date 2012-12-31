@@ -401,8 +401,8 @@ Another example of \pfun{pairs.panels} is to show differences between experiment
 \begin{scriptsize}
 <<affect>>=
 png('affect.png')
-pairs.panels(flat[15:18],bg=c("red","black","white","blue")[maps$Film],pch=21,
-     main="Affect varies by movies (study 'flat')")
+pairs.panels(affect[14:17],bg=c("red","black","white","blue")[affect$Film],pch=21,
+     main="Affect varies by movies ")
 dev.off()
 @
 \end{scriptsize}
@@ -465,14 +465,14 @@ op <- par(mfrow=c(1,2))
   data(affect)
 colors <- c("black","red","white","blue")
  films <- c("Sad","Horror","Neutral","Happy")
-affect.stats <- errorCircles("EA2","TA2",data=maps,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
-  main =' post affective movies')
+affect.stats <- errorCircles("EA2","TA2",data=affect,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
+  main =' Movies effect on arousal')
  errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",ylab="Negative Affect",pch=16,cex=2,col=colors,
-   main ="post affective movies")
+   main ="Movies effect on affect")
 op <- par(mfrow=c(1,1))
 @
 \end{scriptsize}
-\caption{The use of the \pfun{errorCircles} function allows for two dimensional displays of means and error bars.  The first call to \pfun{errorCircles} finds descriptive statistics for the \iemph{maps} data.frame based upon the grouping variable of Film.  These data are returned and then used by the second call which examines the effect of the  same grouping variable upon different measures.  The size of the circles represent the relative sample sizes for each group. }
+\caption{The use of the \pfun{errorCircles} function allows for two dimensional displays of means and error bars.  The first call to \pfun{errorCircles} finds descriptive statistics for the \iemph{affect} data.frame based upon the grouping variable of Film.  These data are returned and then used by the second call which examines the effect of the  same grouping variable upon different measures.  The size of the circles represent the relative sample sizes for each group. The data are from the PMC lab and reported in \cite{smillie:jpsp}.}
 \label{fig:errorCircles}
 \end{center}
 \end{figure}
@@ -1167,7 +1167,7 @@ A conventional (but non-optimal) estimate of the internal consistency reliabilit
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
-set.seed(42)
+set.seed(17)
 r9 <- sim.hierarchical(n=500,raw=TRUE)$observed
 round(cor(r9),2)
 alpha(r9)
@@ -1585,7 +1585,7 @@ where $r_{xy} $ is the normal correlation which may be decomposed into a within 
 
 The \pfun{statsBy.boot} function will randomize the grouping variable ntrials times and find the statsBy output.  This can take a long time and will produce a great deal of output.  This output can then be summarized for relevant variables using the \pfun{statsBy.boot.summary} function specifying the variable of interest.  
 
-Consider the case of the relationship between various tests of ability when the data are grouped by level of education (statsBy(sat.act)) or when affect data are analyzed within and between an affect manipulation (statsBy(flat) ). 
+Consider the case of the relationship between various tests of ability when the data are grouped by level of education (statsBy(sat.act)) or when affect data are analyzed within and between an affect manipulation (statsBy(affect) ). 
 
 
 \section{Set Correlation and Multiple Regression from the correlation matrix}
@@ -1730,6 +1730,7 @@ A number of functions have been developed for some very specific problems that d
 \begin{description}
 \item  [\pfun{block.random}] Creates a block randomized structure for n independent variables. Useful for teaching block randomization for experimental design.
 \item [\pfun{df2latex}] is useful for taking tabular output (such as a correlation matrix or that of \pfun{describe} and converting it to a \LaTeX{} table.  May be used when Sweave is  not convenient.
+\item [\pfun{cor2latex}] Will format a correlation matrix in APA style in a \LaTeX{} table.  See also \pfun{fa2latex} and \pfun{irt2latex}. 
 \item [\pfun{cosinor}]  One of several functions for doing \iemph{circular statistics}.  This is important when studying mood effects over the day which show a diurnal pattern.  See also 
 \pfun{circadian.mean}, \pfun{circadian.cor} and \pfun{circadian.linear.cor} for finding circular means, circular correlations, and correlations of circular with linear data.
 \item[\pfun{fisherz}] Convert a correlation to the corresponding Fisher z score.  
@@ -1772,7 +1773,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version > "1.2.7",package="psych")
+> news(Version > "1.2.8",package="psych")
 \end{Sinput}
 \end{Schunk}
 
@@ -1864,11 +1865,9 @@ Everitt, B. (1974).
 \newblock {\em Cluster analysis}.
 \newblock John Wiley \& Sons, Cluster analysis. 122 pp. Oxford, England.
 
-\bibitem[\protect\astroncite{Fox et~al.}{2011}]{sem}
-Fox, J., Byrnes, J., with contributions~from Michael~Culbertson, Friendly, M.,
-  Kramer, A., and Monette., G. (2011).
-\newblock {\em sem: Structural Equation Models}.
-\newblock R package version 2.1-1.
+\bibitem[\protect\astroncite{Fox et~al.}{2012}]{sem}
+Fox, J., Nie, Z., and Byrnes, J. (2012).
+\newblock {\em {sem: Structural Equation Models}}.
 
 \bibitem[\protect\astroncite{Grice}{2001}]{grice:01}
 Grice, J.~W. (2001).
@@ -1982,7 +1981,7 @@ Revelle, W. (1979).
 Revelle, W. (2012).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.2.4.
+\newblock R package version 1.2.8.
 
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).
@@ -2024,6 +2023,12 @@ Schmid, J.~J. and Leiman, J.~M. (1957).
 Shrout, P.~E. and Fleiss, J.~L. (1979).
 \newblock Intraclass correlations: Uses in assessing rater reliability.
 \newblock {\em Psychological Bulletin}, 86(2):420--428.
+
+\bibitem[\protect\astroncite{Smillie et~al.}{2012}]{smillie:jpsp}
+Smillie, L.~D., Cooper, A., Wilt, J., and Revelle, W. (2012).
+\newblock Do extraverts get more bang for the buck? refining the
+  affective-reactivity hypothesis of extraversion.
+\newblock {\em Journal of Personality and Social Psychology}, 103(2):306--326.
 
 \bibitem[\protect\astroncite{Sneath and Sokal}{1973}]{sneath:73}
 Sneath, P. H.~A. and Sokal, R.~R. (1973).
@@ -2087,6 +2092,7 @@ Zinbarg, R.~E., Yovel, I., Revelle, W., and McDonald, R.~P. (2006).
 \newblock {\em Applied Psychological Measurement}, 30(2):121--144.
 
 \end{thebibliography}
+
 
 
 \printindex

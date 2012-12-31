@@ -9,8 +9,8 @@
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{score.irt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. 
 }
 \usage{
-score.irt(stats, items, keys=NULL,cut = 0.3,bounds=c(-5,5))  #the higher order call just calls 
-score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-5,5))  #for dichotomous items 
+score.irt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic")  #the higher order call just calls 
+score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic")  #for dichotomous items 
 score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-5,5)) #for polytomous items
 irt.stats.like(items,stats,keys=NULL,cut=.3) #to create irt like statistics for plotting
 irt.tau(x)
@@ -23,6 +23,7 @@ irt.tau(x)
   \item{cut}{Only items with discrimination values > cut will be used for scoring.}
   \item{x}{The raw data to be used to find the tau parameter in irt.tau}
   \item{bounds}{The lower and upper estimates for the fitting function}
+  \item{mod}{Should a logistic or normal model be used in estimating the scores?}
 }
 \details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
@@ -32,7 +33,9 @@ There are several more elegant packages in R that provide Full Information Maxim
 
 The keys matrix is a matrix of 1s, 0s, and -1s reflecting whether an item should be scored or not scored for a particular factor.  See \code{\link{score.items}} or \code{\link{make.keys}} for details.  The default case is to score all items with absolute discriminations > cut.
 
-If one wants to score scales taking advantage of differences in item location but not do a full irt analysis, then find the item difficulties from the raw data using \code{\link{irt.tau}} or combine this information with a scoring keys matrix (see \code{\link{score.items}} and code{\link{make.keys}} and create quasi-irt statistics using \code{\link{irt.stats.like}}.  
+If one wants to score scales taking advantage of differences in item location but not do a full irt analysis, then find the item difficulties from the raw data using \code{\link{irt.tau}} or combine this information with a scoring keys matrix (see \code{\link{score.items}} and code{\link{make.keys}} and create quasi-irt statistics using \code{\link{irt.stats.like}}. 
+
+There are conventionally two different metrics and models that are used.  The logistic metric and model and the normal metric and model. These are chosen using the mod parameter.
 }
 \value{
  \item{scores}{A data frame of theta estimates, total scores based upon raw sums, and estimates of fit.}

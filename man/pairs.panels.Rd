@@ -66,8 +66,8 @@ pairs.panels(sat.act,show.points=FALSE)
 #better yet is to show the points as a period
 pairs.panels(sat.act,pch=".")
 #show many variables with 0 gap between scatterplots
-data(bfi)
-pairs.panels(bfi,show.points=FALSE,gap=0)
+# data(bfi)
+# pairs.panels(bfi,show.points=FALSE,gap=0)
 
 
 }

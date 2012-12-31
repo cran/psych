@@ -18,15 +18,19 @@
             # colnames(data)[i] <- paste(cnames[i],"*",sep="")
              }}
        xvals <- list()
-       
-               xvals$mean <- t(matrix(unlist(by(data,z,colMeans,na.rm=TRUE)),nrow=ncol(data)))              
+               temp <- by(data,z,colMeans,na.rm=TRUE)
+               
+               rownn <- lapply(temp,is.null)
+               if(sum(as.integer(rownn)) > 0) {
+               rown <-  names(temp)[-which(rownn==TRUE)] } else {rown <- names(temp) }              
+               xvals$mean <- t(matrix(unlist(temp),nrow=ncol(data)))              
                xvals$sd <-t(matrix(unlist(by(data,z,function(x) sapply(x,sd,na.rm=TRUE))),nrow=ncol(data)))
                xvals$n <- t(matrix(unlist(by(data,z,function(x) sapply(x,valid))),nrow=ncol(data)))
               
                
                colnames(xvals$mean) <- colnames(xvals$sd) <- colnames(xvals$n) <-  colnames(data)
-               rownames(xvals$mean) <-  rownames(xvals$sd) <- rownames(xvals$n) <- levels(z)
-               nH <- harmonic.mean(xvals$n)
+               rownames(xvals$mean) <-  rownames(xvals$sd) <- rownames(xvals$n) <- rown
+                              nH <- harmonic.mean(xvals$n)
                nG <- nrow(xvals$mean)
                GM <- colSums(xvals$mean*xvals$n)/colSums(xvals$n) 
                MSb <- colSums(xvals$n*t((t(xvals$mean) - GM)^2))/(nG-1) #weight means by n

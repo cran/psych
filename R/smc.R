@@ -18,9 +18,11 @@ if(!covar) { R <- cor.smooth(R) }
  R.inv <- try(solve(R),TRUE)
  if(class(R.inv)== as.character("try-error")) {smc <- rep(1,p)
  message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)
- if(max(smc) > 1.0) {message("In smc, smcs > 1 were set to 1.0")
+ if(all(is.na(smc))) {message ("Something is seriously wrong the correlation matrix.\nIn smc, smcs were set to 1.0")
+                      smc[is.na(smc)] <- 1}
+ if(max(smc,na.rm=TRUE) > 1.0) {message("In smc, smcs > 1 were set to 1.0")
    smc[smc >1 ]  <- 1.0}
-   if(min(smc) < 0.0) {message("In smc, smcs < 0 were set to .0")
+   if(min(smc,na.rm=TRUE) < 0.0) {message("In smc, smcs < 0 were set to .0")
    smc[smc < 0]  <- 0}
  if(covar) {smc <- smc * vari}}
  return(smc)

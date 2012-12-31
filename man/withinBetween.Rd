@@ -35,6 +35,9 @@ Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation an
 Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 
 }
+
+\seealso{ \code{\link{statsBy}},   \code{\link{describeBy}}, and  \code{\link{sim.multilevel}} 
+ }
 \examples{
 data(withinBetween)
 pairs.panels(withinBetween,bg=c("red","blue","white","black")[withinBetween[,1]],pch=21,ellipses=FALSE)

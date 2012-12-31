@@ -1,16 +1,23 @@
 "factor.stats" <- 
-function(r,f,phi=NULL,n.obs=NA,alpha=.1) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
-
+#revised November 10, 2012 to add stats for the minchi option of factoring
 cl <- match.call()
-conf.level <- alpha     
- n <- dim(r)[2]  #number of variables
- if(dim(r)[1] !=n ) {n.obs = dim(r)[1]
+conf.level <- alpha 
+ if((!is.matrix(f)) && (!is.data.frame(f)))  {#do a number of things that use f as list
+   
+    if(is.null(r) && (!is.null(f$r)) ) r <- f$r   #we found the correlation while factoring 
+    
+    #if(is.na(n.obs) && (!is.null(f$np.obs))) {np.obs <- f$np.obs}   
+ 
+ f <- as.matrix(f$loadings)} else {f <- as.matrix(f)}
+ 
+  n <- dim(r)[2]  #number of variables
+    if(dim(r)[1] !=n ) {n.obs = dim(r)[1]
                     r <- cor(r,use="pairwise")
-                     }
- if(is.data.frame(r)) r <- as.matrix(r)
- if((!is.matrix(f)) && (!is.data.frame(f)))  {f <- as.matrix(f$loadings)} else {f <- as.matrix(f)}
+                     } 
+    if(is.data.frame(r)) r <- as.matrix(r)
  nfactors <- dim(f)[2]  # number of factors
  if(is.null(phi)) {model <- f %*%  t(f)} else {model <- f %*% phi %*% t(f)}
 
@@ -26,12 +33,31 @@ conf.level <- alpha
    # r2.off <- sum(r2.off^2)
    r2.off <- r2 - tr(r)
     diag(residual) <- 0
-    rstar.off <- sum(residual^2)
+    if(is.null(np.obs))  {rstar.off <- sum(residual^2)
+                          result$chi <- rstar.off * n.obs  #this is the empirical chi square
+                          result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea
+                          result$nh <- n.obs
+                             if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
+                                 result$crms <- sqrt(rstar.off/(result$dof) )} else {result$EPVAL <- NA
+                                 result$crms <- NA}
+                          } else {
+                           rstar.off <- sum(residual^2 * np.obs)  #weight the residuals by their sample size
+                          r2.off <-(r*r * np.obs)   #weight the original by sample size
+                          r2.off <- sum(r2.off) -tr(r2.off) 
+                          result$chi <- rstar.off  #this is the sample size weighted chi square
+                          result$nh <- harmonic.mean(as.vector(np.obs)) #this is the sample weighted cell size
+                          result$rms <- sqrt(rstar.off/(result$nh*n*(n-1))) #this is the sample size weighted square root average squared residual
+                        if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
+                                             result$crms <- sqrt(rstar.off/(result$nh*result$dof) )} else {
+                                              result$EPVAL <- NA
+                                              result$crms <- NA
+                                              }
+                          }
+
     result$fit <-1-rstar2/r2
     result$fit.off <- 1-rstar.off/r2.off
-    result$sd <- sd(as.vector(residual))
-    if(dof > 0) result$crms <- sqrt(rstar.off/(2*dof))  #this is the empirical rmsea
-    result$rms <- sqrt(rstar.off/(2*n*(n-1)))  #this is the empirical rmsea
+    result$sd <- sd(as.vector(residual)) #this is the none sample size weighted root mean square residual
+   
     
     
     
@@ -49,7 +75,7 @@ conf.level <- alpha
    #    #model.inv <- solve(model)
    #    }
    
-     m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision
+     m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision --
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
@@ -61,7 +87,8 @@ conf.level <- alpha
     if (!is.na(n.obs)) {result$STATISTIC <-  chisq <- result$objective * ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #from Tucker  and from factanal
     # if (!is.na(n.obs)) {result$STATISTIC <-  chisq <- result$objective * ((n.obs-1)) #from Fox and sem
           if(!is.nan(result$STATISTIC)) if (result$STATISTIC <0) {result$STATISTIC <- 0}  
-   			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else result$PVAL <- NA}
+   			if (result$dof > 0) {result$PVAL <- pchisq(result$STATISTIC, result$dof, lower.tail = FALSE)} else {result$PVAL <- NA}
+   		}
    	result$Call <- cl
    	
    	#find the Tucker Lewis Index of reliability
@@ -125,7 +152,7 @@ conf.level <- alpha
 				}				
             }
         lam.L <- if (max <= 1) NA else res$minimum  #lam is the ncp
-       #this RMSEA calculation is not right   
+       #this RMSEA calculation is probably not right because it will sometimes (but rarely) give cis that don't include the estimate   
         RMSEA.U <- sqrt(lam.U/((N)*df) )   #lavaan uses sqrt(lam.U/((N)*df) )  sem uses sqrt(lam.U/((N-1)*df) )
         RMSEA.L <- min(sqrt(lam.L/((N)*df) ),RMSEA)
        result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, conf.level)
@@ -158,7 +185,7 @@ conf.level <- alpha
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }
-     #if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
+     if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
       r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 
    	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors

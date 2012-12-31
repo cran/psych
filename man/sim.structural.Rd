@@ -28,12 +28,13 @@ sim.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = F
   \item{cat}{Number of categories when creating binary (2) or polytomous items}
   \item{mu}{A vector of means, defaults to 0}
  }
-\details{Given the measurement model, fx and the structure model Phi, the model is  f %*% Phi %*%  t(f).   Reliability is f %*% t(f).
+\details{Given the measurement model, fx and the structure model Phi, the model is  f \%*\% Phi \%*\%  t(f).   Reliability is f \%*\% t(f). \eqn{f \phi f'} and the reliability for each test is the items communality or just the diag of the model. 
+
 If creating a correlation matrix, (uniq=NULL) then the diagonal is set to 1, otherwise the diagonal is diag(model) + uniq and the resulting structure is a covariance matrix.
 
 Given the model, raw data are generated using the mvnorm function.
 
-A special case of a structural model are one factor models such as parallel tests, tau equivalent tests, and congneneric tests.  These may be created by letting the structure matrix = 1 and then defining a vector of factor loadings. Alternatively, make.congeneric will do the same. 
+A special case of a structural model are one factor models such as parallel tests, tau equivalent tests, and congeneric tests.  These may be created by letting the structure matrix = 1 and then defining a vector of factor loadings. Alternatively, make.congeneric will do the same. 
 
       
 }

@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.2.9 (2012-08-31)}{
+\section{Changes in psych version 1.3.1 (2013-01-30)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.2.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.8.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.8 was released in August of 2012, the last two digits reflect the day of any modifications).
+      \item Version 1.3.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.12.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.11 was released in November of 2012, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -16,25 +16,68 @@
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
-      \item Make pairs.panels not change options for graphics window   (fixed, maybe?)
-      \item Add labels to factor.plot for more than 2 factors?
-      \item Add goodness of fit tests for fa.extension applied to the extension variables. 
-      \item Find canonical loadings in set.cor
-      
-      \item Add omega factor extension figure option (requested by Sylia Wilson)
-      \item Fix bug in describe.by for the case of NULL categories for the by variable. (Reported by Nipa Phojanamongkolkij).
+      \item Make pairs.panels not change options for graphics window   (still not fixed, after many attempts.)
+      \item Add labels to factor.plot for more than 2 factors?     
+      \item Find canonical loadings in set.cor     
+      \item Add omega factor extension figure option (requested by Sylia Wilson)     
       \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
      \item add option to do subject density and item density plot to IRT plot.
-      \item note that the df in set.cor should reflect the number of cases actually used
+    \item note that the df in set.cor should reflect the number of cases actually used
      
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
-      \item add the ability to add labels to lavaan.diagram    
-     \item modify structure  diagram so that the error arrows are to the left for lr printing
-     \item add the von Neumann test of successive differences
-    
+      \item add the ability to add labels to lavaan.diagram  
+      \item clean up lavaan diagram so that the output is more readable  
+     \item modify structure  diagram so that the error arrows are to the left for lr printing    
+     \item add a warning for people finding scores from fa or principal if they have not given the data
+        
     }
   }
   } 
+  
+    \section{Changes in psych version 1.2.12 (2013-1-20)}{
+   \subsection{Additions}{
+\itemize{
+  \item Added fa2irt to convert factor analysis output to Item Response Theory type output.  (Basically doing what irt.fa already does, but from a separate factor analysis.
+  \item Added fa.extend to make factor extension easier to do.
+  \item Added an overall goodness of fit tests for fa.extension applied to the extension variables. 
+  \item Cleaned up factor.stats to make it do fm="minchi" more readily.
+  \item Added two trivial helper functions r2d and d2r to convert from correlations to effect sizes and back.  
+ \item added the von Neumann test of successive differences (mssd and rmssd). This is useful for studying within subject changes in mood. 
+ \item Changed the help files for test.psych, irt.fa, iqitems to dontrun the examples (cutting down time to compile and test the functions) 
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item fix the output in the example for fa.  Fixed by noticing that:  
+   \item in fa, fm="pa" did not return labels for the factors.
+   \item in statsBy, fixed a problem if the by returned NULL values for some group values 
+   \item Finally fixed bug in describeBy for the case of NULL categories for the by variable. (Reported by Nipa Phojanamongkolkij).
+   \item fixed bug in smc for case of missing values of diag(smc)
+   \item added an error message to cor.smooth for the case of NA eigen values
+   \item Changed the random seed in overview.rnw for the example of omegaSem to 17 (from 42).  The previous seed was generating a bad omega solution which in turn caused sem to fail. 
+   \item fixed the call function in ICLUST to properly report the parameters being called. 
+       
+   }
+   } 
+  }
+  
+   \section{Changes in psych version 1.2.11 (2012-11-22)}{
+   \subsection{Additions}{
+\itemize{
+  \item Added the rangeCorrection function to correct for range restriction.
+  \item Added a new factor method (minchi) to the fa function. This weights residual correlations by the pairwise sample size.  The minimum weighted residual is then found.  This will give OLS (minres) solutions for the case of equal sample sizes, but slightly better (weighted) fits for unequal sample sizes.  Most appropriate for the Massively Missing Completely at Random structure of SAPA data.
+ \item Added a measure of the Kaiser-Meyer-Olkin index of factoring adequacy
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item None yet
+       
+   }
+   } 
+  }
   
   \section{Changes in psych version 1.2.8 (2012-8-25)}{
    \subsection{Additions}{

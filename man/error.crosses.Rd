@@ -66,8 +66,8 @@ error.crosses(g1.stats,g2.stats,sd=TRUE)
 data(affect)
 colors <- c("black","red","white","blue")
 films <- c("Sad","Horror","Neutral","Happy")
-map.mat <- describe.by(maps[10:17],maps$Film,mat=TRUE)
- error.crosses(map.mat[c(1:4,17:20),],map.mat[c(5:8,21:24),],labels=films[map.mat$group1],xlab="Energetic Arousal",ylab="Tense Arousal",col=colors[map.mat$group1],pch=16,cex=2)
+affect.mat <- describe.by(affect[10:17],affect$Film,mat=TRUE)
+ error.crosses(affect.mat[c(1:4,17:20),],affect.mat[c(5:8,21:24),],labels=films[affect.mat$group1],xlab="Energetic Arousal",ylab="Tense Arousal",col=colors[affect.mat$group1],pch=16,cex=2)
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

@@ -120,8 +120,8 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
        
        # a weird condition that happens with the Eysenck data
        #making the matrix symmetric solves this problem
-       if(!is.real(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
-       loadings <- matrix(as.real(loadings),ncol=nfactors) } 
+       if(!is.double(loadings)) {warning('the matrix has produced imaginary results -- proceed with caution')
+       loadings <- matrix(as.double(loadings),ncol=nfactors) } 
        #make each vector signed so that the maximum loading is positive  - probably should do after rotation
        #Alternatively, flip to make the colSums of loading positive
    if (FALSE) {

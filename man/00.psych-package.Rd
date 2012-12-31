@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.2.8 \cr
-Date: \tab 2012-08-08\cr
+Version: \tab 1.2.12 \cr
+Date: \tab 2012-12-31\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -88,6 +88,7 @@ Useful data entry and descriptive statistics\cr
 \link{read.clipboard.upper}   \tab           shortcut for reading upper triangular matrices from the clipboard\cr
 \link{describe}        \tab           Basic descriptive statistics useful for psychometrics\cr
 \link{describe.by}    \tab            Find summary statistics by groups\cr
+\link{statsBy}       \tab            Find summary statistics by a grouping variable,  including within and between correlation matrices. \cr  
 \link{headtail}        \tab           combines the head and tail functions for showing data sets\cr
 
 \link{pairs.panels}    \tab          SPLOM and correlations for a data matrix\cr
@@ -110,7 +111,8 @@ Useful data entry and descriptive statistics\cr
 Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
-\link{fa}              \tab         Combined function for principal axis, minimum residual,  weighted least squares, and maximum likelihood factor analysis\cr
+\link{fa}              \tab         Combined function for principal axis, minimum 
+residual,  weighted least squares, and maximum likelihood factor analysis\cr
 \link{factor.pa}        \tab        Do a principal Axis factor analysis   (deprecated)\cr
 \link{factor.minres}    \tab        Do a minimum residual factor analysis (deprecated)\cr
 \link{factor.wls}    \tab        Do a weighted least squares factor analysis (deprecated)\cr
@@ -189,9 +191,11 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 Functions for generating simulated data sets \cr
 \tabular{ll}{
 \link{sim}               \tab       The basic simulation functions \cr
-\link{sim.anova}         \tab       Generate 3 independent variables and 1 or more dependent variables for demonstrating ANOVA and lm designs \cr
+\link{sim.anova}         \tab       Generate 3 independent variables and 1 or more 
+dependent variables for demonstrating ANOVA and lm designs \cr
 \link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
-\link{sim.item}         \tab        Generate a two dimensional simple structrue with particular item characteristics \cr
+\link{sim.item}         \tab        Generate a two dimensional simple structure with 
+particular item characteristics \cr
 \link{sim.congeneric}   \tab        Generate a one factor congeneric reliability structure \cr
 \link{sim.minor}       \tab         Simulate nfact major and nvar/2 minor factors  \cr
 \link{sim.structural}   \tab        Generate a multifactorial structural model  \cr
@@ -206,7 +210,7 @@ Graphical functions (require Rgraphviz) -- deprecated \cr
 \tabular{ll}{
 \link{structure.graph}  \tab           Draw a sem or regression graph \cr
 \link{fa.graph}        \tab           Draw the factor structure from a factor or principal components analysis \cr
-\link{omega.graph}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
+\link{omega.graph}      \tab           Draw the factor structure from an omega analysis(either with or without the Schmid Leiman transformation) \cr 
 \link{ICLUST.graph}     \tab           Draw the tree diagram from ICLUST  \cr
 }
 
@@ -216,7 +220,7 @@ Graphical functions that do not require Rgraphviz \cr
 \link{diagram}           \tab           A general set of diagram functions. \cr 
 \link{structure.diagram}  \tab           Draw a sem or regression graph \cr
 \link{fa.diagram}        \tab           Draw the factor structure from a factor or principal components analysis \cr
-\link{omega.diagram}      \tab           Draw the factor structure from an omega analysis (either with or without the Schmid Leiman transformation) \cr 
+\link{omega.diagram}      \tab           Draw the factor structure from an omega analysis(either with or without the Schmid Leiman transformation) \cr 
 \link{ICLUST.diagram}     \tab           Draw the tree diagram from ICLUST  \cr
 \link{plot.psych}        \tab           A call to plot various types of output (e.g. from irt.fa, fa, omega, iclust \cr
 \link{cor.plot}        \tab            A heat map display of correlations \cr
@@ -225,10 +229,10 @@ Graphical functions that do not require Rgraphviz \cr
 
 Circular statistics (for circadian data analysis) \cr
 \tabular{ll}{
-\link{circadian.cor} \tab      Find the correlation with e.g., mood and time of day \cr
+\link{circadian.cor}     \tab      Find the correlation with e.g., mood and time of day \cr
 \link{circadian.linear.cor} \tab  Correlate a circular value with a linear value \cr
-\link{circadian.mean} \tab      Find the circular mean of each column of a a data set     \cr
-\link{cosinor} \tab            Find the best fitting phase angle for a circular data set \cr
+\link{circadian.mean}     \tab      Find the circular mean of each column of a a data set  \cr
+\link{cosinor}       \tab            Find the best fitting phase angle for a circular data set \cr
 }
 
 
@@ -295,7 +299,9 @@ Data sets included in the psych package \cr
 
 A debugging function that may also be used as a demonstration of psych.
 \tabular{ll}{
-\link{test.psych}   \tab          Run a test of the major functions on 5 different data sets.  Primarily for development purposes. Although the output can be used as a demo of the various functions.
+\link{test.psych}   \tab          Run a test of the major functions on 5 different data 
+sets.  Primarily for development purposes. Although the output can be used as a demo of 
+the various functions.
 }
 
 }
@@ -343,5 +349,6 @@ Revelle, W. (in preparation) An Introduction to Psychometric Theory with applica
 
 \examples{
 #See the separate man pages 
-test.psych()
+#to test most of the psych package run the following
+#test.psych()   
 }

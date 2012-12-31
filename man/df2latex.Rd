@@ -1,32 +1,47 @@
 \name{df2latex}
 \alias{df2latex}
+\alias{cor2latex}
+\alias{fa2latex}
+\alias{irt2latex}
 
-\title{Convert a data frame or matrix to a LaTeX table}
+\title{Convert a data frame or correlation matrix or factor analysis output to a LaTeX table}
 
-\description{A handy helper function to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.  
+\description{A handy helper function to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.   cor2latex will find the correlations and then create a lower (or upper) triangular matrix for latex output.  fa2latex will create the latex commands for showing the loadings and factor intercorrelations. As the default option, tables are prepared in APA format.
 }
 \usage{
-df2latex(x,digits=2,rowlabels=TRUE,caption="df2latex")
+df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize", heading="A table from R",caption="df2latex")
+cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",heading="A correlation table from R",caption="cor2latex")
+fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny", heading="A factor analysis table from R",caption="fa2latex") 
+irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny", heading="An IRT factor analysis table from R",caption="fa2latex")
 }
 
 \arguments{
-  \item{x}{A data frame or matrix to convert to LaTeX}
+  \item{x}{A data frame or matrix to convert to LaTeX. If non-square, then correlations will be found prior to printing in cor2latex}
   \item{digits}{Round the output to digits of accuracy.  NULL for formatting character data}
   \item{rowlabels}{If TRUE, use the row names from the matrix or data.frame}
+  \item{short.names}{Name the columns 1 .. N to save space}
+  \item{apa}{If TRUE formats table in APA style}
+  \item{font.size}{e.g., "scriptsize", "tiny" or anyother acceptable LaTeX font size.}
+  \item{heading}{The label appearing at the top of the table}
   \item{caption}{The table caption}
-  
+  \item{lower}{in cor2latex, just show the lower triangular matrix}
+  \item{f}{The object returned from a factor analysis using \code{\link{fa}} or \code{\link{irt.fa}}. }
 }
 \value{A LaTeX table}
 
-\author{William Revelle
-}
+\author{William Revelle with suggestions from Jason French and David Condon}
 
 \seealso{
 The many LaTeX conversion routines in Hmisc.
 }
 \examples{
-df2latex(Thurstone,rowlabels=FALSE)
-df2latex(describe(sat.act)[2:10])
+df2latex(Thurstone,rowlabels=FALSE,apa=FALSE,short.names=FALSE,caption="Thurstone Correlation matrix")
+df2latex(Thurstone,heading="Thurstone Correlation matrix in APA style")
+
+df2latex(describe(sat.act)[2:10],short.names=FALSE)
+cor2latex(Thurstone)
+cor2latex(sat.act,short.names=FALSE)
+fa2latex(fa(Thurstone,3),heading="Factor analysis from R in quasi APA style")
  }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

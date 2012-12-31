@@ -196,12 +196,13 @@ if(!sem) results <- results[,-which(colnames(results)=="omegaSem")]
 return(results)
 }
 
-"sim.omega.2" <- function(nvar=12,nfact=3,n=c(100,200,400,800),g=c(0,.1,.2,.3,.4,.5),sem=TRUE,fbig=c(.7,.6),fsmall=c(-.2,.2),bipolar=FALSE,ntrials=10) {
+"sim.omega.2" <- function(nvar=12,nfact=3,n=c(100,200,400,800),g=c(0,.1,.2,.3,.4,.5),sem=TRUE,fbig=c(.7,.6),fsmall=c(-.2,.2),bipolar=FALSE,om.fact=3,ntrials=10) {
 result <- list() 
 k <- 1
+progressBar(k,length(n)*length(g),"sim.omega.2")
 for (ni in 1:length(n)) {
 for (gi in 1:length(g)) {
-result[[k]] <- sim.omega(nvar=nvar,nfact=nfact,n=n[ni],g =g[gi],fbig=fbig,fsmall=fsmall,bipolar=bipolar,ntrials=ntrials,sem=sem)
+result[[k]] <- sim.omega(nvar=nvar,nfact=nfact,n=n[ni],g =g[gi],fbig=fbig,fsmall=fsmall,bipolar=bipolar,ntrials=ntrials,om.fact=om.fact,sem=sem)
 k <- k+1
 }
 }

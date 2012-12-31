@@ -12,9 +12,9 @@
 \description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
 }
 \usage{
-fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=FALSE,...)
+fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=FALSE,np.obs,...)
 
-fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,...)
+fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs,...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE, impute="median", min.err = .001, max.iter=50, symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, oblique.scores=TRUE,...)
 
@@ -30,6 +30,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{x}{For fa.poly.ci, only raw data may be used}
   \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
+  \item{np.obs}{The pairwise number of observations. Used if using a correlation matrix and asking for a minchi solution.}
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT",  "geominT" and "bifactor" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible rotations or transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
@@ -43,7 +44,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
-  \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis}
+  \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair.}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
   \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
@@ -60,6 +61,8 @@ Principal axes factor analysis has a long history in exploratory analysis and is
 Not all factor programs that do principal axes do iterative solutions.  The example from the SAS manual (Chapter 26) is such a case. To achieve that solution, it is necessary to specify that the max.iterations = 1.  Comparing that solution to an iterated one (the default) shows that iterations improve the solution.  In addition, fm="minres" or fm="mle" produces even better solutions for this example.  
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller residuals) solutions.
+
+The fm="minchi" option is a variation on the "minres" (ols) solution and minimizes the sample size weighted residuals rather than just the residuals.
 
 A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
 
@@ -97,6 +100,8 @@ The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstr
 \code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so).  Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
+
+For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
 }
 \value{
@@ -167,7 +172,9 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals.  }
 
-\seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis.  }
+\seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
+
+\code{\link{KMO}} and \code{\link{cortest.bartlett}} for various tests that some people like. }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")

@@ -1,8 +1,14 @@
 #revised August 31, 2012 to allow for estimation of all 0s or all 1s
 "score.irt.2" <- 
-function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
+function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5),mod="logistic") {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
 #find the person  parameter
+#This does the normal fit
+irt.2par.norm <-  function(x,delta,beta,scores) {
+  fit <- -1*(log(scores*(1-pnorm(beta*(delta-x))) + (1-scores)*(1-pnorm(beta*(x-delta)))))
+  mean(fit,na.rm=TRUE)
+  } 
+#This does the logistic fit 
  irt.2par <- function(x,delta,beta,scores) {
   fit <- -1*(log(scores/(1+exp(beta*(delta-x))) + (1-scores)/(1+exp(beta*(x-delta)))))
   mean(fit,na.rm=TRUE)
@@ -32,18 +38,21 @@ items.f <- t(items.f)
 
  for (i in 1:n.obs) {
  	progressBar(i,n.obs,"score.IRT")
- 	if (count[i]>0) {if((sum(items.f[i,],na.rm=TRUE) ==0 )  | (prod(items.f[i,],na.rm=TRUE) ==  1 )) { if(sum(items.f[i,],na.rm=TRUE) ==0 ) {
- 	p <- log(1-(1-items.f[i,])/(1+exp(discrim*(diff))) )  #logistic
- 	#p <- log(1-(pnorm(items.f[i,]*discrim*diff)))  #normals
-   pall <- exp(sum(p,na.rm=TRUE))
+ 	if (count[i]>0) {if((sum(items.f[i,],na.rm=TRUE) ==0 )  | (prod(items.f[i,],na.rm=TRUE) ==  1 )) { 
+ 	if(sum(items.f[i,],na.rm=TRUE) ==0 ) {
+ 		if(mod=="logistic") {p <- log(1-(1-items.f[i,])/(1+exp(discrim*(diff))) )} else {  #logistic
+ 				p <- log(1-(pnorm(items.f[i,]*discrim*diff))) }  #normals
+  	 pall <- exp(sum(p,na.rm=TRUE))
    
-   theta[i] <- qnorm(pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
-   fit[i] <- 0 
-  # cat ("\nThe case of all wrong",i,theta[i])
+   	theta[i] <- qnorm(pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
+   	fit[i] <- 0 
+ 	 # cat ("\nThe case of all wrong",i,theta[i])
 
  	} else {
- 		p <- log((items.f[i,])/(1+exp(discrim*(diff))) )
-   pall <- exp(sum(p,na.rm=TRUE))
+ 		if(mod == "logistic") {	p <- log((items.f[i,])/(1+exp(discrim*(diff))) )} else  { 
+ 	                        	p <- log((items.f[i,])*(1 - pnorm(1- discrim*(diff)) ))  } 
+ 	
+ 	 pall <- exp(sum(p,na.rm=TRUE))
    theta[i] <- qnorm(1-pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
    fit[i] <- 0 
 
@@ -51,7 +60,9 @@ items.f <- t(items.f)
  	#cat("\nthe case of all right",i,theta[i]) 
  }
  	} else { #cat("the normal case",i )
-  myfit <-optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,]) #how to do an apply?
+ 	if(mod=="logistic") {
+  myfit <-optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,])  #how to do an apply?
+    } else {myfit <-optimize(irt.2par.norm,bounds,beta=discrim,delta=diff,scores=items.f[i,])} #do a normal fit function
      		theta[i] <- myfit$minimum    
      		fit[i] <- myfit$objective  #fit of optimizing program 
      		}} else  {#cat("\nno items",i)
@@ -138,11 +149,11 @@ discrim.vect <- rep(discrim,each=cat)
 	return(scores)
 	}
 
-"score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
+"score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-5,5),mod="logistic") {
 if (length(class(stats)) > 1) {
     switch(class(stats)[2],
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds) },
-    irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds)},
+    irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds,mod=mod)},
     fa = {tau <- irt.tau(items)  #this is the case of a factor analysis to be applied to irt
           nf <- dim(stats$loadings)[2]
           diffi <- list() 

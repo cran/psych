@@ -23,6 +23,7 @@ switch(value,
  iclust= { print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extension = { print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ extend = {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  fa.ci = { print.psych.fa.ci(x,digits=digits,all=all,... )},
  
 
@@ -491,5 +492,12 @@ iclust.sort = { nvar <- ncol(x$sort)
    x$sort[4:nvar] <- round(x$sort[4:nvar],digits)
    print(x$sort)
 },
+KMO = {cat("Kaiser-Meyer-Olkin factor adequacy")
+     cat("\nCall: ")
+   print(x$Call)
+   cat("Overall MSA = ",round(x$MSA,digits))
+   cat("\nMSA for each item = \n")
+   print(round(x$MSAi,digits))
+   }
   )   #end of switch 
 }  #end function

@@ -7,21 +7,24 @@
 \description{Chi square and other goodness of fit statistics are found based upon the fit of a factor or components model to a correlation matrix.  Although these statistics are normally associated with a maximum likelihood solution, they can be found for minimal residual (OLS), principal axis, or principal component solutions as well.  Primarily called from within these functions, factor.stats can be used by itself. Measures of factorial adequacy and validity follow the paper by Grice, 2001.
 }
 \usage{
-factor.stats(r, f, phi=NULL, n.obs = NA,alpha=.1)
+factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1) 
 }
 
 \arguments{
   \item{r}{A correlation matrix or a data frame of raw data}
-  \item{f}{A factor analysis loadings matrix or the output from a factor or principal components analysis}
-  \item{phi}{A factor intercorrelation matrix if the factor solution was oblique}
+  \item{f}{A factor analysis loadings matrix or the output from a factor or principal components analysis.  In which case the r matrix need not be specified.}
+  \item{phi}{A factor intercorrelation matrix if the factor solution was oblique.}
   \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.}
+  \item{np.obs}{The pairwise number of subjects for each pair in the correlation matrix.  This is used for finding observed chi square.}
   \item{alpha}{alpha level of confidence intervals for RMSEA}
 }
 \details{Combines the goodness of fit tests used in factor.pa, factor.minres, and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.
+
+Chi square is found two ways.  The first (STATISTIC) applies the goodness of fit test from Maximum Likelihood objective function (see below).  This assumes multivariate normality.  The second is the empirical chi square based upon the observed residual correlation matrix and the observed sample size for each correlation.  This is found by summing the squared residual correlations time the sample size.  
 }
 \value{ 
 \item{fit}{How well does the factor model reproduce the correlation matrix. (See \code{\link{VSS}}, \code{\link{ICLUST}}, and \code{\link{principal}} for this fit statistic.}
-  \item{fit.off}{how well are the off diagonal elements reproduced?}
+  \item{fit.off}{how well are the off diagonal elements reproduced?  This is just 1 - the  relative magnitude of the squared off diagonal residuals to the squared off diagonal original values.}
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters.  Let n=Number of items, nf = number of factors then
   \cr
   \eqn{dof = n * (n-1)/2 - n * nf + nf*(nf-1)/2}{dof = n * (n-1)/2 - n * nf + nf*(nf-1)/2}}
@@ -55,7 +58,7 @@ factor.stats(r, f, phi=NULL, n.obs = NA,alpha=.1)
 \item{RMSEA}{The Root Mean Square Error of Approximation and the alpha confidence intervals. Based upon the chi square non-centrality parameter.
 This is found as \eqn{\sqrt{f/dof - 1(/-1)}}{sqrt((f/df - 1(N-1))} }
 \item{rms}{The empirically found square root of the squared residuals.  This does not require sample size to be specified nor does it make assumptions about normality.}
-\item{crms}{While the rms uses the number of correlations to find the average, the crms uses the number of degrees of freedom.  Thus, there is a subtle penalty for having too complex a model.}
+\item{crms}{While the rms uses the number of correlations to find the average, the crms uses the number of degrees of freedom.  Thus, there is a penalty for having too complex a model.}
 }
 \author{William Revelle}
 

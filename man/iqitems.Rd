@@ -40,6 +40,7 @@ In addition, the data set is a good example of doing item analysis to examine th
 Condon, David and Revelle, William, (2012) The development of an open source measure of cognitive ability. (in prep, Northwestern University).
 }
 \examples{
+\dontrun{
 data(iqitems)
 iq.keys <- c(4,4,4, 6,  6,3,4,4,   5,2,2,4,   3,2,6,7)
 score.multiple.choice(iq.keys,iqitems)   #this just gives summary statisics
@@ -53,6 +54,6 @@ iq.sc <-score.irt(iq.irt,iq.tf)  #find the scores
 op <- par(mfrow=c(4,4))
 irt.responses(iq.sc[,1], iq.tf)  
 op <- par(mfrow=c(1,1))
-
+}
 }
 \keyword{datasets}

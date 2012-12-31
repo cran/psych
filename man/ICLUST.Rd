@@ -13,11 +13,14 @@ Alpha, the mean split half correlation, and beta, the worst split half correlati
 }
 \usage{
 iclust(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
-correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="iclust",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
+correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1,
+digits=2,labels=NULL,cut=0, n.iterations =0, title="ICLUST", plot=TRUE, 
+weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
+
 ICLUST(r.mat, nclusters=0, alpha=3, beta=1, beta.size=4, alpha.size=3,
-correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, digits=2,labels=NULL,cut=0,
-n.iterations = 0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
+correct=TRUE,correct.cluster=TRUE, reverse=TRUE, beta.min=.5, output=1, 
+digits=2,labels=NULL,cut=0,n.iterations = 0,title="ICLUST",plot=TRUE,
+weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
 
 
 #iclust(r.mat)    #use all defaults

@@ -56,7 +56,7 @@ errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,circles=FALSE,ylab="f
  data(affect)
 colors <- c("black","red","white","blue")
 films <- c("Sad","Horror","Neutral","Happy")
-affect.stats <- errorCircles("EA2","TA2",data=maps,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
+affect.stats <- errorCircles("EA2","TA2",data=affect,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
 main ="EA and TA pre and post affective movies")
 #now, use the stats from the prior run 
 errorCircles("EA1","TA1",data=affect.stats,labels=films,pch=16,cex=2,col=colors,add=TRUE)

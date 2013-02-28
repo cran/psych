@@ -55,6 +55,7 @@ if(is.null(cut)) cut <- .2
   	
    	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits))
     cat("\nmean percent general = ",round(mp2,digits), "   with sd = ", round(sqrt(vp2),digits), "and cv of ",round(sqrt(vp2)/mp2,digits),"\n")
+   if(!is.null(x$ECV))  cat("Explained Common Variance of the general factor = ", round(x$ECV,digits),"\n")
    
 
    	

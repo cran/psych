@@ -116,7 +116,7 @@ footer <- paste(footer,"
       	                                      vx <- vx*nvar/vtotal }
       	  #names(vx) <- colnames(x)[1:nvar]
       	  vx <- round(vx,digits) 
-          loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""))
+          loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""),"\\cr")
           cat(loads)
            
           #varex <- rbind("SS loadings " =   vx)

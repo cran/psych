@@ -6,7 +6,8 @@
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-cor.plot(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,...)
+cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,
+            labels=NULL,n.legend=10,keep.par=TRUE,...)
 }
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{omega}}.  }
@@ -45,7 +46,8 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 \examples{
 cor.plot(Thurstone,main="9 cognitive variables from Thurstone") #just blue implies positive manifold
 cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone")
-cor.plot(mat.sort(Thurstone),TRUE,zlim=c(0,1), main="9 cognitive variables from Thurstone (sorted by factor loading) ")
+cor.plot(mat.sort(Thurstone),TRUE,zlim=c(0,1), 
+       main="9 cognitive variables from Thurstone (sorted by factor loading) ")
 simp <- sim.circ(24)
 cor.plot(cor(simp),main="24 variables in a circumplex")
 

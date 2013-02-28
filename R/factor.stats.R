@@ -1,5 +1,5 @@
 "factor.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
@@ -181,11 +181,13 @@ conf.level <- alpha
      }   #these are the beta weights 
     }}
       R2 <- diag(t(w) %*% f)
+      if(is.null(fm)) {
      if(prod(R2) < 0 ) {message("The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor extraction method\n")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }
      if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
+     }
       r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 
    	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors

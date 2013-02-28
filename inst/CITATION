@@ -4,12 +4,12 @@ citEntry(entry="Manual",
          author = "William Revelle",
 	     Organization = " Northwestern University",        
          address      = " Evanston, Illinois",
-         year         = 2012,
-         note         = "R package version 1.2.12",
-         url          = "http://personality-project.org/r/psych.manual.pdf",
+         year         = 2013,
+         note         = "R package version 1.3.2",
+         url          = "http://CRAN.R-project.org/package=psych",
          textVersion =  
-         paste("Revelle, W. (2012) ", 
+         paste("Revelle, W. (2013) ", 
                "psych: Procedures for Personality and Psychological Research, ",
                "Northwestern University, Evanston, Illinois, USA, ",
-                "http://personality-project.org/r/psych.manual.pdf ",
-                " Version = 1.2.12",".",sep="") )
+                "http://CRAN.R-project.org/package=psych",
+                " Version = 1.3.2",".",sep="") )

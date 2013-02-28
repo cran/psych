@@ -40,7 +40,7 @@ Promax is a very direct adaptation of the stats::promax function.  The addition 
 
 In addition, it will take output from either the factanal, \code{\link{fa}} or earlier (\code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}})  functions and select just the loadings matrix for analysis.
 
-TargetQ implements Michael Browne's algorithm and allows specification of NA values. The Target input is a list (see examples.)
+TargetQ implements Michael Browne's algorithm and allows specification of NA values. The Target input is a list (see examples).  It is interesting to note how powerful specifying what a factor isn't works in defining a factor.  That is, by specifying the pattern of 0s and letting most other elements be NA, the factor structure is still clearly defined.
 
 The target.rot function is an adaptation of a function of Michael Browne's to do rotations to arbitrary target matrices.  Suggested by Pat Shrout. 
 
@@ -64,7 +64,7 @@ Jennrich, Robert and Bentler, Peter (2011) Exploratory Bi-Factor Analysis. Psych
 
  
 }
-\seealso{ \code{\link{promax}}, \code{\link{factor.pa}}, \code{\link{factor.minres}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data.}
+\seealso{ \code{\link{promax}}, \code{\link{factor.pa}}, \code{\link{factor.minres}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data. \code{\link{factor.rotate}} for 'hand rotation'.  }
 \examples{
 jen <- sim.hierarchical()
 f3 <- fa(jen,3,rotate="varimax")
@@ -78,8 +78,10 @@ target.rot(m3)
 #now try a bifactor solution
 fa(jen,3,rotate="bifactor")
 fa(jen,3,rotate="biquartimin")
-# compare an oblimin with a target rotation
- Targ <- make.keys(9,list(f1=1:3,f2=4:6,f3=7:9))
+
+# compare an oblimin with a target rotation using the Browne algorithm
+ #note that we are changing the factor #order (this is for demonstration only)
+ Targ <- make.keys(9,list(f1=1:3,f2=7:9,f3=4:6)) 
  Targ <- scrub(Targ,isvalue=1)  #fix the 0s, allow the NAs to be estimated
  Targ <- list(Targ)  #input must be a list
 #show the target

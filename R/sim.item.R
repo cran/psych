@@ -159,7 +159,6 @@ function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5
 
       
     colnames(item) <- paste("V",1:nvar,sep="")
-     browser()
     result <- list(p=p,items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	} 

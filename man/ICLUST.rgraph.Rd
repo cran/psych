@@ -5,7 +5,10 @@
 \description{Given a cluster structure determined by \code{\link{ICLUST}}, create a rgraphic directly using Rgraphviz.  To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}.  As an option, dot code is also generated and saved in a file. To  use the dot code, use either \url{http://www.graphviz.org/} Graphviz or a commercial viewer (e.g., OmniGraffle).
 }
 \usage{
-ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits = 2, title = "ICLUST",label.font=2, ...)
+ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, 
+    labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), 
+   edge.font = c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
+    digits = 2, title = "ICLUST",label.font=2, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

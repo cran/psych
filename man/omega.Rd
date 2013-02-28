@@ -19,7 +19,7 @@ omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TR
   \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
  \item{n.iter}{How many replications to do in omega for bootstrapped estimates}
-  \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components, fm="ml" for maximum likelihood.}
+  \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components (see note), or  fm="ml" for maximum likelihood.}
   \item{poly}{should the correlation matrix be found using polychoric/tetrachoric or normal Pearson correlations}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
@@ -89,7 +89,9 @@ It is important to distinguish here between the two \eqn{\omega} coefficients of
 \deqn{\omega_h = \frac{ \vec{1}\vec{cc'}\vec{1}}{V_x}}
 
 Another estimate reported is the omega for an infinite length test with a structure similar to the observed test.  This is found by 
-\deqn{\omega_limit = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}
+\deqn{\omega_limit = \frac{ \vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}.
+
+Following suggestions by Steve Reise, the Explained Common Variance (ECV) is also reported.  This is the ratio of the general factor eigen value to the sum of all of the eigen values.  As such, it is a better indicator of unidimensionality than of the amount of test variance accounted for by a general factor.
 
 The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.  
 
@@ -142,7 +144,11 @@ If the factor solution leads to an exactly orthogonal solution (probably only fo
 
 \code{\link{omegaSem}} requires the sem package.  \code{\link{omegaFromSem}} uses the output from the sem package.
 
-\code{\link{omega}} may be run on raw data, a correlation matrix, a polychoric correlation matrix (found by e.g., polychoric), or the output of a previous omega run.  This last case is particularly useful when working with categorical data using the poly=TRUE option.  For in this case, most of the time is spent in finding the correlation matrix.  The matrix is saved as part of the omega output and may be used as input for subsequent runs.  A similar feature is found in \code{\link{irt.fa}} where the output of one analysis can be taken as the input to the subsequent analyses.
+\code{\link{omega}} may be run on raw data, a correlation matrix, a polychoric correlation matrix (found by e.g., polychoric), or the output of a previous omega run.  This last case is particularly useful when working with categorical data using the poly=TRUE option.  For in this case, most of the time is spent in finding the correlation matrix.  The matrix is saved as part of the omega output and may be used as input for subsequent runs.  A similar feature is found in \code{\link{irt.fa}} where the output of one analysis can be taken as the input to the subsequent analyses.  
+
+However, simulations based upon tetrachoric and polychoric correlations suggest that although the structure is better defined, that the estimates of omega are inflated over the true general factor saturation.
+
+When doing fm="pc", principal components are done for the original correlation matrix, but minres is used when examining the intercomponent correlations.  For otherwise an omega of 1 is found.  A warning is issued that the method was changed to minres.
 }
 
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}

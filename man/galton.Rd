@@ -30,8 +30,11 @@ data. The American Statistician, 57, 190-1922.
 \examples{
 data(galton)
 describe(galton)
-pairs.panels(galton,main="Galton's Parent child heights")   #show the scatter plot and the lowess fit 
-pairs.panels(galton,lm=TRUE,main="Galton's Parent child heights") #but this makes the regression lines look the same
-pairs.panels(galton,lm=TRUE,xlim=c(62,74),ylim=c(62,74),main="Galton's Parent child heights")  #better is to scale them 
+ #show the scatter plot and the lowess fit 
+pairs.panels(galton,main="Galton's Parent child heights")  
+#but this makes the regression lines look the same
+pairs.panels(galton,lm=TRUE,main="Galton's Parent child heights") 
+ #better is to scale them 
+pairs.panels(galton,lm=TRUE,xlim=c(62,74),ylim=c(62,74),main="Galton's Parent child heights") 
 }
 \keyword{datasets}

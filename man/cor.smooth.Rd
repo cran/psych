@@ -40,7 +40,8 @@ abline(0,1,lty="dashed")
 
 round(burt - bs,3) 
 fa(burt,2) #this throws a warning that the matrix yields an improper solution
-fa(cor.smooth(burt),2)  #This throws a warning that the matrix was improper, but produces a better solution 
+#Smoothing first throws a warning that the matrix was improper, but produces a better solution 
+fa(cor.smooth(burt),2)  
 
 #this next example is a correlation matrix from DeLeuw used as an example in Knol and ten Berge.  
 #the example is also used in the nearcor documentation

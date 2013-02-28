@@ -142,12 +142,12 @@ f1 <- fa(observed.cor)$loadings
 om.fa <- sum(f1)^2/sum(observed.cor)
 e.f1 <- sum(f1^2)/nvar
     sem.model <- omega.sem(x$fload,sl=TRUE,nf=nfact)  #this is the model based upon the true values
-    if(!require(sem)) {stop("You must have the sem package installed to use omegaSem")
- } else {sem.om <- sem(sem.model,observed.cor, n) }
+    if(sem) {if(!require(sem)) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
  
   omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
     if(omega.cfa$omega >1) omega.cfa$omega <- NA
   results[i,"omegaCFA"] <- omega.cfa$omega
+  } else {omega.cfa <- NULL}
 results[i,"n"] <- n
 if(n > 0) {
    if (sem) {om <- try(omegaSem(x$observed,om.fact,flip=flip,plot=FALSE,option=option))} else {

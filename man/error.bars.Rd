@@ -4,7 +4,9 @@
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
 }
 \usage{
-error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL, ylim = NULL, alpha=.05,sd=FALSE, labels = NULL, pos = NULL, arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE, ...)
+error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL,
+    ylim = NULL, alpha=.05,sd=FALSE, labels = NULL, pos = NULL, 
+    arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE, ...)
 }
 
 \arguments{
@@ -70,7 +72,8 @@ error.bars(attitude,bar=TRUE)  #show the use of bar graphs
 
 
 #combine with a strip chart and boxplot
-stripchart(attitude,vertical=TRUE,method="jitter",jitter=.1,pch=19,main="Stripchart with 95 percent confidence limits")
+stripchart(attitude,vertical=TRUE,method="jitter",jitter=.1,pch=19,
+           main="Stripchart with 95 percent confidence limits")
 boxplot(attitude,add=TRUE)
 error.bars(attitude,add=TRUE,arrow.len=.2)
 

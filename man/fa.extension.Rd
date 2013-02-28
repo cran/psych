@@ -7,7 +7,8 @@
 }
 \usage{
 fa.extension(Roe,fo,correct=TRUE)
-fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL, correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",alpha=.1, ...) 
+fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
+  correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",alpha=.1, ...) 
 
 }
 
@@ -99,7 +100,8 @@ set.seed(42)
  #an example of extending an omega analysis
  
  
-fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(c(.9,.8,.7,.6),rep(0,20)),c(.9,.8,.7,.6))),ncol=5)
+fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),
+        rep(0,20)),c(c(c(.9,.8,.7,.6),rep(0,20)),c(.9,.8,.7,.6))),ncol=5)
  gload <- matrix(rep(.7,5))
  five.factor <- sim.hierarchical(gload,fload,500,TRUE) #create sample data set
  ss <- c(1,2,3,5,6,7,9,10,11,13,14,15,17,18,19)

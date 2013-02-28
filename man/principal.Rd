@@ -4,7 +4,7 @@
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components analysis (PCA) for n principal components of either a correlation or covariance matrix.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
 \usage{
-principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FALSE, scores=FALSE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",...)
+principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FALSE, scores=TRUE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

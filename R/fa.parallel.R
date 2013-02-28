@@ -35,7 +35,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    					 if(SMC) {sampler <- cor(sampledata,use="pairwise")
    					          diag(sampler) <- smc(sampler)
    					 temp[["samp.fa"]][[trials]] <- eigen(sampler)$values} else {
-   						temp[["samp.fa"]][[trials]]  <- fa(cor(sampledata,use="pairwise"),fm=fm,SMC="FALSE",warnings=FALSE)$values
+   						temp[["samp.fa"]][[trials]]  <- fa(cor(sampledata,use="pairwise"),fm=fm,SMC=FALSE,warnings=FALSE)$values
           					}
           					}
                   } 
@@ -47,7 +47,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    if (fa!="pc") {
         if(SMC) { diag(sim.cor) <- smc(sim.cor)
    					 temp[["sim.fa"]][[trials]] <- eigen(sim.cor)$values} else 
-   		{fa.values.sim <- fa(sim.cor,fm=fm,SMC="FALSE",warnings=FALSE)$values
+   		{fa.values.sim <- fa(sim.cor,fm=fm,SMC=FALSE,warnings=FALSE)$values
    		 temp[["sim.fa"]][[trials]] <- 	fa.values.sim
 }}
    	}

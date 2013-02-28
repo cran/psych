@@ -7,7 +7,8 @@
 \description{Given a cluster structure determined by \code{\link{ICLUST}}, create a graphic structural diagram using graphic functions in the psych package To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}. If Rgraphviz has been successfully installed, the alternative is to use \code{\link{ICLUST.rgraph}}.
 }
 \usage{
-iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.size = NULL, e.size =1,colors=c("black","blue"), main = "ICLUST diagram",cluster.names=NULL)
+iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.size = NULL,
+  e.size =1,colors=c("black","blue"), main = "ICLUST diagram",cluster.names=NULL)
 }
 
 \arguments{
@@ -53,7 +54,8 @@ ic.out <- ICLUST(test.data)
 ic.bfi <- iclust(bfi[1:25],beta=3) #find the clusters
 cluster.names <- rownames(ic.bfi$results) #get the old names
 #change the names to the desired ones
-cluster.names[c(16,19,18,15,20)] <- c("Neuroticism","Extra-Open","Agreeableness","Conscientiousness","Open")
+cluster.names[c(16,19,18,15,20)] <- c("Neuroticism","Extra-Open","Agreeableness",
+      "Conscientiousness","Open")
 #now show the new names
 iclust.diagram(ic.bfi,cluster.names=cluster.names,min.size=4,e.size=1.75)
 

@@ -230,17 +230,19 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0,r=r)}
     
    
-   
+    if(is.null(SMC)) SMC=TRUE   #if we don't specify it, make it true
     r.mat <- r
     Phi <- NULL 
     colnames(r.mat) <- rownames(r.mat) <- colnames(r)
-     if(is.logical(SMC) )  {if(SMC) { 
-      if(nfactors < n/2)   {diag(r.mat) <- smc(r,covar=covar) }  else {
-           if (warnings) message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")
-           }  
-    } else { diag(r.mat) <- SMC}}
+     if(is.logical(SMC) )  {
+                  if(SMC) {if(nfactors < n/2)   {
+                           diag(r.mat) <- smc(r,covar=covar) 
+                           }  else {if (warnings) {
+                           message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")}
+                            }   } else { diag(r.mat) <- 1
+                }
+              } else { diag(r.mat) <- SMC} 
     orig <- diag(r)
-   
    
     comm <- sum(diag(r.mat))
     err <- comm
@@ -403,4 +405,4 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     #corrected, August, 2009 to count the diagonal when doing GLS or WLS - this mainly affects (improves) the chi square
     #modified April 4, 2011 to find the factor scores of the oblique factors
     #modified December 12, 2011 to report structure coefficients as well as pattern (loadings)
- 
+   #modified February 11, 2013 to correctly treat SMC=FALSE as 1s instead of 0s.

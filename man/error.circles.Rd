@@ -4,7 +4,9 @@
 \title{Two way plots of means, error bars, and sample sizes}
 \description{Given a matrix or data frame, data, find statistics based upon a grouping variable and then plot x and y means with error bars for each value of the grouping variable.  If the data are paired (e.g. by gender), then plot means and error bars for the two groups on all variables. }
 \usage{
-errorCircles(x, y, data, ydata = NULL, group=NULL, paired = FALSE, labels = NULL, main = NULL, xlim = NULL, ylim = NULL, xlab = NULL, ylab = NULL,add=FALSE, pos = NULL, offset = 1, arrow.len = 0.2, alpha = 0.05, sd = FALSE, bars = TRUE, circles = TRUE, ...)
+errorCircles(x, y, data, ydata = NULL, group=NULL, paired = FALSE, labels = NULL, 
+main = NULL, xlim = NULL, ylim = NULL, xlab = NULL, ylab = NULL,add=FALSE, pos = NULL,
+ offset = 1, arrow.len = 0.2, alpha = 0.05, sd = FALSE, bars = TRUE, circles = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -47,23 +49,29 @@ When visualizing the effect of an experimental manipulation or the relationship 
 \seealso{\code{\link{statsBy}}, \code{\link{describeBy}}, \code{\link{error.crosses}}}
 \examples{
 #BFI scores for males and females
-errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,ylab="female scores",xlab="male scores",main="BFI scores by gender")
+errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,ylab="female scores",
+      xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
 #drop the circles since all samples are the same sizes
-errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,circles=FALSE,ylab="female scores",xlab="male scores",main="BFI scores by gender")
+errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,circles=FALSE,
+     ylab="female scores",xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
  
  data(affect)
 colors <- c("black","red","white","blue")
 films <- c("Sad","Horror","Neutral","Happy")
-affect.stats <- errorCircles("EA2","TA2",data=affect,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
-main ="EA and TA pre and post affective movies")
+affect.stats <- errorCircles("EA2","TA2",data=affect,group="Film",labels=films,
+      xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20), 
+      pch=16,cex=2,col=colors, main ="EA and TA pre and post affective movies")
 #now, use the stats from the prior run 
 errorCircles("EA1","TA1",data=affect.stats,labels=films,pch=16,cex=2,col=colors,add=TRUE)
+
 #Can also provide error.bars.by functionality
- errorCircles(2,5,group=2,data=sat.act,circles=FALSE,pch=16,col="blue",ylim= c(200,800),main="SATV by education",labels="")
+ errorCircles(2,5,group=2,data=sat.act,circles=FALSE,pch=16,col="blue",
+      ylim= c(200,800),main="SATV by education",labels="")
  #just do the breakdown and then show the points
- errorCircles(3,5,group=3,data=sat.act,circles=FALSE,pch=16,col="blue",ylim= c(200,800),main="SATV by age",labels="",bars=FALSE)
+ errorCircles(3,5,group=3,data=sat.act,circles=FALSE,pch=16,col="blue",
+         ylim= c(200,800),main="SATV by age",labels="",bars=FALSE)
 
 
 }

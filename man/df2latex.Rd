@@ -4,15 +4,19 @@
 \alias{fa2latex}
 \alias{irt2latex}
 
-\title{Convert a data frame or correlation matrix or factor analysis output to a LaTeX table}
+\title{Convert a data frame, correlation matrix, or factor analysis output to a LaTeX table}
 
-\description{A handy helper function to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.   cor2latex will find the correlations and then create a lower (or upper) triangular matrix for latex output.  fa2latex will create the latex commands for showing the loadings and factor intercorrelations. As the default option, tables are prepared in APA format.
+\description{A handy helper function to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.   cor2latex will find the correlations and then create a lower (or upper) triangular matrix for latex output.  fa2latex will create the latex commands for showing the loadings and factor intercorrelations. As the default option, tables are prepared in an approximation of APA format.
 }
 \usage{
-df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize", heading="A table from R",caption="df2latex")
-cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",heading="A correlation table from R",caption="cor2latex")
-fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny", heading="A factor analysis table from R",caption="fa2latex") 
-irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny", heading="An IRT factor analysis table from R",caption="fa2latex")
+df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",
+  heading="A table from R",caption="df2latex")
+cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
+     font.size ="scriptsize",heading="A correlation table from R",caption="cor2latex")
+fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny",
+    heading="A factor analysis table from R",caption="fa2latex") 
+irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny",
+     heading="An IRT factor analysis table from R",caption="fa2latex")
 }
 
 \arguments{

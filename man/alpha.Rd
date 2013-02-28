@@ -95,7 +95,8 @@ alpha(r9)
 two.f <- sim.item(8)
 alpha(two.f,keys=c(rep(1,4),rep(-1,4))) 
 #an example with discrete item responses  -- show the frequencies
-items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
+items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,
+        categorical=TRUE) #500 responses to 4 discrete items with 5 categories
 a4 <- alpha(items$observed)  #item response analysis of congeneric measures
 a4
 #summary just gives Alpha

@@ -6,14 +6,17 @@
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph.
 }
 \usage{
-fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL, ...) 
+fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
+simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
+    main,cex=NULL, ...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis", ...)
+    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
+     digits=1,main="Factor Analysis", ...)
 fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
-    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis",graphviz=TRUE, ...)
+    edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
+     digits=1,main="Factor Analysis",graphviz=TRUE, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.

@@ -1,15 +1,16 @@
 "set.cor" <-
-function(y,x,data,z=NULL,n.obs=NULL,use="pairwise")  {
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #seriously rewritten, March 24, 2009 to make much simpler
   #minor additons, October, 20, 2009 to allow for print and summary function
   #major addition in April, 2011 to allow for set correlation
   #added calculation of residual matrix December 30, 2011
+  #added option to allow square data matrices
    cl <- match.call()
    
   if(!is.matrix(data)) data <- as.matrix(data)
-  if(dim(data)[1]!=dim(data)[2]) {n.obs=dim(data)[1]   #this does not take into account missing data
+  if((dim(data)[1]!=dim(data)[2]) | square)  {n.obs=dim(data)[1]   #this does not take into account missing data
                     C <- cov(data,use=use)
                     m <- cov2cor(C)
                     raw <- TRUE}  else {

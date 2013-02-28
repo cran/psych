@@ -4,7 +4,8 @@
 \description{Dynamic motivational models such as the Dynamics of Action (Atkinson and Birch, 1970, Revelle, 1986) may be reparameterized as a simple pair of differential (matrix) equations (Revelle, 1986, 2008). This function simulates the dynamic aspects of the CTA.
 }
 \usage{
-cta(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, ten = NULL, type = "both", fast = 2, compare = FALSE)
+cta(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, ten = NULL,
+      type = "both", fast = 2, compare = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

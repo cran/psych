@@ -4,7 +4,8 @@
 \description{Given two vectors of data (X and Y), plot the means and show standard errors in both X and Y directions. 
 }
 \usage{
-error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  
+error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL, 
+xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -67,7 +68,9 @@ data(affect)
 colors <- c("black","red","white","blue")
 films <- c("Sad","Horror","Neutral","Happy")
 affect.mat <- describe.by(affect[10:17],affect$Film,mat=TRUE)
- error.crosses(affect.mat[c(1:4,17:20),],affect.mat[c(5:8,21:24),],labels=films[affect.mat$group1],xlab="Energetic Arousal",ylab="Tense Arousal",col=colors[affect.mat$group1],pch=16,cex=2)
+ error.crosses(affect.mat[c(1:4,17:20),],affect.mat[c(5:8,21:24),],
+    labels=films[affect.mat$group1],xlab="Energetic Arousal",
+     ylab="Tense Arousal",col=colors[affect.mat$group1],pch=16,cex=2)
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

@@ -1,5 +1,5 @@
 "mat.regress" <-
-function(y,x,data,z=NULL,n.obs=NULL)  {
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
   #seriously rewritten, March 24, 2009 to make much simpler
@@ -7,9 +7,11 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
   #major addition in April, 2011 to allow for set correlation
    cl <- match.call()
   if(!is.matrix(data)) data <- as.matrix(data)
-  if(dim(data)[1]!=dim(data)[2]) {n.obs=dim(data)[1]
-                    C <- cov(data,use="pairwise")
-                    m <- cov2cor(C)}  else {
+  if((dim(data)[1]!=dim(data)[2]) |square) {n.obs=dim(data)[1]
+                    C <- cov(data,use=use)
+                    m <- cov2cor(C)
+                     raw <- TRUE}  else {
+                    raw <- FALSE  
                     C <-data
                     m <- cov2cor(C)}
                    
@@ -71,8 +73,8 @@ function(y,x,data,z=NULL,n.obs=NULL)  {
      	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(ac.matrix))} #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,Call = cl)} else {
-     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Call = cl)}
+     	if(is.null(n.obs)) {mat.regress <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,raw=raw,Call = cl)} else {
+     	              mat.regress <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,raw=raw,Call = cl)}
      	class(mat.regress) <- c("psych","set.cor")
      	return(mat.regress)
      	}

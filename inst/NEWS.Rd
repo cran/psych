@@ -1,6 +1,6 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.3.1 (2013-01-30)}{
+\section{Changes in psych version 1.3.3 (2013-03-31)}{
   \subsection{Introduction}{
     \itemize{
       \item Version 1.3.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.12.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.11 was released in November of 2012, the last two digits reflect the day of any modifications).
@@ -22,8 +22,7 @@
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
       \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
      \item add option to do subject density and item density plot to IRT plot.
-    \item note that the df in set.cor should reflect the number of cases actually used
-     
+    \item note that the df in set.cor should reflect the number of cases actually used   
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
       \item clean up lavaan diagram so that the output is more readable  
@@ -33,6 +32,27 @@
     }
   }
   } 
+  
+    \section{Changes in psych version 1.3.2 (2013-2-28)}{
+   \subsection{Additions}{
+\itemize{
+  \item Cleaned up help files so that lines don't over run the page in the pdf version. (Suggested  by  Jennie Miller).  Still seems to be a problem.
+  \item Fixed factor.stats so that it does not complain when finding scores for principal
+  \item Fixed fa2latex so that the apa option correctly puts in the last cr
+  \item Added ECV to omega to give an estimate of unidimensionality
+  \item Add a parameter to set.cor and mat.regress to allow for square data matrices (suggested by Thomas Richardson).
+  \item Changed the default in principal to find scores (scores=TRUE).  This makes it compatible with fa.
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item Fixed principal so that it labels the components as rotated or transformed (as documented and previously implemented.  Somehow this feature went away.
+   \item Fixed fa so that specifying SMC=FALSE will replace the diagonals with 1s instead of 0s.  (Seems to have been an error introduced when the SMC= a vector option was introduced)
+   \item Minor bug fix to sim.omega so that it will not choke on badly structured sem commands.
+   }
+   } 
+  }
   
     \section{Changes in psych version 1.2.12 (2013-1-20)}{
    \subsection{Additions}{

@@ -37,9 +37,12 @@ Smillie, Luke D.  and Cooper, Andrew  and Wilt, Joshua  and Revelle, William (20
 \examples{
 data(affect)
 describeBy(affect,affect$Film)
-pairs.panels(affect[14:17],bg=c("red","black","white","blue")[affect$Film],pch=21,main="Affect varies by movies ")
-errorCircles(13,14,affect[-1],group=1,labels=c("Sad","Fear","Neutral","Humor"),main="Enegetic and Tense Arousal by Movie condition")
-errorCircles(15,16,affect[-1],group=1,labels=c("Sad","Fear","Neutral","Humor"),main="Positive and Negative Affect by Movie condition")
+pairs.panels(affect[14:17],bg=c("red","black","white","blue")[affect$Film],pch=21,
+    main="Affect varies by movies ")
+errorCircles(13,14,affect[-1],group=1,labels=c("Sad","Fear","Neutral","Humor"),
+     main="Enegetic and Tense Arousal by Movie condition")
+errorCircles(15,16,affect[-1],group=1,labels=c("Sad","Fear","Neutral","Humor"),
+     main="Positive and Negative Affect by Movie condition")
 
 }
 \keyword{datasets}

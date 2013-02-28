@@ -63,7 +63,9 @@ Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The
 \examples{
 data(bfi)
 describe(bfi)
- keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
+ keys.list <- 
+       list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),Extraversion=c(-11,-12,13:15),
+        Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
  keys <- make.keys(28,keys.list,item.labels=colnames(bfi))
  score.items(keys,bfi)
  scores <- score.items(keys[1:27,],bfi[1:27]) #don't score age 

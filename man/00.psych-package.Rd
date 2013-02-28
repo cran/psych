@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.2.12 \cr
-Date: \tab 2012-12-31\cr
+Version: \tab 1.3.2 \cr
+Date: \tab 2012-02-28\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -112,7 +112,8 @@ Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
 \link{fa}              \tab         Combined function for principal axis, minimum 
-residual,  weighted least squares, and maximum likelihood factor analysis\cr
+residual,  weighted least squares, \cr
+\tab and maximum likelihood factor analysis\cr
 \link{factor.pa}        \tab        Do a principal Axis factor analysis   (deprecated)\cr
 \link{factor.minres}    \tab        Do a minimum residual factor analysis (deprecated)\cr
 \link{factor.wls}    \tab        Do a weighted least squares factor analysis (deprecated)\cr
@@ -130,7 +131,7 @@ residual,  weighted least squares, and maximum likelihood factor analysis\cr
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
 \link{ICLUST.rgraph}   \tab          Graph the output from ICLUST using rgraphviz \cr
 \link{kaiser}     \tab           Apply kaiser normalization before rotating \cr
-\link{polychoric}        \tab          Find the polychoric correlations for items  and find item thresholds (uses J. Fox's polycor) \cr
+\link{polychoric}        \tab          Find the polychoric correlations for items  and find item thresholds\cr
 \link{poly.mat}        \tab          Find the polychoric correlations for items (uses J. Fox's hetcor) \cr
 \link{omega}           \tab          Calculate the omega estimate of factor saturation (requires the GPArotation package)\cr
 \link{omega.graph}      \tab         Draw a hierarchical or Schmid Leiman orthogonalized solution (uses Rgraphviz) \cr 
@@ -192,7 +193,8 @@ Functions for generating simulated data sets \cr
 \tabular{ll}{
 \link{sim}               \tab       The basic simulation functions \cr
 \link{sim.anova}         \tab       Generate 3 independent variables and 1 or more 
-dependent variables for demonstrating ANOVA and lm designs \cr
+dependent variables for demonstrating ANOVA \cr 
+\tab  and lm designs \cr
 \link{sim.circ}         \tab        Generate a two dimensional circumplex item structure \cr
 \link{sim.item}         \tab        Generate a two dimensional simple structure with 
 particular item characteristics \cr
@@ -257,8 +259,7 @@ Miscellaneous functions\cr
 \link{phi2poly}         \tab         Given a phi coefficient, what is the polychoric correlation\cr
 \link{phi2poly.matrix}  \tab         Given a phi coefficient, what is the polychoric correlation (works on matrices)\cr
 \link{polar}           \tab          Convert 2 dimensional factor loadings to polar coordinates.\cr
-\link{poly.mat}         \tab         Use John Fox's hetcor to create a matrix of correlations from a data.frame or matrix of integer values\cr
-\link{polychor.matrix}   \tab        Use John Fox's polycor to create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
+\link{polychor.matrix}   \tab        Create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
 \link{scaling.fits}     \tab         Compares alternative scaling solutions and gives goodness of fits \cr
 \link{scrub}   \tab            Basic data cleaning \cr
 \link{tetrachor}   \tab            Finds tetrachoric correlations \cr
@@ -300,8 +301,8 @@ Data sets included in the psych package \cr
 A debugging function that may also be used as a demonstration of psych.
 \tabular{ll}{
 \link{test.psych}   \tab          Run a test of the major functions on 5 different data 
-sets.  Primarily for development purposes. Although the output can be used as a demo of 
-the various functions.
+sets.  Primarily for development purposes.\cr 
+\tab  Although the output can be used as a demo of the various functions.
 }
 
 }

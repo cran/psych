@@ -97,3 +97,13 @@ return(result)}
 return(sqrt(mssd(x,lag=lag,group=group,na.rm=na.rm))) }
 
 
+sim.mssd <- function(n,r,g=.1) {
+rw <- rnorm(n,sqrt(1/(1-r^2)))
+x  <- xg <- rep(0,n)
+for(i in 2:n) {x[i] <- r*x[i-1] + rw[i]
+              xg[i] <- x[i] + g*i }
+rx <- sample(x,n,replace=FALSE)
+x2 <- x*2
+rx2 <- rx*2
+x.df <- data.frame(x,rx,x2,rx2,xg)
+return(x.df)}

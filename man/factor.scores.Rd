@@ -5,7 +5,8 @@
 \description{A fundamental problem with factor analysis is that although the model is defined at the structural level, it is indeterminate at the data level. This problem of factor indeterminancy leads to alternative ways of estimating factor scores, none of which is ideal.  Following Grice (2001) four different methods are available here.
 }
 \usage{
-factor.scores(x, f, Phi = NULL, method = c("Thurstone", "tenBerge", "Anderson",  "Bartlett", "Harman","components"))}
+factor.scores(x, f, Phi = NULL, method = c("Thurstone", "tenBerge", "Anderson", 
+       "Bartlett", "Harman","components"))}
 \arguments{
   \item{x}{Either a matrix of data if scores are to be found, or a correlation matrix if just the factor weights are to be found.}
   \item{f}{The output from the \code{\link{fa}} function, or a factor loading matrix.}

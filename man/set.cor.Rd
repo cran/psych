@@ -6,8 +6,8 @@
  Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. 
 }
 \usage{
-set.cor(y, x,data, z=NULL,n.obs=NULL,use="pairwise")
-mat.regress(y, x,data, z=NULL,n.obs=NULL)
+set.cor(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
+mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL)
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
   \item{z}{the column names or numbers of the set of covariates}
   \item{use}{find the correlations "pairwise" (default) or just use "complete" cases (to match the lm function)}
+  \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   
 }
 \details{

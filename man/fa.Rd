@@ -12,17 +12,27 @@
 \description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
 }
 \usage{
-fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,p=.05,oblique.scores=FALSE,np.obs,...)
+fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
+residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
+min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
+ alpha=.1,p=.05,oblique.scores=FALSE,np.obs,...)
 
-fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001,  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs,...)
+fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
+ SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
+max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
+oblique.scores=FALSE,np.obs,...)
 
-fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE, impute="median", min.err = .001, max.iter=50, symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, oblique.scores=TRUE,...)
+fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
+ impute="median", min.err = .001, max.iter=50, 
+ symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, oblique.scores=TRUE,...)
 
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
-scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2, max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres")    #deprecated
+scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
+ max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres")    #deprecated
 
 factor.wls(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,
-scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="wls")  #deprecated
+scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
+ digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="wls")  #deprecated
 }
 
 \arguments{

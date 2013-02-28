@@ -6,7 +6,8 @@
 \description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original. fa.parallel.poly does this for tetrachoric or polychoric analyses.
 }
 \usage{
-fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
+fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",
+              n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres") 
 \method{plot}{poly.parallel}(x,show.legend=TRUE,...)
 }
@@ -39,6 +40,8 @@ By default, fa.parallel estimates the communalities based upon a one factor minr
 For comparability with other algorithms (e.g, the paran function in the paran package), setting smc=TRUE will use smcs as estimates of communalities. This will tend towards identifying more factors than the default option.
 
  Printing the results will show the eigen values of the original data that are greater than simulated values.
+ 
+ A sad observation about parallel analysis is that it is sensitive to sample size.  That is, for large data sets, the eigen values of random data are very close to 1.  This will lead to different estimates of the number of factors as a function of sample size.  Consider factor structure of the bfi data set (the first 25 items are meant to represent a five factor model).  For samples of 200 or less, parallel analysis suggests 5 factors, but for 1000 or more, six factors and components are indicated.  This is not due to an instability of the eigen values of the real data, but rather the closer approximation to 1 of the random data as n increases.
 
 }
 \value{

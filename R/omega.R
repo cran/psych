@@ -71,6 +71,8 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
             dg <-max(digits-1,1)} else {
               omega <- list(omega_h= gsq/Vt,alpha=alpha,omega.tot=om.tot,schmid=gf,key=key,title=title)
       dg <- 1}
+      ev <- colSums(gf$sl[,1:(nfactors+1)]^2)
+      ECV <- ev[1]/sum(ev)
       omega.stats <- factor.stats(m,gf$sl[,1:(nfactors+1)],n.obs=n.obs)
       general.stats <- factor.stats(m,as.matrix(gf$sl[,1]),n.obs=n.obs)  #just get fit for the general factor
      if (nfactors<2) plot <- FALSE
@@ -78,7 +80,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
    
    omega.model <- omega.sem(omega,sl=sl)
      
-     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,gstats = general.stats,call=cl,title=title,R = m,model=omega.model)
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model)
 
       class(omega) <- c("psych","omega")
      if(plot)  omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)

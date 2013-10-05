@@ -53,7 +53,8 @@ jensen <- sim.hierarchical(gload,fload)    #the test set used by omega
 round(jensen,2)     
 
 #simulate a non-hierarchical structure
-fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(c(.9,.8,.7,.6),rep(0,20)),c(.9,.8,.7,.6))),ncol=5)
+fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),
+    c(c(.9,.8,.7,.6),rep(0,20)),c(c(c(.9,.8,.7,.6),rep(0,20)),c(.9,.8,.7,.6))),ncol=5)
 gload <- matrix(rep(0,5))
 five.factor <- sim.hierarchical(gload,fload,500,TRUE) #create sample data set
 #do it again with a hierachical structure

@@ -63,7 +63,7 @@ ch.col=c("black","blue","red","gray","black","blue","red","gray")
 	cluster[(apply(abs(load),1,max) < cut)] <- nc+1
 	
 if (nc > 2 ) {
- pairs(load,pch = cluster+19,cex=1.5,col=ch.col[cluster],bg=ch.col[cluster]) }
+ pairs(load,pch = cluster+19,col=ch.col[cluster],bg=ch.col[cluster]) }
  else {
  plot(load,pch = cluster+20,col=ch.col[cluster],bg=ch.col[cluster],...) 
  abline(h=0)
@@ -102,9 +102,9 @@ irt.fa =  {result <- plot.irt(x,labels=labels,...)},
 
 irt.poly = { result <-  plot.poly(x,labels=labels,...)},
 
-fa =  {fa.plot(x,...)},
+fa =  {fa.plot(x,labels=labels,...)},
 
-principal = {fa.plot(x,...)},
+principal = {fa.plot(x,labels=labels,...)},
 
 parallel = {plot.fa.parallel(x,...)},
 

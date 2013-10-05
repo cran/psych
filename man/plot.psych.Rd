@@ -12,12 +12,12 @@
 }
 \usage{
 \method{plot}{psych}(x,labels=NULL,...)
-\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,ylim=NULL,...)
-\method{plot}{poly}(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
+\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,
+     ylim=NULL,y2lab,...)
+\method{plot}{poly}(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,
+     keys=NULL,y2lab,...)
 \method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
-%plot.psych(x,labels=NULL,...)
-%plot.irt(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
-%plot.poly(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,...)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +31,7 @@
   \item{D}{The discrimination parameter}
   \item{cut}{Only plot item responses with discrimiantion greater than cut}
   \item{keys}{Used in plotting irt results from irt.fa.}
+  \item{y2lab}{ylab for test reliability, defaults to "reliability"}
   \item{qq}{if TRUE, plot qq plot of residuals, otherwise plot a cor.plot of residuals}
   \item{...}{other calls to plot}
 }
@@ -41,6 +42,8 @@ These are calls to the generic plot function that are intercepted for objects of
 A "jiggle" parameter is available in the fa.plot function (called from plot.psych when the type is a factor or cluster.  If jiggle=TRUE, then the points are jittered slightly (controlled by amount) before plotting.  This option is useful when plotting items with identical factor loadings (e.g., when comparing hypothetical models).
 
 Objects from \code{\link{irt.fa}} are plotted according to "type" (Item informations, item characteristics, or test information).  In addition, plots for selected items may be done if using the keys matrix.  Plots of irt information return three invisible objects, a summary of information for each item at  levels of the trait, the average area under the curve (the average information) for each item as well as where the item is most informative.
+
+If plotting multiple factor solutions in plot.poly, then main can be a vector of names, one for each factor.  The default is to give main + the factor number.
 
 It is also possible to create irt like plots based upon just a scoring key and item difficulties, or from a factor analysis and item difficulties.  These are not true IRT type analyses, in that the parameters are not estimated from the data, but are rather indications of item location and discrimination for arbitrary sets of items.  To do this, find \code{\link{irt.stats.like}} and then plot the results.
 

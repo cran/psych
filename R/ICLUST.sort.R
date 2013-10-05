@@ -1,3 +1,4 @@
+"iclust.sort"<- function (ic.load,cut=0,labels=NULL,keys=FALSE, clustsort=TRUE) {ICLUST.sort(ic.load,labels,keys,clustsort)}
 "ICLUST.sort"<- function (ic.load,cut=0,labels=NULL,keys=FALSE, clustsort=TRUE) {
      if(is.matrix(ic.load)) {loadings <- ic.load
      pattern <- as.matrix(loadings)} else { loadings <- ic.load$loadings

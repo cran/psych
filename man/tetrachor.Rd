@@ -16,7 +16,9 @@ tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE)
 polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE, std.err=FALSE) 
 biserial(x,y)  
 polyserial(x,y) 
-poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE) #deprecated  use polychoric instead
+
+#deprecated  use polychoric instead
+poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE) 
 }
 
 \arguments{
@@ -110,13 +112,19 @@ data(bock)
 tetrachoric(lsat6)
 polychoric(lsat6)  #values should be the same
 tetrachoric(matrix(c(44268,193,14,0),2,2))  #MPLUS reports.24
-tetrachoric(matrix(c(44268,193,14,0),2,2),FALSE)  #Do not apply continuity correction -- compare with previous analysis!
+
+#Do not apply continuity correction -- compare with previous analysis!
+tetrachoric(matrix(c(44268,193,14,0),2,2),FALSE)  
+
 tetrachoric(matrix(c(61661,1610,85,20),2,2)) #Mplus reports .35
 tetrachoric(matrix(c(62503,105,768,0),2,2)) #Mplus reports -.10
 tetrachoric(matrix(c(24875,265,47,0),2,2)) #Mplus reports  0
-tetrachoric(matrix(c(24875,265,47,0),2,2),FALSE) #Do not apply continuity correction- compare with previous analysis
+
+#Do not apply continuity correction- compare with previous analysis
+tetrachoric(matrix(c(24875,265,47,0),2,2),FALSE) 
 tetrachoric(c(0.02275000, 0.0227501320, 0.500000000))
-tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000)) } else {message("Sorry, you must have mvtnorm installed")}
+tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000)) } else {
+        message("Sorry, you must have mvtnorm installed")}
 
 # 4 plots comparing biserial to point biserial and latent Pearson correlation
 set.seed(42)
@@ -130,7 +138,8 @@ yhigh <- y[x > 0]
 yc <- c(ylow,yhigh)
 rpb <- round(cor((x>=0),y),2)
 rbis <- round(biserial(y,(x>=0)),2)
-ellipses(x,y,ylim=c(-3,3),xlim=c(-4,3),pch=21 - (x>0),main =paste("r = ",r,"rpb = ",rpb,"rbis =",rbis))
+ellipses(x,y,ylim=c(-3,3),xlim=c(-4,3),pch=21 - (x>0),
+       main =paste("r = ",r,"rpb = ",rpb,"rbis =",rbis))
 
 dlow <- density(ylow)
 dhigh <- density(yhigh)

@@ -7,17 +7,20 @@
  Internal consistency measures of reliability range from \eqn{\omega_h}{omega_hierchical} to \eqn{\alpha}{alpha} to \eqn{\omega_t}{omega_total}.  This function reports two estimates: Cronbach's coefficient \eqn{\alpha}{alpha} and Guttman's \eqn{\lambda_6}{lambda_6}.  Also reported are item - whole correlations, \eqn{\alpha}{alpha} if an item is omitted, and item means and standard deviations.
 }
 \usage{
-alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,check.keys=TRUE)
+alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
+   check.keys=TRUE,delete=TRUE)
 }
 
 \arguments{
   \item{x}{A data.frame or matrix of data, or a covariance or correlation matrix }
-  \item{keys}{If some items are to be reversed keyed, then the direction of all items must be specified in a keys vector}
+  \item{keys}{If some items are to be reversed keyed, then either specify the direction of all items or just a vector of which items to reverse }
   \item{title}{Any text string to identify this run}
   \item{cumulative}{should means reflect the sum of items or the mean of the items.  The default value is means.}
   \item{max}{the number of categories/item to consider if reporting category frequencies.  Defaults to 10, passed to \code{link{response.frequencies}} }
   \item{na.rm}{The default is to remove missing values and find pairwise correlations}
   \item{check.keys}{if TRUE, then find the first principal component and reverse key items with negative loadings.  Give a warning if this happens. }
+ 
+  \item{delete}{Delete items with no variance and issue a warning}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
@@ -47,6 +50,10 @@ More complete reliability analyses of a single scale can be done using the \code
 Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} will also score multiple scales and report more useful statistics. ``Standardized" alpha is calculated from the inter-item correlations and will differ from raw alpha. 
 
 Three alternative item-whole correlations are reported, two are conventional, one unique.  r is the correlation of the item with the entire scale, not correcting for item overlap.  r.drop is the correlation of the item with the scale composed of the remaining items.  Although both of these are conventional statistics, they have the disadvantage that a) item overlap inflates the first and b) the scale is different for each item when an item is dropped. Thus, the third alternative, r.cor, corrects for the item overlap by subtracting the item variance but then replaces this with the best estimate of common variance, the smc.
+
+If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).
+
+Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items.  
 
 }
 \value{
@@ -86,14 +93,23 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 
 \seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{guttman}}, \code{\link{score.items}}, \code{\link{cluster.cor}}}
 \examples{
+set.seed(42) #keep the same starting values
+#four congeneric measures
 r4 <- sim.congeneric()
 alpha(r4)
+#nine hierarchical measures -- should actually use omega
 r9 <- sim.hierarchical()
 alpha(r9)
-#an example of two independent factors that produce reasonable alphas
+
+# examples of two independent factors that produce reasonable alphas
 #this is a case where alpha is a poor indicator of unidimensionality
 two.f <- sim.item(8)
-alpha(two.f,keys=c(rep(1,4),rep(-1,4))) 
+#specify which items to reverse key by name
+ alpha(two.f,keys=c("V1","V2","V7","V8"))
+ #by location
+ alpha(two.f,keys=c(1,2,7,8))
+ #automatic reversal base upon first component
+alpha(two.f)  
 #an example with discrete item responses  -- show the frequencies
 items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,
         categorical=TRUE) #500 responses to 4 discrete items with 5 categories

@@ -5,7 +5,8 @@
 \description{When analyzing ability tests, it is important to consider how the distractor alternatives vary as a function of the latent trait.  The simple graphical solution is to plot response endorsement frequencies against the values of the latent trait found from multiple items. A good item is one in which the probability of the distractors decrease and the keyed answer increases as the latent trait increases. 
 }
 \usage{
-irt.responses(theta,items, breaks = 11,show.missing=FALSE, show.legend=TRUE, legend.location="topleft", colors=NULL,...)
+irt.responses(theta,items, breaks = 11,show.missing=FALSE, show.legend=TRUE, 
+legend.location="topleft", colors=NULL,...)
 }
 
 \arguments{
@@ -39,7 +40,8 @@ Revelle, W. An introduction to psychometric theory with applications in R (in pr
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
 scores <- score.multiple.choice(iq.keys,iqitems,score=TRUE,short=FALSE)
-#note that for speed we can just do this on simple item counts rather than IRT based scores.
+#note that for speed we can just do this on simple item counts rather
+# than IRT based scores.
 op <- par(mfrow=c(2,2))  #set this to see the output for multiple items
 irt.responses(scores$scores,iqitems[1:4],breaks=11)
 op <-  par(op)

@@ -30,6 +30,8 @@ cat("Factor Analysis with confidence intervals using method = ",x$f$fm )
 
 
 
+
+
  
  
  

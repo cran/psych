@@ -5,7 +5,8 @@
 \description{Draw a X Y scatter plot with associated X and Y histograms with estimated densities.  Partly a demonstration of the use of layout. Also includes lowess smooth or linear model slope, as well as correlation.  Adapted from addicted to R example 78 
 }
 \usage{
-scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,density=TRUE,ellipse=TRUE,digits=2, cex.cor=1,title="Scatter plot + histograms",xlab=NULL,ylab=NULL,...)
+scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,density=TRUE,ellipse=TRUE,
+  digits=2, method,cex.cor=1,title="Scatter plot + histograms",xlab=NULL,ylab=NULL,...)
 }
 \arguments{
   \item{x}{The X vector, or the first column of a  data.frame or matrix.  }
@@ -16,6 +17,7 @@ scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,density=TRUE,ellipse=TRUE
    \item{density}{TRUE: Show the estimated densities}
   \item{ellipse}{TRUE: draw 1 and 2 sigma ellipses and smooth}
   \item{digits}{How many digits to use if showing the correlation}
+  \item{method}{Which method to use for correlation ("pearson","spearman","kendall") defaults to "pearson"}
   \item{cex.cor}{Adjustment for the size of the correlation}
   \item{xlab}{Label for the x axis}
   \item{ylab}{Label for the y axis} 

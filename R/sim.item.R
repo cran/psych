@@ -31,6 +31,50 @@ function (nvar = 72 ,nsub = 500,
 	return (item) 
 	}  
 
+"sim.spherical" <-
+function (simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55, zloading=.55, gloading=0, xbias=0,  ybias = 0, zbias=0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
+	{ 
+
+	nvar <- nx * (ny-1)
+	errorweight <- sqrt(1-(xloading^2  + yloading^2 + zloading^2+  gloading^2))  #squared errors and true score weights add to 1
+    g <- rnorm(nsub) 
+	truex <- rnorm(nsub)  +xbias #generate normal true scores for x + xbias
+	truey <- rnorm(nsub)  + ybias #generate normal true scores for y + ybias
+	truez <- rnorm(nsub)  + zbias #generate normal true scores for y + ybias
+    true <- matrix(c(g,truex,truey,truez),nsub)
+    
+	 #make a vector of radians (the whole way around the circle) if circumplex
+	if(!simple) {f1  <- rep(cos(seq(0,pi,length.out = nx)),each=ny-1)*xloading
+	 f2 <- rep(cos(seq(0,2*pi*(ny-1)/ny,length.out=ny-1)),nx)*yloading
+    f3 <- rep(sin(seq(0,2*pi*(ny-1)/ny,length.out=ny-1)),nx)*zloading
+    f <- matrix(c(rep(gloading,(ny-1)*nx),f1,f2,f3),(ny-1)*nx)
+      
+     } else {    #simple structure -- 
+     nvar <- 4*ny
+     f1  <- rep(c(1,0,-1,0),each=ny)
+	 f2 <- rep(c(1,0,-1,0),ny)
+     f3 <- rep(c(0,1,0,-1),ny)
+    f <- matrix(c(rep(gloading,ny*4),f1,f2,f3),4*ny)
+     }
+        
+	error<- matrix(rnorm(nsub*(nvar)),nsub)    #create normal error scores
+
+	#true score matrix for each item reflects structure in radians
+	
+
+	item <- true %*% t(f) + errorweight*error   #observed item = true score + error score 
+    if (categorical) {
+        
+    	item = round(item)       #round all items to nearest integer value
+		item[(item<= low)] <- low     
+		item[(item>high) ] <- high   
+		}
+	if (truncate) {item[item < cutpoint] <- 0  }
+	colnames(item) <- paste("V",1:nvar,sep="")
+	return (item) 
+	}  
+
+
 
 "sim.rasch" <-
 function (nvar = 5 , n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1) 
@@ -181,3 +225,22 @@ warning("Not ready for prime time")
    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
 	return (result) 
 	}  	
+
+
+
+#simulate a particular polychoric structure R with specified marginals (m)
+"sim.poly.mat" <- function(R,m,n) {
+ e <- eigen(R)
+ v <- pmax(e$values,0)
+ nvar <- ncol(R)
+ ncat <- nrow(m) 
+X <- matrix(rnorm(nvar*n),n)
+X <- scale(X)
+X <- t(e$vectors %*% sqrt(diag(v)) %*% t(X))
+marg <- apply(m[,],2,cumsum)
+marg <- qnorm(marg)
+Y <- matrix(0,ncol=n,nrow=nvar)
+for(i in 1:(ncat)) {
+Y[t(X) > marg[i,]] <- i }
+return(t(Y))
+}

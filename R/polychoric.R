@@ -77,8 +77,10 @@ xt <- table(x)
 #nvalues <- length(xt)  #find the number of response alternatives 
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
-xmin <- min(x,na.rm=TRUE)
-xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
+xmin <- apply(x,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
+x <- t(t(x) - xmin +1)  #all numbers now go from 1 to nvalues
+#xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
+xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
 tau <- qnorm(apply(xfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
@@ -112,8 +114,9 @@ mat[i,j] <- mat[j,i] <- poly$rho } else {
  if(smooth) {mat <- cor.smooth(mat) }
  tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
-  flush(stdout())
+   flush(stdout())
  cat("\n") #put in to clear the progress bar
+ flush(stdout())
  class(result) <- c("psych","poly")
   return(result) 
   }

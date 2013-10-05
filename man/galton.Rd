@@ -17,13 +17,13 @@
 \source{This is just the galton data set from UsingR, slightly rearranged.
 }
 \references{Stigler, S. M. (1999). Statistics on the Table: The History of Statistical 
-Concepts and Methods. Harvard University Press.       
-  Galton, F. (1869). Hereditary Genius: An Inquiry into its Laws and Con- 
-sequences. London: Macmillan. 
+Concepts and Methods. Harvard University Press. 
+Galton, F. (1886). Regression towards mediocrity in hereditary stature. Journal of the Anthropological Institute of Great Britain and Ireland, 15:246-263. 
+Galton, F. (1869). Hereditary Genius: An Inquiry into its Laws and Consequences. London: Macmillan. 
  
   Wachsmuth, A.W., Wilkinson L., Dallal G.E. (2003). Galton's bend: A 
 previously undiscovered nonlinearity in Galton's family stature regression 
-data. The American Statistician, 57, 190-1922.
+data. The American Statistician, 57, 190-192.
 }
 
 \seealso{The other Galton data sets:   \code{\link{heights}}, \code{\link{peas}},\code{\link{cubits}}}

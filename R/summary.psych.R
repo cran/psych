@@ -66,13 +66,13 @@ if(omega) {
  cat("Alpha: ",round(object$alpha,digits),"\n") 
  cat("Omega Hierarchical:  " ,round(object$omega_h,digits),"\n")
  cat("Omega Total:  " ,round(object$omega.tot,digits),"\n")
- numfactors <- dim(object$schmid$sl)[2] -2
+ numfactors <- dim(object$schmid$sl)[2] -3
   eigenvalues <- diag(t(object$schmid$sl[,1:numfactors]) %*% object$schmid$sl[,1:numfactors])
        cat("\nWith eigenvalues of:\n")
        print(eigenvalues,digits=2)
    maxmin <- max(eigenvalues[2:numfactors])/min(eigenvalues[2:numfactors])
    gmax <- eigenvalues[1]/max(eigenvalues[2:numfactors])
-   cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
+  # cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
    cat("The degrees of freedom for the model is",object$schmid$dof," and the fit was ",round(object$schmid$objective,digits),"\n")
    	if(!is.na(object$schmid$n.obs)) {cat("The number of observations was ",object$schmid$n.obs, " with Chi Square = ",round(object$schmid$STATISTIC,digits), " with prob < ", round(object$schmid$PVAL,digits),"\n")}
    	
@@ -80,7 +80,11 @@ if(omega) {
      if(!is.null(object$stats$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$stats$crms,digits),"\n") }
     if(!is.null(object$schmid$RMSEA)) {cat("\nRMSEA and the ",object$schmid$RMSEA[4]  ,"confidence intervals are ",round(object$schmid$RMSEA[1:3],digits+1))  }
    	if(!is.null(object$schmid$BIC)) {cat("\nBIC = ",round(object$schmid$BIC,digits))}	
-   	
+   	  if(!is.null(object$ECV))  cat("Explained Common Variance of the general factor = ", round(object$ECV,digits),"\n")
+   	 cat("\n Total, General and Subset omega for each subset\n")
+   colnames(object$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   print(round(t(object$omega.group),digits))
+   
    	
    	
            } 

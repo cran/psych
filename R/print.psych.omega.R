@@ -90,6 +90,9 @@ if(is.null(cut)) cut <- .2
   #cat("\nMultiple R square of scores with factors      " ,round(x$stats$R2,digits))
   #cat("\nMinimum correlation of factor score estimates ", round(2*x$stats$R2 -1,digits),"\n")
    
+   cat("\n Total, General and Subset omega for each subset\n")
+   colnames(x$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   print(round(t(x$omega.group),digits))
    
    #now, see if there are any confidence intervals to report
    if(!is.null(xx$ci)) {

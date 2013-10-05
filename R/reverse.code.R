@@ -5,22 +5,34 @@ function(keys,items,mini=NULL,maxi=NULL) {
  if(is.null(maxi)) {colMax <- apply(items,2,max,na.rm=TRUE)} else {colMax <- maxi}
  if(is.null(mini)) {colMin <- apply(items,2,min,na.rm=TRUE) } else {colMin <-mini}
  colAdj <- colMax+colMin
+ 
+ if(length(keys) < nvar) {     
+ temp <- keys 
+ if(is.character(temp)) temp <- match(temp,colnames(items))
+ keys <- rep(1,nvar)
+ keys[temp] <- -1
+ }
+
  keys.d <- diag(keys,nvar,nvar)
  items[is.na(items)] <- -9999  #a way of using matrix operations even for missing data
  reversed <- items %*% keys.d 
- keys[keys > 0] <- 0
- keys <- abs(keys*colAdj)   #now we need to add the adjustments to the ones we flipped
- new <- t(keys + t(reversed))
- new[abs(new) > 999] <- NA     
+ 
+ adj <- abs(keys*colAdj)   #now we need to add the adjustments to the ones we flipped
+ new <- t(adj + t(reversed))
+ new[abs(new) > 999] <- NA 
+ colnames(new) <- colnames(items)
+ colnames(new)[keys < 0] <- paste(colnames(new)[keys < 0],"-",sep="")    
  return(new) }
  
+ #corrected April 3, 2010 to properly do matrix addition
+#modified Sept 14, 2013  to allow symbolic names and to allow for just specifying the ones to reversed
+#suggested by David Stanley
+
  
  "rescale" <-  function(x,mean=100,sd=15,df=TRUE) {if(df) {x <- data.frame(t(t(scale(x))*sd+mean))
 } else {x <- t( t(scale(x))*sd +mean)}
 return(x)
 }
-#corrected April 3, 2010 to properly do matrix addition
- 
  
  
  

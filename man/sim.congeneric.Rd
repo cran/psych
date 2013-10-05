@@ -6,7 +6,8 @@
 \description{Classical Test Theory (CTT) considers four or more tests to be congenerically equivalent if all tests may be expressed in terms of one factor and a residual error.  Parallel tests are the special case where (usually two) tests have equal factor loadings.  Tau equivalent tests have equal factor loadings but may have unequal errors.  Congeneric tests may differ in both factor loading and error variances.
 }
 \usage{
-sim.congeneric(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short = TRUE, categorical=FALSE, low=-3,high=3)
+sim.congeneric(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short = TRUE, 
+              categorical=FALSE, low=-3,high=3)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,15 +36,18 @@ The implied covariance matrix is just pattern \%*\% t(pattern).
 \author{ William Revelle }
 
 \seealso{  \code{\link{item.sim}} for other simulations, \code{\link{fa}} for an example of factor scores, \code{\link{irt.fa}} and \code{\link{polychoric}} for the treatment of item data with discrete values.}
+
 \examples{
 test <- sim.congeneric(c(.9,.8,.7,.6))   #just the population matrix
 test <- sim.congeneric(c(.9,.8,.7,.6),N=100)   # a sample correlation matrix
 test <- sim.congeneric(short=FALSE, N=100)
 round(cor(test$observed),2) # show  a congeneric correlation matrix
 f1=fa(test$observed,scores=TRUE)
-round(cor(f1$scores,test$latent),2)  #factor score estimates are correlated with but not equal to the factor scores
+round(cor(f1$scores,test$latent),2)  
+     #factor score estimates are correlated with but not equal to the factor scores
 set.seed(42)
-items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
+#500 responses to 4 discrete items
+items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) 
 d4 <- irt.fa(items$observed)  #item response analysis of congeneric measures
 
 

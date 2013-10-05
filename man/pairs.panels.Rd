@@ -13,7 +13,9 @@
 \description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.
 }
 \usage{
-\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2,method="pearson", pch = 20,lm=FALSE, cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, ...)
+\method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
+     digits = 2,method="pearson", pch = 20,lm=FALSE, 
+     cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -56,9 +58,12 @@ If lm=TRUE, then the scatter plots are drawn above and below the diagonal, each 
 
 pairs.panels(attitude)   #see the graphics window
 data(iris)
-pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],pch=21,main="Fisher Iris data by Species") #to show color grouping
+pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
+        pch=21,main="Fisher Iris data by Species") #to show color grouping
 
-pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],pch=21,main="Fisher Iris data by Species",hist.col="red") #to show changing the diagonal
+pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
+   pch=21,main="Fisher Iris data by Species",hist.col="red") 
+   #to show changing the diagonal
 
 #demonstrate not showing the data points
 data(sat.act)

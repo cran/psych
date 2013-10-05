@@ -105,7 +105,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	
     	 if(sd) {xse <- x.stats$sd[i] } else {xse  <- x.stats$se[i]}
     	
-    	if(sd) {ci <- 1} else { ci <- qt(1-alpha/2,x.stats$n[i])}
+    	if(sd) {ci <- 1} else { ci <- qt(1-alpha/2,x.stats$n[i]-1)}  #corrected Sept 11, 2013
     	  if(is.finite(xse) & xse>0)  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 
     	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
@@ -160,7 +160,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
       
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
-    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n)}
+    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n-1)}
     	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)}  else {
     	    
     	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)} 

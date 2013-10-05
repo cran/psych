@@ -15,8 +15,12 @@ See the other structural diagramming functions, \code{\link{fa.diagram}} and \co
 In addition 
 }
 \usage{
-omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut,simple=TRUE,errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE, ...) 
-omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
+omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut,simple=TRUE,
+      errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,
+    main=NULL,cex=NULL,color.lines=TRUE, ...) 
+omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), 
+    node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  
+    rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
 }
 
 \arguments{

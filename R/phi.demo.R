@@ -19,12 +19,13 @@ trunc.cor<- cor(d.mat)                 #find the Pearson correlations
 freq <- apply(d.mat,2,mean)                    #find the frequencies of scores
 
 
- #first demonstrate the polychoric function
+ #first demonstrate the tetrachoric function
+
  tetra <- tetrachoric(d.mat[,3:7],correct=FALSE)
- 
+
 for (i in 4:length(d.mat)) {
    for (j in 3:i) {
-       trunc.cor[j,i]<- phi2poly(trunc.cor[i,j],freq[i],freq[j]) 
+       trunc.cor[j,i]<- phi2tetra(trunc.cor[i,j],freq[i],freq[j]) 
        }}
   return(list(tetrachoric=tetra, phis=trunc.cor))
 }

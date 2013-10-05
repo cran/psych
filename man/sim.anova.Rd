@@ -7,7 +7,8 @@
 }
 \usage{
 sim.anova(es1 = 0, es2 = 0, es3 = 0, es12 = 0, es13 = 0,
-    es23 = 0, es123 = 0, es11=0,es22=0, es33=0,n = 2,n1 = 2, n2 = 2, n3 = 2, within=NULL,r=.8,factors=TRUE,center = TRUE,std=TRUE)
+    es23 = 0, es123 = 0, es11=0,es22=0, es33=0,n = 2,n1 = 2, n2 = 2, n3 = 2, 
+    within=NULL,r=.8,factors=TRUE,center = TRUE,std=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -62,10 +63,13 @@ pairs.panels(data.df)   #show how the design variables are orthogonal
 summary(lm(DV~IV1*IV2*IV3,data=data.df))
 summary(aov(DV~IV1*IV2*IV3,data=data.df))
 set.seed(42)
-data.df <- sim.anova(es1=1,es2=.5,es13=1,center=FALSE)  # demonstrate the effect of not centering the data on the regression
+ #demonstrate the effect of not centering the data on the regression
+data.df <- sim.anova(es1=1,es2=.5,es13=1,center=FALSE)  #
 describe(data.df)
 #
-summary(lm(DV~IV1*IV2*IV3,data=data.df)) #this one is incorrect, because the IVs are not centered
+#this one is incorrect, because the IVs are not centered
+summary(lm(DV~IV1*IV2*IV3,data=data.df)) 
+
 summary(aov(DV~IV1*IV2*IV3,data=data.df)) #compare with the lm model
 #now examine multiple levels and quadratic terms
 set.seed(42)

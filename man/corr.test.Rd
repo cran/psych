@@ -22,6 +22,10 @@ corr.p(r,n,adjust="holm")
 \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}
 }{t = r* sqrt(n-1)/sqrt(1-r^2) }
 
+\deqn{se = \sqrt(\frac{1-r^2}{n-2}) }{se = sqrt((1-r^2)/(n-2))}
+
+The t and Standard Errors are returned as objects in the result, but are not normally displayed.
+
 The probability values may be adjusted using the Holm (or other) correction.  If the matrix is symmetric (no y data), then the original p values are reported below the diagonal and the adjusted above the diagonal.  Otherwise, all probabilities are adjusted (unless adjust="none").  This is made explicit in the output.
 }
 \value{
@@ -29,11 +33,16 @@ The probability values may be adjusted using the Holm (or other) correction.  If
   \item{n}{Number of cases per correlation}
   \item{t}{value of t-test for each correlation}
   \item{p}{two tailed probability of t for each correlation.  For symmetric matrices, p values adjusted for multiple tests are reported above the diagonal. }
+  \item{se}{standard error of the correlation}
 }
 
 \seealso{  \code{\link{cor.test}} for tests of a single correlation,  Hmisc::rcorr for an equivalant function, \code{\link{r.test}} to test the difference between correlations, and \code{\link{cortest.mat}} to test for equality of two correlation matrices. 
 
-In particular, see \code{\link{p.adjust}} for a discussion of p values associated with multiple tests.}
+Also see \code{\link{cor.ci}} for bootstrapped confidence intervals of Pearson, Spearman, Kendall, tetrachoric or polychoric correlations.  In addition \code{\link{cor.ci}} will find bootstrapped estimates of composite scales based upon a set of correlations (ala \code{\link{cluster.cor}}). 
+
+In particular, see \code{\link{p.adjust}} for a discussion of p values associated with multiple tests.
+
+Other useful functions related to finding and displaying correlations include \code{\link{lowerCor}} for finding the correlations and then displaying the lower off diagonal using the \code{\link{lowerMat}} function. \code{\link{lowerUpper}} to compare two correlation matrices.}
 \examples{
 data(sat.act)
 corr.test(sat.act)

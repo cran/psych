@@ -73,7 +73,8 @@ Promax(f3)
 target.rot(f3)
 m3 <- factanal(covmat=jen,factors=3)
 Promax(m3)  #example of taking the output from factanal
-#compare this rotation with the solution from a targeted rotation aimed for an independent cluster solution
+#compare this rotation with the solution from a targeted rotation aimed for 
+#an independent cluster solution
 target.rot(m3)
 #now try a bifactor solution
 fa(jen,3,rotate="bifactor")

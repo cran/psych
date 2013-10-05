@@ -1,26 +1,36 @@
  #polychoric factor analysis with confidence intervals
  "fa.poly" <- 
-function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=TRUE,...) {
+function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,scores="regression",oblique.scores=TRUE,...) {
  cl <- match.call()
-
+ ncat <- 8
 n.obs <- dim(x)[1]
 	tx <- table(as.matrix(x))
+	
 	if(dim(tx)[1] ==2) {tet <- tetrachoric(x)
-	    typ = "tet"} else {tet <- polychoric(x)
-	    typ = "poly"}
+	    typ = "tet"} else {
+	    
+	    tab <- apply(x,2,function(x) table(x))
+if(is.list(tab)) {len <- lapply(tab,function(x) length(x))} else {len <- dim(tab)[1] }
+nvar <- ncol(x)
+dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
+pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
+cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
+if(length(pvars)==ncol(x)) {tet <- polychoric(x)
+	    typ = "poly"} else {tet <- mixed.cor(x)
+	    typ="mixed" }}
  r <- tet$rho
- f <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+ f <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,scores=scores,...) #call fa with the appropriate parameters
  f$Call <- cl
  fl <- f$loadings  #this is the original
  nvar <- dim(fl)[1]
-
+ 
  if(n.iter > 1) {
  e.values <- list(pc =list(),fa <- list())
  replicates <- list()
  rep.rots <- list()
  for (trials in 1:n.iter) {
  xs <- x[sample(n.obs,n.obs,replace=TRUE),]
-  if(typ=="poly") {tets <- polychoric(xs)} else {tets <- tetrachoric(xs)}
+  if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
    					e.values[["pc"]][[trials]] <- values.samp
@@ -39,13 +49,15 @@ replicates <- matrix(unlist(replicates),ncol=nfactors*nvar,byrow=TRUE)
 
 if(!is.null( f$Phi) ) {rep.rots <- matrix(unlist(rep.rots),ncol=nfactors*(nfactors-1)/2,byrow=TRUE) 
        z.rot <- fisherz(rep.rots)
-       means.rot <- fisherz2r(colMeans(z.rot,na.rm=TRUE))
+       means.rot <- colMeans(z.rot,na.rm=TRUE)
       sds.rot <- apply(z.rot,2,sd, na.rm=TRUE)
       sds.rot <- fisherz2r(sds.rot)
       ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
       ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot
+       means.rot <- fisherz2r(means.rot)
       ci.rot.lower <- fisherz2r(ci.rot.lower)
       ci.rot.upper <- fisherz2r(ci.rot.upper)
+      
       ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)
 } else  {rep.rots <- NULL
          means.rot <- NULL
@@ -60,12 +72,15 @@ z.replicates <- fisherz(replicates)  #convert to z scores
 means <- matrix(colMeans(z.replicates,na.rm=TRUE),ncol=nfactors)
 sds <-  matrix(apply(z.replicates,2,sd,na.rm=TRUE),ncol=nfactors)
 
-ci.lower <-  means + qnorm(p/2) * sds
+ci.lower <-  means + qnorm(p/2) * sds 
 ci.upper <- means + qnorm(1-p/2) * sds
 means <- fisherz2r(means)
 sds <- fisherz2r(sds)
 ci.lower <- fisherz2r(ci.lower)
 ci.upper <- fisherz2r(ci.upper)
+#ci.low.e <- apply(replicates,2, quantile, p/2)
+#ci.up.e <- apply(replicates,2,quantile, (1-p/2))
+#ci <- data.frame(lower = ci.lower, upper=ci.upper, low.e=ci.low.e, up.e=ci.up.e)
 ci <- data.frame(lower = ci.lower,upper=ci.upper)
 class(means) <- "loadings"
 #class(sds) <- "loadings"
@@ -79,15 +94,18 @@ e.stats <- list(ob.fa=f$values,ob.pc=f$e.values,pc=ei.pc,fa=ei.fa)
  
 
 results <- list(fa = f,rho=tet$rho,tau=tet$tau,n.obs=n.obs,means = means,sds = sds,ci = ci, means.rot=means.rot,sds.rot=sds.rot,ci.rot=ci.rot,Call= cl,replicates=replicates,rep.rots=rep.rots,e.values=e.values,e.stats=e.stats)
+
 class(results) <- c("psych","fa.ci")
 } else {results <- list(fa = f,rho=r,tau=tet$tau,n.obs=n.obs,Call=cl)
-       class(results) <- c("psych","irt.fa")
+       if(oblique.scores) {results$scores <- factor.scores(x,f=f$loadings,Phi=r,method=scores) } else {results$scores <- factor.scores(x,f=f$Structure,method=scores)}
+       class(results) <- c("psych","fa")
        }
 return(results)
  }
  #written May 3 2011
- 
- 
+ #revised Sept 13, 2013 to allow for mixed cor input
+ #and to find factor scores if data are given
+ #corrected Sept 20, 2013 to do the ci on the fisher zs and then convert back to r
 
  
  

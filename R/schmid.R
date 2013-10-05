@@ -75,7 +75,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
               warning("Omega_h and Omega_asymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
       
-       gfactor <- fa(factr,fm=fm)   #The first factor of the factor intercorrelation matrix
+     gfactor <- fa(factr,fm=fm)   #The first factor of the factor intercorrelation matrix
                   #added fm=fm  March 5, 2011
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
             if(option=="equal") {

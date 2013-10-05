@@ -28,12 +28,14 @@ http://www.census.gov/hhes/www/cpstables/032009/hhinc/new06_000.htm
 
 \examples{
 data(income)
-with(income[1:40,], plot(mean,prop, main="US family income for 2008",xlab="income", ylab="Proportion of families",xlim=c(0,100000)))
+with(income[1:40,], plot(mean,prop, main="US family income for 2008",xlab="income", 
+        ylab="Proportion of families",xlim=c(0,100000)))
 with (income[1:40,], points(lowess(mean,prop,f=.3),typ="l"))
 describe(income)
 
 
-with(all.income, plot(mean,prop, main="US family income for 2008",xlab="income", ylab="Proportion of families",xlim=c(0,250000)))
+with(all.income, plot(mean,prop, main="US family income for 2008",xlab="income", 
+                ylab="Proportion of families",xlim=c(0,250000)))
 with (all.income[1:50,], points(lowess(mean,prop,f=.25),typ="l"))
 #curve(100000* dlnorm(x, 10.8, .8), x = c(0,250000),ylab="Proportion")
 }

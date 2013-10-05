@@ -15,6 +15,7 @@
 \alias{sim.poly.ideal}
 \alias{sim.poly.ideal.npl}
 \alias{sim.poly.ideal.npn}
+\alias{sim.poly.mat}
 \title{Functions to simulate psychological/psychometric data.}
 \description{A number of functions in the psych package will generate simulated data with particular structures.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
@@ -39,19 +40,24 @@ sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
 sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
 sim.general(nvar=9,nfact =3, g=.3,r=.3,n=0) 
 sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
-sim.omega(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
+sim.omega(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = 
+  c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
 n = c(200,400)) 
 sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
 sim.irt(nvar = 5, n = 500, low=-3, high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,mod="logistic")
 sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
-sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
+sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+    mu=0,sd=1,cat=5,mod="logistic") 
 sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
 sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
-sim.poly.ideal(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
-sim.poly.ideal.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
-sim.poly.ideal.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,theta=NULL) 
+sim.poly.ideal(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+   mu=0,sd=1,cat=5,mod="logistic") 
+sim.poly.ideal.npn(nvar = 5,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+sim.poly.ideal.npl(nvar = 5,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+      mu=0,sd=1,cat=5,theta=NULL)
+sim.poly.mat(R,m,n) 
 
 }
 \arguments{
@@ -86,6 +92,8 @@ sim.poly.ideal.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,s
   \item{mod}{which IRT model to use, mod="logistic" simulates a logistic function, otherwise, a normal function}
   \item{cat}{Number of categories to simulate in sim.poly.  If cat=2, then this is the same as simulating t/f items and sim.poly is functionally equivalent to sim.irt}
   \item{theta}{The underlying latent trait value for each simulated subject}
+  \item{R}{A correlation matrix to be simulated using the sim.poly.mat function}
+  \item{m}{The matrix of marginals for all the items}
    }
 
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
@@ -116,6 +124,8 @@ For the 4PL and 4PN models, the upper asymptote, z= \eqn{\zeta} is also specifie
 The normal model (irt.npn calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logistic model the two models are practically identical.
 
 In parallel to the dichotomous IRT simulations are the poly versions which simulate polytomous item models.  They have the additional parameter of how many categories to simulate.  In addition, the \code{\link{sim.poly.ideal}} functions will simulate an ideal point or unfolding model in which the response probability varies by the distance from each subject's ideal point.  Some have claimed that this is a more appropriate model of the responses to personality questionnaires.  It will lead to simplex like structures which may be fit by a two factor model.  The middle items form one factor, the extreme a bipolar factor.
+
+The previous functions all assume one latent trait.  Alternatively, we can simulate dichotomous or polytomous items with a particular structure using the sim.poly.mat function.  This takes as input the population correlation matrix, the population marginals, and the sample size.  It returns categorical items with the specified structure.
 
 Other simulation functions in psych are:
 
@@ -161,15 +171,20 @@ sim.minor will generate such data sets with big factors with loadings of .6 to .
 
 \seealso{ See above}
 \examples{
-simplex <- sim.simplex() #create the default structure
-round(simplex,2)  #the correlation matrix
-
-
-
+simplex <- sim.simplex() #create the default simplex structure
+lowerMat(simplex) #the correlation matrix
+#create a congeneric matrix
 congeneric <- sim.congeneric()
-round(congeneric,2)
+lowerMat(congeneric)
 R <- sim.hierarchical()
-R
+lowerMat(R)
+#now simulate categorical items with the hierarchical factor structure.  
+#Let the items be dichotomous with varying item difficulties.
+marginals = matrix(c(seq(.1,.9,.1),seq(.9,.1,-.1)),byrow=TRUE,nrow=2)
+X <- sim.poly.mat(R=R,m=marginals,n=1000)
+lowerCor(X) #show the raw correlations
+#lowerMat(tetrachoric(X)$rho) # show the tetrachoric correlations (not run)
+#generate a structure 
 fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
 fy <- c(.6,.5,.4)
 Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
@@ -180,9 +195,11 @@ simp <- sim.simplex()
 #show the simplex structure using cor.plot
 cor.plot(simp,colors=TRUE,main="A simplex structure")
 #Show a STARS model 
-simp <- sim.simplex(alpha=.8,lambda=.8)
+simp <- sim.simplex(alpha=.8,lambda=.4)
 #show the simplex structure using cor.plot
 cor.plot(simp,colors=TRUE,main="State Trait Auto Regressive Simplex" )
+
+
 }
 
 

@@ -40,11 +40,13 @@ where \eqn{r_{xy}} is the normal correlation which may be decomposed into a with
 
 It is important to realize that the within group and between group correlations are independent of each other.  That is to say, inferring from the 'ecological correlation' (between groups) to the lower level (within group) correlation is in appropriate.  However, these between group correlations are still very meaningful, if inferences are made at the higher level.  
 
+There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value.  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
+
 Confidence values and significance  of  \eqn{r_{xy_{wg}}}, pwg, reflect the pooled number of cases within groups, while  \eqn{r_{xy_{bg}} }, pbg, the number of groups. These are not corrected for multiple comparisons.
 
 \code{\link{withinBetween}} is an example data set of the mixture of within and between group correlations. \code{\link{sim.multilevel}} will generate simulated data with a multilevel structure.
 
-The \code{\link{statsBy.boot}} function will randomize the grouping variable ntrials times and find the statsBy output.  This can take a long time and will produce a great deal of output.  This output can then be summarized for relevant variables using the \code{\link{statsBy.boot.summary}} function specifying the variable of interest.  
+The \code{\link{statsBy.boot}} function will randomize the grouping variable ntrials times and find the statsBy output.  This can take a long time and will produce a great deal of output.  This output can then be summarized for relevant variables using the \code{\link{statsBy.boot.summary}} function specifying the variable of interest.  These two functions are useful in order to find if the mere act of grouping leads to large between group correlations.
 
 Consider the case of the relationship between various tests of ability when the data are grouped by level of education (statsBy(sat.act,"education")) or when affect data are analyzed within and between an affect manipulation (statsBy(flat,group="Film") ). Note in this latter example, that because subjects were randomly assigned to Film condition for the pretest, that the pretest ICC1s cluster around 0. 
 
@@ -62,6 +64,10 @@ Consider the case of the relationship between various tests of ability when the 
 \item{etabg}{The correlation of the data with the group means.}
 \item{pbg}{The probability of the between group correlation}
 \item{pwg}{The probability of the within group correlation}
+\item{r}{In the case that we want the correlations in each group, r is a list of the within group correlations for every group.}
+\item{within}{is just another way of displaying these correlations.  within is a matrix which reports the lower off diagonal correlations as one row for each group.}
+\item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes. }
+
 }
 \references{ Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation and prediction.  Harcourt Brace.
 

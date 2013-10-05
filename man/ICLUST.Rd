@@ -134,8 +134,10 @@ Revelle, W. (in prep) An introduction to psychometric theory with applications i
 
 
 To view the cluster structure more closely, it is possible to save the graphic output as a pdf and then magnify this using a pdf viewer.  This is useful when clustering a large number of variables.
+
+In order to sort the clusters by cluster loadings, use \code{\link{iclust.sort}}.
 }
-\seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
+\seealso{ \code{\link{iclust.sort}}, \code{\link{ICLUST.graph}}, \code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 
 \examples{
 test.data <- Harman74.cor$cov

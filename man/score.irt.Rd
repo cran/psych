@@ -9,10 +9,15 @@
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{score.irt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. 
 }
 \usage{
-score.irt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic")  #the higher order call just calls 
-score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic")  #for dichotomous items 
-score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-5,5)) #for polytomous items
-irt.stats.like(items,stats,keys=NULL,cut=.3) #to create irt like statistics for plotting
+score.irt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic") 
+ #the higher order call just calls one of the next two
+  #for dichotomous items 
+score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-5,5),mod="logistic") 
+  #for polytomous items
+score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-5,5))
+    #to create irt like statistics for plotting
+irt.stats.like(items,stats,keys=NULL,cut=.3)
+   
 irt.tau(x)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -59,15 +64,16 @@ score.irt is just a wrapper to score.irt.poly and score.irt.2
 
 
 \seealso{
-\code{\link{irt.fa}} for finding the parameters. For more conventional scoring algorithms see \code{\link{score.items}}.  For more conventional IRT estimations, see the ltm package.
+\code{\link{irt.fa}} for finding the parameters. For more conventional scoring algorithms see \code{\link{score.items}}. \code{\link{irt.responses}} will plot the empirical response patterns for the alternative response choices for  multiple choice items. For more conventional IRT estimations, see the ltm package.
 }
 \examples{
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
 test <- irt.fa(d9$items)
 scores <- score.irt(test,d9$items)
 scores.df <- data.frame(scores,true=d9$theta) #combine the estimates with the true thetas.
-pairs.panels(scores.df,pch=".") #with all the data, why bother ?
-title("Comparing IRT and classical with complete data",line=3)
+pairs.panels(scores.df,pch=".",
+main="Comparing IRT and classical with complete data") 
+#with all the data, why bother ?
 
 #now delete some of the data
 d9$items[1:333,1:3] <- NA
@@ -75,8 +81,9 @@ d9$items[334:666,4:6] <- NA
 d9$items[667:1000,7:9] <- NA
 scores <- score.irt(test,d9$items)
 scores.df <- data.frame(scores,true=d9$theta) #combine the estimates with the true thetas.
-pairs.panels(scores.df, pch=".") #with missing data, the theta estimates are noticably better.
-title("Comparing IRT and classical with random missing data",line=3)
+pairs.panels(scores.df, pch=".",
+main="Comparing IRT and classical with random missing data")
+ #with missing data, the theta estimates are noticably better.
 
 
 v9 <- sim.irt(9,1000,-2.,2.,mod="normal") #dichotomous items
@@ -91,10 +98,13 @@ items[334:666,3:7] <- NA
 items[667:1000,1:4] <- NA
 scores <- score.irt(test,items)
 unitweighted <- score.irt(items=items,keys=rep(1,9))
-scores.df <- data.frame(v9$theta[ord],scores,unitweighted) #combine the estimates with the true thetas.
+#combine the estimates with the true thetas.
+scores.df <- data.frame(v9$theta[ord],scores,unitweighted) 
+   
 colnames(scores.df) <- c("True theta","irt theta","total","fit","rasch","total","fit")
-pairs.panels(scores.df,pch=".") #with missing data, the theta estimates are noticably better estimates of the generating theta than calling them all equal
-title("Comparing IRT and classical with missing data",line=3)
+pairs.panels(scores.df,pch=".",main="Comparing IRT and classical with missing data") 
+ #with missing data, the theta estimates are noticably better estimates 
+ #of the generating theta than calling them all equal
  
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

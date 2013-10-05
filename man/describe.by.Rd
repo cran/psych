@@ -5,7 +5,7 @@
 \description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Partly a wrapper for by and \code{\link{describe}}
 }
 \usage{
-describeBy(x, group=NULL,mat=FALSE,type=3,...)
+describeBy(x, group=NULL,mat=FALSE,type=3,digits=15,...)
 describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
 }
 %- maybe also 'usage' for other objects documented here.
@@ -15,6 +15,7 @@ describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
   \item{group}{a grouping variable or a list of grouping variables}
   \item{mat}{provide a matrix output rather than a list}
   \item{type}{Which type of skew and kurtosis should be found}
+  \item{digits}{When giving matrix output, how many digits should be reported?}
   
   \item{...}{parameters to be passed to describe}
 }
@@ -48,8 +49,9 @@ An alternative function (\code{\link{statsBy}}) returns a list of means, n, and 
 data(sat.act)
 describeBy(sat.act,sat.act$gender) #just one grouping variable	
 #describeBy(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
-des.mat <- describeBy(sat.act$age,sat.act$education,mat=TRUE) #matrix  (data.frame) output 
-des.mat <- describeBy(sat.act$age,list(sat.act$education,sat.act$gender),mat=TRUE)  #matrix output
+des.mat <- describeBy(sat.act$age,sat.act$education,mat=TRUE) #matrix (data.frame) output 
+des.mat <- describeBy(sat.act$age,list(sat.act$education,sat.act$gender),
+             mat=TRUE,digits=2)  #matrix output
 
 
 }

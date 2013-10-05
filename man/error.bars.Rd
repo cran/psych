@@ -4,8 +4,8 @@
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
 }
 \usage{
-error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable", main=NULL,
-    ylim = NULL, alpha=.05,sd=FALSE, labels = NULL, pos = NULL, 
+error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable",
+  main=NULL, ylim = NULL, alpha=.05,sd=FALSE, labels = NULL, pos = NULL, 
     arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE, ...)
 }
 
@@ -28,7 +28,7 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 }
 
-\details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors.  
+\details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors of the t-distribution.  
 
 If within=TRUE, the error bars are corrected for the correlation with the other variables by reducing the variance by a factor of (1-smc).  This allows for comparisons between variables.
 

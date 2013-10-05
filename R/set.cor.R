@@ -53,8 +53,23 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
      	 
      	 R2 <- colSums(beta * xy.matrix) } else { colnames(beta) <- colnames(data)[y]
      		 R2 <- sum(beta * xy.matrix)
-     	 	names(beta) <- colnames(data)[x]
+     	 	 names(beta) <- colnames(data)[x]
      		 names(R2) <- colnames(data)[y]}
+     		 
+     	#now find the unit weighted correlations  
+     	#reverse items in X and Y so that they are all positive signed
+     	 px <- principal(x.matrix)
+            keys.x <- diag(as.vector(1- 2* (px$loadings < 0 )) )
+         py <- principal(y.matrix)
+            keys.y <- diag(as.vector(1- 2* (py$loadings < 0 ) ))
+
+        Vx <- sum( keys.x %*% x.matrix %*% t(keys.x))
+        Vy <- sum( keys.y %*% y.matrix %*% t(keys.y))
+     		 
+     	ruw <- colSums(abs(xy.matrix))/sqrt(Vx)	 
+     	Ruw <- sum(diag(keys.x) %*% xy.matrix %*% t(keys.y))/sqrt(Vx * Vy)
+     	
+   
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
      	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
      	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
@@ -67,7 +82,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
      	            cc <- sqrt(cc2)
      	            T <- sum(cc2)/length(cc2)             
      	            }
-     	           
+     	       
      	if(!is.null(n.obs)) {k<- length(x)
      	                     
      	                     uniq <- (1-smc(x.matrix))
@@ -114,8 +129,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
      	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
-     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,Call = cl)} else {
-     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,Call = cl)}
+     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,Call = cl)} else {
+     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,Call = cl)}
      	class(set.cor) <- c("psych","set.cor")
      	return(set.cor)
      	}

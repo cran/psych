@@ -57,7 +57,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      	  Vitem <- sum(diag(m)) 
      	  gload <- gf$sl[,1]	
        
-       
+     
       gsq <- (sum(gload))^2
       uniq <- sum(gf$sl[,(nfactors+3)])
       if((nfactors == 1) && (fm=="pc")) {gsq <- Vt - uniq
@@ -80,7 +80,29 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
    
    omega.model <- omega.sem(omega,sl=sl)
      
-     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model)
+     #find the subset omegas
+     omg <- omgo <- omt<-  rep(NA,nfactors+1)
+     sub <- apply(gf$sl,1,function(x) which.max(abs(x[2:(nfactors+1)])))
+     grs <- 0
+     for(group in( 1:nfactors)) {
+     groupi <- which(sub==group)
+     if(length(groupi) > 0) {
+      Vgr <- sum(m[groupi,groupi])
+      gr <- sum(gf$sl[groupi,(group+1)])
+      grs <- grs + gr^2
+      omg[group+1] <- gr^2/Vgr
+      omgo[group+1] <- sum(gf$sl[groupi,1])^2/Vgr
+      omt[group+1] <- (gr^2+ sum(gf$sl[groupi,1])^2)/Vgr
+     }
+     omgo[1] <- sum(gf$sl[,1])^2/sum(m)  #omega h
+     omg[1] <- grs/sum(m)  #omega of subscales
+     omt[1] <- om.tot 
+     om.group <- data.frame(total=omt,general=omgo,group=omg)
+     rownames(om.group) <- colnames(gf$sl)[1:(nfactors+1)]
+     
+     
+     }
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group)
 
       class(omega) <- c("psych","omega")
      if(plot)  omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)

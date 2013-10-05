@@ -16,7 +16,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     	max.x <- max(x.stats$mean,na.rm=TRUE)
     	max.se <- max(x.stats$se,na.rm=TRUE)
     	 {if(!sd) {
-   		          if(is.null(stats)) {ci <- qt(1-alpha/2,x.stats$n) } else {ci <- rep(1,z) }}  else {ci <- sqrt(x.stats$n) 
+   		          if(is.null(stats)) {ci <- qt(1-alpha/2,x.stats$n-1) } else {ci <- rep(1,z) }}  else {ci <- sqrt(x.stats$n) 
    		           max.se <- max(ci * x.stats$se,na.rm=TRUE)} }
     if(is.null(main)) {if(!sd) { main = paste((1-alpha)*100,"% confidence limits",sep="") } else {main= paste("Means and standard deviations")} }
     if(is.null(ylim)) {if(is.na(max.x) | is.na(max.se) | is.na(min.x) | is.infinite(max.x)| is.infinite(min.x) | is.infinite(max.se)) {
@@ -62,3 +62,4 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    #April 5, 2010: the within parameter was added to allow for error bars in repeated measure designs 
    #modified June, 2010 to allow for easier use of stats input
    #modified June 15, 2010 to allow color bars to match color of lines and to have standard deviations as an option
+   #modified Sept 11, 2013 to pass n -1 to the qt function (reported by Trevor Dodds)

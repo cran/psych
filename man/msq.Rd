@@ -18,14 +18,14 @@
     \item{\code{aroused}}{a numeric vector}
     \item{\code{ashamed}}{a numeric vector}
     \item{\code{astonished}}{a numeric vector}
-    \item{\code{at-ease}}{a numeric vector}
-    \item{\code{at-rest}}{a numeric vector}
+    \item{\code{at.ease}}{a numeric vector}
+    \item{\code{at.rest}}{a numeric vector}
     \item{\code{attentive}}{a numeric vector}
     \item{\code{blue}}{a numeric vector}
     \item{\code{bored}}{a numeric vector}
     \item{\code{calm}}{a numeric vector}
     \item{\code{cheerful}}{a numeric vector}
-    \item{\code{clutched-up}}{a numeric vector}
+    \item{\code{clutched.up}}{a numeric vector}
     \item{\code{confident}}{a numeric vector}
     \item{\code{content}}{a numeric vector}
     \item{\code{delighted}}{a numeric vector}
@@ -40,7 +40,7 @@
     \item{\code{excited}}{a numeric vector}
     \item{\code{fearful}}{a numeric vector}
     \item{\code{frustrated}}{a numeric vector}
-    \item{\code{full-of-pep}}{a numeric vector}
+    \item{\code{full.of.pep}}{a numeric vector}
     \item{\code{gloomy}}{a numeric vector}
     \item{\code{grouchy}}{a numeric vector}
     \item{\code{guilty}}{a numeric vector}
@@ -52,8 +52,7 @@
     \item{\code{intense}}{a numeric vector}
     \item{\code{interested}}{a numeric vector}
     \item{\code{irritable}}{a numeric vector}
-    \item{\code{jittery}}{a numeric vector}
-    
+    \item{\code{jittery}}{a numeric vector}    
     \item{\code{lively}}{a numeric vector}
     \item{\code{lonely}}{a numeric vector}
     \item{\code{nervous}}{a numeric vector}
@@ -65,8 +64,7 @@
     \item{\code{relaxed}}{a numeric vector}
     \item{\code{sad}}{a numeric vector}
     \item{\code{satisfied}}{a numeric vector}
-    \item{\code{scared}}{a numeric vector}
-    
+    \item{\code{scared}}{a numeric vector}  
     \item{\code{serene}}{a numeric vector}
     \item{\code{sleepy}}{a numeric vector}
     \item{\code{sluggish}}{a numeric vector}
@@ -83,7 +81,7 @@
     \item{\code{vigorous}}{a numeric vector}
     \item{\code{wakeful}}{a numeric vector}
     \item{\code{warmhearted}}{a numeric vector}
-    \item{\code{wide-awake}}{a numeric vector}
+    \item{\code{wide.awake}}{a numeric vector}
      \item{\code{alone}}{a numeric vector}
    \item{\code{kindly}}{a numeric vector}
    \item{\code{scornful}}{a numeric vector}
@@ -170,23 +168,26 @@ data(msq)
 describe(msq)
 
 #score them for 12 short scales
-keys <- make.keys(75,list(
-       EA=c(1, 26, 69, 70, 72, 31, 44, -57,-65,-23),
-       TA =c(40,43,29, 64, 16, -51, -61,-47, -14, -10),
-       PA =c(1,28,62, 39, 21, 11, 41, 27, 49, 3),
-       NAf =c(43,46, 55, 2, 34, 7, 22,68,36, 42),
-       HAct = c(1,6, 63, 40, 8),
-       aPA = c(25, 28, 27,44),
-       uNA = c(14, 56, 52, 10, 18, 9),
-       pa = c(35,71,48, 15, 19 ),
-       LAct = c(51, 38, 37, 61, 66),
-       uPA =c(24, 13, 58, 65, 23),
-       naf = c(53, 12, 67, 32, 33),
-       aNA = c(43, 5, 46, 29, 22))
+ 
+keys <- make.keys(colnames(msq)[1:75], list(
+ EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
+       "lively", "-sleepy", "-tired", "-drowsy"),
+  TA =c("intense", "jittery", "fearful", "tense", "clutched.up", "-quiet", "-still", 
+       "-placid", "-calm", "at.rest") ,
+  PA =c("active", "excited", "strong", "inspired", "determined", "attentive", 
+          "interested", "enthusiastic", "proud", "alert"),
+ NAf =c("jittery", "nervous", "scared", "afraid", "guilty", "ashamed", "distressed",  
+         "upset", "hostile", "irritable" ),
+ HAct = c("active", "aroused", "surprised", "intense", "astonished"),
+ aPA = c("elated", "excited", "enthusiastic", "lively"),
+ uNA = c("calm", "serene", "relaxed", "at.rest", "content", "at.ease"),
+ pa = c("happy", "warmhearted", "pleased", "cheerful", "delighted" ),
+ LAct = c("quiet", "inactive", "idle", "still", "tranquil"),
+  uPA =c( "dull", "bored", "sluggish", "tired", "drowsy"),
+ naf = c( "sad", "blue", "unhappy", "gloomy", "grouchy"),
+ aNA = c("jittery", "anxious", "nervous", "fearful", "distressed"))
        )
-    
        
-rownames(keys) <- colnames(msq)[1:75]
 msq.scores <- score.items(keys,msq[1:75])
 
 #show a circumplex structure 

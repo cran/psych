@@ -64,13 +64,15 @@ n <- cosinor(time,noisy)
 small.pure <- pure[c(8,11,14,17,20,23),]
 #small.noisy <- noisy[c(6:18),]
 small.noisy <- noisy[c(8,11,14,17,20,23),]
-matplot(small.noisy,type="l",main="Noisy circadian arousal rhythms",xlab="time of day",ylab="Arousal") 
+matplot(small.noisy,type="l",main="Noisy circadian arousal rhythms",
+         xlab="time of day",ylab="Arousal") 
 #sp <- cosinor(time[c(6:18)],small.pure)  #linear fit
 sp <- cosinor(time[c(8,11,14,17,20,23)],small.pure)
 spo <- cosinor(time[c(8,11,14,17,20,23)],small.pure,opti=TRUE) #iterative fit
 sn <- cosinor(time[c(8,11,14,17,20,23)],small.noisy) #linear
 sno <- cosinor(time[c(8,11,14,17,20,23)],small.noisy,opti=TRUE) #iterative
-sum.df <- data.frame(pure=p,noisy = n, small=sp,small.noise = sn, small.opt=spo,small.noise.opt=sno)
+sum.df <- data.frame(pure=p,noisy = n, small=sp,small.noise = sn, 
+        small.opt=spo,small.noise.opt=sno)
 round(sum.df,2)
 round(circadian.cor(sum.df[,c(1,3,5,7,9,11)]),2)  #compare alternatives 
 round(cor(sum.df[,c(2,4,6,8,10,12)]),2) 

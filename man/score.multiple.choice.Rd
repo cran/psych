@@ -5,7 +5,8 @@
 \description{Ability tests are typically multiple choice with one right answer.  score.multiple.choice takes a scoring key and a data matrix (or data.frame) and finds total or average number right for each participant.  Basic test statistics (alpha, average r, item means, item-whole correlations) are also reported. 
 }
 \usage{
-score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL, missing = TRUE, impute = "median", digits = 2,short=TRUE)
+score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL, 
+      missing = TRUE, impute = "median", digits = 2,short=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -6,8 +6,8 @@
 The minkowski function is included as a generalized ellipse.
 }
 \usage{
-ellipses(x, y = NULL, add = FALSE, smooth=TRUE, lm=FALSE,data=TRUE, n = 2,span=2/3, 
-       iter=3, col = "red", xlab =NULL,ylab= NULL, ...)
+ellipses(x, y = NULL, add = FALSE, smooth=TRUE, lm=FALSE,data=TRUE, n = 2,
+ span=2/3, iter=3, col = "red", xlab =NULL,ylab= NULL, ...)
 minkowski(r=2,add=FALSE,main=NULL,xl=1,yl=1) 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -44,7 +44,8 @@ minkowski(r=2,add=FALSE,main=NULL,xl=1,yl=1)
 \examples{
 data(galton)
 ellipses(galton,lm=TRUE)
-ellipses(galton$parent,galton$child,xlab="Mid Parent Height",ylab="Child Height") #input are two vectors
+ellipses(galton$parent,galton$child,xlab="Mid Parent Height",
+                  ylab="Child Height") #input are two vectors
 data(sat.act)
 ellipses(sat.act)  #shows the pairs.panels ellipses
 minkowski(2,main="Minkowski circles")

@@ -5,8 +5,9 @@
 \description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
 }
 \usage{
-score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",  min = NULL, max = NULL, digits = 2)
-response.frequencies(items,max=10,uniqueitems=NULL)
+score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
+ delete=TRUE, min = NULL, max = NULL, digits = 2)
+  response.frequencies(items,max=10,uniqueitems=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,6 +17,7 @@ response.frequencies(items,max=10,uniqueitems=NULL)
   \item{ilabels}{ a vector of item labels. }
   \item{missing}{missing = TRUE is the normal case and data are imputed according to the impute option.  missing=FALSE, only complete cases are scored.}
   \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores.  }
+  \item{delete}{if delete=TRUE, automatically delete items with no variance (and issue a warning)}
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
   \item{uniqueitems}{If specified, the set of possible unique response categories}
@@ -94,13 +96,15 @@ Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revel
 
 \seealso{\code{\link{make.keys}} for a convenient way to create the keys file,  \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}, \code{\link{guttman}} for item/scale analysis.
 
-In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores.}
+In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.}
 \examples{
 
 #see  the example including the bfi data set
 data(bfi)
- keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
- keys <- make.keys(28,keys.list,item.labels=colnames(bfi))
+keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
+  conscientious=c("C1","C2","C2","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
+  neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
+  keys <- make.keys(bfi,keys.list)
  scores <- score.items(keys,bfi,min=1,max=6)
  summary(scores)
  #to get the response frequencies, we need to not use the age variable

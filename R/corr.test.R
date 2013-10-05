@@ -10,16 +10,17 @@ n <- t(!is.na(x)) %*% (!is.na(y))}
 if(use=="complete") n <- min(n)
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
 p <- 2*(1 - pt(abs(t),(n-2)))
+se <- sqrt((1-r*r)/(n-2))
 p[p>1] <- 1
 if (adjust !="none") {
   if (is.null(y)) {lp <- upper.tri(p)  #the case of a symmetric matrix
      pa <- p[lp]
-     pa <- p.adjust(pa)
+     pa <- p.adjust(pa,adjust)
      p[upper.tri(p,diag=FALSE)] <- pa
   } else {
-  p[] <- p.adjust(p)  #the case of an asymmetric matrix 
+  p[] <- p.adjust(p,adjust)  #the case of an asymmetric matrix 
 } }
-result <- list(r = r,n=n,t=t,p=p,adjust=adjust,sym =sym, Call=cl)
+result <- list(r = r,n=n,t=t,p=p,se=se,adjust=adjust,sym =sym, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
 }
@@ -38,10 +39,10 @@ if (adjust !="none") {
 if(isSymmetric(p)) {
  lp <- upper.tri(p)  #the case of a symmetric matrix
      pa <- p[lp]
-     pa <- p.adjust(pa)
+     pa <- p.adjust(pa,adjust)
      p[upper.tri(p,diag=FALSE)] <- pa
   }
-  p[] <- p.adjust(p)  #the case of an asymmetric matrix
+  p[] <- p.adjust(p ,adjust)  #the case of an asymmetric matrix
 } 
 result <- list(r = r,n=n,t=t,p=p,Call=cl)
 class(result) <- c("psych", "corr.test")

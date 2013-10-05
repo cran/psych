@@ -12,9 +12,13 @@
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
 read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimited
-read.clipboard.lower(diag=TRUE,names=FALSE,...)  #read in a matrix given the lower off diagonal
-read.clipboard.upper(diag=TRUE,names=FALSE,...)
-read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  #read in data using a fixed format width (see read.fwf for instructions)
+ #read in a matrix given the lower off diagonal
+ read.clipboard.lower(diag=TRUE,names=FALSE,...) 
+ read.clipboard.upper(diag=TRUE,names=FALSE,...)
+
+#read in data using a fixed format width (see read.fwf for instructions)
+read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  
+
 
 }
 %- maybe also 'usage' for other objects documented here.

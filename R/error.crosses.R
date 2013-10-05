@@ -19,8 +19,8 @@ function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos
      if(is.null(ylab)) ylab <- "Group 2"
      plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
      
-    cix <- qt(1-alpha/2,x$n)
-    ciy <- qt(1-alpha/2,y$n)
+    cix <- qt(1-alpha/2,x$n-1)
+    ciy <- qt(1-alpha/2,y$n-1)
      z <- dim(x)[1]
     if(sd) {x$se <- x$sd
             y$se <- y$sd
@@ -41,5 +41,5 @@ function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos
     	text(xcen,ycen,labels=lab[i],pos=locate[i],cex=1,offset=offset)     #puts in labels for all points
     	}	
    }
-
+#Sept 11, 2013 changed n to n-1 in call to qt  (following a suggestion by Trevor Dodds)
 

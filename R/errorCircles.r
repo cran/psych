@@ -20,8 +20,8 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
      if(is.null(ylab)) ylab <- "Group 2"
      plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
      
-    cix <- qt(1-alpha/2,x$n)
-    ciy <- qt(1-alpha/2,y$n)
+    cix <- qt(1-alpha/2,x$n-1) #modified Sept 11, 2013
+    ciy <- qt(1-alpha/2,y$n-1)
      z <- dim(x)[1]
     if(sd) {x$se <- x$sd
             y$se <- y$sd
@@ -116,8 +116,8 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
     }
      N <-x$n
      Nmax <- max(N)
-    cix <- qt(1-alpha/2,x$n)
-    ciy <- qt(1-alpha/2,y$n)
+    cix <- qt(1-alpha/2,x$n-1)
+    ciy <- qt(1-alpha/2,y$n-1)
      if(paired) {z <- nrow(x$mean) } else {z <- length(x$mean)}
     if(sd) {x$se <- x$sd
             y$se <- y$sd

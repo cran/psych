@@ -1,11 +1,12 @@
 "score.items"  <- 
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",  min=NULL,max=NULL,digits=2) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
    cl <- match.call()
    raw.data <- TRUE
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
      abskeys <- abs(keys)
+     keynames <- colnames(keys)
    num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
   num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
     if (!missing) items <-  na.omit(items) 
@@ -20,7 +21,18 @@
     items <- as.matrix(items)
     
     response.freq <- response.frequencies(items)
-    
+    item.var <- apply(items,2,sd,na.rm=TRUE)
+       bad <- which((item.var==0)|is.na(item.var))
+       if((length(bad) > 0) && delete) {
+       for (baddy in 1:length(bad)) {warning( "Item= ",colnames(items)[bad][baddy]  , " had no variance and was deleted from the data and the keys.")}
+       items <- items[,-bad]
+        keys <- as.matrix(keys[-bad,])
+       
+        n.items <- n.items - length(bad) 
+        abskeys <- abs(keys)
+        colnames(keys) <- keynames
+      
+        }
     item.means <- colMeans(items,na.rm=TRUE)
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
@@ -55,6 +67,7 @@
            num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
           # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
            		} # end of scale loop
+       	
            # we now need to treat the data as if we had done correlations at input
             C <- cov(items,use="pairwise")
             cov.scales <- t(keys) %*% C %*% keys
@@ -126,7 +139,7 @@
    if (!raw.data) { 
      if(impute =="none") {
        rownames(alpha.ob) <- "alpha.observed"
-       
+       if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
        results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,Call=cl)} else {
                             results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, Call=cl)}  } else {
    if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,Call=cl)} else{  

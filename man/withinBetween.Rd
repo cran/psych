@@ -40,7 +40,8 @@ Revelle, W. An introduction to psychometric theory with applications in R (in pr
  }
 \examples{
 data(withinBetween)
-pairs.panels(withinBetween,bg=c("red","blue","white","black")[withinBetween[,1]],pch=21,ellipses=FALSE)
+pairs.panels(withinBetween,bg=c("red","blue","white","black")[withinBetween[,1]],
+     pch=21,ellipses=FALSE)
 stats <- statsBy(withinBetween,'Group')
 print(stats,short=FALSE)
 }

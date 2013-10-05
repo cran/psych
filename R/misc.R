@@ -43,7 +43,7 @@ function(value,max,label=NULL) {
 if(class(stdout())[1]=="terminal")  #only print to the screen, not to a file
  { pc <- round(100 * value/max)
 if(ceiling(100 * value/max)==floor(100 * value/max)) {
-width <- 80
+width <- 100
 char="."
 nw <- nchar(char, "w")
 nb <- round(width * value/max )
@@ -52,6 +52,7 @@ nb <- round(width * value/max )
         cat(paste(c("\r  ",label," |", rep.int(char, nb), rep.int(" ", 
             nw * (width - nb)), sprintf("| %3d%%", pc)), collapse = ""))}
             }
+ flush.console()
 }
 
 
@@ -107,3 +108,36 @@ x2 <- x*2
 rx2 <- rx*2
 x.df <- data.frame(x,rx,x2,rx2,xg)
 return(x.df)}
+
+
+
+
+#shannon complexity index
+"shannon" <-  
+   function(x,correct=FALSE,base=2) {if(is.null(dim(x))) {
+        t <- table(x)
+        s <- sum(t)
+        p <- t/s
+        H <- -sum(p * log(p,base))     
+       if(correct) {
+           Hmax <- -log(1/length(p),base)
+           H <- H/Hmax}
+   } else {  H <- apply(x,2,function(x) shannon(x, correct=correct, base=base))}      
+     return(H)
+}
+
+
+test.all <- function(p) {
+ library(p,character.only=TRUE)
+  ob <- paste("package",p,sep=":")
+  ol <- objects(ob)
+  nf <- length(ol)
+  for(i in 1:nf) {
+    fn <- as.character(ol[[i]])
+    example(topic=fn,package=p,character.only=TRUE)
+    }
+ detach(ob,character.only=TRUE)
+}
+
+
+

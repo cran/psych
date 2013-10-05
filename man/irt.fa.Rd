@@ -78,7 +78,7 @@ The results of \code{\link{irt.fa}}  can be used by \code{\link{score.irt}} for 
 
 \seealso{\code{\link{fa}}, \code{\link{sim.irt}}, \code{\link{tetrachoric}}, \code{\link{polychoric}} as well as \code{\link{plot.psych}} for plotting the IRT item curves.
 
-See also \code{\link{score.irt}} for scoring items based upon these parameter estimates.
+See also \code{\link{score.irt}} for scoring items based upon these parameter estimates. \code{\link{irt.responses}}  will plot the empirical response curves for the alternative response choices for multiple choice items.
 
 }
 \examples{

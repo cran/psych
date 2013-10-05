@@ -4,7 +4,8 @@
 \description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixed.cor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
 }
 \usage{
-mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE, ncat=8, polycor=FALSE)
+mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE, 
+        ncat=8, polycor=FALSE,use="pairwise",method="pearson")
 }
 \arguments{
   \item{x}{A set of continuous variables (may be missing) or, if p and d are missing, the variables to be analyzed.}
@@ -15,6 +16,8 @@ mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE, ncat
   \item{global}{For polychorics, should the global values of the tau parameters be used, or should the pairwise values be used.  Set to local if errors are occurring.}
   \item{ncat}{The number of categories beyond which a variable is considered "continuous".}
   \item{polycor}{Should the polycor function from the polychor package be used?}
+  \item{use}{The various options to the \code{\link{cor}} function include "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs". The default here is "pairwise"}
+  \item{method}{The correlation method to use for the continuous variables. "pearson" (default), "kendall", or "spearman"}
 }
 \details{
 This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  

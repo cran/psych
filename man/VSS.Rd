@@ -7,8 +7,10 @@
 \description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice.
 }
 \usage{
-vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
-VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
+n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
+n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -91,7 +93,8 @@ Velicer, W. (1976) Determining the number of components from the matrix of parti
 
 \author{William Revelle}
 
-\seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{fa.parallel}}}
+\seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}},
+ \code{\link{fa.parallel}}}
 \examples{
 
 test.data <- Harman74.cor$cov

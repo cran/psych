@@ -7,8 +7,10 @@
 Radar plots and spider plots are just two of the many ways to show multivariate data.  \code{\link{radar}}  plots correlations as vectors ranging in length from 0 (corresponding to r=-1) to 1 (corresponding to an r=1).  The vectors are arranged radially around a circle. Spider plots connect the end points of each vector. The plots are most appropriate if the variables are organized in some meaningful manner. 
 }
 \usage{
-spider(y,x,data,labels=NULL,rescale=FALSE,center=FALSE,connect=TRUE,overlay=FALSE,scale=1,ncolors=31,fill=FALSE,main=NULL,...)
-radar(x,labels=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,add=FALSE,linetyp="solid", main="Radar Plot",...) 
+spider(y,x,data,labels=NULL,rescale=FALSE,center=FALSE,connect=TRUE,overlay=FALSE,
+    scale=1,ncolors=31,fill=FALSE,main=NULL,...)
+radar(x,labels=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,
+     add=FALSE,linetyp="solid", main="Radar Plot",...) 
 }
 
 \arguments{
@@ -43,7 +45,8 @@ op <- par(mfrow=c(3,2))
 spider(y=1,x=2:9,data=Thurstone,connect=FALSE) #a radar plot
 spider(y=1,x=2:9,data=Thurstone) #same plot as a spider plot
  spider(y=1:3,x=4:9,data=Thurstone,overlay=TRUE)
-spider(y=26:28,x=1:25,data=cor(bfi,use="pairwise"),fill=TRUE,scale=2) #make a somewhat oversized plot
+ #make a somewhat oversized plot
+spider(y=26:28,x=1:25,data=cor(bfi,use="pairwise"),fill=TRUE,scale=2) 
 par(op)
 }
 \keyword{ multivariate } 

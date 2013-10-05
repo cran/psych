@@ -153,7 +153,10 @@ if(n > 0) {
    if (sem) {om <- try(omegaSem(x$observed,om.fact,flip=flip,plot=FALSE,option=option))} else {
 om <- try(omega(x$observed,om.fact,flip=flip,plot=FALSE,option=option))}
           ic <- suppressWarnings(ICLUST(x$observed,1,plot=FALSE))} else {
-           if (sem) {om <- try(omegaSem(x$model,om.fact,flip=flip,plot=FALSE,option=option))} else {om <- try(omega(x$model,om.fact,flip=flip,plot=FALSE,option=option))}
+           if (sem) {om <- try(omegaSem(x$model,om.fact,flip=flip,plot=FALSE,option=option))} else {om <- try(omega(x$model,om.fact,flip=flip,plot=FALSE,option=option))
+           if(class(om)=="try-error") {message("Error in sem. iteration = ",i)
+            om <- NA
+            next}}
           ic <- suppressWarnings(ICLUST(x$model,1,plot=FALSE))}
 results
 if(sem) {results[i,"omega"] <- om$omegaSem$omega_h

@@ -12,8 +12,11 @@ if(is.null(upper)) {upper <- lower  #return two from one
 if(nrow(upper) !=ncol(upper)) {stop("upper matrix must be square")}
 if(nrow(lower) !=ncol(upper)) {stop("lower and upper matrices must have the same dimensions")}
 result <- lower
+colnames(result) <- colnames(upper)
+rownames(result) <-rownames(lower)
 if(diff) upper <- lower - upper
 result [lower.tri(result)] <- upper[lower.tri(upper)] 
 result <- t(result)
 diag(result) <- NA}
 return(result)}
+#revised Oct 6, 2013 to pick up row names and column names from the two matrices

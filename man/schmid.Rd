@@ -5,7 +5,8 @@
 
 }
 \usage{
-schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,...)
+schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",
+            n.obs=NA,option="equal",Phi=NULL,...)
 }
 
 \arguments{
@@ -49,7 +50,9 @@ A diagnostic tool for testing the appropriateness of a hierarchical model is p2 
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
 jen <- sim.hierarchical()  #create a hierarchical demo
-if(!require(GPArotation)) {message("I am sorry, you must have GPArotation installed to use schmid.")} else {p.jen <- schmid(jen,digits=2)   #use the oblimin rotation
+if(!require(GPArotation)) {
+   message("I am sorry, you must have GPArotation installed to use schmid.")} else {
+   p.jen <- schmid(jen,digits=2)   #use the oblimin rotation
 p.jen <- schmid(jen,rotate="promax") #use the promax rotation
 }
 }

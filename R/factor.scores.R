@@ -82,7 +82,7 @@
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }
-     #if ((max(R2) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
+     #if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
       r.scores <- cov2cor(t(w) %*% r %*% w) 
      
     

@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.3.2 \cr
-Date: \tab 2012-02-28\cr
+Version: \tab 1.3.9 \cr
+Date: \tab 2013--September--15\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -205,6 +205,7 @@ particular item characteristics \cr
 \link{sim.VSS}          \tab          Generate simulated data for the factor model\cr
 \link{phi.demo}          \tab       Create artificial data matrices for teaching purposes\cr
 \link{sim.hierarchical} \tab        Generate simulated correlation matrices with hierarchical or any structure\cr 
+\link{sim.spherical}    \tab        Generate three dimensional spherical data (generalization of circumplex to 3 space)\cr
 }
 
 
@@ -259,7 +260,6 @@ Miscellaneous functions\cr
 \link{phi2poly}         \tab         Given a phi coefficient, what is the polychoric correlation\cr
 \link{phi2poly.matrix}  \tab         Given a phi coefficient, what is the polychoric correlation (works on matrices)\cr
 \link{polar}           \tab          Convert 2 dimensional factor loadings to polar coordinates.\cr
-\link{polychor.matrix}   \tab        Create a matrix of polychoric  correlations from  a matrix of Yule correlations\cr
 \link{scaling.fits}     \tab         Compares alternative scaling solutions and gives goodness of fits \cr
 \link{scrub}   \tab            Basic data cleaning \cr
 \link{tetrachor}   \tab            Finds tetrachoric correlations \cr
@@ -269,8 +269,7 @@ Miscellaneous functions\cr
 \link{Yule}            \tab           Find the Yule Q coefficient of correlation \cr
 \link{Yule.inv}         \tab          What is the two by two table that produces a Yule Q with set marginals? \cr
 \link{Yule2phi}         \tab          What is the phi coefficient corresponding to a Yule Q with set marginals? \cr
-\link{Yule2phi.matrix}   \tab          Convert a matrix of Yule coefficients to a matrix of phi coefficients. \cr
-\link{Yule2phi.matrix}   \tab          Convert a matrix of Yule coefficients to a matrix of polychoric  coefficients. \cr
+\link{Yule2tetra}        \tab          Convert one or a matrix of Yule coefficients to tetrachoric coefficients. \cr
 }
 
 

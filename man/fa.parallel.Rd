@@ -6,9 +6,10 @@
 \description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original. fa.parallel.poly does this for tetrachoric or polychoric analyses.
 }
 \usage{
-fa.parallel(x, n.obs = NULL,fm="minres", fa="both", main = "Parallel Analysis Scree Plots",
-              n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
-fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres") 
+fa.parallel(x, n.obs = NULL,fm="minres", fa="both", 
+       main = "Parallel Analysis Scree Plots",
+        n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
+fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE) 
 \method{plot}{poly.parallel}(x,show.legend=TRUE,...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -19,6 +20,8 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres")
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
  \item{main}{ a title for the analysis }
  \item{n.iter}{Number of simulated analyses to perform}
+ \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See tetrachoric)}
+ \item{sim}{In the case of polychoric or tetrachoric data, in addition to randomizing the real data, should we compare the solution to random simulated data.  This will double the processing time, but basically show the same result.}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
  \item{SMC}{SMC=TRUE finds eigen values after estimating communalities by using SMCs.  smc = FALSE finds eigen values after estimating communalities with the first factor.}
  \item{ylabel}{Label for the y axis -- defaults to ``eigen values of factors and components", can be made empty to show many graphs}
@@ -42,6 +45,8 @@ For comparability with other algorithms (e.g, the paran function in the paran pa
  Printing the results will show the eigen values of the original data that are greater than simulated values.
  
  A sad observation about parallel analysis is that it is sensitive to sample size.  That is, for large data sets, the eigen values of random data are very close to 1.  This will lead to different estimates of the number of factors as a function of sample size.  Consider factor structure of the bfi data set (the first 25 items are meant to represent a five factor model).  For samples of 200 or less, parallel analysis suggests 5 factors, but for 1000 or more, six factors and components are indicated.  This is not due to an instability of the eigen values of the real data, but rather the closer approximation to 1 of the random data as n increases.
+ 
+ When simulating dichotomous data in fa.parallel.poly, the simulated data have the same difficulties as the original data.  This functionally means that the simulated and the resampled results will be very similar.
 
 }
 \value{

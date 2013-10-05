@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.3.3 (2013-03-31)}{
+\section{Changes in psych version 1.3.11 (2013-11-01)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.3.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.2.12.  The second digit reflects the year (i.e., 2012), the third set the month (i.e., 1.2.11 was released in November of 2012, the last two digits reflect the day of any modifications).
+      \item Version 1.3.11 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.3.10.  The second digit reflects the year (i.e., 2013), the third set the month (i.e., 1.3.2 was released in February of 2013, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -17,7 +17,7 @@
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
       \item Make pairs.panels not change options for graphics window   (still not fixed, after many attempts.)
-      \item Add labels to factor.plot for more than 2 factors?     
+      \item Add labels to factor.plot for more than 2 factors?  -- this will be hard   
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
       \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
@@ -26,12 +26,69 @@
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
       \item clean up lavaan diagram so that the output is more readable  
-     \item modify structure  diagram so that the error arrows are to the left for lr printing    
-     \item add a warning for people finding scores from fa or principal if they have not given the data
-        
+     \item add a warning for people finding scores from fa or principal if they have not given the data 
+     \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
+     \item To help those who want to simulate a bifactor model, make it explicit      
     }
   }
   } 
+  
+\section{Changes in psych version 1.3.10 (2013-10-03)}{
+   \subsection{Additions}{
+\itemize{
+     \item Added Yule2phi and Yule2tetra to convert Yule Q coefficients to phis or tetrachorics.  Completely rewrote Yule.inv and Yule2phi.
+     \item Added sim.poly.mat to generate polytomous or dichotomous items given a particular item structure.
+     \item Modified describeBy to allow specification of digits in the matrix output.
+     \item Modified multi.hist to allow one more control over graphic output. (Requested by Lars Carlsen).
+     \item added iclust.sort to documentation of iclust.
+     \item Added label option to fa2latex (requested by Robert Carlisie)
+     \item Added sanitize.latex function to all the latex functions so that they properly escape underscore and ampersand.
+     \item Added method option to scatter.hist to allow for other correlation methods
+     \item Modified tetrachoric and polychoric so that (0,1) and (1,2) data can be mixed together.  tetrachoric and polychoric agree for dichotomous data (as they should)
+     \item Added an option to the mixed.cor function to allow for spearman or kendall correlations.
+     \item Added Hoffman's complexity index for the factor analyses output
+     \item Modified make.keys to allow addressing items by name rather than location.
+     \item Modified alpha to allow for specify items to reverse by name or location.
+     \item Modified the msq data set Rd file to address by name rather than location
+     \item Minor tweaks to fa.plot and cluster.plot to allow more graphic control
+      \item modify structure  diagram so that the error arrows are to the left for lr printing 
+      \item Modified fa.plot and cluster.plot to allow positioning and sizing of item labels for two dimensional plots.
+      \item Made sure all usage and example lines are less than 90 characters.
+      \item Added the ability to calculate factors scores in fa.poly. 
+      \item Significant improvement in biplot.psych to allow much greater control over plotting.
+      \item Added cor.ci to find bootstrapped confidence intervals for raw and synthetic correlations. 
+      \item Added group reliability calculation for omega.
+      \item return (invisibly) the eigen values of the factors and components from scree. 
+      \item Added unit weighted multiple correlation and unit weighted set correlation to set.cor.
+      \item Added test.all to allow for testing whether other packages work (or at least their examples) when psych is loaded.  (Can be used for any set of packages.)
+      \item Added the ability to simulate as well as resample dichotomous data in fa.parallel.poly (requested by Balal Izanloo).
+      \item Drop (with a warning) items that have no variance in alpha (requested by Eric Green).  This feature has also been added to score.items.
+      \item Modified upperLower so that the rownames come from the lower diagonal matrix, and the column names from the upper diagonal matrix.
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+   \item fixed statsBy so that it correctly reports the pooled values (reported by John Rauthman)
+   \item corrected a problem with fa that was leading to errors when handling very non-positive matrices
+   \item fixed a bug in Yule.inv that was leading to impossible values being reported
+   \item fixed the way that biplot.psych returns the op$mfrow parameter
+   \item applied the same fix to pairs.panels to perhaps fix the recurring problem
+   \item Fixed fa.parallel to not break if just principal components output is requested
+   \item Identified and fixed bug in mixed.cor for case of improper data.
+   \item Identified and fixed? bug in mixed.cor so it will treat randomly mixed data
+   \item Corrected corr.test and cor.p to properly pass the adjust option (reported by David Weisman and Russell Pierce)
+   \item Corrected error.bars,  error.bars.by and errorCircles to use n-1 for df in the call to qt.  Modified the documentation to point out that we are using the t-distribution.  (Thanks to Trevor Dodds)
+   \item Fixed fa.parallel so that it correctly prints out the legend for the case of fa="pc" or fa="fa" (reported by Andrew Hsiao and others)
+   \item Corrected the way confidence intervals were found in fa.poly
+   \item Correctly name the scored variables in case of impute = 'none'  (reported by David Condon
+   \item Complains, rather than blows up when doing irt.fa and plot.poly for Heywood cases.
+   \item Added column names to factor scores.
+   \item Corrected the way that data are randomized in the fa.parallel.poly function so that each variable retains (roughly) the original difficulty.  Also did this for fa.parallel.  Reported by Balal Izanloo.
+   \item Fixed (?) progressBar so that it does not freeze the R.Gui for Mac.
+      }
+   } 
+  }
   
     \section{Changes in psych version 1.3.2 (2013-2-28)}{
    \subsection{Additions}{
@@ -349,7 +406,7 @@
   \item Added a summary of the graphic output for irt.fa that includes the average information for each item as well as where the item is most informative. (Suggested by David Condon.)
   \item Integrated the interactions between fa, fa.poly, irt.fa, fa.diagram, plot, etc. to make commands more consistent.
   \item added a factor analysis for tetrachoric or polychoric correlations (fa.poly) that will work without doing an irt analysis using irt.fa.
-  \item Added bootstrapped confidence intervals for loadings and correlations in factor  analysis (fa), for reliability estimates in omega (omega) and fa.poly.(Originally requested by Steve Miller and Renee Engeln-Maddox polychoric correlations, extended to the omega case.)
+  \item Added bootstrapped confidence intervals for loadings and correlations in factor  analysis (fa), for reliability estimates in omega (omega) and fa.poly.(Originally requested by Steve Miller and Renee Engeln-Maddox for polychoric correlations, extended to the omega case.)
    \item Modified fa.diagram to include graphic output for fa.extension.
   \item Added Cohen's set correlation to the mat.regress function. (Requested by Amanda Uliaszek.)
   \item Changed the order of the parameters in the mat.regress function to be more consistent with the y~x notation of most regression functions.
@@ -638,13 +695,14 @@
 \section{Changes in psych version 1.0.82 (2009-10-26)}{
   \subsection{Additions}{
     \itemize{
-      \item Improved the output for mat.regress to allow print() and summary().
-      \item Corrected bug to fa for case of oblique and negatively correlated factors (reported by Erich Studerus).
+      \item Improved the output for mat.regress to allow print() and summary().    
       \item Corrected problem in describe.by to properly identify the matrix output 
     }
   }
-  \subsection{Bugs fixed}{
+  
+\subsection{Bugs fixed}{
     \itemize{
+      \item Corrected bug to fa for case of oblique and negatively correlated factors (reported by Erich Studerus).
       \item Minor improvements to the dia.x functions 
       \item Fixed the formatting of the news file to follow the appropriate format
       \item Removed the old supplementary  manual from the docs folder to make for a cleaner installation
@@ -839,21 +897,21 @@
     }
   }
 }
-\section{Changes in psych version 1.0.58 (2009-09-15)}{
+\section{Changes in psych version 1.0.58 (2008-09-15)}{
   \subsection{Additions}{
     \itemize{
       \item Introduced the guttman function to estimate the 6 Guttman (1945) estimates (as well as a few others).
     }
   }
 }
-\section{Changes in psych version 1.0.54 (2009-08-15)}{
+\section{Changes in psych version 1.0.54 (2008-08-15)}{
   \subsection{Additions}{
     \itemize{
       \item Added print.psych and summary.psych generic functions to clean up the output of many of the functions. 
     }
   }
 }
-\section{Changes in psych version 1.0.50 (2007-11-15)}{
+\section{Changes in psych version 1.0.50 (2008-06-30)}{
   \subsection{Additions}{
     \itemize{
       \item Introduced several new functions:
@@ -865,15 +923,16 @@
   }
 }
 
-\section{Changes in psych version 1.0.42 (2007-03-24)}{
+\section{Changes in psych version 1.0.42 (2008-03-24)}{
   \subsection{Additions}{
     \itemize{
-      \item A relatively stable release. 
+      \item A relatively stable release.
+      \item Passed the tests for R 2.6.2 
     }
   }
 }
 
-\section{Changes in psych version 1.0.40 (2007-08-15)}{
+\section{Changes in psych version 1.0.40 (2008-02-15)}{
   \subsection{Additions}{
     \itemize{
       \item score.multiple.choice   provides scores and item statistics for multiple choice items.
@@ -885,10 +944,56 @@
   }
 }
 
+\section{Changes in psych version 1.0.30 (2007-09-09)}{
+  \subsection{Additions}{
+    \itemize{
+      \item A relatively stable release. 
+    }
+  }
+}
+
+\section{Changes in psych version 1.0.27 (2007-07-31)}{
+  \subsection{Additions}{
+    \itemize{
+      \item Another upgrade.
+      \item Passed tests for R 2.5
+    }
+  }
+}
+
 \section{Changes in psych version 1.0.17 (2007-05-06)}{
   \subsection{Additions}{
     \itemize{
-      \item The first release to CRAN
+      \item The first release to CRAN.  Prior versions had been tested at NU.
+      \item Included pairs.panels, describe, read.clipboard, iclust, vss, principal.
+
+    }
+  }
+}
+
+\section{Changes in psych version 1.0-14 (2006-09-11)}{
+  \subsection{Additions}{
+    \itemize{
+      \item Another release
+    }
+  }
+}
+
+
+\section{Changes in psych version 1.0-9 (2006-08-26)}{
+  \subsection{Additions}{
+    \itemize{
+      \item Another release
+    }
+  }
+}
+
+\section{Changes in psych version 1.0-1 (2005-05-19)}{
+  \subsection{Additions}{
+    \itemize{
+      \item The first package version on the personality-project.org repository.
+      \item included some of the functions previously in the "useful R" source file.
+      \item worked with R 2.1.0
     }
   }
 }

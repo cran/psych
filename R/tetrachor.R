@@ -32,12 +32,16 @@ function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
            
             result <- list(rho=NA,tau=c(NA,NA),objective=NA)
               }  else {
- 
+              
+ if(is.na(sum(tab))) {warning("For i = ", i," j = ",j, tab,"  No variance for either i or j   rho set to NA")
+ browser()
+ } else {
+
  if((sum(tab) > 1) && (min(tab) == 0) && correct) {
     warning("For i = ", i," j = ",j, "  A cell entry of 0 was replaced with .5.  Check your data!")
     tab[tab==0] <-.5  #correction for continuity
 
-    }
+    }}
   
   if(global) {cc <- taux
               rc <- tauy } else {
@@ -52,9 +56,12 @@ function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
   }
   
  #repeatedly do the analysis to form a matrix of output 
+ #added the pmin instead of min on Sept 10, 2013
 "tetra.mat" <- 
 function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE) {nvar <- dim(x)[2]
-x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1
+mx <- apply(x,2,function(x) min(x,na.rm=TRUE))
+x <- t(t(x) - mx)
+#x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1  -- using pmin allows different minima for different variables
 n.obs <- dim(x)[1]
 if(is.null(y)) {
 if(max(x,na.rm=TRUE) > 1) {stop("Tetrachoric correlations require dictomous data")}
@@ -80,7 +87,9 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
   
       # the case of having a y variable
-      y <- y -min(y,na.rm=TRUE) #in case the numbers are not 0,1 
+      my <- apply(x,2,function(x) min(x,na.rm=TRUE))
+        y <- t(t(y) - my)
+      #y <- y -min(y,na.rm=TRUE) #in case the numbers are not 0,1 
       if(is.matrix(y)) {ny <- dim(y)[2]
            tauy <- -qnorm(colMeans(y,na.rm=TRUE))
            n.obs.y <- dim(y)[1]
@@ -127,9 +136,6 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  "tetrachoric" <- 
  function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE) {
  
-
-
-
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
  cl <- match.call() 
  if (!is.matrix(x) && !is.data.frame(x)) {
@@ -160,7 +166,6 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  if (dim(x)[1] == nvar) {result <- tetrac(x,correct=correct)} else {
  result <- tetra.mat(x,correct=correct)}
 
- 
  result$Call <- cl
  class(result) <- c("psych","tetra")
  return(result) 
@@ -206,12 +211,13 @@ colnames(mat) <- colnames(x)
 rownames(mat) <- colnames(y)
 #cat("\n Finding the biserial correlations\n")
 for(i in 1:ny) {
-progressBar(i*(i-1)/2,ny^2/2,"Biserial")
+#progressBar(i*(i-1)/2,ny^2/2,"Biserial")
    for (j in 1:nx) {
     mat[i,j] <- biserialc(x[,j],y[,i],j,i)
     }}
-  flush(stdout())
-  cat("\n" )  #put in to clear the progress bar
+  
+ # cat("\n" )  #put in to clear the progress bar
+ # flush(stdout())
    return(mat)
 }
 

@@ -10,13 +10,18 @@
 }
 \usage{
 df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",
-  heading="A table from R",caption="df2latex")
+big.mark=NULL, heading="A table from R",caption="df2latex",label="default")
 cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
-     font.size ="scriptsize",heading="A correlation table from R",caption="cor2latex")
-fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny",
-    heading="A factor analysis table from R",caption="fa2latex") 
-irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny",
-     heading="An IRT factor analysis table from R",caption="fa2latex")
+     font.size ="scriptsize",
+      heading="A correlation table from the psych package in R",
+      caption="cor2latex",label="default")
+fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
+       font.size ="scriptsize",
+       heading="A factor analysis table from the psych package in R",
+       caption="fa2latex",label="default") 
+irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
+       font.size ="scriptsize",
+     heading="An IRT factor analysis table from R",caption="fa2latex",label="default")
 }
 
 \arguments{
@@ -30,6 +35,8 @@ irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny"
   \item{caption}{The table caption}
   \item{lower}{in cor2latex, just show the lower triangular matrix}
   \item{f}{The object returned from a factor analysis using \code{\link{fa}} or \code{\link{irt.fa}}. }
+  \item{label}{The label for the table}
+  \item{big.mark}{Comma separate numbers large numbers}
 }
 \value{A LaTeX table}
 
@@ -39,7 +46,8 @@ irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="tiny"
 The many LaTeX conversion routines in Hmisc.
 }
 \examples{
-df2latex(Thurstone,rowlabels=FALSE,apa=FALSE,short.names=FALSE,caption="Thurstone Correlation matrix")
+df2latex(Thurstone,rowlabels=FALSE,apa=FALSE,short.names=FALSE,
+        caption="Thurstone Correlation matrix")
 df2latex(Thurstone,heading="Thurstone Correlation matrix in APA style")
 
 df2latex(describe(sat.act)[2:10],short.names=FALSE)

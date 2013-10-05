@@ -1,31 +1,18 @@
 Package: psych
-Version: 1.3.2
-Date: 2013-02-28
+Version: 1.3.10
+Date: 2013-10-05
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Author: William Revelle <revelle@northwestern.edu>
 Maintainer: William Revelle <revelle@northwestern.edu>
-Description: A number of routines for personality, psychometrics and
-        experimental psychology.  Functions are primarily for scale
-        construction using factor analysis, cluster analysis and
-        reliability analysis, although others provide basic descriptive
-        statistics. Item Response Theory is done using factor analysis
-        of tetrachoric and polychoric correlations. Functions for
-        simulating particular item and test structures are included.
-        Several functions serve as a useful front end for structural
-        equation modeling.  Graphical displays of path diagrams, factor
-        analysis and structural equation models are created using basic
-        graphics. Some of the functions are written to support a book
-        on psychometrics as well as publications in personality
-        research. For more information, see the
-        personality-project.org/r webpage.
+Description: A number of routines for personality, psychometrics and experimental psychology.   Functions are primarily for scale construction using factor analysis, cluster analysis and reliability analysis, although others provide basic descriptive statistics. Item Response Theory is done using  factor analysis of tetrachoric and polychoric correlations. Functions for simulating particular item and test structures are included. Several functions serve as a useful front end for structural equation modeling.  Graphical displays of path diagrams, factor analysis and structural equation models are created using basic graphics. Some of the functions are written to support a book on psychometrics as well as publications in personality research. For more information, see the personality-project.org/r webpage.
 License: GPL (>= 2)
 Suggests: MASS, GPArotation, mvtnorm, polycor, sem, lavaan, Rcsdp,
         graph, Rgraphviz
 LazyData: true
-URL: http://personality-project.org/r,
+URL: http://personality-project.org/r
         http://personality-project.org/r/psych.manual.pdf
-Packaged: 2013-02-26 16:13:45 UTC; revelle
+Packaged: 2013-10-07 14:09:16 UTC; revelle
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-02-26 17:33:22
+Date/Publication: 2013-10-07 23:44:43

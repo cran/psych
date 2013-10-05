@@ -22,9 +22,16 @@ lavaan.diagram will draw either cfa or sem results from the lavaan package (> .4
 
 }
 \usage{
-structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,main="Structural model", ...)
-structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, title = "Structural model", ...)
-structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL, cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
+structure.diagram(fx, Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
+   regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,digits=1,e.size=.1,
+    main="Structural model", ...)
+structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut = 0.3, 
+   errors=TRUE, simple=TRUE,regression=FALSE, size = c(8, 6), 
+    node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10), 
+    rank.direction = c("RL", "TB", "LR", "BT"), digits = 1, 
+     title = "Structural model", ...)
+structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL,
+     cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
 lavaan.diagram(fit,title,...) 
 }
 %- maybe also 'usage' for other objects documented here.

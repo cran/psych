@@ -1,5 +1,4 @@
 \name{sim.structure}
-\alias{make.structural}
 \alias{sim.structure}
 \alias{sim.structural}
 
@@ -9,8 +8,10 @@
 It is also possible to specify a measurement model for a set of x variables separately from a set of y variables.  They are then combined into one model with the correlation structure between the two sets.
 }
 \usage{
-sim.structure(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	
-sim.structural(fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0)  #deprecated
+sim.structure(fx=NULL,Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE, 
+  items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)
+sim.structural(fx=NULL, Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE,
+      items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)  #deprecated
 
 }
 \arguments{
@@ -52,16 +53,17 @@ A special case of a structural model are one factor models such as parallel test
 \seealso{ \code{\link{make.hierarchical}} for another structural model and \code{\link{make.congeneric}} for the one factor case. \code{\link{structure.list}} and \code{\link{structure.list}} for making symbolic structures.
 } 
 \examples{
-fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)              
+fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)  
 fy <- matrix(c(.6,.5,.4),ncol=1)
 rownames(fx) <- c("V","Q","A","nach","Anx")
 rownames(fy)<- c("gpa","Pre","MA")
 Phi <-matrix( c(1,0,.7,.0,1,.7,.7,.7,1),ncol=3)
 gre.gpa <- sim.structural(fx,Phi,fy)
 print(gre.gpa,2)  
-round(correct.cor(gre.gpa$model,gre.gpa$reliability),2)  #correct for attenuation to see structure
+#correct for attenuation to see structure
 
-congeneric <- sim.structural(f=c(.9,.8,.7,.6)) # a congeneric model 
+round(correct.cor(gre.gpa$model,gre.gpa$reliability),2)  
+congeneric <- sim.structure(f=c(.9,.8,.7,.6)) # a congeneric model 
 congeneric 
 
 }

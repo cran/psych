@@ -28,7 +28,10 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    
  for (trials in 1:n.iter) {
    
-    if(is.null(n.obs)) {sampledata <- matrix(sample(unlist(x),size=nsub*nvariables,replace=TRUE),nrow=nsub,ncol=nvariables) 
+    if(is.null(n.obs)) {
+    #sampledata <- matrix(sample(unlist(x),size=nsub*nvariables,replace=TRUE),nrow=nsub,ncol=nvariables) 
+   
+    sampledata <- matrix(apply(x,2,function(y) sample(y,nsub,replace=TRUE)),ncol=nvariables) #do it column wise
    					values.samp <- eigen(cor(sampledata,use="pairwise"))$values
    					temp[["samp"]][[trials]] <- values.samp
    					if (fa!= "pc") {
@@ -61,7 +64,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   
     ymax <- max(valuesx,values.sim$mean)
    
-if (fa !="fa") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4,col="blue") 
+if (fa !="fa") {if(fa=="both") {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor/Component Number",pch=4,col="blue") } else {
+       plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Component Number",pch=4,col="blue")}
 	points(values.sim$mean,type ="l",lty="dotted",pch=4,col="red")
 	if(error.bars) {
       for (i in 1:dim(values.sim)[1])  
@@ -110,20 +114,43 @@ if (fa !="pc" ) { if (fa=="fa") { ylabel <-  "eigen values of principal factors"
 
 if(show.legend) {
 if(is.null(n.obs)) {
-legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"), col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
+switch(fa,  
+both = {legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"),
+       col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
        text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
-       merge = TRUE, bg = 'gray90')} else {
+       merge = TRUE, bg = 'gray90')},
+       
+pc = {legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data"), col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
+       text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
+       merge = TRUE, bg = 'gray90')} ,  
+       
+fa = {legend("topright", c("  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"), col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
+       text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
+       merge = TRUE, bg = 'gray90')}   
+       ) } else {
+switch(fa,
 
-       legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
+ both= {      legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
        text.col = "green4", lty = c("solid","dotted","solid","dotted"),
-       merge = TRUE, bg = 'gray90')}
+       merge = TRUE, bg = 'gray90')},
+       
+  pc= {   legend("topright", c("PC  Actual Data", " PC  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
+       text.col = "green4", lty = c("solid","dotted","solid","dotted"),
+       merge = TRUE, bg = 'gray90')},
+fa =  {legend("topright", c("FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
+       text.col = "green4", lty = c("solid","dotted","solid","dotted"),
+       merge = TRUE, bg = 'gray90')})}
    }
 abline(h=1)
 if (fa!="pc") {abline(h=0) }
+if (fa == "pc" )  {results <- list(fa.values = fa.valuesx,pc.values=valuesx,pc.sim=values.sim,Call=cl) 
+fa.test <- NA } else {
 results <- list(fa.values = fa.valuesx,fa.sim = fa.values.sim,pc.values=valuesx,pc.sim=values.sim,Call=cl)
 fa.test <- which(!(fa.valuesx > fa.values.sim$mean))[1]-1
+results$nfact <- fa.test}
+
 pc.test <- which(!(valuesx > values.sim$mean))[1] -1
-results$nfact <- fa.test
+
 results$ncomp <- pc.test
 cat("Parallel analysis suggests that ")
 cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
@@ -182,7 +209,10 @@ if(show.legend) {
 abline(h=1)
 if (fa!="pc") {abline(h=0) }
 }
-
+ #modified June 09, 2013 to fix the case for just PC tests
+ #modified October 2, 2013 to sample each column of data separately.  
+ 
+ 
 
 
 

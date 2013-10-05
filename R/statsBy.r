@@ -52,9 +52,9 @@
              lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))
              pool  <- colSums( lower.wt * xvals$within,na.rm=TRUE)
              pool.sd <- apply(xvals$within, 2,FUN=sd, na.rm=TRUE)
-             xvals$pooled <- matrix(NA,nvars,nvars)
-             xvals$pooled[lower.tri(xvals$pooled)] <- pool
-             xvals$pooled[upper.tri(xvals$pooled)]  <- pool
+             xvals$pooled <- matrix(0,nvars,nvars)
+             xvals$pooled[lower.tri(xvals$pooled)] <- pool  
+             xvals$pooled <- xvals$pooled + t(xvals$pooled)  #changed, May 12 to properly reflect values
              diag(xvals$pooled) <- 1
              xvals$sd.r <-  matrix(NA,nvars,nvars)
              xvals$sd.r[lower.tri(xvals$sd.r)] <- pool.sd

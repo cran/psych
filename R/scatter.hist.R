@@ -1,5 +1,5 @@
 "scatter.hist" <-
-function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,density=TRUE,ellipse=TRUE,digits=2,cex.cor=1,title="Scatter plot + histograms",xlab=NULL,ylab=NULL,...) {
+function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,density=TRUE,ellipse=TRUE,digits=2,method,cex.cor=1,title="Scatter plot + histograms",xlab=NULL,ylab=NULL,...) {
 old.par <- par(no.readonly = TRUE) # save default 
 if(missing(xlab)) {
 if(!is.null(colnames(x))) {xlab=colnames(x)[1]
@@ -53,10 +53,12 @@ plot(1,1,type="n",axes=FALSE)
 #plot(x,y)
 med.x <- median(x,na.rm=TRUE)
 med.y <- median(y,na.rm=TRUE)
- r = (cor(x, y,use="pairwise"))
+if(missing(method)) method <- "pearson"
+ r = (cor(x, y,use="pairwise",method=method))
  txt <- format(c(r, 0.123456789), digits=digits)[1]
  if(missing(cex.cor)) {cex <- 0.75/strwidth(txt)} else {cex <- cex.cor}
   text(1,1, txt,cex=cex)}
 par(old.par)
 }
 #version of March 7, 2011
+#revised Sept 7, 2013 to include method option in cor

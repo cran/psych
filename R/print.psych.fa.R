@@ -61,7 +61,9 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {
            cat("Standardized loadings (pattern matrix) based upon correlation matrix\n")
-	    	print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } else {
+           com <- x$complexity
+           if(!is.null(com)) { print(cbind(fx,h2,u2,com),quote="FALSE",digits=digits)} else {
+            print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } } else {
 	    	cat("Unstandardized loadings (pattern matrix) based upon covariance matrix\n") 
 	    	print(cbind(fx,h2,u2,H2=h2/(h2+u2),U2=u2/(h2+u2)),quote="FALSE",digits=digits)}
 	   
@@ -135,7 +137,8 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
        colnames(Phi) <- rownames(Phi) <- colnames(x$loadings)
        print(round(Phi,digits))
             } }
-            
+       
+       if(!is.null(com)) cat("\nMean item complexity = ",round(mean(com),1))     
        objective <- x$criteria[1]
     if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}

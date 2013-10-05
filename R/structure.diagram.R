@@ -163,7 +163,7 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
                          }  
                         }      
    }  #end of if num.xfactors >0     
-  if(errors) {  for (i in 1:num.xvar) {if(lr) { dia.self(var.rect[[i]],side=3) } else { dia.self(var.rect[[i]],side=1)}
+  if(errors) {  for (i in 1:num.xvar) {if(lr) { dia.self(var.rect[[i]],side=2) } else { dia.self(var.rect[[i]],side=1)}
                                           sem[k,1] <- paste(vars[i],"<->",vars[i],sep="")
                                           sem[k,2] <- paste("x",i,"e",sep="")
                                     k <- k+1 }

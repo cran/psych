@@ -1,5 +1,5 @@
 "plot.irt" <- 
-function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,ylim=NULL,...) {
+function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,ylim=NULL,y2lab,...) {
 item <- x
 temp <- list()
 sumtemp <- list()
@@ -63,13 +63,20 @@ if(type=="ICC") {
 	max.info <- apply(tInfo,2,which.max)
 	if(type=="test") {
 		if(missing(main)) main <- "Test information -- item parameters from factor analysis"
+		if(missing(y2lab)) y2lab <- "Reliability"
 		testInfo <- rowSums(tInfo)
 		if(missing(ylab)) ylab <- "Test Information"
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab="Test Information",main=main)
+		if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
+		
+		op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
+		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main)
 		 ax4 <- seq(0,max(testInfo),max(testInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
-	 axis(4,at=ax4,rel4)
+	 axis(4,at=ax4,rel4) 
+	 	
+	 mtext(y2lab,side=4,line=2)
+	 op <- par(op)   #set them back to what we had before
 		} else {
 		if(missing(ylab)) ylab <- "Item Information"
 	if(missing(main)) main <- "Item information from factor analysis"
@@ -122,7 +129,7 @@ function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
 
 
 "plot.poly" <- 
-function(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,...) {
+function(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,...) {
 
 item <- x
 byKeys <- FALSE
@@ -163,9 +170,12 @@ lenx <- length(x)
 sumInfo <- matrix(NA,ncol=nvar,nrow=length(summaryx))
 
 #if there was more than 1 factor, repeat the figure nf times
-for(f in 1:nf) {if(byKeys) {discrimination=item$irt$discrimination[,1]} else {discrimination=item$irt$discrimination[,f]}
+for(f in 1:nf) {if(byKeys) {discrimination <- item$irt$discrimination[,1]} else {discrimination <-item$irt$discrimination[,f]}
  if(!is.null(keys)) discrimination <- discrimination * abs(keys[,f])
- if(byKeys) {location=item$irt$difficulty[[1]]} else { location=item$irt$difficulty[[f]]}
+ if(any(is.nan(discrimination))) {bad <- which(is.nan(discrimination))
+        discrimination[is.nan(discrimination)] <- max(discrimination,na.rm=TRUE) 
+     warning("An discrimination  with a NaN value was replaced with the maximum discrimination for factor = ",f, " and item ",labels[bad], "\nexamine the factor analysis object (fa)  to identify the Heywood case") }
+     if(byKeys) {location=item$irt$difficulty[[1]]} else { location=item$irt$difficulty[[f]]}
   difficulty <- location[,1:ncat]
   
 
@@ -174,13 +184,15 @@ if(type=="ICC") { #this draws the item characteristic curves
 
 if(missing(main)) main <- "Item parameters from factor analysis"
 if(missing(ylab)) ylab <- "Probability of Response"
-
+if(missing(main)) {main <- "Test information for factor "
+	main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
+	
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
 	if(discrimination[i] > 0 ) {
-		plot(x,logistic(x,a=-D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main,...) 
+		plot(x,logistic(x,a=-D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,...) 
 		text(0,.70,labels[i])} else { 
-		plot(x,logistic(x,a=D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main,...)
+		plot(x,logistic(x,a=D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,...)
 		text(max(0),.7,paste("-",labels[i],sep=""))
 			}
   for (j in 2:(ncat))  {
@@ -212,7 +224,7 @@ for(i in 1:nvar) {
     summtInfo <- array(unlist(summtInfo),dim=c(nvar,ncat,length(summaryx)))  #this is now an array with items levels and summaryx 
     
     tInfo[is.nan(tInfo)] <- 0    #this gets around the problem of no values 
-   summtInfo[is.nan(summtInfo)] <- 0    #this gets around the problem of no values 
+    summtInfo[is.nan(summtInfo)] <- 0    #this gets around the problem of no values 
 	testInfo <- matrix(NA,ncol=nvar,nrow=length(x))
 	sumInfo <- matrix(NA,ncol=nvar,nrow=length(summaryx))
 	
@@ -239,14 +251,17 @@ for(i in 1:nvar) {
 	 ax4 <- seq(0,max(rsInfo),max(rsInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
+	op <- par(mar=c(5,4,4,4))
 	 axis(4,at=ax4,rel4)
+	 	 mtext(y2lab,side=4,line=2)
+	 op <- par(op)
 	 } else { if(type != "ICC") {
 	if(missing(ylab)) ylab <- "Item Information"
-	if(missing(main)) main <- "Item information from factor analysis"
+	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
 	
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main,...)
+	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,...)
 	#xmax <- which
 if(discrimination[ii] > 0 ) {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,labels[ii])} else {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,paste("-",labels[ii],sep=""))}
 for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {

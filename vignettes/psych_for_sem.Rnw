@@ -665,11 +665,10 @@ Fox, J. (2009).
 \newblock {\em sem: Structural Equation Models}.
 \newblock R package version 0.9-15.
 
-\bibitem[\protect\astroncite{Fox et~al.}{2011}]{sem}
-Fox, J., Byrnes, J., with contributions~from Michael~Culbertson, Friendly, M.,
-  Kramer, A., and Monette., G. (2011).
+\bibitem[\protect\astroncite{Fox et~al.}{2013}]{sem}.
+Fox, J.  Nie, Zhenghua and  Byrnes, J. (2013) 
 \newblock {\em sem: Structural Equation Models}.
-\newblock R package version 2.1-1.
+\newblock R package version 3.1-3.
 
 
 \bibitem[\protect\astroncite{Holzinger and Swineford}{1937}]{holzinger:37}
@@ -699,16 +698,17 @@ Reise, S., Morizot, J., and Hays, R. (2007).
   health outcomes measures.
 \newblock {\em Quality of Life Research}, 16(0):19--31.
 
-\bibitem[\protect\astroncite{Revelle}{2011}]{psych}
-Revelle, W. (2012).
+\bibitem[\protect\astroncite{Revelle}{2013}]{psych}
+Revelle, W. (2013).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.2.8.
+\newblock R package version 1.3.9
 
-\bibitem[\protect\astroncite{Rosseel}{2011}]{lavaan}
-Rosseel, Y. (2011).
-\newblock {\em lavaan: Latent Variable Analysis}.
-\newblock R package version 0.4-11.
+\bibitem[\protect\astroncite{Rosseel}{2012}]{lavaan}
+Rosseel, Y. (2012).
+\newblock {\em llavaan: An R Package for Structural Equation Modeling}.
+\newblock {\em Journal of Statistical Software},  48(2):1-36.
+\newblock R package version 0.5-14.
 
 \bibitem[\protect\astroncite{Schmid and Leiman}{1957}]{schmid:57}
 Schmid, J.~J. and Leiman, J.~M. (1957).

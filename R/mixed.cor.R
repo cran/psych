@@ -1,6 +1,6 @@
 #modified April 29th to get around the problem of missing rows or columns in the polychoric function.
 "mixed.cor" <- 
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=TRUE,global=TRUE,ncat=8,polycor=FALSE)  {
+function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=TRUE,global=TRUE,ncat=8,polycor=FALSE,use="pairwise",method="pearson")  {
 cl <- match.call() 
 organize <- FALSE   #the default is to specify the continuous, the polytomous and the dichotomous
 if(!is.null(x) && is.null(p)  && is.null(d)) { #figure out which kinds of variables we are using 
@@ -9,9 +9,9 @@ nvar <- ncol(x)
 x <- as.matrix(x)
 tab <- apply(x,2,function(x) table(x))
 if(is.list(tab)) {len <- lapply(tab,function(x) length(x))} else {len <- dim(tab)[1] }
-dvars <- subset(1:nvar,len==2)
-pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))
-cvars <- subset(1:nvar,(len > ncat))
+dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
+pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
+cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
 
 if(length(dvars) > 0) {d <- matrix(x[,dvars],ncol=length(dvars))
               colnames(d) <- colnames(x)[dvars]} else {d <- NULL}
@@ -20,11 +20,13 @@ if(length(pvars) > 0) {p <- matrix(x[,pvars],ncol=length(pvars))
  if(length(cvars) > 0) {cont <- matrix(x[,cvars],ncol=length(cvars))
                        colnames(cont) <- colnames(x)[cvars] } else {cont <- NULL}
                        
-Rho <- mixed.cor1(cont,p, d,smooth=smooth,polycor=polycor,global=global,correct=correct)
+Rho <- mixed.cor1(cont,p, d,smooth=smooth,polycor=polycor,global=global,correct=correct,use=use,method=method)
 oldorder <- c(cvars,pvars,dvars)
 ord <- order(oldorder)
 Rho$rho <- Rho$rho[ord,ord]
-} else {Rho <- mixed.cor1(x=x,p=p,d=d,smooth=smooth,polycor=polycor,global=global,correct=correct)}
+} else {# organization is specified
+#if ((p+ d) == nvar) 
+Rho <- mixed.cor1(x=x,p=p,d=d,smooth=smooth,polycor=polycor,global=global,correct=correct,use=use,method=method)}
 
 Rho$Call <- cl
 return(Rho)
@@ -34,8 +36,9 @@ return(Rho)
 #revised July 15, 2011 to work for the various special cases
 #meant to combine continuous, polytomous and dichotomous correlations
 #revised October 12, 2011 to get around the sd of vectors problem
+#revised Sept 10, 2013 to allow for dichotomies with different minima
 "mixed.cor1" <-
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE,polycor=FALSE,global=TRUE,correct=TRUE) {
+function(x=NULL,p=NULL,d=NULL,smooth=TRUE,polycor=FALSE,global=TRUE,correct=TRUE,use=use,method=method) {
  cl <- match.call() 
 if(!is.null(x)) {nx <- dim(x)[2]} else {nx <- 0}
 if(!is.null(p)) {np <- dim(p)[2]} else {np <- 0}
@@ -46,16 +49,19 @@ if(is.null(nd)) nd <- 1
 npd  <- nx +np + nd
 #check to make sure all the data are ok for doing the appropriate analyses
 #first check for polychorics
-if(np >0) { ptable <- table(as.matrix(p))
+if(np > 0) { ptable <- table(as.matrix(p))
 nvalues <- length(ptable)  #find the number of response alternatives 
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")}
-#now test for tetrachorics
 
-if(nd > 0) {d <- d -min(d,na.rm=TRUE) #in case the numbers are not 0,1   This requires them all to be the same
+#now test for tetrachorics
+if(nd > 0) {
+dm <- apply(d,2,function(x) min(x,na.rm=TRUE))
+d <- t(t(d) - dm)  
+#d <- d -min(d,na.rm=TRUE) #in case the numbers are not 0,1   This requires them all to be the same
 if(max(d,na.rm=TRUE) > 1) {stop("Tetrachoric correlations require dichotomous data")}}
 
 
-if(nx > 0) {rx <- cor(x,use="pairwise")} else {rx <- NULL
+if(nx > 0) {rx <- cor(x,use=use,method=method)} else {rx <- NULL
    rho <- NULL}
 if(np > 1) {
 #cat("\n Starting to find the polychoric correlations")

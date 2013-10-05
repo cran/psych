@@ -1,59 +1,22 @@
+
+
  "Yule2poly.matrix" <-
-function(x,v) {
- sizex <- dim(x)[2]
- if (!is.vector(v)) v <- as.vector(v)
- nv <- length(v)
- sizey <- dim(x)[1]
- for (i in 1:sizex) { xc <- v[i]
-   for (j in 1:i) {
-   	 	yc  <-  v[j]
-   	 	if(x[i,j] > .999) {x[i,j] <- 1} else 
-  		 {x[i,j] <- Yule2poly(x[i,j],c(xc,yc))}
-  		x[j,i] <- x[i,j]
- 			 }
- 	}
-  return(x)  
- }
+function(x,v) {   
+.Deprecated("Yule2tetra", msg="This function has been replaced by Yule2tetra")
+}
 
-   
-   
-   
-   
  "phi2poly.matrix" <-
-function(x,v) {
-
- sizex <- dim(x)[2]
- if (!is.vector(v)) v <- as.vector(v)
- nv <- length(v)
- sizey <- dim(x)[1]
- for (i in 1:sizex) { xc <- v[i]
-   for (j in 1:i) {
-   	 	yc  <-  v[j]
-   	 	if(x[i,j] > .999) {x[i,j] <- 1} else 
-  		 {x[i,j] <- phi2poly(x[i,j],xc,yc)}
-  		x[j,i] <- x[i,j]
- 			 }
- 	}
-  return(x)  
- }
-
+function(x,v) {  
+.Deprecated("phi2tetra",msg="This function has been replaced by phi2tetra")
+}
 
 "Yule2phi.matrix" <-
 function(x,v) {
- sizex <- dim(x)[2]
- if (!is.vector(v)) v <- as.vector(v)
- nv <- length(v)
- sizey <- dim(x)[1]
- for (i in 1:sizex) { xc <- v[i]
-   for (j in 1:i) {
-   	 	yc  <-  v[j]
-   	 	if(x[i,j] > .999) {x[i,j] <- 1} else 
-  		 {x[i,j] <- Yule2phi(x[i,j],c(xc,yc))}
-  		x[j,i] <- x[i,j]
- 			 }
- 	}
-  return(x)  
- }
+.Deprecated("Yule2phi",msg="This function has been replaced by Yule2phi")
+}
+   
+   
+
 
 #revised August 29, 2010 
 "poly.mat" <- 
@@ -62,21 +25,3 @@ function(x,short=TRUE,std.err=FALSE,ML=FALSE) {
 return(polychoric(x))	
 }
 
-
-"phi2polychor.matrix" <-
-function(x,v) {
-
- sizex <- dim(x)[2]
- if (!is.vector(v)) v <- as.vector(v)
- nv <- length(v)
- sizey <- dim(x)[1]
- for (i in 1:sizex) { xc <- v[i]
-   for (j in 1:i) {
-   	 	yc  <-  v[j]
-   	 	if(x[i,j] > .999) {x[i,j] <- 1} else 
-  		 {x[i,j] <- phi2poly(x[i,j],xc,yc)}
-  		x[j,i] <- x[i,j]
- 			 }
- 	}
-  return(x)  
- }

@@ -7,10 +7,15 @@
 \description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem package.  This is done by omegaSem and omegaFromSem.
 }
 \usage{
-omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE,digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
-omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...)
+omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE,digits=2,
+    title="Omega",sl=TRUE,labels=NULL,
+    plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
+omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE,digits=2,title="Omega",
+sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL, option="equal",...)
 omegaFromSem(m,s,flip=TRUE)
-omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) 
+omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, 
+digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
+   n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) 
 
 
 }
@@ -101,6 +106,10 @@ In addition, not all EFA solutions will produce workable CFA solutions.  Model m
 
 \code{\link{omegaFromSem}} takes the output from a sem model and uses it to find 
  \eqn{\omega_h}.  The estimate of factor indeterminacy, found by the multiple \eqn{R^2} of the variables with the factors, will not match that found by the EFA model.  In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
+ 
+The notion of omega may be applied to the individual factors as well as the overall test. A typical use of omega is to identify subscales of a total inventory.  Some of that variability is due to the general factor of the inventory, some to the specific variance of each subscale.  Thus, we can find a number of different omega estimates:   what percentage of the variance of the items identified with each subfactor is actually due to the general factor.  What variance is common but unique to the subfactor, and what is the total reliable variance of each subfactor.  
+
+The summary of the omega object is a reduced set of the most useful output. 
 }
 \value{
  
@@ -155,8 +164,9 @@ When doing fm="pc", principal components are done for the original correlation m
 \examples{
 \dontrun{
  test.data <- Harman74.cor$cov
- if(!require(GPArotation)) {message("Omega requires GPA rotation" )} else {my.omega <- omega(test.data)       
- print(my.omega,digits=2)}
+ if(!require(GPArotation)) {message("Omega requires GPA rotation" )} else {
+      my.omega <- omega(test.data)       
+         print(my.omega,digits=2)}
  
 #create 9 variables with a hierarchical structure
 v9 <- sim.hierarchical()
@@ -170,7 +180,8 @@ v9.omega
 sim2 <- item.sim(8)
 omega(sim2)   #an example of misidentification-- remember to look at the loadings matrices.
 omega(sim2,2)  #this shows that in fact there is no general factor
-omega(sim2,2,option="first") #but, if we define one of the two group factors as a general factor, we get a falsely high omega 
+omega(sim2,2,option="first") #but, if we define one of the two group factors 
+     #as a general factor, we get a falsely high omega 
 #apply omega to analyze 6 mental ability tests 
 data(ability.cov)   #has a covariance matrix
 omega(ability.cov$cov)

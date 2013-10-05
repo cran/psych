@@ -8,6 +8,7 @@
 }
 \usage{
 \method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...)
+
 \method{summary}{psych}(object,digits=2,items=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -32,18 +33,17 @@ As an added feature, if the promax function is applied to a factanal loadings ma
 }
 \value{ Various psych functions produce copious output.  This is a way to summarize the most important parts of the output of the score.items, cluster.scores, and ICLUST functions.  See those ( \code{\link{score.items}}, \code{\link{cluster.cor}}, \code{\link{cluster.loadings}}, or \code{\link{ICLUST}}) for details on what is produced.
 
-  
+
 }
 
 \author{ William Revelle}
 \note{ See \code{\link{score.items}}, \code{\link{cluster.cor}}, \code{\link{cluster.loadings}}, or \code{\link{ICLUST}}for details on what is printed.
-
-
 }
 
 \examples{
 data(bfi)
- keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
+ keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),
+ extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
  keys <- make.keys(25,keys.list,item.labels=colnames(bfi[1:25]))
  scores <- score.items(keys,bfi[1:25])
  scores

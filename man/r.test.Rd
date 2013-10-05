@@ -4,7 +4,8 @@
 \description{Tests the significance of a single correlation, the difference between two independent correlations, the difference between two dependent correlations sharing one variable (Williams's Test), or the difference between two dependent correlations with different variables (Steiger Tests).
 }
 \usage{
-r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL, n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL, 
+          n2 = NULL,pooled=TRUE, twotailed = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

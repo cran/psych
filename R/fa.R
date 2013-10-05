@@ -388,8 +388,10 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
     
     if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores) } else {result$scores <- factor.scores(x.matrix,f=Structure,method=scores)}
+
     result$weights <- result$scores$weights
     result$scores <- result$scores$scores
+        if(!is.null(result$scores)) colnames(result$scores) <- colnames(loadings) #added Sept 27, 2013
     result$factors <- nfactors 
     result$r <- r   #save the correlation matrix 
     result$np.obs <- np.obs

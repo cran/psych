@@ -16,7 +16,8 @@ interp.quantiles(x, q = .5, w = 1,na.rm=TRUE)
 interp.quartiles(x,w=1,na.rm=TRUE)
 interp.boxplot(x,w=1,na.rm=TRUE)
 interp.values(x,w=1,na.rm=TRUE)
-interp.qplot.by(y,x,w=1,na.rm=TRUE,xlab="group",ylab="dependent",ylim=NULL,arrow.len=.05,typ="b",add=FALSE,...)
+interp.qplot.by(y,x,w=1,na.rm=TRUE,xlab="group",ylab="dependent",
+               ylim=NULL,arrow.len=.05,typ="b",add=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

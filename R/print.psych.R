@@ -14,62 +14,48 @@ if(value == "score.items") value <- "scores"
 switch(value,
 
 ## the following functions have their own print function
- omega = { print.psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- omegaSem=  {print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- schmid = { print.psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- fa =  {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- principal ={print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- iclust= { print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extension = { print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extend = {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ fa =  {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  fa.ci = { print.psych.fa.ci(x,digits=digits,all=all,... )},
- 
+ iclust= { print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ omega = { print.psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ omegaSem=  {print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  principal ={print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  schmid = { print.psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
          print(x) },    #find out which function created the data and then print accordingly
-
-
-describe= {if  (length(dim(x))==1) {class(x) <- "list"
-              attr(x,"call") <- NULL
-              print(round(x,digits=digits))
-                  } else  {class(x) <- "data.frame" 
-            print(round(x,digits=digits)) }
-         },
          
-          
-corr.test = {cat("Call:")
-              print(x$Call)
-              cat("Correlation matrix \n")
-              print(round(x$r,digits))
-              cat("Sample Size \n")
-              print(x$n)
-              if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
-                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
-             print(round(x$p,digits))
-         },
+alpha = {
+	cat("\nReliability analysis ",x$title," \n")
+	cat("Call: ")
+	print(x$call)
+	cat("\n ")
+	print(x$total,digits=digits)
+	cat("\n Reliability if an item is dropped:\n")
+    print(x$alpha.drop,digits=digits)
+	cat("\n Item statistics \n")
+   print(x$item.stats,digits=digits)
+	 if(!is.null(x$response.freq)) {
+	 cat("\nNon missing response frequency for each item\n")
+	 print(round(x$response.freq,digits=digits))}
+},
 
-r.test =  {cat("Correlation tests \n")
-            cat("Call:")
-              print(x$Call)
-              cat( x$Test,"\n")
-              if(!is.null(x$t)) {cat(" t value" ,round(x$t,digits),"   with probability <", signif(x$p,digits) )}
-              if(!is.null(x$z)) {cat(" z value" ,round(x$z,digits),"   with probability ",  round(x$p,digits) )}               
-              if(!is.null(x$ci)) {cat("\n and confidence interval ",round(x$ci,digits) ) }
-         },
-         
-cortest= {cat("Tests of correlation matrices \n")
-            cat("Call:")
-            print(x$Call)
-            cat(" Chi Square value" ,round(x$chi,digits)," with df = ",x$df, "  with probability <", signif(x$p,digits),"\n" )
-            if(!is.null(x$z)) cat("z of differences = ",round(x$z,digits),"\n")
-         },
-
-partial.r = {cat("partial correlations \n")
-            print(round(unclass(x),digits))
-         },
+bifactor = {
+   cat("Call: ")
+     print(x$Call) 
+ 	cat("Alpha:                ",round(x$alpha,digits),"\n") 
+ 	cat("G.6:                  ",round(x$G6,digits),"\n")
+ 	cat("Omega Hierarchical:   " ,round(x$omega_h,digits),"\n")
+ #	cat("Omega H asymptotic:   " ,round(x$omega.lim,digits),"\n")
+ 	cat("Omega Total           " ,round(x$omega.tot,digits),"\n")
+ 	print(x$f,digits=digits,sort=sort)
+ 	},
          
 circ =     {cat("Tests of circumplex structure \n")
             cat("Call:")
@@ -77,56 +63,6 @@ circ =     {cat("Tests of circumplex structure \n")
              res <- data.frame(x[1:4]) 
              print(res,digits=2)
              },
-
-             
-scores =  {
-    cat("Call: ")
-    print(x$Call)
-    if(x$raw) {
-	cat("\n(Unstandardized) Alpha:\n") } else {cat("\n(Standardized) Alpha:\n") }
-	
-	print(x$alpha,digits=digits)
-	if(!is.null(x$alpha.ob)) {cat("\nStandardized Alpha of observed scales:\n")
-	print(x$alpha.ob,digits=digits)}
-  	cat("\nAverage item correlation:\n")
-  	print(x$av.r,digits=digits)
-	cat("\n Guttman 6* reliability: \n")
-	print(x$G6,digits=digits)     
-	#if(iclust) {cat("\nOriginal Beta:\n")
-	# print(x$beta,digits) }	          
- 	
-	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
-	 	if(!is.null(x$alpha.ob)) {cat("\nNote that these are the correlations of the complete scales based on the correlation matrix,\n not the observed scales based on the raw items.\n")}
-	 	
-	 print(x$corrected,digits) 
-	 if(short) {cat("\n In order to see the item by scale loadings and frequency counts of the data\n print with the short option = FALSE") } else {
-	  if(!is.null(x$item.cor) ) {
-	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
-	   
-	 print(round(x$item.corrected,digits=digits)) } 
-	 if(!is.null(x$response.freq)) {
-	 cat("\nNon missing response frequency for each item\n")
-	 print(round(x$response.freq,digits=digits))}
-	 }
-	
-  },
-  
-mchoice =  {
-    cat("Call: ")
-    print(x$Call)
-	cat("\n(Unstandardized) Alpha:\n")
-	print(x$alpha,digits=digits)
-  	cat("\nAverage item correlation:\n")
-  	print(x$av.r,digits=digits)
-	
-	
-	
-	 if(!is.null(x$item.stats)) {
-	 cat("\nitem statistics \n")
-	 print(round(x$item.stats,digits=digits))}
-  },
-  
-  
 cluster.cor =  {
     cat("Call: ")
     print(x$Call)
@@ -167,22 +103,58 @@ cluster.loadings =  {
 	# print(x$pattern,digits) 	
   },
 
-alpha = {
-	cat("\nReliability analysis ",x$title," \n")
-	cat("Call: ")
-	print(x$call)
-	cat("\n ")
-	print(x$total,digits=digits)
-	cat("\n Reliability if an item is dropped:\n")
-    print(x$alpha.drop,digits=digits)
-	cat("\n Item statistics \n")
-   print(x$item.stats,digits=digits)
-	 if(!is.null(x$response.freq)) {
-	 cat("\nNon missing response frequency for each item\n")
-	 print(round(x$response.freq,digits=digits))}
-},
+
+comorbid = {cat("Call: ")
+              print(x$Call)
+            cat("Comorbidity table \n")
+            print(x$twobytwo,digits=digits)
+            cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra$rho,digits))
+            cat("\nand normal thresholds of ",round(-x$tetra$tau,digits))
+          
+   },
 
 
+
+     
+cor.ci = {cat("Call:")
+              print(x$Call) 
+               cat("\n Coefficients and bootstrapped confidence intervals \n")
+               lowerMat(x$rho)
+   phis <- x$rho[lower.tri(x$rho)]
+   cci <- data.frame(lower.emp =x$ci$low.e, lower.norm=x$ci$lower,estimate =phis ,upper.norm= x$ci$upper, upper.emp=x$ci$up.e)
+   cat("\n scale correlations and bootstrapped confidence intervals \n")
+   print(cci,digits=digits)
+              
+            },       
+corr.test = {cat("Call:")
+              print(x$Call)
+              cat("Correlation matrix \n")
+              print(round(x$r,digits))
+              cat("Sample Size \n")
+              print(x$n)
+              if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
+                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
+             print(round(x$p,digits))
+         },     
+
+         
+cortest= {cat("Tests of correlation matrices \n")
+            cat("Call:")
+            print(x$Call)
+            cat(" Chi Square value" ,round(x$chi,digits)," with df = ",x$df, "  with probability <", signif(x$p,digits),"\n" )
+            if(!is.null(x$z)) cat("z of differences = ",round(x$z,digits),"\n")
+         },
+
+
+         
+
+describe= {if  (length(dim(x))==1) {class(x) <- "list"
+              attr(x,"call") <- NULL
+              print(round(x,digits=digits))
+                  } else  {class(x) <- "data.frame" 
+            print(round(x,digits=digits)) }
+         },
+    
 guttman =  {
   cat("Call: ")
     print(x$Call)
@@ -193,180 +165,22 @@ guttman =  {
  cat("\nalpha of first PC = ",round( x$alpha.pc,digits), "\nestimated greatest lower bound based upon communalities= ", round(x$glb,digits),"\n")
  #cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
  } ,
-  
- ## 
-thurstone = {
-	cat("Thurstonian scale (case 5) scale values ")
-	cat("\nCall: ")
-     print(x$Call)
-	print(x$scale)
-	cat("\n Goodness of fit of model  ", round(x$GF,digits))
- },
  
-
-sim =  { if(is.matrix(x)) {x <-unclass(x) 
-             round(x,digits) } else {
-              cat("Call: ")
-              print(x$Call)
-             cat("\n $model (Population correlation matrix) \n")
-             print(x$model,digits)
-             if(!is.null(x$reliability)) { cat("\n$reliability (population reliability) \n")
-                print(x$reliability,digits) } 
-             if(!is.null(x$N) && !is.null(x$r)) {
-             cat("\n$r  (Sample correlation matrix  for sample size = ",x$N,")\n")
-             print(x$r,digits)}
-             }
-             
- },
-            
-             
-ICC =  {cat("Call: ")
+ ICC =  {cat("Call: ")
               print(x$Call)
             cat("\nIntraclass correlation coefficients \n")
             print(x$results,digits=digits)
             cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
 
    },
-  
-kappa = {if(is.null(x$cohen.kappa)) {
-            cat("Call: ")
-            print(x$Call)
-            
-            cat("\nCohen Kappa and Weighted Kappa correlation coefficients and confidence boundaries \n")
-           
-            print(x$confid,digits=digits)
-            cat("\n Number of subjects =", x$n.obs,"\n")} else {
-            cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
-            print(x$cohen.kappa,digits) 
-            }
-   },
    
-comorbid = {cat("Call: ")
-              print(x$Call)
-            cat("Comorbidity table \n")
-            print(x$twobytwo,digits=digits)
-            cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra$rho,digits))
-            cat("\nand normal thresholds of ",round(-x$tetra$tau,digits))
-          
-   },
-   
- tetra = {cat("Call: ")
-              print(x$Call)
-            cat("tetrachoric correlation \n")
-            if(!is.null(x$twobytwo)) {
-              print(x$twobytwo,digits=digits)
-              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
-           if(is.matrix(x$rho) &&  lower) {lowerMat (x$rho,digits)} else { print(x$rho,digits)}
-            cat("\n with tau of \n")
-            print(x$tau,digits)
-          }
-   },
-  
-  
- poly= {cat("Call: ")
-              print(x$Call)
-            cat("Polychoric correlations \n")
-            if(!is.null(x$twobytwo)) {
-              print(x$twobytwo,digits=digits)
-              cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
-            
-            if(lower) {lowerMat (x$rho,digits) } else {print(x$rho,digits)}
-            cat("\n with tau of \n")
-            print(x$tau,digits)
-          }
-   },
-   
-mixed= { cat("Call: ")
-          print(x$Call)
-    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}
-   },
+iclust.sort = {
+     nvar <- ncol(x$sort) 
+     x$sort[4:nvar] <- round(x$sort[4:nvar],digits)
+     print(x$sort)
+       },
 
-paired.r = {cat("Call: ")
-            print(x$Call)
-        print(x$test)
-        if(is.null(x$z)) {cat("t =",round(x$t,digits))  
-         } else {cat("z =",round(x$z,digits)) }
-         cat("  With probability = ",round(x$p,digits))
-         },
    
-residuals = { 
-   if (lower) {lowerMat (x,digits=digits)} else {print(x,digits)}
-	},   
-	
-set.cor= { cat("Call: ")
-              print(x$Call)
-            if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
-            cat("\nMultiple Regression from matrix input \n")}
-           cat("\nBeta weights \n")
-           print(round(x$beta,digits))
-           cat("\nMultiple R \n") 
-           print(round(x$R,digits))
-            cat("\nMultiple R2 \n") 
-            print(x$R2,digits)
-              if(!is.null(x$se)) {
-               cat("\n SE of Beta weights \n")
-           print(round(x$se,digits))
-           cat("\n t of Beta Weights \n") 
-           print(round(x$t,digits))
-            cat("\nProbability of t < \n") 
-            print(signif(x$Probability,digits))
-            cat("\n Shrunken R2 \n")
-           print(x$shrunkenR2,digits)
-           cat("\nStandard Error of R2  \n") 
-           print(x$seR2,digits)
-            cat("\nF \n") 
-            print(round(x$F,digits))
-             cat("\nProbability of F < \n") 
-           print(signif(x$probF,digits+1))
-            cat("\n degrees of freedom of regression \n") 
-            print(x$df)
-           
-           }
-            
-            if(!is.null(x$cancor)) {
-            cat("\nVarious estimates of between set correlations\n")
-            cat("Squared Canonical Correlations \n")
-            print(x$cancor2,digits=digits)
-            cat("Chisq of canonical correlations \n")
-            print(x$Chisq,digits=digits)
-            cat("\n Average squared canonical correlation = ",round(x$T,digits=digits))
-          
-            cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
-            #print(x$Rset,digits=digits)
-           if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
-          
-            cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
-           }
-
-
-   },
-   
-   
-parallel= { cat("Call: ")
-              print(x$Call) 
-              if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
-                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim$mean,pc= x$pc.values,pc.sim =x$pc.sim$mean)
-		fa.test <- which(!(x$fa.values > x$fa.sim$mean))[1]-1
-		pc.test <- which(!(x$pc.values > x$pc.sim$mean))[1] -1
-		cat("Parallel analysis suggests that ")
-		cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
-                  cat("\n Eigen Values of \n")
-                  
-                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")
-                  print(round(parallel.df[1:max(fa.test,pc.test),],digits))} else {
-              if(!is.null(x$fa.values)) {cat("\n eigen values of factors\n")
-              print(round(x$fa.values,digits))}
-               if(!is.null(x$fa.sim)){cat("\n eigen values of simulated factors\n") 
-               print(round(x$fa.sim$mean,digits))}
-              if(!is.null(x$pc.values)){cat("\n eigen values of components \n")
-              print(round(x$pc.values,digits))}
-             
-              if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
-              print(round(x$pc.sim$mean,digits=digits))}
-              
-              }
-         },
-  
 irt.fa = {
    cat("Item Response Analysis using Factor Analysis \n")
    cat("\nCall: ")
@@ -399,6 +213,102 @@ irt.poly =  {
     } else {summary(x$fa) }
   },
  
+kappa = {if(is.null(x$cohen.kappa)) {
+            cat("Call: ")
+            print(x$Call)
+            
+            cat("\nCohen Kappa and Weighted Kappa correlation coefficients and confidence boundaries \n")
+           
+            print(x$confid,digits=digits)
+            cat("\n Number of subjects =", x$n.obs,"\n")} else {
+            cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
+            print(x$cohen.kappa,digits) 
+            }
+   },
+   
+mardia =  {
+   cat("Call: ")
+     print(x$Call) 
+     cat("\nMardia tests of multivariate skew and kurtosis\n")
+     cat("Use describe(x) the to get univariate tests")
+      cat("\nn.obs =",x$n.obs,"  num.vars = ",x$n.var,"\n")
+     cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability = ", signif(x$p.skew,digits)) 
+     cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability = ", signif(x$p.small,digits)) 
+     cat("\nb2p = ", round(x$b2p,digits),"  kurtosis = ",round(x$kurtosis,digits)," with probability = ",signif(x$p.kurt,digits ))
+  },
+
+  
+mchoice =  {
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Unstandardized) Alpha:\n")
+	print(x$alpha,digits=digits)
+  	cat("\nAverage item correlation:\n")
+  	print(x$av.r,digits=digits)
+	 if(!is.null(x$item.stats)) {
+	 cat("\nitem statistics \n")
+	 print(round(x$item.stats,digits=digits))}
+  },     
+    
+mixed= { cat("Call: ")
+          print(x$Call)
+    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}
+   },
+   
+ 
+ paired.r = {cat("Call: ")
+            print(x$Call)
+        print(x$test)
+        if(is.null(x$z)) {cat("t =",round(x$t,digits))  
+         } else {cat("z =",round(x$z,digits)) }
+         cat("  With probability = ",round(x$p,digits))
+         },
+
+  
+
+         
+parallel= { cat("Call: ")
+              print(x$Call) 
+              if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
+                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim$mean,pc= x$pc.values,pc.sim =x$pc.sim$mean)
+		fa.test <- which(!(x$fa.values > x$fa.sim$mean))[1]-1
+		pc.test <- which(!(x$pc.values > x$pc.sim$mean))[1] -1
+		cat("Parallel analysis suggests that ")
+		cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
+                  cat("\n Eigen Values of \n")
+                  
+                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")
+                  print(round(parallel.df[1:max(fa.test,pc.test),],digits))} else {
+              if(!is.null(x$fa.values)) {cat("\n eigen values of factors\n")
+              print(round(x$fa.values,digits))}
+               if(!is.null(x$fa.sim)){cat("\n eigen values of simulated factors\n") 
+               print(round(x$fa.sim$mean,digits))}
+              if(!is.null(x$pc.values)){cat("\n eigen values of components \n")
+              print(round(x$pc.values,digits))}
+             
+              if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
+              print(round(x$pc.sim$mean,digits=digits))}
+              
+              }
+         },
+         
+  partial.r = {cat("partial correlations \n")
+            print(round(unclass(x),digits))
+         }, 
+         
+ poly= {cat("Call: ")
+              print(x$Call)
+            cat("Polychoric correlations \n")
+            if(!is.null(x$twobytwo)) {
+              print(x$twobytwo,digits=digits)
+              cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
+            
+            if(lower) {lowerMat (x$rho,digits) } else {print(x$rho,digits)}
+            cat("\n with tau of \n")
+            print(x$tau,digits)
+          }
+   },
+   
  polyinfo =  {cat("Item Response Analysis using Factor Analysis  \n")
    cat("\n Summary information by factor and item")
      names(x$sumInfo ) <- paste("Factor",1:length(x$sumInfo))
@@ -449,29 +359,132 @@ irt.poly =  {
      print(max.info,digits=digits)
     }
     },
-  
-mardia =  {
-   cat("Call: ")
-     print(x$Call) 
-     cat("\nMardia tests of multivariate skew and kurtosis\n")
-     cat("Use describe(x) the to get univariate tests")
-      cat("\nn.obs =",x$n.obs,"  num.vars = ",x$n.var,"\n")
-     cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability = ", signif(x$p.skew,digits)) 
-     cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability = ", signif(x$p.small,digits)) 
-     cat("\nb2p = ", round(x$b2p,digits),"  kurtosis = ",round(x$kurtosis,digits)," with probability = ",signif(x$p.kurt,digits ))
+
+   
+                  
+r.test =  {cat("Correlation tests \n")
+            cat("Call:")
+              print(x$Call)
+              cat( x$Test,"\n")
+              if(!is.null(x$t)) {cat(" t value" ,round(x$t,digits),"   with probability <", signif(x$p,digits) )}
+              if(!is.null(x$z)) {cat(" z value" ,round(x$z,digits),"   with probability ",  round(x$p,digits) )}               
+              if(!is.null(x$ci)) {cat("\n and confidence interval ",round(x$ci,digits) ) }
+         },   
+         
+residuals = { 
+   if (lower) {lowerMat (x,digits=digits)} else {print(x,digits)}
+	},   
+	
+	
+scree = {
+       cat("Scree of eigen values \nCall: ") 
+       print(x$Call) 
+       if(!is.null(x$fv)) {cat("Eigen values of factors ")
+              print(round(x$fv,digits))}
+       if (!is.null(x$pcv)) {cat("Eigen values of Principal Components")
+              print(round(x$pcv,digits))}
+         },  
+scores =  {
+    cat("Call: ")
+    print(x$Call)
+    if(x$raw) {
+	cat("\n(Unstandardized) Alpha:\n") } else {cat("\n(Standardized) Alpha:\n") }
+	
+	print(x$alpha,digits=digits)
+	if(!is.null(x$alpha.ob)) {cat("\nStandardized Alpha of observed scales:\n")
+	print(x$alpha.ob,digits=digits)}
+  	cat("\nAverage item correlation:\n")
+  	print(x$av.r,digits=digits)
+	cat("\n Guttman 6* reliability: \n")
+	print(x$G6,digits=digits)     
+	#if(iclust) {cat("\nOriginal Beta:\n")
+	# print(x$beta,digits) }	          
+ 	
+	 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 	if(!is.null(x$alpha.ob)) {cat("\nNote that these are the correlations of the complete scales based on the correlation matrix,\n not the observed scales based on the raw items.\n")}
+	 	
+	 print(x$corrected,digits) 
+	 if(short) {cat("\n In order to see the item by scale loadings and frequency counts of the data\n print with the short option = FALSE") } else {
+	  if(!is.null(x$item.cor) ) {
+	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
+	   
+	 print(round(x$item.corrected,digits=digits)) } 
+	 if(!is.null(x$response.freq)) {
+	 cat("\nNon missing response frequency for each item\n")
+	 print(round(x$response.freq,digits=digits))}
+	 }
+	
   },
   
-bifactor = {
-   cat("Call: ")
-     print(x$Call) 
- 	cat("Alpha:                ",round(x$alpha,digits),"\n") 
- 	cat("G.6:                  ",round(x$G6,digits),"\n")
- 	cat("Omega Hierarchical:   " ,round(x$omega_h,digits),"\n")
- #	cat("Omega H asymptotic:   " ,round(x$omega.lim,digits),"\n")
- 	cat("Omega Total           " ,round(x$omega.tot,digits),"\n")
- 	print(x$f,digits=digits,sort=sort)
- 	},
+set.cor= { cat("Call: ")
+              print(x$Call)
+            if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
+            cat("\nMultiple Regression from matrix input \n")}
+           cat("\nBeta weights \n")
+           print(round(x$beta,digits))
+           cat("\nMultiple R \n") 
+           print(round(x$R,digits))
+            cat("multiple R2 \n") 
+            print(x$R2,digits)
+             cat("\n Unweighted multiple R \n") 
+           print(round(x$ruw,digits))
+             cat(" Unweighted multiple R2 \n") 
+           print(round(x$ruw^2,digits))
+              if(!is.null(x$se)) {
+               cat("\n SE of Beta weights \n")
+           print(round(x$se,digits))
+           cat("\n t of Beta Weights \n") 
+           print(round(x$t,digits))
+            cat("\nProbability of t < \n") 
+            print(signif(x$Probability,digits))
+            cat("\n Shrunken R2 \n")
+           print(x$shrunkenR2,digits)
+           cat("\nStandard Error of R2  \n") 
+           print(x$seR2,digits)
+            cat("\nF \n") 
+            print(round(x$F,digits))
+             cat("\nProbability of F < \n") 
+           print(signif(x$probF,digits+1))
+            cat("\n degrees of freedom of regression \n") 
+            print(x$df)
+           
+           }
+            
+            if(!is.null(x$cancor)) {
+            cat("\nVarious estimates of between set correlations\n")
+            cat("Squared Canonical Correlations \n")
+            print(x$cancor2,digits=digits)
+            if(!is.null(x$Chisq)) {cat("Chisq of canonical correlations \n")
+            print(x$Chisq,digits=digits)}
+            cat("\n Average squared canonical correlation = ",round(x$T,digits=digits))
+          
+            cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
+            #print(x$Rset,digits=digits)
+           if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
+          
+            cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
+             cat("\nUnweighted correlation between the two sets = ",round(x$Ruw,digits)) 
+           
+           }
+
+
+   },
    
+   
+sim =  { if(is.matrix(x)) {x <-unclass(x) 
+             round(x,digits) } else {
+              cat("Call: ")
+              print(x$Call)
+             cat("\n $model (Population correlation matrix) \n")
+             print(x$model,digits)
+             if(!is.null(x$reliability)) { cat("\n$reliability (population reliability) \n")
+                print(x$reliability,digits) } 
+             if(!is.null(x$N) && !is.null(x$r)) {
+             cat("\n$r  (Sample correlation matrix  for sample size = ",x$N,")\n")
+             print(x$r,digits)}
+             }             
+ },
+ 
 statsBy ={
  cat("Statistics within and between groups  ")
    cat("\nCall: ")
@@ -488,10 +501,34 @@ cat("Correlation within groups \n")
 lowerMat(x$rwg)
 }
 },
-iclust.sort = { nvar <- ncol(x$sort) 
-   x$sort[4:nvar] <- round(x$sort[4:nvar],digits)
-   print(x$sort)
-},
+
+            
+   
+ tetra = {cat("Call: ")
+              print(x$Call)
+            cat("tetrachoric correlation \n")
+            if(!is.null(x$twobytwo)) {
+              print(x$twobytwo,digits=digits)
+              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
+           if(is.matrix(x$rho) &&  lower) {lowerMat (x$rho,digits)} else { print(x$rho,digits)}
+            cat("\n with tau of \n")
+            print(x$tau,digits)
+          }
+   },
+   
+thurstone = {
+	cat("Thurstonian scale (case 5) scale values ")
+	cat("\nCall: ")
+     print(x$Call)
+	print(x$scale)
+	cat("\n Goodness of fit of model  ", round(x$GF,digits))
+ },
+         
+
+   
+
+
+       
 KMO = {cat("Kaiser-Meyer-Olkin factor adequacy")
      cat("\nCall: ")
    print(x$Call)

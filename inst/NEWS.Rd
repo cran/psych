@@ -33,6 +33,25 @@
   }
   } 
   
+ \section{Changes in psych version 1.3.10.12 (2013-10-12)}{
+   \subsection{Additions}{
+\itemize{
+    \item A serious speedup to tetrachoric and polychoric was initiated with the help of Jason French.  The increase in speed is roughly 1- (nc-1)^2/nc^2 where nc is the number of categories.  Thus, for tetrachorics where nc=2, this is a 75% reduction, whereas for polychorics of 6 item responses this is just a 30% reduction.
+    \item Added the ability to rotate the numbers in cor.plot by specifying srt. (Thanks to a suggestion on Stack OverFlow by shujaa).
+    \item Added the use parameter to the fa function to allow for other than pairwise correlations.
+    \item Added an invisible return from the print.psych.fa function to include the variances accounted for and the cumulative variance accounted for. (Requested by Eric Green).
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+      \item Fixed a bug in print.psych.fa so that it did not always work with the HDMD package. 
+      \item Modified fa.parallel.poly so that the progress bar is not called during the tetrachorics or polychoric simulations. 
+      }
+   } 
+  }
+ 
+  
 \section{Changes in psych version 1.3.10 (2013-10-03)}{
    \subsection{Additions}{
 \itemize{

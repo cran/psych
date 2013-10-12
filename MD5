@@ -1,4 +1,4 @@
-55877fcbc87f813f2813787ba48326d5 *DESCRIPTION
+32815d08a2aea105e7d5de88923b1ebb *DESCRIPTION
 8a20be4df7602a73d89d852446c59e3f *NAMESPACE
 13d9ab3fbb68605e336eaf29f98bd80a *R/BASS.R
 55da70d9c9bec31f46ff865582d29dc6 *R/CTA_lrn.R
@@ -38,7 +38,7 @@ f90b3f75b4e0143f342ed4e785260f1a *R/cluster.loadings.R
 02f5c23520d04eeff50459773faba599 *R/congeneric.sim.R
 02f5c23520d04eeff50459773faba599 *R/congeric.sim.R
 eec08750a228d1b85dbcd909b1c44df7 *R/cor.ci.R
-7d95e15a7f04721ee1b3d6fabf408798 *R/cor.plot.R
+0629a920e76f7017822af437454f056d *R/cor.plot.R
 fd74b129ae2efec3e186e5d597bfbdea *R/cor2dist.R
 7127e0807f189a927b99d718e9b82dc9 *R/corr.test.R
 b7523e26cedf7a2f78758088c1feb182 *R/correct.cor.R
@@ -53,7 +53,7 @@ a86b1ffa515cc91f0bc27c737a912431 *R/cosiner.R
 76ec20e866c197c84bb745e773456b50 *R/cta.R
 e64c8e18b96314cb8bd1796484be68ad *R/describe.R
 c57671512bc48af257c8ea4b5414b3e3 *R/describe.by.R
-30ef47639923fbf54e3b49929b990dea *R/df2latex.R
+caa21fe6ea78508121d784e607e90ab8 *R/df2latex.R
 fd3fc64eaafbfb3771f597a51647b779 *R/dia.cone.R
 295c9a1ff73500cd077ae3fc17220cf0 *R/diagram.R
 43b0a2e6269769f41683871e50b40699 *R/draw.tetra.R
@@ -64,13 +64,13 @@ e7c4ffda605eca6f62e7155dfca1a521 *R/error.bars.R
 b457e0bfab57ff9a55742bee60fb50d7 *R/error.bars.by.R
 df953e545a4827123bbf6b0b1e5e4f31 *R/error.crosses.R
 9b43abe987172cddcb0a69b86eb4c396 *R/errorCircles.r
-133b4f1600c9b887deeb91825ab032d3 *R/fa.R
+7d0f3de3116ce9d11c4bd7d14ba9dc43 *R/fa.R
 e178c02a2e96e2a55934dd905fc71530 *R/fa.ci.R
 2f0dd1e3bde5c772ef697469c5bb2680 *R/fa.diagram.R
 b27cf8ea52312e28a1624796e761380c *R/fa.extension.R
 b2f045a51110e376b73a021035d02033 *R/fa.graph.R
 2a96fa85ce48a8be875fb9a4c51502e7 *R/fa.parallel.R
-bf2cbebb971ea6a02281e1837ac26f81 *R/fa.parallel.poly.R
+e5371e535b927df788b0ecbb04862253 *R/fa.parallel.poly.R
 09725a3b0ab5938a9bf6fb3464f09302 *R/fa.poly.R
 7c97a6828a82ed925b928d3f036be065 *R/fa.rgraph.R
 65c136f77c4ced60152fd1acd6c3553d *R/fa.sort.R
@@ -119,7 +119,7 @@ c171acfae802dbfba3a32dac0fbaa275 *R/mat.regress.R
 ebfb848141f2e063822863870429a8eb *R/mat.sqrt.R
 c7aa8f722e3227cc1e8a64ace4f506be *R/matrix.addition.R
 7efd423b076037ac3ef6b4fa9e984f55 *R/meta.schmid.R
-fa05a6a89bac160977c290760d914ca1 *R/misc.R
+4bed1ed132dd2273affcccbab69dd90e *R/misc.R
 3e693350e89fa83d46c1f9152f2e965c *R/mixed.cor.R
 cdc667c9fbf11a77f9182084090bbc10 *R/model.fit.R
 df827a6929ee8e7186f8f65e5e93ab48 *R/multi.hist.R
@@ -142,12 +142,12 @@ b838ebb7831a19b43c597fe316db7f78 *R/plot.irt.R
 4fe1507d08a4c1f1a16202db33890f56 *R/plot.psych.R
 ff658a0e5e3abdec684cb8eb47bb16a6 *R/polar.R
 8b7c8a676b41c656c541740af079b707 *R/polychor.matrix.R
-753433436e567f552873ff598c37bca5 *R/polychoric.R
+ed26298cd71f3eecaa4d273801409b36 *R/polychoric.R
 7172664481e5ef4c1685ec9da9178d68 *R/predict.principal.R
 ea3b09cb7877620220bcf1aebbf76466 *R/principal.R
 8e9470ebadc491c5643b76789d2feb1f *R/print.factor.pa.R
 351f74fe28e375c586f85f72c24cba05 *R/print.psych.R
-7d8c5c94d674ca53f237df64e5901472 *R/print.psych.fa.R
+aae3dc0f1c9c27b8075fbfdb40f37509 *R/print.psych.fa.R
 810b7aea2e3eec77cd9b5111146230b8 *R/print.psych.iclust.R
 74b2ed2ee41cce9394e67830c9e79e02 *R/print.psych.omega.R
 7e319ec8a8fd8c1d6f0bbc350bb050d9 *R/print.psych.schmid.R
@@ -198,7 +198,7 @@ a0c781092a59b3984e4f098785161744 *R/table2matrix.R
 d749df7eb65ddfd8050bd0b676665366 *R/tenberge.R
 545ccfc4eb4c25123abdef7e5b5b2e0a *R/test.all.R
 4efb254993a5cb176f4e828dc3647046 *R/test.psych.r
-8e9b6396feb760f40becfdfde9c9ace0 *R/tetrachor.R
+d0893760514a6b54835c9983dae3b161 *R/tetrachor.R
 78c92616b47e4883cf7bc609591e1740 *R/thurstone.R
 c05b3842295f63714f4bc689880c9802 *R/toDotty.R
 eb39f2e692f5edc7a6eb4dbdb2319cc7 *R/winsor.R
@@ -239,13 +239,13 @@ e42a06c561110ba9f9430c4306de4640 *data/income.rda
 e9421dca7adc88289073257ad3107939 *data/vegetables.rda
 16da6b1e624fce7a452326bfab7d390d *data/withinBetween.rda
 99af01a0ec75f8685ac0cafba3f616c4 *inst/CITATION
-d1376fa4524132b97197027ddc786d27 *inst/NEWS.Rd
+99c93f140af99050e2184129cad8bcec *inst/NEWS.Rd
 589a863f7db93ddef2b5233d4130c446 *inst/doc/overview.R
 b77020361ba4a360d7985d25bc591c30 *inst/doc/overview.Rnw
-970e35bce0b2b01086aeb2b04384ddf7 *inst/doc/overview.pdf
+9f567c5d80509a1e10d2fa685422e51a *inst/doc/overview.pdf
 3be3ffcdc7b2e1a7c851a31d9debc14f *inst/doc/psych_for_sem.R
 cbbc990657a5917f9a388f495870bec5 *inst/doc/psych_for_sem.Rnw
-c02684a467446fdf58bb33fbd395715d *inst/doc/psych_for_sem.pdf
+ee8f37cf89028862188a16b619657a7d *inst/doc/psych_for_sem.pdf
 7b1414f798d8d2a04fe3c3a0e825fec0 *man/00.psych-package.Rd
 d1c648092201e2fd2185c5aa2bdd2d9b *man/Gorsuch.Rd
 c17f31ee6ea94de020699e6c741d655e *man/Harman.5.Rd
@@ -287,7 +287,7 @@ ce4d13b1579e98dd37f9c266eab55248 *man/cluster.loadings.Rd
 8a2b12d771d57672b7abe446e68b058c *man/cluster2keys.Rd
 08e903f052431a4bde3432f026189991 *man/comorbidity.Rd
 56b5193fa8dbedf87fd974579b45a39b *man/cor.ci.Rd
-dcf3b393378480942a492033bb14badb *man/cor.plot.Rd
+aee58a35c9c0d6aaf5554cdaef346cf8 *man/cor.plot.Rd
 55f9b7fb07725b1ead3d0cce7b38b54f *man/cor.smooth.Rd
 695bb5f5976eec427b24dc2e5cef1067 *man/cor.wt.Rd
 ec23aaa2b3a72fc49d99706294849a72 *man/cor2dist.Rd
@@ -302,7 +302,7 @@ fe1f3416b8b6484adf8c7cc5f43ddc29 *man/cortest.bartlett.Rd
 167c2b83f483f25cff9b393bfa94d221 *man/cushny.Rd
 ab40506a605127a10c2ebc31fea47f0a *man/describe.Rd
 38ade56afaec49106d400687c5393d70 *man/describe.by.Rd
-5444529872b5c223d3ba4e8678b1a795 *man/df2latex.Rd
+cce1e8f88608039c3016e11423224781 *man/df2latex.Rd
 3d3940dabd9dfb161e7d992fd6d4e06e *man/diagram.Rd
 202299033e942cda84835874e7203d91 *man/draw.tetra.Rd
 5d07a27b7176286042fdb51ffe85b41f *man/dummy.code.Rd
@@ -314,7 +314,7 @@ b778936359a7d9fc1426f26093823005 *man/epi.bfi.Rd
 31b2553777d57a1a384c2f68d0217d11 *man/error.bars.by.Rd
 e24226d665fa2a0448190588b6701ec4 *man/error.circles.Rd
 6bfaa2fea1b95fdd2d5c991b21b4c570 *man/error.crosses.Rd
-a4b7e0903b244e59f54680f70c25a32e *man/fa.Rd
+af81b442e642745d9671c6ec4ee1558d *man/fa.Rd
 de5cfad5e327f2d64cee2dc8432d692b *man/fa.diagram.Rd
 d213519a316b08bec33f786d858f8684 *man/fa.extension.Rd
 8474893254992e276b3e3b32cd360906 *man/fa.parallel.Rd
@@ -407,7 +407,7 @@ a26318e3d78de9177aa226b2b334cec6 *man/statsBy.Rd
 33a3312d410d98197ebeec6bc16825f2 *man/super.matrix.Rd
 a0b470042d5a8fbeb2fe3993670d6509 *man/table2matrix.Rd
 ced3f3045b1f7bcfa569618a7d976e6f *man/test.psych.Rd
-71c570aa9346b7d1b4b25ccc2c0af747 *man/tetrachor.Rd
+cb7e3f48b26183d4e77d0a0a2f4784f9 *man/tetrachor.Rd
 a89bd2c5a93b3940761d0b5c6dfc515c *man/thurstone.Rd
 9eec50d1cd2208bce401da2c58c29d35 *man/tr.Rd
 8e7698beb925751bf5b8e1289497dba2 *man/vegetables.Rd

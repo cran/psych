@@ -3,7 +3,7 @@
 
  #the following two functions are called repeatedly by tetrac and are put here to speed up the process
  
-"tetraBinBvn" <-
+"tetraBinBvn.old" <-
  function (rho,rc,cc)    #adapted from John Fox's polychor
 { row.cuts <- c(-Inf, rc, Inf)
     col.cuts <- c(-Inf, cc, Inf)
@@ -15,6 +15,22 @@
                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
                 corr = R)
         }}
+    P   #the estimated 2 x 2 predicted by rho, rc, cc
+}
+
+"tetraBinBvn" <-
+ function (rho,rc,cc)    #adapted from John Fox's polychor
+{ row.cuts <- c(-Inf, rc, Inf)
+    col.cuts <- c(-Inf, cc, Inf)
+    P <- matrix(0, 2,2)
+    R <- matrix(c(1, rho, rho, 1), 2, 2)
+    P[1,1] <- pmvnorm(lower = c(row.cuts[1], col.cuts[1]), 
+                upper = c(row.cuts[2], col.cuts[2]), 
+                corr = R)
+    P[1,2] <- pnorm(rc) - P[1,1]
+    P[2,1] <- pnorm(cc) - P[1,1]
+    P[2,2] <-  1- pnorm(rc) - P[2,1]
+
     P   #the estimated 2 x 2 predicted by rho, rc, cc
 }
 
@@ -211,13 +227,12 @@ colnames(mat) <- colnames(x)
 rownames(mat) <- colnames(y)
 #cat("\n Finding the biserial correlations\n")
 for(i in 1:ny) {
-#progressBar(i*(i-1)/2,ny^2/2,"Biserial")
+progressBar(i*(i-1)/2,ny^2/2,"Biserial")
    for (j in 1:nx) {
     mat[i,j] <- biserialc(x[,j],y[,i],j,i)
     }}
-  
- # cat("\n" )  #put in to clear the progress bar
- # flush(stdout())
+  flush(stdout())
+  cat("\n" )  #put in to clear the progress bar
    return(mat)
 }
 

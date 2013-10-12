@@ -15,7 +15,7 @@ cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
      font.size ="scriptsize",
       heading="A correlation table from the psych package in R",
       caption="cor2latex",label="default")
-fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
+fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
        font.size ="scriptsize",
        heading="A factor analysis table from the psych package in R",
        caption="fa2latex",label="default") 
@@ -30,6 +30,7 @@ irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
   \item{rowlabels}{If TRUE, use the row names from the matrix or data.frame}
   \item{short.names}{Name the columns 1 .. N to save space}
   \item{apa}{If TRUE formats table in APA style}
+  \item{cumvar}{For factor analyses, should we show the cumulative variance accounted for?}
   \item{font.size}{e.g., "scriptsize", "tiny" or anyother acceptable LaTeX font size.}
   \item{heading}{The label appearing at the top of the table}
   \item{caption}{The table caption}

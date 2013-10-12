@@ -138,7 +138,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
        print(round(Phi,digits))
             } }
        
-       if(!is.null(com)) cat("\nMean item complexity = ",round(mean(com),1))     
+       if(!is.null(x$complexity)) cat("\nMean item complexity = ",round(mean(com),1))     
        objective <- x$criteria[1]
     if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}
@@ -162,19 +162,18 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 if ((!is.null(x$fn)) && (x$fn != "principal")) {
 if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 
-
- 
  rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
          colnames(stats.df) <- colnames(x$loadings)
  
  cat("\nMeasures of factor score adequacy             \n")
- print(round(stats.df,digits))}
+ print(round(stats.df,digits))
  
  
 
 	 if( max(x$R2) > (1 + .Machine$double.eps) ) {
 	 cat("\n WARNING, the factor score fit indices suggest that the solution is degenerate. Try a different method of factor extraction.\n")
 	 warning("the factor score fit indices suggest that the solution is degenerate\n")}
+	 }
 	 
 	if(!is.null(x$stats$R2)) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
 	cat("\nCorrelation of scores with factors           ",round(sqrt(x$R2),digits))
@@ -182,9 +181,11 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 	  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
 	  }
  
-  
+ result <- list(Vaccounted=varex)
+ invisible(result) 
 } 
    #end of print.psych.fa
 
 #modified November 22, 2010 to get the communalities correct for sorted loadings, but does this work for covariances?
 #modified November 18, 2012 to print the empirical chi squares
+#modified October 13, 2013 to add the invisibile return of varex.

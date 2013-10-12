@@ -56,7 +56,7 @@ return(df2latex(r,digits=NULL,rowlabels=rowlabels,apa=apa,short.names=short.name
 }
 
 "fa2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
 x <- unclass(f$loadings)
 if(!is.null(f$Phi)) {Phi <- f$Phi} else {Phi <- NULL}
 nfactors <- ncol(x)
@@ -118,14 +118,19 @@ footer <- paste(footer,"
       	                                      vx <- vx*nvar/vtotal }
       	  #names(vx) <- colnames(x)[1:nvar]
       	  vx <- round(vx,digits) 
-          loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""),"\\cr")
+          loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""),"\\cr  \n")
           cat(loads)
            
           #varex <- rbind("SS loadings " =   vx)
-         # varex <- rbind(varex, "Proportion Var" =  vx/nvar)
-          # if (nfactors > 1) {varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/nvar))
-          #varex <- rbind(varex, "Cum. factor Var"=     cumsum(vx/sum(vx)))}
-    
+          if(cumvar) {
+          provar <- round(vx/nvar,digits)
+         cat("Proportion Var &" ,paste(  provar, "  & ",sep=""),"\\cr \n")
+           if (nfactors > 1) {cumvar <- round(cumsum(vx/nvar),digits)
+             cumfavar <- round(cumsum(vx/sum(vx)),digits=digits)
+           cat("Cumulative Var & ",paste( cumvar," & ", sep=""),"\\cr \n")
+          cat( "Cum. factor Var & ",paste(cumsum(vx/sum(vx)),"  & ",sep=""),"\\cr \n") } 
+          }
+         
  if(!is.null(Phi)) {
         cat("\\cr 
             \\hline \\cr \n")

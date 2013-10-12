@@ -48,12 +48,13 @@ char="."
 nw <- nchar(char, "w")
 nb <- round(width * value/max )
        
-        cat(paste(c("\r  ",label," |", rep.int(" ", nw * width + 6)), collapse = ""))
-        cat(paste(c("\r  ",label," |", rep.int(char, nb), rep.int(" ", 
-            nw * (width - nb)), sprintf("| %3d%%", pc)), collapse = ""))}
+        #cat(paste(c("\r  ",label," |", rep.int(" ", nw * width + 6)), collapse = ""))
+        cat(paste(c("\r  ",label," |", rep.int(char, nb), rep.int(" ", nw * (width - nb)), sprintf("| %3d%%", pc)), collapse = ""))
+        }
             }
- flush.console()
-}
+ #flush.console()
+ flush(stdout())
+ }
 
 
 "reflect" <- 

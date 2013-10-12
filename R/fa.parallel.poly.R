@@ -13,6 +13,8 @@ n.obs <- dim(x)[1]
 	    px <- matrix(tx.item/colSums(tx.item),ncol=2,byrow=TRUE)
 	    } } else {tet <- mixed.cor(x)
 	    typ = "poly"}
+	    cat("\n")  #to try to clear the progress bar
+        flush(stdout())
  r <- tet$rho
  f <- fa(r,n.obs=n.obs,SMC = SMC,covar=FALSE,fm=fm) #call fa with the appropriate parameters
  f$Call <- cl
@@ -23,9 +25,11 @@ n.obs <- dim(x)[1]
  replicates <- list()
  rep.rots <- list()
  for (trials in 1:n.iter) {
+progressBar(trials,n.iter,"fa.parallel.poly")
  #xs <- matrix(sample(nx,n.obs*nvar,replace=TRUE),ncol=nvar) #this does not replicate the p values
  xs <- matrix(apply(x,2,function(y) sample(y,n.obs,replace=TRUE)),ncol=nvar) #do it column wise
- if(typ=="poly") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs,correct=correct)}
+# if(typ=="poly") {tets <- polychoric(xs,progress=FALSE)} else {tets <- tetrachoric(xs,correct=correct)}
+tets <- polychoric(xs,progress=FALSE)
 # tets <- mixed.cor(xs)
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
@@ -46,7 +50,7 @@ if(sim && (typ=="tet")) {xsim <- matrix(apply(px,1,function(x) sample(2,n.obs,TR
      
 } 
 
-
+cat("\n")  #to try to clear the progress bar
 
 ei.pc <-describe(matrix(unlist(e.values$pc),ncol=nvar,byrow=TRUE))  #eigen values of pcs
 ei.fa <- describe(matrix(unlist(e.values$fa),ncol=nvar,byrow=TRUE)) #eigen values of fa
@@ -62,6 +66,7 @@ if(sim && (typ=="tet")) {eis.pc <- describe(matrix(unlist(e.values$pc.sim),ncol=
 #results <- list(fa = f,rho=tet$rho,tau=tet$tau,n.obs=n.obs,Call= cl,e.values=e.values,e.stats=e.stats)
 results <- list(rho=tet$rho,tau=tet$tau,n.obs=n.obs,Call= cl,fa.values=f$values,pc.values=f$e.values,pc.sim=ei.pc,fa.sim=ei.fa,pcs.sim=eis.pc,fas.sim=eis.fa,nfact=fa.test,ncomp = pc.test)
 class(results) <- c("psych","parallel")
+cat('\n See the graphic output for a description of the results\n')
 plot.poly.parallel(results)
 return(results)
  }

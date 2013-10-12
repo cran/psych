@@ -4,7 +4,7 @@
 #moved these first two function out of the polyc function in the hope that they will be compiled just once and perhaps get a speed increase
 #doesn't seem to make a difference although it does make the code a bit easier to read
 
- polyBinBvn <- function (rho,rc,cc)    #adapted from John Fox's polychor
+ polyBinBvn.old <- function (rho,rc,cc)    #adapted from John Fox's polychor
 { if (min(rc) < -9999) rc <- rc[-1]          
   if (min(cc) < - 9999) cc <- cc[-1]
   if (max(rc) > 9999) rc <- rc[-length(rc)]
@@ -24,6 +24,34 @@
                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
                 corr = R)   #should we specify the algorithm to TVPACK or Miwa
         }}
+    P   #the estimated n x n predicted by rho, rc, cc
+}
+
+ polyBinBvn<- function (rho,rc,cc)    #adapted from John Fox's polychor
+{ if (min(rc) < -9999) rc <- rc[-1]          
+  if (min(cc) < - 9999) cc <- cc[-1]
+  if (max(rc) > 9999) rc <- rc[-length(rc)]
+  if (max(cc)  > 99999) cc <- cc[-length(cc)]
+  row.cuts <- c(-Inf,rc,Inf)
+  col.cuts <- c(-Inf,cc,Inf)
+  nr <- length(rc) + 1
+  nc <- length(cc) + 1
+
+
+    P <- matrix(0, nr,nc)
+    R <- matrix(c(1,rho,rho,1),2,2)
+   # diag(R) <- 1
+    for (i in 1:(nr-1)) {
+        for (j in 1:(nc-1)) {
+            P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
+                upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
+                corr = R)   #should we specify the algorithm to TVPACK or Miwa
+        }}
+    P[1,nc] <- pnorm(rc[1]) - sum(P[1,1:(nc-1)] )
+    P[nr,1] <- pnorm(cc[1]) - sum(P[1:(nr-1),1] )
+    if(nr >2) {for (i in (2:(nr-1))) {P[i,nc] <- pnorm(rc[i]) -pnorm(rc[i-1])- sum(P[i,1:(nc-1)] ) }}
+    if(nc >2) {for (j in (2:(nc-1))) {P[nr,j] <- pnorm(cc[j]) - pnorm(cc[j-1])-sum(P[1:(nr-1),j] ) }}
+    if(nc>1)  P[nr,nc] <- 1- pnorm(rc[nr-1]) - sum(P[nr,1:(nc-1)]) 
     P   #the estimated n x n predicted by rho, rc, cc
 }
 
@@ -65,7 +93,7 @@ function(x,y=NULL,taux,tauy,global=TRUE) {
 
 #Basically just is used to find the thresholds and then does the polychoric r for a matrix
 "polychoric" <- 
-function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE) {
+function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,progress=TRUE) {
 if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
 if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
  polycor <- FALSE}
@@ -95,7 +123,7 @@ x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to o
 
 #cat("\n Finding Polychoric correlations\n" )
 for (i in 2:nvar) {
-progressBar(i^2/2,nvar^2/2,"Polychoric")
+if(progress) progressBar(i^2/2,nvar^2/2,"Polychoric")
   for (j in 1:(i-1)) { 
  if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
 if(!polycor) {
@@ -114,9 +142,9 @@ mat[i,j] <- mat[j,i] <- poly$rho } else {
  if(smooth) {mat <- cor.smooth(mat) }
  tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
-   flush(stdout())
- cat("\n") #put in to clear the progress bar
- flush(stdout())
+  #flush(stdout())
+ if(progress) {cat("\n") #put in to clear the progress bar
+  flush(stdout())}
  class(result) <- c("psych","poly")
   return(result) 
   }

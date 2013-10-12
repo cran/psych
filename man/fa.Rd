@@ -15,12 +15,12 @@
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
- alpha=.1,p=.05,oblique.scores=FALSE,np.obs,...)
+ alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs,...)
+oblique.scores=FALSE,np.obs,use="pairwise",...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
@@ -58,6 +58,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
   \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
+  \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -117,7 +118,7 @@ Some correlation matrices that arise from using pairwise deletion or from tetrac
 
 For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
-
+For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  
 
 }
 \value{

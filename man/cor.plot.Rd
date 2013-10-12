@@ -20,7 +20,7 @@ cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),show.legend=TRU
   \item{labels}{if NULL, use column and row names, otherwise use labels}
   \item{n.legend}{How many categories should be labelled in the legend?}
   \item{keep.par}{restore the graphic parameters when exiting}
-  \item{...}{Other parameters for axis (e.g., cex.axis to change the font size)}
+  \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
 

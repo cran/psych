@@ -55,7 +55,7 @@ at1 <- (0:(nf-1))/(nf-1)
 
 if(numbers) {rx <- rep(at1,ncol(r))
  ry <-rep(at2,each=ncol(r))
- text(rx,ry,round(r*100))}
+ text(rx,ry,round(r*100),...)}
 if(show.legend) {
     leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)
 #screen(2) 

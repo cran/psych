@@ -13,7 +13,8 @@ The biserial correlation is between a continuous y variable and a dichotmous x v
 }
 \usage{
 tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE)
-polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE, std.err=FALSE) 
+polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE,
+       std.err=FALSE,progress=TRUE) 
 biserial(x,y)  
 polyserial(x,y) 
 
@@ -42,6 +43,7 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 
 \item{short}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric}
 \item{std.err}{std.err=FALSE does not report the standard errors (faster) }
+\item{progress}{Show the progress bar}
 \item{ML}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow!}
 
 }

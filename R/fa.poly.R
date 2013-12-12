@@ -1,6 +1,6 @@
  #polychoric factor analysis with confidence intervals
  "fa.poly" <- 
-function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,scores="regression",oblique.scores=TRUE,...) {
+function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,scores="regression",oblique.scores=TRUE,weight=NULL,...) {
  cl <- match.call()
  ncat <- 8
 n.obs <- dim(x)[1]
@@ -15,8 +15,8 @@ nvar <- ncol(x)
 dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
 pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
 cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
-if(length(pvars)==ncol(x)) {tet <- polychoric(x)
-	    typ = "poly"} else {tet <- mixed.cor(x)
+if(length(pvars)==ncol(x)) {tet <- polychoric(x,weight=weight)
+	    typ = "poly"} else {tet <- mixed.cor(x,weight=weight)
 	    typ="mixed" }}
  r <- tet$rho
  f <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,scores=scores,...) #call fa with the appropriate parameters
@@ -30,7 +30,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
  rep.rots <- list()
  for (trials in 1:n.iter) {
  xs <- x[sample(n.obs,n.obs,replace=TRUE),]
-  if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
+  if(typ!= "tet") {tets <- mixed.cor(xs,weight=weight)} else {tets <- tetrachoric(xs,weight=weight)}
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
    					e.values[["pc"]][[trials]] <- values.samp

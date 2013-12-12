@@ -38,9 +38,13 @@ test.all(p)
   \item{base}{What is the base for the log function (default=2, e implies base = exp(1) ) }
   \item{p}{The name of a package to be activated and then have all the examples tested.}
 }
-\value{ The lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3 (lowerMat) or a series of dots (progressBar).
+\value{ 
+
+The lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3 (lowerMat)
+or a series of dots (progressBar).
 
 lowerCor prints the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places. 
+
 
 \code{\link{shannon}} finds Shannon's H index of information.  Used for estimating the complexity or diversity of the distribution of responses in a vector or matrix. \deqn{H = -\sum{p_i log(p_i) }}
 
@@ -48,10 +52,20 @@ lowerCor prints the lower diagonal correlation matrix but returns (invisibly) th
 
 }
 
+\details{ corFiml is a very short wrapper function that uses the power of the lavaan package.  corFiml calls three lavaan functions: getMissingPatterns, getMissingPatternStats and estimate.moments.fiml.  corFiml is included here to allow for Full Information Maximum Likelihood (FIML) correlation and covariance matrices without digging into the lavaan package.  lavaan in turn requires a number of other packages, including boot, MASS, mnormt, pbivnorm, and quadprog.  
+
+lowerCor prints out the lower off diagonal matrix rounded to digits with column names abbreviated to digits + 3 characters, but also returns the full and unrounded matrix.  By default, it uses pairwise deletion of variables.  It in turn calls
+
+lowerMat which does the pretty printing.  
+
+}
+
 \seealso{\code{\link{corr.test}} to find correlations, count the pairwise occurrences, and to give significance tests for each correlation.  \code{\link{r.test}} for a number of tests of correlations, including tests of the difference between correlations.  \code{\link{lowerUpper}} will display the differences between two matrices.}
 \examples{
 lowerMat(Thurstone)
 lowerCor(bfi[1:10])
+#fiml <- corFiml(bfi[1:10])     #FIML correlations require lavaan package
+#lowerMat(fiml)  #to get pretty output
 f3 <- fa(Thurstone,3)
 f3r <- reflect(f3,2)  #reflect the second factor
 #find the complexity of the response patterns of the iqitems.

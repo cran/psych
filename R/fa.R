@@ -320,7 +320,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     if(rotate != "none") {if (nfactors > 1) {
 
     
-   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" |rotate =="bifactor" ||rotate =="targetT" ) { 
+   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" |rotate =="bifactor" | rotate =="targetT" |rotate =="TargetT" ) { 
    	if (!require(GPArotation)) {stop("I am sorry, to do these rotations requires the GPArotation package to be installed")}
    	       #varimax is from the stats package, Varimax is from GPArotations
    			rotated <- do.call(rotate,list(loadings,...))

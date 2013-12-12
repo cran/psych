@@ -37,6 +37,9 @@ alpha = {
 	print(x$call)
 	cat("\n ")
 	print(x$total,digits=digits)
+	if(!is.null(x$total$ase)){ cat("\n lower alpha upper     95% confidence boundaries\n")
+	cat(round(c(x$total$raw_alpha - 1.96* x$total$ase, x$total$raw_alpha,x$total$raw_alpha +1.96* x$total$ase),digits=digits) ,"\n")}
+	if(!is.null(x$boot.ci)) {cat("\n lower median upper bootstrapped confidence intervals\n",round(x$boot.ci,digits=digits))}
 	cat("\n Reliability if an item is dropped:\n")
     print(x$alpha.drop,digits=digits)
 	cat("\n Item statistics \n")
@@ -159,11 +162,11 @@ guttman =  {
   cat("Call: ")
     print(x$Call)
  cat("\nAlternative estimates of reliability\n")
- cat("Beta = ", round(x$beta,digits), " This is an estimate of the worst split half reliability")  
+# cat("Beta = ", round(x$beta,digits), " This is an estimate of the worst split half reliability")  
  cat("\nGuttman bounds \nL1 = ",round(x$lambda.1,digits), "\nL2 = ", round(x$lambda.2,digits), "\nL3 (alpha) = ", round(x$lambda.3,digits),"\nL4 (max) = " ,round(x$lambda.4,digits), "\nL5 = ", round(x$lambda.5,digits), "\nL6 (smc) = " ,round(x$lambda.6,digits), "\n")
  cat("TenBerge bounds \nmu0 = ",round(x$tenberge$mu0,digits), "mu1 = ", round(x$tenberge$mu1,digits), "mu2 = " ,round(x$tenberge$mu2,digits), "mu3 = ",round(x$tenberge$mu3,digits) , "\n")
  cat("\nalpha of first PC = ",round( x$alpha.pc,digits), "\nestimated greatest lower bound based upon communalities= ", round(x$glb,digits),"\n")
- #cat("\nbeta estimated by first and second PC = ", round(x$beta.pc,digits), " This is an exploratory statistic \n")
+ cat("\nbeta found by splitHalf  = ", round(x$beta,digits),"\n")
  } ,
  
  ICC =  {cat("Call: ")
@@ -389,8 +392,10 @@ scores =  {
     print(x$Call)
     if(x$raw) {
 	cat("\n(Unstandardized) Alpha:\n") } else {cat("\n(Standardized) Alpha:\n") }
-	
-	print(x$alpha,digits=digits)
+	print(x$alpha,digits=digits) 
+	if(!is.null(x$ase)) {cat("\nStandard errors of unstandardized Alpha:\n")
+	rownames(x$ase) <- "ASE  "
+	print(x$ase,digit=digits) }
 	if(!is.null(x$alpha.ob)) {cat("\nStandardized Alpha of observed scales:\n")
 	print(x$alpha.ob,digits=digits)}
   	cat("\nAverage item correlation:\n")
@@ -483,6 +488,17 @@ sim =  { if(is.matrix(x)) {x <-unclass(x)
              cat("\n$r  (Sample correlation matrix  for sample size = ",x$N,")\n")
              print(x$r,digits)}
              }             
+ },
+ 
+ split ={ cat("Split half reliabilities  ")
+   cat("\nCall: ")
+      print(x$Call)
+   cat("\nMaximum split half reliability (lambda 4) = ",round(x$maxrb,digits=digits))
+   cat("\nGuttman lambda 6                          = ",round(x$lambda6,digits=digits))
+   cat("\nAverage split half reliability            = ",round(x$meanr,digits=digits))
+   cat("\nGuttman lambda 3 (alpha)                  = ",round(x$alpha,digits=digits))
+   cat("\nMinimum split half reliability  (beta)    = ",round(x$minrb,digits=digits))
+      
  },
  
 statsBy ={

@@ -1,17 +1,34 @@
+#November 22, 2013  Modified with help from Davide Morselli to allow for "stars"
+#also allows for printing straight text (char=TRUE)
+#cor2latex was modified following Davide Morselli's suggestion to allow direct calculation of the correlations
+#
 "df2latex" <- 
-function(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",big.mark=NULL, heading="A table from R",caption="df2latex",label="default") {
+function(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,
+font.size ="scriptsize",big.mark=NULL, drop.na=TRUE, heading="A table from R",
+caption="df2latex",label="default",char=FALSE,stars=FALSE) {
 #first set up the table
  nvar <- dim(x)[2]
+ rname<- rownames(x)
 comment <- paste("%", match.call())
 header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
 "\\caption{",caption,"}
 \\begin{center}
 \\begin{tabular}",sep="")
-if(rowlabels) {header <- c(header,"{l",rep("r",(nvar)),"}\n")} else {header <- c(header,"{",rep("r",(nvar+1)),"}\n")} 
+if(stars) {if(rowlabels) {
+               header <- c(header,"{l",rep("S",(nvar)),"}\n")} else {header <- c(header,"{",rep("S",(nvar+1)),"}\n")}  } else {
+              if(rowlabels) { header <- c(header,"{l",rep("r",(nvar)),"}\n")} else {header <- c(header,"{",rep("r",(nvar+1)),"}\n")}
+               }
 if(apa) {header <- c(header,
 "\\multicolumn{",nvar,"}{l}{",heading,"}",
 '\\cr \n \\hline ')
 footer <- paste(" \\hline ")}  else {footer <- NULL}
+if (stars){
+      footer <- paste(" \\hline 
+                      \n \\multicolumn{7}{l}{\\scriptsize{\\emph{Note: }\\textsuperscript{***}$p<.001$; 
+                      \\textsuperscript{**}$p<.01$; 
+                      \\textsuperscript{*}$p<.05$",".}}" ,sep = "")
+    }else{
+      footer <- paste(" \\hline ")}
 footer <- paste(footer,"
 \\end{tabular}
 \\end{center}
@@ -22,20 +39,24 @@ footer <- paste(footer,"
 )
 
 #now put the data into it
-if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)} else {x <- try(round(x,digits=digits)) }}
+if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)} else {x <- try(round(x,digits=digits)) }}
+      }
  
  cname <- colnames(x)
  if (short.names) cname <- 1:nvar
  names1 <- paste(cname[1:(nvar-1)], " & ")
  lastname <- paste(cname[nvar],"\\cr \n")
  
- if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {if(rowlabels) {allnames <- c("  &  ",names1,lastname,"\\cr \n")} else {
+if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {if(rowlabels) {allnames <- c("  &  ",names1,lastname,"\\cr \n")} else {
              allnames <- c(names1,lastname,"\\cr \n")}}
-if(is.null(big.mark)) { x <- format(x)} else   #to keep the digits the same
-                      {x <- prettyNum(x,big.mark=",")}
+if(!char) {if(is.null(big.mark)) { x <- format(x,drop0trailing=FALSE)} else   #to keep the digits the same
+                      {x <- prettyNum(x,big.mark=",",drop0trailing=FALSE)} 
+   }   
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
- if(rowlabels) {value <- paste(sanitize.latex(names(value)),"  & ",value)} else {value <- paste("  & ",value)}
+
+ if(rowlabels) {value <- paste(sanitize.latex(rname),"  & ",value)} else {value <- paste("  & ",value)}
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
+ if(drop.na) values <- gsub("NA","  ",values,fixed=TRUE)
 
  #now put it all together
  cat(comment,"\n")  #a comment field saying where the data came from
@@ -47,16 +68,60 @@ if(is.null(big.mark)) { x <- format(x)} else   #to keep the digits the same
  }
  
  
-"cor2latex" <- function(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",heading="A correlation table from the psych package in R",caption="cor2latex",label="default") {
-if(nrow(x) > ncol(x) ) {x <- cor(x,use="pairwise")}
-r <- round(x,digits)
-r <- format(r,nsmall=digits)  #this converts to character but keeps the right number of digits
-if(lower) {r[upper.tri(r)] <- "~"} else {r[lower.tri(r)] <- "~"} 
-return(df2latex(r,digits=NULL,rowlabels=rowlabels,apa=apa,short.names=short.names,font.size=font.size,heading=heading,caption=caption,label=label))
+ 
+ cor2latex <- function (x, use = "pairwise", method="pearson", adjust="holm", stars = FALSE, digits=2, rowlabels = TRUE, lower = TRUE, apa = TRUE, 
+                       short.names = TRUE, font.size = "scriptsize", heading = "A correlation table from the psych package in R.", 
+                       caption = "cor2latex", label = "default")
+{
+if(stars) heading  <- paste(heading, "Adjust for multiple tests = ",adjust )
+if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analysis, just report it
+      r <- x$r
+      p <- x$p} else {
+ 
+      if (nrow(x) > ncol(x)) {   #find the correlations 
+        x <- corr.test(x, use=use,method=method,adjust=adjust)
+        r <- x$r
+        p <- x$p   } else {   #take the correlations as given
+        r <- x
+        p <- NULL
+      }
+    }
+    r <- round(r, digits)
+    r <- format(r, nsmall = digits,drop0trailing=FALSE)  #this converts to character but keeps the right number of digits)
+    if (lower) {
+      r[upper.tri(r)] <- "~"
+    } else {
+      r[lower.tri(r)] <- "~"
+    }
+  
+    if(stars && is.null(p))  stop("To print significance levels, x must be be either a data frame of observations or a correlation matrix created with the corr.test function of the package psych. If you are not interested in displaying signicance level set stars = FALSE")
+     
+          #p[upper.tri(p,diag=FALSE)]  #the adjusted probability values
+       
+ 
+    mystars <- ifelse(p < .001, "{***}", ifelse(p < .01, "{**}", ifelse(p < .05, "{*}", "")))
+    mystars <- t(mystars)
+   if(stars) { R <- matrix(paste(r,mystars,sep=""),ncol=ncol(r))} else {R <- r}
+    diag(R) <- paste(diag(r), " ", sep="")
+    rownames(R) <- colnames(r)
+    colnames(R) <- colnames(r)
+    if (lower) {
+      R[upper.tri(R, diag = FALSE)] <- ""
+     
+    } else {
+      R[lower.tri(R, diag = FALSE)] <- ""
+      
+    }
+     
+    if(stars) {char<- TRUE} else {char <- FALSE}
+  return(df2latex(R, digits = NULL, rowlabels = rowlabels, 
+                  apa = apa, short.names = short.names, font.size = font.size, 
+                  heading = heading, caption = caption, label = label, stars = stars))
 }
 
 "fa2latex" <- 
 function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
+if(class(f)[2] !="fa") f <- f$fa
 x <- unclass(f$loadings)
 if(!is.null(f$Phi)) {Phi <- f$Phi} else {Phi <- NULL}
 nfactors <- ncol(x)
@@ -96,7 +161,7 @@ footer <- paste(footer,"
  lastname <- paste(cname[nvar],"\\cr \n")
  
  if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {allnames <- c("  &  ",names1,lastname,"\\cr \n")}
- x <- format(x)  #to keep the digits the same
+ x <- format(x,drop0trailing=FALSE)  #to keep the digits the same
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
  if(rowlabels) value <- {paste(sanitize.latex(names(value)),"  & ",value)} else {paste("  &  ",value)}
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
@@ -164,7 +229,7 @@ header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
 \\begin{tabular}",sep="")
 header <- c(header,"{l",rep("r",nvar),"}\n")
 if(apa) header <- c(header,
-"\\multicolumn{",nvar,"}{l}{",heading,"}",
+"\\multicolumn{",nvar,"}{l}{",heading," for factor " , i, " }",
 "\\cr  \\hline \\cr",
 "\n & \\multicolumn{7}{c}{Item information at $\\theta$}  \\cr \\cline{2-8}  ")
 if(apa) {footer <- paste(" \\hline ")} 
@@ -185,7 +250,7 @@ footer <- paste(footer,"
  lastname <- paste(cname[nvar],"\\cr \n")
  
  if(apa)  {allnames <- c("Item  &  ",names1,lastname," \\hline \n")} else {allnames <- c("  &  ",names1,lastname,"\\cr \n")}
- x <- format(x)  #to keep the digits the same
+ x <- format(x,drop0trailing=FALSE)  #to keep the digits the same
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
  if(rowlabels) value <- paste(sanitize.latex(names(value)),"  & ",value)
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
@@ -193,6 +258,7 @@ footer <- paste(footer,"
  #now put it all together
  cat(comment,"\n")  #a comment field saying where the data came from
  cat(header)   #the header information
+ 
  cat(allnames) #the variable names
  cat(values)  #the item information 
  cat("\\hline \n & \\multicolumn{7}{c}{Summary statistics at $\\theta$} \\cr \\cline{2-8}")

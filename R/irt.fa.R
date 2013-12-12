@@ -1,5 +1,5 @@
 "irt.fa" <- 
-function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,...) {
+function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",...) {
 cl <- match.call()
 if (is.matrix(x) | is.data.frame(x)) {
 	if(is.null(n.obs)) n.obs <- dim(x)[1]
@@ -17,7 +17,9 @@ if (is.matrix(x) | is.data.frame(x)) {
    			 
    			  }  else {stop("x must  be a data.frame or matrix or the result from tetra or polychoric")}
               }
-t <- fa(r,nfactors=nfactors,n.obs=n.obs,...)
+t <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,fm=fm,...)
+
+
 nf <- dim(t$loadings)[2]
 
  diffi <- list() 

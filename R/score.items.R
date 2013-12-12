@@ -14,8 +14,10 @@
     if ((dim(items)[1] == dim(items)[2]) & !((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1))) { #this is the case of scoring correlation matrices instead of raw data
    # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
      raw.data <- FALSE
+     n.subjects <- 0
      C <- as.matrix(items)
      cov.scales <- t(keys) %*% C %*% keys
+     cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys) # this is sum(C^2)  for finding ase
      response.freq <- NULL
      } else {
     items <- as.matrix(items)
@@ -50,10 +52,10 @@
        		items[miss]<- item.means[miss[,2]]} else { 
        		item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
         	items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
-         scores<- items %*%  keys  #this actually does all the work but doesn't handle missing values
+         scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
           C <- cov(items,use="pairwise")
-        cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
-          
+          cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
+          cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
         }  else { #handle the case of missing data without imputation
            scores <- matrix(NA,ncol=n.keys,nrow=n.subjects)
            totals <- FALSE  #just in case it was not already false
@@ -71,6 +73,7 @@
            # we now need to treat the data as if we had done correlations at input
             C <- cov(items,use="pairwise")
             cov.scales <- t(keys) %*% C %*% keys
+            cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)  # sum(C^2)  for finding ase
             raw.data <- FALSE
          }  #end of treating missing without imputation
 
@@ -88,7 +91,8 @@
     
     var.scales <- diag(cov.scales)
     cor.scales <- cov2cor(cov.scales)    
-    sum.item.var <- item.var %*% abskeys  
+    sum.item.var <- item.var %*% abskeys 
+    sum.item.var2 <- item.var^2 %*% abskeys 
    
     
    #av.r <- (var.scales - sum.item.var)/(num.item*(num.item-1))  #actually, this the average covar
@@ -99,8 +103,12 @@
     colnames(alpha.scale) <- slabels
   alpha.scale[is.nan(alpha.scale)] <- 1
    
-   #
-   
+   #Find standard errors of alpha following Duhacheck and Iacobbci
+   #Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2)))
+   #this works if we have the raw data
+   Q = (2 * num.item^2/((num.item-1)^2*((var.scales)^3))) * (var.scales * (sum.item.var2 + sum.item.var^2) - 2* sum.item.var * cov.scales2)
+
+   ase <- NULL  #to have something if we don't have raw data
    #now find the Guttman 6 * reliability estimate as well as the corrected item-whole correlations
    
    if(raw.data) { item.cor <- cor(items,scores)} else {if (n.keys >1) {
@@ -118,13 +126,14 @@
    
 
       
-  
+  if(n.subjects >0) {ase <- sqrt(Q/ n.subjects )} else {ase=NULL}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
    rownames(item.rc) <- ilabels
   if(raw.data) {
      correction <- (colSums(abs(keys)-(keys))/2)*(max+min) #correct for flipping
      scores <- scores  + matrix(rep(correction,n.subjects),byrow=TRUE,nrow=n.subjects)
+      
      if (!totals) {
         if(n.keys > 1) {scores <- scores %*% diag(1/num.item)   #find averages
                   }  else
@@ -140,10 +149,10 @@
      if(impute =="none") {
        rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
-       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,Call=cl)} else {
-                            results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, Call=cl)}  } else {
-   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,Call=cl)} else{  
-                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,Call=cl)} }
+       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,Call=cl)} else {
+                            results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,Call=cl)}  } else {
+   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} else{  
+                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
     return(results)
@@ -160,3 +169,4 @@
  #modified November 11, 2010 to allow for data with lots of missingness to be scored without imputing means or medians  
  #need to rethink the short option.  Why bother since summary and print don't show scores anyway
  #added missing score to count missing responses for each scale instead of just the overall.
+ #Modified November 22, 2013 to add confidence intervals for alpha 

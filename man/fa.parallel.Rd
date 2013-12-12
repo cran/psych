@@ -9,8 +9,8 @@
 fa.parallel(x, n.obs = NULL,fm="minres", fa="both", 
        main = "Parallel Analysis Scree Plots",
         n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
-fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE) 
-\method{plot}{poly.parallel}(x,show.legend=TRUE,...)
+fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,fa="both") 
+\method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -86,12 +86,12 @@ Velicer, Wayne. (1976) Determining the number of components from the matrix of p
 \seealso{  \code{\link{fa}}, \code{\link{VSS}}, \code{\link{VSS.plot}},   \code{\link{VSS.parallel}}, \code{\link{sim.minor}}}
 \examples{
 
-test.data <- Harman74.cor$cov 
-fa.parallel(test.data,n.obs=145)
+#test.data <- Harman74.cor$cov 
+#fa.parallel(test.data,n.obs=145)
 set.seed(123)
 minor <- sim.minor(24,4,400) #4 large and 12 minor factors
-fa.parallel(minor$observed) #shows 4 factors  -- compare with 
-fa.parallel(minor$observed,SMC=TRUE) #which shows 8 factors
+fa.parallel(minor$observed) #shows 5 factors and 4 components -- compare with 
+#fa.parallel(minor$observed,SMC=FALSE) #which shows 6  and 4 components factors
 
 
 }

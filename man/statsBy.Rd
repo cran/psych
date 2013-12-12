@@ -20,7 +20,7 @@ statsBy.boot.summary(res.list,var="ICC2")
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
 \item{var}{Name of the variable to be summarized from statsBy.boot}
 }
-\details{Multilevel data are endemic in psychological research. In multilevel data, observations are taken on subjects who are nested within some higher level grouping variable.  The data might be experimental (participants are nested within experimental conditions) or observational (students are nested within classrooms, students are nested within college majors.) To analyze this type of data, one uses random effects models or mixed effect models, or more generally, multilevel models.  There are at least two very powerful packages (nlme and multilevel) which allow for complex analysis of hierarchical (multilevel) data structures.  \code{\link{statsBy}} is a much simpler function to give some of the basic descriptive statistics for two level models.  It 
+\details{Multilevel data are endemic in psychological research. In multilevel data, observations are taken on subjects who are nested within some higher level grouping variable.  The data might be experimental (participants are nested within experimental conditions) or observational (students are nested within classrooms, students are nested within college majors.) To analyze this type of data, one uses random effects models or mixed effect models, or more generally, multilevel models.  There are at least two very powerful packages (nlme and multilevel) which allow for complex analysis of hierarchical (multilevel) data structures.  \code{\link{statsBy}} is a much simpler function to give some of the basic descriptive statistics for two level models.  It is meant to supplement true multilevel modeling.
 
 For a group variable (group) for a data.frame or matrix (data), basic descriptive statistics (mean, sd, n) as well as within group correlations (cors=TRUE) are found for each group.  
 
@@ -32,13 +32,13 @@ The reliability of the group differences may be found by the ICC2 which reflects
 \eqn{ICC2 = (MSb-MSw)/MSb}.
 Because the mean square between is sensitive to sample size, this estimate will also reflect sample size.
 
-Perhaps the most useful part of \code{\link{statsBy}} is that  decomposes the observed correlations between variables into two parts: the within group and the between group correlation. This follows the decomposition of an observed correlation into the pooled correlation within groups (rwg) and the weighted correlation of the means between groups  discussed by Pedazur (1997) and by Bliese in the multilevel package.  
+Perhaps the most useful part of \code{\link{statsBy}} is that it decomposes the observed correlations between variables into two parts: the within group and the between group correlation. This follows the decomposition of an observed correlation into the pooled correlation within groups (rwg) and the weighted correlation of the means between groups  discussed by Pedazur (1997) and by Bliese in the multilevel package.  
 
 \eqn{r_{xy} = eta_{x_{wg}} * eta_{y_{wg}} * r_{xy_{wg}}  +  eta_{x_{bg}} * eta_{y_{bg}} * r_{xy_{bg}}  }
 
 where \eqn{r_{xy}} is the normal correlation which may be decomposed into a within group and between group correlations \eqn{r_{xy_{wg}}} and \eqn{r_{xy_{bg}}} and eta is the correlation of the data with the within group values, or the group means.
 
-It is important to realize that the within group and between group correlations are independent of each other.  That is to say, inferring from the 'ecological correlation' (between groups) to the lower level (within group) correlation is in appropriate.  However, these between group correlations are still very meaningful, if inferences are made at the higher level.  
+It is important to realize that the within group and between group correlations are independent of each other.  That is to say, inferring from the 'ecological correlation' (between groups) to the lower level (within group) correlation is inappropriate.  However, these between group correlations are still very meaningful, if inferences are made at the higher level.  
 
 There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value.  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
 
@@ -77,7 +77,6 @@ Consider the case of the relationship between various tests of ability when the 
 \author{William Revelle
 }
 \note{
-For statsBy, the grouping variable needs to be the first variable.
 
 The statsBy.boot function will sometimes fail if sampling with replacement because if the group sizes differ drastically, some groups will be empty.  In this case, sample without replacement.  
 
@@ -96,10 +95,15 @@ pedhazur
 ped.stats <- statsBy(pedhazur,"Group")
 ped.stats
 
+
 #Now do this for the sat.act data set
 sat.stats <- statsBy(sat.act,c("education","gender"))   #group by two grouping variables
 print(sat.stats,short=FALSE)
 lowerMat(sat.stats$pbg)  #get the probability values
+
+#show means by groups
+round(sat.stats$mean)
+
 
 
 

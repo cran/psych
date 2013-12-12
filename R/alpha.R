@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE,delete=TRUE) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE,n.iter=1,delete=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -8,7 +8,8 @@
     smc.R <- smc(R)
     G6 <- (1- (n-sum(smc.R))/sum(R))
     av.r <- (sum(R)-n)/(n*(n-1))
-    result <- list(raw=alpha.raw,std=alpha.std,G6,av.r)
+    Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2)))
+    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,Q=Q)
     return(result)
     }
     
@@ -52,7 +53,7 @@
                      colnames(x) <- paste(colnames(x),signkey,sep="")
             min.item <- min(x,na.rm=na.rm)
          	max.item <- max(x,na.rm=na.rm)
-         	if(any(keys <0 )) { 
+         	if(any(keys < 0 )) { 
          	   adjust <- max.item + min.item
          	   flip.these <- which(keys < 0 )
          	   x[,flip.these]  <- adjust - x[,flip.these] 
@@ -60,8 +61,8 @@
          	
 
         if(cumulative) {total <- rowSums(x,na.rm=na.rm) } else {total <- rowMeans(x,na.rm=na.rm)}
-                   mean.t <- mean(total,na.rm=na.rm)
-                  sdev <- sd(total,na.rm=na.rm) 
+                mean.t <- mean(total,na.rm=na.rm)
+                sdev <- sd(total,na.rm=na.rm) 
                        
         t.valid <- colSums(!is.na(x))} else {   #we are working with a correlation matrix
                  total <- NULL
@@ -77,10 +78,13 @@
          drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
                             } 
          } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2])}
-        by.item <- data.frame(matrix(unlist(drop.item),ncol=4,byrow=TRUE))
-        colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r")
+        by.item <- data.frame(matrix(unlist(drop.item),ncol=5,byrow=TRUE))
+        if(nsub > nvar) {by.item[5] <- sqrt(by.item[5]/nsub) 
+         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","alpha se") } else {
+             by.item <- by.item[-5]
+             colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r") }
         rownames(by.item) <- colnames(x)
-       
+        
         Vt <- sum(R)
         item.r <- colSums(R)/sqrt(Vt)
      #correct for item overlap by using  smc 
@@ -101,20 +105,39 @@
         item.means <- colMeans(x, na.rm=na.rm )
         item.sd <-  apply(x,2,sd,na.rm=na.rm)
         if(nsub > nvar) {
-        	alpha.total <- data.frame(alpha.total,mean=mean.t,sd=sdev)
-        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","mean","sd")
+            ase = sqrt(alpha.total$Q/nsub)
+        	alpha.total <- data.frame(alpha.total[1:4],ase=ase,mean=mean.t,sd=sdev)
+        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","ase","mean","sd")
         	rownames(alpha.total) <- ""
-        	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)} else {
-        	alpha.total <- data.frame(alpha.total)
+        	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
+        	} else {
+        	alpha.total <- data.frame(alpha.total[-5])
         	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r")
         	        rownames(alpha.total) <- ""
 
-                  stats <- data.frame(r =item.r,r.cor = item.rc)
+                  stats <- data.frame(r =item.r,r.cor = item.rc,r.drop = r.drop) #added r.drop 10/12/13
         	}
        	rownames(stats) <- colnames(x)
        	
-       	
-        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,call=cl,title=title)
+       	if(n.iter > 1) {#do a bootstrap confidence interval for alpha
+        if(nsub == nvar) {message("bootstrapped confidence intervals require raw data") 
+                          boot <- NULL } else {
+       	 boot <- list()
+       	 for (i in 1:n.iter) {xi <- x[sample.int(nsub,replace=TRUE),]
+       	   C <- cov(xi,use="pairwise")
+       	           if(!is.null(keys)) {key.d <- diag(keys)
+                                      xi <- key.d %*% C %*% key.d}
+                
+                                      
+         R <- cov2cor(C)
+       	 boot[[i]] <- alpha.1(C,R)
+       	 }
+       	  boot <- matrix(unlist(boot),ncol=5,byrow=TRUE)
+       	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","ase")
+       	  boot.ci <- quantile(boot[,1],c(.025,.5,.975))
+       	}} else {boot=NULL
+       	         boot.ci <- NULL}
+        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,call=cl,title=title)
         class(result) <- c("psych","alpha")
         return(result)
      
@@ -125,3 +148,5 @@
   #January 30, 2011  - added the max category parameter (max)
   #June 20, 2011 -- revised to add the check.keys option as suggested by Jeremy Miles
   #Oct 3, 2013 check for variables with no variance and drop them with a warning
+  #November 22, 2013  Added the standard error as suggested by 
+  #modified December 6, 2013 to add empirical confidence estimates

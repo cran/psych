@@ -138,7 +138,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
        print(round(Phi,digits))
             } }
        
-       if(!is.null(x$complexity)) cat("\nMean item complexity = ",round(mean(com),1))     
+       if(!is.null(x$complexity)) cat("\nMean item complexity = ",round(mean(x$complexity),1))     
        objective <- x$criteria[1]
     if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}

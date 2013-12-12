@@ -34,7 +34,7 @@ function(x,digits=2,use="pairwise",method="pearson") {
    lowerMat(R,digits)
    invisible(R)
    }
-	
+
 	
 #adapted from utils::txtProgressBar
 #modified August 10, 2012 to print just 100 times. 

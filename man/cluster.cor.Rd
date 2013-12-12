@@ -16,7 +16,7 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE, impute=TRUE)
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
 }
-\details{This is one of the functions used in the SAPA procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
+\details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
 
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  

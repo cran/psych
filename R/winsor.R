@@ -43,7 +43,7 @@ function(x, trim=.2,na.rm=TRUE) {
   #corrected January 15, 2009 to use the quantile function rather than sorting.
   #suggested by Michael Conklin in correspondence with Karl Healey
   #this preserves the order of the data
-   "wins" <- 
+"wins" <- 
  function(x,trim=.2, na.rm=TRUE) {
     if ((trim < 0) | (trim>0.5) ) 
         stop("trimming must be reasonable")
@@ -56,7 +56,7 @@ function(x, trim=.2,na.rm=TRUE) {
      return(x) } 
     
     
- "win.mean" <- 
+"win.mean" <- 
 function(x,trim=.2, na.rm=TRUE) {
     if ((trim < 0) | (trim>0.5) ) 
         stop("trimming must be reasonable")
@@ -66,7 +66,7 @@ function(x,trim=.2, na.rm=TRUE) {
    }
    
    
- "win.var" <- 
+"win.var" <- 
 function(x,trim=.2, na.rm=TRUE) {
     if ((trim < 0) | (trim > 0.5) )   {stop("trimming must be reasonable")}
      if (trim < .5) {
@@ -74,5 +74,4 @@ function(x,trim=.2, na.rm=TRUE) {
           return(ans)
     } else {return(median(x,na.rm=TRUE))
     }
-
 }

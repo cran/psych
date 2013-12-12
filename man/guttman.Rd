@@ -1,13 +1,16 @@
-\name{guttman}
+\name{splitHalf}
+\alias{splitHalf}
+\alias{guttman}
 \alias{tenberge}
 \alias{glb}
 \alias{glb.fa}
-\alias{guttman} 
+ 
 
 \title{Alternative estimates of test reliabiity }
-\description{Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) (\eqn{\mu_0 \dots \mu_3)} as well as \eqn{\beta} (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and \eqn{\omega_h} and \eqn{\omega_t} (McDonald, 1999; Zinbarg et al., 2005). 
+\description{Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) (\eqn{\mu_0 \dots \mu_3)} as well as \eqn{\beta} (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and \eqn{\omega_h} and \eqn{\omega_t} (McDonald, 1999; Zinbarg et al., 2005). Greatest and lowest split-half values are found by brute force or sampling. 
 }
 \usage{
+splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE)
 guttman(r,key=NULL) 
 tenberge(r)
 glb(r,key=NULL)
@@ -16,10 +19,16 @@ glb.fa(r,key=NULL)
 
 \arguments{
   \item{r}{A correlation or covariance matrix or raw data matrix.}
+  \item{raw}{return a vector of split half reliabilities}
+  \item{brute}{Use brute force to try all combinations of n take n/2. }
+  \item{n.sample}{if brute is false, how many samples of split halves should be tried?}
+  \item{covar}{Should the covariances or correlations be used for reliability calculations}
   \item{key}{a vector of -1, 0, 1 to select or reverse key items}
  
 }
-\details{Surprisingly, 105 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. The guttman function includes the six estimates discussed by Guttman (1945), four of ten Berge and Zergers (1978), as well as Revelle's \eqn{\beta} (1979) using \code{\link{ICLUST}}. The companion function, \code{\link{omega}} calculates omega hierarchical (\eqn{\omega_h})  and omega total (\eqn{\omega_t}). 
+\details{Surprisingly, 107 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. For tests with 16 or fewer items, all possible splits may be found fairly easily.  For tests with 17 or more items, n.sample splits are randomly found. Thus, for 16 or fewer items, the upper and lower bounds are precise.  For 17 or more items, they are close but will probably slightly underestimate the highest and overestimate the lowest reliabilities.  
+
+ The guttman function includes the six estimates discussed by Guttman (1945), four of ten Berge and Zergers (1978), as well as Revelle's \eqn{\beta} (1979) using \code{\link{splitHalf}}. The companion function, \code{\link{omega}} calculates omega hierarchical (\eqn{\omega_h})  and omega total (\eqn{\omega_t}). 
 
 Guttman's first estimate \eqn{\lambda_1} assumes that all the variance of an item is error:
 \deqn{
@@ -57,7 +66,7 @@ Guttman's fourth lower bound, \eqn{\lambda_4} was originally proposed as any spi
 \deqn{
 \lambda_4 = 2\Bigl(1 - \frac{V_{X_a} + V_{X_b}}{V_X} \Bigr) =  \frac{4 r_{ab}}{V_x} = \frac{4 r_{ab}}{V_{X_a} + V_{X_b}+ 2r_{ab}V_{X_a}  V_{X_b}}
 }{\lambda 4 = 4rab/(Va + Vb + 2rabVaVb)}
-which is just the normal split half reliability, but in this case, of the most similar splits. 
+which is just the normal split half reliability, but in this case, of the most similar splits. For 16 or fewer items, this is found by trying all possible splits.  For 17 or more items, this is estimated by taking n.sample random splits. 
 
 
 \eqn{\lambda_5}, Guttman's fifth lower bound, replaces the diagonal values with twice the square root of the maximum (across items) of the sums of squared interitem covariances
@@ -69,7 +78,7 @@ Although superior to \eqn{\lambda_1}, \eqn{\lambda_5} underestimates the correct
 \lambda_{5+} =  \lambda_1 + \frac{n}{n-1}\frac{2 \sqrt{\bar{C_2}}}{V_X}.
 }{\lambda 5+ = \lambda 1 + ((n/(n-1))2/sqrt(av covariance 12)/Vx}
 
-Guttman's final bound considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
+\eqn{\lambda_6},Guttman's final bound considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
 \deqn{\lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}
 }{\lambda 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx}.
 
@@ -77,9 +86,9 @@ The smc is found from all the items.  A modification to Guttman \eqn{\lambda_6},
 
 
 
-Guttman's \eqn{\lambda_4} is the greatest split half reliability.  This is found here by combining the output from three different approaches, and seems to work for all test cases yet tried. Lambda 4 is reported as the max of these three algorithms.
+Guttman's \eqn{\lambda_4} is the greatest split half reliability.  Although originally found here by combining the output from three different approaches,this has now been replaced by using \code{\link{splitHalf}} to find the maximum value by brute force (for 16 or fewer items) or by taking a substantial number of random splits.
 
-The algorithms are 
+The algorithms that had been tried before included:
 
 a) Do an ICLUST of the reversed correlation matrix.  ICLUST normally forms the most distinct clusters.  By reversing the correlations, it will tend to find the most related clusters.  Truly a weird approach but tends to work.
 
@@ -88,6 +97,8 @@ b) Alternatively, a kmeans clustering of the correlations (with the diagonal rep
 c) Clusters identified by assigning items to two clusters based upon their order on the first principal factor.  (Highest to cluster 1, next 2 to cluster 2, etc.)
 
 These three procedures will produce keys vectors for assigning items to the two splits.  The maximum split half reliability is found by taking the maximum of these three approaches.  This is not elegant but is fast.
+
+The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
 There are three greatest lower bound functions.  One, glb finds the greatest split half reliability, \eqn{\lambda_4}. This considers the test as set of items and examines how best to partition the items into splits. The other two, \code{\link{glb.fa}} and \code{\link{glb.algebraic}}, are alternative ways of weighting the diagonal of the matrix. 
 
@@ -102,14 +113,9 @@ Compared to \code{\link{glb.algebraic}}, \code{\link{glb.fa}} seems to have less
 }
 
 \value{
-\item{beta}{The normal beta estimate of cluster similarity from ICLUST.  This is an estimate of the general factor saturation.}
+\item{beta}{The worst split half reliability. This is an estimate of the general factor saturation.}
 \item{tenberge$mu1}{tenBerge mu 1 is functionally alpha}
  \item{tenberge$mu2}{one of the sequence of estimates mu1 ... mu3}
-\item{beta.factor}{For experimental purposes, what is the split half based upon the two factor solution?}
-\item{glb.IC}{Greatest split half based upon ICLUST of reversed correlations}
-\item{glb.Km}{Greatest split half based upon a kmeans clustering.}
-\item{glb.Fa}{Greatest split half based upon the items assigned by factor analysis.}
-\item{glb.max}{max of the above estimates}
 \item{glb}{glb found from factor analysis}
 \item{keys}{scoring keys from each of the alternative methods of forming best splits}
 }
@@ -133,6 +139,8 @@ Zinbarg, R. E., Revelle, W., Yovel, I., & Li, W. (2005). Cronbach's \eqn{\alpha}
 }
 \examples{
 data(attitude)
+splitHalf(attitude)
+splitHalf(attitude,covar=TRUE) #do it on the covariances
 glb(attitude)
 glb.fa(attitude)
 if(require(Rcsdp)) {glb.algebraic(cor(attitude)) }

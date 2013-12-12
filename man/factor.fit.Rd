@@ -11,8 +11,12 @@ factor.fit(r, f)
   \item{r}{a correlation matrix }
   \item{f}{A factor matrix of loadings.}
 }
-\details{There are probably as many fit indices as there are psychometricians.  This fit is a plausible estimate of the amount of reduction in a correlation matrix given a factor model.  Note that it is sensitive to the size of the original correlations.  That is, if the residuals are small but the original correlations are small, that is a bad fit.  
-}
+\details{There are probably as many fit indices as there are psychometricians.  This fit is a plausible estimate of the amount of reduction in a correlation matrix given a factor model.  Note that it is sensitive to the size of the original correlations.  That is, if the residuals are small but the original correlations are small, that is a bad fit. 
+
+Let \deqn{R* = R - FF'}{R*= R - FF'}
+\deqn{fit = 1 - \frac{ \sum(R*^2)}{\sum(R^2)}}{fit = 1 - sum(R*^2)/sum(R^2)}. 
+
+The sums are taken for the off diagonal elements.}
 \value{fit
 }
 

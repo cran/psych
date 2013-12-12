@@ -59,11 +59,17 @@
  polyF <- function(rho,rc,cc,tab) { 
       P <- polyBinBvn(rho, rc, cc) 
        -sum(tab * log(P)) }  #the  criterion to be minimized
+       
+       
+"wtd.table" <- function(x,y,weight) {
+tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questionr:wtd.table
+tab[is.na(tab)] <- 0
+return(tab)
+}      
 
 "polyc" <- 
-function(x,y=NULL,taux,tauy,global=TRUE) {
-
-  tab <- table(x,y)  
+function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL) {
+  if(is.null(weight)) {tab <- table(x,y) }  else {tab <- wtd.table(x,y,weight)} 
   tot <- sum(tab)
   tab <- tab/tot
   
@@ -93,10 +99,11 @@ function(x,y=NULL,taux,tauy,global=TRUE) {
 
 #Basically just is used to find the thresholds and then does the polychoric r for a matrix
 "polychoric" <- 
-function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,progress=TRUE) {
+function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE) {
 if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
 if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
  polycor <- FALSE}
+ if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
  cl <- match.call() 
 nvar <- dim(x)[2]
 nsub <- dim(x)[1]
@@ -127,7 +134,7 @@ if(progress) progressBar(i^2/2,nvar^2/2,"Polychoric")
   for (j in 1:(i-1)) { 
  if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
 if(!polycor) {
-poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j],global=global)  
+poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight)  
 mat[i,j] <- mat[j,i] <- poly$rho } else {
 #To use John Fox's version which requires the polycor package
   poly <- polychor(x[,i],x[,j],ML = ML,std.err = std.err)  #uses John Fox's function
@@ -150,3 +157,32 @@ mat[i,j] <- mat[j,i] <- poly$rho } else {
   }
 
 
+#draft version to do one item at a time 
+#not public 
+#use polychor from John Fox to do the same
+"polytab" <- 
+function(tab) {
+  tot <- sum(tab)
+  tab <- tab/tot
+  
+  
+ #use item row and column information for this pair, rather than global values
+      #this seems to match the polycor function
+      #the next five lines are taken directly from John Fox's polycor function
+      zerorows <- apply(tab, 1, function(x) all(x == 0))
+	zerocols <- apply(tab, 2, function(x) all(x == 0))
+	zr <- sum(zerorows)
+	#if (0 < zr) warning(paste(zr, " row", suffix <- if(zr == 1) "" else "s"," with zero marginal", suffix," removed", sep=""))
+	zc <- sum(zerocols)
+	#if (0 < zc) warning(paste(zc, " column", suffix <- if(zc == 1) "" else "s", " with zero marginal", suffix, " removed", sep=""))
+	tab <- tab[!zerorows, ,drop=FALSE]  
+	tab <- tab[, !zerocols, drop=FALSE] 
+    csum <- colSums(tab)
+    rsum <- rowSums(tab)
+     cc <-  qnorm(cumsum(csum))[-length(csum)]
+     rc <-  qnorm(cumsum(rsum))[-length(rsum)]
+    rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc,tab)
+     
+  result <- list(rho=rho$minimum,objective=rho$objective)
+  return(result)
+  }

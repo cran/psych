@@ -2,7 +2,7 @@
 \alias{score.items}
 \alias{response.frequencies}
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
-\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
+\description{Given a matrix or data.frame of k keys for n items (-1, 0, 1), and a matrix or data.frame of items scores for m items and N people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
 }
 \usage{
 score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
@@ -25,13 +25,13 @@ score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="me
 
   
 }
-\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for score.items is the average as it would seem to make more sense to report scale scores in the metric of the item.  
+\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for score.items is the average as it would seem to make more sense to report scale scores in the metric of the item.  
 
 Various estimates of scale reliability include ``Cronbach's alpha", Guttman's Lambda 6, and the average interitem correlation.  For k = number of items in a scale, and av.r = average correlation between items in the scale, alpha = k * av.r/(1+ (k-1)*av.r).  Thus, alpha is an increasing function of test length as well as the test homeogeneity.  
 
-Surprisingly, 106 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
+Surprisingly, more than a century after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
 
-\eqn{\alpha}{alpha} (Cronbach, 1951) is the same as Guttman's  \eqn{\lambda}{lambda}3 (Guttman, 1945) and may be found by
+\eqn{\alpha}{alpha} (Cronbach, 1951) is the same as Guttman's  \eqn{\lambda_3}{lambda3} (Guttman, 1945) and may be found by
 \deqn{
 \lambda_3 =  \frac{n}{n-1}\Bigl(1 - \frac{tr(\vec{V})_x}{V_x}\Bigr) = \frac{n}{n-1} \frac{V_x - tr(\vec{V}_x)}{V_x} = \alpha
 }{Lambda 3 = (n)/(n-1)(1-tr(Vx)/(Vx)  = (n)/(n-1)(Vx-tr(Vx)/Vx  = alpha}
@@ -49,14 +49,16 @@ G6 is also sensitive to lumpyness in the test and should not be taken as a measu
 
 Alpha and G6* are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep).
 
+Standard errors for unstandardized alpha are reported using the formula from Duhachek and Iacobucci (2005).
+
 More complete reliability analyses of a single scale can be done using the \code{\link{omega}} function which finds \eqn{\omega_h}{omega_hierchical} and \eqn{\omega_t}{omega_total} based upon a hierarchical factor analysis.  Alternative estimates of the Greatest Lower Bound for the reliability are found in the \code{\link{guttman}} function. 
 
 
-Alpha is a poor estimate of the general factor saturation of a test (see Revelle and Zinbarg, 2009; Zinbarg et al., 2005) for it can seriously overestimate the size of a general factor, and a better but not perfect estimate of total test reliability because it underestimates total reliability. None the less, it is a useful statistic to report. 
+Alpha is a poor estimate of the general factor saturation of a test (see Revelle and Zinbarg, 2009; Zinbarg et al., 2005) for it can seriously overestimate the size of a general factor, and a better but not perfect estimate of total test reliability because it underestimates total reliability. None the less, it is a common statistic to report. In general, the use of alpha should be discouraged and the use of more appropriate estimates (\eqn{\omega_h}{omega_hierchical} and \eqn{\omega_t}{omega_total}) should be encouraged. 
 
 Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  
 
-By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
+By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
 
 \code{\link{score.items}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
 }
@@ -65,6 +67,7 @@ By default, missing values are replaced with the corresponding median value for 
   \item{alpha }{Cronbach's coefficient alpha.  A simple (but non-optimal) measure of the internal consistency of a test. See also beta and omega. Set to 1 for scales of length 1. }
   \item{av.r}{The average correlation within a scale, also known as alpha 1, is a useful index of the internal consistency of a domain. Set to 1 for scales with 1 item.}
   \item{G6}{Guttman's Lambda 6 measure of reliability}
+  \item{G6*}{A generalization of Guttman's Lambda 6 measure of reliability using all the items to find the smc.}
   \item{n.items}{Number of items on each scale}
    \item{item.cor}{The correlation of each item with each scale.  Because this is not corrected for item overlap, it will overestimate the amount that an item correlates with the other items in a scale.}
   \item{cor}{The intercorrelation of all the scales}
@@ -75,12 +78,15 @@ By default, missing values are replaced with the corresponding median value for 
  \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
-An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  
+An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 
 } 
 \references{
+
+Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
+
 Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{http://personality-project.org/r/book}
 
 
@@ -102,7 +108,7 @@ In addition, the \code{\link{irt.fa}} function provides an alternative way of ex
 #see  the example including the bfi data set
 data(bfi)
 keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
-  conscientious=c("C1","C2","C2","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
+  conscientious=c("C1","C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
   keys <- make.keys(bfi,keys.list)
  scores <- score.items(keys,bfi,min=1,max=6)

@@ -8,7 +8,7 @@
 Although exploratory factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
 }
 \usage{
-irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,...)
+irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",...)
 irt.select(x,y)
 fa2irt(f,rho,plot=TRUE,n.obs=NULL)
 }
@@ -19,6 +19,8 @@ fa2irt(f,rho,plot=TRUE,n.obs=NULL)
   \item{plot}{If TRUE, automatically call the \code{\link{plot.irt}} or \code{\link{plot.poly}} functions.}
   \item{y}{the subset of variables to pick from the rho and tau output of a previous irt.fa analysis to allow for further analysis.}
   \item{n.obs}{The number of subjects used in the initial analysis if doing a second analysis of a correlation matrix.  In particular, if using the fm="minchi" option, this should be the matrix returned by \code{\link{count.pairwise}}.} 
+  \item{rotate}{The default rotation is oblimin.  See \code{\link{fa}} for the other options.}
+  \item{fm}{The default factor extraction is minres.  See \code{\link{fa}} for the other options.}
   \item{f}{The object returned from \code{\link{fa}} }
   \item{rho}{The object returned from \code{\link{polychoric}} or \code{\link{tetrachoric}}.  This will include both a correlation matrix and the item difficulty levels.}
   \item{...}{Additional parameters to pass to the factor analysis function}
@@ -36,7 +38,7 @@ The difficulty parameter, \eqn{\delta} is found from the \eqn{\tau} parameter of
 
 Similar analyses may be done with discrete item responses using polychoric correlations and distinct estimates of item difficulty (location)  for each item response.
 
-The results may be shown graphically using \code{link{plot.irt}} (which may be called by plotting the irt.fa output, see the examples).   For plotting there are three options: type = "ICC" will plot the item characteristic response function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.  Invisible output from the plot function will return tables of item information as a function of several levels of the trait, as well as the standard error of measurement and the reliability at each of those levels.
+The results may be shown graphically using \code{link{plot.irt}} for dichotomous items or  \code{link{plot.poly}} for polytomous items.  These called by plotting the irt.fa output, see the examples).   For plotting there are three options: type = "ICC" will plot the item characteristic response function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.  Invisible output from the plot function will return tables of item information as a function of several levels of the trait, as well as the standard error of measurement and the reliability at each of those levels.
 
 The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}}, \code{\link{polychoric}}, or a previous analysis using \code{\link{irt.fa}} then that result can be processed directly.  Because  \code{\link{irt.fa}} saves the rho and tau matrices from the analysis, subsequent analyses of the same data set are much faster if the input is the object returned on the first run.  A similar feature is available in \code{\link{omega}}. 
 

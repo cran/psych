@@ -40,17 +40,18 @@
        -sum(tab * log(P)) }  #the ML criterion to be minimized
 
 "tetrac" <- 
-function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
+function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE,weight=NULL) {
 
       
- if(is.null(y)) {tab <- x} else {tab <- table(x,y)}
+ if(is.null(y)) {tab <- x} else {
+ if(is.null(weight)) {tab <- table(x,y) }  else {tab <- wtd.table(x,y,weight)} 
+ }
  if(length(tab) < 4) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")
            
             result <- list(rho=NA,tau=c(NA,NA),objective=NA)
               }  else {
               
  if(is.na(sum(tab))) {warning("For i = ", i," j = ",j, tab,"  No variance for either i or j   rho set to NA")
- browser()
  } else {
 
  if((sum(tab) > 1) && (min(tab) == 0) && correct) {
@@ -58,7 +59,7 @@ function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
     tab[tab==0] <-.5  #correction for continuity
 
     }}
-  
+  ###### put in the weights here
   if(global) {cc <- taux
               rc <- tauy } else {
   tot <- sum(tab)
@@ -71,17 +72,24 @@ function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE) {
   return(result)
   }
   
+ "wtd.table" <- function(x,y,weight) {
+tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questionr:wtd.table
+tab[is.na(tab)] <- 0
+return(tab)
+}    
+  
  #repeatedly do the analysis to form a matrix of output 
  #added the pmin instead of min on Sept 10, 2013
 "tetra.mat" <- 
-function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE) {nvar <- dim(x)[2]
+function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {nvar <- dim(x)[2]
 mx <- apply(x,2,function(x) min(x,na.rm=TRUE))
 x <- t(t(x) - mx)
 #x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1  -- using pmin allows different minima for different variables
 n.obs <- dim(x)[1]
 if(is.null(y)) {
 if(max(x,na.rm=TRUE) > 1) {stop("Tetrachoric correlations require dictomous data")}
-tau <- -qnorm(colMeans(x,na.rm=TRUE))
+if(is.null(weight)) {tau <- -qnorm(colMeans(x,na.rm=TRUE))} else
+        {tau <- -qnorm(apply(x,2,function(y) weighted.mean(y,weight,na.rm=TRUE)))}   #weighted tau
 
 mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
@@ -91,7 +99,7 @@ for (i in 2:nvar) {
 progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   for (j in 1:(i-1)) {
   if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
-  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global)
+  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)
    mat[i,j] <- mat[j,i] <- tetra$rho} else {mat[i,j] <- mat[j,i] <- NA}
    }
    }
@@ -150,7 +158,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
    
  #the public function
  "tetrachoric" <- 
- function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE) {
+ function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
  
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
  cl <- match.call() 
@@ -161,8 +169,9 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   }}
   nvar <- dim(x)[2]
   n.obs <- dim(x)[1]
+  if(!is.null(weight)) {if (length(weight)!= n.obs) stop("The number of weights must match the number of observations") }
  if (n.obs == nvar) {result <- tetrac(x,correct=correct,i=1,j=1,global=FALSE)} else {
- result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global)}
+ result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)}
  
  result$Call <- cl
  class(result) <- c("psych","tetra")

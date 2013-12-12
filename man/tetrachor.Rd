@@ -12,9 +12,9 @@
 The biserial correlation is between a continuous y variable and a dichotmous x variable, which is assumed to have resulted from a dichotomized normal variable. Biserial is a special case of the polyserial correlation, which is the inferred latent correlation between a continuous variable (X) and a ordered categorical variable (e.g., an item response). Input for these later two are data frames or matrices.
 }
 \usage{
-tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE)
+tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL)
 polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE,
-       std.err=FALSE,progress=TRUE) 
+       std.err=FALSE,weight=NULL,progress=TRUE) 
 biserial(x,y)  
 polyserial(x,y) 
 
@@ -38,6 +38,8 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 \item{smooth}{if TRUE and if the tetrachoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
 
 \item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution. This will make a difference in the presence of lots of missing data. } 
+
+\item{weight}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
   
 \item{polycor}{If polycor=TRUE and the polycor package is installed, then use it when finding the polychoric correlations.  }
 
@@ -65,7 +67,7 @@ polychoric replaces poly.mat and is recommended.   poly.mat is an alternative wr
 
 biserial and polyserial correlations are the inferred latent correlations equivalent to the observed point-biserial and point-polyserial correlations (which are themselves just Pearson correlations).
 
-The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures with large amounts of missing data and no complete cases.
+The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{http://sapa-project.org}) with large amounts of missing data and no complete cases.
 
 Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation.  
 
@@ -92,7 +94,6 @@ For combinations of continous, categorical, and dichotomous variables, see \code
 A. Gunther and M. Hofler. Different results on tetrachorical correlations in mplus and stata-stata announces modified procedure. Int J Methods Psychiatr Res, 15(3):157-66, 2006.
 
 David Kirk (1973) On the numerical approximation of the bivariate normal (tetrachoric) correlation coefficient. Psychometrika, 38, 259-268.
-
 
 U.Olsson, F.Drasgow, and N.Dorans (1982). The polyserial correlation coefficient. Psychometrika, 47:337-347. 
 

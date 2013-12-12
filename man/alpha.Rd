@@ -8,7 +8,7 @@
 }
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
-   check.keys=TRUE,delete=TRUE)
+   check.keys=TRUE,n.iter=1,delete=TRUE)
 }
 
 \arguments{
@@ -19,12 +19,12 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
   \item{max}{the number of categories/item to consider if reporting category frequencies.  Defaults to 10, passed to \code{link{response.frequencies}} }
   \item{na.rm}{The default is to remove missing values and find pairwise correlations}
   \item{check.keys}{if TRUE, then find the first principal component and reverse key items with negative loadings.  Give a warning if this happens. }
- 
+ \item{n.iter}{Number of iterations if bootstrapped confidence intervals are desired}
   \item{delete}{Delete items with no variance and issue a warning}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
-Surprisingly, 105 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
+Surprisingly, 109 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
 
 \eqn{\alpha}{alpha} (Cronbach, 1951) is the same as Guttman's  \eqn{\lambda}{lambda}3 (Guttman, 1945) and may be found by
 \deqn{
@@ -53,7 +53,11 @@ Three alternative item-whole correlations are reported, two are conventional, on
 
 If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).
 
-Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items.  
+Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items. 
+
+When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).
+
+Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot object.  They may be plotted or described. 
 
 }
 \value{
@@ -72,10 +76,13 @@ Scores are based upon the simple averages (or totals) of the items scored. Rever
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
   \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
+  \item{boot}{a 5 column by n.iter matrix of boot strapped resampled values}
   
 }
 \references{
 Cronbach, L.J. (1951) Coefficient alpha and the internal strucuture of tests.  Psychometrika, 16, 297-334.
+
+Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
 
 Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika, 10 (4), 255-282. 
 
@@ -83,10 +90,7 @@ Revelle, W.  (in preparation) An introduction to psychometric theory with applic
 
 Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
 
-Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
-
-
-	
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 74 (1) 1145-154. 
 }
 \author{William Revelle }
 

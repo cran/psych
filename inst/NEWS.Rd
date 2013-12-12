@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.3.11 (2013-11-01)}{
+\section{Changes in psych version 1.3.12 (2013-12-01)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.3.11 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.3.10.  The second digit reflects the year (i.e., 2013), the third set the month (i.e., 1.3.2 was released in February of 2013, the last two digits reflect the day of any modifications).
+      \item Version 1.3.12 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.3.11.  The second digit reflects the year (i.e., 2013), the third set the month (i.e., 1.3.2 was released in February of 2013, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -33,6 +33,32 @@
   }
   } 
   
+   \section{Changes in psych version 1.3.11 (2013-11-22)}{
+   \subsection{Additions}{
+\itemize{
+
+  \item Added a brief wrapper function (corFiml) to call FIML procedures taken from lavaan. Inspired by some code from Joshua Wiley and with the help of Ashley Brown. The lavaan functions are not exported from lavaan and hence have been moved to psych.
+   \item Completely modified guttman to use the splitHalf function.  This provides much more accurate estimates of the greatest lower bound.
+   \item Added the splitHalf function to find all possible split halves of scales of up to 16 items, and to sample repeatedly random splits for more than 16 items.
+   \item Modified plot.parallel.poly and fa.parallel.poly to allow choice in plotting between both, fa, and pc. (Matches the fa.parallel function).
+   \item Added the weight option to fa.poly, polychoric, tetrachoric, and mixed cor. This allows for cases to be given unequal weights.  Requested by Fabricio Flalho. 
+   \item Enhanced the documentation for irt.fa and plot.irt to explain when to use plot.irt vs. plot.poly (Requested by David Condon).
+   \item Enhanced cor2latex with the help of Davide Morselli.  Now can find correlations directly and can also (if desired) show probability stars.
+   \item Added standard errors and 95% confidence boundaries to alpha and score.items (suggested by Doug Lawson)
+  \item Minor tweaks to irt2latex and fa2latex.
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+       \item Corrected the documentation to fa to specify that it allows targetT and targetQ rotation.
+       \item Corrected kaiser to return as class "psych" and "fa" so that solutions can be used in fa.diagram.  (Reported by Gouri Shankar Mishra)
+    \item Corrected alpha so that it reports r.drop in the case of working from a correlation matrix.  (Reported by Nicolas Hubner)
+      }
+   } 
+  }
+ 
+  
  \section{Changes in psych version 1.3.10.12 (2013-10-12)}{
    \subsection{Additions}{
 \itemize{
@@ -47,6 +73,7 @@
    \itemize{
       \item Fixed a bug in print.psych.fa so that it did not always work with the HDMD package. 
       \item Modified fa.parallel.poly so that the progress bar is not called during the tetrachorics or polychoric simulations. 
+      \item print.psych.fa did not work for covariance input when adding the complexity option.
       }
    } 
   }

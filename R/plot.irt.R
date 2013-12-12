@@ -1,5 +1,7 @@
 "plot.irt" <- 
 function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,ylim=NULL,y2lab,...) {
+if(class(x)[2] == "irt.poly") {message("Oops, you wanted to do a polychoric plot. ")
+          stop("Use either plot or plot.poly")}
 item <- x
 temp <- list()
 sumtemp <- list()
@@ -246,6 +248,7 @@ for(i in 1:nvar) {
 	if(missing(main)) main <- "Test information for factor "
 	main1 <- paste(main,'  ',f)
 	if(missing(ylab)) ylab <- "Test Information"
+	if(missing(y2lab)) y2lab <- "Reliability"
 	rsInfo <- rowSums(testInfo)
 	 plot(x,rsInfo,typ="l",ylim=c(0,max(rsInfo)),ylab=ylab,xlab=xlab,main=main1)
 	 ax4 <- seq(0,max(rsInfo),max(rsInfo)/4)

@@ -6,4 +6,5 @@ weighted <- f/sqrt(h2)
 rotated <- do.call(rotate,list(weighted))
 normalized <- rotated$loadings * sqrt(h2)
 rotated$loadings <- normalized
+class(rotated) <- c("psych","fa")
 return(rotated)}

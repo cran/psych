@@ -24,7 +24,7 @@ oblique.scores=FALSE,np.obs,use="pairwise",...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
- fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,...)
+ fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,weight=NULL,...)
 
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
@@ -58,6 +58,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
   \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
+  \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
@@ -99,6 +100,8 @@ For dichotomous items or polytomous items, it is recommended to analyze the \cod
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
+
+Two additional target rotation options are available through calls to GPArotation.  These are the targetQ (oblique) and targetT (orthogonal) target rotations of Michael Browne.  See \code{\link{target.rot}} for more documentation. 
 
 The "bifactor" rotation implements the Jennrich and Bentler (2011) bifactor rotation by calling the GPForth function in the GPArotation package and using two functions adapted from  the MatLab code of Jennrich and Bentler.
 

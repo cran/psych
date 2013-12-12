@@ -16,7 +16,7 @@ cluster.loadings(keys, r.mat, correct = TRUE,SMC=TRUE)
 }
 \details{Given a set of items to be scored as (perhaps overlapping) clusters and the intercorrelation matrix of the items, find the clusters and then the correlations of each item with each cluster.  Correct for item overlap by replacing the item variance with its average within cluster inter-item correlation.  
 
-Although part of ICLUST, this may be used in any SAPA application where we are interested in item- whole correlations of items and composite scales.
+Although part of ICLUST, this may be used in any SAPA (\url{http://sapa-project.org}) application where we are interested in item- whole correlations of items and composite scales.
 
 These loadings are particularly interpretable when sorted by absolute magnitude for each cluster (see \code{\link{ICLUST.sort}}). 
 }

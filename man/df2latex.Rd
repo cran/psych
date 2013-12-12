@@ -6,14 +6,16 @@
 
 \title{Convert a data frame, correlation matrix, or factor analysis output to a LaTeX table}
 
-\description{A handy helper function to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.   cor2latex will find the correlations and then create a lower (or upper) triangular matrix for latex output.  fa2latex will create the latex commands for showing the loadings and factor intercorrelations. As the default option, tables are prepared in an approximation of APA format.
+\description{A set of handy helper functions to convert data frames or matrices to LaTeX tables. Although Sweave is the preferred means of converting R output to LaTeX, it is sometimes useful to go directly from a data.frame or matrix to a LaTeX table.   cor2latex will find the correlations and then create a lower (or upper) triangular matrix for latex output.  fa2latex will create the latex commands for showing the loadings and factor intercorrelations. As the default option, tables are prepared in an approximation of APA format. 
 }
 \usage{
 df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",
-big.mark=NULL, heading="A table from R",caption="df2latex",label="default")
-cor2latex(x,digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
+big.mark=NULL,drop.na=TRUE, heading="A table from R",caption="df2latex",label="default", 
+char=FALSE,stars=FALSE)
+cor2latex(x,use = "pairwise", method="pearson", adjust="holm",stars=FALSE,
+       digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
      font.size ="scriptsize",
-      heading="A correlation table from the psych package in R",
+      heading="A correlation table from the psych package in R.",
       caption="cor2latex",label="default")
 fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
        font.size ="scriptsize",
@@ -37,11 +39,17 @@ irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
   \item{lower}{in cor2latex, just show the lower triangular matrix}
   \item{f}{The object returned from a factor analysis using \code{\link{fa}} or \code{\link{irt.fa}}. }
   \item{label}{The label for the table}
-  \item{big.mark}{Comma separate numbers large numbers}
+  \item{big.mark}{Comma separate numbers large numbers (big.mark=",")}
+  \item{drop.na}{Do not print NA values}
+  \item{method}{When finding correlations, which method should be used (pearson)}
+  \item{use}{use="pairwise" is the default when finding correlations in cor2latex}
+  \item{adjust}{If showing probabilities, which adjustment should be used (holm)}
+  \item{stars}{Should probability asterixs be displayed in cor2latex (FALSE)}
+  \item{char}{char=TRUE allows printing tables with character information, but does not allow for putting in commas into numbers}
 }
-\value{A LaTeX table}
+\value{A LaTeX table.  Note that if showing "stars" for correlations, then one needs to use the siunitx  package in LaTex. }
 
-\author{William Revelle with suggestions from Jason French and David Condon}
+\author{William Revelle with suggestions from Jason French and David Condon and Davide Morselli}
 
 \seealso{
 The many LaTeX conversion routines in Hmisc.

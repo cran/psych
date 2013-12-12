@@ -37,6 +37,8 @@
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "IIC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
 
+Note that plotting an irt result will call either plot.irt or plot.poly depending upon the type of data that were used in the original \code{\link{irt.fa}} call.  
+
 These are calls to the generic plot function that are intercepted for objects of type "psych".  More precise plotting control is available in the separate plot functions.  plot may be used for psych objects returned from \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{ICLUST}}, \code{\link{omega}}, as well as  \code{\link{principal}} 
 
 A "jiggle" parameter is available in the fa.plot function (called from plot.psych when the type is a factor or cluster.  If jiggle=TRUE, then the points are jittered slightly (controlled by amount) before plotting.  This option is useful when plotting items with identical factor loadings (e.g., when comparing hypothetical models).

@@ -26,7 +26,7 @@
     \item{\code{rotate.8}}{Spatial Rotation of type 2.3}
   }
 }
-\details{16 items were sampled from 80 items given as part of the SAPA project  (Revelle, Wilt and Rosenthal, 2009; Condon and Revelle, 2012) to develop online measures of ability. These 16 items reflect four lower order factors (verbal reasoning, letter series, matrix reasoning, and spatial rotations.  These lower level factors all share a higher level factor ('g').  
+\details{16 items were sampled from 80 items given as part of the SAPA (\url{http://sapa-project.org}) project  (Revelle, Wilt and Rosenthal, 2009; Condon and Revelle, 2013) to develop online measures of ability. These 16 items reflect four lower order factors (verbal reasoning, letter series, matrix reasoning, and spatial rotations.  These lower level factors all share a higher level factor ('g').  
 
 This data set may be used to demonstrate item response functions, \code{\link{tetrachoric}} correlations, or \code{\link{irt.fa}} as well as \code{\link{omega}} estimates of of reliability and hierarchical structure.
 

@@ -15,11 +15,12 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
       normal.case <- TRUE
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
-                                          model <- cor(model,use="pairwise")}
+                                         model <- cor(model,use="pairwise")   
+                                         }
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls") |(fm =="minchi")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm) } else {
      
         #fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
         stop("The method of factor extraction you specified is not available")
@@ -114,7 +115,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,Call=cl)} else{
     result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,Call=cl )}
+        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,scores=fact$scores,Call=cl )}
     class(result) <- c("psych" ,"schmid")
     return(result)
 }

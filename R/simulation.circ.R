@@ -2,7 +2,7 @@
 function(samplesize=c(100,200,400,800), numberofvariables=c(16,32,48,72))  {
  ncases=length(samplesize)
  nvar <- length(numberofvariables)
-  results <- matrix(NA,ncol=ncases,nrow=nvar*ncases)
+  results <- matrix(NaN,ncol=ncases,nrow=nvar*ncases)
   results.ls <- list()
    case <- 1
   for (ss in 1:ncases) {

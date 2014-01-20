@@ -77,6 +77,8 @@ cluster.cor =  {
 	print(x$av.r,digits)
 	cat("\nNumber of items:\n")
 	print(x$size)
+	cat("\nSignal to Noise ratio based upon average r and n \n")
+	print(x$sn,digits=digits)
 	
 	      
  	 # cat("\nScale intercorrelations:\n")
@@ -157,6 +159,17 @@ describe= {if  (length(dim(x))==1) {class(x) <- "list"
                   } else  {class(x) <- "data.frame" 
             print(round(x,digits=digits)) }
          },
+         
+describeData = {if  (length(dim(x))==1) {class(x) <- "list"
+              attr(x,"call") <- NULL
+              print(round(x,digits=digits))
+                  } else  {
+                  cat('n.obs = ', x$n.obs, "of which ", x$complete.cases,"  are complete cases.   Number of variables = ",x$nvar," of which all are numeric ",x$all.numeric," \n")
+                 
+            print(x$variables) }
+         },
+ 
+
     
 guttman =  {
   cat("Call: ")
@@ -401,7 +414,9 @@ scores =  {
   	cat("\nAverage item correlation:\n")
   	print(x$av.r,digits=digits)
 	cat("\n Guttman 6* reliability: \n")
-	print(x$G6,digits=digits)     
+	print(x$G6,digits=digits)   
+	cat("\nSignal/Noise based upon av.r : \n")
+	print(x$sn,digits=digits)  
 	#if(iclust) {cat("\nOriginal Beta:\n")
 	# print(x$beta,digits) }	          
  	

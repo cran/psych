@@ -18,6 +18,7 @@ function(keys,items,mini=NULL,maxi=NULL) {
  reversed <- items %*% keys.d 
  
  adj <- abs(keys*colAdj)   #now we need to add the adjustments to the ones we flipped
+ adj[keys > 0] <- 0  #added December 26 
  new <- t(adj + t(reversed))
  new[abs(new) > 999] <- NA 
  colnames(new) <- colnames(items)
@@ -27,6 +28,7 @@ function(keys,items,mini=NULL,maxi=NULL) {
  #corrected April 3, 2010 to properly do matrix addition
 #modified Sept 14, 2013  to allow symbolic names and to allow for just specifying the ones to reversed
 #suggested by David Stanley
+#fixed bug reported by Jian Jin (26/12/13)
 
  
  "rescale" <-  function(x,mean=100,sd=15,df=TRUE) {if(df) {x <- data.frame(t(t(scale(x))*sd+mean))

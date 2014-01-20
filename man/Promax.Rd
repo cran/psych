@@ -64,7 +64,7 @@ Jennrich, Robert and Bentler, Peter (2011) Exploratory Bi-Factor Analysis. Psych
 
  
 }
-\seealso{ \code{\link{promax}}, \code{\link{factor.pa}}, \code{\link{factor.minres}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data. \code{\link{factor.rotate}} for 'hand rotation'.  }
+\seealso{ \code{\link{promax}}, \code{\link{fa}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data. \code{\link{factor.rotate}} for 'hand rotation'.  }
 \examples{
 jen <- sim.hierarchical()
 f3 <- fa(jen,3,rotate="varimax")

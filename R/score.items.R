@@ -1,4 +1,10 @@
-"score.items"  <- 
+"score.items"  <-
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
+ message("score.items has been replaced by scoreItems, please change your call")
+     scoreItems(keys=keys,items=items,totals=totals,ilabels=ilabels,missing=missing,impute=impute,delete=delete,min=min,max=max,digits=digits)
+     }
+
+"scoreItems"  <-
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
    cl <- match.call()
    raw.data <- TRUE
@@ -57,7 +63,7 @@
           cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
           cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
         }  else { #handle the case of missing data without imputation
-           scores <- matrix(NA,ncol=n.keys,nrow=n.subjects)
+           scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
            totals <- FALSE  #just in case it was not already false
            for (scale in 1:n.keys) {
            pos.item <- items[,which(keys[,scale] > 0)]
@@ -144,15 +150,17 @@
   rownames(alpha.scale) <- "alpha"
   rownames(av.r) <- "average.r"
   rownames(G6) <- "Lambda.6"
+  sn <-  av.r * num.item/(1-av.r)
+  rownames(sn) <- "Signal/Noise"
 
    if (!raw.data) { 
      if(impute =="none") {
        rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
-       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,Call=cl)} else {
-                            results <- list(alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,Call=cl)}  } else {
-   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} else{  
-                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} }
+       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,Call=cl)} else {
+                            results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,Call=cl)}  } else {
+   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} else{  
+                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
     return(results)

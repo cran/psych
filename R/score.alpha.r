@@ -1,4 +1,6 @@
 score.alpha <- function (keys,items,labels=NULL,totals=TRUE, digits=2) {
+.Deprecated("score.alpha", msg = "score.alpha is deprecated.  Please use the scoreItems function")
+
     keys <- as.matrix(keys)   #just in case they were not matrices to start with
     items <- as.matrix(items)
     scores <- items %*%  keys  #this actually does all the work

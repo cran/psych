@@ -285,8 +285,8 @@ for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
 
 	}  #end of 1:nf loop
 	
-     AUC <- matrix(NA,ncol=nf,nrow=nvar)
-     max.info <- matrix(NA,ncol=nf,nrow=nvar) 
+     AUC <- matrix(NaN,ncol=nf,nrow=nvar)
+     max.info <- matrix(NaN,ncol=nf,nrow=nvar) 
        for(f in 1:nf) {
      AUC[,f] <- colSums(temp[[f]])
      

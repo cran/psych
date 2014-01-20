@@ -7,7 +7,7 @@ n <- t(!is.na(x)) %*% (!is.na(x))
 } else {r <- cor(x,y,use=use,method=method)
   sym=FALSE
 n <- t(!is.na(x)) %*% (!is.na(y))}
-if(use=="complete") n <- min(n)
+if((use=="complete") | (min(n) == max(n))) n <- min(n)
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
 p <- 2*(1 - pt(abs(t),(n-2)))
 se <- sqrt((1-r*r)/(n-2))
@@ -24,6 +24,7 @@ result <- list(r = r,n=n,t=t,p=p,se=se,adjust=adjust,sym =sym, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
 }
+#modified 1/4/14 to report sample size once if they are all equal
 
 
 

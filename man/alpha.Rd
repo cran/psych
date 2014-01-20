@@ -36,13 +36,15 @@ Perhaps because it is so easy to calculate and is available in most commercial p
 Guttman's Lambda 6 (G6) considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
 \deqn{
 \lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}
-.}{lamada 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx.}
+.}{lambda 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx.}
 
 The squared multiple correlation is a lower bound for the item communality and as the number of items increases, becomes a better estimate.
 
 G6 is also sensitive to lumpyness in the test and should not be taken as a measure of unifactorial structure.  For lumpy tests, it will be greater than alpha.  For tests with equal item loadings, alpha > G6, but if the loadings are unequal or if there is a general factor, G6 > alpha. alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep).
 
 Alpha and G6 are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  
+
+A useful index of the quality of the test that is linear with the number of items and the average correlation is the Signal/Noise ratio where \deqn{s/n = \frac{n \bar{r}}{1-n \bar{r}}}{s/n = n r/(1-nr)}  (Cronbach and Gleser, 1964; Revelle and Condon (in press)).
 
 
 More complete reliability analyses of a single scale can be done using the \code{\link{omega}} function which finds \eqn{\omega_h}{omega_hierchical} and \eqn{\omega_t}{omega_total} based upon a hierarchical factor analysis.  
@@ -82,6 +84,8 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
 \references{
 Cronbach, L.J. (1951) Coefficient alpha and the internal strucuture of tests.  Psychometrika, 16, 297-334.
 
+Cronbach, L.J. and Gleser G.C.  (1964)The signal/noise ratio in the comparison of reliability coefficients. Educational and Psychological Measurement, 24 (3) 467-480. 
+
 Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
 
 Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika, 10 (4), 255-282. 
@@ -89,6 +93,8 @@ Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{http://personality-project.org/r/book}). 
 
 Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
+
+Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (in press).
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 74 (1) 1145-154. 
 }

@@ -2,7 +2,9 @@
 \alias{df2latex}
 \alias{cor2latex}
 \alias{fa2latex}
+\alias{omega2latex}
 \alias{irt2latex}
+\alias{ICC2latex}
 
 \title{Convert a data frame, correlation matrix, or factor analysis output to a LaTeX table}
 
@@ -10,20 +12,29 @@
 }
 \usage{
 df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",
-big.mark=NULL,drop.na=TRUE, heading="A table from R",caption="df2latex",label="default", 
-char=FALSE,stars=FALSE)
+big.mark=NULL,drop.na=TRUE, heading="A table from the psych package in R",
+caption="df2latex",label="default", char=FALSE,stars=FALSE)
 cor2latex(x,use = "pairwise", method="pearson", adjust="holm",stars=FALSE,
        digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
      font.size ="scriptsize",
       heading="A correlation table from the psych package in R.",
       caption="cor2latex",label="default")
 fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
-       font.size ="scriptsize",
+       cut=0,font.size ="scriptsize",
        heading="A factor analysis table from the psych package in R",
        caption="fa2latex",label="default") 
+omega2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=.2,
+        font.size ="scriptsize", 
+        heading="An omega analysis table from the psych package in R",
+        caption="omega2latex",label="default") 
+
 irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
        font.size ="scriptsize",
      heading="An IRT factor analysis table from R",caption="fa2latex",label="default")
+ICC2latex(icc,digits=2,rowlabels=TRUE,apa=TRUE,ci=TRUE,
+font.size ="scriptsize",big.mark=NULL, drop.na=TRUE,
+    heading="A table from the psych package in R",
+   caption="ICC2latex",label="default",char=FALSE) 
 }
 
 \arguments{
@@ -46,6 +57,9 @@ irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
   \item{adjust}{If showing probabilities, which adjustment should be used (holm)}
   \item{stars}{Should probability asterixs be displayed in cor2latex (FALSE)}
   \item{char}{char=TRUE allows printing tables with character information, but does not allow for putting in commas into numbers}
+  \item{cut}{In omega2latex and fa2latex, do not print abs(values) < cut }
+  \item{icc}{Either the output of an ICC, or the data to be analyzed.}
+  \item{ci}{Should confidence intervals of the ICC be displayed}
 }
 \value{A LaTeX table.  Note that if showing "stars" for correlations, then one needs to use the siunitx  package in LaTex. }
 

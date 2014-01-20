@@ -1,6 +1,6 @@
 "phi2poly" <-
 function(ph,cp,cc,n=NULL,correct=TRUE) {
-	.Deprecated(phi2tetra, msg='phi2poly is deprecated, please use phi2tetra')
+	#.Deprecated(phi2tetra, msg='phi2poly is deprecated, please use phi2tetra')
      #ph is the phi coefficient
      #cp is the selection ratio of the predictor
      #cc is the success rate of the criterion

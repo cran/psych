@@ -286,11 +286,14 @@ function (x, y,   pch = par("pch"),
 #rug is a variable that is local to the entire function but is used only in the hist and hist.density functions.
 #having done the same trick for passing method, it is now time to change all of this to pass some of these other options
 
-#old.par <- par(no.readonly = TRUE) # save default, for resetting... 
-#on.exit(par(old.par))     #and when we quit the function, restore to original values
-op <- par()
-old.par <- op$mfrow
-on.exit(par(old.par))
+old.par <- par(no.readonly = TRUE) # save default, for resetting... 
+on.exit(par(old.par))     #and when we quit the function, restore to original values
+#op <- par()
+#old.par <- op$mfrow
+#on.exit(par(old.par))
+#old.par<- par(mfrow)    #get the original parameters so we can 
+#on.exit(par(old.par))  #set them back upon exiting
+
    
 par(pch = pch)
 #method <- method   #make method global for this function
@@ -399,6 +402,6 @@ par(pch = pch)
    			 }
    			   }
    	}
-par(old.par) #reset the parameters
+#par(old.par) #reset the parameters
 }
 

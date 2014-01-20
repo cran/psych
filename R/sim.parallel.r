@@ -5,7 +5,7 @@ nvariables = nvar
 factors = nfact
 subjects = n 
 
-result <- matrix(NA,ncol=7,nrow=ntrials*length(nvariables) * length(subjects) * length(factors))
+result <- matrix(NaN,ncol=7,nrow=ntrials*length(nvariables) * length(subjects) * length(factors))
 k <- 1
 for (nfact in factors) {
   for (nvar in nvariables) {

@@ -391,7 +391,7 @@ omegaSem(r9,n.obs=500)
 ###################################################
 ### code chunk number 55: overview.Rnw:1290-1291
 ###################################################
-guttman(r9)
+splitHalf(r9)
 
 
 ###################################################
@@ -429,7 +429,7 @@ keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
 ###################################################
 ### code chunk number 58: overview.Rnw:1352-1354
 ###################################################
- scores <- score.items(keys,bfi)
+ scores <- scoreItems(keys,bfi)
  scores
 
 

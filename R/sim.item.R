@@ -229,18 +229,17 @@ warning("Not ready for prime time")
 
 
 #simulate a particular polychoric structure R with specified marginals (m)
+#Modified December 17,2013 to actually work
 "sim.poly.mat" <- function(R,m,n) {
  e <- eigen(R)
  v <- pmax(e$values,0)
  nvar <- ncol(R)
- ncat <- nrow(m) 
+ ncat <- ncol(m) 
 X <- matrix(rnorm(nvar*n),n)
-X <- scale(X)
 X <- t(e$vectors %*% sqrt(diag(v)) %*% t(X))
-marg <- apply(m[,],2,cumsum)
-marg <- qnorm(marg)
+marg <- m
 Y <- matrix(0,ncol=n,nrow=nvar)
 for(i in 1:(ncat)) {
-Y[t(X) > marg[i,]] <- i }
+Y[t(X) > marg[,i]] <- i }
 return(t(Y))
 }

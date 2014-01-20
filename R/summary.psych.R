@@ -1,3 +1,4 @@
+#Modified 1/10/14 to convert to switch 
 "summary.psych" <-
 function(object,digits=2,items=FALSE,...) { 
 
@@ -8,6 +9,12 @@ function(object,digits=2,items=FALSE,...) {
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
 #figure out which psych function called us 
+
+if(length(class(object)) > 1)  { value <- class(object)[2] }
+
+
+#this next part can be deleted, we have switched to switch
+if(FALSE) {
  iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- mat.reg <- irt.fa <-  FALSE 
  
  if(length(class(object)) > 1)  { 
@@ -26,9 +33,16 @@ function(object,digits=2,items=FALSE,...) {
    if(class(object)[2] == 'irt.fa') irt.fa <- TRUE
      } 
 result <- NULL
-if(!is.null(object$fn)) {fa <- TRUE}
+ }
+ if(value=="principal") value <- "fa"
+ if(value=="score.items") value <- "scores"
+ if(value=="cluster.loadings") value <- "cluster.cor"
+  if(value=="mat.regress") value <- "mat.reg"
+   if(value=="set.cor") value <- "mat.reg"
  
- if(vss) {
+switch(value, 
+
+vss = {
  if(object$title!="Very Simple Structure") {
  cat("\nVery Simple Structure of ", object$title,"\n") } else {cat("\nVery Simple Structure\n")} 
  cat("VSS complexity 1 achieves a maximimum of ")
@@ -40,10 +54,9 @@ if(!is.null(object$fn)) {fa <- TRUE}
  cat("\nThe Velicer MAP criterion achieves a minimum of ")
  vss.map <- round(max(object$map) ,digits) 
  cat(vss.map," with " ,which.min(object$map), " factors\n ") 
+ },
  
- }
- 
-if(iclust) { cat("ICLUST (Item Cluster Analysis)") 
+iclust = { cat("ICLUST (Item Cluster Analysis)") 
  cat("Call: ")
      print(object$call)
     cat( object$title,"\n") 
@@ -59,9 +72,9 @@ if(iclust) { cat("ICLUST (Item Cluster Analysis)")
 if(!is.null(object$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")
 print(object$purified$corrected,digits)  }
 
-} 
+} ,
 
-if(omega) {
+omega =  {
  cat( object$title,"\n") 
  cat("Alpha: ",round(object$alpha,digits),"\n") 
  cat("Omega Hierarchical:  " ,round(object$omega_h,digits),"\n")
@@ -83,13 +96,10 @@ if(omega) {
    	  if(!is.null(object$ECV))  cat("Explained Common Variance of the general factor = ", round(object$ECV,digits),"\n")
    	 cat("\n Total, General and Subset omega for each subset\n")
    colnames(object$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
-   print(round(t(object$omega.group),digits))
-   
-   	
-   	
-           } 
+   print(round(t(object$omega.group),digits)) 	
+           }, 
 
-if(scores ) { 
+scores =  { 
 cat("Call: ")
 print(object$Call)
 if(object$raw) {
@@ -98,18 +108,18 @@ cat("\nScale intercorrelations corrected for attenuation \n raw correlations bel
 
 	 print(object$corrected,digits) 
 	 result <- object$corrected
-	 }
+	 },
  
-if(cluster.cor ) { 
+cluster.cor = { 
 cat("Call: ")
 print(object$Call)
 cat("\nScale intercorrelations corrected for attenuation \n raw correlations below the diagonal, (standardized) alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(object$corrected,digits) 
      result <- object$corrected
 
-}
+},
 
-if(fa) {
+fa =  {
   cat("\nFactor analysis with Call: ")
    print(object$Call)
    
@@ -134,10 +144,10 @@ if(fa) {
    if(object$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}
        colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
        print(round(object$Phi,digits))}
-}
+},
 
 
-if(items) { 
+items= { 
     if(omega) {
        cat("\nSchmid Leiman Factor loadings:\n")
        print(object$schmid$sl)
@@ -169,15 +179,15 @@ if(items) {
        print(object$cfit.2,digits)
       }
 	
-	}  #end if items
+	},  #end if items
 	
-if(alpha) {
+alpha=  {
 cat("\nReliability analysis ",object$title," \n")
 
 print(object$total,digits=digits)
-}
+},
  
-  if(mat.reg) {
+mat.reg = {
    if(object$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
 
@@ -194,9 +204,9 @@ print(object$total,digits=digits)
            cat("\nSquared Canonical Correlations\n")
            print(object$cancor2,digits)
            
-           }
+           },
            
-  if(irt.fa) {
+irt.fa = {
      cat("\nItem Response Theory using factor analysis with Call: ")
    print(object$Call)
    
@@ -219,7 +229,12 @@ print(object$total,digits=digits)
    if(object$fa$fn == "principal") {cat ("\n With component correlations of \n" ) } else {cat ("\n With factor correlations of \n" )}
        colnames(object$fa$Phi) <- rownames(object$fa$Phi) <- colnames(object$fa$loadings)
        print(round(object$fa$Phi,digits))}
-}
-invisible(result)
+},
+
+describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.cases," are complete cases. Number of variables = ",object$nvar," of which all are numeric is ",object$all.numeric,"\n")
+                 
+        } 
+)  #end of switch
+#invisible(result)
    }
   

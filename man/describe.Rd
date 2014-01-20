@@ -1,5 +1,6 @@
 \name{describe}
 \alias{describe}
+\alias{describeData}
 \title{  Basic descriptive statistics useful for psychometrics }
 \description{
 There are many summary statistics available in R; this function
@@ -7,7 +8,9 @@ There are many summary statistics available in R; this function
   Range is most useful for the first pass in a data set, to check for coding errors. 
 }
 \usage{
-describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,type=3)
+describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
+type=3,check=TRUE)
+describeData(x,head=4,tail=4) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,13 +21,16 @@ describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,type=3
   \item{ranges}{ Should the range be calculated? }
   \item{trim}{trim=.1 -- trim means by dropping the top and bottom trim fraction}
   \item{type}{Which estimate of skew and kurtosis should be used?  (See details.) }
+  \item{check}{Should we check for non-numeric variables?  Slower but helpful.}
+  \item{head}{show the first 1:head cases for each variable in describeData}
+  \item{tail}{Show the last nobs-tail cases for each variable in describeData}
 }
 \details{In basic data analysis it is vital to get basic descriptive statistics. 
 Procedures such as \code{\link{summary}} and hmisc::describe do so.  The describe function in the \code{\link{psych}} package is meant to produce the most frequently requested stats in psychometric and psychology studies, and to produce them in an easy to read data.frame. The results from describe can be used in graphics functions (e.g., \code{\link{error.crosses}}).
 
 The range statistics (min, max, range) are most useful for data checking to detect coding errors, and should be found in early analyses of the data.  
 
-Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not  for alphanumeric data). Variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name. 
+Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not  for alphanumeric data). If the check option is TRUE, variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name.  This is somewhat slower. 
 
 In a typical study, one might read the data in from the clipboard (\code{\link{read.clipboard}}), show the splom plot of the correlations (\code{\link{pairs.panels}}), and then describe the data. 
 
@@ -38,7 +44,9 @@ Type 1 finds skewness and kurtosis by \eqn{g_1 = m_3/(m_2)^{3/2} } and \eqn{g_2 
 
 Type 2 is \eqn{G1 = g1 * \sqrt{n *(n-1)}/(n-2)} and \eqn{G2 = (n-1)*[(n+1)g2 +6]/((n-2)(n-3))}.  
 
-Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2} m_4/m_2^2)}.  
+Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2} m_4/m_2^2)}.
+
+The additional helper function \code{\link{describeData}} just scans the data array and reports on whether the data are all numerical, logical/factorial, or categorical.  This is a useful check to run if trying to get descriptive statistics on very large data sets where to improve the speed, the check option is FALSE.  
 }
 \value{
  A data.frame of the relevant statistics: \cr
@@ -57,7 +65,9 @@ Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2
    standard error\cr
 }
 
-\note{Describe uses either the mean or colMeans functions depending upon whether the data are a data.frame or a matrix. The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the describe function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.}
+\note{For very large data sets that are data.frames, describe can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.
+
+For the greatest speed, at the cost of losing information, do not ask for ranges or for skew and turn off check.   }
 \author{ 
  
  \url{http://personality-project.org/revelle.html} \cr
@@ -74,7 +84,9 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 data(sat.act)
 describe(sat.act)
 
-describe(sat.act,skew=FALSE)   
+describe(sat.act,skew=FALSE)
+describeData(sat.act)
+   
 
 
 

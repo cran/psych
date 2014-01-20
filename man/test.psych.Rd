@@ -35,7 +35,7 @@ The datasets tested are part of the standard R data sets and represent some of t
 
 When version 1.1.10 was released, it caused errors when compiling and testing on some Solaris 32 bit systems.  The all option was added to avoid this problem (since I can't replicate the problem on Macs or PCs).  all=TRUE adds one more test, for a non-positive definite matrix.}
 
-\section{Warning }{Warning messages will be thrown by fa.parallel and sometimes by factor.pa for random datasets.} 
+\section{Warning }{Warning messages will be thrown by fa.parallel and sometimes by fa for random datasets.} 
 
 
 \examples{

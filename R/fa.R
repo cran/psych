@@ -10,6 +10,8 @@
 #modified April 4, 2011 to allow for factor scores of oblique or orthogonal solution
 #In May, 2011, fa was added as a wrapper to do iterations, and the original fa function was changed to fac.  The functionality of fa has not changed.
 #Revised November, 2012 to add the minchi option for factoring.  This minimizes the sample size weighted residual matrix
+#Revised 1/2/14 to add mclapply (multicore) feature.  Increase in speed is 50\% for two cores, but only 63\% for 4 cores or 76\% for 8 cores
+#dropped the fisherz transform on loadings and phis
 "fa" <- 
 function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",...) {
  cl <- match.call()
@@ -25,50 +27,49 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
  if(is.na(n.obs) ) {n.obs <- f$n.obs} 
  replicates <- list()
  rep.rots <- list()
- for (trials in 1:n.iter) {
+ 
+
+ replicateslist <- mclapply(1:n.iter,function(x) {
  if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with observed correlation
                                       mu <- rep(0, nvar)
-                                      x <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, 
+                                      X <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, 
                                    empirical = FALSE)
 
-                            } else {x <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <-fac(x,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,...) #call fa with the appropriate parameters
+                            } else {X <- r[sample(n.obs,n.obs,replace=TRUE),]}
+  fs <-fac(X,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,...) #call fa with the appropriate parameters
   if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
-                  replicates[[trials]] <- t.rot$loadings
+                 # replicates[[trials]] <- t.rot$loadings
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
-                    rep.rots[[trials]] <- phis[lower.tri(phis)]}}  else 
-                    {replicates[[trials]] <- fs$loadings}
-  }
-replicates <- matrix(unlist(replicates),ncol=nfactors*nvar,byrow=TRUE)
-if(!is.null( f$Phi) ) {rep.rots <- matrix(unlist(rep.rots),ncol=nfactors*(nfactors-1)/2,byrow=TRUE) 
-       z.rot <- fisherz(rep.rots)
-       means.rot <- fisherz2r(colMeans(z.rot,na.rm=TRUE))
-      sds.rot <- apply(z.rot,2,sd, na.rm=TRUE)
-      sds.rot <- fisherz2r(sds.rot)
-      ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
-      ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot
-      ci.rot.lower <- fisherz2r(ci.rot.lower)
-      ci.rot.upper <- fisherz2r(ci.rot.upper)
-      ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)
-} else  {rep.rots <- NULL
+                    replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])}}  else 
+                    {replicates <- list(loadings=fs$loadings)}
+  })
+  
+  
+replicates <- matrix(unlist(replicateslist),nrow=n.iter,byrow=TRUE)
+
+means <- colMeans(replicates,na.rm=TRUE)
+sds <- apply(replicates,2,sd,na.rm=TRUE)
+
+if(length(means) > (nvar * nfactors) ) {
+   means.rot <- means[(nvar*nfactors +1):length(means)]
+   sds.rot <-      sds[(nvar*nfactors +1):length(means)]  
+   ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
+  ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot  
+   ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)    } else  {
+        rep.rots <- NULL
          means.rot <- NULL
          sds.rot <- NULL
          z.rot <- NULL
          ci.rot <- NULL }
-z.replicates <- fisherz(replicates)  #convert to z scores
-
-means <- matrix(colMeans(z.replicates,na.rm=TRUE),ncol=nfactors)
-sds <-  matrix(apply(z.replicates,2,sd,na.rm=TRUE),ncol=nfactors)
+   
+   means <- matrix(means[1:(nvar*nfactors)],ncol=nfactors)
+   sds <- matrix(sds[1:(nvar*nfactors)],ncol=nfactors)
 
 ci.lower <-  means + qnorm(p/2) * sds
 ci.upper <- means + qnorm(1-p/2) * sds
-means <- fisherz2r(means)
-sds <- fisherz2r(sds)
-ci.lower <- fisherz2r(ci.lower)
-ci.upper <- fisherz2r(ci.upper)
+
 ci <- data.frame(lower = ci.lower,upper=ci.upper)
 class(means) <- "loadings"
-#class(sds) <- "loadings"
 
 colnames(means) <- colnames(sds) <- colnames(fl)
 rownames(means) <- rownames(sds) <- rownames(fl)
@@ -261,7 +262,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
          	comm1 <- sum(new)
          	diag(r.mat) <- new
         	 err <- abs(comm-comm1)
-        	 if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa,\n Try again with SMC=FALSE \n exiting factor.pa")
+        	 if(is.na(err)) {warning("imaginary eigen value condition encountered in fa\n Try again with SMC=FALSE \n exiting fa")
                              break}
         	 comm <- comm1
         	 comm.list[[i]] <- comm1
@@ -398,7 +399,6 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     result$fn <- "fa"
     result$fm <- fm
     result$Call <- cl
-
     class(result) <- c("psych", "fa")
     return(result) }
     

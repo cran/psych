@@ -19,7 +19,7 @@ factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL)
   \item{alpha}{alpha level of confidence intervals for RMSEA}
   \item{fm}{flag if components are being given statistics}
 }
-\details{Combines the goodness of fit tests used in factor.pa, factor.minres, and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.
+\details{Combines the goodness of fit tests used in \code{\link{fa}} and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.
 
 Chi square is found two ways.  The first (STATISTIC) applies the goodness of fit test from Maximum Likelihood objective function (see below).  This assumes multivariate normality.  The second is the empirical chi square based upon the observed residual correlation matrix and the observed sample size for each correlation.  This is found by summing the squared residual correlations time the sample size.  
 }

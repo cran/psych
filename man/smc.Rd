@@ -25,7 +25,7 @@ If the matrix is not invertible, then a vector of 1s is returned
 
 \author{ William Revelle }
 
-\seealso{  \code{\link{mat.regress}}, \code{\link{factor.pa}}  }
+\seealso{  \code{\link{mat.regress}}, \code{\link{fa}}  }
 \examples{
 R <- make.hierarchical()
 round(smc(R),2)

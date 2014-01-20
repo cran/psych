@@ -129,7 +129,7 @@ results <- sim(fload,n=n)
 #simulate various structures and summarize them
 "sim.omega" <-
 function(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
-results <- matrix(NA,nrow=ntrials,ncol=12)
+results <- matrix(NaN,nrow=ntrials,ncol=12)
 colnames(results) <- c("n","om.model","omega","ev.N","e.f1","omega.f1","Beta","omegaCFA","omegaSem","rms","RMSEA","coeff.v")
 for (i in 1:ntrials) {
 x <- try(sim.minor(nvar=nvar,nfact=nfact,n=n,g=g,fbig=fbig,fsmall=fsmall,bipolar=bipolar))

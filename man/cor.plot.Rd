@@ -10,7 +10,7 @@ cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),show.legend=TRU
             labels=NULL,n.legend=10,keep.par=TRUE,...)
 }
 \arguments{
-  \item{r}{A correlation matrix or the output of  \code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{omega}}.  }
+  \item{r}{A correlation matrix or the output of  \code{\link{fa}}, \code{\link{principal}} or \code{\link{omega}}.  }
   \item{numbers}{Display the numeric value of the correlations.  Defaults to FALSE.}
   \item{colors}{Defaults to TRUE and colors use colors from the colorRampPalette from red through white to blue, but colors=FALSE will use a grey scale}
   \item{n}{The number of levels of shading to use.  Defaults to 51}

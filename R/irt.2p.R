@@ -9,7 +9,7 @@ function(delta,beta,items) {
   
 
  num <- dim(items)[1]
- fit <- matrix(NA,num,2)
+ fit <- matrix(NaN,num,2)
  total <- rowMeans(items,na.rm=TRUE)
  count <- rowSums(!is.na(items))
  

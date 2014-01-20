@@ -7,10 +7,14 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      if(!require(GPArotation) && (rotate !="cluster")) {stop("I am sorry, you need to have the  GPArotation package installed")}
       cl <- match.call() 
       nvar <- dim(m)[2]
+      raw.data <- NULL
       if(is.null(Phi)) {   #the normal case is to do the factor analysis of the raw data or the correlation matrix
       if(dim(m)[1] != dim(m)[2]) {
                             n.obs <- dim(m)[1]
-                            m <- cor(m,use="pairwise")} else {
+                            m <- as.matrix(m)
+                            raw.data <- m #added 9/1/14
+                            m <- cor(m,use="pairwise")
+                            } else {
                             m <- cov2cor(as.matrix(m))    #make sure it is a correlation matrix not a covariance or data matrix (if we change this, we will need to change the calculation for omega later)
                            }
                             
@@ -99,17 +103,17 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      omt[1] <- om.tot 
      om.group <- data.frame(total=omt,general=omgo,group=omg)
      rownames(om.group) <- colnames(gf$sl)[1:(nfactors+1)]
-     
-     
+
+     if(!is.null(raw.data)) {scores <- raw.data %*%  omega.stats$weights} else {scores<- NULL} 
      }
-     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group)
+     omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group,scores=scores)
 
       class(omega) <- c("psych","omega")
      if(plot)  omega.diagram(omega,main=title,sl=sl,labels=labels,digits=dg)
       return(omega)
       }
 #April 4, 2011  added a check for fm=pc and nfactors == 1 to solve problem of omega_h < omega_t -- probably not a good idea.  removed
-
+#January 9, 2014  added omega scores if the raw data are given
 
 
 "omega" <- 

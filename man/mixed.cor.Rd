@@ -23,6 +23,8 @@ mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE,
 \details{
 This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) (\url{http://sapa-project.org}) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
 
+This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
+
 Item response analyses using \code{\link{irt.fa}} may be done separately on the polytomous and dichotomous items  in order to develop internally consistent scales. These scale may, in turn, be correlated with each other using the complete correlation matrix found by mixed.cor and using the \code{\link{score.items}} function.
 
 This function is not quite as flexible as the hetcor function in John Fox's polychor package. 

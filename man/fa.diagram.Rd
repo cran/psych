@@ -8,7 +8,7 @@
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
 simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
-    main,cex=NULL, ...) 
+    main,cex=NULL,marg=c(.5,.5,1,.5), ...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
@@ -36,6 +36,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{rsize}{size of rectangles}
   \item{side}{on which side should error arrows go?}
   \item{cex}{modify font size}
+  \item{marg}{sets the margins to be wider than normal, returns them to the normal size upon exit}
   \item{node.font}{what font should be used for nodes in fa.graph  }
   \item{edge.font}{what font should be used for edges in fa.graph  }
   \item{rank.direction}{ parameter passed to Rgraphviz-- which way to draw the graph }
@@ -53,11 +54,15 @@ Hierarchical (bifactor) models may be drawn by specifying the g parameter as TRU
 
 In fa.rgraph although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram. 
 
-The normal input is taken from the output of either \code{\link{fa}} or \code{\link{ICLUST}}.  It is also possible to just give a factor loading matrix as input.  In this case, supplying a Phi matrix of factor correlations is also possible. 
+The normal input is taken from the output of either \code{\link{fa}} or \code{\link{ICLUST}}. This latter case displays the ICLUST results in terms of the cluster loadings, not in terms of the cluster structure.  Actually an interesting option.
+
+It is also possible to just give a factor loading matrix as input.  In this case, supplying a Phi matrix of factor correlations is also possible. 
 
 It is possible, using fa.graph, to export dot code for an omega solution.  fa.graph should be applied to the schmid$sl object with labels specified as the rownames of schmid$sl.  The results will need editing to make fully compatible with dot language plotting.  
 
 To specify the model for a structural equation confirmatory analysis of the results, use \code{\link{structure.diagram}} instead. 
+
+
 }
 \value{fa.diagram: A path diagram is drawn without using Rgraphviz.  This is probably the more useful function.
 

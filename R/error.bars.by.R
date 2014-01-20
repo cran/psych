@@ -127,7 +127,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     
     n.vars <- dim(x)[2]
     if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
-     var.means <- matrix(NA,nrow=n.vars,ncol=n.group)
+     var.means <- matrix(NaN,nrow=n.vars,ncol=n.group)
      var.se <- matrix(NA,nrow=n.vars,ncol=n.group)
      
 

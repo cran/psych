@@ -36,9 +36,12 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
   nvar <- dim(rho)[2]
  
  if(n.iter > 1) {
+ 
  replicates <- list()
  rep.rots <- list()
- for (trials in 1:n.iter) {
+
+if(!require(parallel)) {warning("parallel package needed for mclapply")}
+ replicates <- mclapply(1:n.iter,function(XX) {
  xs <- x[sample(n.obs,n.obs,replace=TRUE),]
  {if(poly) {
   if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
@@ -48,12 +51,15 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
  if(!is.null(keys)) {covariances <- t(keys) %*% R %*% keys
                r <- cov2cor(covariances) } else {r <- R}					
                  
- rep.rots[[trials]] <- r[lower.tri(r)]}
+ rep.rots <- r[lower.tri(r)]
  }
+ } 
+ )
  
  }
 
-   replicates <- matrix(unlist(rep.rots),ncol=nvar*(nvar-1)/2,byrow=TRUE) 
+
+   replicates <- matrix(unlist(replicates),ncol=nvar*(nvar-1)/2,byrow=TRUE) 
        z.rot <- fisherz(replicates)
      means.rot <- colMeans(z.rot,na.rm=TRUE)
       sds.rot <- apply(z.rot,2,sd, na.rm=TRUE)

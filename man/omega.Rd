@@ -54,7 +54,7 @@ McDonald has proposed coefficient omega (hierarchical (\eqn{\omega_h}) as an est
 
 One way to find \eqn{\omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}.  Here we present code to do that.  
 
-\eqn{\omega_h} differs as a function of how the factors are estimated.  Four options are available, the default does a minres factor solution, fm="pa"  does a principle axes factor analysis (\link{factor.pa}), fm="mle" uses the factanal function, and fm="pc" does a principal components analysis (\link{principal}).  
+\eqn{\omega_h} differs as a function of how the factors are estimated.  Four options are available, three use the \code{\link{fa}} function but with different factoring methods: the default does a minres factor solution, fm="pa"  does a principle axes factor analysis  fm="mle" does a maximum likelihood solution; fm="pc" does a principal components analysis using (\link{principal}).  
 
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{score.items}} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 

@@ -11,7 +11,8 @@ Given a two x two table of counts \cr
 }
 The phi coefficient is (a - (a+b)*(a+c))/sqrt((a+b)(a+c)(b+d)(c+c)).
 
-This function reproduces the cell entries for specified marginals and then calls John Fox's polychor function. 
+This function reproduces the cell entries for specified marginals and then calls the tetrachoric function. (Which was originally based upon John Fox's polychor function.)
+The phi2poly name will become deprecated in the future. 
 }
 
 \usage{

@@ -38,7 +38,11 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	  stop() }
 	if(is.null(colnames(r.mat))) {colnames(r.mat) <- paste("V",1:nvar,sep="")} 
 	if(is.null(rownames(r.mat))) {rownames(r.mat) <- paste("V",1:nvar,sep="")} 
-	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options) #ICLUST.cluster does all the work - the answers are in iclust.results
+	
+	#added this 30/12/13 to improve speed
+	if(ICLUST.options$SMC) {smc.items <- smc(r.mat)} else {smc.items <- rep(1,nvar)}  
+	
+	iclust.results <- ICLUST.cluster(r.mat,ICLUST.options,smc.items) #ICLUST.cluster does all the work - the answers are in iclust.results
 	
 	loads <- cluster.loadings(iclust.results$clusters,r.mat,SMC=SMC) #summarize the results by using cluster.loadings  -- these are the original values
 	
@@ -95,7 +99,7 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,diagonal)
 	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut,keys=TRUE)   #at this point, the clusters have been cleaned up, but are not in a sorted order.  Sort them
 	
-	purified <- cluster.cor(p.sorted$clusters,r.mat,SMC=SMC)
+	purified <- cluster.cor(p.sorted$clusters,r.mat,SMC=SMC,item.smc=smc.items)
 	class(loads$loadings) <- "loading"
 	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,G6 = loads$G6,fit=fits,results=iclust.results$results,cor=loads$cor,Phi=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,
 	sorted=sorted,

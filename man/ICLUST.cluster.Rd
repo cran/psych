@@ -6,12 +6,13 @@
   The guts of the  \code{\link{ICLUST}} algorithm.  Called by \code{\link{ICLUST}} See ICLUST for description.
 }
 \usage{
-ICLUST.cluster(r.mat, ICLUST.options)
+ICLUST.cluster(r.mat, ICLUST.options,smc.items)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{r.mat}{ A correlation matrix}
   \item{ICLUST.options}{ A list of options (see \code{\link{ICLUST}}) }
+  \item{smc.items}{passed from the main program to speed up processing}
 }
 \details{
   See \code{\link{ICLUST}}

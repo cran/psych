@@ -101,7 +101,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
          comm1 <- sum(new)
          diag(r.mat) <- new
          err <- abs(comm-comm1)
-         if(is.na(err)) {warning("imaginary eigen value condition encountered in factor.pa,\n Try again with SMC=FALSE \n exiting factor.pa")
+         if(is.na(err)) {warning("imaginary eigen value condition encountered in fa,\n Try again with SMC=FALSE \n exiting fa")
           break}
          comm <- comm1
          comm.list[[i]] <- comm1
@@ -205,7 +205,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
     
     if(scores) {result$scores <- factor.scores(x.matrix,loadings) }
     result$factors <- nfactors 
-    result$fn <- "factor.pa"
+    result$fn <- "factor.wls"
     result$Call <- cl
     class(result) <- c("psych", "fa")
     return(result) }

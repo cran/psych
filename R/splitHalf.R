@@ -71,16 +71,21 @@ i <- i + 1L
 }} else {   #sample the alternatives
 
 result <- rep(NA,n.sample)
+sumr <- 0
 for (i in 1:n.sample) {
+#result <- mclapply(1:n.sample,{   #use mclapply to allow for parallelism
  	o <- sample(n,n2)
  	sp <- split(o,n)
 	if(raw) result[i] <- sp$rab
+	#if(raw) result <- sp$rab   #if mclapply
     sumr <- sumr+ sp$rab
     if(sp$rab > maxrb) {maxrb <- sp$rab
                               maxAB <- sp$AB}
     if(sp$rab < minrb) { minrb <- sp$rab
                               minAB <- sp$AB}
+                        
     }
+    #)    #if using mclapply
  }
  #now 
 if(brute) {meanr <- sumr/count } else {meanr <- sumr/n.sample }

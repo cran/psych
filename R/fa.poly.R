@@ -1,6 +1,6 @@
  #polychoric factor analysis with confidence intervals
  "fa.poly" <- 
-function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,scores="regression",oblique.scores=TRUE,weight=NULL,...) {
+function(x,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",SMC=TRUE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,scores="regression",oblique.scores=TRUE,weight=NULL,global =TRUE, ...) {
  cl <- match.call()
  ncat <- 8
 n.obs <- dim(x)[1]
@@ -15,28 +15,31 @@ nvar <- ncol(x)
 dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
 pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
 cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
-if(length(pvars)==ncol(x)) {tet <- polychoric(x,weight=weight)
-	    typ = "poly"} else {tet <- mixed.cor(x,weight=weight)
+if(length(pvars)==ncol(x)) {tet <- polychoric(x,weight=weight,global=global)
+	    typ = "poly"} else {tet <- mixed.cor(x,weight=weight,global=global)
 	    typ="mixed" }}
  r <- tet$rho
- f <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,scores=scores,...) #call fa with the appropriate parameters
+ #call fa with the polychoric/tetrachoric matrix
+ #fa will not return scores, we still need to find them
+ 
+ f <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,scores=scores,oblique.scores=oblique.scores,...) #call fa with the appropriate parameters
  f$Call <- cl
  fl <- f$loadings  #this is the original
  nvar <- dim(fl)[1]
- 
+
  if(n.iter > 1) {
- e.values <- list(pc =list(),fa <- list())
- replicates <- list()
- rep.rots <- list()
+ e.values <- list(pc =vector("list",n.iter),fa =vector("list",n.iter))
+ replicates <- vector("list",n.iter)
+ rep.rots <- vector("list",n.iter)
  for (trials in 1:n.iter) {
  xs <- x[sample(n.obs,n.obs,replace=TRUE),]
-  if(typ!= "tet") {tets <- mixed.cor(xs,weight=weight)} else {tets <- tetrachoric(xs,weight=weight)}
+  if(typ!= "tet") {tets <- mixed.cor(xs,weight=weight,global=global)} else {tets <- tetrachoric(xs,weight=weight)}
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
    					e.values[["pc"]][[trials]] <- values.samp
    					
    				
-  fs <-fa(r,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
+  fs <- fa(r,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,...) #call fa with the appropriate parameters
      e.values[["fa"]][[trials]] <- fs$values
  if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
                   replicates[[trials]] <- t.rot$loadings
@@ -97,9 +100,10 @@ results <- list(fa = f,rho=tet$rho,tau=tet$tau,n.obs=n.obs,means = means,sds = s
 
 class(results) <- c("psych","fa.ci")
 } else {results <- list(fa = f,rho=r,tau=tet$tau,n.obs=n.obs,Call=cl)
-       if(oblique.scores) {results$scores <- factor.scores(x,f=f$loadings,Phi=r,method=scores) } else {results$scores <- factor.scores(x,f=f$Structure,method=scores)}
+       if(oblique.scores) {results$scores <- factor.scores(x,f=f$loadings,Phi=f$Phi,method=scores,rho=r) } else {results$scores <- factor.scores(x,f=f$Structure,method=scores,rho=r)}
        class(results) <- c("psych","fa")
        }
+       
 return(results)
  }
  #written May 3 2011

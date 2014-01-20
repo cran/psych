@@ -1,6 +1,6 @@
  #parallel analysis of polychoric factor analysis
  "fa.parallel.poly" <- 
-function(x,n.iter=10,SMC=TRUE,fm="minres",correct=TRUE,sim=FALSE,fa="both") { 
+function(x,n.iter=10,SMC=TRUE,fm="minres",correct=TRUE,sim=FALSE,fa="both",global=global) { 
 p <- .05
  cl <- match.call()
 
@@ -11,7 +11,7 @@ n.obs <- dim(x)[1]
 	    typ = "tet"
 	    if(sim) { tx.item <- matrix(apply(x,2,table),ncol=ncol(x))
 	    px <- matrix(tx.item/colSums(tx.item),ncol=2,byrow=TRUE)
-	    } } else {tet <- mixed.cor(x)
+	    } } else {tet <- mixed.cor(x,global=global)
 	    typ = "poly"}
 	    cat("\n")  #to try to clear the progress bar
         flush(stdout())
@@ -29,7 +29,7 @@ progressBar(trials,n.iter,"fa.parallel.poly")
  #xs <- matrix(sample(nx,n.obs*nvar,replace=TRUE),ncol=nvar) #this does not replicate the p values
  xs <- matrix(apply(x,2,function(y) sample(y,n.obs,replace=TRUE)),ncol=nvar) #do it column wise
 # if(typ=="poly") {tets <- polychoric(xs,progress=FALSE)} else {tets <- tetrachoric(xs,correct=correct)}
-tets <- polychoric(xs,progress=FALSE)
+tets <- polychoric(xs,progress=FALSE,global=global)
 # tets <- mixed.cor(xs)
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
@@ -75,7 +75,7 @@ return(results)
  #modified Sept 16, 2013 to use mixed.cor instead of polychoric  (more robust) 
  #modified Oct 2, 2013 to add the ability to do random data as well 
  #modified Oct 22, 2013 to allow choice of what to plot
- 
+ #modified 1/15/14 to pass the global parameter
  "plot.poly.parallel" <-
  function(x,show.legend=TRUE,fa="both",...) {
  e.values <- x$pc.values

@@ -1,12 +1,15 @@
-\name{score.items}
+\name{scoreItems}
+\alias{scoreItems}
 \alias{score.items}
 \alias{response.frequencies}
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
 \description{Given a matrix or data.frame of k keys for n items (-1, 0, 1), and a matrix or data.frame of items scores for m items and N people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
 }
 \usage{
-score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
+scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
  delete=TRUE, min = NULL, max = NULL, digits = 2)
+ score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
+ delete=TRUE, min = NULL, max = NULL, digits = 2) 
   response.frequencies(items,max=10,uniqueitems=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -47,7 +50,9 @@ The squared multiple correlation is a lower bound for the item communality and a
 
 G6 is also sensitive to lumpyness in the test and should not be taken as a measure of unifactorial structure.  For lumpy tests, it will be greater than alpha.  For tests with equal item loadings, alpha > G6, but if the loadings are unequal or if there is a general factor, G6 > alpha. Although it is normal when scoring just a single scale to calculate G6 from just those items within the scale, logically it is appropriate to estimate an item reliability from all items available.  This is done here and is labeled as G6* to identify the subtle difference.
 
-Alpha and G6* are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep).
+Alpha and G6* are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep; Revelle and Condon, in press.).
+
+A useful index is the ratio of reliable variance to unreliable variance and is known as the Signal/Noise ratio.  This is just \deqn{s/n = \frac{n \bar{r}}{1-n \bar{r}}}{s/n = n r/(1-nr)}  (Cronbach and Gleser, 1964; Revelle and Condon (in press)).
 
 Standard errors for unstandardized alpha are reported using the formula from Duhachek and Iacobucci (2005).
 
@@ -85,17 +90,21 @@ An alternative to classical test theory scoring is to use \code{\link{score.irt}
 } 
 \references{
 
+Cronbach, L.J. and Gleser G.C.  (1964)The signal/noise ratio in the comparison of reliability coefficients. Educational and Psychological Measurement, 24 (3) 467-480. 
+
+
 Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
 
 Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{http://personality-project.org/r/book}
 
+Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (in press).
 
-Revelle W. and R.E. Zinbarg. (2009) 
-Coefficients alpha, beta, omega and the glb: comments on Sijtsma.
-Psychometrika, 74(1):145-154.
-
+Revelle W. and R.E. Zinbarg. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 74(1):145-154.
 
 Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revelle's beta, and McDonald's omega h, Their relations with each other and two alternative conceptualizations of reliability, Psychometrika, 70, 123-133.
+
+
+
 	
 }
 \author{ William Revelle }
@@ -111,10 +120,10 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   conscientious=c("C1","C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
   keys <- make.keys(bfi,keys.list)
- scores <- score.items(keys,bfi,min=1,max=6)
+ scores <- scoreItems(keys,bfi,min=1,max=6)
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
- scores <- score.items(keys[1:27,],bfi[1:27],min=1,max=6)
+ scores <- scoreItems(keys[1:27,],bfi[1:27],min=1,max=6)
  scores
  
  #compare this output to that for the impute="none" option for SAPA type data
@@ -122,7 +131,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  missing.bfi <- bfi
  missing.bfi[1:1000,3:8] <- NA
  missing.bfi[1001:2000,c(1:2,9:10)] <- NA
- scores <- score.items(keys,missing.bfi,impute="none",min=1,max=6)
+ scores <- scoreItems(keys,missing.bfi,impute="none",min=1,max=6)
  scores
 
 }

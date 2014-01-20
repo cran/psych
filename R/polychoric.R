@@ -1,8 +1,28 @@
+#Faster Polychoric uses tableF (a function to speed up 2 way tables of integers
+#first, we introduce a new function to find integer tables without error checking
+
+#if all data are integer then
+#tableF is the fast version of table  
+#it does no error checking and works only for two dimensional integer data
+tableF <-
+function(x,y) {
+minx <- min(x,na.rm=TRUE)
+maxx <- max(x,na.rm=TRUE)
+miny <- min(y,na.rm=TRUE)
+maxy <- max(y,na.rm=TRUE)
+maxxy <- (maxx+(minx==0))*(maxy+(miny==0))
+dims=c(maxx + 1 - min(1,minx),maxy+1 - min(1,minx))
+bin <- x - minx+ (y-miny)*(dims[1])+ max(1,minx)
+ans <- matrix(tabulate(bin,maxxy),dims)
+ans
+}
+
 #adapted from John Fox's Polychor
 #polyc does all the work but does not work in cases of incomplete tables
 #thus, the polychor function is used
 #moved these first two function out of the polyc function in the hope that they will be compiled just once and perhaps get a speed increase
 #doesn't seem to make a difference although it does make the code a bit easier to read
+#polychoric.mc  is added while we test it versus polychoric
 
  polyBinBvn.old <- function (rho,rc,cc)    #adapted from John Fox's polychor
 { if (min(rc) < -9999) rc <- rc[-1]          
@@ -27,8 +47,9 @@
     P   #the estimated n x n predicted by rho, rc, cc
 }
 
- polyBinBvn<- function (rho,rc,cc)    #adapted from John Fox's polychor
-{ if (min(rc) < -9999) rc <- rc[-1]          
+ polyBinBvn<- function (rho,rc,cc)  {   #adapted from John Fox's polychor
+      #recognizes that we don't need to calculate all cells because of degrees of freedom                               
+ if (min(rc) < -9999) rc <- rc[-1]          
   if (min(cc) < - 9999) cc <- cc[-1]
   if (max(rc) > 9999) rc <- rc[-length(rc)]
   if (max(cc)  > 99999) cc <- cc[-length(cc)]
@@ -36,7 +57,6 @@
   col.cuts <- c(-Inf,cc,Inf)
   nr <- length(rc) + 1
   nc <- length(cc) + 1
-
 
     P <- matrix(0, nr,nc)
     R <- matrix(c(1,rho,rho,1),2,2)
@@ -66,10 +86,10 @@ tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questio
 tab[is.na(tab)] <- 0
 return(tab)
 }      
-
-"polyc" <- 
+  
+  "polyc" <-     #uses the tableF function instead of table
 function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL) {
-  if(is.null(weight)) {tab <- table(x,y) }  else {tab <- wtd.table(x,y,weight)} 
+  if(is.null(weight )) {tab <- tableF(x,y) }   else {tab <- wtd.table(x,y,weight)} 
   tot <- sum(tab)
   tab <- tab/tot
   
@@ -95,11 +115,33 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL) {
   return(result)
   }
   
-  
 
-#Basically just is used to find the thresholds and then does the polychoric r for a matrix
 "polychoric" <- 
-function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE) {
+function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE) {
+if(!require(parallel)) {message("polychoric requires the parallel package.")}
+#declare these next two functions to be local inside of polychoric
+
+myfun <- function(x,i,j) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight) }
+
+matpLower <- function(x,nvar) {
+k <- 1
+il <- vector()
+jl <- vector()
+for(i in 2:nvar) {for (j in 1:(i-1)) {
+   il[k] <- i
+   jl [k] <- j
+   k<- k+1}
+   }
+poly <- mcmapply(function(i,j) myfun(x,i,j) , il,jl) 
+#now make it a matrix
+mat <- diag(nvar)
+mat[upper.tri(mat)] <- as.numeric(poly[1,]) #first row of poly is correlation, 2nd the fit
+mat <- t(mat) + mat
+diag(mat) <- 1
+return(mat)
+}
+
+
 if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
 if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
  polycor <- FALSE}
@@ -112,8 +154,19 @@ xt <- table(x)
 #nvalues <- length(xt)  #find the number of response alternatives 
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
+ #first delete any bad cases
+  item.var <- apply(x,2,sd,na.rm=na.rm)
+       bad <- which((item.var <= 0)|is.na(item.var))
+       if((length(bad) > 0)  & delete) {
+            for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
+            x <- x[,-bad] 
+            nvar <- nvar - length(bad)
+             }
 xmin <- apply(x,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
 x <- t(t(x) - xmin +1)  #all numbers now go from 1 to nvalues
+xmax <- apply(x,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
+if (min(xmax) != max(xmax)) {global <- FALSE
+                      message("The items do not have an equal number of response alternatives, global set to FALSE")}
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
@@ -128,33 +181,25 @@ mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
 
-#cat("\n Finding Polychoric correlations\n" )
-for (i in 2:nvar) {
-if(progress) progressBar(i^2/2,nvar^2/2,"Polychoric")
-  for (j in 1:(i-1)) { 
- if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
-if(!polycor) {
-poly <-  polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight)  
-mat[i,j] <- mat[j,i] <- poly$rho } else {
-#To use John Fox's version which requires the polycor package
-  poly <- polychor(x[,i],x[,j],ML = ML,std.err = std.err)  #uses John Fox's function
-  mat[i,j] <- mat[j,i] <- poly }
-  } else {mat[i,j] <- mat[j,i] <- NA}
-   }
-   } 
-   diag(mat) <- 1
+mat <- matpLower(x,nvar)  #the local copy has the extra paremeters   #do the multicore version
+
+   
+
   if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
                         smooth <- FALSE}
                      
  if(smooth) {mat <- cor.smooth(mat) }
+ colnames(mat) <- rownames(mat) <- colnames(x)
  tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
-  #flush(stdout())
- if(progress) {cat("\n") #put in to clear the progress bar
-  flush(stdout())}
+  
  class(result) <- c("psych","poly")
   return(result) 
   }
+
+
+
+
 
 
 #draft version to do one item at a time 
@@ -186,3 +231,4 @@ function(tab) {
   result <- list(rho=rho$minimum,objective=rho$objective)
   return(result)
   }
+

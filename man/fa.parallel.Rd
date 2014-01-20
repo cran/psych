@@ -9,7 +9,8 @@
 fa.parallel(x, n.obs = NULL,fm="minres", fa="both", 
        main = "Parallel Analysis Scree Plots",
         n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE)
-fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,fa="both") 
+fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
+       fa="both",global=global) 
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -26,6 +27,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,fa
  \item{SMC}{SMC=TRUE finds eigen values after estimating communalities by using SMCs.  smc = FALSE finds eigen values after estimating communalities with the first factor.}
  \item{ylabel}{Label for the y axis -- defaults to ``eigen values of factors and components", can be made empty to show many graphs}
  \item{show.legend}{the default is to have a legend.  For multiple panel graphs, it is better to not show the legend}
+ \item{global}{If doing polychoric analyses (fa.parallel.poly) and the number of alternatives differ across items, it is necessary to turn off the global option}
  \item{...}{additional plotting parameters, for plot.poly.parallel}
 }
 \details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}).  fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
@@ -47,6 +49,8 @@ For comparability with other algorithms (e.g, the paran function in the paran pa
  A sad observation about parallel analysis is that it is sensitive to sample size.  That is, for large data sets, the eigen values of random data are very close to 1.  This will lead to different estimates of the number of factors as a function of sample size.  Consider factor structure of the bfi data set (the first 25 items are meant to represent a five factor model).  For samples of 200 or less, parallel analysis suggests 5 factors, but for 1000 or more, six factors and components are indicated.  This is not due to an instability of the eigen values of the real data, but rather the closer approximation to 1 of the random data as n increases.
  
  When simulating dichotomous data in fa.parallel.poly, the simulated data have the same difficulties as the original data.  This functionally means that the simulated and the resampled results will be very similar.
+ 
+ As with many psych functions, fa.parallel has been changed to allow for multicore processing.  For running a large number of iterations, it is obviously faster to increase the number of cores to the maximum possible (using the options("mc.cores=n) command where n is determined from detectCores(). 
 
 }
 \value{
@@ -86,11 +90,13 @@ Velicer, Wayne. (1976) Determining the number of components from the matrix of p
 \seealso{  \code{\link{fa}}, \code{\link{VSS}}, \code{\link{VSS.plot}},   \code{\link{VSS.parallel}}, \code{\link{sim.minor}}}
 \examples{
 
-#test.data <- Harman74.cor$cov 
+#test.data <- Harman74.cor$cov   #The 24 variable Holzinger - Harman problem
 #fa.parallel(test.data,n.obs=145)
-set.seed(123)
-minor <- sim.minor(24,4,400) #4 large and 12 minor factors
-fa.parallel(minor$observed) #shows 5 factors and 4 components -- compare with 
+fa.parallel(Thurstone,n.obs=213)   #the 9 variable Thurstone problem
+
+#set.seed(123)
+#minor <- sim.minor(24,4,400) #4 large and 12 minor factors
+#fa.parallel(minor$observed) #shows 5 factors and 4 components -- compare with 
 #fa.parallel(minor$observed,SMC=FALSE) #which shows 6  and 4 components factors
 
 

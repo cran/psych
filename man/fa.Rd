@@ -24,7 +24,8 @@ oblique.scores=FALSE,np.obs,use="pairwise",...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
- fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,weight=NULL,...)
+ fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,
+        weight=NULL,global=TRUE,...)
 
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
@@ -60,6 +61,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
   \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
+  \item{global}{should overall taus be used in polychoric or should they be found for each pair.  Necessary to be set to false in the case of different number of alternatives for each item.}
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 

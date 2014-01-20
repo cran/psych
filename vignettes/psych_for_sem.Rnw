@@ -66,6 +66,7 @@
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 %\section{}
 %\subsection{}
@@ -698,11 +699,11 @@ Reise, S., Morizot, J., and Hays, R. (2007).
   health outcomes measures.
 \newblock {\em Quality of Life Research}, 16(0):19--31.
 
-\bibitem[\protect\astroncite{Revelle}{2013}]{psych}
-Revelle, W. (2013).
+\bibitem[\protect\astroncite{Revelle}{2014}]{psych}
+Revelle, W. (2014).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.3.9
+\newblock R package version 1.4.1
 
 \bibitem[\protect\astroncite{Rosseel}{2012}]{lavaan}
 Rosseel, Y. (2012).

@@ -60,7 +60,7 @@ It is also possible to create irt like plots based upon just a scoring key and i
 
  
 }
-\seealso{ \code{\link{VSS.plot}} and \code{\link{fa.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{factor.pa}}, or \code{\link{principal}}   
+\seealso{ \code{\link{VSS.plot}} and \code{\link{fa.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, or \code{\link{principal}}   
 }
 \examples{
 test.data <- Harman74.cor$cov

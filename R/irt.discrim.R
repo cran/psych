@@ -7,7 +7,7 @@ function(item.diff,theta,items) {
   mean(fit,na.rm=TRUE)
   }
  nitems <- length(item.diff)
- discrim <- matrix(NA,nitems,2)
+ discrim <- matrix(NaN,nitems,2)
  for (i in 1:nitems) {
     item.fit <- optimize(irt.item.discrim,c(-5,5),diff=item.diff[i],theta=theta,scores = items[,i])
    discrim[i,1] <- item.fit$minimum

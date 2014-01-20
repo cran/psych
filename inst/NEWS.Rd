@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.3.12 (2013-12-01)}{
+\section{Changes in psych version 1.4.2 (2014-2-15)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.3.12 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.3.11.  The second digit reflects the year (i.e., 2013), the third set the month (i.e., 1.3.2 was released in February of 2013, the last two digits reflect the day of any modifications).
+      \item Version 1.4.2 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.1.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.1 was released in January of 2014, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -16,35 +16,79 @@
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
-      \item Make pairs.panels not change options for graphics window   (still not fixed, after many attempts.)
+     
       \item Add labels to factor.plot for more than 2 factors?  -- this will be hard   
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
-      \item Add option to sim.congeneric (and others) to do multiple simulations with same theta values. 
+      
      \item add option to do subject density and item density plot to IRT plot.
     \item note that the df in set.cor should reflect the number of cases actually used   
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
-      \item clean up lavaan diagram so that the output is more readable  
-     \item add a warning for people finding scores from fa or principal if they have not given the data 
+      \item clean up lavaan diagram so that the output is more readable    
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
      \item To help those who want to simulate a bifactor model, make it explicit      
     }
   }
   } 
   
-   \section{Changes in psych version 1.3.11 (2013-11-22)}{
+    \section{Changes in psych version 1.4.1 (2014-1-1)}{
+   \subsection{Additions}{
+\itemize{
+   \item Substantial improvements in speed through the use of the parallel package and some coding improvements.  
+   \item Added parallel processing (multicores) to polychoric, tetrachoric, and mixed.cor.  With 2 cores this saves 50\%, but this is not a linear function of the number of cores:  with 4 cores the savings seems to be 67\% and with 8 cores 75\%.  Requires the parallel package which seems to be supplied with core R. Apparently this benefit will not help  those running PCs which don't implement forking.
+   \item Added parallel processing using multicores to fa when calculating confidence intervals.  Basically changed the interation loop to an lapply and then made that a mclapply. 
+   \item Added parallel processing using multicores to fa.parallel, cor.ci and alpha (for the empirical bootstrap). 
+   \item Yet another speed improvement by introducing tableF: a cut down/speeded up version of table.  This works only for tabulating two integer vectors, but by reducing error checking, is at least twice as fast.  This is used in particular in polychoric and tetrachoric, and therefore in mixed.cor as well.
+   \item Changed fa so that confidence intervals are raw rather than fisherz transformed before averaging.  
+    \item Modified ICLUST to increase speed by about 50\% by doing the smcs once instead of every iteration. This does not use multicores so the savings will be for PCs as well as OS X and Unix.  50\% of time is now spent doing matrix multiplication -- can we speed this up by not rescoring all clusters each time, but rather doing incremental changes?
+    \item Minor tweaks to increase speed when creating lists and matrices.
+    \item Added omega2latex and modified fa2latex to allow not printing small values.
+    \item Added ICC2latex.
+    \item Changed score.items to scoreItems in a continuing switch to camelCase. score.items will eventually be deprecated unless the entire score. functions are integrated somehow.
+    \item Added option to sim.congeneric (and others) to do multiple simulations with same theta values. (Actually, it was there all along. Just set.seed(some value) before each run).
+    \item A minor tweak to r.test to better report the call in the case of a correlated correlation. 
+    \item A minor tweak to corr.test so that if all the sample sizes are the same, just report one number.
+    \item Reduced the number of executable examples to speed up compilation.  The examples are just commented out.  Worth running for understanding.
+    \item Added the Gleser data set for an example of generalizability theory.
+    \item Added the ability to find scores automatically in omega. 
+    \item Added the ability data set (just the iqitems data set scored for correct/incorrect).  This is more convenient for demonstrations.
+    \item Added the check option in describe (turning it off increases speed drastically, but at the risk of not detecting logical or factor data).
+    \item Added the describeData helper to do a quick pass to list the data types in a data.frame. 
+    \item Rewrote the summary function to use switch rather than a series of ifs.
+    \item Added a parameter to factor.scores to allow the data and a correlation matrix to both be passed for scoring.
+    \item Added Structure as an output for principal (requested by Emeka Egbuna) 
+    \item Added best.items and lookup as two helper functions.
+    }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+      \item sim.cor.poly  -- fixed so that it actually works.
+      \item Fixed alpha so that it will properly reverse key if given correlations. (Not sure when this stopped working.)
+      \item Corrected the sign of at.rest in the TA scoring key for the msq.Rd file
+      \item Corrected reverse.code to not add a constant to positive items (reported by Jian Jin)
+       \item Perhaps finally fixed pairs.panels so it will not change options for graphics window. 
+       \item Fixed polychoric so that it will not blow up if the number of response alternatives are not equal.  (Reported by Jeanette Lim )
+       \item Fixed fa.poly so that the scores are calculated based upon the polychoric correlations rather than the Pearson correlations (based partly on trying to solve another problem reported by Jeanette Lim)
+      }
+   } 
+  }
+  
+  
+  
+   \section{Changes in psych version 1.3.12 (2013-12-10)}{
    \subsection{Additions}{
 \itemize{
 
-  \item Added a brief wrapper function (corFiml) to call FIML procedures taken from lavaan. Inspired by some code from Joshua Wiley and with the help of Ashley Brown. The lavaan functions are not exported from lavaan and hence have been moved to psych.
+  \item Added a brief wrapper function (corFiml) to call FIML procedures taken from lavaan. Inspired by some code from Joshua Wiley and with the help of Ashley Brown. The lavaan functions necessary for this are not exported from lavaan and hence have been partially moved (with adaptations) to psych.
    \item Completely modified guttman to use the splitHalf function.  This provides much more accurate estimates of the greatest lower bound.
    \item Added the splitHalf function to find all possible split halves of scales of up to 16 items, and to sample repeatedly random splits for more than 16 items.
    \item Modified plot.parallel.poly and fa.parallel.poly to allow choice in plotting between both, fa, and pc. (Matches the fa.parallel function).
    \item Added the weight option to fa.poly, polychoric, tetrachoric, and mixed cor. This allows for cases to be given unequal weights.  Requested by Fabricio Flalho. 
    \item Enhanced the documentation for irt.fa and plot.irt to explain when to use plot.irt vs. plot.poly (Requested by David Condon).
    \item Enhanced cor2latex with the help of Davide Morselli.  Now can find correlations directly and can also (if desired) show probability stars.
-   \item Added standard errors and 95% confidence boundaries to alpha and score.items (suggested by Doug Lawson)
+   \item Added standard errors and 95\% confidence boundaries to alpha and score.items (suggested by Doug Lawson)
   \item Minor tweaks to irt2latex and fa2latex.
     }
   }
@@ -62,7 +106,7 @@
  \section{Changes in psych version 1.3.10.12 (2013-10-12)}{
    \subsection{Additions}{
 \itemize{
-    \item A serious speedup to tetrachoric and polychoric was initiated with the help of Jason French.  The increase in speed is roughly 1- (nc-1)^2/nc^2 where nc is the number of categories.  Thus, for tetrachorics where nc=2, this is a 75% reduction, whereas for polychorics of 6 item responses this is just a 30% reduction.
+    \item A serious speedup to tetrachoric and polychoric was initiated with the help of Jason French.  The increase in speed is roughly 1- (nc-1)^2/nc^2 where nc is the number of categories.  Thus, for tetrachorics where nc=2, this is a 75\% reduction, whereas for polychorics of 6 item responses this is just a 30\% reduction.
     \item Added the ability to rotate the numbers in cor.plot by specifying srt. (Thanks to a suggestion on Stack OverFlow by shujaa).
     \item Added the use parameter to the fa function to allow for other than pairwise correlations.
     \item Added an invisible return from the print.psych.fa function to include the variances accounted for and the cumulative variance accounted for. (Requested by Eric Green).

@@ -7,7 +7,7 @@
 }
 \usage{
 sim.congeneric(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short = TRUE, 
-              categorical=FALSE, low=-3,high=3)
+              categorical=FALSE, low=-3,high=3,cuts=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,7 @@ sim.congeneric(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short = TRUE,
   \item{categorical}{ continuous or categorical (discrete) variables.  }
   \item{low}{ values less than low are forced to low }
   \item{high}{ values greater than high are forced to high  }
+  \item{cuts}{If specified, and categorical = TRUE, will cut the resulting continuous output at the value of cuts}
 }
 \details{When constructing examples for reliability analysis, it is convenient to simulate congeneric data structures.  These are the most simple of item structures, having just one factor. Mainly used for a discussion of reliability theory as well as factor score estimates. 
 

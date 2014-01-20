@@ -10,7 +10,7 @@
 
 Perhaps even more usefully, the function returns a model appropriate for running directly in the \emph{sem package} written by John Fox.  For this option to work directly, it is necessary to specfy that errrors=TRUE. 
 
-Input can be specified as matrices or the output from  \code{\link{fa}},  \code{\link{factor.pa}}, factanal,  or a rotation package such as \emph{GPArotation}.
+Input can be specified as matrices or the output from  \code{\link{fa}}, factanal,  or a rotation package such as \emph{GPArotation}.
 
 For symbolic graphs, the input matrices can be character strings or mixtures of character strings and numeric vectors.
 

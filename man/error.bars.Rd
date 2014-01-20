@@ -78,7 +78,7 @@ boxplot(attitude,add=TRUE)
 error.bars(attitude,add=TRUE,arrow.len=.2)
 
 #use statistics from somewhere else
-my.stats <- data.frame(values=c(1,4,8),means=c(10,12,18),se=c(2,3,5))
+my.stats <- data.frame(values=c(1,4,8),mean=c(10,12,18),se=c(2,3,5))
 error.bars(stats=my.stats,type="b",main="data with confidence intervals")
 #note that in this case, the error bars are 1 s.e.  To modify that, change the s.e.
 

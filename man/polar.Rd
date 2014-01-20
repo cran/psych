@@ -28,7 +28,7 @@ For a two dimensional structure, this will lead to a column of angles and a colu
 Hofstee, W. K. B., de Raad, B., & Goldberg, L. R. (1992). Integration of the big five and circumplex approaches to trait structure. Journal of Personality and Social Psychology, 63, 146-163.}
 \author{William Revelle}
 
-\seealso{ \code{\link{ICLUST}}, \code{\link{cluster.plot}}, \code{\link{circ.tests}},  \code{\link{factor.pa}} }
+\seealso{ \code{\link{ICLUST}}, \code{\link{cluster.plot}}, \code{\link{circ.tests}},  \code{\link{fa}} }
 \examples{
 
 circ.data <- circ.sim(24,500)

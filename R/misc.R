@@ -140,5 +140,28 @@ test.all <- function(p) {
  detach(ob,character.only=TRUE)
 }
 
+  
+  "best.items" <- 
+function(x,c1=1,cut=.3, abs=TRUE, contents=NULL,digits=2) {
+if(abs) {ord <- order(abs(x[,c1]),decreasing=TRUE)
+  value <- x[ord,c1]
+  value <- value[abs(value) >cut]
+  } else {ord <- order(x[,c1],decreasing=TRUE)
+  value <- x[ord,c1]
+  value <- value[abs(value) >cut] }
+value <- round(data.frame(value),digits)
+if(!is.null(contents)) {if(!is.factor(contents)) {temp <- lookup(rownames(value),contents,c1=1)
+  if(nrow(value) > nrow(temp))  value <- value[rownames(value) %in% contents[,1], ]
+  value <- data.frame(value,temp)}}
+return(value)
+}
+  
+  
+  #lookup which x's are found in y[c1],return matches for y[]
+ "lookup" <- 
+function(x,y,c1=1) {
+temp <- match(x,y[,c1])
+ y <- (y[temp[!is.na(temp)],])
+  return(y)}
 
 

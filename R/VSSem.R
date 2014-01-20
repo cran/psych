@@ -58,13 +58,13 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { 
    if(!(pc=="pc")) { if ( pc=="pa") {
-   		f <- factor.pa(x,i,rotate=rotate,n.obs=n.obs,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
+   		f <- fa(x,i,fm="pa",rotate=rotate,n.obs=n.obs,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once
 		 sqoriginal <- original*original    #squared correlations
 		 totaloriginal <- sum(sqoriginal) - diagonal*sum(diag(sqoriginal) )   #sum of squared correlations - the diagonal
 		}}  else { 
-   	f <- factanal(factors=i,rotation=rotate,covmat=x,n.obs=n.obs,...)  #do a factor analysis with i factors and the rotations specified in the VSS call
+   	f <- fa(x,i,fm=pc,rotate=rotate,covmat=x,n.obs=n.obs,...)  #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once
 		 sqoriginal <- original*original    #squared correlations

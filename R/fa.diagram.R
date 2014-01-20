@@ -7,7 +7,9 @@
 
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL, ...) {
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5), ...) {
+    old.par<- par(mar=marg)  #give the window some narrower margins
+    on.exit(par(old.par))  #set them back
    col <- c("black","red")
    if(missing(main)) if(is.null(fe.results)) {main <- "Factor Analysis" } else {main <- "Factor analysis and extension"}
    if(!is.matrix(fa.results) && !is.null(fa.results$fa) && is.list(fa.results$fa)) fa.results <- fa.results$fa
@@ -49,7 +51,9 @@
     limy <- c(0,max(nvar+1,n.evar+1))} else {
      limy=c(0,nvar+1) }
      top <- max(nvar,n.evar) + 1
- plot(0,type="n",xlim=limx,ylim=limy,asp=1,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
+# plot(0,type="n",xlim=limx,ylim=limy,asp=1,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main,...)
+  plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main,...)
+ 
    max.len <- max(strwidth(rownames(factors)),strwidth("abc"))/1.8  #slightly more accurate, but needs to be called after plot is opened
     limx=c(-max.len/2,x.max)  
      cex <-  min(cex,20/x.max)
@@ -77,7 +81,7 @@
    }
    }
    
-   if(!is.null(Phi)) { for (i in 2:num.factors) {
+   if(!is.null(Phi) && (ncol(Phi) >1)) { for (i in 2:num.factors) {
      for (j in 1:(i-1)) {
      if(abs(Phi[i,j]) > cut) {
        # dia.curve(from=c(x.max-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(x.max -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}

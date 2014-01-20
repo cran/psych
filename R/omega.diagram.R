@@ -7,10 +7,13 @@
 
 "omega.diagram" <-
   function(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut=.2,simple=TRUE,errors=FALSE,
-    digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE, ...) {
+    digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE
+    ,marg=c(.5,.5,1.5,.5), ...) {
      if(color.lines) { colors <- c("black","red")} else {colors <- c("black","black") }
   Phi <- NULL  #the default case
   if(is.null(cex)) cex <- 1
+   old.par<- par(mar=marg)  #give the window some narrower margins
+    on.exit(par(old.par))  #set them back
   
  
  if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "omegaSem")) ) {

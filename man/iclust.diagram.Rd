@@ -8,7 +8,8 @@
 }
 \usage{
 iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.size = NULL,
-  e.size =1,colors=c("black","blue"), main = "ICLUST diagram",cluster.names=NULL)
+     e.size =1,colors=c("black","blue"), 
+     main = "ICLUST diagram",cluster.names=NULL,marg=c(.5,.5,1.5,.5))
 }
 
 \arguments{
@@ -22,6 +23,7 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL, min.siz
   \item{colors}{postive and negative }
   \item{main}{The main graphic title}
   \item{cluster.names}{Normally, clusters are named sequentially C1 ... Cn.  If cluster.names are specified, then these values will be used instead.}
+  \item{marg}{Sets the margins to be narrower than the default values. Resets them upon return}
  
 }
 \details{iclust.diagram provides most of the power of \code{\link{ICLUST.rgraph}} without the difficulties involved in installing Rgraphviz.  It is called automatically from ICLUST. 

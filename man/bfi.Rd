@@ -53,7 +53,7 @@ The item data were collected using a 6 point response scale:
 as part of the Synthetic Apeture Personality Assessment (SAPA \url{http://sapa-project.org}) project.  To see an example of the data collection technique, visit \url{http://SAPA-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
 
 }
-\source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010 ( \url{http://test.personality-project.org}).
+\source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010 ( \url{http://sapa-project.org}).
 }
 \references{Goldberg, L.R. (1999) A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In Mervielde, I. and Deary, I. and De Fruyt, F. and Ostendorf, F. (eds) Personality psychology in Europe. 7. Tilburg University Press. Tilburg, The Netherlands.
 
@@ -65,12 +65,12 @@ data(bfi)
 describe(bfi)
  
  keys.list <-
-  list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
+  list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
   keys <- make.keys(bfi,keys.list)
  
- scores <- score.items(keys[1:27,],bfi[1:27]) #don't score age 
+ scores <- scoreItems(keys[1:27,],bfi[1:27]) #don't score age 
  scores
  
 }

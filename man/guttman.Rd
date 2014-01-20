@@ -146,6 +146,11 @@ glb.fa(attitude)
 if(require(Rcsdp)) {glb.algebraic(cor(attitude)) }
 guttman(attitude)
 
+#to show the histogram of all possible splits for the ability test
+#sp <- splitHalf(ability,raw=TRUE)  #this saves the results
+#hist(sp$raw,breaks=101,ylab="SplitHalf reliability",main="SplitHalf 
+#    reliabilities of a test with 16 ability items")
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

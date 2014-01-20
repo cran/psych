@@ -20,12 +20,12 @@ factor.residuals(r, f)
 Maintainer: William Revelle <revelle@northwestern.edu>
 }
 
-\seealso{\code{\link{factor.pa}},  \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}}
+\seealso{\code{\link{fa}},  \code{\link{principal}}, \code{\link{VSS}}, \code{\link{ICLUST}}}
 \examples{
-fa2 <- factor.pa(Harman74.cor$cov,2,rotate=TRUE)
+fa2 <- fa(Harman74.cor$cov,2,rotate=TRUE)
  fa2resid <- factor.residuals(Harman74.cor$cov,fa2)
  fa2resid[1:4,1:4] #residuals with two factors extracted
- fa4 <- factor.pa(Harman74.cor$cov,4,rotate=TRUE)
+ fa4 <- fa(Harman74.cor$cov,4,rotate=TRUE)
  fa4resid <- factor.residuals(Harman74.cor$cov,fa4)
  fa4resid[1:4,1:4] #residuals with 4 factors extracted
 

@@ -16,7 +16,7 @@ irt.2par.norm <-  function(x,delta,beta,scores) {
  nf <- length(stats$difficulty)
  n.obs <- dim(items)[1]
  nvar <- dim(items)[2]  
-scores <- matrix(NA,nrow=n.obs,ncol=nf*3)
+scores <- matrix(NaN,nrow=n.obs,ncol=nf*3)
  #now do the scoring one factor at a time
  
 for (f in 1:nf) {
@@ -101,7 +101,7 @@ function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
  n.obs <- dim(items)[1]
  nvar <- dim(items)[2]
  
-scores <- matrix(NA,nrow=n.obs,ncol=nf*3)
+scores <- matrix(NaN,nrow=n.obs,ncol=nf*3)
 
 for (f in 1:nf) {
 diff <- stats$difficulty[[f]]

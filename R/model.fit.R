@@ -1,5 +1,5 @@
 model.fit <- function(R,model,N, digits=5, conf.level=.90, ...) {
-#summary.sem adapted to factanal or factor.pa output
+#summary.sem adapted to factanal or fa output
    # norm.res <- normalized.residuals(object)
   #  se <- sqrt(diag(object$cov))
   se <- sqrt(diag(R))

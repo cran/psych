@@ -1,4 +1,5 @@
 #modified April 29th to get around the problem of missing rows or columns in the polychoric function.
+#modified 1/1/14 to add multicore capability
 "mixed.cor" <- 
 function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=TRUE,global=TRUE,ncat=8,polycor=FALSE,use="pairwise",method="pearson",weight=NULL)  {
 cl <- match.call() 

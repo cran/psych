@@ -44,7 +44,7 @@ function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE,weight=NULL) {
 
       
  if(is.null(y)) {tab <- x} else {
- if(is.null(weight)) {tab <- table(x,y) }  else {tab <- wtd.table(x,y,weight)} 
+ if(is.null(weight)) {tab <- tableF(x,y) }  else {tab <- wtd.table(x,y,weight)}  #switched to tableF for speed
  }
  if(length(tab) < 4) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")
            
@@ -77,11 +77,38 @@ tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questio
 tab[is.na(tab)] <- 0
 return(tab)
 }    
-  
- #repeatedly do the analysis to form a matrix of output 
+ 
+  #repeatedly do the analysis to form a matrix of output 
  #added the pmin instead of min on Sept 10, 2013
 "tetra.mat" <- 
-function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {nvar <- dim(x)[2]
+function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
+
+#the functions to do parallelism
+myfun <- function(x,i,j) {if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
+  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)} else  {
+  tetra <- NA}}
+
+
+matpLower <- function(x,nvar) {
+k <- 1
+il <- vector()
+jl <- vector()
+for(i in 2:nvar) {for (j in 1:(i-1)) {
+   il[k] <- i
+   jl [k] <- j
+   k<- k+1}
+   }
+tet <- mcmapply(function(i,j) myfun(x,i,j) , il,jl)
+#now make it a matrix
+mat <- diag(nvar)
+mat[upper.tri(mat)] <- as.numeric(tet[1,]) #first row of poly is correlation, 2nd the fit
+mat <- t(mat) + mat
+diag(mat) <- 1
+return(mat)
+}
+
+
+nvar <- dim(x)[2]
 mx <- apply(x,2,function(x) min(x,na.rm=TRUE))
 x <- t(t(x) - mx)
 #x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1  -- using pmin allows different minima for different variables
@@ -95,19 +122,22 @@ mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 names(tau) <- colnames(x)
 #cat("\nFinding the tetrachoric correlations\n")
-for (i in 2:nvar) {
-progressBar(i^2/2,nvar^2/2,"Tetrachoric")
-  for (j in 1:(i-1)) {
-  if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
-  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)
-   mat[i,j] <- mat[j,i] <- tetra$rho} else {mat[i,j] <- mat[j,i] <- NA}
-   }
-   }
-   diag(mat) <- 1
+#for (i in 2:nvar) {
+#progressBar(i^2/2,nvar^2/2,"Tetrachoric")
+ # for (j in 1:(i-1)) {
+ # if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
+ # tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)
+ #  mat[i,j] <- mat[j,i] <- tetra$rho} else {mat[i,j] <- mat[j,i] <- NA}
+ #  }
+  # }
+  # diag(mat) <- 1
+ mat <- matpLower(x,nvar)
+ 
    if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
                         smooth <- FALSE}
                      
   if(smooth) {mat <- cor.smooth(mat) }  #makes it positive semidefinite 
+  colnames(mat) <- rownames(mat) <- colnames(x)  
   result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
   
       # the case of having a y variable
@@ -135,7 +165,94 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
         for (j in 1:ny) {tetra <-  tetrac(x[,i],y[,j],taux[i],tauy[j],correct=correct)
         mat[i,j] <- tetra$rho }
          }
-       
+      colnames(mat) <- rownames(mat) <- colnames(x)    
+    result <-   list(rho = mat,tau = taux,tauy= tauy,n.obs=n.obs)
+     }
+ flush(stdout()) 
+  cat("\n" )  #put in to clear the progress bar
+  return(result) 
+  }
+  
+ #convert comorbidity type numbers to a table
+ pqr <- function(q1,q2=NULL,p=NULL) {
+    if(length(q1) > 1) {
+       q2 <- q1[2]
+       p <- q1[3]
+       q1 <- q1[1]}
+   tab <- matrix(0,2,2)
+   tab[1,1] <- p
+   tab[2,1] <- q1-p
+   tab[1,2] <- q2-p
+   tab[2,2] <- 1-q1 - tab[1,2]
+   return(tab)}
+
+  
+ #repeatedly do the analysis to form a matrix of output 
+ #added the pmin instead of min on Sept 10, 2013
+"tetra.mat.sc" <- 
+function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
+
+
+
+nvar <- dim(x)[2]
+mx <- apply(x,2,function(x) min(x,na.rm=TRUE))
+x <- t(t(x) - mx)
+#x <- x -min(x,na.rm=TRUE) #in case the numbers are not 0,1  -- using pmin allows different minima for different variables
+n.obs <- dim(x)[1]
+if(is.null(y)) {
+if(max(x,na.rm=TRUE) > 1) {stop("Tetrachoric correlations require dictomous data")}
+if(is.null(weight)) {tau <- -qnorm(colMeans(x,na.rm=TRUE))} else
+        {tau <- -qnorm(apply(x,2,function(y) weighted.mean(y,weight,na.rm=TRUE)))}   #weighted tau
+
+mat <- matrix(0,nvar,nvar)
+
+names(tau) <- colnames(x)
+#cat("\nFinding the tetrachoric correlations\n")
+for (i in 2:nvar) {
+progressBar(i^2/2,nvar^2/2,"Tetrachoric")
+  for (j in 1:(i-1)) {
+  if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
+  tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)
+   mat[i,j] <- mat[j,i] <- tetra$rho} else {mat[i,j] <- mat[j,i] <- NA}
+   }
+   }
+   diag(mat) <- 1
+   if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
+                        smooth <- FALSE}
+                     
+  if(smooth) {mat <- cor.smooth(mat) }  #makes it positive semidefinite 
+   colnames(mat) <- rownames(mat) <- colnames(x)  
+   
+  result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
+  
+      # the case of having a y variable
+      my <- apply(x,2,function(x) min(x,na.rm=TRUE))
+        y <- t(t(y) - my)
+      #y <- y -min(y,na.rm=TRUE) #in case the numbers are not 0,1 
+      if(is.matrix(y)) {ny <- dim(y)[2]
+           tauy <- -qnorm(colMeans(y,na.rm=TRUE))
+           n.obs.y <- dim(y)[1]
+             } else {
+             	ny <- 1
+           		n.obs.y <- length(y)}
+           	tauy <- -qnorm(mean(y,na.rm=TRUE))
+           y <- as.matrix(y) 
+           
+      if(dim(x)[1] != n.obs.y)  {stop("x and y must have the same number of observations")}
+      taux <- -qnorm(colMeans(x,na.rm=TRUE))
+      
+      nx <- dim(x)[2]
+     
+      mat <- matrix(0,nx,ny)
+      colnames(mat) <- colnames(y)
+      rownames(mat) <- colnames(x)
+      for (i in 1:nx) {
+        for (j in 1:ny) {tetra <-  tetrac(x[,i],y[,j],taux[i],tauy[j],correct=correct)
+        mat[i,j] <- tetra$rho }
+         }
+         
+     
+
     result <-   list(rho = mat,tau = taux,tauy= tauy,n.obs=n.obs)
      }
  flush(stdout()) 
@@ -158,7 +275,8 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
    
  #the public function
  "tetrachoric" <- 
- function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
+ function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,delete=TRUE) {
+
  
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
  cl <- match.call() 
@@ -171,12 +289,23 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   n.obs <- dim(x)[1]
   if(!is.null(weight)) {if (length(weight)!= n.obs) stop("The number of weights must match the number of observations") }
  if (n.obs == nvar) {result <- tetrac(x,correct=correct,i=1,j=1,global=FALSE)} else {
- result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)}
+ #first delete any bad cases
+  item.var <- apply(x,2,sd,na.rm=na.rm)
+       bad <- which((item.var <= 0)|is.na(item.var))
+       if((length(bad) > 0)  & delete) {
+            for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
+            x <- x[,-bad] 
+            nvar <- nvar - length(bad)
+             }
+  if(!require(parallel)) {warning("need parallel installed to take advantage of multiple cores.  Using single core version instead")
+      result <- tetra.mat.sc(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)} else {
+ result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)}}
  
  result$Call <- cl
  class(result) <- c("psych","tetra")
  return(result) 
  }
+ #modified 1/14/14 to include the tableF function to double the speed for large problems
  
  "tetrachor" <- 
  function(x,correct=TRUE) {
@@ -207,7 +336,7 @@ lev <- levels(yf)
 if(length(lev)!=2) {#stop("y is not a dichotomous variable")
                    warning("For x = ",i, " y = ", j, " y is not dichotomous")
                     r <- NA} else {
-ty <- table(y)
+ty <- table(y)  
  tot <- sum(ty)
  tab <- ty/tot
  if(length(tab) < 2) {r <- NA
@@ -231,7 +360,7 @@ nx <- dim(x)[2]
 ny <- dim(y)[2]
 if(is.null(nx)) nx <- 1
 if(is.null(ny)) ny <- 1
-mat <- matrix(NA,nrow=ny,ncol=nx)
+mat <- matrix(NaN,nrow=ny,ncol=nx)
 colnames(mat) <- colnames(x)
 rownames(mat) <- colnames(y)
 #cat("\n Finding the biserial correlations\n")

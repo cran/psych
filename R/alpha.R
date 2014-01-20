@@ -8,8 +8,9 @@
     smc.R <- smc(R)
     G6 <- (1- (n-sum(smc.R))/sum(R))
     av.r <- (sum(R)-n)/(n*(n-1))
+    sn <- n*av.r/(1-av.r)
     Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2)))
-    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,Q=Q)
+    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,sn=sn,Q=Q)
     return(result)
     }
     
@@ -21,18 +22,18 @@
     scores <- NULL
     response.freq <- NULL
    
-   
     if (nsub !=nvar)  {
        item.var <- apply(x,2,sd,na.rm=na.rm)
-       bad <- which((item.var==0)|is.na(item.var))
+       bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0) && delete) {
             for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
             x <- x[,-bad] 
             nvar <- nvar - length(bad)
              }
          response.freq <- response.frequencies(x,max=max)
-         C <- cov(x,use="pairwise") 
-         
+         C <- cov(x,use="pairwise")} else {C <- x}
+        
+       
          if(check.keys && is.null(keys)) {
             p1 <- principal(x)
             if(any(p1$loadings < 0)) warning("Some items were negatively correlated with total scale and were automatically reversed.")
@@ -48,12 +49,14 @@
          			                   } 
         			 key.d <- diag(keys)
                      C <- key.d %*% C %*% key.d
-                      signkey <- strtrim(keys,1)
+                     signkey <- strtrim(keys,1)
             		 signkey[signkey=="1"] <- ""
                      colnames(x) <- paste(colnames(x),signkey,sep="")
-            min.item <- min(x,na.rm=na.rm)
-         	max.item <- max(x,na.rm=na.rm)
+                     
+      if (nsub !=nvar)  {   #raw data      
          	if(any(keys < 0 )) { 
+         	     min.item <- min(x,na.rm=na.rm)
+                 max.item <- max(x,na.rm=na.rm)
          	   adjust <- max.item + min.item
          	   flip.these <- which(keys < 0 )
          	   x[,flip.these]  <- adjust - x[,flip.these] 
@@ -67,22 +70,21 @@
         t.valid <- colSums(!is.na(x))} else {   #we are working with a correlation matrix
                  total <- NULL
                  totals <- TRUE
-                 C <- as.matrix(x) 
-                  if(!is.null(keys)) {key.d <- diag(keys)
-                                      C <- key.d %*% C %*% key.d}}
+                 }
+          
          R <- cov2cor(C)
-         drop.item <- list()
+         drop.item <- vector("list",nvar)
          alpha.total <- alpha.1(C,R)
          if(nvar > 2) {
          for (i in 1:nvar) {
          drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
                             } 
-         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2])}
-        by.item <- data.frame(matrix(unlist(drop.item),ncol=5,byrow=TRUE))
-        if(nsub > nvar) {by.item[5] <- sqrt(by.item[5]/nsub) 
-         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","alpha se") } else {
-             by.item <- by.item[-5]
-             colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r") }
+         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA)}
+        by.item <- data.frame(matrix(unlist(drop.item),ncol=6,byrow=TRUE))
+        if(nsub > nvar) {by.item[6] <- sqrt(by.item[6]/nsub) 
+         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","alpha se") } else {
+             by.item <- by.item[-6]
+             colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N") }
         rownames(by.item) <- colnames(x)
         
         Vt <- sum(R)
@@ -106,13 +108,13 @@
         item.sd <-  apply(x,2,sd,na.rm=na.rm)
         if(nsub > nvar) {
             ase = sqrt(alpha.total$Q/nsub)
-        	alpha.total <- data.frame(alpha.total[1:4],ase=ase,mean=mean.t,sd=sdev)
-        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","ase","mean","sd")
+        	alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
+        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd")
         	rownames(alpha.total) <- ""
         	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
         	} else {
-        	alpha.total <- data.frame(alpha.total[-5])
-        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r")
+        	alpha.total <- data.frame(alpha.total[-4])
+        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N")
         	        rownames(alpha.total) <- ""
 
                   stats <- data.frame(r =item.r,r.cor = item.rc,r.drop = r.drop) #added r.drop 10/12/13
@@ -120,18 +122,21 @@
        	rownames(stats) <- colnames(x)
        	
        	if(n.iter > 1) {#do a bootstrap confidence interval for alpha
+       	 if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
         if(nsub == nvar) {message("bootstrapped confidence intervals require raw data") 
-                          boot <- NULL } else {
-       	 boot <- list()
-       	 for (i in 1:n.iter) {xi <- x[sample.int(nsub,replace=TRUE),]
+                          boot <- NULL
+                          boot.ci <- NULL } else {
+       	 boot <- vector("list",n.iter)
+       	 boot <- mclapply(1:n.iter,function(XX) {
+       	 xi <- x[sample.int(nsub,replace=TRUE),]
        	   C <- cov(xi,use="pairwise")
        	           if(!is.null(keys)) {key.d <- diag(keys)
                                       xi <- key.d %*% C %*% key.d}
                 
                                       
          R <- cov2cor(C)
-       	 boot[[i]] <- alpha.1(C,R)
-       	 }
+       	 alpha.1(C,R)
+       	 })  #end of mclapply 
        	  boot <- matrix(unlist(boot),ncol=5,byrow=TRUE)
        	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","ase")
        	  boot.ci <- quantile(boot[,1],c(.025,.5,.975))
@@ -139,8 +144,7 @@
        	         boot.ci <- NULL}
         result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,call=cl,title=title)
         class(result) <- c("psych","alpha")
-        return(result)
-     
+        return(result) 
     }
   #modified Sept 8, 2010 to add r.drop feature  
   #modified October 12, 2011 to add apply to the sd function
@@ -150,3 +154,6 @@
   #Oct 3, 2013 check for variables with no variance and drop them with a warning
   #November 22, 2013  Added the standard error as suggested by 
   #modified December 6, 2013 to add empirical confidence estimates
+  #modified January 9, 2014 to add multicore capabilities to the bootstrap 
+  #corrected December 18 to allow reverse keying for correlation matrices as well as raw data
+  #modified 1/16/14 to add S/N to summary stats

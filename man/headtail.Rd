@@ -29,8 +29,8 @@ topBottom is just a call to headTail with ellipsis = FALSE and returning a matri
 \seealso{ \code{\link{head}} and \code{\link{tail}}}
 
 \examples{
-x <- matrix(sample(10,1000,TRUE),ncol=5)
-headtail(x,4,8)
+
+headTail(iqitems[1:5],4,8)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

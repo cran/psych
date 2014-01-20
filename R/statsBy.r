@@ -56,7 +56,7 @@
              xvals$pooled[lower.tri(xvals$pooled)] <- pool  
              xvals$pooled <- xvals$pooled + t(xvals$pooled)  #changed, May 12 to properly reflect values
              diag(xvals$pooled) <- 1
-             xvals$sd.r <-  matrix(NA,nvars,nvars)
+             xvals$sd.r <-  matrix(NaN,nvars,nvars)
              xvals$sd.r[lower.tri(xvals$sd.r)] <- pool.sd
              xvals$sd.r[upper.tri(xvals$sd.r)] <- pool.sd
              colnames(xvals$pooled) <- rownames (xvals$pooled) <- cnames[-1]

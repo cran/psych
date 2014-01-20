@@ -97,14 +97,14 @@ Velicer, W. (1976) Determining the number of components from the matrix of parti
  \code{\link{fa.parallel}}}
 \examples{
 
-test.data <- Harman74.cor$cov
-my.vss <- VSS(test.data,title="VSS of 24 mental tests")      
+#test.data <- Harman74.cor$cov
+#my.vss <- VSS(test.data,title="VSS of 24 mental tests")      
 #print(my.vss[,1:12],digits =2) 
 #VSS.plot(my.vss, title="VSS of 24 mental tests")
 
 #now, some simulated data with two factors
-VSS(sim.circ(nvar=24),fm="mle" ,title="VSS of 24 circumplex variables")
-VSS(sim.item(nvar=24),fm="mle" ,title="VSS of 24 simple structure variables")
+#VSS(sim.circ(nvar=24),fm="minres" ,title="VSS of 24 circumplex variables")
+VSS(sim.item(nvar=24),fm="minres" ,title="VSS of 24 simple structure variables")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

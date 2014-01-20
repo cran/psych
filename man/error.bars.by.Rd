@@ -78,10 +78,13 @@ data(bfi)   #The Big 5 data
  keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
         Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
  keys <- make.keys(28,keys.list,item.labels=colnames(bfi))
- #then create the scores 
- scores <- score.items(keys,bfi,min=1,max=6) #set the right limits for item reversals
+ #then create the scores for those oler than 10 and less than 80
+ bfis <- subset(bfi,((bfi$age > 10) & (bfi$age < 80)))
+
+ scores <- scoreItems(keys,bfis,min=1,max=6) #set the right limits for item reversals
  #now draw the results by age
- error.bars.by(scores$scores,round(bfi$age/10)*10,by.var=TRUE,
+ 
+ error.bars.by(scores$scores,round(bfis$age/10)*10,by.var=TRUE,
       main="BFI age trends",legend=3,labels=colnames(scores$scores),
         xlab="Age",ylab="Mean item score")
 

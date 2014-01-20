@@ -12,9 +12,10 @@
 The biserial correlation is between a continuous y variable and a dichotmous x variable, which is assumed to have resulted from a dichotomized normal variable. Biserial is a special case of the polyserial correlation, which is the inferred latent correlation between a continuous variable (X) and a ordered categorical variable (e.g., an item response). Input for these later two are data frames or matrices.
 }
 \usage{
-tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL)
+tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
+     delete=TRUE)
 polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE,
-       std.err=FALSE,weight=NULL,progress=TRUE) 
+       std.err=FALSE,weight=NULL,progress=TRUE,na.rm=TRUE, delete=TRUE)
 biserial(x,y)  
 polyserial(x,y) 
 
@@ -45,15 +46,20 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 
 \item{short}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric}
 \item{std.err}{std.err=FALSE does not report the standard errors (faster) }
-\item{progress}{Show the progress bar}
+\item{progress}{Show the progress bar (if  not doing multicores)}
 \item{ML}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow!}
+\item{na.rm}{Should missing data be deleted}
+\item{delete}{Cases with no variance are deleted with a warning before proceeding.}
+
 
 }
 
 \details{
-Tetrachoric correlations infer a latent Pearson correlation from a two x two table of frequencies with the assumption of bivariate normality.  The estimation procedure is two stage ML.  Cells with zero counts are replaced with .5 as a correction for continuity (correct=TRUE).
+Tetrachoric correlations infer a latent Pearson correlation from a two x two table of frequencies with the assumption of bivariate normality.  The estimation procedure is two stage ML.  Cell frequencies for each pair of items are found. In the case of tetrachorics, cells with zero counts are replaced with .5 as a correction for continuity (correct=TRUE). 
 
 The data typically will be a raw data matrix of responses to a questionnaire scored either true/false (tetrachoric) or with a limited number of responses (polychoric).  In both cases, the marginal frequencies are converted to normal theory thresholds and the resulting table for each item pair is converted to the (inferred)  latent  Pearson correlation that would produce the observed cell frequencies with the observed marginals.  (See \code{\link{draw.tetra}} for an illustration.)
+
+This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
 The tetrachoric correlation is used in a variety of contexts, one important one being in Item Response Theory (IRT) analyses of test scores, a second in the conversion of comorbity statistics to correlation coefficients.  It is in this second context that examples of the sensitivity of the coefficient to the cell frequencies becomes apparent:
 
@@ -69,7 +75,7 @@ biserial and polyserial correlations are the inferred latent correlations equiva
 
 The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{http://sapa-project.org}) with large amounts of missing data and no complete cases.
 
-Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation.  
+Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation. However, if either alpha or omega is used to find the reliability, this will be an overestimate of the squared correlation of a latent variable the observed variable.
 
 A biserial correlation (not to be confused with the point-biserial correlation which is just a Pearson correlation) is the latent correlation between x and y where y is continuous and x is dichotomous but assumed to represent an (unobserved) continuous normal variable. Let p = probability of x level 1, and q = 1 - p.  Let zp = the normal ordinate of the z score associated with p.  Then, \eqn{rbi = r s* \sqrt(pq)/zp }.
 
@@ -81,6 +87,8 @@ All of these were inspired by (and adapted from) John Fox's polychor package whi
 Particularly for tetrachoric correlations from sets of data with missing data, the matrix will sometimes not be positive definite.  Various smoothing alternatives are possible, the one done here is to do an eigen value decomposition of the correlation matrix, set all negative eigen values to   10 * .Machine$double.eps, normalize the positive eigen values to sum to the number of variables, and then reconstitute the correlation matrix.   A warning is issued when this is done.
 
 For combinations of continous, categorical, and dichotomous variables, see \code{\link{mixed.cor}}.
+
+If using data with a variable number of response alternatives, it is necessary to use the global=FALSE option in polychoric.
 }
 
 \value{

@@ -67,6 +67,7 @@ score.irt is just a wrapper to score.irt.poly and score.irt.2
 \code{\link{irt.fa}} for finding the parameters. For more conventional scoring algorithms see \code{\link{score.items}}. \code{\link{irt.responses}} will plot the empirical response patterns for the alternative response choices for  multiple choice items. For more conventional IRT estimations, see the ltm package.
 }
 \examples{
+if(FALSE) {  #not run in the interest of time, but worth doing
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
 test <- irt.fa(d9$items)
 scores <- score.irt(test,d9$items)
@@ -84,7 +85,7 @@ scores.df <- data.frame(scores,true=d9$theta) #combine the estimates with the tr
 pairs.panels(scores.df, pch=".",
 main="Comparing IRT and classical with random missing data")
  #with missing data, the theta estimates are noticably better.
-
+}
 
 v9 <- sim.irt(9,1000,-2.,2.,mod="normal") #dichotomous items
 items <- v9$items
@@ -92,12 +93,14 @@ test <- irt.fa(items)
 total <- rowSums(items)
 ord <- order(total)
 items <- items[ord,]
+
+
 #now delete some of the data - note that they are ordered by score
 items[1:333,5:9] <- NA
 items[334:666,3:7] <- NA
 items[667:1000,1:4] <- NA
 scores <- score.irt(test,items)
-unitweighted <- score.irt(items=items,keys=rep(1,9))
+unitweighted <- score.irt(items=items,keys=rep(1,9)) #each item has a discrimination of 1
 #combine the estimates with the true thetas.
 scores.df <- data.frame(v9$theta[ord],scores,unitweighted) 
    

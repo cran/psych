@@ -3,10 +3,10 @@
 
 \title{Find correlations of composite variables from a larger matrix}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{score.items}} which also gives item by cluster correlations.
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
 }
 \usage{
-cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE, impute=TRUE)
+cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,17 +14,18 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE, impute=TRUE)
   \item{r.mat}{A correlation matrix }
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
+ \item{item.smc}{the smcs of the items may be passed into the function for speed, or calculated if SMC=TRUE }
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
 }
 \details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
 
- A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{factor.pa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
+ A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{fa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
  
  If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations. If impute=TRUE (the default), a warning is issued and the correlations are imputed based upon the average correlations of the non-missing elements of each scale. 
  
- Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{score.items}}.  They will differ substantially only if the items differ a great deal in their variances.   
+ Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{scoreItems}}.  They will differ substantially only if the items differ a great deal in their variances.   
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}
@@ -43,7 +44,7 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 }
 \note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
 }
-\seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha.scale}}, \code{\link{score.items}}}
+\seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha}}, and most importantly, \code{\link{scoreItems}}, which will do all of what cluster.cor does for most users.  cluster.cor is an important helper function for \code{\link{iclust}}}
 \examples{
 \dontrun{
 data(attitude)

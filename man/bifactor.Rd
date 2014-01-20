@@ -89,9 +89,9 @@ Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of
 \examples{
 
 if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotation") } else {
-holz <- omega(Holzinger,4, title = "14 ability tests from Holzinger-Swineford")
-bf <- omega(Reise,5,title="16 health items from Reise") 
-omega(Reise,5,labels=colnames(Reise),title="16 health items from Reise")
+#holz <- omega(Holzinger,4, title = "14 ability tests from Holzinger-Swineford")
+#bf <- omega(Reise,5,title="16 health items from Reise") 
+#omega(Reise,5,labels=colnames(Reise),title="16 health items from Reise")
 thur.om <- omega(Thurstone,title="9 variables from Thurstone") #compare with
 thur.bf   <- fa(Thurstone,3,rotate="biquartimin")
 factor.congruence(thur.om,thur.bf)

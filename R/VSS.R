@@ -79,6 +79,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
         
         map.values <- map(x,n)
  if (n >  dim(x)[2]) {n <- dim(x)[2]}       #in cases where there are very few variables
+
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { PHI <- diag(i) 
  if(i<2) {(rotate="none")} else {rotate=old_rotate} 

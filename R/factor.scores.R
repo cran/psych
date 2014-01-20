@@ -1,4 +1,4 @@
-"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components")) {
+"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL) {
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
      if(!is.matrix(f)) {Phi <- f$Phi
@@ -7,10 +7,11 @@
      nf <- dim(f)[2]
       if(is.null(Phi)) Phi <- diag(1,nf,nf)
      if(dim(x)[1] == dim(f)[1]) {r <- as.matrix(x)
-     
-     square <- TRUE} else { 
-       r <- cor(x,use="pairwise") #find the correlation matrix from the data
-       square <- FALSE}
+         square <- TRUE} else { 
+          square <- FALSE
+         if(!is.null(rho)) {r <- rho } else {
+          r <- cor(x,use="pairwise") #find the correlation matrix from the data
+      }}
        
    switch(method,   
     "Thurstone" = { w <- try(solve(r,f),silent=TRUE )  #these are the factor weights

@@ -49,11 +49,13 @@ Included in this set of functions are simple procedure to generate circumplex st
 \seealso{See also \code{\link{circ.tests}}, \code{\link{sim.circ}}, \code{\link{sim.structural}}, \code{\link{sim.hierarchical}} }
 \examples{
 
+#not run
+if(FALSE) {
 demo <- simulation.circ()
  boxplot(demo[3:14])
  title("4 tests of Circumplex Structure",sub="Circumplex, Ellipsoid, Simple Structure")
 circ.sim.plot(demo[3:14])  #compare these results to real data
-
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

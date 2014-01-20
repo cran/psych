@@ -32,6 +32,8 @@
        t2 = diff * sqrt((n-1)*(1+r23)/(((2*(n-1)/(n-3))*determin+av*av*cube)))
        p <- pt(abs(t2),n-2,lower.tail=FALSE)
         if(twotailed) p <- 2*p
+        #the call is ambiguous, we need to clarify it
+        cl <- paste("r.test(n = ",n, ",  r12 = ",r12,",  r23 = ",r23,",  r13 = ",r13, ")")
       result <- list(Call=cl,Test="Test of difference between two correlated  correlations",t=t2,p=p)                                  
       } else { #compare two dependent correlations, case 2
        z12 <- fisherz(r12)

@@ -6,7 +6,7 @@
   rowval <- as.numeric(rownames(x))
   colval <- as.numeric(colnames(x))
   
-  xm <- matrix(NA,nrow=n,ncol=2)
+  xm <- matrix(NaN,nrow=n,ncol=2)
   k <- 1
   for (rows in 1:nrows) {
      for (cols in 1:ncol) { 
@@ -33,7 +33,7 @@
   rowval <- as.numeric(rownames(x))
   colval <- as.numeric(colnames(x))
   
-  xm <- matrix(NA,nrow=n,ncol=2)
+  xm <- matrix(NaN,nrow=n,ncol=2)
   k <- 1
   for (rows in 1:nrows) {
      for (cols in 1:ncol) { 
@@ -56,7 +56,7 @@
  n <- dim(x)[1]
  ncol <- dim(x)[2]
  nrows <- sum(count)
- xm <- matrix(NA,nrow=nrows,ncol=ncol)
+ xm <- matrix(NaN,nrow=nrows,ncol=ncol)
  k <- 1
  for (i in 1 :n) {
    for (j in k:(k+count[i]-1)) {

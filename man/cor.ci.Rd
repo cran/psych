@@ -13,7 +13,7 @@ cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson"
   \item{keys}{If NULL, then the confidence intervals of the raw correlations are found.  Otherwise, composite scales are formed from the keys applied to the correlation matrix (in a logic similar to \code{\link{cluster.cor}} but without the bells and whistles) and the confidence of those composite scales intercorrelations. }
   \item{n.iter}{The number of iterations to bootstrap over. This will be very slow if using tetrachoric/or polychoric correlations. }
   \item{p}{The upper and lower confidence region will include 1-p of the distribution.}
-  \item{poly}{if FALSE, then find the correlations using the method specified (defaults to Pearson).  If TRUE, the polychoric correlations will be found (slowly)}
+  \item{poly}{if FALSE, then find the correlations using the method specified (defaults to Pearson).  If TRUE, the polychoric correlations will be found (slowly).  Because the polychoric function uses multicores (if available), and cor.ci does as well, the number of cores used is options("mc.cores")^2. }
   \item{method}{"pearson","spearman", "kendall"}
   }
 \details{

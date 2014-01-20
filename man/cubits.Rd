@@ -10,14 +10,14 @@ The data frame, \code{\link{heights}}, is converted from this table.
 \format{
   A data frame with 9 observations on the following 8 variables.
   \describe{
-    \item{\code{16.5}}{Cubit length of lowest category}
-    \item{\code{16.75}}{a numeric vector}
-    \item{\code{17.25}}{a numeric vector}
-    \item{\code{17.75}}{a numeric vector}
-    \item{\code{18.25}}{a numeric vector}
-    \item{\code{18.75}}{a numeric vector}
-    \item{\code{19.25}}{a numeric vector}
-    \item{\code{19.75}}{a numeric vector}
+    \item{\code{16.5}}{Cubit length < 16.5}
+    \item{\code{16.75}}{16.5 <= Cubit length < 17.0}
+    \item{\code{17.25}}{17.0 <= Cubit length < 17.5}
+    \item{\code{17.75}}{17.5 <= Cubit length < 18.0}
+    \item{\code{18.25}}{18.0 <= Cubit length < 18.5}
+    \item{\code{18.75}}{18.5 <= Cubit length < 19.0}
+    \item{\code{19.25}}{19.0 <= Cubit length < 19.5}
+    \item{\code{19.75}}{19.5 <= Cubit length  }
   }
 }
 \details{Sir Francis Galton (1888) published the first demonstration of the correlation coefficient.  The regression (or reversion to mediocrity) of the height to the length of the left forearm (a cubit) was found to .8.  There seem to be some errors in the table as published in that the row sums do not agree with the actual row sums. These data are used to create a matrix using \code{\link{table2matrix}} for demonstrations of analysis and displays of the data.
@@ -32,8 +32,9 @@ data(cubits)
 cubits
 heights <- table2df(cubits,labs = c("height","cubit"))
 ellipses(heights,n=1,main="Galton's co-relation data set")
-ellipses(jitter(heights$cubit,3),jitter(heights$height,3),pch=".",
-     main="Galton's co-relation data set") #add in some noise to see the points
-
+ellipses(jitter(heights$height,3),jitter(heights$cubit,3),pch=".",
+     main="Galton's co-relation data set",xlab="height",
+     ylab="Forearm (cubit)") #add in some noise to see the points
+pairs.panels(heights,jiggle=TRUE,main="Galton's cubits data set")
 }
 \keyword{datasets}

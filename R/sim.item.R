@@ -47,6 +47,8 @@ function (simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55, 
 	if(!simple) {f1  <- rep(cos(seq(0,pi,length.out = nx)),each=ny-1)*xloading
 	 f2 <- rep(cos(seq(0,2*pi*(ny-1)/ny,length.out=ny-1)),nx)*yloading
     f3 <- rep(sin(seq(0,2*pi*(ny-1)/ny,length.out=ny-1)),nx)*zloading
+    f2 <- f2 * (1-f1^2)  #added to make the cylinder a sphere
+    f3 <- f3 * (1-f1^2)
     f <- matrix(c(rep(gloading,(ny-1)*nx),f1,f2,f3),(ny-1)*nx)
       
      } else {    #simple structure -- 

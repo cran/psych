@@ -82,10 +82,14 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
           		 }  
           		 
           fa.results$schmid$sl <- sl
-         
-       
-         } else {if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors} else {
+              
+         } else {
+            if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors} else {
               fa.results <- factors} }
-       if(is.list(fa.results))  fa.results$order <- total.ord 
+        #note that h2 and complexities were not sorted, we need to do this now
+       if(is.list(fa.results))  {fa.results$order <- total.ord 
+         fa.results$complexity <- fa.results$complexity[total.ord]
+         fa.results$communality <- fa.results$communality[total.ord]
+         fa.results$uniquenesses <- fa.results$uniquenesses[total.ord]}
           return(fa.results)
          }     

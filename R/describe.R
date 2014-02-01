@@ -62,13 +62,13 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
      #now summarize the results 
     if (ranges)
     	{if(skew){answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 
-        3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/stats[,1])  #the typical (maximum) case
+        3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))  #the typical (maximum) case
          } else {
           answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 
-        3],trimmed =stats[,9],mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/stats[,1])}  #somewhat shorter 
+        3],trimmed =stats[,9],mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1]))}  #somewhat shorter 
         
-       } else {if(skew){answer <-  data.frame(vars,n = stats[,1],mean=stats[,2], sd =stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/stats[,1])}
-       else {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/stats[,1])}}  #the minimal case
+       } else {if(skew){answer <-  data.frame(vars,n = stats[,1],mean=stats[,2], sd =stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))}
+       else {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))}}  #the minimal case -- fixed 1/2/2014
                 
    # answer <-data.frame(var=vars,temp, se = temp$sd/sqrt(temp$n))  #replaced with forming the answer in the if statements  10/1/2014 to improve memory management
    
@@ -77,34 +77,49 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
 }
 
 #added 1/11/14
-"describeData" <- function(x,head=4,tail=4) {
-valid <- function(x) {sum(!is.na(x))}
-nvar <- ncol(x)
-all.numeric <- nvar
-ans <- c(NA,(3+head + tail))
+#for fast descriptions
+describeData <- 
+function (x, head = 4, tail = 4) 
+{
+    valid <- function(x) {
+        sum(!is.na(x))
+    }
+    nvar <- ncol(x)
+    all.numeric <- nvar
+    ans <- matrix(NA,nrow=nvar,ncol=2)
+    nobs <- nrow(x)
+    cc <- sum(complete.cases(x))
+   for (i in 1:nvar) {
+        
+        if (is.numeric(x[,i])) {ans[i,2] <- 1 } else {
+            if ((is.factor(x[,i])) || (is.logical(x[,i]))) {
+               ans[i,2]  <- 2
+            } else {
+                if (is.character(x[,i])) {
+               ans[i,2] <- 3
+                } 
+            }
+        }
+        ans[i,1]  <- valid(x[,i])
+    }
 
-nobs <- nrow(x)
-cc <- sum(complete.cases(x))
-#rownames(ans) <- colnames(x)
-temp <- apply(x,2, function(xx) {
-if(!is.numeric(xx)) {
-   if( (is.factor(xx)) || (is.logical(xx))) {ans[3] <- "factor/logical"} else {
-   if(is.character(xx)) {ans[3] <- "character"} 
-  }
+  
+    if (is.numeric(x)) {
+        all.numeric <- TRUE
+    }
+    else {
+        all.numeric <- FALSE
+    }
+    H1 <- t(x[1:head,1:nvar])
+    T1 <- t(x[(nobs-tail+1):nobs,1:nvar])
+    temp <- data.frame(V=1:nvar,ans,H1,T1)
+    
+    colnames(temp) <- c("variable #", "n.obs", "type", paste("H", 
+        1:head, sep = ""), paste("T", 1:tail, sep = ""))
+   rownames(temp)[temp[,"type"]!=1] <- paste(rownames(temp)[temp[,"type"]!=1],"*",sep="")
+    result <- (list(n.obs = nobs, nvar = nvar, all.numeric = all.numeric, 
+        complete.cases = cc, variables = temp))
+    class(result) <- c("psych", "describeData")
+    return(result)
 }
-ans[2] <- valid(xx)
-ans[4:(3+head)] <- xx[1:head]
-ans[(4+head):(3+head+tail)] <- xx[((nobs-tail+1):nobs)] 
-ans})
-
-temp[1,] <- 1:nvar
-temp <- t(temp)
-if(is.numeric(temp)) {all.numeric<- TRUE} else {all.numeric <- FALSE}
-colnames(temp) <- c("variable #","n.obs", "type" ,paste("H",1:head,sep=""),paste("T",1:tail,sep=""))
-result <- (list(n.obs= nobs,nvar=nvar,all.numeric=all.numeric, complete.cases = cc,variables = temp))
-class(result) <- c('psych','describeData')
-return(result)
-}
- 
-
 

@@ -1,10 +1,13 @@
 \name{bfi}
 \alias{bfi}
+\alias{bfi.dictionary}
 \docType{data}
 \title{25 Personality items representing 5 factors}
 \description{25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project.  The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis, and Item Response Theory analysis.  Three additional demographic variables (sex, education, and age) are also included.
 }
-\usage{data(bfi)}
+\usage{data(bfi)
+data(bfi.dictionary)
+}
 \format{
   A data frame with 2800 observations on the following 28 variables. (The q numbers are the SAPA item numbers).
   \describe{
@@ -69,9 +72,11 @@ describe(bfi)
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
   keys <- make.keys(bfi,keys.list)
- 
+  
  scores <- scoreItems(keys[1:27,],bfi[1:27]) #don't score age 
  scores
+ #show the use of the fa.lookup with a dictionary
+ fa.lookup(keys,bfi.dictionary[,1:4])
  
 }
 \keyword{datasets}

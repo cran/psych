@@ -1,4 +1,9 @@
+
 "factor.stats" <- 
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
+   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm)}
+
+"fa.stats" <- 
 function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
@@ -155,7 +160,8 @@ conf.level <- alpha
         RMSEA.L <- min(sqrt(lam.L/((N)*df) ),RMSEA)
        result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, conf.level)
        names(result$RMSEA) <- c("RMSEA","lower","upper","confidence")
-        result$BIC <- chisq - df * log(N) 
+       result$BIC <- chisq - df * log(N) 
+       result$SABIC <- chisq - df * log((N+2)/24)  #added 1/27/2014
         }
       }  
   

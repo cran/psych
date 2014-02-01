@@ -1842,7 +1842,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version > "1.2.8",package="psych")
+> news(Version > "1.4.1",package="psych")
 \end{Sinput}
 \end{Schunk}
 

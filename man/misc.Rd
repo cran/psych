@@ -10,12 +10,13 @@
 \alias{test.all}
 \alias{best.items}
 \alias{lookup}
+\alias{fa.lookup} 
 \title{Miscellaneous helper functions for the psych package}
 \description{This is a set of minor, if not trivial, helper functions.
 lowerCor finds the correlation of x variables and then prints them using 
 lowerMat which is a trivial, but useful, function to round off and print the lower triangle of a matrix.
 reflect reflects the output of a factor analysis or principal components analysis so that one or more factors is reflected. (Requested by Alexander Weiss.)
-progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names
+progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names. fa.lookup returns sorted factor analysis output with item labels.
 }
 \usage{
 psych.misc()
@@ -27,7 +28,8 @@ progressBar(value,max,label=NULL)
 shannon(x,correct=FALSE,base=2)
 test.all(p) 
 best.items(x,c1=1,cut=.3, abs=TRUE, contents=NULL,digits=2) 
-lookup(x,y,c1=1)
+lookup(x,y,c1=NULL)
+fa.lookup(f,dictionary,digits=2)
 }
 \arguments{
   \item{R}{A rectangular matrix or data frame (probably a correlation matrix)}
@@ -48,6 +50,7 @@ lookup(x,y,c1=1)
   \item{cut}{Return all values in abs(x[,c1]) > cut.}
   \item{abs}{if TRUE, sort by absolute value in best.items}
   \item{contents}{a two column data.frame of item names and item content.  Allows for long values for item output, even though the column names are short.}
+  \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix, and entries (may be multiple columns) of item content.}
 
   
 }
@@ -66,7 +69,9 @@ or a series of dots (progressBar).
 
 \code{\link{best.items}} returns a sorted list of factor loadings or correlations with the labels as provided in the contents field.
 
-\code{\link{lookup}} is a very simple implementation of the match function.  
+\code{\link{lookup}} is a very simple implementation of the match function. 
+
+\code{\link{fa.lookup}} takes a factor/cluster analysis object (or just a keys like matrix), sorts it using \code{\link{fa.sort}} and then matches by row.name to the corresponding dictionary entries.
 
 }
 
@@ -79,7 +84,9 @@ or a series of dots (progressBar).
 \code{\link{best.items}} and \code{\link{lookup}} are simple helper functions to summarize correlation matrices or factor loading matrices.  \code{\link{best.items}} will sort the specified column (c1) of x on the basis of the (absolute) value of the column.  The return as a default is just the rowname of the variable with those absolute values > cut.   If there is a dictionary of item content and item names, then include the contents as a two column matrix with item name and item content.
 
 \code{\link{lookup}} is used by \code{\link{best.items}} and will find values in c1 of y that match those in x.  It returns those rows of y of that match x.
-Suppose that you have a "dictionary" of the many variables in a study but you want to consider a small subset of them in a data set x.  Then, you can find the entries in the dictionary corresponding to x by lookup(rownames(x),y)
+Suppose that you have a "dictionary" of the many variables in a study but you want to consider a small subset of them in a data set x.  Then, you can find the entries in the dictionary corresponding to x by lookup(rownames(x),y)  If the column is not specified, then it will match by rownames(y). 
+
+\code{\link{fa.lookup}} is used when examining the output of a factor analysis and one wants the corresponding variable names and contents. The returned object may then be printed in LaTex by using the \code{\link{df2latex}} function with the char option set to TRUE.
 
 Similarly, given a correlation matrix, r, of the x variables, if you want to find the items that most correlate with another item or scale, and then show the contents of that item from the dictionary, best.items(r,c1=column number or name of x, contents = y)
 
@@ -89,7 +96,7 @@ Similarly, given a correlation matrix, r, of the x variables, if you want to fin
 \seealso{\code{\link{corr.test}} to find correlations, count the pairwise occurrences, and to give significance tests for each correlation.  \code{\link{r.test}} for a number of tests of correlations, including tests of the difference between correlations.  \code{\link{lowerUpper}} will display the differences between two matrices.}
 \examples{
 lowerMat(Thurstone)
-lb <- lowerCor(bfi[1:10])  #finds and prints the he lower correlation matrix, 
+lb <- lowerCor(bfi[1:10])  #finds and prints the lower correlation matrix, 
   # returns the square matrix.
 #fiml <- corFiml(bfi[1:10])     #FIML correlations require lavaan package
 #lowerMat(fiml)  #to get pretty output
@@ -102,7 +109,9 @@ best.items(lb,3,cut=.1)
 #to make this a latex table 
 #df2latex(best.items(lb,2,cut=.2))
 #
-
+data(bfi.dictionary)
+f2 <- fa(bfi[1:10],2)
+fa.lookup(f2,bfi.dictionary)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

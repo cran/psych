@@ -79,7 +79,7 @@
     #now find a few fit statistics
     if(is.null(w)) {results <- list(scores=NULL,weights=NULL)} else {
      R2 <- diag(t(w) %*% f)
-     if( (prod(!is.nan(R2)) <1) || (prod(R2) < 0) ) {message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
+     if(any(R2>1) || (prod(!is.nan(R2)) <1) || (prod(R2) < 0) ) {#message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }

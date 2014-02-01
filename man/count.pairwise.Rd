@@ -1,11 +1,14 @@
 \name{count.pairwise}
 \alias{count.pairwise}
+\alias{pairwiseDescribe}
 \title{ Count number of pairwise cases for a data set with missing (NA) data. }
 \description{
   When doing cor(x, use= "pairwise"), it is nice to know the number of cases for each pairwise correlation.  This is particularly useful when doing SAPA type analyses.
 }
 \usage{
 count.pairwise(x, y = NULL,diagonal=TRUE)
+pairwiseDescribe(x,diagonal=FALSE) 
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,6 +35,7 @@ count.pairwise(x)
 count.pairwise(y)
 count.pairwise(x,y)
 count.pairwise(x,diagonal=FALSE)
+pairwiseDescribe(x)
 }
 
     

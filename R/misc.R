@@ -150,7 +150,7 @@ if(abs) {ord <- order(abs(x[,c1]),decreasing=TRUE)
   value <- x[ord,c1]
   value <- value[abs(value) >cut] }
 value <- round(data.frame(value),digits)
-if(!is.null(contents)) {if(!is.factor(contents)) {temp <- lookup(rownames(value),contents,c1=1)
+if(!is.null(contents)) {if(!is.factor(contents)) {temp <- lookup(rownames(value),contents)
   if(nrow(value) > nrow(temp))  value <- value[rownames(value) %in% contents[,1], ]
   value <- data.frame(value,temp)}}
 return(value)
@@ -159,9 +159,27 @@ return(value)
   
   #lookup which x's are found in y[c1],return matches for y[]
  "lookup" <- 
-function(x,y,c1=1) {
-temp <- match(x,y[,c1])
+function(x,y,c1=NULL) {
+if (is.null(c1)) {temp <- match(x,rownames(y))} else {
+     temp <- match(x,y[,c1])}
  y <- (y[temp[!is.na(temp)],])
   return(y)}
+ 
+ #use lookup to take fa/ic output and show the results 
+"fa.lookup"  <-
+   function(f,dictionary,digits=2) {
+   
+   f <- fa.sort(f)
+   if(!(is.matrix(f) || is.data.frame(f))) {h2 <- f$communality
+    com <- f$complexity
+    f <- f$loadings} else {h2<- NULL
+       com <- NULL}
+   
+   contents <- lookup(rownames(f),dictionary)
+   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits),contents)} else {
+   results <- data.frame(round(unclass(f),digits=digits),contents)}
+   return(results)}
+   
+
 
 

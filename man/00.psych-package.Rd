@@ -9,9 +9,9 @@
 
 The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} ) are useful for basic data entry and descriptive analyses. Use help(package="psych") for a list of all functions.  Two vignettes are included as part of the package.  The overview provides examples of using psych in many applications.  
 
-Psychometric applications include routines (\code{\link{fa}} for principal axes (fm="pa"), minimum residual (fm="minres") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
+Psychometric applications include routines (\code{\link{fa}} for principal axes (fm="pa"), minimum residual (fm="minres"), maximum likelihood (fm="mle") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{score.items}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
 
-The \code{\link{score.items}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
+The \code{\link{scoreItems}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
 
 Additional functions make for more convenient descriptions of item characteristics.  Functions under development include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning.
 
@@ -32,7 +32,7 @@ Additional functions make for more convenient descriptions of item characteristi
 The psych package was originally a combination of multiple source files maintained at the \url{http://personality-project.org/r} repository: ``useful.r", VSS.r., ICLUST.r, omega.r, etc.``useful.r" is a set of routines for easy data entry (\code{\link{read.clipboard}}),
 simple descriptive statistics (\code{\link{describe}}), and splom plots combined with correlations (\code{\link{pairs.panels}}, adapted from the help files of pairs).  Those files have now been replaced with a single package.
 
-The \code{\link{VSS}} routines allow for testing the number of factors (\code{\link{VSS}}), showing plots (\code{\link{VSS.plot}}) of goodness of fit, and basic routines for estimating the number of factors/components to extract by using the \code{\link{MAP}}'s procedure, the examining the scree plot (\code{\link{VSS.scree}}) or comparing with the scree of an equivalent matrix of random numbers (\code{\link{VSS.parallel}}). 
+The \code{\link{vss}} routines allow for testing the number of factors (\code{\link{vss}}), showing plots (\code{\link{VSS.plot}}) of goodness of fit, and basic routines for estimating the number of factors/components to extract by using the \code{\link{MAP}}'s procedure, the examining the scree plot (\code{\link{VSS.scree}}) or comparing with the scree of an equivalent matrix of random numbers (\code{\link{VSS.parallel}}). 
 
 In addition, there are routines for hierarchical factor analysis using Schmid Leiman tranformations (\code{\link{omega}}, \code{\link{omega.graph}}) as well as Item Cluster analysis (\code{\link{ICLUST}}, \code{\link{ICLUST.graph}}).
 
@@ -40,11 +40,11 @@ The more important functions in the package are for the analysis of multivariate
 
 When given a set of items from a personality inventory, one goal is to combine these into higher level item composites. This leads to several questions:
 
-1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describe.by}} provides descriptive statistics, organized by one or more grouping variables.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals. \code{\link{error.bars}} will plot confidence intervals for both the x and y coordinates.  \code{\link{corr.test}} will find the significance values for a matrix of correlations.
+1) What are the basic properties of the data?  \code{\link{describe}} reports basic summary statistics (mean, sd, median, mad, range,  minimum, maximum, skew, kurtosis, standard error) for vectors, columns of matrices, or data.frames. \code{\link{describeBy}} provides descriptive statistics, organized by one or more grouping variables.  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals. \code{\link{error.bars}} will plot confidence intervals for both the x and y coordinates.  \code{\link{corr.test}} will find the significance values for a matrix of correlations.
 
 2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations using a wrapper (\code{\link{poly.mat}}) for John Fox's hetcor function, the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}},  \code{\link{fa.parallel}}, and \code{\link{MAP}})  also address this question.  
 
-3) What are the best composites to form?  Although this may be answered using principal components  (\code{\link{principal}}), principal axis (\code{\link{factor.pa}}) or minimum residual (\code{\link{factor.minres}})  factor analysis (all part of the \code{\link{fa}} function) and to show the results graphically (\code{\link{fa.graph})}, it is sometimes more useful to address this question using cluster analytic techniques. (Some would argue that better yet is to use maximum likelihood factor analysis using \code{\link{factanal}} from the stats package.) Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at forming maximally consistent and independent item composites.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  If Rgraphviz is available, these graphs can be done in R.
+3) What are the best composites to form?  Although this may be answered using principal components  (\code{\link{principal}}), principal axis (\code{\link{factor.pa}}) or minimum residual (\code{\link{factor.minres}})  factor analysis (all part of the \code{\link{fa}} function) and to show the results graphically (\code{\link{fa.diagram})}, it is sometimes more useful to address this question using cluster analytic techniques.  Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at forming maximally consistent and independent item composites.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  If Rgraphviz is available, these graphs can be done in R.
 
 Graphical organizations of cluster and factor analysis output can be done using  \code{\link{cluster.plot}} which plots items by cluster/factor loadings and assigns items to that dimension with the highest loading.  
 
@@ -69,8 +69,8 @@ Ten data sets are included: \code{\link{bfi}} represents 25 personality items th
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.4.1 \cr
-Date: \tab 2014--January--15\cr
+Version: \tab 1.4.2 \cr
+Date: \tab 2014--February--01\cr
 License: \tab GPL version 2 or newer\cr
 }
 Index:
@@ -307,7 +307,7 @@ sets.  Primarily for development purposes.\cr
 }
 \note{Development versions (source code) of this package are maintained at the  repository \url{http://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
 \cr
-Some functions require other packages. Specifically, omega and schmid require the GPArotation package, and poly.mat, phi2poly and polychor.matrix requires John Fox's polychor package. ICLUST.rgraph and fa.graph require Rgraphviz but have alternatives using the diagram functions.  i.e.:
+Some functions require other packages. Specifically, omega and schmid require the GPArotation package,  ICLUST.rgraph and fa.graph require Rgraphviz but have alternatives using the diagram functions.  i.e.:
 \cr
 
 \tabular{ll}{
@@ -324,7 +324,6 @@ function  \tab     requires\cr
 }
 
 }
-
 
 \author{William Revelle \cr
         Department of Psychology \cr

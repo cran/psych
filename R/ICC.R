@@ -70,6 +70,7 @@
  
  #now find confidence limits
  #first, the easy ones
+ #don't divide alpha level by 2  (changed on 2/1/14)
  F1L <- F11 / qf(1-alpha/2,df11n,df11d)  
  F1U <- F11 * qf(1-alpha/2,df11d,df11n)
  L1 <- (F1L-1)/(F1L+(nj-1))
@@ -102,7 +103,6 @@
  results[5,7] <- L3k
  results[5,8] <- U3k
  
-
  #clean up the output
  results[,2:8] <- results[,2:8]
  result <- list(results=results,summary=s.aov,stats=stats,MSW=MSW,Call=cl,n.obs=n.obs,n.judge=nj)

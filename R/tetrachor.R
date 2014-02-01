@@ -405,11 +405,6 @@ function(x,y) {
  }
 
 
-
-
-
-
-
 "cor.smooth" <- function(x) {
 eigens <- try(eigen(x),TRUE)
 if(class(eigens)== as.character("try-error")) {warning('I am sorry, there is something seriously wrong with the correlation matrix,\ncor.smooth failed to  smooth it because some of the eigen values are NA.  \nAre you sure you specified the data correctly?')
@@ -429,3 +424,34 @@ rownames(x) <- rnames}
 }
 return(x)}
 #modified January 9, 2012 to add the try so we don't fail (just complain) if the data are bad.
+
+
+#identify the most likely candidates for a bad item
+"cor.smoother" <- function(x,cut=.01) {
+nvar <- ncol(x)
+result <- list()
+if(nrow(x) != nvar) x <- cor(x,use="pairwise")
+bad <- rep(NA,nvar)
+good <- rep(TRUE,nvar)
+names(good) <- names(bad) <- colnames(x)
+
+for (i in 1:nvar) {
+ev <- eigen(x[-i,-i])$values
+if(any(ev < 0) ) {bad[i] <- TRUE
+good[i] <- FALSE}
+bad[i] <- sum((ev < 0),na.rm=TRUE)
+}
+
+if(sum(bad+0) > 0 )  {result$good <- bad[(bad > 0)]
+result$bad <- good[good]
+s <- cor.smooth(x)
+possible <- arrayInd(which.max(abs(s-x)),dim(x),.dimnames=colnames(x))
+result$likely <- colnames(x)[possible]
+
+result$possible <- arrayInd(which(abs(s-x) > cut),dim(x),.dimnames=colnames(x))
+result$possible <- sort(table(colnames(x)[result$possible]),decreasing=TRUE)
+} else {result$bad <- c("all ok")}
+class(result) <- c("psych","smoother")
+return(result)
+}
+

@@ -44,7 +44,9 @@ McGraw, Kenneth O. and Wong, S. P. (1996), Forming inferences about some intracl
 Revelle, W. (in prep) An introduction to psychometric theory with applications in R. Springer. (working draft available at  \url{http://personality-project.org/r/book/}}
 
 \author{William Revelle }
-\note{The results for the Lower and Upper Bounds for ICC(2,k) do not match those of SPSS 9 or 10, but do match the definitions of Shrout and Fleiss.  SPSS  seems to have been using the  formula in McGraw and Wong, but not the errata on p 390.  They seem to have fixed it in more recent releases (15). }
+\note{The results for the Lower and Upper Bounds for ICC(2,k) do not match those of SPSS 9 or 10, but do match the definitions of Shrout and Fleiss.  SPSS  seems to have been using the  formula in McGraw and Wong, but not the errata on p 390.  They seem to have fixed it in more recent releases (15). 
+
+Starting with psych  1.4.2, the confidence intervals are based upon (1-alpha)\% at both tails of the confidence interval.  This is in agreement with Shrout and Fleiss.  Prior to 1.4.2 the confidence intervals were (1-alpha/2)\%.  }
 
 \examples{
 sf <- matrix(c(9,    2,   5,    8,

@@ -15,7 +15,7 @@
          Phi <- NULL
          fl <- fl[,1:(dim(fl)[2]-3)]
          nfactors <- dim(fl)[2]
-          fe <- t(t(w) %*% Roe)
+        fe <- t(t(w) %*% Roe)
        } 
     }
     }
@@ -60,6 +60,8 @@ if(is.na(n.obs) && !is.null(np.obs)) n.obs <- max(as.vector(np.obs))
 result <- factor.stats(r[nv,nv],foe,fo$Phi,n.obs,np.obs.r,alpha=alpha)
     result$rotation <- rotate
     result$loadings <- foe
+    if(nfactors > 1) {if(is.null(fo$Phi)) {h2 <- rowSums(foe^2)} else {h2 <- diag(foe %*% fo$Phi %*% t(foe)) }} else {h2 <-foe^2}
+    result$communality <- h2
     result$fm <- fm  #remember what kind of analysis we did
     result$fo=fo
     result$fe=fe

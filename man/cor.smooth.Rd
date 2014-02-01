@@ -1,5 +1,6 @@
 \name{cor.smooth}
 \alias{cor.smooth}
+\alias{cor.smoother}
 
 \title{Smooth a non-positive definite correlation matrix to make it positive definite}
 
@@ -7,13 +8,17 @@
 }
 \usage{
 cor.smooth(x)
+cor.smoother(x,cut=.01)
 }
 \arguments{
-  \item{x}{A correlation matrix}
+  \item{x}{A correlation matrix or a raw data matrix.}
+  \item{cut}{Report all abs(residuals)  > cut}
 }
 \details{The smoothing is done by eigen value decomposition.  eigen values < .Machine$double.eps are changed to 100  * .Machine$double.eps.  The positive eigen values are rescaled to sum to the number of items.  The matrix is recomputed (eigen.vectors \%*\% diag(eigen.values) \%*\% t(eigen.vectors) and forced to a correlation matrix using cov2cor. (See Bock, Gibbons and Muraki, 1988 and Wothke, 1993). 
 
 This does not implement the Knol and ten Berge (1989) solution, nor do nearcor and posdefify in sfmsmisc, not does nearPD in Matrix. As Martin Maechler puts it in the posdedify function, "there are more sophisticated algorithms to solve this and related problems."  
+
+cor.smoother examines all of nvar minors of rank nvar-1 by systematically dropping one variable at a time and finding the eigen value decomposition.  It reports those variables, which, when dropped, produce a positive definite matrix.  It also reports the number of negative eigenvalues when each variable is dropped.  Finally, it compares the original correlation matrix to the smoothed correlation matrix and reports those items with absolute deviations great than cut.  These are all hints as to what might be wrong with a correlation matrix.  
 }
 \value{The smoothed matrix with a warning reporting that smoothing was necessary (if smoothing was in fact necessary).
 }

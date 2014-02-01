@@ -1,9 +1,10 @@
 #vss is just an alias to VSS to be consistent with naming conventions
-"vss" <-
-function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
- {VSS(x,n,rotate,diagonal,fm,n.obs,plot,title,...)  }
-
+#added the RMSEA, BIC, SABIC and complexity criteria 1/27/14
 "VSS" <-
+function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+ {vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=plot,title=title,...)  }
+
+"vss" <-
 function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
  
  #x is a data matrix
@@ -62,6 +63,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  }
  return(min.partial)
  }
+ 
   if(dim(x)[2] < n) n <- dim(x)[2]  
   #now do the main Very Simple Structure  routine
 
@@ -69,7 +71,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   complexresid <-  array(0,dim=c(n,n))
   
   
-  vss.df <- data.frame(dof=rep(0,n),chisq=0,prob=0,sqresid=0,fit=0) #keep the basic results here 
+  vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA) #keep the basic results here 
  
   if (dim(x)[1]!=dim(x)[2]) { n.obs <- dim(x)[1]
                x <- cor(x,use="pairwise") }  else {if(!is.matrix(x)) x <- as.matrix(x)}
@@ -83,20 +85,13 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  for (i in 1:n)                            #loop through 1 to the number of factors requested
  { PHI <- diag(i) 
  if(i<2) {(rotate="none")} else {rotate=old_rotate} 
-   if(!(fm=="pc")) { if(( fm=="pa") | ( fm=="minres") |( fm=="wls") |( fm=="gls")) {
+   if(!(fm=="pc")) { 
    		f <- fa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,fm=fm,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once
 		 sqoriginal <- original*original    #squared correlations
 		 totaloriginal <- sum(sqoriginal) - diagonal*sum(diag(sqoriginal) )   #sum of squared correlations - the diagonal
-		}}  else { 
-   	f <- factanal(factors=i,rotation=rotate,covmat=x,n.obs=n.obs,...)  #do a factor analysis with i factors and the rotations specified in the VSS call
- 	 if (i==1)
-  		 {original <- x         #just find this stuff once
-		 sqoriginal <- original*original    #squared correlations
-		 totaloriginal <- sum(sqoriginal) - diagonal*sum(diag(sqoriginal) )   #sum of squared correlations - the diagonal
-		}}
-	  } else {f <- principal(x,i)
+		}} else {f <- principal(x,i)
 	    if (i==1)
   			 {original <- x       #the input to pc is a correlation matrix, so we don't need to find it again
 			 sqoriginal <- original*original    #squared correlations
@@ -120,14 +115,18 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  	sqresid <- residual*residual            #square the residuals
  	totalresid <- sum(sqresid)- diagonal * sum(diag(sqresid) )      #sum squared residuals - the main diagonal
  	fit <- 1-totalresid/totaloriginal       #fit is 1-sumsquared residuals/sumsquared original     (of off diagonal elements
- 	
+
  	if ((fm !="pc")) {
- 			vss.df[i,1] <- f$dof                   #degrees of freedom from the factor analysis
- 			vss.df[i,2] <- f$STATISTIC             #chi square from the factor analysis
- 			vss.df[i,3] <- f$PVAL                  #probability value of this complete solution
+ 			vss.df[i,"dof"] <- f$dof                   #degrees of freedom from the factor analysis
+ 			vss.df[i,"chisq"] <- f$STATISTIC             #chi square from the factor analysis
+ 			vss.df[i,"prob"] <- f$PVAL                  #probability value of this complete solution\
+ 			if(!is.null(f$RMSEA)) {vss.df[i,"RMSEA"] <- f$RMSEA[1]} else {vss.df[i,"RMSEA"] <- NA}
+ 			if(!is.null(f$BIC)) {vss.df[i,"BIC"] <- f$BIC} else {vss.df[i,"BIC"] <- NA}
+ 			if(!is.null(f$SABIC)) {vss.df[i,"SABIC"] <- f$SABIC} else {vss.df[i,"SABIC"] <- NA}
+ 			if(!is.null(f$complexity)) {vss.df[i,"complex"] <- mean(f$complexity)} else {vss.df[i,"complex"] <- NA}
  			 }
-  	vss.df[i,4] <- totalresid              #residual given complete model
-  	vss.df[i,5] <- fit                     #fit of complete model
+  	vss.df[i,"sqresid"] <- totalresid              #residual given complete model
+  	vss.df[i,"fit"] <- fit                     #fit of complete model
   	
   	
   	

@@ -1,6 +1,12 @@
+#January 27, 2014  added fa.congruence to clean up calls
 #modified March 12 to allow for a list of factor solutions
+
 "factor.congruence" <-
 function (x,y=NULL,digits=2) {
+   fa.congruence(x=x,y=y,digits=digits) }
+
+"fa.congruence" <-
+ function (x,y=NULL,digits=2) {
 if(is.null(y)&& is.list(x)) {
 	n <- length(x)
 		for (i in 1:n) {

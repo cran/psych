@@ -1,6 +1,6 @@
  #parallel analysis of polychoric factor analysis
  "fa.parallel.poly" <- 
-function(x,n.iter=10,SMC=TRUE,fm="minres",correct=TRUE,sim=FALSE,fa="both",global=global) { 
+function(x,n.iter=10,SMC=TRUE,fm="minres",correct=TRUE,sim=FALSE,fa="both",global=TRUE) { 
 p <- .05
  cl <- match.call()
 

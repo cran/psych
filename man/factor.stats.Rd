@@ -1,12 +1,14 @@
 \name{factor.stats}
 \Rdversion{1.1}
 \alias{factor.stats}
+\alias{fa.stats}
 
 \title{Find various goodness of fit statistics for factor analysis and principal components }
 
 \description{Chi square and other goodness of fit statistics are found based upon the fit of a factor or components model to a correlation matrix.  Although these statistics are normally associated with a maximum likelihood solution, they can be found for minimal residual (OLS), principal axis, or principal component solutions as well.  Primarily called from within these functions, factor.stats can be used by itself. Measures of factorial adequacy and validity follow the paper by Grice, 2001.
 }
 \usage{
+fa.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) 
 factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) 
 }
 

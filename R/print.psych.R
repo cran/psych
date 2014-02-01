@@ -151,6 +151,7 @@ cortest= {cat("Tests of correlation matrices \n")
          },
 
 
+
          
 
 describe= {if  (length(dim(x))==1) {class(x) <- "list"
@@ -504,6 +505,11 @@ sim =  { if(is.matrix(x)) {x <-unclass(x)
              print(x$r,digits)}
              }             
  },
+ 
+ smoother = {x <- unclass(x)
+             print(x)
+             },
+             
  
  split ={ cat("Split half reliabilities  ")
    cat("\nCall: ")

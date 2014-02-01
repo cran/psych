@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.2 (2014-2-15)}{
+\section{Changes in psych version 1.4.3 (2014-2-15)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.4.2 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.1.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.1 was released in January of 2014, the last two digits reflect the day of any modifications).
+      \item Version 1.4.3 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.2.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.2 was released in February of 2014, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -11,7 +11,7 @@
   }
   \subsection{To do}{
     \itemize{
-      \item Suggestions are welcome, but the current list includes:
+      \item Suggestions are welcome, but the current list includes (and has included for a long time, so lets be patient):
       \item Add confirmatory clustering to ICLUST
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
@@ -27,12 +27,36 @@
       \item add the ability to add labels to lavaan.diagram  
       \item clean up lavaan diagram so that the output is more readable    
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
-     \item To help those who want to simulate a bifactor model, make it explicit      
+     \item To help those who want to simulate a bifactor model, make it explicit  
+     \item Add a modification to error bars suggested by Jaroslaw Arlet    
     }
   }
   } 
   
-    \section{Changes in psych version 1.4.1 (2014-1-1)}{
+  \section{Changes in psych version 1.4.2 (2014-02-01)}{
+   \subsection{Additions}{
+  \itemize{ 
+    \item Added the epi data set and epi.dictionary  of items.
+    \item Added bfi.dictionary to show the item contents of the bfi example.
+    \item Added BIC, SABIC, RMSEA, and complexity for each factor model in VSS (vss) (requested by David Condon)
+    \item added the alias of fa.congruence and fa.stats as calls to factor.congruence and factor.stats in a slow move to consistency
+    \item Added fa.lookup to allow for sorted factor loadings with item contents if using a dictionary for the items.
+    \item Modified print.psych.fa so that warnings about how factor score correlations are improper are suppressed (as is the printing of the improper correlations).
+  }
+  }
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+  \item defined global=TRUE as default in fa.parallel.poly (reported by  Koji E. Kosugi)
+  \item changed if(max(R2 > 1) to if(any(max(R2 > 1)) in print.psych.fa (reported by David Condon)
+  \item Fixed the se calculation in describe which had been incorrectly changed in version 1.4.1.  Thanks to Terry Jorgensen and others for reporting this.
+  \item Fixed fa.sort so the that communalities and complexities are sorted as well
+  
+   }
+   } 
+  }
+  
+    \section{Changes in psych version 1.4.1 (2014-1-20)}{
    \subsection{Additions}{
 \itemize{
    \item Substantial improvements in speed through the use of the parallel package and some coding improvements.  

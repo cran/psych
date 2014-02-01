@@ -193,7 +193,9 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 \note{Thanks to Erich Studerus for some very helpful suggestions about various rotation and factor scoring algorithms, and to  Gumundur Arnkelsson  for suggestions about factor scores for singular matrices.
 
-The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals.  }
+The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals. 
+
+A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.}
 
 \seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
 
@@ -235,6 +237,11 @@ pa3 <- fa(Thurstone.33,3,rotate="none",fm="pa")
 mr2 <- fa(Thurstone.33,2,rotate="none")
 mr3 <- fa(Thurstone.33,3,rotate="none")
 factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
+
+#f5 <- fa(bfi[1:25],5)
+#f5  #names are not in ascending numerical order (see note)
+#colnames(f5$loadings) <- paste("F",1:5,sep="")
+#f5
 }
 
 \keyword{ multivariate }

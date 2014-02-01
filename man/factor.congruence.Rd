@@ -1,5 +1,6 @@
 \name{factor.congruence}
 \alias{factor.congruence}
+\alias{fa.congruence}
 \title{Coefficient of factor congruence }
 \description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although reported by Burt (1948), this is frequently known as the Tucker index of factor congruence.
 }

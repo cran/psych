@@ -72,6 +72,8 @@ A variety of rotation options are available. These include varimax, promax, and 
  chisq: chi square (from the factor analysis output  (if using FA) \cr
  prob: probability of residual matrix > 0  (if using FA) \cr
  sqresid: squared residual correlations\cr
+ RMSEA: the RMSEA for each number of factors \cr
+ BIC: the BIC for each number of factors \cr
  fit: factor fit of the complete model\cr
  cfit.1: VSS fit of complexity 1\cr
  cfit.2: VSS fit of complexity 2 \cr

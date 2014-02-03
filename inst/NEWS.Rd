@@ -33,6 +33,15 @@
   }
   } 
   
+  \section{Changes in psych version 1.4.2.1 (2014-02-03)}{
+  
+   \subsection{Bugs Fixed}{
+   \itemize{
+ \item Fixed print.psych.fa to cover several weird cases of no x$R2 or stats.df that were causing HDMD package to fail. 
+  
+   }
+   } 
+  }
   \section{Changes in psych version 1.4.2 (2014-02-01)}{
    \subsection{Additions}{
   \itemize{ 

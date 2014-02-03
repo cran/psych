@@ -1,4 +1,4 @@
-3a62a18141bedb1ba4765e0eb6e70ff3 *DESCRIPTION
+ae685eda4224e446aae466eea1e7ab96 *DESCRIPTION
 1d87b35c50b93fbdf1d8772cefd461a4 *NAMESPACE
 13d9ab3fbb68605e336eaf29f98bd80a *R/BASS.R
 55da70d9c9bec31f46ff865582d29dc6 *R/CTA_lrn.R
@@ -149,7 +149,7 @@ ff658a0e5e3abdec684cb8eb47bb16a6 *R/polar.R
 c22d4b784c632be5b02abbbd941d0c2f *R/principal.R
 8e9470ebadc491c5643b76789d2feb1f *R/print.factor.pa.R
 baf6518ef58152b5db20a275befb8957 *R/print.psych.R
-ef4aecf0e022e99a35a79beb0dd04f7d *R/print.psych.fa.R
+f6fcf1f31bd73087e1eaa1c400e1dd8c *R/print.psych.fa.R
 810b7aea2e3eec77cd9b5111146230b8 *R/print.psych.iclust.R
 74b2ed2ee41cce9394e67830c9e79e02 *R/print.psych.omega.R
 7e319ec8a8fd8c1d6f0bbc350bb050d9 *R/print.psych.schmid.R
@@ -247,14 +247,14 @@ b46d7736259a00ec30cbd51393061a9f *data/peas.rda
 07040691f6fc9fe6411848cd91e61a79 *data/sat.act.rda
 f5795d2e3b5949a914c23d516f4084c4 *data/vegetables.rda
 83883d86665ce28e26481a7413d10bb8 *data/withinBetween.rda
-0cc7351d9fcab74344f765f7d01d74eb *inst/CITATION
-81664d2ae5cc25d90ceec5f2b3a3e378 *inst/NEWS.Rd
+d5e58c1c7d082f55716d596a0f232135 *inst/CITATION
+8b82f2b1373e1145dad67e42127e9867 *inst/NEWS.Rd
 51373b31ff4c2317c97b13ffa06eaa7e *inst/doc/overview.R
 d75b765a2dea9aa071fe7c0d34fee136 *inst/doc/overview.Rnw
-e8f42bc593a72a4edbbcb4b0900b0c16 *inst/doc/overview.pdf
+f1c34f68dea16e7b67047cee7dfdfb5a *inst/doc/overview.pdf
 b68bb3a2cf654eda2ed28769d82d01c8 *inst/doc/psych_for_sem.R
 edf6f0fa58503c1ca8cec2f3b6a28106 *inst/doc/psych_for_sem.Rnw
-2e640417cbdf515d12d596a9306ebdef *inst/doc/psych_for_sem.pdf
+81f22199ca6bf09c51fd1383ddcacc8c *inst/doc/psych_for_sem.pdf
 1c939e4f8c87c9e90b60aeefcf915da3 *man/00.psych-package.Rd
 d17cc6e8c6a59208a5af65de5fa47ab7 *man/Gleser.Rd
 d1c648092201e2fd2185c5aa2bdd2d9b *man/Gorsuch.Rd

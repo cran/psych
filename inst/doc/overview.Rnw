@@ -369,7 +369,7 @@ Note that the number of subjects for those columns has decreased, and the minimu
 Sometimes categorical variables (e.g., college major, occupation, ethnicity) are to be analyzed using correlation or regression.  To do this, one can form ``dummy codes'' which are merely binary variables for each category.  This may be done using \pfun{dummy.code}. Subsequent analyses using these dummy coded variables may be using \pfun{biserial} or point biserial (regular Pearson r) to show effect sizes and may be plotted in e.g., \pfun{spider} plots.
 
 \subsection{Simple descriptive graphics}
-Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  
+Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits.  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots.  
 
 \subsubsection{Scatter Plot Matrices}
 Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the \iemph{lowess} locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the x and y variables is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).  When plotting many subjects, it is both faster and cleaner to set the plot character (pch) to be '.'.  (See Figure~\ref{fig:pairs.panels} for an example.)
@@ -412,12 +412,31 @@ dev.off()
 \end{center}
 \end{figure}
 
+\subsubsection{Density or violin plots}
+Graphical presentation of data may be shown using box plots to show the median and 25th and 75th percentiles.  A powerful alternative is to show the density distribution using the  \pfun{violinBy} function.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+data(sat.act)
+violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by gender for SAT V and Q")
+@
+\end{scriptsize}
+\caption{Using the \pfun{violinBy} function to show the distribution of SAT V and Q for males and females. The plot shows the medians, and 25th and 75th percentiles, as well as the entire range and the density distribution.  }
+\label{fig:error.bars}
+\end{center}
+\end{figure}
+
+
+
 \subsubsection{Means and error bars}
 \label{sect:errorbars}
 Additional descriptive graphics include the ability to draw \iemph{error bars} on sets of data, as well as to draw error bars in both the x and y directions for paired data.  These are the functions
 
 \begin{description}
-\item [\pfun{error.bars}]  show the 95 \% confidence intervals for each variable in a data frame or matrix.  These errors are based upon normal theory and the standard errors of the mean. Alternative options include +/- one standard deviation or 1 standard error.  If the data are repeated measures, the error bars will be reflect the between variable correlations.
+\item [\pfun{error.bars}]  show the 95 \% confidence intervals for each variable in a data frame or matrix.  These errors are based upon normal theory and the standard errors of the mean. Alternative options include +/- one standard deviation or 1 standard error.  If the data are repeated measures, the error bars will be reflect the between variable correlations. By default, the confidence intervals are displayed using a ``cats eyes'' plot which emphasizes the distribution of confidence within the confidence interval. 
 \item [\pfun{error.bars.by}] does the same, but grouping the data by some condition.
 \item [\pfun{error.crosses}]  draw the confidence intervals for an x set and a y set of the same size.
 \end{description}
@@ -432,12 +451,12 @@ data(epi.bfi)
 error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 @
 \end{scriptsize}
-\caption{Using the \pfun{error.bars.by} function shows that self reported personality scales on the Big Five Inventory vary as a function of the Lie scale on the EPI. }
+\caption{Using the \pfun{error.bars.by} function shows that self reported personality scales on the Big Five Inventory vary as a function of the Lie scale on the EPI.  The ``cats eyes'' show the distribution of the confidence.  }
 \label{fig:error.bars}
 \end{center}
 \end{figure}
 
-Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of`\iemph{dynamite plot} (Figure~\ref{fig:dynamite}) can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{http://emdbolker.wikidot.com/blog:dynamite}.  In the example shown, note that the graph starts at 0, although is out of the range.  This is a function of using bars, which always are assumed to start at zero.  Consider other ways of showing your data.
+Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of \iemph{dynamite plot} (Figure~\ref{fig:dynamite}) can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{http://emdbolker.wikidot.com/blog:dynamite}.  In the example shown, note that the graph starts at 0, although is out of the range.  This is a function of using bars, which always are assumed to start at zero.  Consider other ways of showing your data.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1374,12 +1393,12 @@ dev.off()
 \subsubsection{Forming scales from a correlation matrix}
 There are some situations when the raw data are not available, but the correlation matrix between the items is available. In this case, it is not possible to find individual scores, but it is possible to find the reliability and intercorrelations of the scales.  This may be done using the \pfun{cluster.cor} function or the \pfun{scoreItems} function.  The use of a keys matrix is the same as in the raw data case.
 
-Consider the same \pfun{bfi} data set, but first find the correlations, and then use \pfun{cluster.cor}.
+Consider the same \pfun{bfi} data set, but first find the correlations, and then use \pfun{scoreItems}.
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 r.bfi <- cor(bfi,use="pairwise")
-scales <- cluster.cor(keys,r.bfi)
+scales <- scoreItems(keys,r.bfi)
 summary(scales)
 @
 \end{scriptsize}
@@ -1427,6 +1446,28 @@ irt.responses(scores$scores,iqitems[1:4],breaks=11)
 \label{fig:irt.response}
 \end{center}
 \end{figure}
+
+\subsubsection{Exploring the item structure of scales}
+The Big Five scales found above can be understood in terms of the item - whole correlations, but it is also useful to think of the endorsement frequency of the items.  The \pfun{item.lookup} function will sort items by their factor loading/item-whole correlation, and then resort those above a certain threshold in terms of the item means.  Item content is shown by using the dictionary developed for those items. This allows one to see the structure of each scale in terms of its endorsement range.  This is a simple way of thinking of items that is also possible to do using the various IRT approaches discussed later.  
+
+\begin{tiny}
+<<print=FALSE,echo=TRUE>>=
+ m <- colMeans(bfi,na.rm=TRUE)
+  item.lookup(scales$item.corrected[,1:3],m,dictionary=bfi.dictionary[1:2])
+@
+\end{tiny}
+
+\subsubsection{Empirical scale construction}
+There are some situations where one wants to identify those items that most relate to a particular criterion.  Although this will capitalize on chance and the results should interpreted cautiously, it does give a feel for what is being measured.  Consider the following example from the \pfun{bfi} data set.  The items that best predicted gender, education, and age may be found using the \pfun{best.scales} function.  This also shows the use of a dictionary that has the item content.
+
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE>>=
+data(bfi)
+best.scales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
+@
+\end{scriptsize}
+
+
 
 \section{Item Response Theory analysis}
 The use of Item Response Theory has become is said to be the ``new psychometrics".  The emphasis is upon item properties, particularly those of item difficulty or location and item discrimination.  These two parameters are easily found from classic techniques when using factor analyses of correlation matrices formed by \pfun{polychoric} or \pfun{tetrachoric} correlations.  The \pfun{irt.fa} function does this and then graphically displays item discrimination and item location as well as item and test information (see Figure~\ref{fig:irt}).  

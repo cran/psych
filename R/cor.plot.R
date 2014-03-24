@@ -3,7 +3,8 @@
 #completely revised June 20, 2011 to do more reds for less than 0, blues for above 0
 #also switched to using layout to make legend clearer
 #modified May 5, 2012 to add the keep.par option to allow more control of small graphics
-#
+#Corrected feb 22, 2014 to not double plot text (reported by David Condon)
+
 "cor.plot" <- 
 function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,...){
 if(keep.par) op <- par(no.readonly=TRUE)
@@ -54,7 +55,7 @@ if(max.len>.5) {axis(2,at=at2,labels=colnames(r),las=1,...)
 at1 <- (0:(nf-1))/(nf-1)
 
 if(numbers) {rx <- rep(at1,ncol(r))
- ry <-rep(at2,each=ncol(r))
+ ry <-rep(at2,each=nrow(r))
  text(rx,ry,round(r*100),...)}
 if(show.legend) {
     leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)

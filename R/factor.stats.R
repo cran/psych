@@ -8,6 +8,7 @@ function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
+#revised February 28, 2014 to emphasize empirical chi 2 and report empirical BIC
 cl <- match.call()
 conf.level <- alpha 
  if((!is.matrix(f)) && (!is.data.frame(f)))  {#do a number of things that use f as list
@@ -36,15 +37,21 @@ conf.level <- alpha
     #r2.off <- r
     #diag(r2.off) <- 0
    # r2.off <- sum(r2.off^2)
-   r2.off <- r2 - tr(r)
+    r2.off <- r2 - tr(r)
     diag(residual) <- 0
     if(is.null(np.obs))  {rstar.off <- sum(residual^2)
+                          result$ENull <- r2.off * n.obs  #the empirical null model
                           result$chi <- rstar.off * n.obs  #this is the empirical chi square
                           result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea
                           result$nh <- n.obs
                              if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
-                                 result$crms <- sqrt(rstar.off/(result$dof) )} else {result$EPVAL <- NA
-                                 result$crms <- NA}
+                                 result$crms <- sqrt(rstar.off/(2*result$dof) )
+                                  result$EBIC <- result$chi - result$dof * log(n.obs) 
+                                  result$ESABIC <- result$chi - result$dof * log((n.obs+2)/24) } else {result$EPVAL <- NA
+                                 result$crms <- NA
+                                  result$EBIC <- NA
+                                 result$ESABIC <- NA}
+                                             
                           } else {
                            rstar.off <- sum(residual^2 * np.obs)  #weight the residuals by their sample size
                           r2.off <-(r*r * np.obs)   #weight the original by sample size
@@ -53,9 +60,13 @@ conf.level <- alpha
                           result$nh <- harmonic.mean(as.vector(np.obs)) #this is the sample weighted cell size
                           result$rms <- sqrt(rstar.off/(result$nh*n*(n-1))) #this is the sample size weighted square root average squared residual
                         if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
-                                             result$crms <- sqrt(rstar.off/(result$nh*result$dof) )} else {
+                                              result$crms <- sqrt(rstar.off/(2*result$nh*result$dof) )
+                                              result$EBIC <- result$chi - result$dof * log(result$nh) 
+                                              result$ESABIC <- result$chi - result$dof * log((result$nh+2)/24) } else {   #added 2/28/2014 
                                               result$EPVAL <- NA
                                               result$crms <- NA
+                                              result$EBIC <- NA
+                                              result$ESABIC <- NA
                                               }
                           }
 
@@ -68,6 +79,8 @@ conf.level <- alpha
   
     diag(model) <- diag(r)  
     model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
+    r <- cor.smooth(r)  #this makes sure that the correlation is positive semi-definite
+    #although it would seem that the model should always be positive semidefinite so this is probably not necessary
     #cor.smooth approach  added August 25,2011
    #  model.inv <- try(solve(model),silent=TRUE)
    #  if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
@@ -78,7 +91,7 @@ conf.level <- alpha
    #    #model.inv <- solve(model)
    #    }
    
-     m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision --
+    m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision --
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)

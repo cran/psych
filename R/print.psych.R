@@ -48,6 +48,16 @@ alpha = {
 	 cat("\nNon missing response frequency for each item\n")
 	 print(round(x$response.freq,digits=digits))}
 },
+best.scales ={ 
+     df <- data.frame(correlation=x$r,n.items = x$n.items)
+    cat("The items most correlated with the criteria yield r's of \n")
+    print(round(df,digits=digits)) 
+    if(!is.null(x$value)) {cat("\nThe best items, their correlations and content  are \n")
+    print(x$value) } else {cat("\nThe best items and their correlations are \n")
+     for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
+     } 
+      },
+      
 
 bifactor = {
    cat("Call: ")
@@ -127,8 +137,9 @@ cor.ci = {cat("Call:")
                lowerMat(x$rho)
    phis <- x$rho[lower.tri(x$rho)]
    cci <- data.frame(lower.emp =x$ci$low.e, lower.norm=x$ci$lower,estimate =phis ,upper.norm= x$ci$upper, upper.emp=x$ci$up.e)
+   rownames(cci) <- rownames(x$ci)
    cat("\n scale correlations and bootstrapped confidence intervals \n")
-   print(cci,digits=digits)
+   print(round(cci,digits=digits))
               
             },       
 corr.test = {cat("Call:")
@@ -140,8 +151,25 @@ corr.test = {cat("Call:")
               if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
                  if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
              print(round(x$p,digits))
+             cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
+             if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
+             print(round(x$ci,digits)) }
          },     
 
+corr.p = {cat("Call:")
+              print(x$Call)
+              cat("Correlation matrix \n")
+              print(round(x$r,digits))
+              cat("Sample Size \n")
+              print(x$n)
+              if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
+                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
+             print(round(x$p,digits))
+             cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
+              if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
+             print(round(x$ci,digits)) }
+
+         },     
          
 cortest= {cat("Tests of correlation matrices \n")
             cat("Call:")

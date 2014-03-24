@@ -119,6 +119,7 @@
    
    if(raw.data) { item.cor <- cor(items,scores)} else {if (n.keys >1) {
          item.cor <- C %*% keys %*% diag(1/sqrt(var.scales))/sqrt(item.var)} else {item.cor <- C %*% keys /sqrt(var.scales * item.var)}}
+         colnames(item.cor) <- slabels
     c.smc <- smc(C,TRUE)
    
     diag(C) <- c.smc

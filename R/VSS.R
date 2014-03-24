@@ -71,7 +71,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   complexresid <-  array(0,dim=c(n,n))
   
   
-  vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA) #keep the basic results here 
+  vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA,eChisq=NA,eRMS=NA,eCRMS=NA,eBIC=NA) #keep the basic results here 
  
   if (dim(x)[1]!=dim(x)[2]) { n.obs <- dim(x)[1]
                x <- cor(x,use="pairwise") }  else {if(!is.matrix(x)) x <- as.matrix(x)}
@@ -120,6 +120,11 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  			vss.df[i,"dof"] <- f$dof                   #degrees of freedom from the factor analysis
  			vss.df[i,"chisq"] <- f$STATISTIC             #chi square from the factor analysis
  			vss.df[i,"prob"] <- f$PVAL                  #probability value of this complete solution\
+ 			vss.df[i,"eChisq"] <- f$chi
+ 			vss.df[i,"eRMS"] <- f$rms
+ 			vss.df[i,"eCRMS"] <- f$crms
+ 			vss.df[i,"eBIC"] <- f$EBIC
+ 			
  			if(!is.null(f$RMSEA)) {vss.df[i,"RMSEA"] <- f$RMSEA[1]} else {vss.df[i,"RMSEA"] <- NA}
  			if(!is.null(f$BIC)) {vss.df[i,"BIC"] <- f$BIC} else {vss.df[i,"BIC"] <- NA}
  			if(!is.null(f$SABIC)) {vss.df[i,"SABIC"] <- f$SABIC} else {vss.df[i,"SABIC"] <- NA}
@@ -157,4 +162,33 @@ class(vss.results) <- c("psych" ,"vss")
 return(vss.results)
    
     }     #end of VSS function
+
+
+"nfactors" <-
+function(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,title="Number of Factors",pch=16,...) {
+vs <- vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=FALSE,title=title) 
+old.par <- par(no.readonly = TRUE) # save default, for resetting... 
+on.exit(par(old.par))     #and when we quit the function, restore to original values
+op <- par(mfrow=c(2,2))
+x <- vs$vss.stats
+n = dim(x)
+    plot(x$cfit.1, ylim = c(0, 1), typ = "b", ylab = "Very Simple Structure Fit", 
+        xlab = "Number of Factors",main="Very Simple Structure",pch=49)
+          lines(x$cfit.1)
+    x$cfit.2[1] <- NA
+    x$cfit.3[1] <- NA
+    x$cfit.3[2] <- NA
+    lines(x$cfit.2)
+    points(x$cfit.2,pch=50)
+     lines(x$cfit.3)
+    points(x$cfit.3,pch=51)
+   
+plot(vs$vss.stats[,"complex"],xlab="Number of factors",ylab="Complexity",typ="b",main="Complexity",pch=pch,...)
+plot(vs$vss.stats[,"eBIC"],xlab="Number of factors",ylab="Empirical BIC",typ="b",main="Empirical BIC",pch=pch,...)
+plot(vs$vss.stats[,"eCRMS"],xlab="Number of factors",ylab="Empirical CRMS",typ="b",main="Root Mean Residual",pch=pch,...)
+results <- list(title=title,map=vs$map,vss.stats=vs$vss.stats[,1:16],call=vs$call)
+class(results) <- c("psych","vss")
+return(results)
+}
+
 

@@ -1,6 +1,7 @@
 "error.bars" <-
-function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,ylim= NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,...)  # x   data frame with 
+function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,...)  # x   data frame with 
     {
+    SCALE=.5   #scale the width of the cats eyes
     if(is.null(stats)) {
     	x.stats <- describe(x)
     	if (within) { x.smc <- smc(x,covar=TRUE)
@@ -33,8 +34,9 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      box()
     } else {
     if(!add){
+     if(missing(xlim)) xlim<- c(.5,z+.5)
        if(is.null(x.stats$values)) {
-     plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,axes=FALSE,main=main,...) 
+     plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,xlim=xlim,axes=FALSE,main=main,...) 
        axis(1,1:z,names)
        axis(2)
      box()} else { plot(x.stats$values,x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...) }
@@ -42,19 +44,26 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      
      } else {points(x.stats$mean,...) }
      }  #end of if(bars)
+     
+    
     if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
-   
+     
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      if (length(labels)==0) lab <- rep("",z) else lab <-labels
       s <- c(1:z)
     	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else { 
+    	       
     	        if(is.null(x.stats$values)) {
     	 arrows(s[s],x.stats$mean[s]-ci[s]* x.stats$se[s],s[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col=arrow.col) } else {
     	 arrows(x.stats$values,x.stats$mean[s]-ci[s]* x.stats$se[s],x.stats$values,x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3, col=arrow.col)}
+ 	 
+   	 
+  if(eyes) {
+    	     ln <- seq(-3,3,.1)
+    	     rev <- (length(ln):1)	   
+    for (s in 1:z){ if(!is.null(x.stats$n[s] )) {catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col="blue")}}
     	  }
-    	 
-    	  
-    	
+    	    }
    }
    #corrected July 25, 2009 to fix bug reported by Junqian Gordon Xu and then modified to be cleaner code
  
@@ -63,3 +72,20 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    #modified June, 2010 to allow for easier use of stats input
    #modified June 15, 2010 to allow color bars to match color of lines and to have standard deviations as an option
    #modified Sept 11, 2013 to pass n -1 to the qt function (reported by Trevor Dodds)
+   #modified March 10, 2014 add the capability to draw "cats eyes" 
+   
+   
+   
+  "catseyes" <- function(x,y,se,n,alpha=alpha,density=density,col=col) {
+     SCALE=.7
+    	     ln <- seq(-3,3,.1)
+    	     rev <- (length(ln):1)
+    norm <-  dt(ln,n-1)
+    norm <- c(norm,-norm[rev])
+    ln <- seq(-3,3,.1)
+    clim <- qt(alpha/2,n-1)
+    cln <- seq(clim,-clim,.01)
+    cnorm <- dnorm(cln)
+    cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	  
+    polygon(norm*SCALE+x,c(ln,ln[rev])*se+y)
+    polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}

@@ -1,8 +1,13 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), lty = NULL,lines=TRUE, legend=0,...)  # x   data frame with 
+function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
+xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
+arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
+ lty = NULL,lines=TRUE, legend=0,...)  # x   data frame with 
     {
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
+    density=-10
+    
     if(is.null(lty)) lty = "solid"
     legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
     
@@ -19,7 +24,7 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     
     if(is.null(main)) {if(sd) {main <- paste("Means + Standard Deviations") } else {main <- paste(1-alpha,"% confidence limits",sep="")} }
     
-    if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
+ if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
     group.stats <- describeBy(x,group,mat=TRUE)   
            n.var <- dim(all.stats)[1]
            n.groups <- length(group.stats[[1]])/n.var
@@ -66,12 +71,12 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
        legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.var),
        text.col = "green4", lty = seq(1:8),
        merge = TRUE, bg = 'gray90')}
-           
-           
-           } else {   #the normal case is to not use bars
+               
+  } else {   #the normal case is to not use bars
            
     group.stats <- describeBy(x,group)
     n.group <- length(group.stats)
+    n.var <- ncol(x)
      if(within) {group.smc <- by(x,group,smc) }
      z <- dim(x)[2]
      if(is.null(z)) z <- 1 
@@ -79,23 +84,21 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     if (is.null(ylab)) ylab <- "Dependent Variable"
      
      if(!by.var) {
-      
+        
       	if (is.null(xlab)) xlab <- "Independent Variable"
     	for (g in 1:n.group) {
    	 	x.stats <- group.stats[[g]]
    	 	if (within) { x.smc <- group.smc[[g]]  
     	              if(sd) {x.stats.$se <- sqrt(x.stats$sd^2* (1- x.smc))} else { x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)}
     	               }
-
-    	if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ=typ,lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
-    	#if(!add) {plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ = typ,lty=((g-1) %% 8 +1),axes=FALSE, pch=14+g,...)
+        if (missing(xlim)) xlim <- c(.5,n.var+.5)
+    	if(!add) {plot(x.stats$mean,ylim=ylim,xlim=xlim, xlab=xlab,ylab=ylab,main=main,typ=typ,lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
+    	
     	axis(1,1:z,colnames(x),...)
     	axis(2,...)
     	box()
     	} else {points(x.stats$mean,typ = typ,lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1], pch=14+g) 
     	       }
-    
-    	
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
    
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
@@ -106,9 +109,11 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     	 if(sd) {xse <- x.stats$sd[i] } else {xse  <- x.stats$se[i]}
     	
     	if(sd) {ci <- 1} else { ci <- qt(1-alpha/2,x.stats$n[i]-1)}  #corrected Sept 11, 2013
-    	  if(is.finite(xse) & xse>0)  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	 
+    	  if(is.finite(xse) & xse>0)  {
+    	  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	 if (eyes) {catseyes(i,xcen,xse,x.stats$n[i],alpha=alpha,density=density,col=colors[(g-1) %% n.color +1] )}
     	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
+    	}
     	}
      add <- TRUE
      lty <- "dashed"
@@ -142,7 +147,8 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     for (i in 1:n.vars) {	
    
     	if(!add) {
-    	 plot(x.values,var.means[1,],ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
+    	if(missing(xlim)) xlim <- c(.5,n.group + .5)
+    	 plot(x.values,var.means[1,],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
     		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats)),...) } else {axis(1)}
     		axis(2,...)
     		box() 
@@ -161,9 +167,12 @@ function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= N
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
     	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n-1)}
-    	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)}  else {
-    	    
-    	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)} 
+    	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	        if (eyes) { 
+    	        catseyes(g,xcen,xse,group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}}  else {
+    	     
+    	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	            if (eyes) {catseyes(x.values[g],xcen,xse,x.stats$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
     		}
  

@@ -6,11 +6,9 @@
 \alias{fac}
 \alias{fa.poly}
 
-
-
 \title{Exploratory Factor analysis using MinRes (minimum residual) as well as EFA by Principal Axis, Weighted Least Squares or Maximum Likelihood }
-\description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal fuction) is probably preferred.  Bootstrapped confidence intervals the loadings and interfactor correlations are found by fa  in n.iter > 1 and for dichotomous or polytomous items, by fa.poly.
-}
+\description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal function) is probably preferred.  Bootstrapped confidence intervals of the loadings and interfactor correlations are found by fa  with n.iter > 1 and for dichotomous or polytomous items, by fa.poly.}
+
 \usage{
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
@@ -26,6 +24,8 @@ fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
  fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,
         weight=NULL,global=TRUE,...)
+        
+
 
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
@@ -37,7 +37,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
 }
 
 \arguments{
-  \item{r}{A correlation matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. }
+  \item{r}{A correlation or covariance matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. If covariances are supplied, they will be converted to correlations unless the covar option is TRUE.}
   \item{x}{For fa.poly.ci, only raw data may be used}
   \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
@@ -141,7 +141,7 @@ For those who want to have an object of the variances accounted for, this is ret
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters.  Let n=Number of items, nf = number of factors then
   \cr
   \eqn{dof = n * (n-1)/2 - n * nf + nf*(nf-1)/2}{dof = n * (n-1)/2 - n * nf + nf*(nf-1)/2}}
-  \item{objective}{value of the function that is minimized by maximum likelihood procedures.  This is reported for comparison purposes and as a way to estimate chi square goodness of fit.  The objective function is 
+  \item{objective}{Value of the function that is minimized by a maximum likelihood procedures.  This is reported for comparison purposes and as a way to estimate chi square goodness of fit.  The objective function is 
   \cr
   \eqn{f = log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^{-1} R|) - n.items}{log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^-1 R|) - n.items}. }
   
@@ -157,9 +157,15 @@ For those who want to have an object of the variances accounted for, this is ret
  
  \item{rms}{This is the sum of the squared (off diagonal residuals) divided by the degrees of freedom.  Comparable to an RMSEA which, because it is based upon  \eqn{\chi^2}{chi^2}, requires the number of observations to be specified.  The rms is an empirical value while the RMSEA is based upon normal theory and the non-central \eqn{\chi^2}{chi^2} distribution.}
  
+ \item{crms}{rms adjusted for degrees of freedom}
+ 
 \item{TLI}{The Tucker Lewis Index of factoring reliability which is also known as the non-normed fit index.  }
 
-\item{BIC}{Based upon \eqn{\chi^2}{chi^2}}
+\item{BIC}{Based upon \eqn{\chi^2}{chi^2} with the assumption of normal theory and using the \eqn{\chi^2}{chi^2} found using the objective function defined above. This is just \eqn{\chi^2 - 2 df}{chi^2 - 2 df}}
+
+\item{chi}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived \eqn{\chi^2}{chi^2} based upon the sum of the squared residuals * N.}
+ 
+\item{eBIC}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived eBIC based upon the empirical \eqn{\chi^2}{chi^2} - 2 df. }
 
 \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
 
@@ -174,11 +180,7 @@ For those who want to have an object of the variances accounted for, this is ret
 
  }
 
-\note{SPSS will sometimes use a Kaiser normalization before rotating.  This will lead to different solutions than reported here.  To get the Kaiser normalized loadings, use \code{\link{kaiser}}.
 
-The communality for a variable is the amount of variance accounted for by all of the factors.  That is to say, for orthogonal factors, it is the sum of the squared factor loadings (rowwise).  The communality is insensitive to rotation.  However, if an oblique solution is found, then the communality is not the sum of squared pattern coefficients. In both cases (oblique or orthogonal) the communality is the diagonal of the reproduced correlation matrix where \eqn{_nR_n =  _{n}P_{k  k}\Phi_{k k}P_n'}{nRn = nPk k\Phi k kPn' }  where P is the pattern matrix and \eqn{\Phi} is the factor intercorrelation matrix.  Similarly, the eigen values are the diagonal of the product \eqn{ _k\Phi_{kk}P'_{nn}P_{k}
-}{\Phi_{k k}P'_nnP_k}.
-}
 
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
 
@@ -195,9 +197,17 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 The fac function is the original fa function which is now called by fa repeatedly to get confidence intervals. 
 
+SPSS will sometimes use a Kaiser normalization before rotating.  This will lead to different solutions than reported here.  To get the Kaiser normalized loadings, use \code{\link{kaiser}}.
+
+The communality for a variable is the amount of variance accounted for by all of the factors.  That is to say, for orthogonal factors, it is the sum of the squared factor loadings (rowwise).  The communality is insensitive to rotation.  However, if an oblique solution is found, then the communality is not the sum of squared pattern coefficients. In both cases (oblique or orthogonal) the communality is the diagonal of the reproduced correlation matrix where \eqn{_nR_n =  _{n}P_{k  k}\Phi_{k k}P_n'}{nRn = nPk k\Phi k kPn' }  where P is the pattern matrix and \eqn{\Phi} is the factor intercorrelation matrix. This is the same, of course to multiplying the pattern by the structure: \eqn{R = P S'} {R = PS'} where the Structure matrix is \eqn{S = \Phi P}{S = Phi P}. Similarly, the eigen values are the diagonal of the product \eqn{ _k\Phi_{kk}P'_{nn}P_{k}
+}{\Phi_{k k}P'_nnP_k}. 
+ 
+
 A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.}
 
 \seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
+
+\code{\link{fa.sort}} will sort the factor loadings into echelon form. \code{\link{fa.organize}} will reorganize the factor pattern matrix into any arbitrary order of factors and items.  
 
 \code{\link{KMO}} and \code{\link{cortest.bartlett}} for various tests that some people like. }
 \examples{

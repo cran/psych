@@ -23,12 +23,15 @@ function(m,x,y)  {
         phi <- reorder[(numx+1):nxy,(numx+1):nxy] 
         phi.inv <- solve(phi)
         X.resid <- X - Y %*% phi.inv %*% t(Y)
-        sd <- diag(sqrt(1/diag(X.resid)))
-        X.resid <- sd %*% X.resid %*% sd
+       # sd <- diag(sqrt(1/diag(X.resid)))
+       # X.resid <- sd %*% X.resid %*% sd
+       X.resid <- cov2cor(X.resid)  
        
         colnames(X.resid) <- rownames(X.resid) <- colnames(m)[x]
         
         class(X.resid)  <- c("psych","partial.r")
         return(X.resid)
      	}
+     #modified March 23 to use cov2cor instead of the sd line.  This makes the diagonal exactly 1.
+     
 

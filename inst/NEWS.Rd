@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.3 (2014-2-15)}{
+\section{Changes in psych version 1.4.4 (2014-4-15)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.4.3 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.2.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.2 was released in February of 2014, the last two digits reflect the day of any modifications).
+      \item Version 1.4.4 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.3.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.3 was released in March of 2014, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -16,11 +16,9 @@
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
-     
       \item Add labels to factor.plot for more than 2 factors?  -- this will be hard   
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
-      
      \item add option to do subject density and item density plot to IRT plot.
     \item note that the df in set.cor should reflect the number of cases actually used   
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
@@ -28,10 +26,39 @@
       \item clean up lavaan diagram so that the output is more readable    
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
      \item To help those who want to simulate a bifactor model, make it explicit  
-     \item Add a modification to error bars suggested by Jaroslaw Arlet    
+   
+    
     }
   }
   } 
+  
+\section{Changes in psych version 1.4.3 (2014-03-24)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added best.scale to empirically combine the best items for a scale to predict  particular criteria.
+          \item Changed the call to best.items to match fa.lookup. 
+          \item Added a warning for cor.ci if some of the correlations are NA as would be the resulting scales.  Will still find the other correlations but be careful.
+          \item Added empirical estimates of fit to the fa and fa.stats functions.  These are more robust to misfit for matrices that are not positive definite. (Requested by David Condon and Lorien Elleman).
+          \item Added these empirical estimates of fit to vss.
+          \item Added the nfactors function to do a call to vss and then do nice graphics
+          \item Added fa.organize to hand sort factor output by factor number and by item order. 
+          \item Added item.lookup to organize items by factor and then by item mean. 
+          \item Added densityBy to show violin plots.  Will do this by groups.
+          \item Added cats eyes to error.bars and error.bars.by. 
+          \item Added normal theory confidence intervals to corr.test. (Suggested by Alexander Weiss)
+           \item Added the ability to just resample and not simulate in fa.parallel.  (Requested by Ashley Kendall.) 
+            \item Fixed fa.parallel and fa.parallel.poly for case of very low frequency data.  We now resample until we get a matrix with no NA values. (Problem reported by Eric Green). 
+           \item Added a modification to error bars to print a dark circle at the mean. ( Suggested by Jaroslaw Arlet.) 
+          \item Add significance and confidence intervals to partial.r (Suggested by Elizabeth Schubach).   
+          }
+   }
+\subsection{Bugs Fixed}{
+   \itemize{
+         \item  cor.plot was incorrectly plotting the numbers by col instead of row.  Just a problem for asymmetric matrices. Reported by David Condon.
+         \item corr.p was not printing correctly.  Reported by Robin Beaumount.
+            }
+                       } 
+  }
   
   \section{Changes in psych version 1.4.2.1 (2014-02-03)}{
   

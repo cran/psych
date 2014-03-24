@@ -2,15 +2,18 @@
 \alias{vss}
 \alias{VSS}
 \alias{MAP}
+\alias{nfactors}
 
-\title{ Apply the Very Simple Structure and MAP criteria to determine the appropriate number of factors.}
-\description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice.
+\title{ Apply the Very Simple Structure, MAP, and other criteria to determine the appropriate number of factors.}
+\description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice. \code{\link{nfactors}} finds and plots several of these alternative estimates.
 }
 \usage{
 vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
 n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
 VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
 n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
+             title="Number of Factors",pch=16,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,8 +24,9 @@ n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
   \item{fm}{factoring method -- fm="pa"  Principal Axis Factor Analysis, fm = "minres" minimum residual (OLS) factoring fm="mle"  Maximum Likelihood FA, fm="pc" Principal Components" }
   \item{n.obs}{Number of observations if doing a factor analysis of correlation matrix.  This value is ignored by VSS but is necessary for the ML factor analysis package.}
   \item{plot}{plot=TRUE  Automatically call VSS.plot with the VSS output, otherwise don't plot}
-  \item{title}{a title to be passed on to VSS.plot}
-  \item{\dots}{parameters to pass to the factor analysis program 
+\item{title}{a title to be passed on to VSS.plot}
+\item{pch}{the plot character for the nfactors plots}
+\item{\dots}{parameters to pass to the factor analysis program 
       The most important of these is if using a correlation matrix is covmat= xx}
 }
 \details{Determining the most interpretable number of factors from a factor analysis is perhaps one of the greatest challenges in factor analysis.  There are many solutions to this problem, none of which is uniformly the best.  "Solving the number of factors problem is easy, I do it everyday before breakfast.  But knowing the right solution is harder" (Kaiser, 195x).  
@@ -64,6 +68,8 @@ e.g., the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000.
 
 Wayne Velicer's MAP criterion has been added as an additional test for the optimal number of components to extract.  Note that VSS and MAP will not always agree as to the optimal number.
 
+
+
 A variety of rotation options are available. These include varimax, promax, and oblimin. Others can be added.  Suggestions are welcome.
 }
 \value{ A data.frame with entries:
@@ -74,6 +80,10 @@ A variety of rotation options are available. These include varimax, promax, and 
  sqresid: squared residual correlations\cr
  RMSEA: the RMSEA for each number of factors \cr
  BIC: the BIC for each number of factors \cr
+ eChiSq: the empirically found chi square \cr
+ eRMS: Empirically found mean residual \cr
+ eCRMS: Empirically found mean residual corrected for df \cr
+ eBIC: The empirically found BIC based upon the eChiSq \cr
  fit: factor fit of the complete model\cr
  cfit.1: VSS fit of complexity 1\cr
  cfit.2: VSS fit of complexity 2 \cr

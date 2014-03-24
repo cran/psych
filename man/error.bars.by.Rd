@@ -6,9 +6,9 @@
 }
 \usage{
 error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,
-    ylim= NULL, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, pos=NULL,
-      arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
-        lty=NULL,lines=TRUE, legend=0,...)
+    ylim= NULL,xlim=NULL, eyes=TRUE, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, 
+    pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,
+    colors=c("black","blue","red"), lty=NULL,lines=TRUE, legend=0,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,7 +19,8 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,
   \item{ylab}{y label}
   \item{xlab}{x label}
   \item{main}{title for figure}
-  \item{ylim}{if specified, the limits for the plot, otherwise based upon the data}
+  \item{ylim}{if specified, the y limits for the plot, otherwise based upon the data}
+  \item{xlim}{if specified, the x limits for the plot, otherwise based upon the data}  \item{eyes}{Should 'cats eyes' be drawn'}
   \item{alpha}{alpha level of confidence interval.  Default is 1- alpha =95\% confidence interval}
   \item{sd}{sd=TRUE  will plot Standard Deviations instead of standard errors}
   \item{labels}{ X axis label }

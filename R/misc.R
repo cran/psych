@@ -140,19 +140,25 @@ test.all <- function(p) {
  detach(ob,character.only=TRUE)
 }
 
-  
+
+
   "best.items" <- 
-function(x,c1=1,cut=.3, abs=TRUE, contents=NULL,digits=2) {
+function(x,c1=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) {
+if((nrow(x) !=ncol(x)) && cor) {x <- cor(x,use="pairwise")} #convert to correlation if necessary
 if(abs) {ord <- order(abs(x[,c1]),decreasing=TRUE)
-  value <- x[ord,c1]
-  value <- value[abs(value) >cut]
+  value <- x[ord,c1,drop=FALSE]
+  value <- value[(abs(value) >cut),,drop=FALSE]
   } else {ord <- order(x[,c1],decreasing=TRUE)
   value <- x[ord,c1]
   value <- value[abs(value) >cut] }
 value <- round(data.frame(value),digits)
-if(!is.null(contents)) {if(!is.factor(contents)) {temp <- lookup(rownames(value),contents)
-  if(nrow(value) > nrow(temp))  value <- value[rownames(value) %in% contents[,1], ]
-  value <- data.frame(value,temp)}}
+if((!is.null(dictionary)) && !is.factor(dictionary)) {temp <- lookup(rownames(value),dictionary)
+   value <- merge(value,temp,by="row.names",all.x=TRUE,sort=FALSE)
+   rownames(value) <- value[,"Row.names"]
+   value <- value[-1]
+  if(abs) {ord <- order(abs(value[,c1]),decreasing=TRUE) } else {ord <- order(value[,c1],decreasing=TRUE)}
+   value <- value[ord,] 
+   }
 return(value)
 }
   
@@ -162,24 +168,174 @@ return(value)
 function(x,y,c1=NULL) {
 if (is.null(c1)) {temp <- match(x,rownames(y))} else {
      temp <- match(x,y[,c1])}
- y <- (y[temp[!is.na(temp)],])
+ y <- (y[temp[!is.na(temp)],,drop=FALSE])
   return(y)}
  
  #use lookup to take fa/ic output and show the results 
 "fa.lookup"  <-
    function(f,dictionary,digits=2) {
-   
    f <- fa.sort(f)
+  
    if(!(is.matrix(f) || is.data.frame(f))) {h2 <- f$communality
     com <- f$complexity
+     ord <- rownames(f$loadings) #keep this order
     f <- f$loadings} else {h2<- NULL
-       com <- NULL}
-   
+       com <- NULL
+       ord <- rownames(f)}
+    
    contents <- lookup(rownames(f),dictionary)
-   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits),contents)} else {
-   results <- data.frame(round(unclass(f),digits=digits),contents)}
+   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits))} else {
+   results <- data.frame(round(unclass(f),digits=digits))}
+   results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
+   rownames(results) <- results[,"Row.names"]
+   results <- results[ord,-1]  #now put it back into the correct order
    return(results)}
-   
+  
 
 
+ #created 20/2/14
+ #find the scales based upon the items that most correlate with a criteria
+ #pure dust bowl empiricism
+ 
+ "best.scales" <- 
+ function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,digits=2) {
+
+#first, declare a function to identify the bad items and drop them from the keys
+ findBad <- function(key,r) { 
+ss <- abs(key) > 0 
+rss <- r[ss,ss]
+if(any(is.na(rss))){ #some of these are bad
+n.bad <-  apply(rss,1,function(x) sum(is.na(x)))
+key[names(which.max(n.bad))] <- 0
+findBad(key,r)}
+return(key)
+}
+
+short <- function(key,r) {
+
+kn <- names(key[abs(key[,1]) >0,1])
+if(is.null(kn)) kn <- names(which(abs(key[,1]) >0))
+cn <- colnames(key)
+ord <- order(abs(r[kn,cn]),decreasing=TRUE)
+kn <- kn[ord]
+result <- r[kn,cn,drop=FALSE]
+return(result)
+}
+
+ nvar <- ncol(x)
+ if(nrow(x) != nvar) {r <- cor(x,use="pairwise")} else {r <- x}  #convert data to a correlation matrix
+ ny <- length(criteria)
+ nc <- length(cut)
+ ni <- length(n.item)
+ ord.name <- NULL
+if(length(cut) ==1)  cut <- rep(cut,ny)
+if(length(n.item) ==1) n.item <- rep(n.item,ny)
+ if(ny > 1 ) {ord <- apply(abs(r[,criteria]),2,order,decreasing=TRUE) 
+     for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[criteria[i],ord[n.item[i]+1,i]])) 
+     ord.name <- c(ord.name, rownames(r)[ord[1:n.item[i],i]] )
+    }
+     } else {
+         ord <- order(abs(r[criteria,]),decreasing=TRUE)
+         for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[ord[n.item[i]+1],criteria])) }
+        }
+
+ key <- matrix(0,ncol=ny,nrow=nvar)
+ key[t(r[criteria,] >= cut)] <- 1
+ key[t(r[criteria,] <= -cut)] <- -1
+ rownames(key)  <- colnames(r)
+ colnames(key)  <- criteria
+ c <- key  #this just gets it to be a matrix of the right size and names
+ if(!overlap)  {key[criteria,criteria] <- 0} else {for(i in 1:ny) key[criteria[i],criteria[i]] <- 0}
+ #colnames(key) <- paste(criteria,"S",sep=".")
+ colnames(key) <- criteria
+ 
+if(any(is.na(r))) {#Are there any bad values
+for(i in 1:ny) {key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
+c[,i] <- colSums(key[,i] * r,na.rm=TRUE)}    #replace matrix addition with a colSums
+c <- t(c)
+} else {#otherwise, don't bother
+
+ c<- t(key) %*% r    #we can do the matrix multiply because there are no bad data         
+ }
+ C <- c %*% key
+ re <- diag(c[,criteria])/sqrt(diag(C))
+ni <- colSums(abs(key))
+R <- cov2cor(C)
+
+short.key <- list()
+value <- list()
+for(i in 1:ny) {short.key[[criteria[i]]] <- short(key[,i,drop=FALSE],r) 
+
+if(!is.null(dictionary)) {if(!is.factor(dictionary)) {temp <- lookup(rownames(short.key[[criteria[i]]]),dictionary)
+ # if(nrow(value) > nrow(temp))  value <- value[rownames(value) %in% dictionary[,1], ]
+  value[[criteria[i]]] <- data.frame(round(short.key[[criteria[i]]],digits=digits),temp)}}
+ } 
+results <- list(r=re,n.items=ni,R=R,cut=cut,short.key=short.key,value=value,key=key,ordered=ord.name)
+class(results) <- c("psych","best.scales")
+return(results)
+}
+ 
+ 
+ 
+  "fa.organize" <- 
+function(fa.results,o=NULL,i=NULL,cn=NULL) {
+  if(!is.null(o)) {fa.results$loadings <- fa.results$loadings[,o]
+       fa.results$Structure <- fa.results$Structure[,o]
+       fa.results$weights <- fa.results$weights[,o]
+       fa.results$valid <- fa.results$valid[o]
+       fa.results$score.cor <- fa.results$score.cor[o,o]
+       fa.results$r.scores <- fa.results$r.scores[o,o]
+       fa.results$R2 <- fa.results$R2[o]
+  if(!is.null(cn)) {colnames(fa.results$loadings) <- cn}
+ fa.results$Phi <- fa.results$Phi[o,o]}
+  if(!is.null(i)) {fa.results$loadings <- fa.results$loadings[i,]
+   fa.results$Structure <- fa.results$Structure[i,]
+       fa.results$weights <- fa.results$weights[i,]
+       fa.results$complexity=fa.results$complexity[i]
+       fa.results$uniquenesses <- fa.results$uniquenesses[i]}
+  return(fa.results)
+  }
+  
+  
+  
+  "item.lookup" <- 
+function (f,m, dictionary,cut=.3, digits = 2) 
+{
+    f <- fa.sort(f)
+    if (!(is.matrix(f) || is.data.frame(f))) {
+        h2 <- f$communality
+        com <- f$complexity
+        ord <- rownames(f$loadings)
+        nfact <- ncol(f$loadings)
+        f <- f$loadings
+    }
+    else {
+        h2 <- NULL
+        com <- NULL
+        ord <- rownames(f)
+        nfact <- ncol(f)
+    }
+    means <- m[ord]
+    f <- data.frame(unclass(f),means=means)
+
+    contents <- lookup(rownames(f), y=dictionary)
+    if (!is.null(h2)) {
+        results <- data.frame(round(f, digits = digits), 
+            com = round(com, digits = digits), h2 = round(h2, 
+                digits = digits))
+    }
+    else {
+        results <- data.frame(round(f, digits = digits))
+    }
+    results <- merge(results, contents, by = "row.names", all.x = TRUE, 
+        sort = FALSE)
+    rownames(results) <- results[, "Row.names"]
+    results <- results[ord, -1]
+    res <- results[0,]  #make an empty data frame of the structure of results
+    for (i in 1:nfact) { temp <-results[abs(results[,i]) > cut,]
+     ord <- order(temp[,"means"])
+     res <- rbind(res,temp[ord,])
+     }
+    return(res)
+}
 

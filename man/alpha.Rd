@@ -100,8 +100,9 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 }
 \author{William Revelle }
 
+\note{By default, items that correlate negatively with the overall scale will be reverse coded.  This option may be turned off by setting check.keys = FALSE.  If items are reversed, then each item is subtracted from the  minimum item response + maximum item response where  min and max are taken over all items.  Thus, if the items intentionally differ in range, the scores will be off by a constant.  See \code{\link{scoreItems}} for a solution. }
 
-\seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{guttman}}, \code{\link{score.items}}, \code{\link{cluster.cor}}}
+\seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{guttman}}, \code{\link{scoreItems}}, \code{\link{cluster.cor}}}
 \examples{
 set.seed(42) #keep the same starting values
 #four congeneric measures

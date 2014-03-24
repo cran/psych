@@ -21,7 +21,7 @@ scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="med
   \item{missing}{missing = TRUE is the normal case and data are imputed according to the impute option.  missing=FALSE, only complete cases are scored.}
   \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores.  }
   \item{delete}{if delete=TRUE, automatically delete items with no variance (and issue a warning)}
-  \item{min}{May be specified as minimum item score allowed, else will be calculated from data}
+  \item{min}{May be specified as minimum item score allowed, else will be calculated from data.  min and max should be specified if items differ in their possible minima or maxima.  See notes for details.}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
   \item{uniqueitems}{If specified, the set of possible unique response categories}
   \item{digits}{ Number of digits to report }
@@ -87,6 +87,8 @@ By default, missing values are replaced with the corresponding median value for 
 
 An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 
+When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items.
+
 } 
 \references{
 
@@ -125,6 +127,9 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  #to get the response frequencies, we need to not use the age variable
  scores <- scoreItems(keys[1:27,],bfi[1:27],min=1,max=6)
  scores
+ #The scores themselves are available in the scores$scores object.  I.e.,
+ describe(scores$scores)
+ 
  
  #compare this output to that for the impute="none" option for SAPA type data
  #first make many of the items missing in a missing pattern way
@@ -133,6 +138,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  missing.bfi[1001:2000,c(1:2,9:10)] <- NA
  scores <- scoreItems(keys,missing.bfi,impute="none",min=1,max=6)
  scores
+ describe(scores$scores)  #the actual scores themselves
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

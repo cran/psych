@@ -26,12 +26,15 @@ n.obs <- dim(x)[1]
  rep.rots <- list()
  for (trials in 1:n.iter) {
 progressBar(trials,n.iter,"fa.parallel.poly")
- #xs <- matrix(sample(nx,n.obs*nvar,replace=TRUE),ncol=nvar) #this does not replicate the p values
+ 
+ bad <- TRUE
+ while(bad) {
  xs <- matrix(apply(x,2,function(y) sample(y,n.obs,replace=TRUE)),ncol=nvar) #do it column wise
-# if(typ=="poly") {tets <- polychoric(xs,progress=FALSE)} else {tets <- tetrachoric(xs,correct=correct)}
+
 tets <- polychoric(xs,progress=FALSE,global=global)
-# tets <- mixed.cor(xs)
   r <- tets$rho
+  bad <- any(is.na(r))
+  }
   values.samp <- eigen(tets$rho)$values
   e.values[["pc"]][[trials]] <- values.samp
    					
@@ -76,6 +79,7 @@ return(results)
  #modified Oct 2, 2013 to add the ability to do random data as well 
  #modified Oct 22, 2013 to allow choice of what to plot
  #modified 1/15/14 to pass the global parameter
+ #modified 3/24/14 to check for bad resamples
  "plot.poly.parallel" <-
  function(x,show.legend=TRUE,fa="both",...) {
  e.values <- x$pc.values

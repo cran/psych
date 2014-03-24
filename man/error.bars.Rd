@@ -5,8 +5,9 @@
 }
 \usage{
 error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable",
-  main=NULL, ylim = NULL, alpha=.05,sd=FALSE, labels = NULL, pos = NULL, 
-    arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE, ...)
+  main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05,sd=FALSE, labels = NULL, 
+   pos = NULL,  arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE,
+    ...)
 }
 
 \arguments{
@@ -16,6 +17,8 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
   \item{xlab}{x label}
   \item{main}{title for figure}
   \item{ylim}{if specified, the limits for the plot, otherwise based upon the data}
+  \item{xlim}{if specified, the x limits for the plot, otherwise c(.5,nvar + .5)}
+  \item{eyes}{should 'cats eyes' plots be drawn}
   \item{alpha}{alpha level of confidence interval  -- defaults to 95\% confidence interval}
   \item{sd}{if TRUE, draw one  standard deviation instead of standard errors at the alpha level}
   \item{labels}{ X axis label }

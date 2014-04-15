@@ -79,7 +79,7 @@
          for (i in 1:nvar) {
          drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
                             } 
-         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA)}
+         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA)}
         by.item <- data.frame(matrix(unlist(drop.item),ncol=6,byrow=TRUE))
         if(nsub > nvar) {by.item[6] <- sqrt(by.item[6]/nsub) 
          colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","alpha se") } else {
@@ -137,8 +137,9 @@
          R <- cov2cor(C)
        	 alpha.1(C,R)
        	 })  #end of mclapply 
-       	  boot <- matrix(unlist(boot),ncol=5,byrow=TRUE)
-       	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","ase")
+       
+       	  boot <- matrix(unlist(boot),ncol=6,byrow=TRUE)
+       	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","s/n","ase")
        	  boot.ci <- quantile(boot[,1],c(.025,.5,.975))
        	}} else {boot=NULL
        	         boot.ci <- NULL}

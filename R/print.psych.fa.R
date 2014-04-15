@@ -61,7 +61,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {
            cat("Standardized loadings (pattern matrix) based upon correlation matrix\n")
-           com <- x$complexity
+           com <- x$complexity[u2.order] # u2.order added 9/4/14
            if(!is.null(com)) { print(cbind(fx,h2,u2,com),quote="FALSE",digits=digits)} else {
             print(cbind(fx,h2,u2),quote="FALSE",digits=digits) } } else {
 	    	cat("Unstandardized loadings (pattern matrix) based upon covariance matrix\n") 

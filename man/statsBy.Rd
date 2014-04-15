@@ -3,7 +3,7 @@
 \alias{statsBy.boot}
 \alias{statsBy.boot.summary}
 \title{Find statistics (including correlations) within and between groups for basic multilevel analyses}
-\description{When examining data at two levels (e.g., the individual and by some grouping variable), it is useful to find basic descriptive statistics (means, sds, ns per group, within group correlations) as well as between group statistics (over all descriptive statistics, and overall between group correlations). Of particular use is the ability to decompose a matrix of correlations at the individual level into correlations within group and correlations between groups. 
+\description{When examining data at two levels (e.g., the individual and by some set of grouping variables), it is useful to find basic descriptive statistics (means, sds, ns per group, within group correlations) as well as between group statistics (over all descriptive statistics, and overall between group correlations). Of particular use is the ability to decompose a matrix of correlations at the individual level into correlations within group and correlations between groups. 
 }
 \usage{
 statsBy(data, group, cors = FALSE, method="pearson")
@@ -12,9 +12,9 @@ statsBy.boot.summary(res.list,var="ICC2")
 }
 \arguments{
   \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  One of these columns should be the values of a grouping variable.}
-  \item{group}{The name or number of the variable in data to use as the grouping variable. This needs to be the first variable.}
+  \item{group}{The names or numbers of the variable in data to use as the grouping variables.}
   \item{cors}{Should the results include the correlation matrix within each group?  Default is FALSE.}
-\item{method}{What kind of correlations should be found (default is pearson product moment)}
+\item{method}{What kind of correlations should be found (default is Pearson product moment)}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}

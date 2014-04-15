@@ -43,8 +43,10 @@ To compare more than two solutions, x may be a list of matrices, all of which wi
 \references{
 Burt, Cyril (1948) The factorial study of temperamental traits. British Journal of Statistical Psychology, 1(3) 178-203.
 
+Lorenzo-Seva, U. and ten Berge, J. M. F. (2006). Tucker's congruence coefficient as a meaningful index of factor similarity. Methodology: European Journal of Research Methods for the Behavioral and Social Sciences, 2(2):57-64.
+
 Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
-\cr
+
 
 Revelle, W. (In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/})
 }

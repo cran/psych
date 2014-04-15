@@ -51,13 +51,18 @@ Other useful functions related to finding and displaying correlations include \c
 
 }
 \examples{
-data(sat.act)
-ct <- corr.test(sat.act)  #find the correlations and give the probabilities
-ct #show the results
-corr.test(sat.act[1:3],sat.act[4:6]) #reports all values corrected for multiple tests
 
-corr.test(sat.act[1:3],sat.act[4:6],adjust="none")  #don't adjust the probabilities
-corr.p(ct$r,ct$n)  #take correlations and show the probabilities
+ct <- corr.test(attitude)  #find the correlations and give the probabilities
+ct #show the results
+corr.test(attitude[1:3],attitude[4:6]) #reports all values corrected for multiple tests
+
+#corr.test(sat.act[1:3],sat.act[4:6],adjust="none")  #don't adjust the probabilities
+
+#take correlations and show the probabilities as well as the confidence intervals
+print(corr.p(cor(attitude[1:4]),30),short=FALSE)  
+
+#don't adjust the probabilities
+print(corr.test(sat.act[1:3],sat.act[4:6],adjust="none"),short=FALSE)  
 
 }
 

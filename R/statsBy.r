@@ -8,7 +8,7 @@
     }
   pairwise <- function(x) {n <- t(!is.na(x)) %*% (!is.na(x))
               n}
-       gr <- which(colnames(data) == group)
+       gr <- which(colnames(data) %in% group)
        
        z1 <- data[,group]
        z <- z1
@@ -42,12 +42,23 @@
               npr <- (colSums(xvals$n-1)+nrow(xvals$n))/(nrow(xvals$n))
                xvals$ICC1 <- (MSb-MSw)/(MSb + MSw*(npr-1))
                xvals$ICC2 <- (MSb-MSw)/(MSb)
-                             if(cors) { r <- by(data,z,function(x) cor(x[-1],use="pairwise",method=method))
+               
+             if(cors) { r <- by(data,z,function(x) cor(x[-gr],use="pairwise",method=method))
               nvars <-  ncol(r[[1]])
               xvals$r <- r
               lower <- lapply(r,function(x) x[lower.tri(x)])
+             
              xvals$within <- t(matrix(unlist(lower),nrow=nvars*(nvars-1)/2))
-             wt <- by(data,z,function(x) count.pairwise(x[-1]))
+             
+              cnR <- abbreviate(cnames[-gr],minlength=5) 
+             
+      k <- 1
+       colnames(xvals$within) <- paste("V",1:ncol(xvals$within))
+      for(i in 1:(nvars-1)) {for (j in (i+1):nvars) {
+      colnames(xvals$within)[k] <- paste(cnR[i],cnR[j],sep="-")
+      k<- k +1 }}
+             
+             wt <- by(data,z,function(x) count.pairwise(x[-gr]))
              lower.wt <- t(matrix(unlist(lapply(wt,function(x) x[lower.tri(x)])    )  ,nrow=nvars*(nvars-1)/2))
              lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))
              pool  <- colSums( lower.wt * xvals$within,na.rm=TRUE)
@@ -59,7 +70,7 @@
              xvals$sd.r <-  matrix(NaN,nvars,nvars)
              xvals$sd.r[lower.tri(xvals$sd.r)] <- pool.sd
              xvals$sd.r[upper.tri(xvals$sd.r)] <- pool.sd
-             colnames(xvals$pooled) <- rownames (xvals$pooled) <- cnames[-1]
+             colnames(xvals$pooled) <- rownames (xvals$pooled) <- cnames[-gr]
               }
 
               nvar <- ncol(data)-length(group) #we have dropped the grouping variable

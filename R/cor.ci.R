@@ -81,10 +81,11 @@ if(!require(parallel)) {warning("parallel package needed for mclapply")}
       ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e)
       cnR <- abbreviate(colnames(rho),minlength=5) 
       k <- 1
-      for(i in 2:nvar) {for (j in 1:(i-1)) {
-      rownames(ci.rot)[k] <- paste(cnR[j],cnR[i],sep="-")
+     for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
+      rownames(ci.rot)[k] <- paste(cnR[i],cnR[j],sep="-")
       k<- k +1 }}
-
+      
+     
 
 
 results <- list(rho=rho, means=means.rot,sds=sds.rot,ci=ci.rot,Call= cl,replicates=rep.rots)

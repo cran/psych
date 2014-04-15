@@ -344,7 +344,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
      				                 
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
-     		                             }
+     		                             } else {message("Specified rotation not found, rotate='none' used")}
      	               }}}
      	  
      }}

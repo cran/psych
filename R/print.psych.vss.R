@@ -43,7 +43,7 @@ if(!is.null(x$cfit.1)) {
  vss.map <- round(min(x$map,na.rm=TRUE) ,digits) 
  cat(vss.map," with " ,which.min(x$map), " factors ") 
  bic.min <- round(min(x$vss.stats[["eBIC"]],na.rm=TRUE),digits)
- cat("\nemprical BIC achieves a minimum of ", bic.min," with ", which.min(x$vss.stats[["BIC"]])," factors\n")
+ cat("\nEmpirical BIC achieves a minimum of ", bic.min," with ", which.min(x$vss.stats[["BIC"]])," factors\n")
  sabic.min <- round(min(x$vss.stats[["SABIC"]],na.rm=TRUE),digits)
  cat("Sample Size adjusted BIC achieves a minimum of ", sabic.min," with ", which.min(x$vss.stats[["SABIC"]])," factors\n")
  # cat("\nVelicer MAP\n")

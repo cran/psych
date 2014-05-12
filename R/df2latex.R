@@ -120,8 +120,10 @@ if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analy
 }
 
 "fa2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
-if(class(f)[2] !="fa") f <- f$fa
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,alpha=.05,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
+if(class(f)[2] == "fa.ci") {
+if(is.null(f$cip)) {px <- f$cis$p} else {px <- f$cip}} else {px <- NULL}  #get the probabilities if we did fa.ci
+#if(class(f)[2] !="fa") f <- f$fa
 x <- unclass(f$loadings)
 if(!is.null(f$Phi)) {Phi <- f$Phi} else {Phi <- NULL}
 nfactors <- ncol(x)
@@ -129,7 +131,7 @@ nfactors <- ncol(x)
 if(nfactors > 1) {if(is.null(Phi)) {h2 <- rowSums(x^2)} else {h2 <- diag(x %*% Phi %*% t(x)) }} else {h2 <-x^2}
 u2 <- 1- h2
 vtotal <- sum(h2 + u2)
-
+if(cut > 0) x[abs(x) < cut] <- NA    #modified May 13 following a suggestion from Daniel Zingaro
 if(!is.null(f$complexity)) {x <- data.frame(x,h2=h2,u2=u2,com=f$complexity) } else {x <- data.frame(x,h2=h2,u2=u2)}
 #first set up the table
  nvar <- dim(x)[2]
@@ -156,7 +158,8 @@ footer <- paste(footer,"
 #now put the data into it
  
  x <- round(x,digits=digits)
- x[abs(x) < cut] <- NA
+ 
+ 
  cname <- colnames(x)
  if (short.names) cname <- 1:nvar
  names1 <- paste(cname[1:(nvar-1)], " & ")
@@ -164,7 +167,10 @@ footer <- paste(footer,"
  
  if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {allnames <- c("  &  ",names1,lastname,"\\cr \n")}
  x <- format(x,drop0trailing=FALSE)  #to keep the digits the same
- 
+ {if(!is.null(pf) && (cut == 0)) { temp <- x[1:nfactors]
+ temp[px < alpha] <- paste("\\bf{",temp[px < alpha],"}",sep="")
+ x[1:nfactors] <- temp
+ }
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
  value <- gsub("NA", "  ", value, fixed = TRUE)
  if(rowlabels) value <- {paste(sanitize.latex(names(value)),"  & ",value)} else {paste("  &  ",value)}
@@ -212,9 +218,8 @@ footer <- paste(footer,"
        phi <- paste(phi, "\\cr", "\n")
        cat(phi)}
  cat(footer)   #close it up with a footer
-
  }
- 
+ }
  
  
  "irt2latex" <- 

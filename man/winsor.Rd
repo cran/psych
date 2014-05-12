@@ -37,7 +37,7 @@ winsor.means(sat.act) #compare with the means of the winsorized scores
 y <- winsor(sat.act)
 describe(y)
 xy <- data.frame(sat.act,y)
-pairs.panels(xy) #to see the effect of winsorizing 
+#pairs.panels(xy) #to see the effect of winsorizing 
 x <- matrix(1:100,ncol=5)
 winsor(x)
 winsor.means(x)

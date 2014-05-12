@@ -1,6 +1,6 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.5 (2014-5-1)}{
+\section{Changes in psych version 1.4.6 (2014-6-1)}{
   \subsection{Introduction}{
     \itemize{
       \item Version 1.4.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.3 was released in March of 2014, the last two digits reflect the day of any modifications).
@@ -29,6 +29,36 @@
     }
   }
   } 
+ 
+ \section{Changes in psych version 1.4.5 (2014-05-11)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added con2cat to allow making discrete categories from continuous data.
+          \item  Modified the cats eyes in error.bars so that colors can be specified (requested by Lauren Tindal).
+          \item Modified set.cor so that calls by name or location work equally well.
+          \item Added the option to change the size of the correlation numbers in cor.plot to reflect the probability values.  
+          \item Added a default so that cor.ci automatically draws the scaled cor.plot (requested by David Condon).
+          \item Changed the structure of the fa return when we have confidence intervals.  It has been forming another fa object, but this leads to confusion when sorting.
+          \item Modified print.psych.fa.ci so that it handles the revised fa output.
+          \item Modified vss so that it doesn't find factor scores on each iteration.
+          \item Added the plot.cor.upperLowerCi function to plot the confidence boundaries for correlations (requested by David Condon)
+          \item Modified fa.sort so that it will handle confidence intervals for loadings (requested by Jason French).
+          \item Modified fa2latex to boldface significant loadings based upon the confidence intervals (requested by Jason French).
+          \item Modified score.irt so that it will change the sign to match the direction of the keys (if supplied)
+          \item modified error.bars to that x axis labels can be rotated to be vertical (requested by Greg Miller).
+          }
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+         \item Fixed cor.ci so that it handles case of missing correlations (reported by David Condon)
+         \item Modified plot.irt so that labels are applied for multiple factor solutions (reported by Jason French).
+    \item Modified fa2latex so that it will not blank out h2 and u2 values for cut >0  (suggested by Daniel Zingaro).    
+            }
+                       } 
+  }
+ 
+  
   
 \section{Changes in psych version 1.4.4 (2014-04-15)}{
   \subsection{Additions}{

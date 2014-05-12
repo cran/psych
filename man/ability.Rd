@@ -42,7 +42,8 @@ Condon, David and Revelle, William, (2014) The International Cognitive Ability R
 }
 \examples{
 data(ability)
-ability.irt <- irt.fa(ability)
-ability.scores <- score.irt(ability.irt,ability)
+#not run
+# ability.irt <- irt.fa(ability)
+# ability.scores <- score.irt(ability.irt,ability)
 }
 \keyword{datasets}

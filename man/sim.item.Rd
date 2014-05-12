@@ -6,6 +6,7 @@
 \alias{item.dichot}
 \alias{sim.circ}
 \alias{circ.sim}
+\alias{con2cat}
 \title{Generate simulated data structures for circumplex, spherical, or simple structure }
 \description{Rotations of factor analysis and principal components analysis solutions typically try to represent correlation matrices as simple structured.  An alternative structure, appealing to some, is a circumplex structure where the variables are uniformly spaced on the perimeter of a circle in a two dimensional space.  Generating simple structure and circumplex data is straightforward, and is useful for exploring alternative solutions to affect and personality structure. A generalization to 3 dimensional (spherical) data is straightforward.
 }
@@ -23,6 +24,7 @@ item.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.
 sim.spherical(simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55,
    zloading=.55, gloading=0, xbias=0,  ybias = 0, zbias=0,categorical=FALSE, 
    low=-3,high=3,truncate=FALSE,cutpoint=0) 
+con2cat(old,cuts=c(0,1,2,3),where)
 }
 	
 %- maybe also 'usage' for other objects documented here.
@@ -45,6 +47,9 @@ sim.spherical(simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .
   \item{cutpoint}{What is the cutpoint }
   \item{nx}{number of variables for the first factor in sim.spherical}
   \item{ny}{number of variables for the second and third factors in sim.spherical}
+  \item{old}{a matrix or data frame}
+  \item{cuts}{Values of old to be used as cut points when converting continuous values to categorical values}
+  \item{where}{Which columns of old should be converted to categorical variables.  If missing, then all columns are converted.}
 }
 \details{This simulation was originally developed to compare the effect of skew on the measurement of affect (see Rafaeli and Revelle, 2005).  It has been extended to allow for a general simulation of affect or personality items with either a simple structure or a circumplex structure.  Items can be continuous normally distributed, or broken down into n categories (e.g, -2, -1, 0, 1, 2).  Items can be distorted by limiting them to these ranges, even though the items have a mean of (e.g., 1).  
 
@@ -74,6 +79,11 @@ plot(fa(item.sim(16,500),2)$loadings,main="Simple Structure") #simple structure
 #
 cluster.plot(fa(item.dichot(16,low=0,high=1),2))
 
+ set.seed(42)
+ if(require(mvtnorm)) {
+ data <- rmvnorm(1000, c(0, 0), matrix(c(1, .5, .5, 1), 2, 2)) #continuous data
+ new <- con2cat(data,c(-1.5,-.5,.5,1.5))  #discreet data
+ polychoric(new)}
 #not run
 #x12 <- sim.item(12,gloading=.6)
 #f3 <- fa(x12,3,rotate="none")

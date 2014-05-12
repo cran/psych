@@ -1,7 +1,7 @@
  #Pearson or polychoric correlations with confidence intervals
 
  "cor.ci" <- 
-function(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson") {
+function(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson",plot=TRUE,...) {
  cl <- match.call()
  n.obs <- dim(x)[1]
  
@@ -31,10 +31,11 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
  
          } 
          if(!is.null(keys)) {bad <- FALSE
-         if(any(is.na(rho))) {warning("Some of the item correlations are NA and thus finding scales that include those items will not work.\n We will try to do it for those  scales which do not include those items.
+         if(any(is.na(rho))) {warning(sum(is.na(rho)), " of the item correlations are NA and thus finding scales that include those items will not work.\n We will try to do it for those  scales which do not include those items.
          \n Proceed with caution. ") 
          bad <- TRUE
-         rho <- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(rho*x))*x,na.rm=TRUE))  #matrix multiplication without matrices!
+         rho <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(rho*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!  
+         #switched to using colMeans instead of colSums, recognizing the problem of different number of items being dropped.
          } else {
           rho <- t(keys) %*% rho %*% keys} }  #find the correlation between the scales
 
@@ -54,7 +55,7 @@ if(!require(parallel)) {warning("parallel package needed for mclapply")}
 
   R <- tets$rho} else {R <- cor(xs,use="pairwise",method=method)}
  
- if(!is.null(keys)) { if (bad) {covariances <- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(R*x))*x,na.rm=TRUE))  #matrix multiplication without matrices!
+ if(!is.null(keys)) { if (bad) {covariances <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(R*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!
   } else {
  covariances <- t(keys) %*% R %*% keys}
                r <- cov2cor(covariances) } else {r <- R}					
@@ -78,7 +79,9 @@ if(!require(parallel)) {warning("parallel package needed for mclapply")}
       ci.rot.upper <- fisherz2r(ci.rot.upper)
       low.e <- apply(replicates,2,quantile, p/2,na.rm=TRUE)
       up.e  <- apply(replicates, 2, quantile, 1-p/2,na.rm=TRUE)
-      ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e)
+      tci <- abs(means.rot)/sds.rot
+      ptci <- pnorm(tci)
+      ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e,p =2*(1-ptci))
       cnR <- abbreviate(colnames(rho),minlength=5) 
       k <- 1
      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
@@ -88,8 +91,9 @@ if(!require(parallel)) {warning("parallel package needed for mclapply")}
      
 
 
-results <- list(rho=rho, means=means.rot,sds=sds.rot,ci=ci.rot,Call= cl,replicates=rep.rots)
-
+results <- list(rho=rho, means=means.rot,sds=sds.rot,tci=tci,ptci=ptci,ci=ci.rot,Call= cl,replicates=rep.rots)
+#if(plot) {cor.plot.upperLowerCi(results,numbers=TRUE,cuts=c(.001,.01,.05),...) }  #automatically plot the results
+if(plot) {cor.plot(rho,numbers=TRUE,cuts=c(.001,.01,.05),pval =  2*(1-ptci),...) }
 class(results) <- c("psych","cor.ci")
     
 return(results)
@@ -97,7 +101,30 @@ return(results)
  }
  #written Sept 20, 2013 
  #adapted from fa.poly
- 
+ #modified May 1, 2014 to scale by pvals
+ "cor.plot.upperLowerCi" <- 
+function(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,main="Upper and lower confidence intervals of correlations",...) {
+
+lower <- R$ci$lower
+upper <- R$ci$upper
+temp <- lower
+if(is.null(R$r)) {cn = colnames(R$rho)
+         rl <- R$rho[lower.tri(R$rho)]} else {
+         cn = colnames(R$r)
+         rl <-  R$r[lower.tri(R$r)]} #is input from cor.ci or corr.test
+lower[rl < 0 ] <- upper[rl < 0]
+upper[rl < 0] <- temp[rl < 0]
+m <- length(lower)
+n <- floor((sqrt(1 + 8 * m) +1)/2) 
+    X <- diag(n)
+    X[lower.tri(X)] <- upper
+    X <- t(X) 
+    X[lower.tri(X)] <- lower
+    diag(X) <- 1 
+colnames(X) <- rownames(X) <- cn
+if(is.null(R$ptci))  {pval <- R$p} else {pval = 2*(1-R$ptci)}
+cor.plot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)   
+invisible(X) }
  
 
  

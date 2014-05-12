@@ -1,6 +1,33 @@
 "fa.sort" <- 
 function(fa.results,polar=FALSE) {
   omega <- FALSE
+  con.i <- FALSE
+  if(length(class(fa.results)) > 1)  { value <- class(fa.results)[2] } else {value="other"}
+
+switch(value, 
+omega =  { omega <- TRUE
+        factors <- as.matrix(fa.results$schmid$oblique)
+        sl <- fa.results$schmid$sl},
+
+fa.ci = {factors <- fa.results$loadings
+           if(!is.null(fa.results$Phi))  {Phi <-fa.results$Phi }
+           con.i <-  TRUE
+           ci <- fa.results$cis$ci
+           cip <- fa.results$cis$p
+           },
+ 
+iclust = {factors <- as.matrix(fa.results$loadings)
+             if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+fa = {factors <- as.matrix(fa.results$loadings)
+             if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+extension = {factors <- as.matrix(fa.results$loadings)
+             if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+extend = {factors <- as.matrix(fa.results$loadings)
+             if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+other = {factors <- fa.results})
+
+
+if(FALSE) {#delete this once it works
 if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the input a list structure from fa or omega or iclust
    if(class(fa.results)[2] =="omega") {
         omega <- TRUE
@@ -9,7 +36,7 @@ if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the in
          } else {  #the normal factor case is fa or iclust output
 
       Phi <- NULL  #the default case
-      if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  { #make sure that we weren't just give a matrix to draw
+      if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  { #make sure that we weren't just given a matrix to draw
              factors <- as.matrix(fa.results$loadings)
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}
            } 
@@ -17,7 +44,7 @@ if(!is.null(class(fa.results)) && (length(class(fa.results)) > 1)) {  #is the in
            } else {
                    factors <- fa.results}
           
- 
+ } #end of code to be deleted eventually
 
 nitems <- dim(factors)[1]
 nfactors <- dim(factors)[2]
@@ -37,6 +64,8 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
   		factors[1:nitems,] <- factors[ord$ix,]
  		rownames(factors)[1:nitems] <- rownames(factors)[ord$ix]
         total.ord <- ord$ix
+        if(con.i) { ci[1:nitems,] <- ci[ord$ix,] #if we are doing confidence intervals
+                                   cip[1:nitems,] <- cip[ord$ix,] }
  		
  		 
   #now sort column wise
@@ -52,9 +81,14 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
    				factors[first:last,] <- factors[item[ord$ix+first-1],]
    				loads[first:last,1] <- item[ord$ix+first-1]
    				rownames(factors)[first:last] <- rownames(factors)[ord$ix+first-1]
+   			
+   				if(con.i) { ci[first:last,] <- ci[item[ord$ix+first-1],] #if we are doing confidence intervals
+                            cip[first:last,] <- cip[item[ord$ix+first-1],] }
+        
    				total.ord[first:last] <- total.ord[ord$ix+first-1 ]
    		 		first <- first + items[i]  }
-          		 }  
+          		 
+          		}  
  
  }
          
@@ -84,7 +118,14 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
           fa.results$schmid$sl <- sl
               
          } else {
-            if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors} else {
+            if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors
+             if(con.i) { rownames(ci) <- rownames(factors)
+                        fa.results$ci <- ci
+                      rownames(cip) <- rownames(factors)
+                      colnames(cip) <- colnames(factors)
+                      fa.results$cip <- cip}
+                       
+              } else {
               fa.results <- factors} }
         #note that h2 and complexities were not sorted, we need to do this now
        if(is.list(fa.results))  {fa.results$order <- total.ord 

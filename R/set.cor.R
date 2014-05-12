@@ -8,16 +8,19 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
   #added calculation of residual matrix December 30, 2011
   #added option to allow square data matrices
    cl <- match.call()
-   
+   cor <- TRUE  #fix this to allow this to a parameter
   if(!is.matrix(data)) data <- as.matrix(data)
   if((dim(data)[1]!=dim(data)[2]) | square)  {n.obs=dim(data)[1]   #this does not take into account missing data
                     C <- cov(data,use=use)
-                    m <- cov2cor(C)
+                    if(cor) {m <- cov2cor(C)} else {m <- C}
                     raw <- TRUE}  else {
                     raw <- FALSE
                     C <-data
-                    m <- cov2cor(C)}
-                   
+                    if(cor) {m <- cov2cor(C)} else {m <- C}}
+   #convert names to locations                 
+   if(is.character(x)) x <- which(colnames(data) == x)
+   if(is.character(y)) y <- which(colnames(data) == y) 
+   if(!is.null(z) && is.character(z)) z <-  which(colnames(data) == z)               
  
         nm <- dim(data)[1]
         xy <- c(x,y)
@@ -44,7 +47,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
      	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)
      	                } else   #this is the case of a single x 
       				 { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
-       					 beta <- as.matrix(beta) }
+       					 beta <- as.matrix(beta) 
+       					 }
        				 
        	yhat <- t(xy.matrix) %*% solve(x.matrix) %*% (xy.matrix)
        	resid <- y.matrix - yhat
@@ -53,7 +57,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
      	 
      	 R2 <- colSums(beta * xy.matrix) } else { colnames(beta) <- colnames(data)[y]
      		 R2 <- sum(beta * xy.matrix)
-     	 	 names(beta) <- colnames(data)[x]
+     	 	 rownames(beta) <- colnames(data)[x]
      		 names(R2) <- colnames(data)[y]}
      		 
      	#now find the unit weighted correlations  
@@ -139,3 +143,4 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
 #modified yet again August 15 , 2008 to convert covariances to correlations
 #modified January 3, 2011 to work in the case of a single predictor 
 #modified April 25, 2011 to add the set correlation (from Cohen)
+#modified April 21, 2014 to allow for mixed names and locations in call

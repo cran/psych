@@ -22,10 +22,11 @@ scores <- matrix(NaN,nrow=n.obs,ncol=nf*3)
 for (f in 1:nf) {
 diff <- stats$difficulty[[f]]
 if(nf < 2) {discrim <- drop(stats$discrimination)
-            if(!is.null(keys)) discrim <- discrim * abs(keys)
+            if(!is.null(keys)) {discrim <- discrim * abs(keys)
+                                }
 } else {discrim <- stats$discrimination[,f] 
-if(!is.null(keys)) discrim <- discrim * abs(keys[,f])
-}
+if(!is.null(keys)) {discrim <- discrim * abs(keys[,f])
+                    }}
 
 fit <- rep(NA,n.obs)
 theta <- rep(NA,n.obs)
@@ -33,6 +34,7 @@ items.f <-t(items)
 items.f[abs(discrim) < cut] <- NA
 items.f <- t(items.f)
 
+if(is.matrix(discrim)) discrim <- drop(discrim)
  total <- rowMeans(t(t(items.f)*sign(discrim)),na.rm=TRUE)
  count <- rowSums(!is.na(items.f))
 
@@ -75,6 +77,8 @@ items.f <- t(items.f)
     }  #end loop 
     theta [theta < bounds[1]] <- bounds[1]
     theta[theta > bounds[2]] <- bounds[2]
+     if((!is.null(keys)) & (all(keys[,f] == -1) || (sign(cor(discrim,keys[,f])) < 0) )) {theta <- -theta
+                                 total <- -total}
 	scores[,f] <- theta
 	scores[,nf + f] <- total
 	scores[,2*nf + f] <- fit
@@ -97,6 +101,7 @@ function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5)) {
 
  min.item <- min(items,na.rm=TRUE)
  items <- items - min.item #this converts scores to positive values
+ max.item <- max(items,na.rm=TRUE)  #we use this when reverse score
  nf <- length(stats$difficulty)
  n.obs <- dim(items)[1]
  nvar <- dim(items)[2]
@@ -105,9 +110,15 @@ scores <- matrix(NaN,nrow=n.obs,ncol=nf*3)
 
 for (f in 1:nf) {
 diff <- stats$difficulty[[f]]
-if(nf < 2) {discrim <- stats$discrimination} else {discrim <- stats$discrimination[,f] }
+if(nf < 2) {discrim <- stats$discrimination
+              if(!is.null(keys)) {discrim <- discrim * abs(keys)
+                              } } else {discrim <- stats$discrimination[,f] 
+                                if(!is.null(keys)) {discrim <- discrim * abs(keys[,f]) 
+                  }  
+                    }
 cat <- dim(diff)[2]
-if(!is.null(keys)) discrim <- discrim * abs(keys[,f])
+
+
 diff.vect <- as.vector(t(diff)) 
 discrim.vect <- rep(discrim,each=cat)
 
@@ -119,6 +130,10 @@ discrim.vect <- rep(discrim,each=cat)
  item.f <- t(item.f)
 
  total <- rowMeans(t(t(item.f )* as.vector(sign(discrim))),na.rm=TRUE) #fixed 11/11/11 to be as.vector
+ num.reversed <- sum(discrim < -cut)  #the number of negatively keyed items
+ num.keyed <- sum(abs(discrim) > cut)
+
+ total <- total + num.reversed * (max.item)/num.keyed + min.item
  count <- rowSums(!is.na(item.f))
  
  for (subj in 1:n.obs) {
@@ -141,6 +156,9 @@ discrim.vect <- rep(discrim,each=cat)
   			theta[subj] <- NA 
     			}    #end if else
     }  #end loop 
+   
+     if((!is.null(keys)) & (all(keys[,f] == -1) || (sign(cor(discrim,keys[,f])) < 0) )) {theta <- -theta
+                                 total <- -total}
 	scores[,f] <- theta
 	scores[,nf + f] <- total
 	scores[,2*nf + f] <- fit
@@ -151,6 +169,7 @@ discrim.vect <- rep(discrim,each=cat)
 
 "score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-5,5),mod="logistic") {
 if (length(class(stats)) > 1) {
+   #if(!is.null(keys) && is.vector(keys)) keys <- as.matrix(keys)
     switch(class(stats)[2],
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds) },
     irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds,mod=mod)},

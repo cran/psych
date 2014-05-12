@@ -29,13 +29,13 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
   
  Cohen (1982) introduced the set correlation, a multivariate generalization of the multiple correlation to measure the overall relationship between two sets of variables. It is an application of canoncial correlation (Hotelling, 1936) and \eqn{1 - \prod(1-\rho_i^2)} where \eqn{\rho_i^2} is the squared canonical correlation.  Set correlation is the amount of shared variance (R2) between two sets of variables.  With the addition of a third, covariate set, set correlation will find multivariate R2, as well as partial and semi partial R2.  (The semi and bipartial options are not yet implemented.) Details on set correlation may be found in Cohen (1982), Cohen (1988) and  Cohen, Cohen, Aiken and West (2003). 
  
- R2 between two sets is just \deqn{R_{yx}^2 = 1- \frac{\left | R_{yx} \right |}{\left | R_y \right | \left |R_x\right |}  =  1 - \prod(1-\rho_i^2)   }{R2 = |Ryx| /(|Ry| * |Rx|)}
+ R2 between two sets is just \deqn{R^2 = 1- \frac{\left | R_{yx} \right |}{\left | R_y \right | \left |R_x\right |}  =  1 - \prod(1-\rho_i^2)   }{R2 = 1- |R| /(|Ry| * |Rx|)} where R is the  complete correlation matrix of the x and y variables and Rx and Ry are the two sets involved.
 
  
  Unfortunately, the R2 is sensitive to one of the canonical correlations being very high.  An alternative, T2, is the proportion of additive variance and is the average of the squared canonicals.  (Cohen et al., 2003), see also Cramer and Nicewander (1979).  This average, because it includes some very small canonical correlations, will tend to be too small.  Cohen et al. admonition is appropriate: "In the final analysis, however, analysts must be guided by their substantive and methodological conceptions of the problem at hand in their choice of a measure of association." ( p613). 
  
  Yet another measure of the association between two sets is just the simple, unweighted correlation between the two sets. That is, 
- \deqn{R_{uw}  =\frac{ 1 R_{yx} 1' }{(1R_{yy}1')^{.5} (1R_{xx}1')^{.5}}    }{Ruw=1Ryx1' / (sqrt(1Ryy1'* 1Rxx1'))}.  This is just  the simple (unweighted) sums of the correlations in each matrix. This technique exemplifies the robust beauty of linear models and  is particularly appropriate in the case of one dimension in both x and y, and will be a drastic underestimate in the case of items where the betas differ in sign. 
+ \deqn{R_{uw}  =\frac{ 1 R_{xy} 1' }{(1R_{yy}1')^{.5} (1R_{xx}1')^{.5}}    }{Ruw=1Rxy1' / (sqrt(1Ryy1'* 1Rxx1'))} where Rxy is the matrix of correlations between the two sets.  This is just  the simple (unweighted) sums of the correlations in each matrix. This technique exemplifies the robust beauty of linear models and  is particularly appropriate in the case of one dimension in both x and y, and will be a drastic underestimate in the case of items where the betas differ in sign. 
  
  When finding the unweighted correlations, as is done in \code{\link{alpha}}, items are flipped so that they all are positively signed.  
  

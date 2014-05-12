@@ -7,7 +7,7 @@
 error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable",
   main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05,sd=FALSE, labels = NULL, 
    pos = NULL,  arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE,
-    ...)
+   col="blue",...)
 }
 
 \arguments{
@@ -28,6 +28,7 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
   \item{bars}{bars=TRUE will draw a bar graph if you really want to do that}
   \item{within}{should the error variance of a variable be corrected by 1-SMC?}
+  \item{col}{color(s) of the catseyes.  Defaults to blue.} 
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 }
 
@@ -70,7 +71,10 @@ boxplot(x,notch=TRUE,main="Notched boxplot with error bars")
 error.bars(x,add=TRUE)
 abline(h=0)
 
-error.bars(attitude,alpha=.5,main="50 percent confidence limits") #another example
+#show 50% confidence regions and color each variable separately
+error.bars(attitude,alpha=.5,
+   main="50 percent confidence limits",col=rainbow(ncol(attitude)) )
+   
 error.bars(attitude,bar=TRUE)  #show the use of bar graphs
 
 

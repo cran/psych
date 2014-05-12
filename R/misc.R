@@ -298,6 +298,28 @@ function(fa.results,o=NULL,i=NULL,cn=NULL) {
   
   
   
+  "con2cat" <- function(old,cuts=c(0,1,2,3),where) {
+  new <- old
+  nc <- length(cuts)
+  if(missing(where)) where <- 1:ncol(old)
+  lw <- length(where)
+  if(is.matrix(cuts)) {mcuts <- cuts} else {mcuts <- matrix(rep(cuts,lw),nrow=lw,byrow=TRUE)}
+  vwhere <- as.vector(where)
+       for (w in 1:lw) {where <- vwhere[w]
+       cuts <- mcuts[w,]
+       nc <- length(cuts)
+  if(nc < 2 ) {new[old[,where] <= cuts,where] <- 0
+                         new[old[,where] > cuts,where] <- 1} else {
+     new[old[,where] <= cuts[1],where] <- 0                   
+     for(i in(2:nc)) { 
+          new[(old[,where] <= cuts[i]) & (old[,where] > cuts[i-1]),where] <- i-1
+     }   
+     new[old[,where] > cuts[nc],where] <- nc }
+     }
+   new}
+                         
+   
+  
   "item.lookup" <- 
 function (f,m, dictionary,cut=.3, digits = 2) 
 {

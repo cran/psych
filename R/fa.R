@@ -21,6 +21,7 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
   
  f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use, ...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
+ if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
  nvar <- dim(fl)[1]
  
  if(n.iter > 1) {
@@ -64,7 +65,10 @@ if(length(means) > (nvar * nfactors) ) {
    
    means <- matrix(means[1:(nvar*nfactors)],ncol=nfactors)
    sds <- matrix(sds[1:(nvar*nfactors)],ncol=nfactors)
-
+   tci <- abs(means)/sds
+    ptci <- 1-pnorm(tci)
+   tcirot <- abs(means.rot)/sds.rot
+   ptcirot <- 1- pnorm(tcirot)
 ci.lower <-  means + qnorm(p/2) * sds
 ci.upper <- means + qnorm(1-p/2) * sds
 
@@ -73,7 +77,9 @@ class(means) <- "loadings"
 
 colnames(means) <- colnames(sds) <- colnames(fl)
 rownames(means) <- rownames(sds) <- rownames(fl)
-results <- list(fa = f,means = means,sds = sds,ci = ci, means.rot=means.rot,sds.rot=sds.rot,ci.rot=ci.rot,Call= cl,replicates=replicates,rep.rots=rep.rots)
+f$cis <- list(means = means,sds = sds,ci = ci,p =2*ptci, means.rot=means.rot,sds.rot=sds.rot,ci.rot=ci.rot,p.rot = ptcirot,Call= cl,replicates=replicates,rep.rots=rep.rots)
+results <- f 
+ results$Call <- cl
 class(results) <- c("psych","fa.ci")
 } else {results <- f
         results$Call <- cl
@@ -83,6 +89,7 @@ return(results)
 
  }
  #written May 1 2011
+ #modified May 8, 2014 to make cis an object in f to make sorting easier
 
 
 #the main function 

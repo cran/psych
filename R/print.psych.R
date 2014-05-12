@@ -25,6 +25,7 @@ switch(value,
   schmid = { print.psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)},
   stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
   vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  cta = {print.psych.cta(x,digits=digits,all=all,...)},
 
 
 ##Now, for the smaller print jobs, just do it here.
@@ -136,7 +137,7 @@ cor.ci = {cat("Call:")
                cat("\n Coefficients and bootstrapped confidence intervals \n")
                lowerMat(x$rho)
    phis <- x$rho[lower.tri(x$rho)]
-   cci <- data.frame(lower.emp =x$ci$low.e, lower.norm=x$ci$lower,estimate =phis ,upper.norm= x$ci$upper, upper.emp=x$ci$up.e)
+   cci <- data.frame(lower.emp =x$ci$low.e, lower.norm=x$ci$lower,estimate =phis ,upper.norm= x$ci$upper, upper.emp=x$ci$up.e,p = x$ci$p)
    rownames(cci) <- rownames(x$ci)
    cat("\n scale correlations and bootstrapped confidence intervals \n")
    print(round(cci,digits=digits))

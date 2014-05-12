@@ -4,7 +4,7 @@
 \title{
 A data set from Cushny and Peebles (1905) on the effect of three drugs on hours of sleep, used by Student (1908)
 }
-\description{The classic data set used by Gossett (publishing as Student) for the introduction of the t-test.  The design was a within subjects study with hours of sleep in a control condition compared to those in 3 drug conditions.  Drug1 was 06mg of L Hscyamine, Drug 2L and Drug2R were .6 mg of  Left and Right isomers of Hyoscine.  The detal1, delta2L and delta2R are changes from the baseline control.  
+\description{The classic data set used by Gossett (publishing as Student) for the introduction of the t-test.  The design was a within subjects study with hours of sleep in a control condition compared to those in 3 drug conditions.  Drug1 was 06mg of L Hscyamine, Drug 2L and Drug2R were said to be .6 mg of  Left and Right isomers of Hyoscine. As discussed by Zabell (2008) these were not optical isomers. The detal1, delta2L and delta2R are changes from the baseline control.  
 }
 \usage{data(cushny)}
 \format{
@@ -28,7 +28,9 @@ A data set from Cushny and Peebles (1905) on the effect of three drugs on hours 
 Student (1908) The probable error of the mean.  Biometrika, 6 (1) , 1-25.
 
 }
-\references{See also the data set sleep and the examples for the t.test}
+\references{See also the data set sleep and the examples for the t.test
+
+S. L. Zabell.  On Student's 1908 Article "The Probable Error of a Mean" Journal of the American Statistical Association, Vol. 103, No. 481 (Mar., 2008), pp. 1- 20}
 
 \examples{
 data(cushny)

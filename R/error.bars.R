@@ -1,5 +1,5 @@
 "error.bars" <-
-function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,...)  # x   data frame with 
+function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col="blue",...)  # x   data frame with 
     {
     SCALE=.5   #scale the width of the cats eyes
     if(is.null(stats)) {
@@ -37,7 +37,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      if(missing(xlim)) xlim<- c(.5,z+.5)
        if(is.null(x.stats$values)) {
      plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,xlim=xlim,axes=FALSE,main=main,...) 
-       axis(1,1:z,names)
+       axis(1,1:z,names,...)
        axis(2)
      box()} else { plot(x.stats$values,x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...) }
      
@@ -58,10 +58,10 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     	 arrows(x.stats$values,x.stats$mean[s]-ci[s]* x.stats$se[s],x.stats$values,x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3, col=arrow.col)}
  	 
    	 
-  if(eyes) {
+  if(eyes) { if(length(col) == 1) col <- rep(col,z)  
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)	   
-    for (s in 1:z){ if(!is.null(x.stats$n[s] )) {catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col="blue")}}
+    for (s in 1:z){ if(!is.null(x.stats$n[s] )) {catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])}}
     	  }
     	    }
    }

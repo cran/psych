@@ -75,7 +75,7 @@ By default, missing values are replaced with the corresponding median value for 
   \item{G6*}{A generalization of Guttman's Lambda 6 measure of reliability using all the items to find the smc.}
   \item{n.items}{Number of items on each scale}
    \item{item.cor}{The correlation of each item with each scale.  Because this is not corrected for item overlap, it will overestimate the amount that an item correlates with the other items in a scale.}
-  \item{cor}{The intercorrelation of all the scales}
+  \item{cor}{The intercorrelation of all the scales based upon the interitem correlations (see note for why these differ from the correlations of the observed scales themselves).}
   \item{corrected}{The correlations of all scales (below the diagonal), alpha on the diagonal, and the unattenuated correlations (above the diagonal)}
   \item{item.corrected}{The item by scale correlations for each item, corrected for item overlap by replacing the item variance with the smc for that item}
  \item{response.freq}{The response frequency (based upon number of non-missing responses) for each alternative.}
@@ -83,7 +83,9 @@ By default, missing values are replaced with the corresponding median value for 
  \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+
+More importantly in this case of massively missing data, there is a difference between the correlations of the composite scales based upon the correlations of the items and the correlations of the scored scales based upon the observed data.  That is, the cor object will have correlations as if all items had been given, while the correlation of the scores object will reflect the actual correlation of the scores.  For SAPA data, it is recommended to use the cor object.  Confidence of these correlations may be found using the \code{\link{cor.ci}} function.
 
 An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 

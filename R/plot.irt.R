@@ -184,10 +184,10 @@ for(f in 1:nf) {if(byKeys) {discrimination <- item$irt$discrimination[,1]} else 
 if(type=="ICC") { #this draws the item characteristic curves
   #summtInfo <- NULL 
 
-if(missing(main)) main <- "Item parameters from factor analysis"
+if(missing(main)) {main <- "Item parameters from factor analysis"
+                  main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
 if(missing(ylab)) ylab <- "Probability of Response"
-if(missing(main)) {main <- "Test information for factor "
-	main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
+
 	
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
@@ -209,7 +209,7 @@ for(i in 1:nvar) {
 	}  #now do the summary stuff for all cases
 	
 	
-	#summaryx <- as.matrix(summaryx,ncol=1)
+   #summaryx <- as.matrix(summaryx,ncol=1)
    # summtInfo <- apply(summaryx,1,logisticInfo,a=discrimination,d=sign(discrimination) * difficulty)  #notice that we just need to add the logistics, not the differences 
    # summtInfo <- array(unlist(summtInfo),dim=c(nvar,ncat,length(summaryx)))  #this is now an array with items levels and summaryx 
 	  
@@ -245,8 +245,8 @@ for(i in 1:nvar) {
 	if(type=="test") { 
 
 	
-	if(missing(main)) main <- "Test information for factor "
-	main1 <- paste(main,'  ',f)
+	if(missing(main)) {main <- "Test information for factor "
+	main1 <- paste(main,'  ',f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
 	if(missing(ylab)) ylab <- "Test Information"
 	if(missing(y2lab)) y2lab <- "Reliability"
 	rsInfo <- rowSums(testInfo)

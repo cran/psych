@@ -5,7 +5,8 @@
 \description{Although normal theory provides confidence intervals for correlations, this is particularly problematic with Synthetic Aperture Personality Assessment (SAPA) data where the individual items are Massively Missing at Random.  Bootstrapped confidence intervals are found for Pearson, Spearman, Kendall, tetrachoric, or polychoric correlations and for scales made from those correlations.
 }
 \usage{
-cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson")
+cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson", 
+plot=TRUE,...)
 }
 
 \arguments{
@@ -15,13 +16,17 @@ cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson"
   \item{p}{The upper and lower confidence region will include 1-p of the distribution.}
   \item{poly}{if FALSE, then find the correlations using the method specified (defaults to Pearson).  If TRUE, the polychoric correlations will be found (slowly).  Because the polychoric function uses multicores (if available), and cor.ci does as well, the number of cores used is options("mc.cores")^2. }
   \item{method}{"pearson","spearman", "kendall"}
+  \item{plot}{Show the correlation plot with correlations scaled by the probability values.  To show the matrix in terms of the confidence intervals, use \code{\link{cor.plot.upperLowerCi}}.}
+  \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
   }
 \details{
-The original data are and correlations are found.  If keys are specified (the normal case), then composite scales based upon the correlations are found and reported.  This is the same procedure as done using \code{\link{cluster.cor}} or \code{\link{score.items}}.
+The original data are and correlations are found.  If keys are specified (the normal case), then composite scales based upon the correlations are found and reported.  This is the same procedure as done using \code{\link{cluster.cor}} or \code{\link{scoreItems}}.
 
 Then, n.iter times, the data are recreated by sampling subjects (rows) with replacement and the correlations (and composite scales) are found again (and again and again).  Mean and standard deviations of these values are calculated based upon the Fisher Z transform of the correlations.  Summary statistics include the original correlations and their confidence intervals.  For those who want the complete set of replications, those are available as an object in the resulting output.
 
 Although particularly useful for SAPA (\url{http://sapa-project.org}) type data, this will work for any normal data set as well. 
+
+Although the correlations are shown automatically as a \code{\link{cor.plot}}, it is possible to show the upper and lower confidence intervals by using \code{\link{cor.plot.upperLowerCi}}.
 }
 \value{
 
@@ -37,14 +42,16 @@ Although particularly useful for SAPA (\url{http://sapa-project.org}) type data,
 
 
 
-\seealso{\code{\link{make.keys}}, \code{\link{cluster.cor}}, and \code{\link{score.items}} for forming synthetic correlation matrices from composites of item correlations.  See also \code{\link{corr.test}} for standard significance testing of correlation matrices.  See also \code{\link{lowerCor}} for finding and printing correlation matrices, as well as \code{\link{lowerMat}} for displaying them. 
+\seealso{\code{\link{make.keys}}, \code{\link{cluster.cor}}, and \code{\link{scoreItems}} for forming synthetic correlation matrices from composites of item correlations.  See also \code{\link{corr.test}} for standard significance testing of correlation matrices.  See also \code{\link{lowerCor}} for finding and printing correlation matrices, as well as \code{\link{lowerMat}} for displaying them. Also see \code{\link{cor.plot.upperLowerCi}} for displaying the confidence intervals graphically.
 }
 \examples{
- keys.list <-
-  list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
-extraversion=c("-E1","-E2","E3","E4","E5")) 
-  keys <- make.keys(bfi[1:15],keys.list)
-  cor.ci(bfi[1:15],keys,n.iter=10)
+  keys.list <-
+  list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
+extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
+openness = c("O1","-O2","O3","O4","-O5")) 
+  keys <- make.keys(bfi,keys.list)
+rci <-  cor.ci(bfi[1:200,],keys,n.iter=10) #also shows the graphic
+cor.plot.upperLowerCi(rci)  #to show the upper and lower confidence intervals
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

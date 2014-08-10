@@ -3,6 +3,7 @@
 \alias{tetrachor}
 \alias{polychoric}
 \alias{biserial}
+\alias{polydi}
 \alias{polyserial}
 \alias{poly.mat}
 
@@ -12,13 +13,14 @@
 The biserial correlation is between a continuous y variable and a dichotmous x variable, which is assumed to have resulted from a dichotomized normal variable. Biserial is a special case of the polyserial correlation, which is the inferred latent correlation between a continuous variable (X) and a ordered categorical variable (e.g., an item response). Input for these later two are data frames or matrices.
 }
 \usage{
-tetrachoric(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
+tetrachoric(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
      delete=TRUE)
-polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE, ML = FALSE,
-       std.err=FALSE,weight=NULL,progress=TRUE,na.rm=TRUE, delete=TRUE)
+polychoric(x,smooth=TRUE,global=TRUE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE, 
+     delete=TRUE)
 biserial(x,y)  
 polyserial(x,y) 
-
+polydi(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,
+     weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) 
 #deprecated  use polychoric instead
 poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE) 
 }
@@ -35,31 +37,31 @@ c) a vector with elements corresponding to the four cell frequencies (for tetrac
 d) a vector with elements of the two marginal frequencies (row and column) and the comorbidity (for tetrachoric)
 }
 \item{y}{A (matrix or dataframe) of discrete scores. In the case of tetrachoric, these should be dichotomous, for polychoric not too many levels, for biserial they should be discrete (e.g., item responses) with not too many (<10?) categories.}
-\item{correct}{Correct for continuity in the case of zero entry cell for tetrachoric}
+\item{correct}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
 \item{smooth}{if TRUE and if the tetrachoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
 
 \item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution. This will make a difference in the presence of lots of missing data. } 
 
 \item{weight}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
-  
-\item{polycor}{If polycor=TRUE and the polycor package is installed, then use it when finding the polychoric correlations.  }
-
-\item{short}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric}
-\item{std.err}{std.err=FALSE does not report the standard errors (faster) }
+\item{short}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric  Deprecated}
+\item{std.err}{std.err=FALSE does not report the standard errors (faster)  deprecated}
 \item{progress}{Show the progress bar (if  not doing multicores)}
-\item{ML}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow!}
+\item{ML}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow! Deprecated}
 \item{na.rm}{Should missing data be deleted}
 \item{delete}{Cases with no variance are deleted with a warning before proceeding.}
-
+\item{p}{The polytomous input to polydi}
+\item{d}{The dichotomous input to polydi}
+\item{taup}{The tau values for the polytomous variables -- if global=TRUE}
+\item{taud}{The tau values for the dichotomous variables -- if globabl = TRUE}
 
 }
 
 \details{
 Tetrachoric correlations infer a latent Pearson correlation from a two x two table of frequencies with the assumption of bivariate normality.  The estimation procedure is two stage ML.  Cell frequencies for each pair of items are found. In the case of tetrachorics, cells with zero counts are replaced with .5 as a correction for continuity (correct=TRUE). 
 
-The data typically will be a raw data matrix of responses to a questionnaire scored either true/false (tetrachoric) or with a limited number of responses (polychoric).  In both cases, the marginal frequencies are converted to normal theory thresholds and the resulting table for each item pair is converted to the (inferred)  latent  Pearson correlation that would produce the observed cell frequencies with the observed marginals.  (See \code{\link{draw.tetra}} for an illustration.)
+The data typically will be a raw data matrix of responses to a questionnaire scored either true/false (tetrachoric) or with a limited number of responses (polychoric).  In both cases, the marginal frequencies are converted to normal theory thresholds and the resulting table for each item pair is converted to the (inferred)  latent  Pearson correlation that would produce the observed cell frequencies with the observed marginals.  (See \code{\link{draw.tetra}} and \code{\link{draw.cor}} for  illustrations.)
 
-This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
+This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric may be specified using the options command. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
 The tetrachoric correlation is used in a variety of contexts, one important one being in Item Response Theory (IRT) analyses of test scores, a second in the conversion of comorbity statistics to correlation coefficients.  It is in this second context that examples of the sensitivity of the coefficient to the cell frequencies becomes apparent:
 
@@ -67,7 +69,7 @@ Consider the test data set from Kirk (1973) who reports the effectiveness of a M
 
 Examples include the lsat6 and lsat7 data sets in the \code{\link{bock}} data.
 
-The polychoric function forms matrices of polychoric correlations by either using John Fox's polychor function or by an local function (polyc) and will also report the tau values for each alternative. 
+The polychoric function forms matrices of polychoric correlations by either using John Fox's polychor function or by an local function (polyc) and will also report the tau values for each alternative.  
 
 polychoric replaces poly.mat and is recommended.   poly.mat is an alternative wrapper to the polycor function. 
 
@@ -125,16 +127,26 @@ polychoric(lsat6)  #values should be the same
 tetrachoric(matrix(c(44268,193,14,0),2,2))  #MPLUS reports.24
 
 #Do not apply continuity correction -- compare with previous analysis!
-tetrachoric(matrix(c(44268,193,14,0),2,2),FALSE)  
+tetrachoric(matrix(c(44268,193,14,0),2,2),correct=0)  
 
+#the default is to add correct=.5 to 0 cells 
 tetrachoric(matrix(c(61661,1610,85,20),2,2)) #Mplus reports .35
 tetrachoric(matrix(c(62503,105,768,0),2,2)) #Mplus reports -.10
 tetrachoric(matrix(c(24875,265,47,0),2,2)) #Mplus reports  0
 
 #Do not apply continuity correction- compare with previous analysis
-tetrachoric(matrix(c(24875,265,47,0),2,2),FALSE) 
+tetrachoric(matrix(c(24875,265,47,0),2,2), correct=0) 
+
+
+#these next examples are impossible!
+
 tetrachoric(c(0.02275000, 0.0227501320, 0.500000000))
-tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000)) } else {
+tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000))
+
+#give a vector of two marginals and the comorbidity
+tetrachoric(c(.2, .15, .1))
+tetrachoric(c(.2, .1001, .1))
+ } else {
         message("Sorry, you must have mvtnorm installed")}
 
 # 4 plots comparing biserial to point biserial and latent Pearson correlation

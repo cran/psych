@@ -82,6 +82,8 @@ x <- as.matrix(x)
 n <- colSums(!is.na(x)) -1
 result <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/n}
 } else {
+x <- as.matrix(x) #added 26/5/14
+if(NROW(group) != NROW(x)) group <- x[,group]  #added 26/5/14
 nvar <- ncol(x)
 cname <- colnames(x)
 temp <- by(x,group, mssd,na.rm=na.rm,lag=lag)
@@ -297,7 +299,7 @@ function(fa.results,o=NULL,i=NULL,cn=NULL) {
   }
   
   
-  
+  #fixed 13/6/14 to solve the missing data problem
   "con2cat" <- function(old,cuts=c(0,1,2,3),where) {
   new <- old
   nc <- length(cuts)
@@ -308,13 +310,17 @@ function(fa.results,o=NULL,i=NULL,cn=NULL) {
        for (w in 1:lw) {where <- vwhere[w]
        cuts <- mcuts[w,]
        nc <- length(cuts)
-  if(nc < 2 ) {new[old[,where] <= cuts,where] <- 0
-                         new[old[,where] > cuts,where] <- 1} else {
-     new[old[,where] <= cuts[1],where] <- 0                   
-     for(i in(2:nc)) { 
-          new[(old[,where] <= cuts[i]) & (old[,where] > cuts[i-1]),where] <- i-1
+  if(nc < 2 ) {new[(!is.na(new[,where]) & ( old[,where] <= cuts)),where] <- 0
+               new[(!is.na(new[,where]) & ( old[,where] > cuts)),where] <- 1}   else {
+  
+       
+    
+     new[(!is.na(new[,where]) & ( old[,where] <= cuts[1])),where] <- 0                
+      for(i in(2:nc)) { 
+           new[(!is.na(new[,where]) & ( old[,where] > cuts[i-1] )),where] <- i-1
+          # & (new[(!is.na(new[,where]) & ( old[,where] > cuts[i-1] )),where]),where]  <- i-1
      }   
-     new[old[,where] > cuts[nc],where] <- nc }
+     new[(!is.na(new[,where]) & ( old[,where] > cuts[nc])),where]  <- nc }
      }
    new}
                          
@@ -360,4 +366,10 @@ function (f,m, dictionary,cut=.3, digits = 2)
      }
     return(res)
 }
+
+
+"falsePositive" <- function(sexy=.1,alpha=.05,power=.8) {
+pf <- alpha * (sexy)
+vp <- power * (1-sexy)
+pf/(pf+vp)}
 

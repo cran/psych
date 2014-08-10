@@ -18,6 +18,9 @@
     P   #the estimated 2 x 2 predicted by rho, rc, cc
 }
 
+#modified 5/8/14 to be consistent with call from tetraF
+#no change in functionality, just more esthetic
+
 "tetraBinBvn" <-
  function (rho,rc,cc)    #adapted from John Fox's polychor
 { row.cuts <- c(-Inf, rc, Inf)
@@ -27,38 +30,38 @@
     P[1,1] <- pmvnorm(lower = c(row.cuts[1], col.cuts[1]), 
                 upper = c(row.cuts[2], col.cuts[2]), 
                 corr = R)
-    P[1,2] <- pnorm(rc) - P[1,1]
-    P[2,1] <- pnorm(cc) - P[1,1]
-    P[2,2] <-  1- pnorm(rc) - P[2,1]
+    P[2,1] <- pnorm(rc) - P[1,1]
+    P[1,2] <- pnorm(cc) - P[1,1]
+    P[2,2] <-  1- pnorm(rc) - P[1,2]
 
     P   #the estimated 2 x 2 predicted by rho, rc, cc
 }
 
+
 "tetraF" <-
  function(rho,cc,rc,tab) { 
-      P <- tetraBinBvn(rho, cc, rc) 
+      P <- tetraBinBvn(rho, rc, cc) 
        -sum(tab * log(P)) }  #the ML criterion to be minimized
 
 "tetrac" <- 
-function(x,y=NULL,taux,tauy,i,j,correct=TRUE,global=TRUE,weight=NULL) {
+function(x,y=NULL,taux,tauy,i,j,correct=.5,global=TRUE,weight=NULL) {
 
       
  if(is.null(y)) {tab <- x} else {
  if(is.null(weight)) {tab <- tableF(x,y) }  else {tab <- wtd.table(x,y,weight)}  #switched to tableF for speed
  }
- if(length(tab) < 4) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")
-           
-            result <- list(rho=NA,tau=c(NA,NA),objective=NA)
-              }  else {
+ 
+ #changed 9/8/14 
+#if((length(tab) < 4) | (is.na(sum(tab)) | ((tab[1,1] + tab[1,2]) < 1) |  ((tab[2,1] + tab[2,2]) < 1)  | ((tab[1,1] + tab[2,1]) < 1) |  ((tab[2,1] + tab[2,2]) < 1))) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")
+ if((length(tab) < 4) | (is.na(sum(tab)) )) {warning("For i = ", i," j = ",j, "  No variance for either i or j   rho set to NA")          
+      result <- list(rho=NA,tau=c(NA,NA),objective=NA)
+          }  else   {
               
- if(is.na(sum(tab))) {warning("For i = ", i," j = ",j, tab,"  No variance for either i or j   rho set to NA")
- } else {
-
- if((sum(tab) > 1) && (min(tab) == 0) && correct) {
+ if((sum(tab) > 1) && (min(tab) == 0) && (correct > 0)) {
     warning("For i = ", i," j = ",j, "  A cell entry of 0 was replaced with .5.  Check your data!")
-    tab[tab==0] <-.5  #correction for continuity
+    tab[tab==0] <- correct  #correction for continuity
 
-    }}
+    }
   ###### put in the weights here
   if(global) {cc <- taux
               rc <- tauy } else {
@@ -81,7 +84,7 @@ return(tab)
   #repeatedly do the analysis to form a matrix of output 
  #added the pmin instead of min on Sept 10, 2013
 "tetra.mat" <- 
-function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
+function(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL) {
 
 #the functions to do parallelism
 myfun <- function(x,i,j) {if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
@@ -190,7 +193,7 @@ names(tau) <- colnames(x)
  #repeatedly do the analysis to form a matrix of output 
  #added the pmin instead of min on Sept 10, 2013
 "tetra.mat.sc" <- 
-function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL) {
+function(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL) {
 
 
 
@@ -270,12 +273,12 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
    tab[1,1] <- p
    tab[2,1] <- q1-p
    tab[1,2] <- q2-p
-   tab[2,2] <- 1-q1 - tab[1,2]
+   tab[2,2] <- 1 - q1 - q2 + p
    return(tab)}
    
  #the public function
  "tetrachoric" <- 
- function(x,y=NULL,correct=TRUE,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,delete=TRUE) {
+ function(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,delete=TRUE) {
 
  
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
@@ -283,7 +286,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  if (!is.matrix(x) && !is.data.frame(x)) {
   if (length(x) ==4) {x <- matrix(x,2,2) } else {
   if(length(x) ==3 ) {x <- pqr(x) } else {
-  stop("Data must be either a 1 x 4 vector, a 2 x 2 matrix, or a data.frame/matrix of data")} 
+  stop("Data must be either a 1 x 4 vector, a 2 x 2 matrix, a comorbidity table, or a data.frame/matrix of data")} 
   }}
   nvar <- dim(x)[2]
   n.obs <- dim(x)[1]
@@ -308,14 +311,14 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  #modified 1/14/14 to include the tableF function to double the speed for large problems
  
  "tetrachor" <- 
- function(x,correct=TRUE) {
+ function(x,correct=.5) {
  if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachor")}
  cl <- match.call() 
  if (!is.matrix(x) && !is.data.frame(x)) {
   if (length(x) ==4) {x <- matrix(x,2,2) } else {
   if(length(x) ==3 ) {x <- pqr(x) } else {
-  stop("Data must be either a 1 x 4 vector, a 2 x 2 matrix, or a data.frame/matrix of data")} 
-  }}
+   stop("Data must be either a 1 x 4 vector, a 2 x 2 matrix, a comorbidity table, or a data.frame/matrix of data")} 
+   }}
   nvar <- dim(x)[2]
  if (dim(x)[1] == nvar) {result <- tetrac(x,correct=correct)} else {
  result <- tetra.mat(x,correct=correct)}
@@ -346,7 +349,7 @@ ty <- table(y)
  lo <- mean(x[y==lev[1]],na.ram=TRUE)
 # r <- (hi - lo)*sqrt(prod(tab))/(sd(x,na.rm=TRUE))  #point biserial
  r <- (hi - lo)*(prod(tab))/(zp * sd(x,na.rm=TRUE))
- if(!is.na(r) && r >1) { r <- 1   #in case we are correlating a dichotomous variable with itself 
+ if(!is.na(r) && abs(r)  >1 ) {  if (r > 1)  {r <- 1 } else {r <- -1}   #in case we are correlating a dichotomous variable with itself 
           warning("For x = ",i, " y = ", j, " x seems to be dichotomous, not continuous")
   }}}
  return(r)

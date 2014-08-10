@@ -7,7 +7,7 @@
 
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5), ...) {
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5),adj=1, ...) {
     old.par<- par(mar=marg)  #give the window some narrower margins
     on.exit(par(old.par))  #set them back
    col <- c("black","red")
@@ -76,7 +76,7 @@
      		for (v in 1:nvar)  {
      		
     			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
-    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1))
+    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj +1)
     			 }
    }
    }
@@ -101,9 +101,55 @@
  	 var.rect[[v]] <- dia.rect(x.max,top-v-max(0,nvar-n.evar)/2,rownames(e.loadings)[v],xlim=limx,ylim=limy,cex=cex,...)
  	 for(f in 1:num.factors) {
  	 if(simple && (abs(e.loadings[v,f]) == max(abs(e.loadings[v,])) )  && (abs(e.loadings[v,f]) > cut) | (!simple && (abs(e.loadings[v,f]) > cut))) { 
-    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$left,labels =round(e.loadings[v,f],digits),col=((sign(e.loadings[v,f])<0) +1),lty=((sign(e.loadings[v,f])<0)+1))}
+    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$left,labels =round(e.loadings[v,f],digits),col=((sign(e.loadings[v,f])<0) +1),lty=((sign(e.loadings[v,f])<0)+1),adj=f %% adj +1)}
     			}
              }
    
    }
-}                  
+}  
+
+
+
+
+#draw a heterarchy diagram 
+"het.diagram" <- function(r,levels,cut=.3,digits=2,both=TRUE,main="Heterarchy diagram",...) {
+col = c("black","red")
+nlevels <- length(levels)
+nvar <- max(unlist(lapply(levels,length)))
+lowest <- rownames(r)[levels[[1]]]
+
+xlim <- c(-.25,(nlevels-.75))
+ylim <- c(.25,nvar)
+plot(0,type="n",frame.plot=FALSE,axes=FALSE,xlim=xlim,ylim=ylim,ylab="",xlab="",main=main,...)
+x <- 0
+
+#first draw the left most layer
+if(!is.null(names(levels))) {text(x,nvar,names(levels)[x+1]) }
+nlevel.i <- length(levels[[1]])
+lower <- list(nlevel.i)
+spacing <- (nvar)/(nlevel.i+1)
+for (y in 1:nlevel.i) {
+lower[[y]] <- dia.rect(x,y*spacing,lowest[y],xlim=xlim,ylim=ylim,...)
+}
+names.i <- lowest
+#now repeat for each higher layer
+for(i in 2:(nlevels)){
+nlevel.i <- length(levels[[i]])
+level.i <- list(nlevel.i)
+names.next <- rownames(r)[levels[[i]]]
+x <- i-1
+if(!is.null(names(levels))) {text(x,nvar,names(levels)[i]) }
+spacing <- (nvar)/(nlevel.i+1)
+for(y in 1:nlevel.i) {
+	level.i[[y]] <- dia.rect(x,y*spacing,rownames(r)[levels[[i]][y]],xlim=xlim,ylim=ylim,...)	
+    	for(j in 1:length(levels[[i-1]])) {
+       		if(abs(r[names.i[j],names.next[y]]) > cut) { 
+       		 dia.arrow(from=level.i[[y]]$left, to=lower[[j]]$right, labels=round(r[names.i[j],names.next[y]],digits),both=both,adj= y %%3 + 1,
+       		col=(sign(r[names.i[j],names.next[y]] < 0) +1),lty=(sign(r[names.i[j],names.next[y]] < 0)+1),...)
+   				} }
+   } #end of drawing the factors for this  level
+     	names.i <- names.next 
+     	lower <-level.i			 
+} #end of levels (i) loop
+}
+                

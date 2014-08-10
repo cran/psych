@@ -20,7 +20,7 @@ cor2latex(x,use = "pairwise", method="pearson", adjust="holm",stars=FALSE,
       heading="A correlation table from the psych package in R.",
       caption="cor2latex",label="default")
 fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
-       cut=0,alpha=.05,font.size ="scriptsize",
+       cut=0,big=.3,alpha=.05,font.size ="scriptsize",
        heading="A factor analysis table from the psych package in R",
        caption="fa2latex",label="default") 
 omega2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=.2,
@@ -58,6 +58,7 @@ font.size ="scriptsize",big.mark=NULL, drop.na=TRUE,
   \item{stars}{Should probability asterixs be displayed in cor2latex (FALSE)}
   \item{char}{char=TRUE allows printing tables with character information, but does not allow for putting in commas into numbers}
   \item{cut}{In omega2latex and fa2latex, do not print abs(values) < cut }
+  \item{big}{In fa2latex, boldface those abs(values) > big}
   \item{alpha}{If fa has returned confidence intervals, then what values of loadings should be boldfaced?}
   \item{icc}{Either the output of an ICC, or the data to be analyzed.}
   \item{ci}{Should confidence intervals of the ICC be displayed}

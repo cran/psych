@@ -105,3 +105,57 @@ if(shade) {
 par(def.par)  #reset to the original values
 }
 
+
+
+#show the density of a bivariate correlation
+#adapted from the examples of persp
+#meant to show how tetrachorics work
+#8/4/14
+
+draw.cor <- function(r=.5,expand=10,theta=30,phi=30,N=101,nbcol=30,box=TRUE,main="Bivariate density  rho = ",cuts=NULL,all=TRUE,ellipses=TRUE,ze=.15) {
+
+sigma <- matrix(c(1,r,r,1),2,2)  #the covariance matrix
+x <- seq(-3, 3, length= N)
+y <- x
+f <- function(x, y,sigma=sigma) { r <- dmvnorm(cbind(x,y),sigma=sigma)}
+z <- outer(x,y,f,sigma=sigma)
+nrz <- nrow(z)
+ncz <- ncol(z)
+jet.colors <- colorRampPalette( c("light blue", "red") )
+# Generate the desired number of colors from this palette
+nbcol <- 100
+color <- jet.colors(nbcol)
+color <- jet.colors(nbcol)
+nbcol <- length(color)
+#color <- terrain.colors(nbcol)
+#color <- rainbow(nbcol)
+# Compute the z-value at the facet centres
+zfacet <- z[-1, -1] + z[-1, -ncz] + z[-nrz, -1] + z[-nrz, -ncz]
+# Recode facet z-values into color indices
+facetcol <- cut(zfacet, nbcol)
+if(is.null(cuts)) { #the default is to show a correlation
+pmat <- persp(x, y, z, col = color[facetcol], phi = phi, theta = theta,scale=FALSE,expand=expand,box=box,main=paste(main,r))
+} else {
+
+if(!all) {z[,y > cuts[2] ]<- NA #just show the lower quarter
+	z[ x > cuts[1], ]<- NA}
+	z[,abs(y - cuts[2]) < 6/(N)] <- 0  #show all four quarters, with a notch in the distributions
+	z[abs(x -cuts[1]) < 6/(N),] <- 0
+ pmat <- 	persp(x, y, z, col = color[facetcol], phi = phi, theta = theta,scale=FALSE,expand=expand,box=box,main=paste(main,r))
+	}
+	
+if(ellipses) {
+ angles <- (0:N) * 2 * pi/N
+        unit.circle <- cbind(cos(angles), sin(angles))
+        if (abs(r) > 0) 
+            theta1 <- sign(r)/sqrt(2)
+        else theta1 = 1/sqrt(2)
+        shape <- diag(c(sqrt(1 + r), sqrt(1 - r))) %*% matrix(c(theta1, 
+            theta1, -theta1, theta1), ncol = 2, byrow = TRUE)
+        ellipse <- unit.circle %*% shape*2
+ lines (trans3d(ellipse[,1],ellipse[,2],z = ze, pmat = pmat),col = "red", lwd = 2)
+
+}
+#show it again, but without the ellipses
+pmat <- 	persp(x, y, z, col = color[facetcol], phi = phi, theta = theta,scale=FALSE,expand=expand,box=box,main=paste(main,r))
+}  

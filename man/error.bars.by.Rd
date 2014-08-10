@@ -5,10 +5,10 @@
 \description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
 }
 \usage{
-error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,
-    ylim= NULL,xlim=NULL, eyes=TRUE, alpha=.05,sd=FALSE, labels=NULL, v.labels=NULL, 
-    pos=NULL, arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,
-    colors=c("black","blue","red"), lty=NULL,lines=TRUE, legend=0,...)
+error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
+xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
+arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
+ lty,lines=TRUE, legend=0,pch,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,10 +30,11 @@ error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL, xlab=NULL, main=NULL,
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
   \item{bars}{Draw a barplot with error bars rather than a simple plot of the means}
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}
-  \item{colors}{groups will be plotted in different colors (mod n.groups) }
+  \item{colors}{groups will be plotted in different colors (mod n.groups).  See the note for how to make them transparent.}
   \item{lty}{line type may be specified in the case of not plotting by variables}
   \item{lines}{By default, when plotting different groups, connect the groups with a line of type = lty.  If lines is FALSE, then do not connect the groups}
   \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
+  \item{pch}{The first plot symbol to use.  Subsequent groups are pch + group}
   \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
 
 }
@@ -45,6 +46,9 @@ If desired, a barplot with error bars can be shown. Many find this type of plot 
 
 Note in particular, if choosing to draw barplots, the starting value is 0.0 and setting the ylim parameter can lead to some awkward results if 0 is not included in the ylim range.  Did you really mean to draw a bar plot in this case?
 
+For up to three groups, the colors are by default "black", "blue" and "red". For more than 3 groups, they are by default rainbow colors with an alpha factor (transparency) of .5.
+
+To make colors semitransparent, see the last example.
 
 }
 \value{Graphic output showing the means + x\% confidence intervals for each group.  For ci=1.96, and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region.
@@ -78,8 +82,8 @@ data(bfi)   #The Big 5 data
 #first create the keys 
  keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
         Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
- keys <- make.keys(28,keys.list,item.labels=colnames(bfi))
- #then create the scores for those oler than 10 and less than 80
+ keys <- make.keys(bfi,keys.list)
+ #then create the scores for those older than 10 and less than 80
  bfis <- subset(bfi,((bfi$age > 10) & (bfi$age < 80)))
 
  scores <- scoreItems(keys,bfis,min=1,max=6) #set the right limits for item reversals

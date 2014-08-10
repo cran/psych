@@ -3,7 +3,9 @@ SCALE=.3  #how wide are the plots?
 
 if(missing(col)) {col <- c("blue","red")}
 nvar <- nvarg <- ncol(x)
-if(!is.null(grp)) {	Qnt <-  apply(x,2,function(xx) by(xx,grp,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE))
+if(!is.null(grp)) {
+ if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp]	
+ Qnt <-  apply(x,2,function(xx) by(xx,grp,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE))
 meanX <- apply(x,2,function(xx) by(xx,grp,mean,na.rm=TRUE))
 meanX <- matrix(unlist(meanX))
    Qnt <- matrix(unlist(Qnt),nrow=5)

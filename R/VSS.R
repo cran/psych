@@ -71,7 +71,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   complexresid <-  array(0,dim=c(n,n))
   
   
-  vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA,eChisq=NA,eRMS=NA,eCRMS=NA,eBIC=NA) #keep the basic results here 
+  vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA,eChisq=NA,SRMR=NA,eCRMS=NA,eBIC=NA) #keep the basic results here 
  
   if (dim(x)[1]!=dim(x)[2]) { n.obs <- dim(x)[1]
                x <- cor(x,use="pairwise") }  else {if(!is.matrix(x)) x <- as.matrix(x)}
@@ -121,6 +121,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  			vss.df[i,"chisq"] <- f$STATISTIC             #chi square from the factor analysis
  			vss.df[i,"prob"] <- f$PVAL                  #probability value of this complete solution\
  			vss.df[i,"eChisq"] <- f$chi
+ 			vss.df[i,"SRMR"] <- f$rms
  			vss.df[i,"eRMS"] <- f$rms
  			vss.df[i,"eCRMS"] <- f$crms
  			vss.df[i,"eBIC"] <- f$EBIC
@@ -185,7 +186,7 @@ n = dim(x)
    
 plot(vs$vss.stats[,"complex"],xlab="Number of factors",ylab="Complexity",typ="b",main="Complexity",pch=pch,...)
 plot(vs$vss.stats[,"eBIC"],xlab="Number of factors",ylab="Empirical BIC",typ="b",main="Empirical BIC",pch=pch,...)
-plot(vs$vss.stats[,"eCRMS"],xlab="Number of factors",ylab="Empirical CRMS",typ="b",main="Root Mean Residual",pch=pch,...)
+plot(vs$vss.stats[,"SRMR"],xlab="Number of factors",ylab="SRMR",typ="b",main="Root Mean Residual",pch=pch,...)
 results <- list(title=title,map=vs$map,vss.stats=vs$vss.stats[,1:16],call=vs$call)
 class(results) <- c("psych","vss")
 return(results)

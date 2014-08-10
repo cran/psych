@@ -1,7 +1,9 @@
 "plot.irt" <- 
-function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,ylim=NULL,y2lab,...) {
-if(class(x)[2] == "irt.poly") {message("Oops, you wanted to do a polychoric plot. ")
-          stop("Use either plot or plot.poly")}
+function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,xlim,ylim,y2lab,...) {
+if(class(x)[2] == "irt.poly") {
+if(missing(type)) type = "IIC" 
+plot.poly(x=x,D=D,xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,main=main,type=type,cut=cut,labels=labels,keys=keys,y2lab=y2lab,...)} else {
+
 item <- x
 temp <- list()
 sumtemp <- list()
@@ -46,7 +48,7 @@ if(type=="ICC") {
 		if(missing(ylab)) ylab <- "Probability of Response"
 		ii <- 1 
 		while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main)
+		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main,...)
 		text(location[ii],.53,labels[ii])
 		for(i in (ii+1):nvar) {
   		 if(abs(discrimination[i])  > cut) {
@@ -71,7 +73,7 @@ if(type=="ICC") {
 		if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
 		
 		op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main)
+		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main,...)
 		 ax4 <- seq(0,max(testInfo),max(testInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
@@ -84,8 +86,8 @@ if(type=="ICC") {
 	if(missing(main)) main <- "Item information from factor analysis"
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-    if(is.null(ylim)) {ylimit=c(0,max(tInfo)+.03)} else {ylimit <- ylim}
-	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main)
+    if(missing(ylim)) {ylimit=c(0,max(tInfo)+.03)} else {ylimit <- ylim}
+	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main,...)
 text(location[ii],max(tInfo[,ii])+.03,labels[ii])
 for(i in (ii+1):nvar) {
     if(abs(discrimination[i])  > cut) {
@@ -121,7 +123,7 @@ for(i in (ii+1):nvar) {
 	invisible(result)				
      class(result) <- c("psych","polyinfo")
    invisible(result)}
-	
+}	
 }
 
 
@@ -131,7 +133,7 @@ function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
 
 
 "plot.poly" <- 
-function(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,...) {
+function(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,...) {
 
 item <- x
 byKeys <- FALSE
@@ -150,17 +152,16 @@ temp <- list()
 sumtemp <- list()
  
 x <- NULL
-if(missing(ylim)) ylim <- c(0,1)
+
 nvar <- length(item$irt$discrimination[,1])
 ncat <- dim(item$irt$difficulty[[1]])[2]
 if(missing(type)) {type = "IIC"}   
 
 if(missing(D)) {D <- 1.702
 if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
-x <- seq(-3,3,.1)
-summaryx <- seq(-3,3,1)   #used for item summary table
-}
-		 
+if(missing(xlim)) {x <- seq(-3,3,.1) } else {x <- seq(xlim[1],xlim[2],.1)} #used for item summary table
+summaryx <- x 
+}		 
 if(D==1) {if(missing(xlab)) xlab <- "Latent Trait (logistic scale)"}
 if(missing(xlab)) xlab <- "Latent Trait"
 
@@ -187,7 +188,7 @@ if(type=="ICC") { #this draws the item characteristic curves
 if(missing(main)) {main <- "Item parameters from factor analysis"
                   main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
 if(missing(ylab)) ylab <- "Probability of Response"
-
+if(missing(ylim)) ylim <- c(0,1)
 	
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
@@ -246,22 +247,25 @@ for(i in 1:nvar) {
 
 	
 	if(missing(main)) {main <- "Test information for factor "
-	main1 <- paste(main,'  ',f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
+	                  main1 <- paste(main,' ',f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste(main,'',f)}}
 	if(missing(ylab)) ylab <- "Test Information"
 	if(missing(y2lab)) y2lab <- "Reliability"
+	
 	rsInfo <- rowSums(testInfo)
-	 plot(x,rsInfo,typ="l",ylim=c(0,max(rsInfo)),ylab=ylab,xlab=xlab,main=main1)
-	 ax4 <- seq(0,max(rsInfo),max(rsInfo)/4)
+	if(missing(ylim)) ylim = c(0,max(rsInfo))
+	op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
+	 plot(x,rsInfo,typ="l",ylim=ylim,ylab=ylab,xlab=xlab,main=main1,...)
+	 ax4 <- seq(0,ylim[2],ylim[2]/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
-	op <- par(mar=c(5,4,4,4))
+	
 	 axis(4,at=ax4,rel4)
 	 	 mtext(y2lab,side=4,line=2)
 	 op <- par(op)
 	 } else { if(type != "ICC") {
 	if(missing(ylab)) ylab <- "Item Information"
 	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
-	
+	if(missing(ylim)) ylim <- c(0,1)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
 	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,...)

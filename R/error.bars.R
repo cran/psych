@@ -80,6 +80,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      SCALE=.7
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)
+    if(n >1) {
     norm <-  dt(ln,n-1)
     norm <- c(norm,-norm[rev])
     ln <- seq(-3,3,.1)
@@ -88,4 +89,4 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     cnorm <- dnorm(cln)
     cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	  
     polygon(norm*SCALE+x,c(ln,ln[rev])*se+y)
-    polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}
+    polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}}

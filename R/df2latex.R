@@ -120,7 +120,7 @@ if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analy
 }
 
 "fa2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,alpha=.05,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,big=.3,alpha=.05,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
 if(class(f)[2] == "fa.ci") {
 if(is.null(f$cip)) {px <- f$cis$p} else {px <- f$cip}} else {px <- NULL}  #get the probabilities if we did fa.ci
 #if(class(f)[2] !="fa") f <- f$fa
@@ -157,7 +157,7 @@ footer <- paste(footer,"
 
 #now put the data into it
  
- x <- round(x,digits=digits)
+ x <- round(x,digits=digits)   
  
  
  cname <- colnames(x)
@@ -166,12 +166,17 @@ footer <- paste(footer,"
  lastname <- paste(cname[nvar],"\\cr \n")
  
  if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {allnames <- c("  &  ",names1,lastname,"\\cr \n")}
- x <- format(x,drop0trailing=FALSE)  #to keep the digits the same
- {if(!is.null(pf) && (cut == 0)) { temp <- x[1:nfactors]
+ fx <- format(x,drop0trailing=FALSE)  #to keep the digits the same
+ {if(!is.null(px) && (cut == 0)) { temp <- fx[1:nfactors]
  temp[px < alpha] <- paste("\\bf{",temp[px < alpha],"}",sep="")
- x[1:nfactors] <- temp
+ fx[1:nfactors] <- temp
  }
- value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
+ if(big > 0) {temp <- fx[1:nfactors]  
+   x <- x[1:nfactors]
+  temp[abs(x) > big] <- paste("\\bf{",temp[abs(x) > big],"}",sep="")
+   fx[1:nfactors] <- temp
+   }
+ value <- apply(fx,1,paste,collapse="  &  ") #insert & between columns
  value <- gsub("NA", "  ", value, fixed = TRUE)
  if(rowlabels) value <- {paste(sanitize.latex(names(value)),"  & ",value)} else {paste("  &  ",value)}
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
@@ -345,6 +350,8 @@ footer <- paste(footer,"
  
  if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {allnames <- c("  &  ",names1,lastname,"\\cr \n")}
  x <- format(x,drop0trailing=FALSE)  #to keep the digits the same
+ 
+  
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
  value <- gsub("NA", "  ", value, fixed = TRUE)
  if(rowlabels) value <- {paste(sanitize.latex(names(value)),"  & ",value)} else {paste("  &  ",value)}

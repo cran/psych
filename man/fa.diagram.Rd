@@ -2,13 +2,16 @@
 \alias{fa.graph}
 \alias{fa.rgraph}
 \alias{fa.diagram}
+\alias{het.diagram}
 \title{ Graph factor loading matrices}
-\description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph.
+\description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph. \code{\link{het.diagram}} will draw "heterarchy" diagrams of factor/scale solutions at different levels.
 }
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
-simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
-    main,cex=NULL,marg=c(.5,.5,1,.5), ...) 
+     simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
+    main,cex=NULL,marg=c(.5,.5,1,.5),adj=1, ...) 
+het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
+        main="Heterarchy diagram",...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
@@ -29,6 +32,9 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
   \item{simple}{Only the biggest loading per item is shown}
   \item{g}{Does the factor matrix reflect a g (first) factor.  If so, then draw this to the left of the variables, with the remaining factors to the right of the variables.  It is useful to turn off the simple parameter in this case.}
+  \item{r}{A correlation matrix for the het.diagram function}
+  \item{levels}{A list of the elements in each level}
+  \item{both}{Should arrows have double heads (in het.diagram)}
   \item{size}{graph size }
   \item{sort}{sort the factor loadings before showing the diagram}
   \item{errors}{include error estimates (as arrows)}
@@ -37,6 +43,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{side}{on which side should error arrows go?}
   \item{cex}{modify font size}
   \item{marg}{sets the margins to be wider than normal, returns them to the normal size upon exit}
+  \item{adj}{how many different positions (1-3) should be used for the numeric labels. Useful if they overlap each other.}
   \item{node.font}{what font should be used for nodes in fa.graph  }
   \item{edge.font}{what font should be used for edges in fa.graph  }
   \item{rank.direction}{ parameter passed to Rgraphviz-- which way to draw the graph }

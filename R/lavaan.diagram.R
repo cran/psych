@@ -12,5 +12,6 @@ if(missing(title)) {if(model =="cfa") { title="Confirmatory structure" } else {t
                   v.labels <-fit@Model@dimNames[[1]][[1]]
   if(model=="cfa") {                
 structure.diagram(fx=fx,Phi=Phi,Rx=Rx,labels=v.labels,main=title,...)}
-else {structure.diagram(fx=fx,Phi=fit@Model@GLIST$beta,Rx=Rx,labels=v.labels,main=title,...) }
+else {structure.diagram(fx=fx,Phi=t(fit@Model@GLIST$beta),Rx=Rx,labels=v.labels,main=title,...) }
 }
+#modified 11/6/14 to draw the regression paths

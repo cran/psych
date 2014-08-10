@@ -4,10 +4,14 @@
 \alias{target.rot}
 \alias{bifactor}
 \alias{biquartimin}
+\alias{varimin}
 \alias{vgQ.bimin}
 \alias{vgQ.targetQ}
+\alias{vgQ.varimin}
+
+\alias{equamax}
 \title{ Perform bifactor, promax or targeted rotations and return the inter factor angles.}
-\description{The bifactor rotation implements the rotation introduced by Jennrich and Bentler (2011) by calling GPForth in the GPArotation package.  promax is an oblique rotation function introduced by Hendrickson and White (1964) and implemented in the promax function in the stats package.  Unfortunately, promax does not report the inter factor correlations.  Promax does.  TargetQ does a target rotation with elements that can be missing (NA), or numeric (e.g., 0, 1).  It uses the GPArotation package. target.rot does general target rotations to an arbitrary target matrix. The default target rotation is for an independent cluster solution.
+\description{The bifactor rotation implements the rotation introduced by Jennrich and Bentler (2011) by calling GPForth in the GPArotation package.  promax is an oblique rotation function introduced by Hendrickson and White (1964) and implemented in the promax function in the stats package.  Unfortunately, promax does not report the inter factor correlations.  Promax does.  TargetQ does a target rotation with elements that can be missing (NA), or numeric (e.g., 0, 1).  It uses the GPArotation package. target.rot does general target rotations to an arbitrary target matrix. The default target rotation is for an independent cluster solution. equamax facilitates the call to GPArotation to do an equamax rotation.  Equamax, although available as a specific option within GPArotation is easier to call by name if using equamax.  The varimin rotation suggested by Ertl (2013) is implemented by appropriate calls to GPArotation.
 }
 \usage{
 bifactor(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
@@ -15,8 +19,11 @@ biquartimin(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 TargetQ(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
 Promax(x, m = 4)
 target.rot(x,keys=NULL)
+varimin(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, maxit = 1000)
 vgQ.bimin(L)   #called by bifactor
 vgQ.targetQ(L,Target=NULL)  #called by TargetQ
+vgQ.varimin(L)  #called by varimin
+equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,7 +37,7 @@ vgQ.targetQ(L,Target=NULL)  #called by TargetQ
   \item{eps}{parameter passed to optimization routine (GPForth in the GPArotation package) }
   \item{maxit}{parameter passed to optimization routine (GPForth in the GPArotation package)}
 }
-\details{The two most useful of these four functions is probably biquartimin which implements the oblique bifactor rotation introduced by Jennrich and Bentler (2011). The second is TargetQ which allows for missing NA values in the target. Next best is the orthogonal case, bifactor.  None of these seem to be implemented in GPArotation (yet).  
+\details{The two most useful of these six functions is probably biquartimin which implements the oblique bifactor rotation introduced by Jennrich and Bentler (2011). The second is TargetQ which allows for missing NA values in the target. Next best is the orthogonal case, bifactor.  None of these seem to be implemented in GPArotation (yet).  
 
 The difference between biquartimin and bifactor is just that the latter is the orthogonal case which is documented in Jennrich and Bentler (2011).  It seems as if these two functions are sensitive to the starting values and random  restarts (modifying T) might be called for.
 
@@ -38,7 +45,11 @@ bifactor output for the 24 cognitive variable of Holzinger matches that of Jennr
 
 Promax is a very direct adaptation of the stats::promax function.  The addition is that it will return the interfactor correlations as well as the loadings and rotation matrix. 
 
-In addition, it will take output from either the factanal, \code{\link{fa}} or earlier (\code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}})  functions and select just the loadings matrix for analysis.
+varimin implements the varimin criterion proposed by Suitbert Ertl (2013).  Rather than maximize the varimax criterion, it minimizes it.  For a discussion of the benefits of this procedure, consult Ertel (2013).
+
+In addition, these functions will take output from either the factanal, \code{\link{fa}} or earlier (\code{\link{factor.pa}}, \code{\link{factor.minres}} or \code{\link{principal}})  functions and select just the loadings matrix for analysis.
+
+equamax is just a call to GPArotation's cFT function (for the Crawford Ferguson family of rotations. 
 
 TargetQ implements Michael Browne's algorithm and allows specification of NA values. The Target input is a list (see examples).  It is interesting to note how powerful specifying what a factor isn't works in defining a factor.  That is, by specifying the pattern of 0s and letting most other elements be NA, the factor structure is still clearly defined.
 
@@ -54,13 +65,18 @@ target.rot will not handle targets that have linear dependencies (e.g., a pure b
   \item{rotmat}{The rotation matrix applied to the original loadings to produce the promax soluion or the targeted matrix}
   \item{Phi}{The interfactor correlation matrix}
 }
-\references{Hendrickson, A. E. and  White, P. O, 1964, British Journal of Statistical Psychology, 17, 65-70.
+\references{
+ Ertel, S. (2013). Factor analysis: healing an ailing model. Universitatsverlag Gottingen.
+
+Hendrickson, A. E. and  White, P. O, 1964, British Journal of Statistical Psychology, 17, 65-70.
 
 Jennrich, Robert and Bentler, Peter (2011) Exploratory Bi-Factor Analysis. Psychometrika,  1-13
 
 }
 \author{William Revelle }
 \note{A direct adaptation of the stats:promax function following suggestions to the R-help list by Ulrich Keller and John Fox. Further  modified to do  targeted rotation similar to a function of Michael Browne.
+
+varimin is a direct application of the GPArotation GPForth function modified to do varimin.
 
  
 }
@@ -71,15 +87,19 @@ f3 <- fa(jen,3,rotate="varimax")
 f3   #not a very clean solution
 Promax(f3)
 target.rot(f3)
-m3 <- factanal(covmat=jen,factors=3)
+m3 <- fa(jen,nfactors=3)
 Promax(m3)  #example of taking the output from factanal
 #compare this rotation with the solution from a targeted rotation aimed for 
 #an independent cluster solution
 target.rot(m3)
 #now try a bifactor solution
-fa(jen,3,rotate="bifactor")
-fa(jen,3,rotate="biquartimin")
-
+fb <-fa(jen,3,rotate="bifactor")
+fq <- fa(jen,3,rotate="biquartimin")
+#Suitbert Ertel has suggested varimin
+fm <-  fa(jen,3,rotate="varimin") #the Ertel varimin
+fn <- fa(jen,3,rotate="none")  #just the unrotated factors
+#compare them
+factor.congruence(list(f3,fb,fq,fm,fn))
 # compare an oblimin with a target rotation using the Browne algorithm
  #note that we are changing the factor #order (this is for demonstration only)
  Targ <- make.keys(9,list(f1=1:3,f2=7:9,f3=4:6)) 

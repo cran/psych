@@ -1,23 +1,29 @@
 \name{cluster.cor}
 \alias{cluster.cor}
-
-\title{Find correlations of composite variables from a larger matrix}
+\alias{scoreOverlap}
+\title{Find correlations of composite variables (corrected for overla from a larger matrix.}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} function.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
 }
 \usage{
 cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
+scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
+     impute = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{keys}{ A matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
+  \item{r}{Either a correlation matrix or a raw data matrix}
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
  \item{item.smc}{the smcs of the items may be passed into the function for speed, or calculated if SMC=TRUE }
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
+  \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
 }
 \details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
+
+In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.
 
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{fa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  
@@ -26,6 +32,8 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
  If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations. If impute=TRUE (the default), a warning is issued and the correlations are imputed based upon the average correlations of the non-missing elements of each scale. 
  
  Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{scoreItems}}.  They will differ substantially only if the items differ a great deal in their variances.   
+ 
+ \code{\link{scoreOverlap}} answers an important question when developing scales and related subscales, or when comparing alternative versions of scales.  For by removing the effect of item overlap, it gives a better estimate the relationship between the latent variables estimated by the observed sum (mean) scores.
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}
@@ -44,15 +52,20 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 }
 \note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
 }
-\seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha}}, and most importantly, \code{\link{scoreItems}}, which will do all of what cluster.cor does for most users.  cluster.cor is an important helper function for \code{\link{iclust}}}
+\seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha}}, and most importantly, \code{\link{scoreItems}}, which will do all of what cluster.cor does for most users.  cluster.cor is an important helper function for \code{\link{iclust}}
+}
+
 \examples{
 \dontrun{
 data(attitude)
-keys <- matrix(c(1,1,1,0,0,0,0,
-                 0,0,0,1,1,1,1),ncol=2)
-colnames(keys) <- c("first","second")
+keys <- make.keys(attitude,list(first=1:3),second=4:7))
+
 r.mat <- cor(attitude)
 cluster.cor(keys,r.mat)
+#compare this to the correlations correcting for item overlap
+overlapping.keys <- make.keys(attitude,list(all=1:7,first=1:3,second=4:7,first2 = 1:3))
+cluster.cor(overlapping.keys,r.mat)  #unadjusted correlations
+scoreOverlap(overlapping.keys,attitude)  #adjusted correlations
 }
 #$cor
 #       first second

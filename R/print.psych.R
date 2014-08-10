@@ -199,7 +199,18 @@ describeData = {if  (length(dim(x))==1) {class(x) <- "list"
             print(x$variables) }
          },
  
-
+faBy = { cat("Call: ")
+        print(x$Call)
+        cat("\n Factor analysis by Groups\n")
+        cat("\nStandardized loadings (pattern matrix) based upon correlation matrix for all cases as well as each group\n")
+        print(x$loadings,digits=digits)
+        cat("\n With factor intercorrelations for all cases and for each group\n")
+        print(x$phis,digits=2)
+        if(!is.null(x$fa)) {
+        cat("\nFactor analysis results for each group\n")
+        print(x$fa)}
+        
+},
     
 guttman =  {
   cat("Call: ")
@@ -297,8 +308,9 @@ mchoice =  {
   },     
     
 mixed= { cat("Call: ")
-          print(x$Call)
-    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}
+    print(x$Call)
+    if(is.null(x$rho)) {if(lower) {print(lowerMat(x,digits=digits))} else {print(x,digits)} } else {
+    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}}
    },
    
  
@@ -352,7 +364,15 @@ parallel= { cat("Call: ")
             if(lower) {lowerMat (x$rho,digits) } else {print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
-          }
+            }
+   },
+
+polydi= {cat("Call: ")
+              print(x$Call)
+            cat("Correlations of polytomous with dichotomous\n")
+            print(x$rho,digits)
+            cat("\n with tau of \n")
+            print(x$tau,digits)
    },
    
  polyinfo =  {cat("Item Response Analysis using Factor Analysis  \n")
@@ -406,7 +426,25 @@ parallel= { cat("Call: ")
     }
     },
 
-   
+overlap =  {
+    cat("Call: ")
+    print(x$Call)
+	cat("\n(Standardized) Alpha:\n")
+	print(x$alpha,digits)
+    cat("\n(Standardized) G6*:\n")
+    print(x$G6,digits)
+  	cat("\nAverage item correlation:\n")
+	print(x$av.r,digits)
+	cat("\nNumber of items:\n")
+	print(x$size)
+	cat("\nSignal to Noise ratio based upon average r and n \n")
+	print(x$sn,digits=digits)
+	
+	
+	 cat("\nScale intercorrelations corrected for item overlap and attenuation \n adjusted for overlap correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
+	 print(x$corrected,digits) 
+	  },
+	   
                   
 r.test =  {cat("Correlation tests \n")
             cat("Call:")

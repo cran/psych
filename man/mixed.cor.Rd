@@ -4,18 +4,17 @@
 \description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixed.cor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
 }
 \usage{
-mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=TRUE,global=TRUE, 
-        ncat=8, polycor=FALSE,use="pairwise",method="pearson",weight=NULL)
+mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=.5,global=TRUE, 
+        ncat=8,use="pairwise",method="pearson",weight=NULL)
 }
 \arguments{
   \item{x}{A set of continuous variables (may be missing) or, if p and d are missing, the variables to be analyzed.}
   \item{p}{A set of polytomous items (may be missing)}
   \item{d}{A set of dichotomous items (may be missing)}
   \item{smooth}{If TRUE, then smooth the correlation matix if it is non-positive definite}
-  \item{correct}{When finding tetrachoric correlations, should 0 values be corrected for continuity?}
+  \item{correct}{When finding tetrachoric correlations, what value should be used to correct for continuity?}
   \item{global}{For polychorics, should the global values of the tau parameters be used, or should the pairwise values be used.  Set to local if errors are occurring.}
   \item{ncat}{The number of categories beyond which a variable is considered "continuous".}
-  \item{polycor}{Should the polycor function from the polychor package be used?}
   \item{use}{The various options to the \code{\link{cor}} function include "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs". The default here is "pairwise"}
   \item{method}{The correlation method to use for the continuous variables. "pearson" (default), "kendall", or "spearman"}
   \item{weight}{If specified, this is a vector of weights (one per participant) to differentially weight participants. The NULL case is equivalent of weights of 1 for all cases. }

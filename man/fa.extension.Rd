@@ -8,7 +8,8 @@
 \usage{
 fa.extension(Roe,fo,correct=TRUE)
 fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
-  correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",alpha=.1, ...) 
+  correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, 
+      fm="minres",alpha=.1,omega=FALSE,  ...) 
 
 }
 
@@ -29,6 +30,7 @@ fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair.}
 \item{alpha}{alpha level for the confidence intervals for RMSEA}
+\item{omega}{Do the extension analysis for an omega type analysis}
  \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
 
 }
@@ -42,7 +44,7 @@ The factor analysis results from either \code{\link{fa}} or \code{\link{omega}} 
 
 For a very nice discussion of the relationship between factor scores, correlation matrices, and the factor loadings in a factor extension, see Horn (1973).
 
-The \code{\link{fa.extend}} function may be thought of as a "seeded" factor analysis.  That is, the variables in the original set are factored, this solution is then extended to the extension set, and the resulting output is presented as if both the original and extended variables were factored together. 
+The \code{\link{fa.extend}} function may be thought of as a "seeded" factor analysis.  That is, the variables in the original set are factored, this solution is then extended to the extension set, and the resulting output is presented as if both the original and extended variables were factored together.  This may also be done for an omega analysis. 
 
 The example of  code{\link{fa.extend}} compares the extended solution to a direct solution of all of the variables using \code{\link{factor.congruence}}. 
 }

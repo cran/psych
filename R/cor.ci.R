@@ -1,19 +1,18 @@
  #Pearson or polychoric correlations with confidence intervals
 
  "cor.ci" <- 
-function(x, keys = NULL, n.iter = 100,  p = 0.05, poly = FALSE, method = "pearson",plot=TRUE,...) {
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,...) {
  cl <- match.call()
  n.obs <- dim(x)[1]
  
- 
-if(poly) {
- ncat <- 8
-nvar <- dim(x)[2]
-	tx <- table(as.matrix(x))
+ if(is.null(keys) && overlap) overlap <- FALSE  #can not correct for overlap with just items
+if(poly) {  #find polychoric or tetrachoric correlations if desired
+  ncat <- 8
+  nvar <- dim(x)[2]
+  tx <- table(as.matrix(x))
 	
 	if(dim(tx)[1] ==2) {tet <- tetrachoric(x)
-	    typ = "tet"} else {
-	    
+	    typ = "tet"} else {  #should we do mixed correlations?
 	    tab <- apply(x,2,function(x) table(x))
        if(is.list(tab)) {len <- lapply(tab,function(x) length(x))} else {len <- dim(tab)[1] }
 
@@ -22,44 +21,74 @@ pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variab
 cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
 if(length(pvars)==ncol(x)) {tet <- polychoric(x)
 	    typ = "poly"} else {tet <- mixed.cor(x)
-	    typ="mixed" }
-	    
+	    typ="mixed" }	    
 	  } 
    
-    rho <- tet$rho 
- } else { rho <- cor(x,use="pairwise",method=method)
- 
+    Rho <- tet$rho    #Rho is the big correlation of all of items 
+ } else { Rho <- cor(x,use="pairwise",method=method)    #the normal Pearson correlations
          } 
-         if(!is.null(keys)) {bad <- FALSE
-         if(any(is.na(rho))) {warning(sum(is.na(rho)), " of the item correlations are NA and thus finding scales that include those items will not work.\n We will try to do it for those  scales which do not include those items.
+  #now, if there are keys, find the correlations of the scales       
+   if(!is.null(keys)) {bad <- FALSE
+         if(any(is.na(Rho))) {warning(sum(is.na(Rho)), " of the item correlations are NA and thus finding scales that include those items will not work.\n We will try to do it for those  scales which do not include those items.
          \n Proceed with caution. ") 
          bad <- TRUE
-         rho <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(rho*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!  
+         rho <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(Rho*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!  
          #switched to using colMeans instead of colSums, recognizing the problem of different number of items being dropped.
          } else {
-          rho <- t(keys) %*% rho %*% keys} }  #find the correlation between the scales
+          rho <- t(keys) %*% Rho %*% keys} }  #find the covariances between the scales
 
- rho <- cov2cor(rho)     #scale to correlations  
+ #
+ ##correct for overlap if necessary on the original data
+
+ if(overlap) { key.var <- diag(t(keys) %*% keys)
+  var <- diag(rho)    #these are the scale variances
+   n.keys <- ncol(keys)
+   key.av.r <- (var - key.var)/(key.var * (key.var-1))
+   item.cov <- t(keys) %*% Rho #this will blow up if there are bad data
+   raw.cov <- item.cov %*% keys
+   adj.cov <- raw.cov
+    for (i in 1:(n.keys)) {
+    for (j in 1:i) {
+         adj.cov[i,j] <- adj.cov[j,i]<- raw.cov[i,j] - sum(keys[,i] * keys[,j] ) + sum(keys[,i] * keys[,j] *  sqrt(key.av.r[i] * key.av.r[j]))
+                    }
+                           }
+       diag(adj.cov) <- diag(raw.cov)
+       rho <- cov2cor(adj.cov)
+     }
+  rho <- cov2cor(rho)     #scale covariances to correlations  
   nvar <- dim(rho)[2]
  
  if(n.iter > 1) {
- 
- replicates <- list()
- rep.rots <- list()
- 
-if(!require(parallel)) {warning("parallel package needed for mclapply")}
- replicates <- mclapply(1:n.iter,function(XX) {
- xs <- x[sample(n.obs,n.obs,replace=TRUE),]
- {if(poly) {
-  if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
+ 	replicates <- list()
+ 	rep.rots <- list()
+ 	##now replicate it to get confidence intervals
+	if(!require(parallel)) {warning("parallel package needed for mclapply")}
+ 		replicates <- mclapply(1:n.iter,function(XX) {
+		 xs <- x[sample(n.obs,n.obs,replace=TRUE),]
+ 		{if(poly) {
+ 		 if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
 
-  R <- tets$rho} else {R <- cor(xs,use="pairwise",method=method)}
+  	R <- tets$rho} else {R <- cor(xs,use="pairwise",method=method)}  #R is the big correlation matrix
  
  if(!is.null(keys)) { if (bad) {covariances <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(R*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!
   } else {
  covariances <- t(keys) %*% R %*% keys}
                r <- cov2cor(covariances) } else {r <- R}					
-             
+  #correct for overlap if this is requested
+  if(overlap) { 
+  var <- diag(covariances) 
+   item.cov <- t(keys) %*% R 
+   raw.cov <- item.cov %*% keys
+   adj.cov <- raw.cov
+   key.av.r <- (var - key.var)/(key.var * (key.var-1))
+    for (i in 1:(n.keys)) {
+    for (j in 1:i) {
+         adj.cov[i,j] <- adj.cov[j,i]<- raw.cov[i,j] - sum(keys[,i] * keys[,j] ) + sum(keys[,i] * keys[,j] *  sqrt(key.av.r[i] * key.av.r[j]))
+                    }
+                           }
+       diag(adj.cov) <- diag(raw.cov)
+       rho <- cov2cor(adj.cov)
+  }    
  rep.rots <- r[lower.tri(r)]
  }
  } 

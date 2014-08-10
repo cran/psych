@@ -2,13 +2,20 @@
 function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
 xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
 arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
- lty = NULL,lines=TRUE, legend=0,...)  # x   data frame with 
+ lty,lines=TRUE, legend=0,pch,...)  # x   data frame with 
     {
+
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
+    nvar <- ncol(x)
+    if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)
+     col12 <- col2rgb(colors,TRUE)/255
+    colors <- rgb(col12[1,],col12[2,],col12[3,],.5)
+               n.color <- nvar}
     density=-10
     
-    if(is.null(lty)) lty = "solid"
+    if(missing(lty)) lty <- 1:8
+ 
     legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
     
     all.stats <- describe(x)
@@ -27,17 +34,19 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
  if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
     group.stats <- describeBy(x,group,mat=TRUE)   
            n.var <- dim(all.stats)[1]
-           n.groups <- length(group.stats[[1]])/n.var
-           group.means <- matrix(group.stats$mean,ncol=n.groups,byrow=TRUE)
+           n.group <- length(group.stats[[1]])/n.var
+           group.means <- matrix(group.stats$mean,ncol=n.group,byrow=TRUE)
+           
+            if(missing(pch)) pch <- seq(15,(15+n.group))
           
-           if(sd) {group.se <- matrix(group.stats$sd,ncol=n.groups,byrow=TRUE)} else { group.se <- matrix(group.stats$se,ncol=n.groups,byrow=TRUE)}
-           group.n <- matrix(group.stats$n,ncol=n.groups,byrow=TRUE)
-           if(within) {group.smc <- matrix(unlist(by(x,group,smc)),nrow=n.groups,byrow=TRUE)
-                       group.sd <- matrix(group.stats$sd,ncol=n.groups,byrow=TRUE)
+           if(sd) {group.se <- matrix(group.stats$sd,ncol=n.group,byrow=TRUE)} else { group.se <- matrix(group.stats$se,ncol=n.group,byrow=TRUE)}
+           group.n <- matrix(group.stats$n,ncol=n.group,byrow=TRUE)
+           if(within) {group.smc <- matrix(unlist(by(x,group,smc)),nrow=n.group,byrow=TRUE)
+                       group.sd <- matrix(group.stats$sd,ncol=n.group,byrow=TRUE)
                        if(sd) {group.se <- sqrt(group.se^2 * (1-group.smc))} else { group.se <- sqrt(group.sd^2 *(1-group.smc)/group.n) }}
            
            rownames(group.means) <- rownames(all.stats)
-           if(is.null(labels)) {colnames(group.means) <- paste("Group",1:n.groups)} else {colnames(group.means) <- labels }
+           if(is.null(labels)) {colnames(group.means) <- paste("Group",1:n.group)} else {colnames(group.means) <- labels }
            
            if (is.null(ylab)) ylab <- "Dependent Variable"
           
@@ -46,7 +55,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
            if (is.null(xlab)) xlab <- "Variables"
            mp <- barplot(t(group.means),beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main,col=colors,...)
             for(i in 1:n.var) {
-             for (j in 1:n.groups) {
+             for (j in 1:n.group) {
          	 xcen <- group.means[i,j]
     	 	 xse  <- group.se[i,j]
     	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha/2,group.n[i,j])}
@@ -56,7 +65,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
            if (is.null(xlab)) xlab <- "Grouping Variable"
            mp <- barplot(group.means,beside=TRUE,ylab=ylab,xlab=xlab,ylim=ylim,main=main,col=colors,...)
             for(i in 1:n.var) {
-             for (j in 1:n.groups) {
+             for (j in 1:n.group) {
          	 xcen <- group.means[i,j]
     	 	 xse  <- group.se[i,j]
     	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha/2,group.n[i,j])}
@@ -68,8 +77,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
           box()
             if(legend >0  ){
        if(!is.null(v.labels)) {lab <- v.labels} else {lab <- paste("V",1:n.var,sep="")} 
-       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.var),
-       text.col = "green4", lty = seq(1:8),
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.var],
+       text.col = "green4", lty = lty[1:n.var],
        merge = TRUE, bg = 'gray90')}
                
   } else {   #the normal case is to not use bars
@@ -77,6 +86,10 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     group.stats <- describeBy(x,group)
     n.group <- length(group.stats)
     n.var <- ncol(x)
+    
+    #first set up some defaults to allow the specification of colors, lty, and pch dynamically and with defaults
+    if(missing(pch)) pch <- seq(15,(15+n.group))
+    if(missing(lty)) lty <- 1:8
      if(within) {group.smc <- by(x,group,smc) }
      z <- dim(x)[2]
      if(is.null(z)) z <- 1 
@@ -92,12 +105,12 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	              if(sd) {x.stats.$se <- sqrt(x.stats$sd^2* (1- x.smc))} else { x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)}
     	               }
         if (missing(xlim)) xlim <- c(.5,n.var+.5)
-    	if(!add) {plot(x.stats$mean,ylim=ylim,xlim=xlim, xlab=xlab,ylab=ylab,main=main,typ=typ,lty=((g-1) %% 8 +1),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=15,...)
+    	if(!add) {plot(x.stats$mean,ylim=ylim,xlim=xlim, xlab=xlab,ylab=ylab,main=main,typ=typ,lty=(lty[((g-1) %% 8 +1)]),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=pch[g],...)
     	
     	axis(1,1:z,colnames(x),...)
     	axis(2,...)
     	box()
-    	} else {points(x.stats$mean,typ = typ,lty=((g-1) %% 8 +1),col = colors[(g-1) %% n.color +1], pch=14+g) 
+    	} else {points(x.stats$mean,typ = typ,lty=lty[((g-1) %% 8 +1)],col = colors[(g-1) %% n.color +1],  pch=pch[g]) 
     	       }
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
    
@@ -108,7 +121,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	
     	 if(sd) {xse <- x.stats$sd[i] } else {xse  <- x.stats$se[i]}
     	
-    	if(sd) {ci <- 1} else { ci <- qt(1-alpha/2,x.stats$n[i]-1)}  #corrected Sept 11, 2013
+    	if(sd) {ci <- 1} else { if(x.stats$n[i] >1) {ci <- qt(1-alpha/2,x.stats$n[i]-1)} else {ci <- 0}}  #corrected Sept 11, 2013
     	  if(is.finite(xse) & xse>0)  {
     	  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 if (eyes) {catseyes(i,xcen,xse,x.stats$n[i],alpha=alpha,density=density,col=colors[(g-1) %% n.color +1] )}
@@ -116,13 +129,13 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	}
     	}
      add <- TRUE
-     lty <- "dashed"
+   #  lty <- "dashed"
      }   #end of g loop 
      
        if(legend >0  ){
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:n.group,sep="")} 
-       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.group),
-       text.col = "green4", lty = seq(1:8),
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.group],
+       text.col = "green4", lty = lty[1:8],
        merge = TRUE, bg = 'gray90')
    }
     }    else  { # end of not by var loop
@@ -148,12 +161,12 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    
     	if(!add) {
     	if(missing(xlim)) xlim <- c(.5,n.group + .5)
-    	 plot(x.values,var.means[1,],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty,pch=15,col = colors[(i-1) %% n.color +1],...)
+    	 plot(x.values,var.means[1,],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[1],pch=pch[1],col = colors[(i-1) %% n.color +1],...)
     		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats)),...) } else {axis(1)}
     		axis(2,...)
     		box() 
     		add <- TRUE
-    		} else {points(x.values,var.means[i,],typ = typ,lty=((i-1) %% 8 +1),col = colors[(i-1) %% n.color + 1], pch=14 + i,...) 
+    		} else {points(x.values,var.means[i,],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i-1) %% n.color + 1], pch=pch[i],...) 
     		        # points(x.values,var.means[i,],typ = typ,lty=lty,...)
     		}
     	
@@ -166,7 +179,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
       
     		xcen <- var.means[i,g]
     	 	xse  <- var.se[i,g]
-    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n-1)}
+    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n-1)} 
     	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	        if (eyes) { 
     	        catseyes(g,xcen,xse,group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}}  else {
@@ -180,8 +193,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
      }   #end of i loop 
       if(legend >0  ){
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")} 
-       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=15:(15 + n.vars),
-       text.col = "green4", lty = seq(1:8),
+       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.vars],
+       text.col = "green4", lty = lty[1:8],
        merge = TRUE, bg = 'gray90')
    }
     }  #end of by var is true loop

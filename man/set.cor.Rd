@@ -11,11 +11,12 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
   \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
-  \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
+\item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
   \item{z}{the column names or numbers of the set of covariates}
+  \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
+
   \item{use}{find the correlations "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   
@@ -40,7 +41,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  When finding the unweighted correlations, as is done in \code{\link{alpha}}, items are flipped so that they all are positively signed.  
  
  
-  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{set.cor}}.
+  A typical use in the SAPA project is to form item composites by clustering or factoring (see  \code{\link{fa}},\code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{set.cor}}.
 
  Although the overall matrix can have missing correlations, the correlations in the subset of the matrix used for prediction must exist.
  

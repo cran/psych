@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.6 (2014-6-1)}{
+\section{Changes in psych version 1.4.7 (2014-7-05)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.4.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.3 was released in March of 2014, the last two digits reflect the day of any modifications).
+      \item Version 1.4.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.5.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.5 was released in May of 2014, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -25,10 +25,74 @@
       \item add the ability to add labels to lavaan.diagram  
       \item clean up lavaan diagram so that the output is more readable    
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
-     \item To help those who want to simulate a bifactor model, make it explicit         
+     \item To help those who want to simulate a bifactor model, make it explicit  
+     
+     \item Check the bias in bootstrap resampling using cor.ci  
+     \item Consider using the log option in pnorm 
+     \item Start to use the drop=FALSE when doing subsetting
+     \item fix vss to do any kind of rotation
+     \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases      
     }
   }
   } 
+ \section{Changes in psych version 1.4.8 (2014-08-09)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added the ability to find polychoric correlations within groups in statsBy (requested by Aidan Wright).
+          \item Modified cor.ci to allow for cluster overlap corrections. 
+          \item Added het.diagram to allow for diagrams of heterarchical structures.
+          \item Modified dia.arrow to allow for adjusting where the label appears.  Applied this fix to fa.diagram.
+          \item Modified fa.sort so that it will sort the results of a principal components analysis (requested by Popov Oleg).
+          \item Added the outlier function to find Mahalanobis distance measures for a data matrix and flag those cases that are unusual.
+          \item Added draw.cor to show how bivariate densities estimates are used in finding tetrachoric correlations.
+          \item Added fa.by to allow for factor analysis by groups.
+          \item Removed inactive calls to the polycor package
+          }
+          
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+    \item Fixed alpha so that it properly returns the average correlation if given a correlation matrix (reported by Franziska Zuber).
+   \item A stylistic change in tetrachoric so that it is easier to read.
+   \item Fixed two examples in tetrachoric that were impossible
+   \item Changed a test condition that was not allowing  vector input to be processed in tetrachoric.
+   \item Fixed a bug that would lead polychoric to break if there were no cell entries (bad data condition).  Missing cells are now given NA. (Reported by Elina Zaonegina.)
+            }
+                       } 
+  }
+ 
+ 
+  
+ \section{Changes in psych version 1.4.6.20 (2014-06-20)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added read.https function
+          \item Added the ability to specify group by name or variable location to describeBy, error.bars.by, violinBy, mssd and rmssd. 
+          \item Added the equamax rotation option in fa. (requested by Sagnik Chakravarty, with solution by Gunter Nickel)
+          \item Added the ability to do factor.extensions for omega analyses. 
+          \item Added some error checking in polychoric for case of bad data (requested by Simon Kiss)
+          \item Added the ability to specify the base pch in error.bars.by (requested by Tham Tran)
+          \item Modified tetrachoric and multi.cor to use correct = .5 (that is, to make the correction for continuity a variable rather than a logical to do or not do corrections.)  In addition, modified multi.cor to do polytomous by dichotomous variables using a generalization of polychoric (polydi).
+        \item Modified plot.irt and plot.poly to work together better and to allow specifications of the xlim and ylim across plots.
+        \item Added histBy to draw multiple histograms on a single plot
+        \item Added scoreOverlap to adjust correlations between overlapping sets of items.
+        \item Modified error.bars.by to draw semi-transarent catseyes and to allow for settings of pch, lty, and color for each variable.
+        \item Modified fa2latex to boldface abs(loadings) > cut. 
+        \item Added the varimin rotation from Suitbert Ertl to principal and fa.
+          }
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+     \item fixed print.psych.vss to properly print the minimum eBIC value. (reported by Lorien Elleman)
+      \item made x a matrix in mssd to fix a problem of finding mssd of a single variable (reported by Aidan Wright).
+      \item fixed con2cat so that it will handle missing data  (correctly)
+      \item Modified error.bars.by so that it will not break if there is only one case in a group.
+            }
+                       } 
+  }
+ 
  
  \section{Changes in psych version 1.4.5 (2014-05-11)}{
   \subsection{Additions}{

@@ -20,7 +20,7 @@ if(omega) {omega.diagram(fit,...)}
 if(lavaan) {lavaan.diagram(fit,...)} 
 }
 
-#modified April 19, 20121 to handle long names more gracefully
+#modified April 19, 2012 to handle long names more gracefully
 "dia.rect" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...) {
      text(x=x, y = y, labels = labels,  cex = cex,   ...)
       xrange = (xlim[2] - xlim[1])
@@ -28,8 +28,8 @@ if(lavaan) {lavaan.diagram(fit,...)}
     xs <- .10 * xrange
     ys <- .10 * yrange
      #len <- max(nchar(labels)*cex*.2/2,cex*.25)*xs
-     len <- max(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user")) /1.95
-     vert <- max(strheight(labels,units="user",cex=cex,...),strheight("abc",units="user"))/1.95
+     len <- max(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user",cex=cex,...)) /1.8
+     vert <- max(strheight(labels,units="user",cex=cex,...),strheight("ABC",units="user",cex=cex,...))/1.
     # vert <- min(cex*.3 * ys,.3)
      rect(x-len,y-vert,x+len,y+vert)
      left <- c(x-len,y)
@@ -93,20 +93,30 @@ if(lavaan) {lavaan.diagram(fit,...)}
      radius <- sqrt(len^2+vert^2)
     dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
      }
-       
-"dia.arrow" <- function(from,to,labels=NULL,scale=1,cex=1,...) {
+"dia.arrow" <- 
+function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,...) {
     radius1 <- radius2 <- 0
  	if(is.list(from)) {if(!is.null(from$radius)) {radius1 <- from$radius
  	        radius2 <- 0
     		from <- from$center}}
-       if(is.list(to)) {if(!is.null(to$radius)) {radius2<- to$radius 
+       if(is.list(to)) {if(!is.null(to$radius)) {radius2 <- to$radius 
        			to <- to$center}}
        theta <- atan((from[2] - to[2])/(from[1] - to[1]))
-        x <- (from[1] + to[1])/2
-        y <- (from[2] + to[2])/2
-        if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.4}
-        if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .2}
        
+       dist <- sqrt((to[1] - from[1])^2 + (to[2] - from[2])^2)
+        if((adj  > 3 ) || (adj < 1)) {
+                   x <- (to[1] + from[1])/2
+                   y <- (to[2] + from[2])/2
+                   # browser()
+                   } else {
+       x <- from[1] - sign(from[1]-to[1]) *(4-adj) *  cos(theta) * dist/4
+       y <- from[2] -  sign(from[1]-to[1])* (4-adj) *  sin (theta)* dist/4}
+      #x <- from[1] - sign(from[1]-to[1]) *adj *  cos(theta) * dist/6
+      #y <- from[2] -  sign(from[1]-to[1])* adj *  sin (theta)* dist/6}
+       
+        if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.15}
+        if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .1}
+     
         if(from[1] <  to[1] ) {h.size <- -h.size
                                radius1 <- -radius1
                                radius2 <- -radius2}
@@ -119,9 +129,10 @@ if(lavaan) {lavaan.diagram(fit,...)}
         xe <- to[1] + cos(theta) * radius2
         ye <- to[2] + sin(theta) * radius2
        if(!is.null(labels))  text(x,y,labels,cex=cex,...)
-        arrows(x0,y0,xr,yr, length = 0, angle = 30, code = 2, ...)
+        arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
         arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)
-       }
+       }       
+
        
        
 "dia.curve" <- function(from,to,labels=NULL,scale=1,...) {

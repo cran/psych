@@ -110,13 +110,14 @@ headTail(myData)
 \end{Schunk}
 \end{scriptsize}
 
-\item Look at the patterns in the data. If you have fewer than about 10 variables, look at the SPLOM (Scatter Plot Matrix) of the data using \pfun{pairs.panels} (section~\ref{sect:pairs}).
+\item Look at the patterns in the data. If you have fewer than about 10 variables, look at the SPLOM (Scatter Plot Matrix) of the data using \pfun{pairs.panels} (section~\ref{sect:pairs})  Even better, use the \pfun{outlier} to detect outliers.
 
 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
 pairs.panels(myData)
+outlier(myData)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
@@ -192,6 +193,15 @@ omega(myData)
 \end{Schunk}
 \end{scriptsize}
 
+If you prefer to do a principal components analysis you may use the \pfun{principal} function. The default is one component. 
+\begin{scriptsize}
+\begin{Schunk}
+\begin{Sinput}
+principal(myData)
+\end{Sinput}
+\end{Schunk}
+\end{scriptsize}
+
 \item Some people like to find coefficient $\alpha$ as an estimate of reliability.  This may be done for a single scale using the \pfun{alpha} function (see \ref{sect:alpha}).  Perhaps more useful is the ability to create several scales as unweighted averages of specified items using the \pfun{scoreItems} function (see \ref{sect:score}) and to find various estimates of internal consistency for these scales, find their intercorrelations, and find scores for all the subjects.
 \begin{scriptsize}
 \begin{Schunk}
@@ -215,9 +225,9 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes five methods  of \iemph{factor analysis} (\iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis). Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.  Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}. Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes five methods  of \iemph{factor analysis} (\iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} function. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria. These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}. Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
 
-Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{cor.plot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
+Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{cor.plot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
 
 This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
@@ -228,8 +238,7 @@ For a step by step tutorial in the use of the psych package and the base functio
 
 \section{Getting started} 
 \label{sect:starting}
-Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.  For some analyses of  correlations of dichotomous data, the \Rpkg{polycor} package is suggested in order to use either the \pfun{poly.mat} or \pfun{phi2poly} functions.  However, these functions have been supplement with \pfun{tetrachoric} and \pfun{polychoric} which do not require the  
-\Rpkg{polycor} package. These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
+Some of the functions described in this overview require other packages.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.   These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
 
 
 \begin{Schunk}
@@ -321,13 +330,13 @@ Once the data are read in, then \pfun{describe} or \pfun{describeBy} will provid
 \item[\pfun{describeBy}] reports descriptive statistics broken down by some categorizing variable (e.g., gender, age, etc.)
 \end{description}
 
-\begin{scriptsize}
+\begin{tiny}
 <<print=FALSE,echo=TRUE>>=
 library(psych)
 data(sat.act) 
 describe(sat.act)  #basic descriptive statistics
 @
-\end{scriptsize}
+\end{tiny}
 
 These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.
 
@@ -349,6 +358,26 @@ headTail(sa.mat)
 @
 \end{scriptsize}
 
+\subsubsection{Outlier detection using \pfun{outlier}}
+One way to detect unusual data is to consider how far each data point is from the multivariate centroid of the data.  That is, find the squared Mahalanobis distance  for each data point and then compare these to the expected values of $\chi^{2}$.  This produces a Q-Q (quantle-quantile) plot with the n most extreme data points labeled (Figure~\ref{fig:outlier}). The outlier values are in the vector d2.   
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<outlier>>=
+png( 'outlier.png' )
+d2 <- outlier(sat.act,cex=.8)
+dev.off()
+@
+\end{scriptsize}
+\includegraphics{outlier}
+\caption{Using the \pfun{outlier} function to graphically show outliers.  The y axis is the Mahalanobis $D^{2}$, the X axis is the distribution of $\chi^{2}$ for the same number of degrees of freedom.  The outliers detected here may be shown graphically using \pfun{pairs.panels} (see \ref{fig:pairs.panels}, and may be found by sorting d2. }
+\label{fig:outlier}
+\end{center}
+\end{figure}
+
+
+ 
 \subsubsection{Basic data cleaning using \pfun{scrub}}
 \label{sect:scrub}
 If, after describing the data it is apparent that there were data entry errors that need to be globally replaced with NA,  or only certain ranges of data will be analyzed, the data can be ``cleaned" using the \pfun{scrub} function.
@@ -369,14 +398,14 @@ Note that the number of subjects for those columns has decreased, and the minimu
 Sometimes categorical variables (e.g., college major, occupation, ethnicity) are to be analyzed using correlation or regression.  To do this, one can form ``dummy codes'' which are merely binary variables for each category.  This may be done using \pfun{dummy.code}. Subsequent analyses using these dummy coded variables may be using \pfun{biserial} or point biserial (regular Pearson r) to show effect sizes and may be plotted in e.g., \pfun{spider} plots.
 
 \subsection{Simple descriptive graphics}
-Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits.  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots.  
+Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits (Figure~\ref{fig:error.bars})  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots (Figure~\ref{fig:violin}).  
 
 \subsubsection{Scatter Plot Matrices}
 Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the \iemph{lowess} locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the x and y variables is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).  When plotting many subjects, it is both faster and cleaner to set the plot character (pch) to be '.'.  (See Figure~\ref{fig:pairs.panels} for an example.)
 
 \begin{description}
 \label{sect:pairs}
-\item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.  When plotting many data points (as in the case of the sat.act data, it is possible to specify that the plot character is a period to get a somewhat cleaner graphic.
+\item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.  When plotting many data points (as in the case of the sat.act data, it is possible to specify that the plot character is a period to get a somewhat cleaner graphic.  However, in this figure, to show the outliers, we use colors and a larger plot character.
 \end{description}
 
 \begin{figure}[htbp]
@@ -384,12 +413,13 @@ Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pf
 \begin{scriptsize}
 <<pairspanels>>=
 png( 'pairspanels.png' )
-pairs.panels(sat.act,pch='.')
+sat.d2 <- data.frame(sat.act,d2) #combine the d2 statistics from before with the sat.act data.frame
+pairs.panels(sat.d2,bg=c("yellow","blue")[(d2 > 25)+1],pch=21)
 dev.off()
 @
 \end{scriptsize}
 \includegraphics{pairspanels}
-\caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. Note the extreme outlier for the ACT.  The plot character was set to a period (pch='.') in order to make a cleaner graph. }
+\caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. Note the extreme outlier for the ACT.  If the plot character were set to a period (pch='.') it would make a cleaner graphic, but in to show the outliers in color we use the plot characters 21 and 22. }
 \label{fig:pairs.panels}
 \end{center}
 \end{figure}
@@ -413,7 +443,7 @@ dev.off()
 \end{figure}
 
 \subsubsection{Density or violin plots}
-Graphical presentation of data may be shown using box plots to show the median and 25th and 75th percentiles.  A powerful alternative is to show the density distribution using the  \pfun{violinBy} function.
+Graphical presentation of data may be shown using box plots to show the median and 25th and 75th percentiles.  A powerful alternative is to show the density distribution using the  \pfun{violinBy} function (Figure~\ref{fig:violin}).
 
 
 \begin{figure}[htbp]
@@ -425,7 +455,7 @@ violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by 
 @
 \end{scriptsize}
 \caption{Using the \pfun{violinBy} function to show the distribution of SAT V and Q for males and females. The plot shows the medians, and 25th and 75th percentiles, as well as the entire range and the density distribution.  }
-\label{fig:error.bars}
+\label{fig:violin}
 \end{center}
 \end{figure}
 
@@ -657,7 +687,7 @@ cortest(sat.act)
 
 \subsection{Polychoric, tetrachoric, polyserial, and biserial correlations}
 
-The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.  
+The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  This is also shown in terms of dichotomizing the bivariate normal density function using the \pfun{draw.cor} function (Figure~\ref{fig:draw.cor}). A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.  
 
 \begin{figure}[htbp]
 \begin{center}
@@ -671,11 +701,24 @@ draw.tetra()
 \end{center}
 \end{figure}
 
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+draw.cor(expand=20,cuts=c(0,0))
+@
+\end{scriptsize}
+\caption{The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values. It is found (laboriously) by optimizing the fit of the bivariate normal for various values of the correlation to the observed cell frequencies.}
+\label{fig:draw.cor}
+\end{center}
+\end{figure}
+
+
 Other estimated correlations based upon the assumption of bivariate normality with cut points include the \pfun{biserial} and \pfun{polyserial} correlation.  
 
 If the data are a mix of continuous, polytomous and dichotomous variables, the \pfun{mixed.cor} function will calculate the appropriate mixture of Pearson, polychoric, tetrachoric, biserial, and polyserial correlations.
 
-The correlation matrix resulting from a number of tetrachoric or polychoric correlation matrix sometimes will not be positive semi-definite.  This will also happen if the correlation matrix is formed by using pair-wise deletion of cases.  The \pfun{cor.smooth} function will adjust the smallest eigen values of the correlation matrix to make them positive, rescale all of them to sum to the number of variables, and produce a ``smoothed''  correlation matrix.  An example of this problem is a data set of \pfun{burt} which probably had a typo in the original correlation matrix.  Smoothing the matrix corrects this problem.
+The correlation matrix resulting from a number of tetrachoric or polychoric correlation matrix sometimes will not be positive semi-definite.  This will sometimes happen if the correlation matrix is formed by using pair-wise deletion of cases.  The \pfun{cor.smooth} function will adjust the smallest eigen values of the correlation matrix to make them positive, rescale all of them to sum to the number of variables, and produce a ``smoothed''  correlation matrix.  An example of this problem is a data set of \pfun{burt} which probably had a typo in the original correlation matrix.  Smoothing the matrix corrects this problem.
 
 \subsection{Multiple regression from data or correlation matrices}
 
@@ -718,17 +761,18 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \item[\pfun{fa.poly}] is useful when finding the factor structure of categorical items.  \pfun{fa.poly} first finds the tetrachoric or polychoric correlations between the categorical variables and then proceeds to do a normal factor analysis.  By setting the n.iter option to be greater than 1, it will also find confidence intervals for the factor solution.  Warning.  Finding polychoric correlations is very slow, so think carefully before doing so.
 
-\item [\pfun{factor.minres}] Minimum residual factor analysis is a least squares, iterative solution to the factor problem.  minres attempts to minimize the residual (off-diagonal) correlation matrix.  It produces solutions similar to maximum likelihood solutions, but will work even if the matrix is singular. 
+\item [\pfun{factor.minres} (deprecated)] Minimum residual factor analysis is a least squares, iterative solution to the factor problem.  minres attempts to minimize the residual (off-diagonal) correlation matrix.  It produces solutions similar to maximum likelihood solutions, but will work even if the matrix is singular. 
 
-\item [\pfun{factor.pa}]  Principal Axis factor analysis is a least squares, iterative solution to the factor problem.  PA will work for cases where maximum likelihood techniques (\fun{factanal}) will not work.  The original communality estimates are either the squared multiple correlations (\pfun{smc}) for each item or 1.
+\item [\pfun{factor.pa} (deprecated)]  Principal Axis factor analysis is a least squares, iterative solution to the factor problem.  PA will work for cases where maximum likelihood techniques (\fun{factanal}) will not work.  The original communality estimates are either the squared multiple correlations (\pfun{smc}) for each item or 1.
 
-\item [\pfun{factor.wls}]  Weighted least squares factor analysis is a least squares, iterative solution to the factor problem.  It minimizes the (weighted) squared residual matrix.  The  weights are based upon the independent contribution of each variable. 
+\item [\pfun{factor.wls} (deprecated)]  Weighted least squares factor analysis is a least squares, iterative solution to the factor problem.  It minimizes the (weighted) squared residual matrix.  The  weights are based upon the independent contribution of each variable. 
 
 \item [\pfun{principal}] Principal Components Analysis reports the largest n eigen vectors rescaled by the square root of their eigen values.  
 
 \item [\pfun{factor.congruence}] The congruence between two factors is the cosine of the angle between them.  This is just the cross products of the loadings divided by the  sum of the squared loadings. This differs from the correlation coefficient in that the mean loading is not subtracted before taking the products. \pfun{factor.congruence} will find the cosines between two (or more) sets of factor loadings.
 
 \item [\pfun{vss}] Very Simple Structure \cite{revelle:vss} applies a goodness of fit test to determine the optimal number of factors to extract. It can be thought of as a quasi-confirmatory model, in that it fits the very simple structure (all except the biggest c loadings per item are set to zero where c is the level of complexity of the item) of a factor pattern matrix to the original correlation matrix.  For items where the model is usually of complexity one, this is equivalent to making all except the largest loading for each item 0.  This is typically the solution that the user wants to interpret.  The analysis includes the \pfun{MAP} criterion of \cite{velicer:76} and a $\chi^2$ estimate.
+\item [\pfun{nfactors}] combines VSS, MAP, and a number of other fit statistics.  The depressing reality is that frequently these conventional fit estimates of the number of factors do not agree.  
 \item [\pfun{fa.parallel}] The parallel factors technique compares the observed eigen values of a correlation matrix with those from random data. 
 \item [\pfun{fa.plot}] will plot the loadings from a factor, principal components, or cluster analysis (just a call to plot will suffice).  If there are more than two factors, then a SPLOM of the loadings is generated.
 
@@ -746,12 +790,12 @@ The factor model is an approximation of a correlation matrix by a matrix of lowe
 R = FF' + U^2
 \end{equation}
 
-The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Five alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=``"wls", fm="gls" and fm="ml"). In the discussion of the other algorithms, the calls shown are to the \pfun{fa} function specifying the appropriate method.
+The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Five alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=`wls", fm=``gls" and fm=``ml"). In the discussion of the other algorithms, the calls shown are to the \pfun{fa} function specifying the appropriate method.
 
 
 \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions. \iemph{min.res} is the default for the \pfun{fa} function.
 
-A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an oblique solution using the  default option on rotate which uses an oblimin transformation (Table~\ref{tab:factor.minres}).  Alternative rotations and transformations include ``none", ``varimax", ``quartimax", ``bentlerT", and ``geominT" (all of which are orthogonal rotations). as well as  ``promax", ``oblimin", ``simplimax", ``bentlerQ, and``geominQ" and  ``cluster" which are  possible oblique transformations of the solution. The default is to do a oblimin transformation, although prior versions defaulted to varimax. The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
+A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an oblique solution using the  default option on rotate which uses an oblimin transformation (Table~\ref{tab:factor.minres}).  Alternative rotations and transformations include ``none", ``varimax", ``quartimax", ``bentlerT", ``varimin'' and ``geominT" (all of which are orthogonal rotations). as well as  ``promax", ``oblimin", ``simplimax", ``bentlerQ, and ``geominQ" and  ``cluster" which are  possible oblique transformations of the solution. The default is to do a oblimin transformation. The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
 
 
 \begin{table}[htdp]
@@ -772,7 +816,7 @@ f3t
 \subsubsection{Principal Axis Factor Analysis}
  An alternative, least squares algorithm, \pfun{factor.pa}, does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results.  It seems as if the SAS example for PA uses only one iteration.  Setting the max.iter parameter to 1 produces the SAS solution.  
 
-The solutions from the \pfun{fa}, the \pfun{factor.minres} and \pfun{factor.pa} as well as the \pfun{principal} functions can be rotated or transformed with a number of options.  Some of these call the \Rpkg{GPArotation} package. Orthogonal rotations are \fun{varimax} and \fun{quartimax}. Oblique transformations include \fun{oblimin}, \fun{quartimin} and then two targeted rotation functions \pfun{Promax} and \pfun{target.rot}. The latter of these will transform a loadings matrix towards an arbitrary target matrix.  The default is to transform towards an independent cluster solution. 
+The solutions from the \pfun{fa}, the \pfun{factor.minres} and \pfun{factor.pa} as well as the \pfun{principal} functions can be rotated or transformed with a number of options.  Some of these call the \Rpkg{GPArotation} package. Orthogonal rotations include \fun{varimax}, \fun{quartimax}, \pfun{varimin},  \pfun{bifactor} . Oblique transformations include \fun{oblimin}, \fun{quartimin}, \pfun{biquartimin} and then two targeted rotation functions \pfun{Promax} and \pfun{target.rot}. The latter of these will transform a loadings matrix towards an arbitrary target matrix.  The default is to transform towards an independent cluster solution. 
  
 Using the Thurstone data set, three factors were requested  and then transformed into an independent clusters solution using \pfun{target.rot}  (Table~\ref{tab:Thurstone}).
 
@@ -845,7 +889,7 @@ fa.diagram(f3t)
 A comparison of these three approaches suggests that the minres solution is more similar to a maximum likelihood solution and fits slightly better than the pa or wls solutions.  Comparisons with SPSS suggest that the pa solution matches the SPSS OLS solution, but that the minres solution is slightly better.  At least in one test data set, the weighted least squares solutions, although fitting equally well, had slightly different structure loadings.  Note that the rotations used by SPSS will sometimes use the ``Kaiser Normalization''.  By default, the rotations used in psych do not normalize, but this can be specified as an option in \pfun{fa}. 
 
 \subsubsection{Principal Components analysis (PCA)}
-An alternative to factor analysis, which is unfortunately frequently confused with \iemph{factor analysis}, is \iemph{principal components analysis}.  Although the goals of \iemph{PCA} and \iemph{FA} are similar, PCA is a descriptive model of the data, while FA is a structural model. Psychologists typically use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem rotated using the \pfun{Promax} function. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices. Also note how the goodness of fit statistics, based upon the residual off diagonal elements, is much worse than the \pfun{fa} solution.
+An alternative to factor analysis, which is unfortunately frequently confused with \iemph{factor analysis}, is \iemph{principal components analysis}.  Although the goals of \iemph{PCA} and \iemph{FA} are similar, PCA is a descriptive model of the data, while FA is a structural model.  Some psychologists  use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem rotated using the \pfun{Promax} function. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices. Also note how the goodness of fit statistics, based upon the residual off diagonal elements, is much worse than the \pfun{fa} solution.
 
 
 \begin{table}[htdp]
@@ -1034,7 +1078,7 @@ fa(bfi[1:10],2,n.iter=20)
 
 
 \subsection{Comparing factor/component/cluster solutions}
-Cluster analysis, factor analysis, and principal components analysis all produce structure matrices (matrices of correlations between the dimensions and the variables) that can in turn be compared in terms of the \iemph{congruence coefficient}  which is just the  cosine of the angle between the dimensions $$c_{f_{i}f_{j}} = \frac{\sum_{k=1}^{n}{f_{ik}f_{jk}}}    {\sum{f_{ik}^{2}}\sum{f_{jk}^{2}}}.$$   Consider the case of a four factor solution and four cluster solution to the Big Five problem.  
+Cluster analysis, factor analysis, and principal components analysis all produce structure matrices (matrices of correlations between the dimensions and the variables) that can in turn be compared in terms of Burt's  \iemph{congruence coefficient} (also known as Tucker's coefficient) which is just the  cosine of the angle between the dimensions $$c_{f_{i}f_{j}} = \frac{\sum_{k=1}^{n}{f_{ik}f_{jk}}}    {\sum{f_{ik}^{2}}\sum{f_{jk}^{2}}}.$$   Consider the case of a four factor solution and four cluster solution to the Big Five problem.  
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
@@ -1079,7 +1123,7 @@ Techniques most commonly used include
 
 	
 
- Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simply runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will be very small.   The scree test is quite appealing but can lead to differences of interpretation as to when the scree``breaks".  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  vss, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2). The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3 and is probably the worst of all criteria. 
+ Each of the procedures has its advantages and disadvantages.  Using either the chi square test or the change in square test is, of course, sensitive to the number of subjects and leads to the nonsensical condition that if one wants to find many factors, one simply runs more subjects. Parallel analysis is partially sensitive to sample size in that for large samples the eigen values of random factors will all tend towards 1.   The scree test is quite appealing but can lead to differences of interpretation as to when the scree ``breaks".  Extracting interpretable factors means that the number of factors reflects the investigators creativity more than the data.  vss, while very simple to understand, will not work very well if the data are very factorially complex. (Simulations suggests it will work fine if the complexities of some of the items are no more than 2). The eigen value of 1 rule, although the default for many programs, seems to be a rough way of dividing the number of variables by 3 and is probably the worst of all criteria. 
  
 An additional problem in determining the number of factors is what is considered a factor.  Many treatments of factor analysis assume that the residual correlation matrix after the factors of interest are extracted is composed of just random error.  An alternative concept is that the matrix is formed from major factors of interest but that there are also numerous minor factors of no substantive interest but that account for some of the shared covariance between variables.   The presence of such minor factors can lead one to extract too many factors and to reject solutions on statistical grounds of misfit that are actually very good fits to the data.  This problem is partially addressed later in the discussion of  simulating complex structures using \pfun{sim.structure} and of small extraneous factors using the \pfun{sim.minor} function.
  
@@ -1150,7 +1194,7 @@ Another way to examine the overlap between two sets is the use of \iemph{set cor
 \section{Classical Test Theory and  Reliability}
 
 
-Surprisingly, 107 years after \cite{spearman:rho} introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's  $\alpha$  \citep{cronbach:51} underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
+Surprisingly, 110 years after \cite{spearman:rho} introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's  $\alpha$  \citep{cronbach:51} underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
 
 $\alpha$ \citep{cronbach:51} is the same as Guttman's $\lambda3$ \citep{guttman:45} and may be found by
 $$
@@ -1303,7 +1347,7 @@ omegaSem(r9,n.obs=500)
 
 
 \subsubsection{Other estimates of reliability}
-Other estimates of reliability are found by the \pfun{splitHalf} and  \pfun{guttman} functions. These are described in more detail in \cite{rz:09}. They include the 6 estimates from Guttman, four from TenBerge, and an estimate of the greatest lower bound. 
+Other estimates of reliability are found by the \pfun{splitHalf} and  \pfun{guttman} functions. These are described in more detail in \cite{rz:09} and in \cite{rc:reliability}. They include the 6 estimates from Guttman, four from TenBerge, and an estimate of the greatest lower bound. 
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
@@ -1546,7 +1590,22 @@ More extensive IRT packages include the \Rpkg{ltm} and \Rpkg{eRm} and should be 
 \subsection{Speeding up analyses}
 Finding tetrachoric or polychoric correlations is very time consuming.  Thus, to speed up the process of analysis, the original correlation matrix is saved as part of the output of both \pfun{irt.fa} and \pfun{omega}.  Subsequent analyses may be done by using this correlation matrix.  This is done by doing the analysis not on the original data, but rather on the output of the previous analysis.  
 
-For example, taking the output from the 16 ability items from the \iemph{SAPA} project when scored for True/False using \pfun{score.multiple.choice} we can first do a simple IRT analysis of one factor  (Figure~\ref{fig:iq.irt}) and then use that correlation matrix to do an  \pfun{omega} analysis to show the sub-structure of the ability items .  We can also show the total test information (merely the sum of the item information.  This shows that even with just 16 items, the test is very reliable for most of the range of ability. The \pfun{fa.irt} function saves the correlation matrix and item statistics so that they can be redrawn with other options.
+In addition, recent releases of the \Rpkg{psych} take advantage of the \Rpkg{parallels} package and use multi-cores.  The default for Macs and Unix machines is to use two cores, but this can be increased using the options command.  The biggest step up in improvement is from 1 to 2 cores, but for large problems using polychoric correlations, the more cores available, the better. 
+
+For example of  taking the output from the 16 ability items from the \iemph{SAPA} project when scored for True/False using \pfun{score.multiple.choice} we can first do a simple IRT analysis of one factor  (Figure~\ref{fig:iq.irt}) and then use that correlation matrix to do an  \pfun{omega} analysis to show the sub-structure of the ability items .  We can also show the total test information (merely the sum of the item information.  This shows that even with just 16 items, the test is very reliable for most of the range of ability. The \pfun{fa.irt} function saves the correlation matrix and item statistics so that they can be redrawn with other options.
+
+
+
+\begin{scriptsize}
+\begin{Schunk}
+\begin{Sinput}
+detectCores()  #how many are available
+options("mc.cores")  #how many have been set to be used
+options("mc.cores"=4) #set to use 4 cores
+\end{Sinput}
+\end{Schunk}
+\end{scriptsize}
+
 
 \begin{figure}[htbp]
 \begin{tiny}
@@ -1660,6 +1719,20 @@ where $r_{xy} $ is the normal correlation which may be decomposed into a within 
 The \pfun{statsBy.boot} function will randomize the grouping variable ntrials times and find the statsBy output.  This can take a long time and will produce a great deal of output.  This output can then be summarized for relevant variables using the \pfun{statsBy.boot.summary} function specifying the variable of interest.  
 
 Consider the case of the relationship between various tests of ability when the data are grouped by level of education (statsBy(sat.act)) or when affect data are analyzed within and between an affect manipulation (statsBy(affect) ). 
+
+\subsection{Factor analysis by groups}
+Confirmatory factor analysis comparing the structures in multiple groups can be done in the \Rpkg{lavaan} package.  However, for exploratory analyses of the structure within each of multiple groups, the \pfun{faBy} function may be used in combination with the \pfun{statsBy} function.  First run pfun{statsBy} with the correlation option set to TRUE, and then run \pfun{faBy} on the resulting output.
+
+
+\begin{scriptsize}
+\begin{Schunk}
+\begin{Sinput}
+sb <- statsBy(bfi[c(1:25,27)], group="education",cors=TRUE)
+faBy(sb,nfactors=5)  #find the 5 factor solution for each education level
+\end{Sinput}
+
+\end{Schunk}
+\end{scriptsize}
 
 
 \section{Set Correlation and Multiple Regression from the correlation matrix}
@@ -1883,7 +1956,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version > "1.4.1",package="psych")
+> news(Version > "1.4.5",package="psych")
 \end{Sinput}
 \end{Schunk}
 
@@ -2098,6 +2171,14 @@ Revelle, W. ({in prep}).
 \newblock {\em An introduction to psychometric theory with applications in
   {R}}.
 \newblock Springer.
+
+\bibitem[Revelle and Condon, 2014]{rc:reliability}
+Revelle, W. and Condon, D.~M. (2014).
+\newblock Reliability.
+\newblock In Irwing, P., Booth, T., and Hughes, D., editors, {\em
+  Wiley-Blackwell Handbook of Psychometric Testing}. Wiley-Blackwell (in
+  press).
+
 
 \bibitem[\protect\astroncite{Revelle et~al.}{2011}]{rcw:methods}
 Revelle, W., Condon, D., and Wilt, J. (2011).

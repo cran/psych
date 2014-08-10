@@ -17,7 +17,7 @@ In addition
 \usage{
 omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut=.2,simple=TRUE,
       errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,
-    main=NULL,cex=NULL,color.lines=TRUE,marg=c(.5,.5,1.5,.5), ...) 
+    main=NULL,cex=NULL,color.lines=TRUE,marg=c(.5,.5,1.5,.5),adj=2, ...) 
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), 
     node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  
     rank.direction=c("RL","TB","LR","BT"), digits = 1, title = "Omega", ...)
@@ -36,6 +36,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{cex}{control font size}
   \item{color.lines}{Use black for positive, red for negative}
   \item{marg}{The margins for the figure are set to be wider than normal by default}
+  \item{adj}{Adjust the location of the factor loadings to vary as factor mod 4 + 1}
   \item{title}{ Figure title }
     \item{main}{ main figure caption }
   \item{\dots}{Other options to pass into the graphics packages }

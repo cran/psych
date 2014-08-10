@@ -102,3 +102,12 @@ function(header=FALSE,widths=rep(1,10),...) {  #
    if (header) read.clipboard<- read.fwf(pipe("pbpaste"),header=TRUE,widths=widths,...)
    else read.clipboard<- read.fwf(pipe("pbpaste"),widths=widths,...)}
    }
+   
+#added May, 2014 to read from https files
+"read.https" <-
+function(filename,header=TRUE) {
+temp <- tempfile()   #create a temporary file
+download.file(filename,destfile=temp,method="curl") #copy the https file to temp
+result <- read.table(temp,header=header) #now, do the normal read.table command
+unlink(temp) #get rid of the temporary file
+return(result)}  #give us the result

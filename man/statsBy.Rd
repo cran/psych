@@ -2,23 +2,33 @@
 \alias{statsBy}
 \alias{statsBy.boot}
 \alias{statsBy.boot.summary}
+\alias{faBy}
 \title{Find statistics (including correlations) within and between groups for basic multilevel analyses}
 \description{When examining data at two levels (e.g., the individual and by some set of grouping variables), it is useful to find basic descriptive statistics (means, sds, ns per group, within group correlations) as well as between group statistics (over all descriptive statistics, and overall between group correlations). Of particular use is the ability to decompose a matrix of correlations at the individual level into correlations within group and correlations between groups. 
 }
 \usage{
-statsBy(data, group, cors = FALSE, method="pearson")
+statsBy(data, group, cors = FALSE, method="pearson",poly=FALSE)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
+faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,...)
 }
 \arguments{
   \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  One of these columns should be the values of a grouping variable.}
   \item{group}{The names or numbers of the variable in data to use as the grouping variables.}
   \item{cors}{Should the results include the correlation matrix within each group?  Default is FALSE.}
 \item{method}{What kind of correlations should be found (default is Pearson product moment)}
+\item{poly}{Find polychoric correlations within groups if requested.}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
 \item{var}{Name of the variable to be summarized from statsBy.boot}
+\item{stats}{The output of statsBy}
+\item{nfactors}{The number of factors to extract in each subgroup}
+\item{rotate}{The factor rotation/transformation}
+\item{fm}{The factor method (see \code{\link{fa}} for details)}
+\item{free}{Allow each factor solution to be freely estimated}
+\item{all}{Report individual factor analyses for each group as well as the summary table}
+\item{...}{Other parameters to pass to the fa function}
 }
 \details{Multilevel data are endemic in psychological research. In multilevel data, observations are taken on subjects who are nested within some higher level grouping variable.  The data might be experimental (participants are nested within experimental conditions) or observational (students are nested within classrooms, students are nested within college majors.) To analyze this type of data, one uses random effects models or mixed effect models, or more generally, multilevel models.  There are at least two very powerful packages (nlme and multilevel) which allow for complex analysis of hierarchical (multilevel) data structures.  \code{\link{statsBy}} is a much simpler function to give some of the basic descriptive statistics for two level models.  It is meant to supplement true multilevel modeling.
 
@@ -40,7 +50,9 @@ where \eqn{r_{xy}} is the normal correlation which may be decomposed into a with
 
 It is important to realize that the within group and between group correlations are independent of each other.  That is to say, inferring from the 'ecological correlation' (between groups) to the lower level (within group) correlation is inappropriate.  However, these between group correlations are still very meaningful, if inferences are made at the higher level.  
 
-There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value.  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
+There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value (pooled).  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
+
+If finding polychoric correlations, these two estimates will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
 
 Confidence values and significance  of  \eqn{r_{xy_{wg}}}, pwg, reflect the pooled number of cases within groups, while  \eqn{r_{xy_{bg}} }, pbg, the number of groups. These are not corrected for multiple comparisons.
 
@@ -49,6 +61,8 @@ Confidence values and significance  of  \eqn{r_{xy_{wg}}}, pwg, reflect the pool
 The \code{\link{statsBy.boot}} function will randomize the grouping variable ntrials times and find the statsBy output.  This can take a long time and will produce a great deal of output.  This output can then be summarized for relevant variables using the \code{\link{statsBy.boot.summary}} function specifying the variable of interest.  These two functions are useful in order to find if the mere act of grouping leads to large between group correlations.
 
 Consider the case of the relationship between various tests of ability when the data are grouped by level of education (statsBy(sat.act,"education")) or when affect data are analyzed within and between an affect manipulation (statsBy(flat,group="Film") ). Note in this latter example, that because subjects were randomly assigned to Film condition for the pretest, that the pretest ICC1s cluster around 0. 
+
+\code{\link{faBy}} uses the output of \code{\link{statsBy}} to perform a factor analysis on the correlation matrix within each group. If the free parameter is FALSE, then each solution is rotated towards the group solution (as much as possible).  The output is a list of each factor solution, as well as a summary matrix of loadings and interfactor correlations for  all groups.
 
 }
 \value{
@@ -66,7 +80,7 @@ Consider the case of the relationship between various tests of ability when the 
 \item{pwg}{The probability of the within group correlation}
 \item{r}{In the case that we want the correlations in each group, r is a list of the within group correlations for every group.}
 \item{within}{is just another way of displaying these correlations.  within is a matrix which reports the lower off diagonal correlations as one row for each group.}
-\item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes. }
+\item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes.  See the note. }
 
 }
 \references{ Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation and prediction.  Harcourt Brace.
@@ -76,7 +90,8 @@ Consider the case of the relationship between various tests of ability when the 
 }
 \author{William Revelle
 }
-\note{
+\note{If finding polychoric correlations, the two estimates of the pooled within group correlations will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
+
 
 The statsBy.boot function will sometimes fail if sampling with replacement because if the group sizes differ drastically, some groups will be empty.  In this case, sample without replacement.  
 
@@ -97,13 +112,15 @@ ped.stats
 
 
 #Now do this for the sat.act data set
-sat.stats <- statsBy(sat.act,c("education","gender"))   #group by two grouping variables
+sat.stats <- statsBy(sat.act,c("education","gender"),cor=TRUE)   #group by two grouping variables
 print(sat.stats,short=FALSE)
 lowerMat(sat.stats$pbg)  #get the probability values
 
 #show means by groups
 round(sat.stats$mean)
 
+#Do separate factor analyses for each group
+#faBy(sat.stats,1)
 
 
 

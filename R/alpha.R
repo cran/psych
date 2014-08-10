@@ -113,7 +113,7 @@
         	rownames(alpha.total) <- ""
         	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
         	} else {
-        	alpha.total <- data.frame(alpha.total[-4])
+        	alpha.total <- data.frame(alpha.total[-6])  #fixed 27/7/14 
         	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N")
         	        rownames(alpha.total) <- ""
 

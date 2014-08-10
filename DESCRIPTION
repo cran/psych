@@ -1,19 +1,19 @@
 Package: psych
-Version: 1.4.5
-Date: 2014-5-12
+Version: 1.4.8
+Date: 2014-8-10
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Author: William Revelle <revelle@northwestern.edu>
 Maintainer: William Revelle <revelle@northwestern.edu>
 Description: A number of routines for personality, psychometrics and experimental psychology.   Functions are primarily for scale construction using factor analysis, cluster analysis and reliability analysis, although others provide basic descriptive statistics. Item Response Theory is done using  factor analysis of tetrachoric and polychoric correlations. Functions for simulating particular item and test structures are included. Several functions serve as a useful front end for structural equation modeling.  Graphical displays of path diagrams, factor analysis and structural equation models are created using basic graphics. Some of the functions are written to support a book on psychometrics as well as publications in personality research. For more information, see the personality-project.org/r webpage.
 License: GPL (>= 2)
-Suggests: MASS, parallel, GPArotation, mvtnorm, polycor, sem, lavaan,
-        Rcsdp, graph, Rgraphviz
+Suggests: MASS, parallel, GPArotation, mvtnorm, sem, lavaan, Rcsdp,
+        graph, Rgraphviz
 LazyData: true
 URL: http://personality-project.org/r
         http://personality-project.org/r/psych.manual.pdf
-Packaged: 2014-05-14 01:20:51 UTC; revelle
+Packaged: 2014-08-10 19:31:43 UTC; revelle
 Depends: R (>= 2.10)
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-05-14 07:27:35
+Date/Publication: 2014-08-11 00:06:51

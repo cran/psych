@@ -1,7 +1,7 @@
 #modified April 29th to get around the problem of missing rows or columns in the polychoric function.
 #modified 1/1/14 to add multicore capability
 "mixed.cor" <- 
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=TRUE,global=TRUE,ncat=8,polycor=FALSE,use="pairwise",method="pearson",weight=NULL)  {
+function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=.5,global=TRUE,ncat=8,use="pairwise",method="pearson",weight=NULL)  {
 cl <- match.call() 
 organize <- FALSE   #the default is to specify the continuous, the polytomous and the dichotomous
 if(!is.null(x) && is.null(p)  && is.null(d)) { #figure out which kinds of variables we are using 
@@ -21,13 +21,13 @@ if(length(pvars) > 0) {p <- matrix(x[,pvars],ncol=length(pvars))
  if(length(cvars) > 0) {cont <- matrix(x[,cvars],ncol=length(cvars))
                        colnames(cont) <- colnames(x)[cvars] } else {cont <- NULL}
                        
-Rho <- mixed.cor1(cont,p, d,smooth=smooth,polycor=polycor,global=global,correct=correct,use=use,method=method,weight=weight)
+Rho <- mixed.cor1(cont,p, d,smooth=smooth,global=global,correct=correct,use=use,method=method,weight=weight)
 oldorder <- c(cvars,pvars,dvars)
 ord <- order(oldorder)
 Rho$rho <- Rho$rho[ord,ord]
 } else {# organization is specified
 #if ((p+ d) == nvar) 
-Rho <- mixed.cor1(x=x,p=p,d=d,smooth=smooth,polycor=polycor,global=global,correct=correct,use=use,method=method,weight=weight)}
+Rho <- mixed.cor1(x=x,p=p,d=d,smooth=smooth,global=global,correct=correct,use=use,method=method,weight=weight)}
 
 Rho$Call <- cl
 return(Rho)
@@ -39,7 +39,7 @@ return(Rho)
 #revised October 12, 2011 to get around the sd of vectors problem
 #revised Sept 10, 2013 to allow for dichotomies with different minima
 "mixed.cor1" <-
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE,polycor=FALSE,global=TRUE,correct=TRUE,use=use,method=method,weight=NULL) {
+function(x=NULL,p=NULL,d=NULL,smooth=TRUE,global=TRUE,correct=.5,use=use,method=method,weight=NULL) {
  cl <- match.call() 
 if(!is.null(x)) {nx <- dim(x)[2]} else {nx <- 0}
 if(!is.null(p)) {np <- dim(p)[2]} else {np <- 0}
@@ -66,7 +66,7 @@ if(nx > 0) {rx <- cor(x,use=use,method=method)} else {rx <- NULL
    rho <- NULL}
 if(np > 1) {
 #cat("\n Starting to find the polychoric correlations")
- rp <- polychoric(p,smooth=smooth,polycor=polycor,global=global,weight=weight)}    else {if (np == 1) {
+ rp <- polychoric(p,smooth=smooth,global=global,weight=weight)}    else {if (np == 1) {
 	rho <- 1
 	names(rho) <- colnames(p)
 	rp <- list(rho=rho,tau=NULL)}  else {rp <- list(rho= NULL,tau=NULL)}}
@@ -80,8 +80,8 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all thr
 		rho <- rbind(tmixed,lmixed)} else {rho <- rx}  #we now have x and p
 		
 		if(nd > 0) { rxd <- biserial(x,d)
-		    if(np > 0) {rpd <- biserial(p,d) 
-			            topright <- t(cbind(rxd,rpd)) 
+		    if(np > 0) {rpd <- polydi(p,d,correct=correct)$rho  
+			            topright <- t(cbind(rxd,t(rpd))) 
 			            } else {
 			        topright <- t(rxd)}
 			tmixed <- cbind(rho,topright) 
@@ -90,9 +90,10 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all thr
 
 		} else {  #the case of nx =0
 		   if( np > 0) { 
-		      if (nd >0 ) {rpd <- biserial(p,d)
-		       tmixed <- cbind(rp$rho,t(rpd))
-		       lmixed <- cbind(rpd,rd$rho)
+		      if (nd >0 ) {rpd <- polydi(p,d,correct=correct)$rho
+		     
+		       tmixed <- cbind(rp$rho,rpd)
+		       lmixed <- cbind(t(rpd),rd$rho)
 		       rho <- rbind(tmixed,lmixed)
 		       }  else {rho <- rp$rho} } else {
 		    rho <- rd$rho}

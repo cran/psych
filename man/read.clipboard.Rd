@@ -5,6 +5,7 @@
 \alias{read.clipboard.lower}
 \alias{read.clipboard.upper}
 \alias{read.clipboard.fwf}
+\alias{read.https}
 \title{shortcut for reading from the clipboard}
 \description{Input from the clipboard is easy but a bit obscure, particularly for Mac users. This is just an easier way to do so.  Data may be copied to the clipboard from Exel spreadsheets, csv files, or fixed width formatted files and then into a data.frame. Data may also be read from lower  (or upper) triangular matrices and filled out to square matrices.
 }
@@ -18,7 +19,7 @@ read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimite
 
 #read in data using a fixed format width (see read.fwf for instructions)
 read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  
-
+read.https(filename,header=TRUE)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -28,6 +29,7 @@ read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)
   \item{diag}{for upper or lower triangular matrices, is the diagonal specified or not}
   \item{names}{for read.clipboard.lower or upper, are colnames in the  the first column}
   \item{widths}{how wide are the columns in fixed width input.  The default is to read 10 columns of size 1. }
+  \item{filename}{name or address of remote https file to read}
   \item{\dots}{ Other parameters to pass to read }
 }
 \details{A typical session of R might involve data stored in text files, generated online, etc. Although it is easy to just read from a file (particularly if using file.choose(), copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user). This is particularly convenient when copying from a text book or article and just moving a section of text into R.)

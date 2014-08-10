@@ -12,9 +12,9 @@
 }
 \usage{
 \method{plot}{psych}(x,labels=NULL,...)
-\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels,keys=NULL,
-     ylim=NULL,y2lab,...)
-\method{plot}{poly}(x,D,xlab,ylab,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,
+\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,
+     xlim,ylim,y2lab,...)
+\method{plot}{poly}(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,
      keys=NULL,y2lab,...)
 \method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
 
@@ -25,6 +25,7 @@
   \item{labels}{Variable labels}
   \item{xlab}{Label for the x axis  -- defaults to Latent Trait}
   \item{ylab}{Label for the y axis}
+  \item{xlim}{The limits for the x axis}
   \item{ylim}{Specify the limits for the y axis}
   \item{main}{Main title for graph}
   \item{type}{"ICC" plots items, "IIC" plots item information, "test" plots test information, defaults to IIC. }

@@ -15,8 +15,8 @@ The biserial correlation is between a continuous y variable and a dichotmous x v
 \usage{
 tetrachoric(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
      delete=TRUE)
-polychoric(x,smooth=TRUE,global=TRUE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE, 
-     delete=TRUE)
+polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML=FALSE, std.err=FALSE, 
+     weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,  delete=TRUE)
 biserial(x,y)  
 polyserial(x,y) 
 polydi(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,
@@ -41,6 +41,7 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 \item{smooth}{if TRUE and if the tetrachoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
 
 \item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution. This will make a difference in the presence of lots of missing data. } 
+\item{polycor}{A no longer used option, kept to stop other packages from breaking.}
 
 \item{weight}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
 \item{short}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric  Deprecated}

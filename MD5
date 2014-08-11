@@ -1,4 +1,4 @@
-93dfb81ea1c09d8e7d401c7da4fc8b85 *DESCRIPTION
+03fd8b85697bc53f5bba3997001c86fd *DESCRIPTION
 d375f8cb4028b776b9149d3edf2ca266 *NAMESPACE
 13d9ab3fbb68605e336eaf29f98bd80a *R/BASS.R
 55da70d9c9bec31f46ff865582d29dc6 *R/CTA_lrn.R
@@ -147,7 +147,7 @@ fca8074e68a24c43369ccbf0de29493e *R/plot.irt.R
 4fe1507d08a4c1f1a16202db33890f56 *R/plot.psych.R
 ff658a0e5e3abdec684cb8eb47bb16a6 *R/polar.R
 8b7c8a676b41c656c541740af079b707 *R/polychor.matrix.R
-05229a6ffc03aec4443e5f90096f749d *R/polychoric.R
+cd1ccc0763d1dd385bc92a10add2401b *R/polychoric.R
 7172664481e5ef4c1685ec9da9178d68 *R/predict.principal.R
 6a27371fcf3293e35cfb4c1a58fa38db *R/principal.R
 8e9470ebadc491c5643b76789d2feb1f *R/print.factor.pa.R
@@ -251,14 +251,14 @@ ed5888ebe48fe252940aea7f577213b5 *data/neo.rda
 70081b5cb6f6353f2698be7d0ecd8b71 *data/sat.act.rda
 7baee6165b5cc155d23a03154cf2c43a *data/vegetables.rda
 1503ee71a571140c457d231b0c0fef60 *data/withinBetween.rda
-3808614bdc754c662c82e2b8546e30d3 *inst/CITATION
-1604b96773e5eb233cc8fda5153e97f4 *inst/NEWS.Rd
+381221f0e332fb24df886ae1d1a82369 *inst/CITATION
+d73f9993756f5678c09c411cc78e267d *inst/NEWS.Rd
 880b571dee2f64d596a5ad2d782bfcd5 *inst/doc/overview.R
 6ef5cc491e4bd967757442f29ef3c909 *inst/doc/overview.Rnw
-fec7dd14469a844a629f7e5e3094e83e *inst/doc/overview.pdf
+802ba96dca53c01de48b438710f8e110 *inst/doc/overview.pdf
 b68bb3a2cf654eda2ed28769d82d01c8 *inst/doc/psych_for_sem.R
 edf6f0fa58503c1ca8cec2f3b6a28106 *inst/doc/psych_for_sem.Rnw
-ed7db9ee9c12b60ed32a16ad49e983eb *inst/doc/psych_for_sem.pdf
+3c2f4f3e4a2596d6597cfa2aa5e10827 *inst/doc/psych_for_sem.pdf
 9cc6b13e216436310244ba86d8c3ae75 *man/00.psych-package.Rd
 d17cc6e8c6a59208a5af65de5fa47ab7 *man/Gleser.Rd
 d1c648092201e2fd2185c5aa2bdd2d9b *man/Gorsuch.Rd
@@ -427,7 +427,7 @@ fafd20244c7a278a0f0513c056d72697 *man/structure.diagram.Rd
 33a3312d410d98197ebeec6bc16825f2 *man/super.matrix.Rd
 a0b470042d5a8fbeb2fe3993670d6509 *man/table2matrix.Rd
 18ee5a4d4c6913815b472fe63c0d01b6 *man/test.psych.Rd
-b8d0a4cace7527f5094a7c0d1a73073d *man/tetrachor.Rd
+fab9000c995fa51eab157320f236b6b2 *man/tetrachor.Rd
 a89bd2c5a93b3940761d0b5c6dfc515c *man/thurstone.Rd
 9eec50d1cd2208bce401da2c58c29d35 *man/tr.Rd
 8e7698beb925751bf5b8e1289497dba2 *man/vegetables.Rd

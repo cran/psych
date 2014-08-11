@@ -125,10 +125,14 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5) {
 #We have dropped option to use John Fox's polycor package, so we don't need the options
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
 "polychoric" <- 
-function(x,smooth=TRUE,global=TRUE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
+function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE)  {
+#function(x,smooth=TRUE,global=TRUE,polycor=FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
 if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
-
+#The polycor paramater was dropped because it was not being used.  But, several programs are using it.
+if(polycor) message("The polycor option has been removed from the polychoric function in the psych package.  Please fix the call.")
+if(ML) message("The ML option has been removed from the polychoric function in the psych package.  Please fix the call.")
+if(std.err) message("The std.error option has been removed from the polychoric function in the psych package.  Please fix the call.")
 myfun <- function(x,i,j) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct) }
 
 matpLower <- function(x,nvar) {

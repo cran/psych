@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.7 (2014-7-05)}{
+\section{Changes in psych version 1.4.9 (2014-9-01)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.4.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.5.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.5 was released in May of 2014, the last two digits reflect the day of any modifications).
+      \item Version 1.4.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.8 was released in August of 2014, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -35,7 +35,7 @@
     }
   }
   } 
- \section{Changes in psych version 1.4.8 (2014-08-09)}{
+ \section{Changes in psych version 1.4.8 (2014-08-10)}{
   \subsection{Additions}{
           \itemize{
           \item Added the ability to find polychoric correlations within groups in statsBy (requested by Aidan Wright).
@@ -45,7 +45,7 @@
           \item Modified fa.sort so that it will sort the results of a principal components analysis (requested by Popov Oleg).
           \item Added the outlier function to find Mahalanobis distance measures for a data matrix and flag those cases that are unusual.
           \item Added draw.cor to show how bivariate densities estimates are used in finding tetrachoric correlations.
-          \item Added fa.by to allow for factor analysis by groups.
+          \item Added faBy to allow for factor analysis by groups.
           \item Removed inactive calls to the polycor package
           }
           

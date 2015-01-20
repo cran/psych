@@ -1,7 +1,7 @@
 "sim.structure" <- "sim.structural" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0) {
  cl <- match.call()
-require(MASS)
+#require(MASS)
 
 
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
@@ -26,8 +26,10 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
  
   if(n>0) {
     mu <- rep(mu,nvar)
-  	observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
-  	
+  	#observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
+  	 eX <- eigen(model)
+                                      observed <- matrix(rnorm(nvar * n),n)
+                                      observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + mu) 
   	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
   	         observed[] <- rbinom(n*nvar, cat, observedp)}
   r <- cor(observed) } 
@@ -44,8 +46,8 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
 "sim" <-
 function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
  cl <- match.call()
-require(MASS)
-#set up some default values 
+#require(MASS)
+##set up some default values 
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    if(is.null(Phi)) {Phi <- diag(1,4,4)
                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
@@ -69,7 +71,10 @@ diag(model)<- 1                       # put ones along the diagonal
   colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
   if(n>0) {
     
-  	observed <- mvrnorm(n = n, means, Sigma=model, tol = 1e-6, empirical = FALSE)
+  #	observed <- mvrnorm(n = n, means, Sigma=model, tol = 1e-6, empirical = FALSE)
+  	 eX <- eigen(model)
+     observed <- matrix(rnorm(nvar * n),n)
+     observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + means)
   r <- cor(observed) } 
   	reliability <- diag(f %*% t(f))
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
@@ -88,10 +93,13 @@ diag(model)<- 1                       # put ones along the diagonal
 	diag(R) <- max((alpha * beta) + lambda,1)
 	R <- cov2cor(R)
 	colnames(R) <- rownames(R) <- paste("V",1:nvar,sep="")
-	require(MASS)
+	#require(MASS)
 	if(is.null(mu)) {mu <- rep(0,nvar)} 
 	if(n>0) {
-	observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
+	#observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
+	 	 eX <- eigen(R)
+                observed.scores <- matrix(rnorm(nvar * n),n)
+                observed.scores <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed)+mu)
 	observed <- cor(observed.scores)
 	results <- list(model=R,r=observed,observed=observed.scores)
 	results$Call <- cl
@@ -142,7 +150,7 @@ f1 <- fa(observed.cor)$loadings
 om.fa <- sum(f1)^2/sum(observed.cor)
 e.f1 <- sum(f1^2)/nvar
     sem.model <- omega.sem(x$fload,sl=TRUE,nf=nfact)  #this is the model based upon the true values
-    if(sem) {if(!require(sem)) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
+    if(sem) {if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
  
   omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
     if(omega.cfa$omega >1) omega.cfa$omega <- NA
@@ -220,7 +228,7 @@ return(result)
 
 "sim.general" <- 
 function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
-require(MASS)
+#require(MASS)
   r1 <- matrix(r,nvar/nfact,nvar/nfact)
   R <- matrix(g,nvar,nvar)
   rf <- superMatrix(r1,r1)
@@ -229,6 +237,9 @@ require(MASS)
   R <- R + rf
   diag(R) <- 1
   colnames(R) <- rownames(R) <- paste((paste("V",1:(nvar/nfact),sep="")),rep(1:nfact,each=(nvar/nfact)),sep="gr")
-  if(n > 0) {x <-  mvrnorm(n = n, mu=rep(0,nvar), Sigma = R, tol = 1e-06,empirical = FALSE)
+  if(n > 0) {#x <-  mvrnorm(n = n, mu=rep(0,nvar), Sigma = R, tol = 1e-06,empirical = FALSE)
+   eX <- eigen(R)
+                                      x <- matrix(rnorm(nvar * n),n)
+                                      x <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(x))
    return(x)} else {
   return(R)} }

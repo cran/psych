@@ -9,13 +9,13 @@
 \usage{
 omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE,digits=2,
     title="Omega",sl=TRUE,labels=NULL,
-    plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal", ...)
+    plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE, ...)
 omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE,digits=2,title="Omega",
 sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL, option="equal",...)
 omegaFromSem(m,s,flip=TRUE)
 omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, 
 digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
-   n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",...) 
+   n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) 
 
 
 }
@@ -39,6 +39,7 @@ digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
   \item{rotate}{What rotation to apply? The default is oblimin, the alternatives include simplimax, Promax,  cluster and target. target will rotate to an optional keys matrix (See \code{\link{target.rot}})}
   \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
   \item{option}{In the two factor case (not recommended), should the loadings be equal, emphasize the first factor, or emphasize the second factor. See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
+  \item{covar}{defaults to FALSE and the correlation matrix is found (standardized variables.)  If TRUE, the do the calculations on the unstandardized variables and use covariances.}
   \item{...}{Allows additional parameters to be passed through to the factor routines.  }
   \item{s}{The output from a sem analysis}
 }
@@ -164,9 +165,10 @@ When doing fm="pc", principal components are done for the original correlation m
 \examples{
 \dontrun{
  test.data <- Harman74.cor$cov
- if(!require(GPArotation)) {message("Omega requires GPA rotation" )} else {
+# if(!require(GPArotation)) {message("Omega requires GPA rotation" )} else {
       my.omega <- omega(test.data)       
-         print(my.omega,digits=2)}
+      print(my.omega,digits=2)
+#}
  
 #create 9 variables with a hierarchical structure
 v9 <- sim.hierarchical()

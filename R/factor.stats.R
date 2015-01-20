@@ -91,7 +91,10 @@ conf.level <- alpha
    #    #model.inv <- solve(model)
    #    }
    
-    m.inv.r <- solve(model,r)  #modified Oct 30, 2009 to perhaps increase precision --
+    m.inv.r <- try(solve(model,r),silent=TRUE) #modified Oct 30, 2009 to perhaps increase precision -- #modified 2015/1/2 to use try
+      
+     if(class(m.inv.r)=="try-error") {warning("the model inverse times the r matrix is singular, replaced with Identity matrix which means fits are wrong")
+            m.inv.r <- diag(1,n,n)}
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
     result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)

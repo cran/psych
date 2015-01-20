@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.4.9 (2014-9-01)}{
+\section{Changes in psych version 1.5.2 (2015-01-20)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.4.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.4.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.4.8 was released in August of 2014, the last two digits reflect the day of any modifications).
+      \item Version 1.5.2 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.1.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.1 was released in January of 2015, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -20,7 +20,7 @@
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
      \item add option to do subject density and item density plot to IRT plot.
-    \item note that the df in set.cor should reflect the number of cases actually used   
+    \item note that the df in setCor should reflect the number of cases actually used   
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
       \item clean up lavaan diagram so that the output is more readable    
@@ -31,10 +31,55 @@
      \item Consider using the log option in pnorm 
      \item Start to use the drop=FALSE when doing subsetting
      \item fix vss to do any kind of rotation
-     \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases      
+     \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
+     \item combine the scoreOverlap functionality to scoreItems.     
     }
   }
   } 
+
+
+ \section{Changes in psych version 1.5.1 (2015-1-20)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added the cor option to fa so that it can find tetrachoric, polychoric, or mixed correlations. Cleaned up the fa code a bit by using switch instead of convoluted if statements. 
+          \item changed cor.smooth to detect any eigenvalue < 10^-12  This had been 10^-15
+          \item Added the Bonett generalization to the Yule coefficient and added confidence intervals as well. (Suggested by Barry Dwight).
+          \item Changed tetrachoric and polychoric to use sadmvn from the mnormt package instead of mvtnorm.  This seems to result in a speed up of a factor of 2!  For complete data, the results match that of lavCor (from lavaan) exactly (or at least to the 3 decimals that lavCor reports) but seem to be four times faster for dichotomous data and 20\% faster for polychorics than lavCor.
+           \item Added a message to fa if a Heywood case is detected. Suggested by Sagnik Chakravarty.
+           \item Added a covariance option to omega and to schmid.  Requested by Qingping He.
+           \item Modified describe to add a fast option for larger data sets.  Added a discussion about how to speed up descriptions for very large data sets.
+           \item Added mediate function to estimate mediation and moderation models.
+            (requested by Dan Molden).
+            \item Added mediate.diagram to show the results of mediation models.
+            \item Added regression.diagram to show regression and set.cor models.
+            \item Modified phi.demo to compare phis with tetrachorics and Yules.
+            \item Modified fa.parallel to allow it to use tetrachoric, polychoric, or Yule coefficents (similar to the change in fa).
+            \item Added a number of if(requireNamespaceGPArotation) GPArotation:: blah blah to make it more compatible with the new namespace checking and error complaints
+          \item Modified scoreOverlap to allow for finding correlations from any non-square data matrix (had been limited to case of non-square where the data were outside a 0 1 range).
+          \item Added documentation to alpha and scoreOverlap justifying the r.cor statistic. 
+          }
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+   \item Corrected cor.ci to fix a capitalized rho (which led to a failure if not using keys. And, then more importantly, fixed it again so that it will work for overlapping scales as advertised. 
+   \item Corrected r.test to use df = n-3 instead of n-2. Thanks to Bruno Ernande for reporting this. 
+   \item Corrected the documentation to fa wrt oblique.scores to correctly represent what it does (I had had it backwards)  Thanks to Mark Seeto for reporting this.
+   \item Added a message to principal if rotation is not correctly specified and defaulting to "none".  Suggested by Sagnik Chakravarty.
+  \item Fixed describeData so that it doesn't choke on string variables.
+  \item Modified the print.psych function so that irt information is printed for every unit rather than every .1 unit.  The data are still there in the plot.info object.
+  \item Fixed cor.plot to properly add labels to the plot when plotting factor loadings.
+ \item Fixed phi.demo to compare phis with tetrachorics and Yules.
+ \item Fixed a print problem for fa.parallel
+ \item Fixed a rare case in fa.stats for the case of singular matrices 
+ \item Fixed the way missing is handled in fa so that it actually works! (problem found by Elizabeth Barrett-Cheetham)
+ \item Modified error circles to pass just the x and y values to statsBy.
+            }
+                       } 
+  }
+ 
+ 
+  
  \section{Changes in psych version 1.4.8 (2014-08-10)}{
   \subsection{Additions}{
           \itemize{

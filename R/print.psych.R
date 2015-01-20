@@ -11,6 +11,7 @@ if((!is.null(x$communality.iterations)) | (!is.null(x$uniquenesses)) | (!is.null
 }
 if(all) value <- "all"
 if(value == "score.items") value <- "scores"
+if(value =="set.cor") value <- "setCor"
 switch(value,
 
 ## the following functions have their own print function
@@ -140,9 +141,17 @@ cor.ci = {cat("Call:")
    cci <- data.frame(lower.emp =x$ci$low.e, lower.norm=x$ci$lower,estimate =phis ,upper.norm= x$ci$upper, upper.emp=x$ci$up.e,p = x$ci$p)
    rownames(cci) <- rownames(x$ci)
    cat("\n scale correlations and bootstrapped confidence intervals \n")
+   
    print(round(cci,digits=digits))
               
+            },  
+            
+cor.cip = {class(x) <- NULL
+   cat("\n High and low confidence intervals \n")
+   print(round(x,digits=digits))
+              
             },       
+     
 corr.test = {cat("Call:")
               print(x$Call)
               cat("Correlation matrix \n")
@@ -258,7 +267,7 @@ irt.poly =  {
    cat("Item Response Analysis using Factor Analysis  \n")
    cat("\nCall: ")
    print(x$Call)
-    if (!is.null(x$plot)) print(x$plot)
+    if (!is.null(x$plot)) print(x$plot) #this calls the polyinfo print function below
      if(!short) {
     nf <- length(x$irt$difficulty)
     for(i in 1:nf) {temp <- data.frame(discrimination=x$irt$discrimination[,i],location=x$irt$difficulty[[i]])
@@ -305,7 +314,33 @@ mchoice =  {
 	 if(!is.null(x$item.stats)) {
 	 cat("\nitem statistics \n")
 	 print(round(x$item.stats,digits=digits))}
-  },     
+  },  
+  
+mediate  = { cat("\nMediation analysis \n")
+ cat("Call: ")
+    print(x$Call)
+    dv <- colnames(x$direct)
+    iv <- rownames(x$direct)
+    cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv[1],". The mediating variable(s) = ", iv[-1],".")
+    
+    cat("\nTotal Direct effect(c) of ",iv[1], " on ", dv," = ",round(x$total,digits), "  S.E. = ", round(x$se.bx,digits), " t direct = ",round(x$tt,digits), "  with probability = ", signif(x$probt,digits))
+    cat("\nDirect effect of ",iv[1],  " on ", dv," removing ", iv[-1] ," = ",round(x$direct[1],digits), "  S.E. = ", round(x$se.beta[1],digits), " t direct = ",round(x$t[1],digits), "  with probability = ", signif(x$prob[1],digits))
+   
+   if(is.null(x$mod)) { cat("\nIndirect effect (c') of ",iv[1], " on ", dv," through " ,iv[-1] , "  = ", round(x$indirect,digits),"\n")
+     
+    cat("\nMean bootstrapped indirect effect = ",round(x$mean.boot,digits), " with standard error = ",round(x$sd.boot,digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
+    
+    
+    cat("\nratio of indirect to total effect=  ", round(x$ratit,digits))
+    cat("\nratio of indirect to direct effect= ", round(x$ratid,digits))
+    }  else {
+    cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$int.ind,digits))
+    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot,digits), " with standard error = ",round(x$sd.boot,digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
+    }
+
+    cat("\nR2 of model = ", round(x$R2,digits))
+},
+      
     
 mixed= { cat("Call: ")
     print(x$Call)
@@ -328,9 +363,9 @@ mixed= { cat("Call: ")
 parallel= { cat("Call: ")
               print(x$Call) 
               if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
-                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim$mean,pc= x$pc.values,pc.sim =x$pc.sim$mean)
-		fa.test <- which(!(x$fa.values > x$fa.sim$mean))[1]-1
-		pc.test <- which(!(x$pc.values > x$pc.sim$mean))[1] -1
+                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim,pc= x$pc.values,pc.sim =x$pc.sim)
+		fa.test <- which(!(x$fa.values > x$fa.sim))[1]-1
+		pc.test <- which(!(x$pc.values > x$pc.sim))[1] -1
 		cat("Parallel analysis suggests that ")
 		cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
                   cat("\n Eigen Values of \n")
@@ -340,12 +375,12 @@ parallel= { cat("Call: ")
               if(!is.null(x$fa.values)) {cat("\n eigen values of factors\n")
               print(round(x$fa.values,digits))}
                if(!is.null(x$fa.sim)){cat("\n eigen values of simulated factors\n") 
-               print(round(x$fa.sim$mean,digits))}
+               print(round(x$fa.sim,digits))}
               if(!is.null(x$pc.values)){cat("\n eigen values of components \n")
               print(round(x$pc.values,digits))}
              
               if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
-              print(round(x$pc.sim$mean,digits=digits))}
+              print(round(x$pc.sim,digits=digits))}
               
               }
          },
@@ -353,6 +388,13 @@ parallel= { cat("Call: ")
   partial.r = {cat("partial correlations \n")
             print(round(unclass(x),digits))
          }, 
+         
+ phi.demo = {print(x$tetrachoric)
+            cat("\nPearson (phi) below the diagonal, phi2tetras above the diagonal\n")
+             print(round(x$phis,digits))
+             cat("\nYule correlations")
+             print(x$Yule)
+},
          
  poly= {cat("Call: ")
               print(x$Call)
@@ -385,12 +427,12 @@ polydi= {cat("Call: ")
      if(sort) {ord <- order(temps,decreasing=TRUE)
               temp <- temp[ord,]
               temps <- temps[ord]}
-     temp <- temp[temps >0,]
+     temp <- temp[temps > 0,]
     
      summary <- matrix(c(colSums(temp),sqrt(1/colSums(temp)),1-1/colSums(temp)),nrow=3,byrow=TRUE)
      rownames(summary) <-c("Test Info","SEM", "Reliability")
      temp <- rbind(temp,summary)
-     print(round(temp,digits=digits))
+     if(ncol(temp) == 61) {print(round(temp[,seq(1,61,10)],digits=digits)) } else {print(round(temp,digits=digits))} #this gives us info at each unit 
      }
  if(!short) {    
      cat("\n Average information (area under the curve) \n")
@@ -504,7 +546,7 @@ scores =  {
 	
   },
   
-set.cor= { cat("Call: ")
+setCor= { cat("Call: ")
               print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
@@ -639,6 +681,21 @@ KMO = {cat("Kaiser-Meyer-Olkin factor adequacy")
    cat("Overall MSA = ",round(x$MSA,digits))
    cat("\nMSA for each item = \n")
    print(round(x$MSAi,digits))
-   }
+   },
+   
+yule = {cat("Yule and Generalized Yule coefficients")
+     cat("\nCall: ")
+   print(x$Call)
+   cat("\nYule coefficient \n")
+   print(round(x$rho,digits))
+   cat("\nUpper and Lower Confidence Intervals = \n")
+   print(round(x$ci,digits))
+   },
+   
+Yule = {cat("Yule and Generalized Yule coefficients")
+   
+   cat("\nLower CI  Yule coefficient Upper CI \n")
+   print(round(c(x$lower,x$rho,x$upper),digits))
+}
   )   #end of switch 
 }  #end function

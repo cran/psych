@@ -4,7 +4,7 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE) { #fu
  tol=sqrt(.Machine$double.eps)    #machine accuracy
  cl <- match.call()
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
- if ((dim(r)[1] != dim(r)[2]) & ((min(r,na.rm=TRUE) < -1) || (max(r,na.rm=TRUE) > 1)))  {r <- cor(r,use="pairwise")}
+ if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
 # if(any(is.na(r))) {SMC=FALSE
 #                 warning("Missing values in the correlation matrix do not allow for SMC's to be found")}
 
@@ -58,3 +58,4 @@ adj.r <- cov2cor(adj.cov)
 result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,Call=cl)}
  class(result) <- c ("psych", "overlap")
  return(result)}
+ #modified 01/11/15 to find r if not a square matrix

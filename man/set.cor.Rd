@@ -1,24 +1,36 @@
-\name{set.cor}
+\name{setCor}
+\alias{setCor}
+\alias{setCor.diagram}
 \alias{set.cor}
 \alias{mat.regress}
 \title{Set Correlation and Multiple Regression from matrix or raw input}
 \description{
- Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. 
+ Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.
 }
 \usage{
-set.cor(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
+setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
+       main="Regression Models")
+setCor.diagram(sc,main="Regression model",digits=2,show=TRUE,...)
+set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
+       main="Regression Models")
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
-\item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
+  \item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
   \item{z}{the column names or numbers of the set of covariates}
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
 
   \item{use}{find the correlations "pairwise" (default) or just use "complete" cases (to match the lm function)}
+  \item{std}{Report standardized betas (based upon the correlations) or raw (based upon covariances)}
+  \item{main}{The title for setCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
+  \item{sc}{The output of setCor may be used for drawing diagrams}
+  \item{digits}{How many digits should be displayed in the setCor.diagram?}
+  \item{show}{Show the matrix correlation between the x and y sets?}
+  \item{...}{Additional graphical parameters for setCor.diagram}
   
 }
 \details{
@@ -47,7 +59,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  If the number of observations is entered, then the conventional confidence intervals, statistical significance, and shrinkage estimates are  reported.
  
- If the input is rectangular, correlations are found from the data.
+ If the input is rectangular, correlations or covariances are found from the data.
  
  The print function reports t and p values for the beta weights, the summary function just reports the beta weights.
 }
@@ -71,7 +83,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
        
 Maintainer: William Revelle <revelle@northwestern.edu> }
 \references{
-J. Cohen (1982)  Set correlation as a general mulitivariate data-analytic method. Multivariate Behavioral Research, 17(3):301-341.
+J. Cohen (1982)  Set correlation as a general multivariate data-analytic method. Multivariate Behavioral Research, 17(3):301-341.
 
 
 J. Cohen, P. Cohen, S.G. West, and L.S. Aiken. (2003) Applied multiple regression/correlation analysis for the behavioral sciences. L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
@@ -104,13 +116,16 @@ kelly <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0
 
 kelly
 
-set.cor(1:2,3:5,kelly)
+setCor(1:2,3:5,kelly)
+#Hotelling reports canonical correlations of .3073 and .0583  or squared correlations of
+# 0.09443329 and 0.00339889 vs. our values of  0.0946 0.0035,
 
-set.cor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)
+
+setCor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)
 #now try partialling out some variables
 set.cor(y=c(7:9),x=c(1:3),z=c(4:6),data=Thurstone) #compare with the previous
 #compare complete print out with summary printing 
-sc <- set.cor(x=c("gender","education"),y=c("SATV","SATQ"),data=sat.act) # regression from raw data
+sc <- setCor(x=c("gender","education"),y=c("SATV","SATQ"),data=sat.act) # regression from raw data
 sc
 summary(sc)
 }

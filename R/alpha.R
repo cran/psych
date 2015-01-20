@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE,n.iter=1,delete=TRUE) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE,n.iter=1,delete=TRUE,use="pairwise") {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -31,7 +31,7 @@
             nvar <- nvar - length(bad)
              }
          response.freq <- response.frequencies(x,max=max)
-         C <- cov(x,use="pairwise")} else {C <- x}
+         C <- cov(x,use=use)} else {C <- x}
         
        
          if(check.keys && is.null(keys)) {
@@ -66,6 +66,8 @@
         if(cumulative) {total <- rowSums(x,na.rm=na.rm) } else {total <- rowMeans(x,na.rm=na.rm)}
                 mean.t <- mean(total,na.rm=na.rm)
                 sdev <- sd(total,na.rm=na.rm) 
+                raw.r <- cor(total,x,use=use)
+
                        
         t.valid <- colSums(!is.na(x))} else {   #we are working with a correlation matrix
                  total <- NULL
@@ -88,7 +90,8 @@
         rownames(by.item) <- colnames(x)
         
         Vt <- sum(R)
-        item.r <- colSums(R)/sqrt(Vt)
+        item.r <- colSums(R)/sqrt(Vt)  #this is standardized r
+       
      #correct for item overlap by using  smc 
         RC <-R
         diag(RC) <-smc(R)
@@ -111,7 +114,7 @@
         	alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
         	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd")
         	rownames(alpha.total) <- ""
-        	stats <- data.frame(n=t.valid,r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
+        	stats <- data.frame(n=t.valid,raw.r=t(raw.r),std.r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
         	} else {
         	alpha.total <- data.frame(alpha.total[-6])  #fixed 27/7/14 
         	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N")
@@ -122,7 +125,7 @@
        	rownames(stats) <- colnames(x)
        	
        	if(n.iter > 1) {#do a bootstrap confidence interval for alpha
-       	 if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
+   #    	 if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
         if(nsub == nvar) {message("bootstrapped confidence intervals require raw data") 
                           boot <- NULL
                           boot.ci <- NULL } else {
@@ -158,3 +161,4 @@
   #modified January 9, 2014 to add multicore capabilities to the bootstrap 
   #corrected December 18 to allow reverse keying for correlation matrices as well as raw data
   #modified 1/16/14 to add S/N to summary stats
+  #added item.c  (raw correlation) 1/10/15

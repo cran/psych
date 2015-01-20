@@ -63,7 +63,7 @@ Yet another structure that might be appealing is fully complex data in three dim
   A data matrix of (nsub) subjects by (nvar) variables.  
 }
 \references{ Variations of a routine used in Rafaeli and Revelle, 2006;
-Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadness truly opposite affects? Motivation and Emotion. 
+Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadness truly opposite affects? Motivation and Emotion. \url{http://personality-project.org/revelle/publications/rafaeli.revelle.06.pdf}
 
 Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure. Methods of Psychological Research Online, Vol. 9, No. 1 \url{http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf} }
 \author{ William Revelle }
@@ -80,10 +80,10 @@ plot(fa(item.sim(16,500),2)$loadings,main="Simple Structure") #simple structure
 cluster.plot(fa(item.dichot(16,low=0,high=1),2))
 
  set.seed(42)
- if(require(mvtnorm)) {
- data <- rmvnorm(1000, c(0, 0), matrix(c(1, .5, .5, 1), 2, 2)) #continuous data
+ 
+ data <- mnormt::rmnorm(1000, c(0, 0), matrix(c(1, .5, .5, 1), 2, 2)) #continuous data
  new <- con2cat(data,c(-1.5,-.5,.5,1.5))  #discreet data
- polychoric(new)}
+ polychoric(new)
 #not run
 #x12 <- sim.item(12,gloading=.6)
 #f3 <- fa(x12,3,rotate="none")

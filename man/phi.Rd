@@ -32,7 +32,7 @@ This is in contrast to the Yule coefficient, Q, where \\
 Q = (ad - bc)/(ad+bc) which is the same as \\
  [a- (a+b)*(a+c)]/(ad+bc)
 
-
+Since the phi coefficient is just a Pearson correlation applied to dichotomous data, to find a matrix of phis from a data set involves just finding the correlations using cor  or \code{\link{lowerCor}} or \code{\link{corr.test}}.  
 }
 \value{phi coefficient of correlation
 }

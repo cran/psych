@@ -15,10 +15,7 @@ circ.sim.plot(x.df)
   \item{samplesize}{a vector of sample sizes to simulate }
   \item{numberofvariables}{vector of the number of variables to simulate }
   \item{x.df}{A data frame resulting from \code{\link{simulation.circ}} }
- 
-  
  }
- %
 
 \details{``A common model for representing psychological data is simple structure (Thurstone, 1947). According to one common interpretation, data are simple structured when items or scales have non-zero factor loadings on one and only one factor (Revelle & Rocklin, 1979). Despite the commonplace application of simple structure, some psychological models are defined by a lack of simple structure. Circumplexes (Guttman, 1954) are one kind of model in which simple structure is lacking.
 
@@ -48,17 +45,11 @@ Included in this set of functions are simple procedure to generate circumplex st
 
 \seealso{See also \code{\link{circ.tests}}, \code{\link{sim.circ}}, \code{\link{sim.structural}}, \code{\link{sim.hierarchical}} }
 \examples{
-
 #not run
-if(FALSE) {
 demo <- simulation.circ()
- boxplot(demo[3:14])
- title("4 tests of Circumplex Structure",sub="Circumplex, Ellipsoid, Simple Structure")
+boxplot(demo[3:14])
+title("4 tests of Circumplex Structure",sub="Circumplex, Ellipsoid, Simple Structure")
 circ.sim.plot(demo[3:14])  #compare these results to real data
 }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{multivariate}
 \keyword{datagen}
-

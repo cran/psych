@@ -8,8 +8,8 @@
 \description{Steiger (1980) pointed out that the sum of the squared elements of a correlation matrix, or the Fisher z score equivalents, is distributed as chi square under the null hypothesis that the values are zero (i.e., elements of the identity matrix).  This is particularly useful for examining whether correlations in a single matrix differ from zero or for comparing two matrices. Jennrich (1970) also examined tests of differences between matrices.
 }
 \usage{
-cortest.normal(R1, R2 = NULL, n1 = NULL, n2 = NULL, fisher = TRUE)  #the steiger test
-cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE,cor=TRUE)   #same as cortest.normal 
+cortest.normal(R1, R2 = NULL, n1 = NULL, n2 = NULL, fisher = TRUE) #the steiger test
+cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE,cor=TRUE) #same as cortest.normal 
 cortest.jennrich(R1,R2,n1=NULL, n2=NULL)  #the Jennrich test
 cortest.mat(R1,R2=NULL,n1=NULL,n2 = NULL) #an alternative test
 

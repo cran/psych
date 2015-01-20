@@ -1,9 +1,9 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,cor="cor",use="pairwise")  { 
  cl <- match.call()
- if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
+# if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
 	ci <- 1.96
 	arrow.len <- .05
@@ -15,7 +15,20 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   	rx <- x
   	
   	if(dim(x)[1] != dim(x)[2]) {warning("You specified the number of subjects, implying a correlation matrix, but do not have a correlation matrix, correlations found ")
-  	rx <- cor(x,use="pairwise") 
+  #	rx <- cor(x,use="pairwise") 
+  #add the option to choose the type of correlation, this allows us to do fa.parallel.poly inside fa.parallel
+  switch(cor, 
+       cor = {rx <- cor(x,use=use)},
+       cov = {rx <- cov(x,use=use) 
+              covar <- TRUE},
+       tet = {rx <- tetrachoric(x)$rho},
+       poly = {rx <- polychoric(x)$rho},
+       mixed = {rx <- mixed.cor(x,use=use)$rho},
+       Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
+       YuleQ = {rx <- YuleCor(x,1)$rho},
+       YuleY = {rx <- YuleCor(x,.5)$rho } 
+       )
+  	
   	if(!sim) {warning("You specified a correlation matrix, but asked to just resample (sim was set to FALSE).  This is impossible, so sim is set to TRUE")
   	  sim <- TRUE}
   	}   	 } else {
@@ -24,7 +37,18 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   	nsub = 100
   	n.obs=100
       }  else {
-  	rx <- cor(x,use="pairwise")
+  	#rx <- cor(x,use="pairwise")
+  	switch(cor, 
+       cor = {rx <- cor(x,use=use)},
+       cov = {rx <- cov(x,use=use) 
+              covar <- TRUE},
+       tet = {rx <- tetrachoric(x)$rho},
+       poly = {rx <- polychoric(x)$rho},
+       mixed = {rx <- mixed.cor(x,use=use)$rho},
+       Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
+       YuleQ = {rx <- YuleCor(x,1)$rho},
+       YuleY = {rx <- YuleCor(x,.5)$rho } 
+       )
  	} }
  	
  	 
@@ -43,7 +67,18 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    
     bad <- TRUE
     while(bad) {sampledata <- matrix(apply(x,2,function(y) sample(y,nsub,replace=TRUE)),ncol=nvariables) #do it column wise
-                    C <- cor(sampledata,use="pairwise")    
+                    #C <- cor(sampledata,use="pairwise")  
+                    switch(cor, 
+       cor = {C <- cor(sampledata,use=use)},
+       cov = {C <- cov(sampledata,use=use) 
+              covar <- TRUE},
+       tet = {C <- tetrachoric(sampledata)$rho},
+       poly = {C <- polychoric(sampledata)$rho},
+       mixed = {C <- mixed.cor(sampledata,use=use)$rho},
+       Yuleb = {C <- YuleCor(sampledata,,bonett=TRUE)$rho},
+       YuleQ = {C <- YuleCor(sampledata,1)$rho},
+       YuleY = {C <- YuleCor(sampledata,.5)$rho } 
+       )  
                     bad <- any(is.na(C))
                     
                      }  #Try resampling until we get a correlation matrix that works
@@ -60,7 +95,9 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
                   } 
   
   if(sim) { simdata=matrix(rnorm(nsub*nvariables),nrow=nsub,ncol=nvariables)    #make up simulated data
-   sim.cor <- cor(simdata)
+   sim.cor <- cor(simdata)   #we must use correlations based upon Pearson here, because we are simulating the data
+  
+   
    temp[["sim"]] <- eigen(sim.cor)$values
     
    if (fa!="pc") {

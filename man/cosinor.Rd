@@ -55,7 +55,8 @@ Jammalamadaka, Sreenivasa and Lund, Ulric (2006),The effect of wind direction on
 time <- seq(1:24)
 pure <- matrix(time,24,18)
 pure <- cos((pure + col(pure))*pi/12)
-matplot(pure,type="l",main="Pure circadian arousal rhythms",xlab="time of day",ylab="Arousal") 
+matplot(pure,type="l",main="Pure circadian arousal rhythms",
+    xlab="time of day",ylab="Arousal") 
 p <- cosinor(time,pure)
 #set.seed(42)
 noisy <- pure + rnorm(24*18)

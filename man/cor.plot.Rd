@@ -7,8 +7,9 @@
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,
- labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex=1,...)
+cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
+  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
+   pval=NULL,cuts=c(.001,.01),cex=1,...)
           
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",...)
@@ -58,7 +59,8 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 \seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}}. 
 }
 \examples{
-cor.plot(Thurstone,main="9 cognitive variables from Thurstone") #just blue implies positive manifold
+cor.plot(Thurstone,main="9 cognitive variables from Thurstone") 
+#just blue implies positive manifold
 #select just some variables to plot
 cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone",select=1:4)
 

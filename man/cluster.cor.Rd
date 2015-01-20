@@ -1,16 +1,16 @@
-\name{cluster.cor}
+\name{scoreOverlap}
 \alias{cluster.cor}
 \alias{scoreOverlap}
-\title{Find correlations of composite variables (corrected for overla from a larger matrix.}
+\title{Find correlations of composite variables (corrected for overlap) from a larger matrix.}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
 }
 \usage{
 cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
      impute = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{keys}{ A matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
@@ -21,9 +21,9 @@ scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL,
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
   \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
 }
-\details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{score.items}} which is probably preferred.
+\details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.
 
-In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.
+In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.  This is similar to ideas suggested by Cureton (1966) and Bashaw and Anderson (1966) but uses the smc or the average interitem correlation (default).
 
  A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{fa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
  
@@ -46,6 +46,13 @@ In the case of overlapping keys, (items being scored on multiple scales), \code{
  
 }
 
+\references{
+
+Bashaw, W. and Anderson Jr, H. E. (1967). A correction for replicated error in correlation coefficients. Psychometrika, 32(4):435-441.
+
+Cureton, E. (1966). Corrected item-test correlations. Psychometrika, 31(1):93-96.
+
+}
 \author{
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 
@@ -56,9 +63,9 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 }
 
 \examples{
-\dontrun{
+
 data(attitude)
-keys <- make.keys(attitude,list(first=1:3),second=4:7))
+keys <- make.keys(attitude,list(first=1:3,second=4:7))
 
 r.mat <- cor(attitude)
 cluster.cor(keys,r.mat)
@@ -66,27 +73,9 @@ cluster.cor(keys,r.mat)
 overlapping.keys <- make.keys(attitude,list(all=1:7,first=1:3,second=4:7,first2 = 1:3))
 cluster.cor(overlapping.keys,r.mat)  #unadjusted correlations
 scoreOverlap(overlapping.keys,attitude)  #adjusted correlations
-}
-#$cor
-#       first second
-#first    1.0    0.6
-#second   0.6    1.0
-#
-#$sd
-# first second 
-#  2.57   3.01 
-#
-#$corrected
-#       first second
-#first   0.82   0.77
-#second  0.60   0.74
-#
-#$size
-# first second 
-#     3      4 
 
 
 }
 
-\keyword{ multivariate }% at least one, from doc/KEYWORDS
-\keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ multivariate }
+\keyword{ models }

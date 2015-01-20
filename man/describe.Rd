@@ -9,7 +9,7 @@ There are many summary statistics available in R; this function
 }
 \usage{
 describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
-type=3,check=TRUE)
+type=3,check=TRUE,fast=NULL)
 describeData(x,head=4,tail=4) 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -22,6 +22,7 @@ describeData(x,head=4,tail=4)
   \item{trim}{trim=.1 -- trim means by dropping the top and bottom trim fraction}
   \item{type}{Which estimate of skew and kurtosis should be used?  (See details.) }
   \item{check}{Should we check for non-numeric variables?  Slower but helpful.}
+  \item{fast}{if TRUE, will do n, means, sds, ranges for an improvement in speed.  If NULL, will switch to fast mode for large (ncol * nrow > 10^7) problems, otherwise defaults to fast = FALSE}
   \item{head}{show the first 1:head cases for each variable in describeData}
   \item{tail}{Show the last nobs-tail cases for each variable in describeData}
 }
@@ -47,6 +48,9 @@ Type 2 is \eqn{G1 = g1 * \sqrt{n *(n-1)}/(n-2)} and \eqn{G2 = (n-1)*[(n+1)g2 +6]
 Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2} m_4/m_2^2)}.
 
 The additional helper function \code{\link{describeData}} just scans the data array and reports on whether the data are all numerical, logical/factorial, or categorical.  This is a useful check to run if trying to get descriptive statistics on very large data sets where to improve the speed, the check option is FALSE.  
+
+The fast=TRUE option will lead to a speed up of about 50\% for larger problems.
+Note
 }
 \value{
  A data.frame of the relevant statistics: \cr
@@ -67,7 +71,9 @@ The additional helper function \code{\link{describeData}} just scans the data ar
 
 \note{For very large data sets that are data.frames, describe can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.
 
-For the greatest speed, at the cost of losing information, do not ask for ranges or for skew and turn off check.   }
+For the greatest speed, at the cost of losing information, do not ask for ranges or for skew and turn off check.  This is done automatically if the fast option is TRUE or for large data sets. 
+
+The problem seems to be a memory limitation in that the time taken is an accelerating function of nvars * nobs.  Thus, for a largish problem (72,000 cases with 1680 variables) which might take 330 seconds, doing it as two sets of 840 variable cuts the time down to 80 seconds.   }
 \author{ 
  
  \url{http://personality-project.org/revelle.html} \cr

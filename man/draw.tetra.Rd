@@ -41,10 +41,14 @@ William Revelle
 \seealso{\code{\link{tetrachoric}} to find tetrachoric correlations, \code{\link{irt.fa}} and \code{\link{fa.poly}} to use them in factor analyses, \code{\link{scatter.hist}} to show correlations and histograms. }
 
 \examples{
-if(require(mvtnorm)) {
+#if(require(mvtnorm)) {
+#draw.tetra(.5,1,1)
+#draw.tetra(.8,2,1)} else {print("draw.tetra requires the mvtnorm package")
+#draw.cor(.5,cuts=c(0,0))}
+
 draw.tetra(.5,1,1)
-draw.tetra(.8,2,1)} else {print("draw.tetra requires the mvtnorm package")
-draw.cor(.5,cuts=c(0,0))}
+draw.tetra(.8,2,1)
+draw.cor(.5,cuts=c(0,0))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

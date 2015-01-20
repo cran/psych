@@ -74,7 +74,64 @@ for(i in 2:nvar) {
 }}
 return(result) }
 
+"YuleBonett" <- 
+ function(x,c=1,bonett=FALSE,alpha=.05) {
+  # if(!is.matrix(x)) {stop("x must be a matrix")}
+   stopifnot(prod(dim(x)) == 4 || length(x) == 4)
+    if (is.vector(x)) {
+     x <- matrix(x, 2)}
+     p <- x/sum(x)
+    C <- c
+   a  <- p[1,1]
+   b <- p[1,2]
+   c <- p[2,1]
+   d <- p[2,2]
+   Rs <- rowSums(p)
+   Cs <- colSums(p)
+   if(bonett) {C <- .5 - (.5 - min(Rs,Cs))^2 }
+   ad <- (a*d)^C
+   bc <- (b*c)^C
+   Yule <- (ad-bc)/(ad+bc) 
+   Ystar <- 
+   #See Bonett 2007 p 434
+   w <- (x[1,1] + .1)* (x[2,2] + .1)/((x[2,1] + .1)* (x[1,2] + .1)) #OR estimate
+    Ystar <- (w^C -1)/(w^C+1)   #this is the small cell size adjusted value
+   	vlQ <- (1/(x[1,1] + .1) + 1/ (x[2,2] + .1) + 1/(x[2,1] + .1)+ 1/ (x[1,2] + .1))
+	vQ <-  (C^2/4)*(1-Ystar^2)^2 *vlQ   #equation 9  
+  tanhinv <- atanh(Ystar)
+  upper <- tanh(atanh(Ystar) + qnorm(1-alpha/2) *sqrt( (C^2/4) *vlQ))
+   lower <- tanh(atanh(Ystar) - qnorm(1-alpha/2) *sqrt( (C^2/4) *vlQ))
+   result <- list(rho=Ystar,se=sqrt(vQ), upper=upper, lower=lower)
+   class(result) <- c("psych","Yule")
+   return(result) #Yule Q, Y, or generalized Bonett
+   }
+   
+   
+   
+#Find a correlation matrix of Yule correlations
+"YuleCor" <- function(x,c=1,bonett=FALSE,alpha=.05) {
+cl <- match.call()
+nvar <- ncol(x)
+rho <- matrix(NA,nvar,nvar)
+ci <-  matrix(NA,nvar,nvar)
+zp <- matrix(NA,nvar,nvar)
+for(i in 1:nvar) {
+  for(j in 1:i) {
+    YB <- YuleBonett(table(x[,i],x[,j]),c=c,bonett=bonett,alpha=alpha)
+    rho[i,j] <- rho[j,i] <- YB$rho
+    ci[i,j] <- YB$lower
+    ci[j,i] <- YB$upper
+    zp[i,j] <- YB$rho/YB$se
+    zp[j,i] <- 1-pnorm(zp[i,j])
     
+    }}
+colnames(rho) <- rownames(rho) <- colnames(ci) <- rownames(ci) <- colnames(x)
+result <- list(rho=rho,ci=ci,zp=zp,Call=cl)
+class(result) <- c("psych","yule")
+return(result)
+}
+
+  
     
     
 

@@ -2,7 +2,7 @@
 
 "make.hierarchical" <-
 function (gload=NULL,fload=NULL,n=0,raw=FALSE) {
- require(MASS)
+# require(MASS)
  if(is.null(gload)) gload=matrix(c(.9,.8,.7),nrow=3)
  if(is.null(fload)) {fload <-matrix(c(               
             .8,0,0,
@@ -21,7 +21,12 @@ function (gload=NULL,fload=NULL,n=0,raw=FALSE) {
   nvar <- dim(fload)[1]
   colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
   if(n>0) {
-    mu <- rep(0,nvar)
-  	model <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
+    # mu <- rep(0,nvar)
+  	#model <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
+  	 
+   #the next 3 lines replaces mvrnorm (adapted from mvrnorm, but without the checks)
+                                      eX <- eigen(model)
+                                      model <- matrix(rnorm(nvar * n),n)
+                                      model <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(model))
   	if (!raw ) { model <- cor(model) } }
   make.hierarchical <- model }

@@ -46,3 +46,4 @@ stats <- statsBy(withinBetween,'Group')
 print(stats,short=FALSE)
 }
 \keyword{datasets}
+

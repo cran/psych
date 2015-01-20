@@ -134,7 +134,7 @@ nearcor <- function(  # Computes the nearest correlation matrix to an approximat
       p <- (d>eig.tol*d[1]);
 
       # use p mask to only compute 'positive' part
-      X <- Q[,p,drop=FALSE] %*% D[p,p,drop=FALSE] %*% t(Q[,p,drop=FALSE])
+     X <- Q[,p,drop=FALSE] %*% D[p,p,drop=FALSE] %*% t(Q[,p,drop=FALSE])
 
       # UPDATE DYKSTRA'S CORRECTION
       U <- X - T

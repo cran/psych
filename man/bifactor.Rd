@@ -88,7 +88,8 @@ Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of
 }
 \examples{
 
-if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotation") } else {
+if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotation") 
+        } else {
 #holz <- omega(Holzinger,4, title = "14 ability tests from Holzinger-Swineford")
 #bf <- omega(Reise,5,title="16 health items from Reise") 
 #omega(Reise,5,labels=colnames(Reise),title="16 health items from Reise")

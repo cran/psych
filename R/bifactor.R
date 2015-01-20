@@ -1,3 +1,4 @@
+#added checks for GPArotation even though we are already testing somewhere else
 #the first function finds the first derivative, the second finds the fit
 "vgbQ.bimin" <- function(L) {
 k <- dim(L)[2]
@@ -23,14 +24,14 @@ return(list(f=v,Gq=G))
 #adapted from Jennrich and Bentler 2011
 #requires GPArotation
 "bifactor" <- function(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000){
-   GPForth(L, Tmat=Tmat, normalize=normalize, eps=eps, maxit=maxit,
-           method="bimin")
+  if(requireNamespace('GPArotation')) {GPArotation::GPForth(L, Tmat=Tmat, normalize=normalize, eps=eps, maxit=maxit,
+           method="bimin")} else {stop("Bifactor requires GPArotation")}
    }
  #the oblique case  
 #requires GPArotation
 "biquartimin" <- function(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000){
-   GPFoblq(L, Tmat=Tmat, normalize=normalize, eps=eps, maxit=maxit,
-           method="bimin")
+   if(requireNamespace('GPArotation')) {GPArotation::GPFoblq(L, Tmat=Tmat, normalize=normalize, eps=eps, maxit=maxit,
+           method="bimin") } else {stop("biquartimin requires GPArotation")}
    }
    
 
@@ -45,11 +46,11 @@ return(list(f=v,Gq=G))
 }
 
 "TargetQ" <- function(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL) {
-    GPFoblq(L, Tmat=Tmat,normalize=normalize, eps=eps, maxit=maxit,
-           method="targetQ",Target)}
+    if(requireNamespace('GPArotation')) {GPArotation::GPFoblq(L, Tmat=Tmat,normalize=normalize, eps=eps, maxit=maxit,
+           method="targetQ",Target)} else {stop("TargetQ requires GPArotation")}}
            
 "TargetT" <- function(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL) {
-    GPForth(L, Tmat=Tmat,normalize=normalize, eps=eps, maxit=maxit,
-           method="targetQ",Target)}
+    if(requireNamespace('GPArotation')) {GPArotation::GPForth(L, Tmat=Tmat,normalize=normalize, eps=eps, maxit=maxit,
+           method="targetQ",Target)} else {stop("TargetT requires GPArotation")}}
 
            

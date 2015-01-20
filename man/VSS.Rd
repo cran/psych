@@ -9,11 +9,11 @@
 }
 \usage{
 vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
-n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
 VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
-n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)
+n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
 nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
-             title="Number of Factors",pch=16,...)
+             title="Number of Factors",pch=16,use="pairwise", cor="cor",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,8 @@ nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
   \item{plot}{plot=TRUE  Automatically call VSS.plot with the VSS output, otherwise don't plot}
 \item{title}{a title to be passed on to VSS.plot}
 \item{pch}{the plot character for the nfactors plots}
+\item{use}{If doing covariances or Pearson R, should we use "pairwise" or "complete cases"}
+\item{cor}{What kind of correlation to find, defaults to Pearson but see fa for the choices}
 \item{\dots}{parameters to pass to the factor analysis program 
       The most important of these is if using a correlation matrix is covmat= xx}
 }

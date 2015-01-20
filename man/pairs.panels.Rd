@@ -53,7 +53,10 @@ Sometimes it useful to draw the correlation ellipses and best fitting lowess wit
 If lm=TRUE, then the scatter plots are drawn above and below the diagonal, each with a linear regression fit.  Useful to show the difference between regression lines.
 }
 
-\seealso{  \code{\link{pairs}} which is the base from which pairs.panels is derived, \code{\link{cor.plot}} to do a heat map of correlations, and \code{\link{scatter.hist}} to draw a single correlation plot with histograms and best fitted lines. }
+\seealso{  \code{\link{pairs}} which is the base from which pairs.panels is derived, \code{\link{cor.plot}} to do a heat map of correlations, and \code{\link{scatter.hist}} to draw a single correlation plot with histograms and best fitted lines. 
+
+To find the probability "significance" of the correlations using normal theory, use \code{\link{corr.test}}.  To find confidence intervals using boot strapping procedures, use \code{\link{cor.ci}}.  To graphically show confidence intervals, see \code{\link{cor.plot.upperLowerCi}}.
+}
 \examples{
 
 pairs.panels(attitude)   #see the graphics window

@@ -5,8 +5,8 @@
 \description{Although normal theory provides confidence intervals for correlations, this is particularly problematic with Synthetic Aperture Personality Assessment (SAPA) data where the individual items are Massively Missing at Random.  Bootstrapped confidence intervals are found for Pearson, Spearman, Kendall, tetrachoric, or polychoric correlations and for scales made from those correlations.
 }
 \usage{
-cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, poly = FALSE, method = 
-"pearson", plot=TRUE,...)
+cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, 
+ poly = FALSE, method = "pearson", plot=TRUE,...)
 }
 
 \arguments{
@@ -27,7 +27,7 @@ Then, n.iter times, the data are recreated by sampling subjects (rows) with repl
 
 Although particularly useful for SAPA (\url{http://sapa-project.org}) type data, this will work for any normal data set as well. 
 
-Although the correlations are shown automatically as a \code{\link{cor.plot}}, it is possible to show the upper and lower confidence intervals by using \code{\link{cor.plot.upperLowerCi}}.
+Although the correlations are shown automatically as a \code{\link{cor.plot}}, it is possible to show the upper and lower confidence intervals by using \code{\link{cor.plot.upperLowerCi}}. This will also return, invisibly, a matrix for printing with the lower and upper bounds of the correlations shown below and above the diagonal.
 }
 \value{
 
@@ -46,6 +46,7 @@ Although the correlations are shown automatically as a \code{\link{cor.plot}}, i
 \seealso{\code{\link{make.keys}}, \code{\link{cluster.cor}}, and \code{\link{scoreItems}} for forming synthetic correlation matrices from composites of item correlations.  See \code{\link{scoreOverlap}} for correcting for item overlap in scales. See also \code{\link{corr.test}} for standard significance testing of correlation matrices.  See also \code{\link{lowerCor}} for finding and printing correlation matrices, as well as \code{\link{lowerMat}} for displaying them. Also see \code{\link{cor.plot.upperLowerCi}} for displaying the confidence intervals graphically.
 }
 \examples{
+cor.ci(bfi[1:200,1:10])  # just the first 10 variables
 #The keys have overlapping scales
   keys.list <- list(agree=c("-A1","A2","A3","A4","A5"), conscientious= c("C1", 
   "C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"), neuroticism= 
@@ -53,14 +54,15 @@ Although the correlations are shown automatically as a \code{\link{cor.plot}}, i
   alpha=c("-A1","A2","A3","A4","A5","C1","C2","C3","-C4","-C5","N1","N2","N3","N4","N5"),
 beta = c("-E1","-E2","E3","E4","E5","O1","-O2","O3","O4","-O5") )
   keys <- make.keys(bfi,keys.list)
-  #do not correct for item overlap
+  
+#do not correct for item overlap
 rci <-  cor.ci(bfi[1:200,],keys,n.iter=10,main="correlation with overlapping scales") 
 #also shows the graphic -note the overlap
 #correct for overlap
 rci <-  cor.ci(bfi[1:200,],keys,overlap=TRUE, n.iter=10,main="Correct for overlap") 
 #show the confidence intervals
-cor.plot.upperLowerCi(rci)  #to show the upper and lower confidence intervals
-
+ci <- cor.plot.upperLowerCi(rci)  #to show the upper and lower confidence intervals
+ci   #print the confidence intervals in matrix form
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

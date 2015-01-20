@@ -180,7 +180,7 @@ function(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,scores=FALSE,S
      			                Phi <- pro$Phi} else {
      			                     
      			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax") {
-     				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
+     				if (!requireNamespace('GPArotation')) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
      				Phi <- NULL} else { ob  <- do.call(rotate,list(loadings) )
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}

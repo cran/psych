@@ -5,7 +5,7 @@
 \description{Although the cor function finds the correlations for a matrix, it does not report probability values. corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests.  
 }
 \usage{
-corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm",alpha=.05)
+corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", alpha=.05)
 corr.p(r,n,adjust="holm",alpha=.05)
 }
 

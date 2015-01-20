@@ -7,26 +7,24 @@
 \alias{fa.poly}
 
 \title{Exploratory Factor analysis using MinRes (minimum residual) as well as EFA by Principal Axis, Weighted Least Squares or Maximum Likelihood }
-\description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares. Perhaps the most conventional technique is principal axes.  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal function) is probably preferred.  Bootstrapped confidence intervals of the loadings and interfactor correlations are found by fa  with n.iter > 1 and for dichotomous or polytomous items, by fa.poly.}
+\description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares (OLS) to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares (WLS). Perhaps the most conventional technique is principal axes (PAF).  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal function) is probably preferred.  Bootstrapped confidence intervals of the loadings and interfactor correlations are found by fa  with n.iter > 1. }
 
 \usage{
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
- alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",...)
+ alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs,use="pairwise",...)
+oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
  fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,
-        weight=NULL,global=TRUE,...)
+        weight=NULL,global=TRUE,...)  #deprecated
         
-
-
 factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
 scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
  max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres")    #deprecated
@@ -58,9 +56,11 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair.}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
-  \item{oblique.scores}{When factor scores are found, should they be based on the pattern matrix (default) or the structure matrix (oblique.scores=TRUE).  } 
+  \item{oblique.scores}{When factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (oblique.scores=TRUE).  } 
   \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
+  \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
+  "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
   \item{global}{should overall taus be used in polychoric or should they be found for each pair.  Necessary to be set to false in the case of different number of alternatives for each item.}
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
@@ -94,7 +94,7 @@ Test cases comparing the output to SPSS suggest that the PA algorithm matches wh
 
 Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{score.items}}) factor scores can be estimated by regression as well as several other means. There are multiple approaches that are possible (see Grice, 2001) and the one taken here was developed by tenBerge et al.  (see \code{\link{factor.scores}}. The alternative, which will match factanal is to find the scores using regression --  Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
 
-In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix and \code{\link{factanal}}  seems to find them from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = FALSE will produce factor score estimate that match those of \code{\link{factanal}}.
+In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix while \code{\link{factanal}} seems to do it from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = TRUE  will produce factor score estimate that match those of \code{\link{factanal}}.
 
 It is sometimes useful to extend the factor solution to variables that were not factored.  This may be done using \code{\link{fa.extension}}. Factor extension is typically done in the case where some variables were not appropriate to factor, but factor loadings on the original factors are still desired.
 
@@ -109,15 +109,16 @@ The "bifactor" rotation implements the Jennrich and Bentler (2011) bifactor rota
 
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
+There are three ways to handle dichotomous or polytomous responses: \code{\link{fa}} with the poly=TRUE option, \code{\link{fa.poly}} which will return the tetrachoric or polychoric correlation matrix, as well as the normal factor analysis output, and \code{\link{irt.fa}} which returns a two parameter irt analysis as well as the normal fa output. 
+
 When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. The factor analysis results are available, however, as an object in the irt.fa output. 
 
-\code{\link{fa.poly}} is appropriate if the data are categorical.  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
+\code{\link{fa.poly}} is appropriate if the data are categorical (but just setting the poly=TRUE option works as well).  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
   
 
 The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. The default is to have n.iter =1 and thus not do bootstrapping.
 
-\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so).  Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
-
+\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so). But, so will \code{\link{fa}} with the poly=TRUE option. Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
 
@@ -206,16 +207,18 @@ The communality for a variable is the amount of variance accounted for by all of
 }{\Phi_{k k}P'_nnP_k}. 
  
 
-A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.}
+A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.
 
-\seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
+Correction to documentation: as of September, 2014, the oblique.scores option is correctly explained. (It had been backwards.)  The default (oblique.scores=FALSE) finds scores based upon the Structure matrix, while oblique.scores=TRUE finds them based upon the pattern matrix.  The latter case matches factanal.  This error was detected by Mark Seeto. }
+
+\seealso{ \code{\link{principal}} for principal components analysis (PCA),  \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, \code{\link{VSS}} for the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{nfactors}} to compare many different factor criteria, \code{\link{ICLUST}} for hierarchical cluster analysis alternatives to factor analysis or principal components analysis, \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
 
 \code{\link{fa.sort}} will sort the factor loadings into echelon form. \code{\link{fa.organize}} will reorganize the factor pattern matrix into any arbitrary order of factors and items.  
 
 \code{\link{KMO}} and \code{\link{cortest.bartlett}} for various tests that some people like. }
 \examples{
 #using the Harman 24 mental tests, compare a principal factor with a principal components solution
-pc <- principal(Harman74.cor$cov,4,rotate="varimax")
+pc <- principal(Harman74.cor$cov,4,rotate="varimax")   #principal components
 pa <- fa(Harman74.cor$cov,4,fm="pa" ,rotate="varimax")  #principal axis 
 uls <- fa(Harman74.cor$cov,4,rotate="varimax")          #unweighted least squares is minres
 wls <- fa(Harman74.cor$cov,4,fm="wls")       #weighted least squares

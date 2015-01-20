@@ -94,7 +94,7 @@ if(lavaan) {lavaan.diagram(fit,...)}
     dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
      }
 "dia.arrow" <- 
-function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,...) {
+function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,...) {
     radius1 <- radius2 <- 0
  	if(is.list(from)) {if(!is.null(from$radius)) {radius1 <- from$radius
  	        radius2 <- 0
@@ -107,15 +107,17 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,...) {
         if((adj  > 3 ) || (adj < 1)) {
                    x <- (to[1] + from[1])/2
                    y <- (to[2] + from[2])/2
-                   # browser()
                    } else {
        x <- from[1] - sign(from[1]-to[1]) *(4-adj) *  cos(theta) * dist/4
        y <- from[2] -  sign(from[1]-to[1])* (4-adj) *  sin (theta)* dist/4}
       #x <- from[1] - sign(from[1]-to[1]) *adj *  cos(theta) * dist/6
       #y <- from[2] -  sign(from[1]-to[1])* adj *  sin (theta)* dist/6}
        
-        if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.15}
-        if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .1}
+     #   if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.15}
+      #  if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .1}
+        
+         if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.34}
+       if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .24}
      
         if(from[1] <  to[1] ) {h.size <- -h.size
                                radius1 <- -radius1
@@ -128,7 +130,7 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,...) {
         yl <- y - v.size * sin(theta)  *h.size
         xe <- to[1] + cos(theta) * radius2
         ye <- to[2] + sin(theta) * radius2
-       if(!is.null(labels))  text(x,y,labels,cex=cex,...)
+       if(!is.null(labels))  text(x,y,labels,cex=cex,pos=pos,...)
         arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
         arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)
        }       
@@ -228,14 +230,15 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,...) {
    n <- 20
 if(side %%2 > 0) {scale <- scale*(location$right[1] - location$left[1]) } else {scale <- scale*(location$top[2] - location$bottom[2]) }
  # scale <- scale *.8
- if (side==1) {x <- c(location$bottom[1]-scale/2,location$bottom[1],location$bottom[1]+scale/2)
+if(side ==1)   
+  {x <- c(location$bottom[1]-scale/2,location$bottom[1],location$bottom[1]+scale/2)
                y <- c(location$bottom[2],location$bottom[2]-scale,location$bottom[2])
                sp <- spline(x,y,n=20)
                lines(sp$x,sp$y)
                arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 2*abs(sp$x[3]-sp$x[1]))
      	       arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))
      	        text(sp$x[n/2],sp$y[n/2]-scale,labels,...) }
- if (side==2) {x <- c(location$left[1],location$left[1]-scale,location$left[1])
+if(side == 2)    {x <- c(location$left[1],location$left[1]-scale,location$left[1])
                y <- c(location$left[2]-scale/2,location$left[2],location$left[2]+scale/2)
                sp <- spline(y,x,n=20)
                lines(sp$y,sp$x)
@@ -243,14 +246,16 @@ if(side %%2 > 0) {scale <- scale*(location$right[1] - location$left[1]) } else {
      	      arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[2]-sp$x[1]))
      	      text(sp$y[n/2]-scale,sp$x[n/2],labels,...) 
      	       }
- if (side==3) {x <- c(location$top[1]-scale/2,location$top[1],location$top[1]+scale/2)
+     	       
+if(side == 3)   {x <- c(location$top[1]-scale/2,location$top[1],location$top[1]+scale/2)
                y <- c(location$top[2],location$top[2]+scale,location$top[2])
                sp <- spline(x,y,n=20)
                  lines(sp$x,sp$y)
                  arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 2*abs(sp$x[3]-sp$x[1]))
      	         arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 2*abs(sp$x[3]-sp$x[1]))
      	           text(sp$x[n/2],sp$y[n/2]+scale,labels,...)}
- if (side==4) {x <- c(location$right[1],location$right[1]+scale,location$right[1])
+     	           
+if(side == 4)    {x <- c(location$right[1],location$right[1]+scale,location$right[1])
                y <- c(location$right[2]-scale/2,location$right[2],location$right[2]+scale/2)
                sp <- spline(y,x,n=20)
               
@@ -258,7 +263,7 @@ if(side %%2 > 0) {scale <- scale*(location$right[1] - location$left[1]) } else {
                arrows(sp$y[3],sp$x[3],sp$y[1],sp$x[1],length =2* abs(sp$x[3]-sp$x[1]))
      	arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = 2*abs(sp$x[3]-sp$x[1]))
      	  text(sp$y[n/2]+scale,sp$x[n/2],labels,...)}
-               
+     	             
     }
     
   "dia.shape" <- function(x, y = NULL, labels = NULL, cex = 1,e.size=.05,xlim=c(0,1),ylim=c(0,1),shape=1, ...) {

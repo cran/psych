@@ -6,13 +6,16 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
    cat("\nCall: ")
    print(x$Call)
      
-   	load <- x$loadings   
+   	load <- x$loadings  
+ 
  if(is.null(cut)) cut <- 0   #caving into recommendations to print all loadings
  
     #but, if we are print factors of covariance matrices, they might be very small
-     #       cut <- min(cut,max(abs(load))/2)   #removed following a request by  Reinhold Hatzinger
+     #  cut <- min(cut,max(abs(load))/2)   #removed following a request by  Reinhold Hatzinger
+     
  	nitems <- dim(load)[1]
  	nfactors <- dim(load)[2]
+ 		if(sum(x$uniqueness) + sum(x$communality) >  nitems) {covar <- TRUE} else {covar <- FALSE}
   	loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems),unclass(load))
   	u2.order <- 1:nitems  #used if items are sorted
  if(sort) {
@@ -42,7 +45,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           		 }  
          }    #end of sort 		 
     #they are now sorted, don't print the small loadings if cut > 0 
-
+                if(max(abs(load) > 1.0) && !covar) cat('\n Warning: A Heywood case was detected. \n')
           	ncol <- dim(loads)[2]-2
           	rloads <- round(loads,digits)
 	    	fx <- format(rloads,digits=digits)

@@ -47,7 +47,7 @@ keys3.2 <- parcels(r[(nvar/2+1):nvar,(nvar/2+1):nvar],3,max=max,congruence=congr
 keys <- super.matrix(keys3.1,keys3.2)
 }
 
-x.p3 <- score.items(keys,x[samp,],)
+x.p3 <- scoreItems(keys,x[samp,],)
 f2.p3 <- fa(x.p3$scores,2,rotate="geominQ",delta=delta)
 clust3 <- factor2cluster(f2.p3)
 nrclust3 <- nrow(clust3)

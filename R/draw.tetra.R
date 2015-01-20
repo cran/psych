@@ -8,9 +8,10 @@ function(r,t1,t2,shade=TRUE) {
         R <- matrix(c(1, rho, rho, 1), 2, 2)
         for (i in 1:2) {
             for (j in 1:2) {
-                P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
-                  upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
-                  corr = R)
+               # P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), upper = c(row.cuts[i + 1], col.cuts[j + 1]),  corr = R)
+                  P[i, j] <- sadmvn(lower = c(row.cuts[i], col.cuts[j]), 
+                upper = c(row.cuts[i + 1], col.cuts[j + 1]), mean=rep(0,2),
+                varcov = R) 
             }
         }
         P
@@ -57,12 +58,12 @@ polygon(poly ,density=10,angle=90)
          }
 text(0,0,paste("rho = ",r))
 
-if(require(mvtnorm)) {
+
 HR <- 1 - pnorm(t1)
 SR <- 1 - pnorm(t2)
 P <- binBvn(r,HR,SR)
 ph <- phi(P)
-text(0,-.3,paste("phi = " ,round(ph,2)))}
+text(0,-.3,paste("phi = " ,round(ph,2)))
 
 text(xloc,yloc+.1,expression(X > tau))
 text(xloc,yloc-.1,expression(Y > Tau))
@@ -117,7 +118,8 @@ draw.cor <- function(r=.5,expand=10,theta=30,phi=30,N=101,nbcol=30,box=TRUE,main
 sigma <- matrix(c(1,r,r,1),2,2)  #the covariance matrix
 x <- seq(-3, 3, length= N)
 y <- x
-f <- function(x, y,sigma=sigma) { r <- dmvnorm(cbind(x,y),sigma=sigma)}
+#f <- function(x, y,sigma=sigma) { r <- dmvnorm(cbind(x,y),sigma=sigma)}
+f <- function(x, y,sigma=sigma) { r <- dmnorm(cbind(x,y),varcov=sigma)}
 z <- outer(x,y,f,sigma=sigma)
 nrz <- nrow(z)
 ncz <- ncol(z)

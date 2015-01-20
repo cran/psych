@@ -12,15 +12,16 @@ if(keep.par) op <- par(no.readonly=TRUE)
 if(is.null(main)) {main <- "Correlation plot" }
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {if(class(r)[2] =="omega") {r <- r$schmid$sl
 nff <- ncol(r)
-r <- r[,1:(nff-2)]}  else {r <- r$loadings}
+r <- r[,1:(nff-3)]}  else {r <- r$loadings}  #fixed 12/31/14 to match revised omega
 } }
 r <- as.matrix(r)
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
-r <- t(r)  # flip the matrix because grid requires it
+
 
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]
 nvar <- dim(r)[1]
+if(nf == nvar) r <- t(r)  # flip the matrix because grid requires it  but don't flip if a loadings matrix
 if(missing(pval)) {pval <- matrix(rep(1,nvar*nf),nvar)} else {if (length(pval) != nvar*nf) {
         pr = matrix(0,nvar,nf)
         pr[lower.tri(pr)] <- pval
@@ -51,9 +52,13 @@ if(!is.null(select)) {r <- r[select,select]
                       pval <- pval[select,select]
                       nvar <- length(select)
                       }
-ord1 <- seq(nvar,1,-1)    
-r <- r[,ord1] 
-pval <- pval[,ord1] #reorder the columns to allow image to work
+#reverse the order of the columns (if square)
+ ord1 <- seq(nvar,1,-1)  
+ 
+if(nf == nvar) {r <- r[,ord1] 
+ pval <- pval[,ord1]} else {r <- r[,ord1] 
+ pval <- t(pval[ord1,])}
+ #reorder the columns to allow image to work
 MAR <- 5
 par(mar = c(MAR +max.len,MAR+max.len, 4, .5))
 
@@ -77,7 +82,7 @@ if(numbers) {rx <- rep(at1,ncol(r))
  ry <-rep(at2,each=nrow(r))
 # rv <- round(r*100)
 rv <- round(r,2)
- if(missing(cex)) cex = 10/nrow(r)
+ if(missing(cex))  cex = 10/max(nrow(r),ncol(r))
  text(rx,ry,rv,cex=pval*cex,...)}
 if(show.legend) {
     leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)

@@ -28,7 +28,7 @@ phi2poly(ph,cp,cc,n=NULL,correct=TRUE) #deprecated
   \item{cp}{ probability of the predictor -- the so called selection ratio }
   \item{cc}{probability of the criterion -- the so called success rate. }
 }
-\details{requires the mvtnorm package
+\details{used to require the mvtnorm package but this has been replaced with mnormt
 }
 \value{a tetrachoric correlation
 }

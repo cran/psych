@@ -8,7 +8,7 @@
 }
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
-   check.keys=TRUE,n.iter=1,delete=TRUE)
+   check.keys=TRUE,n.iter=1,delete=TRUE,use="pairwise")
 }
 
 \arguments{
@@ -21,6 +21,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
   \item{check.keys}{if TRUE, then find the first principal component and reverse key items with negative loadings.  Give a warning if this happens. }
  \item{n.iter}{Number of iterations if bootstrapped confidence intervals are desired}
   \item{delete}{Delete items with no variance and issue a warning}
+  \item{use}{Options to pass to the cor function: "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs". The default is "pairwise"}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
@@ -51,7 +52,7 @@ More complete reliability analyses of a single scale can be done using the \code
 
 Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} will also score multiple scales and report more useful statistics. ``Standardized" alpha is calculated from the inter-item correlations and will differ from raw alpha. 
 
-Three alternative item-whole correlations are reported, two are conventional, one unique.  r is the correlation of the item with the entire scale, not correcting for item overlap.  r.drop is the correlation of the item with the scale composed of the remaining items.  Although both of these are conventional statistics, they have the disadvantage that a) item overlap inflates the first and b) the scale is different for each item when an item is dropped. Thus, the third alternative, r.cor, corrects for the item overlap by subtracting the item variance but then replaces this with the best estimate of common variance, the smc.
+Four alternative item-whole correlations are reported, three are conventional, one unique.  raw.r is the correlation of the item with the entire scale, not correcting for item overlap. std.r is the correlation of the item with the entire scale, if each item were standardized.  r.drop is the correlation of the item with the scale composed of the remaining items.  Although each of these are conventional statistics, they have the disadvantage that a) item overlap inflates the first and b) the scale is different for each item when an item is dropped. Thus, the fourth alternative, r.cor, corrects for the item overlap by subtracting the item variance but then replaces this with the best estimate of common variance, the smc. This is similar to a suggestion by Cureton (1966).
 
 If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).
 
@@ -72,7 +73,9 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{sd}{For data matrices, the standard deviation of the total score}
   \item{alpha.drop }{A data frame with all of the above for the case of each item being removed one by one.}
   \item{item.stats}{A data frame including}
-  \item{r}{The correlation of each item with the total score (not corrected for item overlap)}
+  \item{n}{number of complete cases for the item}
+  \item{raw.r}{The correlation of each item with the total score, not corrected for item overlap.}
+  \item{std.r}{The correlation of each item with the total score (not corrected for item overlap) if the items were all standardized}
   \item{r.cor}{Item whole correlation corrected for item overlap and scale reliability}
   \item{r.drop}{Item whole correlation for this item against the scale without this item}
   \item{mean}{for data matrices, the mean of each item}
@@ -83,6 +86,8 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
 }
 \references{
 Cronbach, L.J. (1951) Coefficient alpha and the internal strucuture of tests.  Psychometrika, 16, 297-334.
+
+Cureton, E. (1966). Corrected item-test correlations. Psychometrika, 31(1):93-96.
 
 Cronbach, L.J. and Gleser G.C.  (1964)The signal/noise ratio in the comparison of reliability coefficients. Educational and Psychological Measurement, 24 (3) 467-480. 
 

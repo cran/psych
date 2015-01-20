@@ -1,4 +1,5 @@
 #January 27, 2014  added fa.congruence to clean up calls
+
 #modified March 12 to allow for a list of factor solutions
 
 "factor.congruence" <-
@@ -13,7 +14,7 @@ if(is.null(y)&& is.list(x)) {
 			xi <- x[[i]]
 			if(length(class(xi)) > 1)  { if(class(xi)[2] =='omega')  {xi <- xi$schmid$sl
    												xi<- as.matrix(xi[,1:(ncol(xi)-2)])}}
-			if (!is.matrix(xi)) {if(!is.null(xi$loadings)) {xi <- xi$loadings} else {xi <- as.matrix(xi)}}
+			if (!(is.matrix(xi) )) {if(!is.null(xi$loadings)) {xi <- xi$loadings} else {xi <- as.matrix(xi)}}
 if(i==1) {xg <- xi} else {xg <- cbind(xg,xi)} 
 }
 x <- xg

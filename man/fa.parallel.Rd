@@ -7,8 +7,8 @@
 }
 \usage{
 fa.parallel(x, n.obs = NULL,fm="minres", fa="both", 
-       main = "Parallel Analysis Scree Plots",
-        n.iter=20,error.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE)
+       main = "Parallel Analysis Scree Plots", n.iter=20,error.bars=FALSE,
+       SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,cor="cor",use="pairwise")
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE) 
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
@@ -21,6 +21,9 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
  \item{main}{ a title for the analysis }
  \item{n.iter}{Number of simulated analyses to perform}
+  \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
+  \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
+  "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate.  This matches the call to fa}
  \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See tetrachoric)}
  \item{sim}{For continuous data, the default is to resample as well as to generate random normal data.  If sim=FALSE, then just show the resampled results. These two results are very similar. This does not make sense in the case of  correlation matrix, in which case resampling is impossible. In the case of polychoric or tetrachoric data, in addition to randomizing the real data, should we compare the solution to random simulated data.  This will double the processing time, but basically show the same result.}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
@@ -32,7 +35,9 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
 }
 \details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}). Both the VSS and the MAP criteria are included in the \code{link{nfactors}} function which also reports the  mean item complexity and the BIC for each of multiple solutions.   fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 
-\code{\link{fa.parallel.poly}} will do parallel analysis for polychoric and tetrachoric factors.  If the data are dichotomous, \code{\link{fa.parallel.poly}} will find tetrachoric correlations for the real and simulated data, otherwise, if the number of categories is less than 10, it will find polychoric correlations.  Note that fa.parallel.poly is much slower than fa.parallel because of the complexity of calculating the tetrachoric/polychoric correlations.
+\code{\link{fa.parallel.poly}} will do parallel analysis for polychoric and tetrachoric factors.  If the data are dichotomous, \code{\link{fa.parallel.poly}} will find tetrachoric correlations for the real and simulated data, otherwise, if the number of categories is less than 10, it will find polychoric correlations.  Note that fa.parallel.poly is slower than fa.parallel because of the complexity of calculating the tetrachoric/polychoric correlations.
+
+\code{\link{fa.parallel}} now will do tetrachorics or polychorics directly if the cor option is set to "tet" or "poly".  As with \code{\link{fa.parallel.poly}} this will take longer.  
 
 The means of (ntrials) random solutions are shown.  Error bars are usually very small and are suppressed by default but can be shown if requested.  If the sim option is set to TRUE (default), then parallel analyses are done on resampled data as well as random normal data. In the interests of speed, the parallel analyses are done just on resampled data if sim=FALSE.    Both procedures tend to agree.
 

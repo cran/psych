@@ -3,26 +3,27 @@
 #added ability to do 2 factors by treating them with equal loadings Jan 2008
 #added use of simplimax rotation June 2008
 #corrected the sign of group factors to match the original factors
+#modified November, 2014 to allow for covariances in addition to correlations.
+#also cleaned up the code to take advantage of switch
 "schmid" <-
-function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,...) 
+function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,covar=FALSE,...) 
 {
  cl <- match.call()
 #if Phi is not Null, then we have been given a factor matrix, otherwise
 #model is a correlation matrix, or if not, the correlation matrix is found
 #nfactors is the number of factors to extract
-      if(!require(GPArotation)) {stop("I am sorry, you need to have the  GPArotation package installed")}
+      if(!requireNamespace('GPArotation')) {stop("I am sorry, you need to have the  GPArotation package installed")}
   if(is.null(Phi)) {  #the normal case
       normal.case <- TRUE
       nvar <-dim(model)[2]
       if(dim(model)[1] != dim(model)[2]) {n.obs <- dim(model)[1]
-                                         model <- cor(model,use="pairwise")   
+                                        if(covar) { model <- cov(model,use="pairwise")} else {model <- cor(model,use="pairwise") }
                                          }
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls") |(fm =="minchi")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml") |(fm =="gls") |(fm =="minchi")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,covar=covar) } else {
      
-        #fact <- factanal(covmat = model, factors = nfactors,n.obs=n.obs,...)
         stop("The method of factor extraction you specified is not available")
         
     }}
@@ -34,36 +35,71 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
             nfactors <- dim(fact)[2]
             normal.case <-FALSE}
    
-    
     colnames(orth.load)  <- paste("F",1:nfactors,sep="")
     if(nfactors == 1) { message("Omega_h for 1 factor is not meaningful, just omega_t")
                         obminfact <-list(loadings= orth.load)
                        factr <- 1
                        
            } else {  #the normal case is nfactors > 2
-           
-      if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
-      if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
+switch(rotate,
+    simplimax = {obminfact <- GPArotation::simplimax(orth.load)},
+    promax  =    {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
-           							 } else {
-           							        if(rotate=="TargetQ") {obminfact <- do.call(rotate,list(orth.load,...)) 
+           							 },
+    Promax = {obminfact  <- Promax(orth.load)
+     								 rotmat <- obminfact$rotmat
+                   						Phi <- obminfact$Phi
+           							 },
+    TargetQ = {obminfact <- do.call(rotate,list(orth.load,...)) 
            							       loadings <- obminfact$loadings
      			                            Phi <- obminfact$Phi
-     			                       } else {
-           							     
-           							 if ((rotate == "cluster") | (rotate == "target")) {obminfact <- varimax(orth.load)            			
+     			                       },
+     			                       
+     cluster  = {obminfact <- varimax(orth.load)            			
 								obminfact <- target.rot(obminfact,...)
      			              	loadings <- obminfact$loadings
      			                Phi <- obminfact$Phi
-     			                 } else {
-           							  obminfact <- try(oblimin(orth.load))
+     			                 },
+     target = {obminfact <- varimax(orth.load)            			
+								obminfact <- target.rot(obminfact,...)
+     			              	loadings <- obminfact$loadings
+     			                Phi <- obminfact$Phi
+     			                 },
+    oblimin = 	{ obminfact <- try(GPArotation::oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
-                   						    Phi <- obminfact$Phi} }} }
-                   						 }
-           		}  
+                   						    Phi <- obminfact$Phi}}
+     )
+                        
+     			                       
+     			                       
+     			                       
+#     			       
+#           						    
+#      if (rotate == "simplimax") {obminfact <- simplimax(orth.load)} else {
+#      if((rotate == "promax") | (rotate == "Promax")  )    {obminfact  <- Promax(orth.load)
+#     								 rotmat <- obminfact$rotmat
+#                   						Phi <- obminfact$Phi
+#           							 } else {
+#           							        if(rotate=="TargetQ") {obminfact <- do.call(rotate,list(orth.load,...)) 
+#           							       loadings <- obminfact$loadings
+#     			                            Phi <- obminfact$Phi
+#     			                       } else {
+#           							     
+#           							 if ((rotate == "cluster") | (rotate == "target")) {obminfact <- varimax(orth.load)            			
+#								obminfact <- target.rot(obminfact,...)
+#     			              	loadings <- obminfact$loadings
+#     			                Phi <- obminfact$Phi
+#     			                 } else {
+#           							  obminfact <- try(oblimin(orth.load))
+#           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+#           							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
+#           							        rotmat <- obminfact$rotmat
+#                   						    Phi <- obminfact$Phi} }} }
+#                   						 }
+          		}  
     if(nfactors > 1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     
     if(!normal.case) { fload <- model
@@ -96,17 +132,18 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
     }
     gprimaryload <- fload %*% gload
     colnames(gprimaryload) <- "g"
-    u2 <- 1 - diag(orth.load %*% t(orth.load)) 
-    h2 <- 1 - u2                         
-    uniq <- 1 - fload^2
-    guniq <- 1 - gprimaryload^2
+    h2 <- diag(orth.load %*% t(orth.load)) 
+   # u2 <- 1 - h2    
+    u2 <- diag(model) - h2                     
+    uniq <- diag(model)- fload^2
+    guniq <- diag(model) - gprimaryload^2
     #Ig <- matrix(0, ncol = nfactors, nrow = nfactors)
     #diag(Ig) <- gload
     Ig <- diag(drop(gload))   #3/5/11
     primeload <- fload %*% Ig
     g.percent <- gprimaryload^2/h2
     colnames(g.percent) <- "p2"
-    uniq2 <- 1 - uniq - primeload^2
+    uniq2 <- diag(model) - uniq - primeload^2
     uniq2[uniq2<0] <- 0
     sm <-  sign(fload) * sqrt(uniq2)  #added June 1, 2010 to correctly identify sign of group factors
     

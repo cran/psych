@@ -25,8 +25,9 @@ Harman, Harry Horace (1967), Modern factor analysis. Chicago, University of Chic
 SAS users manual, chapter 26: pages 1123-1192}
 \examples{
 data(Harman.5)
+if(require('GPArotation')){
 pc2 <- principal(Harman.5,2,scores=TRUE)
 pc2$residual
-biplot(pc2,main="Biplot of the Harman 5 socio-demographic variables")
+biplot(pc2,main="Biplot of the Harman 5 socio-demographic variables") }
 }
 \keyword{datasets}

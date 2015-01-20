@@ -38,7 +38,8 @@ R.P. McDonald. Test theory: A unified treatment. L. Erlbaum Associates, Mahwah, 
 }
 \examples{
 data(bock)
-responses <- table2df(bock.table[,2:6],count=bock.table[,7],labs= paste("lsat6.",1:5,sep=""))
+responses <- table2df(bock.table[,2:6],count=bock.table[,7],
+        labs= paste("lsat6.",1:5,sep=""))
 describe(responses)
 ## maybe str(bock.table) ; plot(bock.table) ...
 }

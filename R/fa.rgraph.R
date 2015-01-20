@@ -6,7 +6,11 @@
 function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"), digits=1,main="Factor Analysis",graphviz=TRUE, ...){
-    	if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
+    	if (!requireNamespace('Rgraphviz')) {stop("I am sorry, you need to have loaded the Rgraphviz package")
+    	 #create several dummy functions to get around the "no visible global function definition" problem
+    	nodes <- function() {}
+    	addEdge <- function() {}
+    	subGraph <- function(){} }
     
   Phi <- NULL  #the default case
  if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)

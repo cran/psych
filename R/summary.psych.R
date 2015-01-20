@@ -12,33 +12,12 @@ function(object,digits=2,items=FALSE,...) {
 
 if(length(class(object)) > 1)  { value <- class(object)[2] }
 
-
-#this next part can be deleted, we have switched to switch
-if(FALSE) {
- iclust <- omega <- vss <- scores <- fa <- alpha <- cluster.cor <- mat.reg <- irt.fa <-  FALSE 
- 
- if(length(class(object)) > 1)  { 
-   if(class(object)[2] =='sim')  sim <- TRUE
-   if(class(object)[2] =='vss')  vss <- TRUE
-   if(class(object)[2] =='iclust')  iclust <- TRUE
-   if(class(object)[2] =='omega')  omega <- TRUE
-   if(class(object)[2] =='fa')  fac.pa <- TRUE
-   if(class(object)[2] =='principal') fac.pa <- TRUE
-   if(class(object)[2] == 'alpha') alpha <- TRUE
-   if(class(object)[2] == 'score.items') scores <- TRUE
-   if(class(object)[2] == 'cluster.cor') cluster.cor <- TRUE
-   if(class(object)[2] == 'cluster.loadings') cluster.cor <- TRUE
-   if(class(object)[2] == 'mat.regress') mat.reg <- TRUE
-   if(class(object)[2] == 'set.cor') mat.reg <- TRUE
-   if(class(object)[2] == 'irt.fa') irt.fa <- TRUE
-     } 
-result <- NULL
- }
  if(value=="principal") value <- "fa"
  if(value=="score.items") value <- "scores"
  if(value=="cluster.loadings") value <- "cluster.cor"
   if(value=="mat.regress") value <- "mat.reg"
-   if(value=="set.cor") value <- "mat.reg"
+   if(value=="set.cor") value <- "setCor"
+    if(value=="mat.reg") value <- "setCor"
  
 switch(value, 
 
@@ -76,9 +55,11 @@ print(object$purified$corrected,digits)  }
 
 omega =  {
  cat( object$title,"\n") 
- cat("Alpha: ",round(object$alpha,digits),"\n") 
- cat("Omega Hierarchical:  " ,round(object$omega_h,digits),"\n")
- cat("Omega Total:  " ,round(object$omega.tot,digits),"\n")
+ 	cat("Alpha:                ",round(object$alpha,digits),"\n") 
+ 	cat("G.6:                  ",round(object$G6,digits),"\n")
+ 	cat("Omega Hierarchical:   " ,round(object$omega_h,digits),"\n")
+ 	cat("Omega H asymptotic:   " ,round(object$omega.lim,digits),"\n")
+ 	cat("Omega Total           " ,round(object$omega.tot,digits),"\n")
  numfactors <- dim(object$schmid$sl)[2] -3
   eigenvalues <- diag(t(object$schmid$sl[,1:numfactors]) %*% object$schmid$sl[,1:numfactors])
        cat("\nWith eigenvalues of:\n")
@@ -187,7 +168,7 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 },
  
-mat.reg = {
+setCor = {
    if(object$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
 

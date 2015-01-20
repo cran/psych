@@ -253,7 +253,7 @@ The ``Psychometrics'' task view will install a large number of useful packages. 
 
 \begin{Schunk}
 \begin{Sinput}
-install.packages(list(c("GPArotation","mvtnorm","MASS")
+install.packages(list(c("GPArotation","mnormt")
 \end{Sinput}
 \end{Schunk} 
 
@@ -514,10 +514,11 @@ op <- par(mfrow=c(1,2))
   data(affect)
 colors <- c("black","red","white","blue")
  films <- c("Sad","Horror","Neutral","Happy")
-affect.stats <- errorCircles("EA2","TA2",data=affect,group="Film",labels=films,xlab="Energetic Arousal",ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,cex=2,col=colors,
-  main =' Movies effect on arousal')
- errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",ylab="Negative Affect",pch=16,cex=2,col=colors,
-   main ="Movies effect on affect")
+affect.stats <- errorCircles("EA2","TA2",data=affect[-c(1,20)],group="Film",labels=films,
+xlab="Energetic Arousal",   ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,
+cex=2,col=colors, main =' Movies effect on arousal')
+ errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",
+  ylab="Negative Affect", pch=16,cex=2,col=colors,  main ="Movies effect on affect")
 op <- par(mfrow=c(1,1))
 @
 \end{scriptsize}
@@ -722,11 +723,11 @@ The correlation matrix resulting from a number of tetrachoric or polychoric corr
 
 \subsection{Multiple regression from data or correlation matrices}
 
-The typical application of the \fun{lm} function is to do a linear model of one Y variable as a function of multiple X variables.  Because  \fun{lm} is designed to analyze complex interactions, it requires raw data as input.  It is, however, sometimes convenient to do \iemph{multiple regression} from a correlation or covariance matrix.  The \pfun{set.cor} function will do this, taking a set of y variables predicted from a set of x variables, perhaps with a set of z covariates removed from both x and y.  Consider the \iemph{Thurstone} correlation matrix and find the multiple correlation of the last five variables as a function of the first 4.  
+The typical application of the \fun{lm} function is to do a linear model of one Y variable as a function of multiple X variables.  Because  \fun{lm} is designed to analyze complex interactions, it requires raw data as input.  It is, however, sometimes convenient to do \iemph{multiple regression} from a correlation or covariance matrix.  The \pfun{setCor} function will do this, taking a set of y variables predicted from a set of x variables, perhaps with a set of z covariates removed from both x and y.  Consider the \iemph{Thurstone} correlation matrix and find the multiple correlation of the last five variables as a function of the first 4.  
 
 \begin{scriptsize}
 <<print=TRUE,echo=TRUE>>=
-set.cor(y = 5:9,x=1:4,data=Thurstone)
+setCor(y = 5:9,x=1:4,data=Thurstone)
 @
 \end{scriptsize}
 
@@ -734,11 +735,64 @@ By specifying the number of subjects in correlation matrix, appropriate estimate
 
 \begin{scriptsize}
 <<print=TRUE,echo=TRUE>>=
-sc <- set.cor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
+sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 @
 \end{scriptsize}
 
+\subsection{Mediation and Moderation analysis}
+
+Although multiple regression is a straightforward method for determining the effect of multiple predictors ($x_{1, 2, ... i}$) on a criterion variable, y, some prefer to think of the effect of one predictor, x, as mediated by another variable, m \citep{preacher:04}.  Thus, we we may find  the indirect path  from x to m, and then from m to y as well as the direct path from x to y.  Call these paths a, b, and c, respectively.  Then the indirect effect of x on y through m is just ab and the direct effect is c. Statistical tests of the ab effect are best done by bootstrapping. 
+
+Consider the example from \cite{preacher:04} as analyzed using the \pfun{mediate} function and the subsequent graphic from \pfun{mediate.diagram}.  The data are found in the example for \pfun{mediate}.
+
+
+\begin{scriptsize}
+<<print=FALSE,echo=FALSE>>=
+#data from Preacher and Hayes (2004)
+sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
+-0.03, 1.75, -0.8, -1.2, -1.27, 0.7, -1.59, 0.68, -0.39, 1.33, 
+-1.59, 1.34, 0.1, 0.05, 0.66, 0.56, 0.85, 0.88, 0.14, -0.72, 
+0.84, -1.13, -0.13, 0.2), THERAPY = structure(c(0, 1, 1, 0, 1, 
+1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 
+1, 1, 1, 0), value.labels = structure(c(1, 0), .Names = c("cognitive", 
+"standard"))), ATTRIB = c(-1.17, 0.04, 0.58, -0.23, 0.62, -0.26, 
+-0.28, 0.52, 0.34, -0.09, -1.09, 1.05, -1.84, -0.95, 0.15, 0.07, 
+-0.1, 2.35, 0.75, 0.49, 0.67, 1.21, 0.31, 1.97, -0.94, 0.11, 
+-0.54, -0.23, 0.05, -1.07)), .Names = c("SATIS", "THERAPY", "ATTRIB"
+), row.names = c(NA, -30L), class = "data.frame", variable.labels = structure(c("Satisfaction", 
+"Therapy", "Attributional Positivity"), .Names = c("SATIS", "THERAPY", 
+"ATTRIB")))
+@
+<<print=TRUE,echo=FALSE>>=
+preacher <- mediate(1,2,3,sobel)  #The example in Preacher and Hayes
+@
+\end{scriptsize}
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+mediate.diagram(preacher)
+@
+\end{scriptsize}
+\caption{A mediated model taken from Preacher and Hayes, 2004 and solved using the \pfun{mediate} function. The direct path from Therapy to Satisfaction has a an effect of .76, while the indirect path through Attribution has an effect of .33. Compare this to the normal regression graphic created by setCor.diagram.}
+\label{fig:mediate}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+preacher <- setCor(1,c(2,3),sobel,std=FALSE)
+setCor.diagram(preacher)
+@
+\end{scriptsize}T
+\caption{The conventional regression model for the Preacher and Hayes, 2004 data set  solved using the \pfun{sector} function. Compare this to the previous figure.}
+\label{fig:mediate}
+\end{center}
+\end{figure}
 
 \section{Item and scale analysis}
 
@@ -767,7 +821,7 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \item [\pfun{factor.wls} (deprecated)]  Weighted least squares factor analysis is a least squares, iterative solution to the factor problem.  It minimizes the (weighted) squared residual matrix.  The  weights are based upon the independent contribution of each variable. 
 
-\item [\pfun{principal}] Principal Components Analysis reports the largest n eigen vectors rescaled by the square root of their eigen values.  
+\item [\pfun{principal}] Principal Components Analysis reports the largest n eigen vectors rescaled by the square root of their eigen values.  Note that PCA is not the same as factor analysis and the two should not be confused.
 
 \item [\pfun{factor.congruence}] The congruence between two factors is the cosine of the angle between them.  This is just the cross products of the loadings divided by the  sum of the squared loadings. This differs from the correlation coefficient in that the mean loading is not subtracted before taking the products. \pfun{factor.congruence} will find the cosines between two (or more) sets of factor loadings.
 
@@ -797,14 +851,21 @@ The maximum likelihood solution to this equation is found by \fun{factanal} in t
 
 A classic data set, collected by \cite{thurstone:41} and then reanalyzed by \cite{bechtoldt:61} and discussed by \cite{mcdonald:tt}, is a set of 9 cognitive variables with a clear bi-factor structure \cite{holzinger:37}.  The minimum residual solution was transformed into an oblique solution using the  default option on rotate which uses an oblimin transformation (Table~\ref{tab:factor.minres}).  Alternative rotations and transformations include ``none", ``varimax", ``quartimax", ``bentlerT", ``varimin'' and ``geominT" (all of which are orthogonal rotations). as well as  ``promax", ``oblimin", ``simplimax", ``bentlerQ, and ``geominQ" and  ``cluster" which are  possible oblique transformations of the solution. The default is to do a oblimin transformation. The measures of factor adequacy reflect the multiple correlations of the factors with the best fitting linear regression estimates of the factor scores \citep{grice:01}.
 
+Note that if extracting more than one factor, and doing any oblique rotation, it is necessary to have the \Rpkg{GPArotation} installed.  This is checked for in the appropriate functions.
+
+<<print=FALSE,echo=FALSE>>=
+if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} 
+@
+
 
 \begin{table}[htdp]
 \caption{Three correlated factors from the Thurstone 9 variable problem.  By default, the solution is transformed obliquely using oblimin. The extraction method is (by default) minimum residual.}
 \begin{scriptsize}
 \begin{center}
 <<print=FALSE,echo=TRUE>>=
+if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} else {
 f3t <- fa(Thurstone,3,n.obs=213)
-f3t 
+f3t }
 @
 \end{center}
 \end{scriptsize}
@@ -814,7 +875,7 @@ f3t
 
 
 \subsubsection{Principal Axis Factor Analysis}
- An alternative, least squares algorithm, \pfun{factor.pa}, does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results.  It seems as if the SAS example for PA uses only one iteration.  Setting the max.iter parameter to 1 produces the SAS solution.  
+ An alternative, least squares algorithm (included in \pfun{fa} with the fm=pa option or as a standalone function (\pfun{factor.pa}), does a  Principal Axis factor analysis by iteratively doing an eigen value decomposition of the correlation matrix with the diagonal replaced by the values estimated by the factors of the previous iteration.  This OLS solution is not as sensitive to improper matrices as is the maximum likelihood method, and will sometimes produce more interpretable results.  It seems as if the SAS example for PA uses only one iteration.  Setting the max.iter parameter to 1 produces the SAS solution.  
 
 The solutions from the \pfun{fa}, the \pfun{factor.minres} and \pfun{factor.pa} as well as the \pfun{principal} functions can be rotated or transformed with a number of options.  Some of these call the \Rpkg{GPArotation} package. Orthogonal rotations include \fun{varimax}, \fun{quartimax}, \pfun{varimin},  \pfun{bifactor} . Oblique transformations include \fun{oblimin}, \fun{quartimin}, \pfun{biquartimin} and then two targeted rotation functions \pfun{Promax} and \pfun{target.rot}. The latter of these will transform a loadings matrix towards an arbitrary target matrix.  The default is to transform towards an independent cluster solution. 
  
@@ -826,9 +887,10 @@ Using the Thurstone data set, three factors were requested  and then transformed
 \begin{center}
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
+if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} else {
 f3 <- fa(Thurstone,3,n.obs = 213,fm="pa")
 f3o <- target.rot(f3)
-f3o
+f3o}
 @
 \end{scriptsize}
 \end{center}
@@ -1736,11 +1798,11 @@ faBy(sb,nfactors=5)  #find the 5 factor solution for each education level
 
 
 \section{Set Correlation and Multiple Regression from the correlation matrix}
-An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{set.cor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
+An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{setCor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
 
- \pfun{set.cor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
+ \pfun{setCor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
 
-Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{set.cor}. Two things to notice.  \pfun{set.cor} works on the \emph{correlation} or  \emph{covariance}  or \emph{raw data} matrix, and thus if using the correlation matrix, will report standardized $\hat{\beta}$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, or if the analysis is done on raw data, statistical tests of significance are applied.
+Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{setCor}. Two things to notice.  \pfun{setCor} works on the \emph{correlation} or  \emph{covariance}  or \emph{raw data} matrix, and thus if using the correlation matrix, will report standardized or raw $\hat{\beta}$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, or if the analysis is done on raw data, statistical tests of significance are applied.
 
 For this example, the analysis is done on the correlation matrix rather than the raw data.
 
@@ -1751,13 +1813,13 @@ C <- cov(sat.act,use="pairwise")
 model1 <- lm(ACT~ gender + education + age, data=sat.act)
 summary(model1)
 @
-Compare this with the output from \pfun{set.cor}.
+Compare this with the output from \pfun{setCor}.
 <<print=FALSE,echo=TRUE>>=
-#compare with mat.regress
-set.cor(c(4:6),c(1:3),C, n.obs=700)
+#compare with sector
+setCor(c(4:6),c(1:3),C, n.obs=700)
 @
 \end{scriptsize}
-Note that the \pfun{set.cor} analysis also  reports the amount of shared variance between the predictor set and the criterion (dependent) set.  This set correlation is symmetric. That is, the $R^{2}$ is the same independent of the direction of the relationship.
+Note that the \pfun{setCor} analysis also  reports the amount of shared variance between the predictor set and the criterion (dependent) set.  This set correlation is symmetric. That is, the $R^{2}$ is the same independent of the direction of the relationship.
 
 \section{Simulation functions}
 It is particularly helpful, when trying to understand psychometric concepts, to be able to generate sample data sets that meet certain specifications.   By knowing ``truth" it is possible to see how well various algorithms can capture it. Several of the \pfun{sim} functions create artificial data sets with known structures. 
@@ -1956,7 +2018,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version > "1.4.5",package="psych")
+> news(Version > "1.5.0",package="psych")
 \end{Sinput}
 \end{Schunk}
 
@@ -2155,6 +2217,13 @@ Pedhazur, E. (1997).
   prediction}.
 \newblock Harcourt Brace College Publishers.
 
+\bibitem[Preacher and Hayes, 2004]{preacher:04}
+Preacher, K.~J. and Hayes, A.~F. (2004).
+\newblock {SPSS and SAS} procedures for estimating indirect effects in simple
+  mediation models.
+\newblock {\em Behavior Research Methods, Instruments, \& Computers},
+  36(4):717--731.
+
 \bibitem[\protect\astroncite{Revelle}{1979}]{revelle:iclust}
 Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
@@ -2164,7 +2233,7 @@ Revelle, W. (1979).
 Revelle, W. (2014).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.4.1
+\newblock R package version 1.4.12
 
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).

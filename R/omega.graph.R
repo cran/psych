@@ -12,8 +12,12 @@ function(om.results,out.file=NULL,sl=TRUE,labels=NULL,
     edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=1,title="Omega", ...){
    
      
-     if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
-    # if(!require(graph)) {stop("I am sorry, you need to have the  graph package installed")}
+     if(!requireNamespace('Rgraphviz')) {stop("I am sorry, you need to have the  Rgraphviz package installed")
+        #create several dummy functions to get around the "no visible global function definition" problem
+    	nodes <- function() {}
+    	addEdge <- function() {}
+    	subGraph <- function(){} }
+    # if(!requireNamespace(graph)) {stop("I am sorry, you need to have the  graph package installed") }
     
    if (sl) {factors <- as.matrix(om.results$schmid$sl)   } else{factors <- as.matrix(om.results$schmid$oblique)}
    rank.direction <- match.arg(rank.direction)

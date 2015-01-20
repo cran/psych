@@ -1,11 +1,11 @@
 \name{cta}
 \alias{cta}
 \title{Simulate the C(ues) T(endency) A(ction) model of motivation}
-\description{Dynamic motivational models such as the Dynamics of Action (Atkinson and Birch, 1970, Revelle, 1986) may be reparameterized as a simple pair of differential (matrix) equations (Revelle, 1986, 2008). This function simulates the dynamic aspects of the CTA.
+\description{Dynamic motivational models such as the Dynamics of Action (Atkinson and Birch, 1970, Revelle, 1986) may be reparameterized as a simple pair of differential (matrix) equations (Revelle, 1986, 2008). This function simulates the dynamic aspects of the CTA.  The CTA model is discussed in detail in Revelle and Condon (2015).
 }
 \usage{
-cta(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, ten = NULL,
-      type = "both", fast = 2)
+cta(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, 
+   ten = NULL,  type = "both", fast = 2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,7 +20,7 @@ cta(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, te
   \item{fast}{display every fast time (skips  }
 
 }
-\details{A very thorough discussion of the CTA model is available from Revelle (2008).
+\details{A very thorough discussion of the CTA model is available from Revelle (2008). An application of the model is discussed in Revelle and Condon (2015). 
 }
 \value{
   graphical output unless type="none"
@@ -39,6 +39,8 @@ Atkinson, John W. and Birch, David (1970) The dynamics of action. John Wiley, Ne
 Revelle, William (1986)  Motivation and efficiency of cognitive performance  in Brown, Donald R. and Veroff, Joe (ed). Frontiers of Motivational Psychology: Essays in honor of J. W. Atkinson. Springer.  (Available as a pdf at \url{https://personality-project.org/revelle/publications/dynamicsofmotivation.pdf}.)
 
 Revelle, W. (2008)  Cues, Tendencies and Actions. The Dynamics of Action revisted. \url{http://personality-project.org/revelle/publications/cta.pdf} 
+
+Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality \url{http://personality-project.org/revelle/publications/jrp_14_final.pdf} 
 
 }
 \author{ William Revelle }

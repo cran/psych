@@ -2,7 +2,8 @@
 #March, 2010
 "glb.algebraic"<- 
 function(Cov,LoBounds=NULL, UpBounds=NULL)
-{ if(!require(Rcsdp)) {stop("Rcsdp must be installed to find the glb.algebraic")}
+{ if(!requireNamespace('Rcsdp')) {stop("Rcsdp must be installed to find the glb.algebraic")
+     }
 cl<-match.call()
   # check input
   p<-dim(Cov)[2]
@@ -35,7 +36,7 @@ cl<-match.call()
   }
   K<-list(type=c("s","l","l"),size=rep(p,3))
   # call csdp
-  result<-csdp(C,A,opt,K)
+  result<- Rcsdp::csdp(C,A,opt,K)
   if (result$status>=4||result$status==2)
   { warning("Failure of csdp, status of solution=",result$status)
     lb<-list(glb=NA,solution=NA,status=result$status,Call=cl)

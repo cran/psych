@@ -22,15 +22,16 @@ if(is.null(cut)) cut <- .2
 	       
 	        if(sort) {loads[,1] <- as.integer(loads[,1])
 	                 load.2 <- loads[,2:(nfactor+1)]} else {load.2 <- loads[,1:nfactor] }    
-	        h2 <- round(rowSums(load.2^2),digits)
-	        loads <-round(loads,digits)
+	        h2 <- round(loads[,"h2"],digits)
+	        u2 <- round(loads[,"u2"],digits) 
+	        loads <- round(loads,digits)
 	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")  
          	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
-            h2 <- round(rowSums(load.2^2),digits)
-         	u2 <- 1 - h2
+           # h2 <- round(rowSums(load.2^2),digits)
+           #u2 <- 1 - h2
          	
-         	p2 <- loads[,ncol(loads)]
+         	p2 <- loads[,"p2"]
          	mp2 <- mean(p2)
          	vp2 <- var(p2)
          	p2 <- round(p2,digits)
@@ -102,7 +103,7 @@ cut <- 0
          } else {fx <- data.frame(fx.2)
             colnames(fx) <- colnames(x$orthog)}
          	if(nfactors > 1) {if(is.null(x$Phi)) {h2 <- rowSums(load.2^2)} else {h2 <- diag(load.2 %*% x$Phi %*% t(load.2)) }} else {h2 <-load.2^2}
-         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]}  else {u2 <- (1 - h2)}
+         	if(!is.null(x$uniquenesses)) {u2 <- x$uniquenesses[u2.order]}  else {u2 <- u2[u2.order]}
          	#h2 <- round(h2,digits)
          	vtotal <- sum(h2 + u2)
            if(isTRUE(all.equal(vtotal,nitems))) {

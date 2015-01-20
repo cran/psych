@@ -30,7 +30,7 @@
        av=(r12+r13)/2
        cube= (1-r23)*(1-r23)*(1-r23)
        t2 = diff * sqrt((n-1)*(1+r23)/(((2*(n-1)/(n-3))*determin+av*av*cube)))
-       p <- pt(abs(t2),n-2,lower.tail=FALSE)
+       p <- pt(abs(t2),n-3,lower.tail=FALSE)  #changed to n-3 on 30/11/14
         if(twotailed) p <- 2*p
         #the call is ambiguous, we need to clarify it
         cl <- paste("r.test(n = ",n, ",  r12 = ",r12,",  r23 = ",r23,",  r13 = ",r13, ")")

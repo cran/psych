@@ -7,6 +7,7 @@ s3 <- Harman23.cor$cov     #   Harman Example 2.3 8 physical measurements
 s4 <- Harman74.cor$cov     #   Harman Example 7.4  24 mental measurements
 s5 <- ability.cov$cov       #  6 Ability and Intelligence Tests 
 
+
 #convert covariance to correlation
 d5 <- diag(1/sqrt(diag(s5)))
 s5 <- d5 %*% s5 %*% d5
@@ -35,7 +36,7 @@ for (i in first:last) {
 
 
 	ic <-   ICLUST(test.data,plot=FALSE)
-	if(require(GPArotation)) {om <-  omega(test.data,plot=FALSE)} else {warning("Omega requires the GPArotation package to be loaded")
+	if(requireNamespace('GPArotation')) {om <-  omega(test.data,plot=FALSE)} else {warning("Omega requires the GPArotation package to be loaded")
 	  om <- NULL}
 	fc <- factor.congruence(pc2,fa2)
 	
@@ -44,7 +45,7 @@ for (i in first:last) {
 	keys <- matrix(rep(0,dim(test.data)[2]*2),ncol=2)
 	keys[,1] <- 1
 	keys[1:3,2] <- 1
-	if( dim(test.data)[1] != dim(test.data)[2]) {test.score <- score.items(keys,test.data)} else {test.score <- cluster.cor(keys,test.data)}
+	if( dim(test.data)[1] != dim(test.data)[2]) {test.score <- scoreItems(keys,test.data)} else {test.score <- cluster.cor(keys,test.data)}
 	
 	out <- list(out,paste("test",i),pc,pc2,fa2,fp,ic,om,fc,vss2,vsspc,d,test.score)
   } #end loop
@@ -59,9 +60,9 @@ for (i in first:last) {
   fa.simple <- fa(simple,2)
   cor.plot(fa.simple,TRUE,n=4)
   #fa.simple.keys <- ICLUST.sort(fa.simple,keys=TRUE) #why this way
- # simple.scores <-  score.items(fa.simple.keys$clusters,simple)
+ # simple.scores <-  scoreItems(fa.simple.keys$clusters,simple)
   fa.simple.keys <- factor2cluster(fa.simple)
-  simple.scores <-  score.items(fa.simple.keys,simple)
+  simple.scores <-  scoreItems(fa.simple.keys,simple)
  
  pairs.panels(simple.scores$scores)
  
@@ -88,8 +89,8 @@ p.iris <- principal(IRIS,5,scores=TRUE)
 cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
  pairs.panels(cong) 
  #this section tests various functions that use Rgraphviz (if it is installed) 
-#  if(require(Rgraphviz))       
- if(FALSE) { fa.graph(fa(item.sim(16),2) ,title="Principal factor of a simple structure") 
+ if(FALSE) { #{if(require(Rgraphviz) && !FALSE) {      
+  fa.graph(fa(item.sim(16),2) ,title="Principal factor of a simple structure") 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
   	v9 <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
   	omega.graph(v9,sl=FALSE,title="Omega with hierarchical factors")
@@ -104,7 +105,7 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
 		colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 	structure.graph(X6,phi21,Y3,title="Symbolic structural model")
 
- } #else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz") }
+ } else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz and were not tested") }
  
  fa.diagram(fa(item.sim(16),nfactors=2)) 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
@@ -126,8 +127,9 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
    f <- fa(R[ss,ss],2)
    foe <- fa.extension(R[ss,-ss],f)
    fa.diagram(fa.results=f,fe.results=foe)
-
-  out <- list(out,fa.simple,psych.d)
+   
+   #now test the iteration options in fa
+    out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}
 
 }#end function

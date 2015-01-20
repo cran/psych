@@ -3,33 +3,34 @@
 
  #the following two functions are called repeatedly by tetrac and are put here to speed up the process
  
-"tetraBinBvn.old" <-
- function (rho,rc,cc)    #adapted from John Fox's polychor
-{ row.cuts <- c(-Inf, rc, Inf)
-    col.cuts <- c(-Inf, cc, Inf)
-    P <- matrix(0, 2,2)
-    R <- matrix(c(1, rho, rho, 1), 2, 2)
-    for (i in 1:2) {
-        for (j in 1:2) {
-            P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
-                upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
-                corr = R)
-        }}
-    P   #the estimated 2 x 2 predicted by rho, rc, cc
-}
+# "tetraBinBvn.old" <-
+#  function (rho,rc,cc)    #adapted from John Fox's polychor
+# { row.cuts <- c(-Inf, rc, Inf)
+#     col.cuts <- c(-Inf, cc, Inf)
+#     P <- matrix(0, 2,2)
+#     R <- matrix(c(1, rho, rho, 1), 2, 2)
+#     for (i in 1:2) {
+#         for (j in 1:2) {
+#             P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
+#                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
+#                 corr = R)
+#         }}
+#     P   #the estimated 2 x 2 predicted by rho, rc, cc
+# }
 
 #modified 5/8/14 to be consistent with call from tetraF
 #no change in functionality, just more esthetic
 
+#changed 10/16/14  to use sadmvn instead of mvtnorm
 "tetraBinBvn" <-
  function (rho,rc,cc)    #adapted from John Fox's polychor
 { row.cuts <- c(-Inf, rc, Inf)
     col.cuts <- c(-Inf, cc, Inf)
     P <- matrix(0, 2,2)
     R <- matrix(c(1, rho, rho, 1), 2, 2)
-    P[1,1] <- pmvnorm(lower = c(row.cuts[1], col.cuts[1]), 
-                upper = c(row.cuts[2], col.cuts[2]), 
-                corr = R)
+    P[1,1] <- sadmvn(lower = c(row.cuts[1], col.cuts[1]), 
+                upper = c(row.cuts[2], col.cuts[2]), mean=c(0,0),
+                varcov = R)
     P[2,1] <- pnorm(rc) - P[1,1]
     P[1,2] <- pnorm(cc) - P[1,1]
     P[2,2] <-  1- pnorm(rc) - P[1,2]
@@ -281,7 +282,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  function(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,delete=TRUE) {
 
  
- if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachoric")}
+# if(!require(mnormt)) {stop("I am sorry, you must have mnormt installed to use tetrachoric")}
  cl <- match.call() 
  if (!is.matrix(x) && !is.data.frame(x)) {
   if (length(x) ==4) {x <- matrix(x,2,2) } else {
@@ -299,10 +300,13 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
             for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
             x <- x[,-bad] 
             nvar <- nvar - length(bad)
-             }
-  if(!require(parallel)) {warning("need parallel installed to take advantage of multiple cores.  Using single core version instead")
-      result <- tetra.mat.sc(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)} else {
- result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)}}
+ 
+            }
+            
+ # parallel is now built into the system, so we don't need this.
+ # if(!require(parallel)) {warning("need parallel installed to take advantage of multiple cores.  Using single core version instead")
+ #   result <- tetra.mat.sc(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)} else {
+ result <- tetra.mat(x,y=y,correct=correct,smooth=smooth,global=global,weight=weight)}
  
  result$Call <- cl
  class(result) <- c("psych","tetra")
@@ -312,7 +316,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  
  "tetrachor" <- 
  function(x,correct=.5) {
- if(!require(mvtnorm)) {stop("I am sorry, you must have mvtnorm installed to use tetrachor")}
+ #if(!require(mnormt)) {stop("I am sorry, you must have mnormt installed to use tetrachor")}
  cl <- match.call() 
  if (!is.matrix(x) && !is.data.frame(x)) {
   if (length(x) ==4) {x <- matrix(x,2,2) } else {
@@ -407,14 +411,16 @@ function(x,y) {
  return(rps)
  }
 
-
-"cor.smooth" <- function(x) {
+#modified November 28, 2014 to be slightly more aggressive about smoothing
+#this is more similar to cov2cor(nearPD$mat)
+"cor.smooth" <- function(x,eig.tol=10^-12) {
 eigens <- try(eigen(x),TRUE)
 if(class(eigens)== as.character("try-error")) {warning('I am sorry, there is something seriously wrong with the correlation matrix,\ncor.smooth failed to  smooth it because some of the eigen values are NA.  \nAre you sure you specified the data correctly?')
                                                      } else {
                                                         
 if(min(eigens$values) < .Machine$double.eps)  {warning("Matrix was not positive definite, smoothing was done")
-eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
+#eigens$values[eigens$values  < .Machine$double.eps] <- 100 * .Machine$double.eps
+eigens$values[eigens$values  < eig.tol] <- 100 * eig.tol
 nvar <- dim(x)[1]
 tot <- sum(eigens$values)
 eigens$values <- eigens$values * nvar/tot

@@ -6,7 +6,11 @@
 function(ic.results,out.file = NULL, min.size=1,short=FALSE,labels=NULL,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=2,title="ICLUST",label.font=2, ...){
- if(!require(Rgraphviz)) {stop("I am sorry, you need to have the  Rgraphviz package installed")}
+ if(!requireNamespace('Rgraphviz')) {stop("I am sorry, you need to have the  Rgraphviz package installed")
+    #create several dummy functions to get around the "no visible global function definition" problem
+    	nodes <- function() {}
+    	addEdge <- function() {}
+    	subGraph <- function(){} }
    clusters <- as.matrix(ic.results$clusters)  
    results <- ic.results$results 
   

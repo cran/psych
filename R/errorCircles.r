@@ -65,7 +65,9 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
      
      xvar <- x
      yvar <- y
-     if(!is.null(group)) {data <- statsBy(data,group)}
+    # if((length(xvar) ==1) && (length(yvar)==1) && !is.null(group)) {data <- statsBy(data[,c(group,xvar,yvar)],group=group)} else {
+     if(!is.null(group)) {data <- statsBy(data,group=group)}
+  #  }
     x <- list()
      if(paired) {
           	x$mean <- t(data$mean[,xvar])

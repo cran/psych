@@ -1,7 +1,6 @@
 "toDotty" <- 
 function(graph,filename,...) {
-if(!require(Rgraphviz) && !require(graph)) {stop("You have called a function requiring Rgraphviz and it is not installed.  Install it and try again.")} else {
-require(Rgraphviz)
-require(graph)
-toDot(graph,filename,...)}
+if(!requireNamespace('Rgraphviz') && !requireNamespace(graph)) {stop("You have called a function requiring Rgraphviz and it is not installed.  Install it and try again.")
+toDot <- function() {}   #dummy function} else {
+Rgraphviz::toDot(graph,filename,...)}
 }

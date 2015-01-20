@@ -12,16 +12,21 @@
 #Revised November, 2012 to add the minchi option for factoring.  This minimizes the sample size weighted residual matrix
 #Revised 1/2/14 to add mclapply (multicore) feature.  Increase in speed is 50\% for two cores, but only 63\% for 4 cores or 76\% for 8 cores
 #dropped the fisherz transform on loadings and phis
+#6/12/14  Added the ability to find tetrachorics, polychorics, or mixed cors.
+#15/1/15  Fixed the way we handle missing and imputation to actually work.
+#19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",...) {
  cl <- match.call()
   if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
-                                 if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
+                               #  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use, ...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, ...=...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
- if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
+
+# if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
+
  nvar <- dim(fl)[1]
  
  if(n.iter > 1) {
@@ -29,23 +34,26 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
  replicates <- list()
  rep.rots <- list()
  
-
- replicateslist <- mclapply(1:n.iter,function(x) {
+replicateslist <- parallel::mclapply(1:n.iter,function(x) {
+# replicateslist <- lapply(1:n.iter,function(x) {
  if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with observed correlation
                                       mu <- rep(0, nvar)
-                                      X <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, 
-                                   empirical = FALSE)
-
+                                      #X <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, empirical = FALSE)
+                                      #the next 3 lines replaces mvrnorm (taken from mvrnorm, but without the checks)
+                                      eX <- eigen(r)
+                                      X <- matrix(rnorm(nvar * n.obs),n.obs)
+                                      X <-  t(eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(X))
                             } else {X <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <-fac(X,nfactors=nfactors,rotate=rotate,SMC = SMC,missing=FALSE,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,...) #call fa with the appropriate parameters
-  if(nfactors > 1) {t.rot <- target.rot(fs$loadings,fl)
-                 # replicates[[trials]] <- t.rot$loadings
+  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,poly=poly,use=use,cor=cor,...=...) #call fa with the appropriate parameters
+  if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
+                    t.rot <- target.rot(fs$loadings,fl)
+                
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
-                    replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])}}  else 
-                    {replicates <- list(loadings=fs$loadings)}
-  })
+                    replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])}  else 
+                   {replicates <- list(loadings=t.rot$loadings)}                
+  }})
   
-  
+
 replicates <- matrix(unlist(replicateslist),nrow=n.iter,byrow=TRUE)
 
 means <- colMeans(replicates,na.rm=TRUE)
@@ -67,8 +75,10 @@ if(length(means) > (nvar * nfactors) ) {
    sds <- matrix(sds[1:(nvar*nfactors)],ncol=nfactors)
    tci <- abs(means)/sds
     ptci <- 1-pnorm(tci)
+    if(!is.null(rep.rots)) {
    tcirot <- abs(means.rot)/sds.rot
-   ptcirot <- 1- pnorm(tcirot)
+   ptcirot <- 1- pnorm(tcirot)} else  {tcirot <- NULL
+                                      ptcirot <- NULL}
 ci.lower <-  means + qnorm(p/2) * sds
 ci.upper <- means + qnorm(1-p/2) * sds
 
@@ -95,7 +105,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -109,13 +119,25 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
-       #weighted least squares weights by the importance of each variable   
-       if(fm == "wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 #this last is the uls case
-       if(fm == "minres") {diag(residual) <- 0}   #this is minimum residual factor analysis, ignore the diagonal
-       if(fm=="minchi") {residual <- residual * np.obs
-                         diag(residual) <- 0 }   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
-       }}  # the uls solution usually seems better than wls or gls?
-        # 
+    #use switch to clean up the code
+    switch(fm,
+    wls = {residual <- sd.inv %*% (S- model)^2 %*% sd.inv},
+    gls = {residual <- (S.inv %*%(S - model))^2 } ,
+    uls = {residual <- (S - model)^2},  
+    minres = {residual <- (S - model)^2
+            diag(residual) <- 0},
+    minchi = {residual <- (S - model)^2   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
+            residual <- residual * np.obs
+            diag(residual) <- 0
+            })
+        
+   #     #weighted least squares weights by the importance of each variable   
+#        if(fm == "wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 #this last is the uls case
+#        if(fm == "minres") {diag(residual) <- 0}   #this is minimum residual factor analysis, ignore the diagonal
+#        if(fm=="minchi") {residual <- residual * np.obs
+#                          diag(residual) <- 0 }   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
+#        }}  # the uls solution usually seems better than wls or gls?
+#         # 
          error <- sum(residual)
          }
   
@@ -129,7 +151,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
            if(!covar &&(sum(S.smc) == nf) && (nf > 1)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
                     #initial communality estimates are variance - smc  unless smc = 1 
                     
-           if(fm=="ml")  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
+           if(fm=="ml" || fm=="mle" )  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
                           	lower = .005, upper = 1,
                           	control = c(list(fnscale=1,
                  			parscale = rep(0.01, length(start))), control),
@@ -199,15 +221,17 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     } ## now start the main function
     #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
  if (fm == "mle") fm <- "ml"  #to correct any confusion
- if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres")  & (fm != "minchi")& (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if (!any(fm %in%(c("pa","wls","gls","minres","minchi", "uls","ml","mle") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
+ 
+# if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres")  & (fm != "minchi")& (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+#  fm <- "minres" }
  
      x.matrix <- r
     n <- dim(r)[2]
     if (n!=dim(r)[1]) {  matrix.input <- FALSE  #return the correlation matrix in this case
                        n.obs <- dim(r)[1]
      
-              
         if(missing) { #impute values 
         x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
         miss <- which(is.na(x.matrix),arr.ind=TRUE)
@@ -219,7 +243,23 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         }
     		#if(fm=="minchi") 
     		np.obs <- count.pairwise(r)    #used if we want to do sample size weighting
-    		if(!covar) {r <- cor(r,use=use)} else {r <- cov(r,use=use)} # if given a rectangular matrix, then find the correlation or covariance first
+    		if(covar) {cor <- "cov"}  
+    # if given a rectangular matrix, then find the correlation or covariance 
+    #multiple ways of find correlations or covariances
+    switch(cor, 
+       cor = {r <- cor(r,use=use)},
+       cov = {r <- cov(r,use=use) 
+              covar <- TRUE},
+       tet = {r <- tetrachoric(r)$rho},
+       poly = {r <- polychoric(r)$rho},
+       mixed = {r <- mixed.cor(r,use=use)$rho},
+       Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
+       YuleQ = {r <- YuleCor(r,1)$rho},
+       YuleY = {r <- YuleCor(r,.5)$rho } 
+       )
+       
+    		
+    
            } else { matrix.input <- TRUE #don't return the correlation matrix
                    if(fm=="minchi") { 
                        if(is.null(np.obs)) {fm <- "minres"
@@ -327,34 +367,79 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     f.loadings <- loadings #used to pass them to factor.stats 
     if(rotate != "none") {if (nfactors > 1) {
 
-    
-   	if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" |rotate =="bifactor" | rotate =="targetT" |rotate =="TargetT" |rotate =="equamax" | rotate =="varimin" |rotate =="specialT" ) { 
-   	if (!require(GPArotation)) {stop("I am sorry, to do these rotations requires the GPArotation package to be installed")}
+if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" | rotate =="targetT" | rotate =="bifactor"   | rotate =="TargetT"|
+                       rotate =="equamax"| rotate =="varimin"|rotate =="specialT" | rotate =="Promax"  | rotate =="promax"| rotate =="cluster" |rotate == "biquartimin" |rotate == "TargetQ"  |rotate =="specialQ" ) {
+Phi <- NULL 
+switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psych
+  varimax = {rotated <- stats::varimax(loadings)  #varimax is from stats, the others are from GPArotation 
+   			         loadings <- rotated$loadings},
+   Varimax = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	       #varimax is from the stats package, Varimax is from GPArotations
-   			rotated <- do.call(rotate,list(loadings,...))
-   			loadings <- rotated$loadings
-   			Phi <- NULL} else { 
+   			#rotated <- do.call(rotate,list(loadings,...))
+   			#rotated <- do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...))
+   			rotated <- GPArotation::Varimax(loadings)
+   			loadings <- rotated$loadings} ,
+   	quartimax = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   	      
+   			#rotated <- do.call(rotate,list(loadings))
+   			rotated <- GPArotation::quartimax(loadings)
+   			loadings <- rotated$loadings} ,
+   	bentlerT =  {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   	       
+   			#rotated <- do.call(rotate,list(loadings,...))
+   			rotated <- GPArotation::bentlerT(loadings)
+   			loadings <- rotated$loadings} ,
+   	geominT	= {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   	      
+   			#rotated <- do.call(rotate,list(loadings,...))
+   			rotated <- GPArotation::geominT(loadings)
+   			loadings <- rotated$loadings} ,
+   	targetT = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   	     
+   			#rotated <- do.call(rotate,list(loadings,...))
+   			rotated <- GPArotation::targetT(loadings)
+   			loadings <- rotated$loadings} ,
    			
-     			if ((rotate=="promax")|(rotate=="Promax") ) {pro <- Promax(loadings)
-     			                loadings <- pro$loadings
-     			                Phi <- pro$Phi} else {
-     			if (rotate == "cluster") {loadings <- varimax(loadings)$loadings           			
-								pro <- target.rot(loadings,...)
+   	 bifactor = {rotated <- bifactor(loadings)$loadings},
+   	 TargetT =  {rotated <- TargetT(loadings,...)$loadings},
+   	equamax =  {rotated <- equamax(loadings)$loadings}, 
+   	varimin = {rotated <- varimin(loadings)$loadings},
+   	specialT =  {rotated <- specialT(loadings)$loadings}, 
+   	Promax =   {pro <- Promax(loadings)
+     			 loadings <- pro$loadings
+     			  Phi <- pro$Phi },
+     promax =   {pro <- Promax(loadings)
+     			 loadings <- pro$loadings
+     			  Phi <- pro$Phi },	
+     cluster = 	 {loadings <- varimax(loadings)$loadings           			
+								pro <- target.rot(loadings)
      			              	loadings <- pro$loadings
-     			                Phi <- pro$Phi} else {
-     			                     
-     			if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ" |rotate == "biquartimin" |rotate == "targetQ" |rotate == "TargetQ"  |rotate =="specialQ" ) {
-     				if (!require(GPArotation)) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
-     				Phi <- NULL} else { ob  <- try(do.call(rotate,list(loadings,...) ))
-     				          if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
-     				                  ob <- Promax(loadings)}
+     			                Phi <- pro$Phi},
+     biquartimin =    {ob <- biquartimin(loadings,)
+                    loadings <- ob$loadings
+     				 Phi <- ob$Phi}, 
+     TargetQ  =  {ob <- TargetQ(loadings,...)
+                    loadings <- ob$loadings
+     				 Phi <- ob$Phi}, 
+     specialQ = {ob <- specialQ(loadings,...)
+                    loadings <- ob$loadings
+     				 Phi <- ob$Phi})
+     } else {
+     #The following oblique cases all use GPArotation			                
+     if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ"  |rotate == "targetQ"  ) {
+     				if (!requireNamespace('GPArotation')) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
+     				    Phi <- NULL} else { 
+     				      
+     				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
+     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
      		                             } else {message("Specified rotation not found, rotate='none' used")}
-     	               }}}
-     	  
-     }}
+     	 } }}
+     	 		
+
     signed <- sign(colSums(loadings))
     signed[signed==0] <- 1
     loadings <- loadings %*% diag(signed)  #flips factors to be in positive direction but loses the colnames
@@ -366,6 +451,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
     ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
     minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+    uls =  {colnames(loadings) <- paste("ULS",1:nfactors,sep='')},
     minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008
@@ -378,7 +464,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     if(!is.null(Phi)) {Phi <- Phi[ev.order,ev.order] } #January 20, 2009 but, then, we also need to change the order of the rotation matrix!
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
-   
+    if(max(abs(loadings) > 1.0) && !covar) warning(' A Heywood case was detected.  Examine the loadings carefully.') 
    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)
@@ -394,7 +480,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                        result$Structure <- Structure #added December 12, 2011   
                       
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
-    
+   
     if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores) } else {result$scores <- factor.scores(x.matrix,f=Structure,method=scores)}
 
     result$weights <- result$scores$weights

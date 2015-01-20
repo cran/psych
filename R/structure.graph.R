@@ -10,7 +10,12 @@
 function(fx,Phi=NULL,fy=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simple=TRUE,regression=FALSE,
    size=c(8,6), node.font=c("Helvetica",14),
     edge.font=c("Helvetica", 10),  rank.direction=c("RL","TB","LR","BT"), digits=1,title="Structural model", ...){
-    	if (!require(Rgraphviz)) {stop("I am sorry, you need to have loaded the Rgraphviz package")}
+    	if (!requireNamespace('Rgraphviz')) {stop("I am sorry, you need to have loaded the Rgraphviz package")
+    	#create several dummy functions to get around the "no visible global function definition" problem
+    	nodes <- function() {}
+    	addEdge <- function() {}
+    	subGraph <- function(){}
+    	}
  xmodel <- fx
  ymodel <- fy
  if(!is.null(class(xmodel)) && (length(class(xmodel))>1)) {

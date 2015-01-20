@@ -29,15 +29,15 @@ if(is.null(cut)) cut <- .2
 	       
 	        if(sort) {loads[,1] <- as.integer(loads[,1])
 	                 load.2 <- loads[,2:(nfactor+1)]} else {load.2 <- loads[,1:nfactor] }    
-	        h2 <- round(rowSums(load.2^2),digits)
+	         h2 <- round(loads[,"h2"],digits)
+	         u2 <- round(loads[,"u2"],digits) 
 	        loads <-round(loads,digits)
 	    	fx <- format(loads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")  
          	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
-            h2 <- round(rowSums(load.2^2),digits)
-         	u2 <- 1 - h2
+           
          	
-         	p2 <- loads[,ncol(loads)]
+            p2 <- loads[,"p2"]
          	mp2 <- mean(p2)
          	vp2 <- var(p2)
          	p2 <- round(p2,digits)

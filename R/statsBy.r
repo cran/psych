@@ -84,7 +84,8 @@ z1 <- data[,group]
              colnames(diffs) <- paste(colnames(new.data)[(nvar + 1):ncol(new.data)], ".wg", sep = "")
              xvals$rbg <- cor(new.data[,1:nvar],use="pairwise",method=method)  #the between group (means)
              t <- (xvals$rbg*sqrt(nG-2))/sqrt(1-xvals$rbg^2)
-            xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))
+             
+             if(nG > 2) {xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))} else {xvals$pbg <- NA}
              xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
              xvals$nw <- pairwise(diffs)
 

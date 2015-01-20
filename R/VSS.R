@@ -1,11 +1,11 @@
 #vss is just an alias to VSS to be consistent with naming conventions
 #added the RMSEA, BIC, SABIC and complexity criteria 1/27/14
 "VSS" <-
-function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
- {vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=plot,title=title,...)  }
+function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+ {vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=plot,title=title,use=use,cor=cor,...)  }
 
 "vss" <-
-function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
+function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)     #apply the Very Simple Structure Criterion for up to n factors on data set x
  
  #x is a data matrix
   #n is the maximum number of factors to extract  (default is 8)
@@ -16,7 +16,7 @@ function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE
   #VSS(covmat=msqcovar,n=8,rotate="none",n.obs=3000)
    { 
   cl <- match.call()
-  if (rotate=="oblimin") require(GPArotation)
+  if (rotate=="oblimin") {if(!requireNamespace('GPArotation')) {stop("You must have GPArotation installed to use oblimin rotation")}}
   old_rotate=rotate  #used to remember which rotation to use
   
             #start Function definition
@@ -74,7 +74,19 @@ complexrow <- function(x,c)     #sweep out all except c loadings
   vss.df <- data.frame(dof=rep(0,n),chisq=NA,prob=NA,sqresid=NA,fit=NA,RMSEA=NA,BIC=NA,SABIC=NA,complex=NA,eChisq=NA,SRMR=NA,eCRMS=NA,eBIC=NA) #keep the basic results here 
  
   if (dim(x)[1]!=dim(x)[2]) { n.obs <- dim(x)[1]
-               x <- cor(x,use="pairwise") }  else {if(!is.matrix(x)) x <- as.matrix(x)}
+     switch(cor, 
+       cor = {x <- cor(x,use=use)},
+       cov = {x <- cov(x,use=use) 
+              covar <- TRUE},
+       tet = {x <- tetrachoric(x)$rho},
+       poly = {x <- polychoric(x)$rho},
+       mixed = {x <- mixed.cor(x,use=use)$rho},
+       Yuleb = {x <- YuleCor(x,,bonett=TRUE)$rho},
+       YuleQ = {x <- YuleCor(x,1)$rho},
+       YuleY = {x <- YuleCor(x,.5)$rho } 
+       )
+              # x <- cor(x,use="pairwise")  The case statement allows many types of correlations
+                }  else {if(!is.matrix(x)) x <- as.matrix(x)}
               # if given a rectangular 
   if(is.null(n.obs)) {message("n.obs was not specified and was arbitrarily set to 1000.  This only affects the chi square values.")
         n.obs <- 1000}
@@ -86,7 +98,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
  { PHI <- diag(i) 
  if(i<2) {(rotate="none")} else {rotate=old_rotate} 
    if(!(fm=="pc")) { 
-   		f <- fa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,fm=fm,scores="none",...)   #do a factor analysis with i factors and the rotations specified in the VSS call
+   		f <- fa(x,i,rotate=rotate,n.obs=n.obs,warnings=FALSE,fm=fm,scores="none",cor=cor,...)   #do a factor analysis with i factors and the rotations specified in the VSS call
  	 if (i==1)
   		 {original <- x         #just find this stuff once
 		 sqoriginal <- original*original    #squared correlations
@@ -101,7 +113,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
 		                                 PHI <- diag(i)} else {
 		if(((rotate=="promax")| (rotate=="Promax") )& (i>1))  {f <- Promax(f$loadings) 
           								 PHI <- f$Phi} else {
-		if((rotate=="oblimin")& (i>1))  {f <- oblimin(f$loadings)
+		if((rotate=="oblimin")& (i>1))  {f <- GPArotation::oblimin(f$loadings)
 		    U <- f$Th
            phi <- t(U) %*% U
            PHI <- cov2cor(phi)
@@ -166,8 +178,8 @@ return(vss.results)
 
 
 "nfactors" <-
-function(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,title="Number of Factors",pch=16,...) {
-vs <- vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=FALSE,title=title) 
+function(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,title="Number of Factors",pch=16,use="pairwise",cor="cor",...) {
+vs <- vss(x=x,n=n,rotate=rotate,diagonal=diagonal,fm=fm,n.obs=n.obs,plot=FALSE,title=title,use=use,cor=cor,...) 
 old.par <- par(no.readonly = TRUE) # save default, for resetting... 
 on.exit(par(old.par))     #and when we quit the function, restore to original values
 op <- par(mfrow=c(2,2))

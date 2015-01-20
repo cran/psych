@@ -21,6 +21,8 @@ attitude               The Chatterjee-Price Attitude Data    \cr
 Harman23.cor\$cov       Harman Example 2.3 8 physical measurements  \cr
 Harman74.cor\$cov        Harman Example 7.4  24 mental measurements \cr
 ability.cov\$cov        8 Ability and Intelligence Tests  \cr
+
+It also uses the bfi and ability data sets from psych
  
 }
 \value{
@@ -42,6 +44,23 @@ When version 1.1.10 was released, it caused errors when compiling and testing on
 #test <- test.psych()
 #not run
 #test.psych(all=TRUE)
+#    f3 <- fa(bfi[1:15],3,n.iter=5)
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Varimax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bifactor")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimin")
+#     f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bentlerT")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="geominT")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="cluster")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="biquartimin")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
+#    
+#     fpoly <- fa(bfi[1:10],2,n.iter=5,cor="poly")
+#     f1 <- fa(ability,n.iter=4)
+#     f1p <- fa(ability,n.iter=4,cor="tet")
 
 
 }

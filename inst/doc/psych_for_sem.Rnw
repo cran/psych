@@ -84,6 +84,10 @@ The first section discusses how to simulate particular latent variable structure
 \subsection{Creating and modeling structural relations}
 One common application of \pfun{psych} is the creation of simulated data matrices with  particular structures to use as examples for principal components analysis, factor analysis, cluster analysis, and structural equation modeling.   This vignette describes some of the functions used for creating, analyzing, and displaying such data sets.  The examples use two other packages: \Rpkg{Rgraphviz} and \Rpkg{sem}.  Although not required to use the \Rpkg{psych} package, sem is required for these examples. Although \Rpkg{Rgraphviz} had been used for the graphical displays, it has now been replaced with graphical functions within psych.  The analyses themselves require only the \Rpkg{sem} package to do  the structural modeling.
 
+<<print=FALSE,echo=FALSE>>=
+if(!require(sem))  stop('The package sem is required to do these analyses')
+if(!require('GPArotation')) stop('The package GPArotation is required to do these analyses')
+@
 
 
 \section{Functions for generating correlational matrices with a particular structure}

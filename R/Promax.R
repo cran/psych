@@ -7,7 +7,7 @@ function (x, m = 4)
     if (ncol(x) < 2) 
         return(x)
     dn <- dimnames(x)
-    xx <- varimax(x)
+   xx <- stats::varimax(x)
     x <- xx$loadings
     Q <- x * abs(x)^(m - 1)
     U <- lm.fit(x, Q)$coefficients
@@ -36,7 +36,7 @@ function (x, m = 4)
 #added May 31st following suggestions to R-Help by Gunter Nickel
 "equamax" <- function(L, Tmat=diag(ncol(L)),  eps=1e-5, maxit=1000) {
 kappa=ncol(L)/(2*nrow(L))
-cfT(L, Tmat=diag(ncol(L)),  eps=eps, maxit=maxit)}
+ if(requireNamespace('GPArotation')) {GPArotation::cfT(L, Tmat=diag(ncol(L)),  eps=eps, maxit=maxit)}  else {stop("biquartimin requires GPArotation")}}
 
 
 #based completely on the GPArotation  GPForth function
@@ -44,8 +44,8 @@ cfT(L, Tmat=diag(ncol(L)),  eps=eps, maxit=maxit)}
 
 varimin <- function(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, 
     maxit = 1000) {
-    GPForth(A=L,Tmat = diag(ncol(L)), normalize = normalize, eps = eps, 
-    maxit = maxit, method = "varimin") }
+     if(requireNamespace('GPArotation')) {GPArotation::GPForth(A=L,Tmat = diag(ncol(L)), normalize = normalize, eps = eps, 
+    maxit = maxit, method = "varimin") }  else {stop("biquartimin requires GPArotation")}}
     
  vgQ.varimin <- 
 function (L) 
@@ -54,5 +54,11 @@ function (L)
     list(Gq = L * QL, f = sqrt(sum(diag(crossprod(QL))))^2/4, 
         Method = "varimin")
 }
-   
+
+specialT <- specialQ <- function(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, 
+    maxit = 1000) {
+     write("A dummy function that can be replaced with either an orthogonal (specialT) or oblique (specialQ) call.  You will need to supply it")
+     list(NA)
+     }
+    
 

@@ -6,7 +6,7 @@
 }
 \usage{
 schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",
-            n.obs=NA,option="equal",Phi=NULL,...)
+            n.obs=NA,option="equal",Phi=NULL,covar=FALSE,...)
 }
 
 \arguments{
@@ -18,6 +18,7 @@ schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
   \item{option}{When asking for just two group factors, option can be for "equal", "first" or "second"}
   \item{Phi}{If Phi is specified, then the analysis is done on a pattern matrix with the associated factor intercorrelation (Phi) matrix. This allows for reanalysess of published results}
+  \item{covar}{Defaults to FALSE and finds correlations.  If set to TRUE, then do the calculations on the unstandardized variables.}
   \item{...}{Allows additional parameters to be passed to the factoring routines}
 }
 \details{Schmid Leiman orthogonalizations are typical in the ability domain, but are not seen as often in the non-cognitive personality domain.  S-L is one way of finding the loadings of items on the general factor for estimating omega. 

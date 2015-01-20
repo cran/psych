@@ -24,28 +24,28 @@ ans
 #doesn't seem to make a difference although it does make the code a bit easier to read
 #polychoric.mc  is added while we test it versus polychoric
 
- polyBinBvn.old <- function (rho,rc,cc)    #adapted from John Fox's polychor
-{ if (min(rc) < -9999) rc <- rc[-1]          
-  if (min(cc) < - 9999) cc <- cc[-1]
-  if (max(rc) > 9999) rc <- rc[-length(rc)]
-  if (max(cc)  > 99999) cc <- cc[-length(cc)]
-  row.cuts <- c(-Inf,rc,Inf)
-  col.cuts <- c(-Inf,cc,Inf)
-  nr <- length(rc) + 1
-  nc <- length(cc) + 1
-
-
-    P <- matrix(0, nr,nc)
-    R <- matrix(c(1,rho,rho,1),2,2)
-   # diag(R) <- 1
-    for (i in 1:nr) {
-        for (j in 1:nc) {
-            P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
-                upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
-                corr = R)   #should we specify the algorithm to TVPACK or Miwa
-        }}
-    P   #the estimated n x n predicted by rho, rc, cc
-}
+#  polyBinBvn.old <- function (rho,rc,cc)    #adapted from John Fox's polychor
+# { if (min(rc) < -9999) rc <- rc[-1]          
+#   if (min(cc) < - 9999) cc <- cc[-1]
+#   if (max(rc) > 9999) rc <- rc[-length(rc)]
+#   if (max(cc)  > 99999) cc <- cc[-length(cc)]
+#   row.cuts <- c(-Inf,rc,Inf)
+#   col.cuts <- c(-Inf,cc,Inf)
+#   nr <- length(rc) + 1
+#   nc <- length(cc) + 1
+# 
+# 
+#     P <- matrix(0, nr,nc)
+#     R <- matrix(c(1,rho,rho,1),2,2)
+#    # diag(R) <- 1
+#     for (i in 1:nr) {
+#         for (j in 1:nc) {
+#             P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
+#                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
+#                 corr = R)   #should we specify the algorithm to TVPACK or Miwa
+#         }}
+#     P   #the estimated n x n predicted by rho, rc, cc
+# }
 
  polyBinBvn<- function (rho,rc,cc)  {   #adapted from John Fox's polychor
       #recognizes that we don't need to calculate all cells because of degrees of freedom                               
@@ -65,9 +65,9 @@ ans
    # diag(R) <- 1
     for (i in 1:(nr-1)) {
         for (j in 1:(nc-1)) {
-            P[i, j] <- pmvnorm(lower = c(row.cuts[i], col.cuts[j]), 
-                upper = c(row.cuts[i + 1], col.cuts[j + 1]), 
-                corr = R)   #should we specify the algorithm to TVPACK or Miwa
+            P[i, j] <- mnormt::sadmvn(lower = c(row.cuts[i], col.cuts[j]), 
+                upper = c(row.cuts[i + 1], col.cuts[j + 1]), mean=rep(0,2),
+                varcov = R)   #should we specify the algorithm to TVPACK or Miwa
         }}
     P[1,nc] <- pnorm(rc[1]) - sum(P[1,1:(nc-1)] )
     P[nr,1] <- pnorm(cc[1]) - sum(P[1:(nr-1),1] )
@@ -127,7 +127,7 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5) {
 "polychoric" <- 
 function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE)  {
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
-if(!require(parallel)) {message("polychoric requires the parallel package.")}
+#if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
 #The polycor paramater was dropped because it was not being used.  But, several programs are using it.
 if(polycor) message("The polycor option has been removed from the polychoric function in the psych package.  Please fix the call.")
@@ -160,7 +160,7 @@ stop("we need to quit because something was seriously wrong.  Please look at the
 }
 
 
-if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
+#if(!require(mnormt) ) {stop("I am sorry, you must have mnormt installed to use polychoric")}
 #if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
 # polycor <- FALSE}
  if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
@@ -252,7 +252,7 @@ function(tab) {
 #9/6/14  to facilitate mixed cor  we find polytomous by dichotomous correlations
 "polydi" <- function(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) {
 
-if(!require(parallel)) {message("polychoric requires the parallel package.")}
+#if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
 
 myfun <- function(x,i,j,correct) {polyc(x[,i],x[,j],tau[,i],global=FALSE,weight=weight,correct=correct) }
@@ -275,7 +275,7 @@ return(mat)
 }
 
 
-if(!require(mvtnorm) ) {stop("I am sorry, you must have mvtnorm installed to use polychoric")}
+#if(!require(mnormt) ) {stop("I am sorry, you must have mnormt installed to use polychoric")}
 
  if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
  cl <- match.call() 

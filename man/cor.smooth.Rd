@@ -4,17 +4,18 @@
 
 \title{Smooth a non-positive definite correlation matrix to make it positive definite}
 
-\description{Factor analysis requires positive definite correlation matrices.  Unfortunately, with pairwise deletion of missing data or if using \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations, not all correlation matrices are positive definite.  cor.smooth does a eigenvector (principal components) smoothing.  Negative eigen values are replaced with 100 * .Machine$double.eps, the matrix is reproduced and forced to a correlation matrix using cov2cor.
+\description{Factor analysis requires positive definite correlation matrices.  Unfortunately, with pairwise deletion of missing data or if using \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations, not all correlation matrices are positive definite.  cor.smooth does a eigenvector (principal components) smoothing.  Negative eigen values are replaced with 100  * eig.tol, the matrix is reproduced and forced to a correlation matrix using cov2cor.
 }
 \usage{
-cor.smooth(x)
+cor.smooth(x,eig.tol=10^-12)
 cor.smoother(x,cut=.01)
 }
 \arguments{
   \item{x}{A correlation matrix or a raw data matrix.}
+  \item{eig.tol}{the minimum acceptable eigenvalue}.
   \item{cut}{Report all abs(residuals)  > cut}
 }
-\details{The smoothing is done by eigen value decomposition.  eigen values < .Machine$double.eps are changed to 100  * .Machine$double.eps.  The positive eigen values are rescaled to sum to the number of items.  The matrix is recomputed (eigen.vectors \%*\% diag(eigen.values) \%*\% t(eigen.vectors) and forced to a correlation matrix using cov2cor. (See Bock, Gibbons and Muraki, 1988 and Wothke, 1993). 
+\details{The smoothing is done by eigen value decomposition.  eigen values < eig.tol are changed to 100  * eig.tol.  The positive eigen values are rescaled to sum to the number of items.  The matrix is recomputed (eigen.vectors \%*\% diag(eigen.values) \%*\% t(eigen.vectors) and forced to a correlation matrix using cov2cor. (See Bock, Gibbons and Muraki, 1988 and Wothke, 1993). 
 
 This does not implement the Knol and ten Berge (1989) solution, nor do nearcor and posdefify in sfmsmisc, not does nearPD in Matrix. As Martin Maechler puts it in the posdedify function, "there are more sophisticated algorithms to solve this and related problems."  
 
@@ -45,10 +46,12 @@ abline(0,1,lty="dashed")
 
 round(burt - bs,3) 
 fa(burt,2) #this throws a warning that the matrix yields an improper solution
-#Smoothing first throws a warning that the matrix was improper, but produces a better solution 
+#Smoothing first throws a warning that the matrix was improper, 
+#but produces a better solution 
 fa(cor.smooth(burt),2)  
 
-#this next example is a correlation matrix from DeLeuw used as an example in Knol and ten Berge.  
+#this next example is a correlation matrix from DeLeuw used as an example 
+#in Knol and ten Berge.  
 #the example is also used in the nearcor documentation
  cat("pr is the example matrix used in Knol DL, ten Berge (1989)\n")
  pr <- matrix(c(1,     0.477, 0.644, 0.478, 0.651, 0.826,

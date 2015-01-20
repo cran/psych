@@ -35,9 +35,10 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
          rho <- apply(keys,2,function(x) colMeans(apply(keys,2,function(x) colMeans(Rho*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!  
          #switched to using colMeans instead of colSums, recognizing the problem of different number of items being dropped.
          } else {
-          rho <- t(keys) %*% Rho %*% keys} }  #find the covariances between the scales
+          rho <- t(keys) %*% Rho %*% keys} }  else {rho <- Rho} #find the covariances between the scales
 
  #
+
  ##correct for overlap if necessary on the original data
 
  if(overlap) { key.var <- diag(t(keys) %*% keys)
@@ -62,7 +63,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
  	replicates <- list()
  	rep.rots <- list()
  	##now replicate it to get confidence intervals
-	if(!require(parallel)) {warning("parallel package needed for mclapply")}
+#	if(!require(parallel)) {warning("parallel package needed for mclapply")}
  		replicates <- mclapply(1:n.iter,function(XX) {
 		 xs <- x[sample(n.obs,n.obs,replace=TRUE),]
  		{if(poly) {
@@ -87,7 +88,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
                     }
                            }
        diag(adj.cov) <- diag(raw.cov)
-       rho <- cov2cor(adj.cov)
+       r <- cov2cor(adj.cov) #fixed 03/12/14
   }    
  rep.rots <- r[lower.tri(r)]
  }
@@ -152,7 +153,9 @@ n <- floor((sqrt(1 + 8 * m) +1)/2)
     diag(X) <- 1 
 colnames(X) <- rownames(X) <- cn
 if(is.null(R$ptci))  {pval <- R$p} else {pval = 2*(1-R$ptci)}
-cor.plot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)   
+cor.plot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)  
+class(X) <-  c("psych","cor.cip")
+colnames(X) <- abbreviate(rownames(X,4))
 invisible(X) }
  
 

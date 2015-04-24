@@ -4,6 +4,7 @@
 #developed to replace Rgraphviz which is too much of a pain to install
 #Rgraphviz uses a NEL  (Node, Edge, Label) representation while diagram uses a complete linking matrix
 #thus, I am trying to combine these two approaches
+#some small revisions, March 2015 to allow cex to be passed to dia.ellipse and dia.rect
 
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
@@ -29,7 +30,7 @@
 #first some basic setup parameters 
   
    nvar <- dim(factors)[1]   #how many variables?
-   e.size = e.size*16/nvar
+   e.size = e.size*16*cex/nvar
    if (is.null(nvar) ){nvar <- length(factors)
        num.factors <- 1} else {
          num.factors <- dim(factors)[2]}
@@ -67,16 +68,16 @@
      }
    f.scale <- (top)/(num.factors+1)
    f.shift <- max(nvar,n.evar)/num.factors
-   if(g) {fact.rect[[1]] <- dia.ellipse(-max.len/2,top/2,colnames(factors)[1],xlim=limx,ylim=limy,e.size=e.size,...)
+   if(g) {fact.rect[[1]] <- dia.ellipse(-max.len/2,top/2,colnames(factors)[1],xlim=limx,ylim=limy,e.size=e.size,cex=cex,...)
           	for (v in 1:nvar)  {if(simple && (abs(factors[v,1]) == max(abs(factors[v,])) )  && (abs(factors[v,1]) > cut) | (!simple && (abs(factors[v,1]) > cut))) { 
     			dia.arrow(from=fact.rect[[1]],to=var.rect[[v]]$left,labels =round(factors[v,1],digits),col=((sign(factors[v,1])<0) +1),lty=((sign(factors[v,1])<0)+1))
     	 }}}
    for (f in gf:num.factors) {
-   		fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,...)
+   		fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,cex=cex,...)
      		for (v in 1:nvar)  {
      		
     			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
-    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj +1)
+    			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj +1,cex=cex)
     			 }
    }
    }
@@ -85,7 +86,7 @@
      for (j in 1:(i-1)) {
      if(abs(Phi[i,j]) > cut) {
        # dia.curve(from=c(x.max-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(x.max -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}
-		dia.curve(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),...)} }
+		dia.curve(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),cex=cex,...)} }
   															 }
  
 						}
@@ -112,9 +113,11 @@
 
 
 #draw a heterarchy diagram 
-"het.diagram" <- function(r,levels,cut=.3,digits=2,both=TRUE,main="Heterarchy diagram",...) {
+"het.diagram" <- function(r,levels,cut=.3,digits=2,both=TRUE,main="Heterarchy diagram",l.cex ,gap.size,...) {
 col = c("black","red")
 nlevels <- length(levels)
+if(missing(gap.size)) gap.size <- .4/nlevels
+if(missing(l.cex)) l.cex <- 1
 nvar <- max(unlist(lapply(levels,length)))
 lowest <- rownames(r)[levels[[1]]]
 
@@ -145,7 +148,7 @@ for(y in 1:nlevel.i) {
     	for(j in 1:length(levels[[i-1]])) {
        		if(abs(r[names.i[j],names.next[y]]) > cut) { 
        		 dia.arrow(from=level.i[[y]]$left, to=lower[[j]]$right, labels=round(r[names.i[j],names.next[y]],digits),both=both,adj= y %%3 + 1,
-       		col=(sign(r[names.i[j],names.next[y]] < 0) +1),lty=(sign(r[names.i[j],names.next[y]] < 0)+1),...)
+       		col=(sign(r[names.i[j],names.next[y]] < 0) +1),lty=(sign(r[names.i[j],names.next[y]] < 0)+1),l.cex = l.cex,gap.size=gap.size,...)
    				} }
    } #end of drawing the factors for this  level
      	names.i <- names.next 

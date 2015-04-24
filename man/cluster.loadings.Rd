@@ -29,7 +29,7 @@ These loadings are particularly interpretable when sorted by absolute magnitude 
   \item{G6}{G6* Modified estimated of Guttman Lambda 6}
   \item{count}{Number of items in the cluster}
 }
-\references{ ICLUST: \url{http://personality-project.org/r/r.iclust.html}}
+\references{ ICLUST: \url{http://personality-project.org/r/r.ICLUST.html}}
 \author{Maintainer: William Revelle \email{revelle@northwestern.edu}
    }
         

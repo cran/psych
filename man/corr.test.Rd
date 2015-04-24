@@ -5,7 +5,7 @@
 \description{Although the cor function finds the correlations for a matrix, it does not report probability values. corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests.  
 }
 \usage{
-corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", alpha=.05)
+corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", alpha=.05,ci=TRUE)
 corr.p(r,n,adjust="holm",alpha=.05)
 }
 
@@ -18,7 +18,8 @@ corr.p(r,n,adjust="holm",alpha=.05)
   \item{alpha}{alpha level of confidence intervals}
   \item{r}{A correlation matrix}
   \item{n}{Number of observations if using corr.p. May be either a matrix (as returned from corr.test, or a scaler. Set to n- np if finding the significance of partial correlations. (See below). }
-}
+  \item{ci}{By default, confidence intervals are found.  However, this leads to a great slowdown of speed.  So, for just the rs, ts and ps, set ci=FALSE}
+  }
 \details{corr.test uses the \code{\link{cor}} function to find the correlations, and then applies a t-test to the individual correlations using the formula
 \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}
 }{t = r* sqrt(n-2)/sqrt(1-r^2) }
@@ -39,6 +40,8 @@ The probability values may be adjusted using the Holm (or other) correction.  If
   \item{se}{standard error of the correlation}
   \item{ci}{the alpha/2 lower and upper values}
 }
+
+\note{For very large matrices (> 200 x 200), there is a noticeable speed improvement if confidence intervals are not found.}
 
 \seealso{  \code{\link{cor.test}} for tests of a single correlation,  Hmisc::rcorr for an equivalant function, \code{\link{r.test}} to test the difference between correlations, and \code{\link{cortest.mat}} to test for equality of two correlation matrices. 
 

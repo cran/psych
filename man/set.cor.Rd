@@ -111,8 +111,9 @@ kelly <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0
 1, 0.1487, 0.2489, 0.2843), words = c(0.042, 0.1487, 1, 0.6693, 
 0.4662), symbols = c(0.0215, 0.2489, 0.6693, 1, 0.6915), meaningless = c(0.0573, 
 0.2843, 0.4662, 0.6915, 1)), .Names = c("speed", "power", "words", 
-"symbols", "meaningless"), class = "data.frame", row.names = c(NA, 
--5L))
+"symbols", "meaningless"), class = "data.frame", row.names = c("speed", 
+"power", "words", "symbols", "meaningless"))
+
 
 kelly
 

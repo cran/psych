@@ -14,11 +14,11 @@ mediate.diagram(medi,digits=2,...)
 \arguments{
   \item{y}{The dependent variable (or a formula suitable for a linear model)}
   \item{x}{The principal Independent Variable}
- \item{m}{One (or more) mediating variables}
+  \item{m}{One (or more) mediating variables}
   \item{data}{A data frame holding the data or a correlation  matrix. }
   \item{mod}{A moderating variable, if desired}
   \item{n.obs}{If the data are from a correlation or covariance matrix, 
-     how many observations were used.}
+     how many observations were used. This will lead to simulated data for the bootstrap.}
   \item{use}{use="pairwise" is the default when finding correlations or covariances}
   \item{n.iter}{Number of bootstrap resamplings to conduct}
   \item{alpha}{Set the width of the confidence interval to be 1 - alpha}
@@ -28,7 +28,9 @@ mediate.diagram(medi,digits=2,...)
   \item{...}{Additional graphical parameters to pass to mediate.diagram}
 }
 \details{
-When doing linear modeling, it is frequently convenient to estimate the direct effect of a predictor controlling for the indirect effect of a mediator.  See Preacher and Hayes (2004) for a very thorough discussion of mediation
+When doing linear modeling, it is frequently convenient to estimate the direct effect of a predictor controlling for the indirect effect of a mediator.  See Preacher and Hayes (2004) for a very thorough discussion of mediation.  The mediate function will do some basic mediation and moderation models, with bootstrapped confidence intervals for the mediation/moderation effects. 
+
+In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.
 }
 \value{
 \item{total}{The total direct effect of x on y  (c)}
@@ -50,7 +52,7 @@ Data from Preacher and Hayes (2004).
 }
 \author{William Revelle
 }
-\note{Beta version.  Currently just does simple (and parallel) mediation and simple moderation.  The graphics are also fairly limited. 
+\note{Currently just does simple (and parallel) mediation and simple moderation.  The graphics are also fairly limited.  There are a number of other packages that do mediation analysis and they are probably preferred.  This function is supplied for the more basic cases.
 }
 
 
@@ -72,8 +74,23 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 ), row.names = c(NA, -30L), class = "data.frame", variable.labels = structure(c("Satisfaction", 
 "Therapy", "Attributional Positivity"), .Names = c("SATIS", "THERAPY", 
 "ATTRIB")))
+ #n.iter set to 50 (instead of default of 5000) for speed of example
+mediate(1,2,3,sobel,n.iter=50)  #The example in Preacher and Hayes
 
-mediate(1,2,3,sobel)  #The example in Preacher and Hayes
+#Data from sem package taken from Kerckhoff (from Lisrel manual)
+R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572, 
+0.489, 0.335), Siblings = c(-0.1, 1, -0.152, -0.108, -0.105, 
+-0.213, -0.153), FatherEd = c(0.277, -0.152, 1, 0.611, 0.294, 
+0.446, 0.303), FatherOcc = c(0.25, -0.108, 0.611, 1, 0.248, 0.41, 
+0.331), Grades = c(0.572, -0.105, 0.294, 0.248, 1, 0.597, 0.478
+), EducExp = c(0.489, -0.213, 0.446, 0.41, 0.597, 1, 0.651), 
+    OccupAsp = c(0.335, -0.153, 0.303, 0.331, 0.478, 0.651, 1
+    )), .Names = c("Intelligence", "Siblings", "FatherEd", "FatherOcc", 
+"Grades", "EducExp", "OccupAsp"), class = "data.frame", row.names = c("Intelligence", 
+"Siblings", "FatherEd", "FatherOcc", "Grades", "EducExp", "OccupAsp"
+))
+ #n.iter set to 50 (instead of default of 5000) for speed of demo
+mediate("OccupAsp","Intelligence",m= 2:5,data=R.kerch,n.obs=767,n.iter=50)
 
 }
 

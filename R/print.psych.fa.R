@@ -144,22 +144,25 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
        if(!is.null(x$complexity)) cat("\nMean item complexity = ",round(mean(x$complexity),1))     
        objective <- x$criteria[1]
     if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
+  if(x$fn != "principal") {
     if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}
     if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
     cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n",...) 
-     
+     }
      
     if(!is.null(x$rms)) {cat("\nThe root mean square of the residuals (RMSR) is ", round(x$rms,digits),"\n") }
     if(!is.null(x$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$crms,digits),"\n",...) }
+    
      if((!is.null(x$nh)) && (!is.na(x$nh))) {cat("\nThe harmonic number of observations is " ,round(x$nh)) }
      if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
-   	if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with MLE Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
+   	 if(x$fn != "principal") { 
+   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with MLE Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
   
      
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}
    	if(!is.null(x$RMSEA)) {cat("\nRMSEA index = ",round(x$RMSEA[1],digits+1), " and the", (1- x$RMSEA[4])*100,"% confidence intervals are ",round(x$RMSEA[2:3],digits+1),...)  }
    	if(!is.null(x$BIC)) {cat("\nBIC = ",round(x$BIC,digits))}
-
+}
  	if(!is.null(x$fit)) cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))
 
 if ((!is.null(x$fn)) && (x$fn != "principal")) {

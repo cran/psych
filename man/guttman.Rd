@@ -10,7 +10,7 @@
 \description{Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) (\eqn{\mu_0 \dots \mu_3)} as well as \eqn{\beta} (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and \eqn{\omega_h} and \eqn{\omega_t} (McDonald, 1999; Zinbarg et al., 2005). Greatest and lowest split-half values are found by brute force or sampling. 
 }
 \usage{
-splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE)
+splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL)
 guttman(r,key=NULL) 
 tenberge(r)
 glb(r,key=NULL)
@@ -23,10 +23,11 @@ glb.fa(r,key=NULL)
   \item{brute}{Use brute force to try all combinations of n take n/2. }
   \item{n.sample}{if brute is false, how many samples of split halves should be tried?}
   \item{covar}{Should the covariances or correlations be used for reliability calculations}
-  \item{key}{a vector of -1, 0, 1 to select or reverse key items}
+  \item{check.keys}{If TRUE, any item with a negative loading on the first factor will be flipped in sign}
+ \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See if the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
  
 }
-\details{Surprisingly, 107 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. For tests with 16 or fewer items, all possible splits may be found fairly easily.  For tests with 17 or more items, n.sample splits are randomly found. Thus, for 16 or fewer items, the upper and lower bounds are precise.  For 17 or more items, they are close but will probably slightly underestimate the highest and overestimate the lowest reliabilities.  
+\details{Surprisingly, more than a century after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. Using \code{\link{splitHalf}} for tests with 16 or fewer items, all possible splits may be found fairly easily.  For tests with 17 or more items, n.sample splits are randomly found. Thus, for 16 or fewer items, the upper and lower bounds are precise.  For 17 or more items, they are close but will probably slightly underestimate the highest and overestimate the lowest reliabilities.  
 
  The guttman function includes the six estimates discussed by Guttman (1945), four of ten Berge and Zergers (1978), as well as Revelle's \eqn{\beta} (1979) using \code{\link{splitHalf}}. The companion function, \code{\link{omega}} calculates omega hierarchical (\eqn{\omega_h})  and omega total (\eqn{\omega_t}). 
 
@@ -100,6 +101,8 @@ These three procedures will produce keys vectors for assigning items to the two 
 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
+Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.
+
 There are three greatest lower bound functions.  One, glb finds the greatest split half reliability, \eqn{\lambda_4}. This considers the test as set of items and examines how best to partition the items into splits. The other two, \code{\link{glb.fa}} and \code{\link{glb.algebraic}}, are alternative ways of weighting the diagonal of the matrix. 
 
 \code{\link{glb.fa}} estimates the communalities of the variables from a factor model where the number of factors is the number with positive eigen values.  Then reliability is found by 
@@ -150,6 +153,7 @@ guttman(attitude)
 #sp <- splitHalf(ability,raw=TRUE)  #this saves the results
 #hist(sp$raw,breaks=101,ylab="SplitHalf reliability",main="SplitHalf 
 #    reliabilities of a test with 16 ability items")
+sp <- splitHalf(bfi[1:10],key=c(1,9,10))
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

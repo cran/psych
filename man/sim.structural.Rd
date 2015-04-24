@@ -1,17 +1,21 @@
 \name{sim.structure}
 \alias{sim.structure}
 \alias{sim.structural}
+\alias{sim.correlation}
 
 \title{Create correlation matrices or data matrices with a particular measurement and structural model }
 \description{Structural Equation Models decompose correlation or correlation matrices into a measurement (factor) model and a structural (regression) model.  sim.structural creates data sets with known measurement and structural properties. Population or sample correlation matrices with known properties are generated. Optionally raw data are produced. 
 
 It is also possible to specify a measurement model for a set of x variables separately from a set of y variables.  They are then combined into one model with the correlation structure between the two sets.
+
+Finally, the general case is given a population correlation matrix, generate data that will reproduce (with sampling variability) that correlation matrix.  \code{\link{sim.correlation}}.
 }
 \usage{
 sim.structure(fx=NULL,Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE, 
   items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)
 sim.structural(fx=NULL, Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE,
       items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)  #deprecated
+sim.correlation(R,n=1000,data=FALSE)
 
 }
 \arguments{
@@ -28,6 +32,9 @@ sim.structural(fx=NULL, Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE,
   \item{d}{A vector of item difficulties, if NULL will range uniformly from low to high}
   \item{cat}{Number of categories when creating binary (2) or polytomous items}
   \item{mu}{A vector of means, defaults to 0}
+  \item{R}{The correlation matrix to reproduce}
+  \item{data}{if TRUE, return the raw data, otherwise return the sample correlation matrix.}
+  
  }
 \details{Given the measurement model, fx and the structure model Phi, the model is  f \%*\% Phi \%*\%  t(f).   Reliability is f \%*\% t(f). \eqn{f \phi f'} and the reliability for each test is the items communality or just the diag of the model. 
 
@@ -36,6 +43,8 @@ If creating a correlation matrix, (uniq=NULL) then the diagonal is set to 1, oth
 Given the model, raw data are generated using the mvnorm function.
 
 A special case of a structural model are one factor models such as parallel tests, tau equivalent tests, and congeneric tests.  These may be created by letting the structure matrix = 1 and then defining a vector of factor loadings. Alternatively, make.congeneric will do the same. 
+
+\code{\link{sim.correlation}} will create data sampled from a specified correlation matrix for a particular sample size. If desired, it will just return the sample correlation matrix.  With data=TRUE, it will return the sample data as well.
 
       
 }

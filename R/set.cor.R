@@ -14,21 +14,29 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #added calculation of residual matrix December 30, 2011
   #added option to allow square data matrices
   #modified December, 2014  to allow for covariances as well as to fix a bug with single x variable
+  #modified April, 2015 to handle data with non-numeric values in the data, which are not part of the analysis
   
    cl <- match.call()
-
-  if(!is.matrix(data)) data <- as.matrix(data)
+    if(is.numeric(y )) y <- colnames(data)[y]
+    if(is.numeric(x )) x <- colnames(data)[x]
+    if(is.numeric(z )) z <- colnames(data)[z]
+  
+  
   if((dim(data)[1]!=dim(data)[2]) | square)  {n.obs=dim(data)[1]   #this does not take into account missing data
+                  if(!is.null(z))   {data <- data[,c(y,x,z)]} else {data <- data[,c(y,x)]}
+                   if(!is.matrix(data)) data <- as.matrix(data)  
+                   if(!is.numeric(data)) stop("The data must be numeric to proceed")
                     C <- cov(data,use=use)
                     if(std) {m <- cov2cor(C)} else {m <- C}
                     raw <- TRUE}  else {
                     raw <- FALSE
+                    if(!is.matrix(data)) data <- as.matrix(data)  
                     C <- data
                     if(std) {m <- cov2cor(C)} else {m <- C}}
    #convert names to locations                 
-   if(is.character(x)) x <- which(colnames(data) == x)
-   if(is.character(y)) y <- which(colnames(data) == y) 
-   if(!is.null(z) && is.character(z)) z <-  which(colnames(data) == z)               
+   #if(is.character(x)) x <- which(colnames(data) == x)
+   #if(is.character(y)) y <- which(colnames(data) == y) 
+   #if(!is.null(z) && is.character(z)) z <-  which(colnames(data) == z)               
  
         nm <- dim(data)[1]
         xy <- c(x,y)
@@ -42,6 +50,9 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      	xy.matrix <- m[x,y,drop=FALSE]
      	xyc.matrix <- C[x,y,drop=FALSE]
      	y.matrix <- m[y,y,drop=FALSE]
+     	
+
+        	
      	if(!is.null(z)){numz <- length(z)      #partial out the z variables
      	                zm <- m[z,z,drop=FALSE]
      	                za <- m[x,z,drop=FALSE]
@@ -61,19 +72,20 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
 
        	yhat <- t(xy.matrix) %*% solve(x.matrix) %*% (xy.matrix)
        	resid <- y.matrix - yhat
-     	if (numy > 1 ) { if(is.null(rownames(beta))) {rownames(beta) <- colnames(m)[x]}
-     	                if(is.null(colnames(beta))) {colnames(beta) <- colnames(m)[y]}
+    	if (numy > 1 ) { 
+    	               if(is.null(rownames(beta))) {rownames(beta) <- x}
+    	                if(is.null(colnames(beta))) {colnames(beta) <- y}
      	 
      	 R2 <- colSums(beta * xy.matrix)/diag(y.matrix) } else {  
-     	 colnames(beta) <- colnames(data)[y] 
+     	 colnames(beta) <- y
      		
      		 R2 <- sum(beta * xy.matrix)/y.matrix
      		 R2 <- matrix(R2)
-     		      	 	 rownames(beta) <- colnames(data)[x]
-     		 rownames(R2) <- colnames(R2) <- colnames(data)[y]
+    		      	 	 rownames(beta) <- x
+    		 rownames(R2) <- colnames(R2) <- y
      		 }
      	
-     	
+
      	
      	#now find the unit weighted correlations  
      	#reverse items in X and Y so that they are all positive signed
@@ -162,7 +174,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
 #modified January 3, 2011 to work in the case of a single predictor 
 #modified April 25, 2011 to add the set correlation (from Cohen)
 #modified April 21, 2014 to allow for mixed names and locations in call
-
+#modified February 19, 2015 to just find the covariances of the data that are used in the regression
+#this gets around the problem that some users have large data sets, but only want a few variables in the regression
 
 
 setCor.diagram <- function(sc,main="Regression model",digits=2,show=TRUE,...) { 

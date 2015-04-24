@@ -17,16 +17,16 @@
   num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
     if (!missing) items <-  na.omit(items) 
     n.subjects <- dim(items)[1]
-    if ((dim(items)[1] == dim(items)[2]) & !((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1))) { #this is the case of scoring correlation matrices instead of raw data
-   # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
+     if ((dim(items)[1] == dim(items)[2])  &&  (((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1)))) {warning("You have an equal number of rows and columns but do not seem to have  a correlation matrix.  I will treat this as a data matrix.")} # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
+    if ((dim(items)[1] == dim(items)[2])  &&  (!((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1)))){ #this is the case of scoring correlation matrices instead of raw data  (checking for rare case as well)       
      raw.data <- FALSE
      n.subjects <- 0
      C <- as.matrix(items)
-     cov.scales <- t(keys) %*% C %*% keys
+     cov.scales <- t(keys) %*% C %*% keys  #fast, but does not handle the problem of NA correlations
      cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys) # this is sum(C^2)  for finding ase
      response.freq <- NULL
-     } else {
-    items <- as.matrix(items)
+           }  else {
+   items <- as.matrix(items)
     
     response.freq <- response.frequencies(items)
     item.var <- apply(items,2,sd,na.rm=TRUE)
@@ -131,8 +131,6 @@
       item.rc <- C %*% keys /sqrt(corrected.var*item.var) }
     colnames(item.rc) <- slabels
    
-
-      
   if(n.subjects >0) {ase <- sqrt(Q/ n.subjects )} else {ase=NULL}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}

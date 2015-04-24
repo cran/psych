@@ -28,7 +28,7 @@ scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="med
 
   
 }
-\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for score.items is the average as it would seem to make more sense to report scale scores in the metric of the item.  
+\details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for scoreItems is the average as it would seem to make more sense to report scale scores in the metric of the item.  
 
 Various estimates of scale reliability include ``Cronbach's alpha", Guttman's Lambda 6, and the average interitem correlation.  For k = number of items in a scale, and av.r = average correlation between items in the scale, alpha = k * av.r/(1+ (k-1)*av.r).  Thus, alpha is an increasing function of test length as well as the test homeogeneity.  
 
@@ -39,7 +39,7 @@ Surprisingly, more than a century after Spearman (1904) introduced the concept o
 \lambda_3 =  \frac{n}{n-1}\Bigl(1 - \frac{tr(\vec{V})_x}{V_x}\Bigr) = \frac{n}{n-1} \frac{V_x - tr(\vec{V}_x)}{V_x} = \alpha
 }{Lambda 3 = (n)/(n-1)(1-tr(Vx)/(Vx)  = (n)/(n-1)(Vx-tr(Vx)/Vx  = alpha}
 
-Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients \eqn{\beta}{beta} (Revelle, 1979; see \code{\link{ICLUST}}) and \eqn{\omega_h}{omega_hierchical} (see \code{\link{omega}})  are more appropriate estimates of the general factor saturation.  \eqn{\omega_t}{omega_total} (see \code{\link{omega}}) is a better estimate of the reliability of the total test.  
+Perhaps because it is so easy to calculate and is available in most commercial programs, alpha is without doubt the most frequently reported measure of internal consistency reliability. Alpha is the mean of all possible spit half reliabilities (corrected for test length).  For a unifactorial test, it is a reasonable estimate of the first factor saturation, although if the test has any microstructure (i.e., if it is ``lumpy") coefficients \eqn{\beta}{beta} (Revelle, 1979; see \code{\link{ICLUST}}) and \eqn{\omega_h}{omega_hierchical} (see \code{\link{omega}})  (McDonald, 1999; Revelle and Zinbarg, 2009) are more appropriate estimates of the general factor saturation.  \eqn{\omega_t}{omega_total} (see \code{\link{omega}}) is a better estimate of the reliability of the total test.  
 
 Guttman's Lambda 6 (G6) considers the amount of variance in each item that can be accounted for the linear regression of all of the other items (the squared multiple correlation or smc), or more precisely, the variance of the errors, \eqn{e_j^2},  and is
 \deqn{
@@ -65,7 +65,7 @@ Correlations between scales are attenuated by a lack of reliability.  Correcting
 
 By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
 
-\code{\link{score.items}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
+\code{\link{scoreItems}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
 }
 \value{ 
  \item{scores }{Sum or average scores for each subject on the k scales}
@@ -87,6 +87,8 @@ By default, missing values are replaced with the corresponding median value for 
 
 More importantly in this case of massively missing data, there is a difference between the correlations of the composite scales based upon the correlations of the items and the correlations of the scored scales based upon the observed data.  That is, the cor object will have correlations as if all items had been given, while the correlation of the scores object will reflect the actual correlation of the scores.  For SAPA data, it is recommended to use the cor object.  Confidence of these correlations may be found using the \code{\link{cor.ci}} function.
 
+Further note that the inter-scale correlations are based upon the correlations of scales formed from the covariance matrix of the items.  This will differ from the correlation  of scales based upon the correlation of the items.  Thus, although  \code{\link{scoreItems}} will produce reliabilities and intercorrelations from either the raw data or from a correlation matrix, these values will differ slightly.  In addition, with a great deal of missing data, the scale intercorrelations will differ from the correlations of the scores produced, for the latter will be attenuated. 
+
 An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 
 When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items.
@@ -98,6 +100,9 @@ Cronbach, L.J. and Gleser G.C.  (1964)The signal/noise ratio in the comparison o
 
 
 Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
+
+
+McDonald, R. P. (1999). Test theory: A unified treatment. L. Erlbaum Associates, Mahwah, N.J.
 
 Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{http://personality-project.org/r/book}
 
@@ -114,6 +119,8 @@ Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revel
 \author{ William Revelle }
 
 \seealso{\code{\link{make.keys}} for a convenient way to create the keys file,  \code{\link{score.multiple.choice}} for multiple choice items, \cr \code{\link{alpha}}, \code{\link{correct.cor}}, \code{\link{cluster.cor}} , \code{\link{cluster.loadings}}, \code{\link{omega}}, \code{\link{guttman}} for item/scale analysis.
+
+If scales are formed from overlapping sets of items, their correlations will be inflated.  This is corrected for when using the \code{\link{scoreOverlap}} function which, although it will not produce scores, will report scale intercorrelations corrected for item overlap. 
 
 In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.}
 \examples{

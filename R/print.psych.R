@@ -50,11 +50,11 @@ alpha = {
 	 cat("\nNon missing response frequency for each item\n")
 	 print(round(x$response.freq,digits=digits))}
 },
-best.scales ={ 
+bestScales ={ 
      df <- data.frame(correlation=x$r,n.items = x$n.items)
     cat("The items most correlated with the criteria yield r's of \n")
     print(round(df,digits=digits)) 
-    if(!is.null(x$value)) {cat("\nThe best items, their correlations and content  are \n")
+    if(length(x$value)> 0) {cat("\nThe best items, their correlations and content  are \n")
     print(x$value) } else {cat("\nThe best items and their correlations are \n")
      for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
      } 
@@ -78,6 +78,31 @@ circ =     {cat("Tests of circumplex structure \n")
              res <- data.frame(x[1:4]) 
              print(res,digits=2)
              },
+             
+circadian =  {if(!is.null(x$Call)) {cat("Call: ")
+                 print(x$Call)}
+      	cat("\nCircadian Statistics :\n")
+      	
+    if(!is.null(x$F)) {
+        cat("\nCircadian F test comparing groups :\n")
+         print(round(x$F,digits)) 
+         if(short)  cat("\n To see the pooled and group statistics, print with the short=FALSE option")
+         }	
+         
+	if(!is.null(x$pooled) && !short) { cat("\nThe pooled circadian statistics :\n")
+	print(  x$pooled)}
+	
+	if(!is.null(x$bygroup) && !short) {cat("\nThe  circadian statistics by group:\n")
+	print(x$bygroup)}
+	#if(!is.null(x$result)) print(round(x$result,digits))
+	if(!is.null(x$phase.rel)) {
+	     cat("\nSplit half reliabilities are split half correlations adjusted for test length\n")
+	     x.df <- data.frame(phase=x$phase.rel,fits=x$fit.rel)
+	     print(round(x.df,digits)) }
+	if(is.data.frame(x)) {class(x) <- "data.frame"
+            print(round(x,digits=digits)) }	
+	},
+	
 cluster.cor =  {
     cat("Call: ")
     print(x$Call)
@@ -322,23 +347,30 @@ mediate  = { cat("\nMediation analysis \n")
     dv <- colnames(x$direct)
     iv <- rownames(x$direct)
     cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv[1],". The mediating variable(s) = ", iv[-1],".")
+    if(!is.null(x$mod)) cat("  The moderating variable(s) = ", x$names[x$mod])
     
     cat("\nTotal Direct effect(c) of ",iv[1], " on ", dv," = ",round(x$total,digits), "  S.E. = ", round(x$se.bx,digits), " t direct = ",round(x$tt,digits), "  with probability = ", signif(x$probt,digits))
     cat("\nDirect effect of ",iv[1],  " on ", dv," removing ", iv[-1] ," = ",round(x$direct[1],digits), "  S.E. = ", round(x$se.beta[1],digits), " t direct = ",round(x$t[1],digits), "  with probability = ", signif(x$prob[1],digits))
    
    if(is.null(x$mod)) { cat("\nIndirect effect (c') of ",iv[1], " on ", dv," through " ,iv[-1] , "  = ", round(x$indirect,digits),"\n")
      
-    cat("\nMean bootstrapped indirect effect = ",round(x$mean.boot,digits), " with standard error = ",round(x$sd.boot,digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
-    
+    cat("\nMean bootstrapped indirect effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
+    cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
+    print(round(x$abc,digits))
     
     cat("\nratio of indirect to total effect=  ", round(x$ratit,digits))
     cat("\nratio of indirect to direct effect= ", round(x$ratid,digits))
     }  else {
+    cat("\nEffect of interaction of ",iv[1], " with ", iv[2] , "  = ", round(x$direct[3],digits),"  S.E. = ", round(x$se.beta[3,1],digits), " t direct = ",round(x$t[3,1],digits), "  with probability = ", signif(x$prob[3,1],digits))
     cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$int.ind,digits))
-    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot,digits), " with standard error = ",round(x$sd.boot,digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
-    }
+    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
+    cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
+    print(round(x$abc,digits))
+     }
 
     cat("\nR2 of model = ", round(x$R2,digits))
+
+
 },
       
     
@@ -360,18 +392,22 @@ mixed= { cat("Call: ")
   
 
          
-parallel= { cat("Call: ")
+parallel= {
+cat("Call: ")
               print(x$Call) 
               if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
                   parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim,pc= x$pc.values,pc.sim =x$pc.sim)
-		fa.test <- which(!(x$fa.values > x$fa.sim))[1]-1
-		pc.test <- which(!(x$pc.values > x$pc.sim))[1] -1
+		fa.test <- x$nfact
+		pc.test <- x$ncomp
+		
 		cat("Parallel analysis suggests that ")
 		cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
                   cat("\n Eigen Values of \n")
                   
-                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")
-                  print(round(parallel.df[1:max(fa.test,pc.test),],digits))} else {
+                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")}
+              if(is.na(fa.test) ) fa.test <- 0
+              if(is.na(pc.test)) pc.test <- 0
+               if(!any(is.na(parallel.df)))  {print(round(parallel.df[1:max(fa.test,pc.test),],digits))}  else {
               if(!is.null(x$fa.values)) {cat("\n eigen values of factors\n")
               print(round(x$fa.values,digits))}
                if(!is.null(x$fa.sim)){cat("\n eigen values of simulated factors\n") 
@@ -381,9 +417,8 @@ parallel= { cat("Call: ")
              
               if(!is.null(x$pc.sim)) {cat("\n eigen values of simulated components\n") 
               print(round(x$pc.sim,digits=digits))}
-              
-              }
-         },
+            }  
+    },
          
   partial.r = {cat("partial correlations \n")
             print(round(unclass(x),digits))
@@ -482,9 +517,15 @@ overlap =  {
 	cat("\nSignal to Noise ratio based upon average r and n \n")
 	print(x$sn,digits=digits)
 	
-	
 	 cat("\nScale intercorrelations corrected for item overlap and attenuation \n adjusted for overlap correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(x$corrected,digits) 
+	
+	 if(short) {cat("\n In order to see the item by scale loadings and frequency counts of the data\n print with the short option = FALSE") } else {
+	  if(!is.null(x$item.cor) ) {
+	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )
+	   print(round(x$item.cor,digits=digits)) } 
+	 }
+	
 	  },
 	   
                   

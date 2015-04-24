@@ -44,11 +44,11 @@ Techniques most commonly used include
 
 4) Plotting the magnitude of the successive eigen values and applying the scree test (a sudden drop in eigen values analogous to the change in slope seen when scrambling up the talus slope of a mountain and approaching the rock face.
 
-5) Extracting principal components until the eigen value <1. 
+5) Extracting principal components until the eigen value < 1. 
 
 6) Extracting factors as long as they are interpetable.
 	
-7) Using the Very Structure Criterion (VSS).
+7) Using the Very Simple Structure Criterion (VSS).
 
 8) Using Wayne Velicer's Minimum Average Partial (MAP) criterion. 
 	
@@ -69,6 +69,8 @@ Note that if using a correlation matrix (e.g., my.matrix) and doing a factor ana
 e.g., the call is VSS(my.matrix,n.obs=500).  Otherwise it defaults to 1000. 
 
 Wayne Velicer's MAP criterion has been added as an additional test for the optimal number of components to extract.  Note that VSS and MAP will not always agree as to the optimal number.
+
+The nfactors function will do a VSS, find MAP, and report a number of other criteria (e.g., BIC, complexity, chi square, ...)
 
 
 

@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.5.2 (2015-01-20)}{
+\section{Changes in psych version 1.5.5 (2015-04-24)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.5.2 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.1.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.1 was released in January of 2015, the last two digits reflect the day of any modifications).
+      \item Version 1.5.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.4 was released in April of 2015, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -32,11 +32,68 @@
      \item Start to use the drop=FALSE when doing subsetting
      \item fix vss to do any kind of rotation
      \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
-     \item combine the scoreOverlap functionality to scoreItems.     
+     \item combine the scoreOverlap functionality to scoreItems. (Probably not possible because can not be done with actual scores)  
+     \item Add some power functions
+     
+     
+     
     }
   }
   } 
 
+ \section{Changes in psych version 1.5.4 (2015-4-06)}{
+  \subsection{Additions}{
+          \itemize{
+          \item  Fixed principal to be compatible with changes in fa wrt rotations
+          \item Fixed schmid and omega to compatible with all rotations
+          \item Modified setCor and mediate so that they just read in the relevant variables when finding the covariance matrix.
+          \item Added a simulate data option to mediate to handle mediation models based upon covariance matrices.
+          \item Added a density option to error.bars.by so that transparency is easier.
+          \item Cleaned up faBy to handle missing data
+          \item Modified setCor so that variables can be specified by name or number.
+          \item Modified scoreOverlap to handle the case of NAs in the correlation matrix. 
+          \item Added the ability to find and print item by scale correlations (corrected for item overlap and scale reliability) in scoreOverlap.
+          \item Added the ID number used for grouping to be the rowname for the output in cosinor (requested by Ashley Kendall)
+          \item Added circadian.stats and circadian.F  to do basic circadian stats and group comparisons.
+           \item Added circadian.sd  to work with circadian.mean to allow t-tests.
+          \item Added circadian.reliability to find the split half reliability of phases found by cosinor or circadian.phase.  
+          \item Renamed best.items and best.scales to bestItems and bestScale.  Change the call to be more consistent.
+          \item Added two new features to pairs.panels.  One allows it to handle character variables (which will be translated to numeric levels) as requested by Richard Cotton.  Added the ability to specify the number of breaks in the histogram as requested by Philipp Thomas. Also added the ability to change plot character size independently of correlation print size (cex.cor).
+          \item Did a drastic rewrite of the pairs.panels function so that is much cleaner (partly in response to a bug reported  by Valdar Tammik and a request by Richard Cotten).
+        \item treat character as factor in pairs.panels. Requested by Richard Cotten.
+        \item Modified dia.arrow and het.diagram to allow control over the gap and label sizes. (Requested by David Condon).
+        \item Added a MAR parameter to cor.plot so long labels will fit
+        \item Changed the output of the principal function to not give MLE chi square based fit statistics.  (Which really did not make sense.)
+        \item Added the sim.correlation function to simulate sample correlation matrices from a population correlation matrix.
+        \item Added invisible return from fa2latex and df2latex to allow for capture as a file to put into a latex document. (Requested by David Condon.)
+        \item Did a major rewrite of fa.parallel to make the structure more clear and to allow for choosing mean or quantile values of the eigen value comparisons. 
+        \item Modified fa so that it allows (without warning) for smcs in case nf > n.var/2.  This case will still report a df problem in terms of fit statistics.  It will still throw a warning if using an oblique transformation. 
+        \item Modified splitHalf so the splits reported are keyed appropriately if some items need to be reversed.
+        \item Added the cta.15 function to lock down cta as published by Revelle and Condon.  cta is now the development version, cta.15 is the version reported in R and C.
+        \item The smc function has been modified for the case of correlation matrices with some missing values.  SMCs are found based upon the complete correlations, and alternative estimates are found for those with missing values.
+        \item Added warning message to fa, principal, and iclust so that they stop if there are NA values in the correlation matrix.  
+          }
+          
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+           \item Fixed mat.regress bug by implementing it as part of setCor.
+           \item Fixed faBy to handle the case of bad data more elegantly
+           \item Fixed a bug in sim (seemingly introduced when I changed the way of finding simulated correlation matrices.  Bug also affected the other sim.functions)
+           \item In factor.stats, sometimes the RMSEA limits do not include RMSEA.  Rather than reporting non-sensical values, just report NAs. 
+            \item fixed bug in bestScales that would cause an error if items were missing in the dictionary.
+            \item Fixed a bug in fa.plot where it would not handle data without a title.
+            \item Fixed a long standing problem in biplot to allow multiple graphs in the same window, and then, discovered and fixed a problem with the margins getting progressively smaller.
+            \item Fixed a bug (reported by Isabelle Rivals) in cohen.kappa (just for weighted kappa) when working with raw data with more than 9 categories.
+            \item splitHalf failed for n > 32.  Fixed.  (Thanks to Tom Booth for having the data set that produced this error.)
+         \item test for weird correlation matrices failed in the presence of NA fields in scoreOverlap (reported by Lorien Elleman).  Fixed.
+            
+            }
+                       } 
+  }
+ 
+ 
 
  \section{Changes in psych version 1.5.1 (2015-1-20)}{
   \subsection{Additions}{

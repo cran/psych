@@ -9,7 +9,7 @@
 \usage{
 cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
-   pval=NULL,cuts=c(.001,.01),cex=1,...)
+   pval=NULL,cuts=c(.001,.01),cex,MAR,...)
           
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",...)
@@ -30,6 +30,7 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{cuts}{Scale the numbers by the categories defined by pval < cuts}
   \item{select}{Select the subset of variables to plot}
   \item{cex}{Character size.  Should be reduced a bit for large numbers of variables.}
+  \item{MAR}{Allows for adjustment of the margins if using really long labels or big fonts}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
@@ -42,6 +43,9 @@ The default shows a legend for the color coding on the right hand side of the fi
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
 
 Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1).  Further modified to include the numerical value of the correlation.  (Inspired by the corrplot package).  These values may be scaled according the the probability values found in \code{\link{cor.ci}} or \code{\link{corr.test}}.
+
+Unless specified, the font size is dynamically scaled to have a cex =  10/max(nrow(r),ncol(r).  This can produce fairly small fonts for large problems.  
+The font size of the labels may be adjusted using cex.axis which defaults to one.  
 
 By default \code{\link{cor.ci}} calls cor.plot.upperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call cor.plot directly.
 

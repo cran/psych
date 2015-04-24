@@ -90,12 +90,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    vars <- c(1:ncol(x))
    ##adapted from the pairs function to convert logical or categorical to numeric 
     if(check) {
-    for(i in 1:ncol(x)) {
-            #if(is.factor(x[[i]]) || is.logical(x[[i]]))    #basically this is the same question as 
-            
-          #  if(!is.numeric(x[[i]] ))  {
-          #   x[[i]] <- as.numeric(x[[i]])
-          #    rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")}
+    for(i in 1:ncol(x)) {   
         if(!is.numeric(x[[i]] ))  {
                                  if(fast)  {x[[i]] <- NA} else {
                                   if(is.numeric(unlist(x[[i]]))) {
@@ -103,10 +98,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
                           } else {x[[i]] <- NA} }
                
               rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")}
-           # if(!is.numeric(unclass(x[[i]]))) {
-           #     stop("non-numeric argument to 'describe'")}
-              }
-        }
+              } }
       
     x <- as.matrix(x)
    

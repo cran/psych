@@ -94,7 +94,9 @@ if(lavaan) {lavaan.diagram(fit,...)}
     dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
      }
 "dia.arrow" <- 
-function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,...) {
+function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.size=NULL,...) {
+    if(missing(gap.size)) gap.size <- .2
+    if(missing(l.cex)) l.cex <- cex
     radius1 <- radius2 <- 0
  	if(is.list(from)) {if(!is.null(from$radius)) {radius1 <- from$radius
  	        radius2 <- 0
@@ -116,8 +118,8 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,...) {
      #   if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.15}
       #  if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .1}
         
-         if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.34}
-       if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .24}
+       if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*gap.size}
+       if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .7 * gap.size}
      
         if(from[1] <  to[1] ) {h.size <- -h.size
                                radius1 <- -radius1
@@ -130,7 +132,7 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,...) {
         yl <- y - v.size * sin(theta)  *h.size
         xe <- to[1] + cos(theta) * radius2
         ye <- to[2] + sin(theta) * radius2
-       if(!is.null(labels))  text(x,y,labels,cex=cex,pos=pos,...)
+       if(!is.null(labels))  text(x,y,labels,cex=l.cex,pos=pos,...)
         arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
         arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)
        }       

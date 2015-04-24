@@ -1,13 +1,15 @@
 #rewritten Sept 18,2013 to allow much more controll over the points in a two dimensional biplot
 #the three or more dimensional case remains the same as before
 #The code for the two dimensional case is adapted (heavily) from the stats:::biplot function
+#corrected April 9, 2015 to allow multiple biplots in the same window 
 
 "biplot.psych" <-
 function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,...) {
 if(is.null(x$scores)) stop("Biplot requires factor/component scores:")
 op <- par()
-old.par <-par(no.readonly = TRUE)
+old.par <- par(no.readonly = TRUE)
 on.exit(par(old.par)) 
+MAR <- par("mar")
 
 #fa.poly nests the fa and scores within a list
 if(is.list(x$scores)) x$scores <- x$scores$scores  #the case of fa.poly output
@@ -33,9 +35,9 @@ if (missing(col)) {
 if (n.dims == 2) {
  # biplot(x$scores[,1:2],x$loadings[,1:2],xlabs=labels, cex=cex,main=main,xlim=xlim.s,ylim=ylim.s,...) 
   op <- par(pty = "s")
-  if (!is.null(main)) 
-        op <- c(op, par(mar = par("mar") + c(0, 0, 1, 0))) #give room for the title
-
+  if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
+ 
+    
 #There are three different conditions
 #1 just show the (unlabeled) points
 #2 don't show the points, but put in labels at their locations
@@ -56,7 +58,8 @@ switch(choice,
 
    par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
     dev.hold()
-    on.exit(dev.flush(), add = TRUE)
+    #on.exit(dev.flush(), add = TRUE)
+    on.exit(dev.flush(), add = FALSE)
     plot(x$loadings, axes = FALSE, type = "n", xlim = xlim.f, ylim = ylim.f,
       xlab = "", ylab = "", col = col[1L], ...)
     
@@ -83,6 +86,7 @@ switch(choice,
         biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim.s,ylim=ylim.s,pch=pch,...)}
            }  }
    }
+   par("mar"=MAR) #this puts the margins back to what they were when we started. Important for multiple biplots
 }
 
 

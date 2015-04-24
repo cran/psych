@@ -25,7 +25,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
-Surprisingly, 109 years after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
+Surprisingly, more than a century after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation.
 
 \eqn{\alpha}{alpha} (Cronbach, 1951) is the same as Guttman's  \eqn{\lambda}{lambda}3 (Guttman, 1945) and may be found by
 \deqn{

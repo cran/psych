@@ -1,3 +1,4 @@
+#modified April 6, 2015 to return the table invisibly as well so it can be embedded in a Sweave document
 #November 22, 2013  Modified with help from Davide Morselli to allow for "stars"
 #also allows for printing straight text (char=TRUE)
 #cor2latex was modified following Davide Morselli's suggestion to allow direct calculation of the correlations
@@ -5,7 +6,7 @@
 "df2latex" <- 
 function(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,
 font.size ="scriptsize",big.mark=NULL, drop.na=TRUE, heading="A table from the psych package in R",
-caption="df2latex",label="default",char=FALSE,stars=FALSE) {
+caption="df2latex",label="default",char=FALSE,stars=FALSE,silent=FALSE,file=NULL,append=FALSE) {
 #first set up the table
  nvar <- dim(x)[2]
  rname<- rownames(x)
@@ -43,7 +44,8 @@ if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)
       }
  
  cname <- colnames(x)
- if (short.names) cname <- 1:nvar
+ if (short.names) cname <- abbreviate(cname,minlength=digits+3)  #cname <- 1:nvar
+
  names1 <- paste(cname[1:(nvar-1)], " & ")
  lastname <- paste(cname[nvar],"\\cr \n")
  
@@ -59,19 +61,23 @@ if(!char) {if(is.null(big.mark)) { x <- format(x,drop0trailing=FALSE)} else   #t
  if(drop.na) values <- gsub("NA","  ",values,fixed=TRUE)
 
  #now put it all together
- cat(comment,"\n")  #a comment field saying where the data came from
+ if(!silent) {cat(comment,"\n")  #a comment field saying where the data came from
  cat(header)   #the header information
  cat(allnames) #the variable names
  cat(values)  #the data
  cat(footer)   #close it up with a footer
+ } 
+result <- c(header,allnames,values,footer)
+if(!is.null(file)) write.table(result,file=file,row.names=FALSE,col.names=FALSE,quote=FALSE,append=append)
 
+invisible(result)
  }
  
  
  
  cor2latex <- function (x, use = "pairwise", method="pearson", adjust="holm", stars = FALSE, digits=2, rowlabels = TRUE, lower = TRUE, apa = TRUE, 
                        short.names = TRUE, font.size = "scriptsize", heading = "A correlation table from the psych package in R.", 
-                       caption = "cor2latex", label = "default")
+                       caption = "cor2latex", label = "default",silent=FALSE,file=NULL,append=FALSE)
 {
 if(stars) heading  <- paste(heading, "Adjust for multiple tests = ",adjust )
 if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analysis, just report it
@@ -114,13 +120,13 @@ if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analy
     }
      
     if(stars) {char<- TRUE} else {char <- FALSE}
-  return(df2latex(R, digits = NULL, rowlabels = rowlabels, 
+  return(df2latex(R, digits = digits, rowlabels = rowlabels, 
                   apa = apa, short.names = short.names, font.size = font.size, 
-                  heading = heading, caption = caption, label = label, stars = stars))
+                  heading = heading, caption = caption, label = label, char=TRUE,stars = stars,silent=silent,file=file,append=append))
 }
 
 "fa2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,big=.3,alpha=.05,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default") {
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=0,big=.3,alpha=.05,font.size ="scriptsize", heading="A factor analysis table from the psych package in R",caption="fa2latex",label="default",silent=FALSE,file=NULL,append=FALSE) {
 if(class(f)[2] == "fa.ci") {
 if(is.null(f$cip)) {px <- f$cis$p} else {px <- f$cip}} else {px <- NULL}  #get the probabilities if we did fa.ci
 #if(class(f)[2] !="fa") f <- f$fa
@@ -182,11 +188,12 @@ footer <- paste(footer,"
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
 
  #now put it all together
+ if(!silent) {
  cat(comment,"\n")  #a comment field saying where the data came from
  cat(header)   #the header information
  cat(allnames) #the variable names
  cat(values)  #the factor loadings
- 
+ }
  
  #now find and show the variance accounted for
  x <- f$loadings     #use the original values not the rounded ones
@@ -201,34 +208,47 @@ footer <- paste(footer,"
       	  
           loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""),"\\cr  \n")
            
-          cat(loads)
-           
+ if(!silent) { cat(loads)}
+       summ <- NULL
+            
           #varex <- rbind("SS loadings " =   vx)
           if(cumvar) {
-          provar <- round(vx/nvar,digits)
-         cat("Proportion Var &" ,paste(  provar, "  & ",sep=""),"\\cr \n")
+          provar <- round(vx/nvar,digits)        
+         summ <- c("Proportion Var &" ,paste(  provar, "  & ",sep=""),"\\cr \n")
+         
+       #  cat("Proportion Var &" ,paste(  provar, "  & ",sep=""),"\\cr \n")
            if (nfactors > 1) {cumvar <- round(cumsum(vx/nvar),digits)
              cumfavar <- round(cumsum(vx/sum(vx)),digits=digits)
-           cat("Cumulative Var & ",paste( cumvar," & ", sep=""),"\\cr \n")
-          cat( "Cum. factor Var & ",paste(cumsum(vx/sum(vx)),"  & ",sep=""),"\\cr \n") } 
+        summ <- c(summ,  "Cumulative Var & ",paste( cumvar," & ", sep=""),"\\cr \n",
+         "Cum. factor Var & ",paste(round(cumsum(vx/sum(vx)),digits=digits),"  & ",sep=""),"\\cr \n")
+          } 
+          if(!silent) {cat(summ)  }
           }
-         
+   loads <- c(loads,summ)      
  if(!is.null(Phi)) {
-        cat("\\cr 
-            \\hline \\cr \n")
+      summ <-   c("\\cr 
+            \\hline \\cr \n") 
+            if(!silent) {cat(summ)  }
         Phi <- round(Phi,digits)
         phi <- format(Phi,nsmall=digits)
        phi <-apply(phi,1,paste,collapse=" & ")
        phi <-paste(colnames(x),"  &",phi)
        phi <- paste(phi, "\\cr", "\n")
-       cat(phi)}
- cat(footer)   #close it up with a footer
+       loads <- c(loads,summ,phi)
+     if(!silent) {  cat(phi)}
+     }
+if(!silent) { cat(footer)}   #close it up with a footer
  }
+ values <- c(values,loads)
+ result <- c(header,allnames,values,footer)
+ if(!is.null(file)) write.table(result,file=file,row.names=FALSE,col.names=FALSE,quote=FALSE,append=append)
+
+invisible(result)
  }
  
  
  "irt2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="scriptsize", heading="An IRT factor analysis table from R",caption="fa2latex" ,label="default") {
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="scriptsize", heading="An IRT factor analysis table from R",caption="fa2latex" ,label="default",silent=FALSE,file=NULL,append=FALSE) {
 nf <- length(f$plot$sumInfo)   #create nf tables 
 for(i in (1:nf)) { 
 x <- f$plot$sumInfo[[i]]
@@ -272,12 +292,7 @@ footer <- paste(footer,"
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
 
  #now put it all together
- cat(comment,"\n")  #a comment field saying where the data came from
- cat(header)   #the header information
- 
- cat(allnames) #the variable names
- cat(values)  #the item information 
- cat("\\hline \n & \\multicolumn{7}{c}{Summary statistics at $\\theta$} \\cr \\cline{2-8}")
+
  test.info <- colSums(f$plot$sumInfo[[i]])
  sem <- sqrt(1/test.info)
  reliab <- 1 - 1/test.info
@@ -287,10 +302,21 @@ footer <- paste(footer,"
  summary <- cbind(c("Test.info","SEM","Reliability"),summary)
  summary <- apply(summary,1,paste,collapse="  & ")
  summary <- paste(summary,"\\cr \n") 
- cat(summary)
  
- cat(footer)   #close it up with a footer
+if(!silent) {  cat(comment,"\n")  #a comment field saying where the data came from
+ cat(header)   #the header information
+ 
+ cat(allnames) #the variable names
+ cat(values)  #the item information 
+ cat("\\hline \n & \\multicolumn{7}{c}{Summary statistics at $\\theta$} \\cr \\cline{2-8}")
+ cat(summary)
+ cat(footer)   #close it up with a footer'
  }
+ }
+ result <- c(header,allnames,values,summary,footer)
+ if(!is.null(file)) write.table(result,file=file,row.names=FALSE,col.names=FALSE,quote=FALSE,append=append)
+
+invisible(result)
  }
  
  
@@ -309,7 +335,7 @@ return(result)
  
  #added December 28, 2013
  "omega2latex" <- 
-function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=.2,font.size ="scriptsize", heading="An omega analysis table from the psych package in R",caption="omega2latex",label="default") {
+function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=.2,font.size ="scriptsize", heading="An omega analysis table from the psych package in R",caption="omega2latex",label="default",silent=FALSE,file=NULL,append=FALSE) {
 if(class(f)[2] == "omega" ) f$loadings <- f$schmid$sl
 x <- unclass(f$loadings)
 
@@ -358,10 +384,7 @@ footer <- paste(footer,"
  values <- paste(value, "\\cr", "\n")  #add \\cr at the end of each row
 
  #now put it all together
- cat(comment,"\n")  #a comment field saying where the data came from
- cat(header)   #the header information
- cat(allnames) #the variable names
- cat(values)  #the factor loadings
+
  
  #now find and show the variance accounted for
  x <- f$loadings     #use the original values
@@ -369,8 +392,18 @@ footer <- paste(footer,"
 vx <- colSums(x^2)[1:(ncol(x)-3)]
 vx <- round(vx,digits) 
 loads <- c("\\hline \\cr SS loadings &",paste(vx," & ",sep=""),"\\cr  \n")
+
+if(!silent) { cat(comment,"\n")  #a comment field saying where the data came from
+ cat(header)   #the header information
+ cat(allnames) #the variable names
+ cat(values)  #the factor loadings
 cat(loads)
 cat(footer)   #close it up with a footer
+}
+result <- c(header,allnames,values,loads,footer)
+if(!is.null(file)) write.table(result,file=file,row.names=FALSE,col.names=FALSE,quote=FALSE,append=append)
+
+invisible(result)
  }
 
 
@@ -379,7 +412,7 @@ cat(footer)   #close it up with a footer
 "ICC2latex" <- 
 function(icc,digits=2,rowlabels=TRUE,apa=TRUE,ci=TRUE,
 font.size ="scriptsize",big.mark=NULL, drop.na=TRUE, heading="A table from the psych package in R",
-caption="ICC2latex",label="default",char=FALSE) {
+caption="ICC2latex",label="default",char=FALSE,silent=FALSE,file=NULL,append=FALSE) {
 if((length(class(icc)) < 2 ) | (class(icc)[2] !="ICC")) icc <- ICC(icc)  #do the analysis in case we have not done it yet
 #first set up the table
 x <- icc$results
@@ -427,11 +460,16 @@ if(!char) {if(is.null(big.mark)) { x <- format(x[1:nvar],drop0trailing=FALSE)} e
  if(drop.na) values <- gsub("NA","  ",values,fixed=TRUE)
 
  #now put it all together
- cat(comment,"\n")  #a comment field saying where the data came from
+if(!silent) { cat(comment,"\n")  #a comment field saying where the data came from
  cat(header)   #the header information
  cat(allnames) #the variable names
  cat(values)  #the data
  cat(footer)   #close it up with a footer
+ }
+ result <- c(header,allnames,values,footer)
+ if(!is.null(file)) write.table(result,file=file,row.names=FALSE,col.names=FALSE,quote=FALSE,append=append)
+
+invisible(result)
 
  }
  

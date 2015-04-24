@@ -1,5 +1,5 @@
 "corr.test" <-
-function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05){
+function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE){
 cl <- match.call()
 if(is.null(y)) {r <- cor(x,use=use,method=method)
  sym <- TRUE
@@ -25,7 +25,7 @@ if (adjust !="none") {
 } }
 
   z <- fisherz(r[lower.tri(r)])
-  
+ if(ci) { 
    if (min(n) < 4) {
       warning("Number of subjects must be greater than 3 to find confidence intervals.")
    }
@@ -65,7 +65,7 @@ if (adjust !="none") {
       rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")
       k<- k +1 }}
     }
-
+} else {ci <- NULL}
 result <- list(r = r,n=n,t=t,p=p,se=se,adjust=adjust,sym =sym,ci=ci, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
@@ -74,6 +74,7 @@ return(result)
 #modified 3/12/14 to report confidence intervals (suggested by Alexander Weiss)
 #modified 3/27/14 to correct bug detected by Clemens Fell
 #modified 3/27/14 to correct bug reported by Louis-Charles Vannier
+#modified 2/21/15 to make confidence intervals an option (incredible decrease in speed if doing cis)
 
 
 

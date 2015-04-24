@@ -29,3 +29,13 @@ for (nfact in factors) {
 colnames(result) <- c("factors","nvar","trials","nfact","smc.fact","ncomp","nsub")
 return(result)
 }
+
+"sim.correlation" <- function(R,n=1000,data=FALSE) {
+     eX <- eigen(R)
+     nvar <- ncol(R) 
+     observed <- matrix(rnorm(nvar * n),n,nvar)
+     observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed))
+    colnames(observed) <- colnames(R)
+    if(data) {result <- observed} else {
+  	 result <- cor(observed)}
+  	 return(result)}

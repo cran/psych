@@ -72,13 +72,14 @@ data(epi.dictionary)}
 \details{
 The original data were collected in a group testing framework for screening participants for subsequent studies.  The participants were enrolled in an introductory psychology class between Fall, 1991 and Spring, 1995. 
 
-The structure of the E scale has been shown by Revelle and Rocklin to have two subcomponents, Impulsivity and Sociability. These were subsequently used by Revelle, Humphreys, Simon and Gilliland to examine the relationship between personality, caffeine induced arousal, and cognitive performance. 
+The structure of the E scale has been shown by  Rocklin and Revelle (1981) to have two subcomponents, Impulsivity and Sociability. These were subsequently used by Revelle, Humphreys, Simon and Gilliland to examine the relationship between personality, caffeine induced arousal, and cognitive performance. 
 }
-\source{Data from the PMC laboratory at Northwestern.
+\source{Data from the PMC laboratory at Northwestern.  
 }
 \references{
 Eysenck, H.J. and Eysenck, S. B.G. (1968). Manual for the Eysenck Personality Inventory.Educational and Industrial Testing Service, San Diego, CA.
 
+Rocklin, T. and Revelle, W. (1981). The measurement of extraversion: A comparison of the Eysenck Personality Inventory and the Eysenck Personality Questionnaire.  British Journal of Social Psychology, 20(4):279-284.
 
 }
 \examples{

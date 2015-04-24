@@ -28,7 +28,7 @@ Item response analyses using \code{\link{irt.fa}} may be done separately on the 
 
 This function is not quite as flexible as the hetcor function in John Fox's polychor package. 
 
-Note that the variables may be organized by type of data: first continuous, then polytomous, then dichotomous.  This is advantageous  }
+Note that the variables may be organized by type of data: first continuous, then polytomous, then dichotomous. This is done by simply specifying x, p, and d. This is advantageous in the case of some continuous variables having a limited number of categories because of subsetting.  }
 \value{
  \item{rho}{The complete matrix}
  \item{rx}{The Pearson correlation matrix for the continuous items}
@@ -41,7 +41,7 @@ Note that the variables may be organized by type of data: first continuous, then
 
 When finding correlations between dummy coded SAPA data (e.g., of occupations), the real correlations are all slightly less than zero because of the ipsatized nature of the data.  This leads to a non-positive definite correlation matrix because the matrix is no longer of full rank. Smoothing will correct this, even though this might not be desired.  Turn off smoothing in this case.
 
- Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  }
+ Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  However, this automatic detection will lead to problems if the variables such as age are limited to less than 8 categories but those category values differ from the polytomous items.  The fall back is to specify x, p, and d. }
 
 \references{
 W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-cognition link. In A.Gruszka, G. Matthews, and B. Szymura, editors,  Handbook of Individual Differences in Cognition: Attention, Memory and Executive

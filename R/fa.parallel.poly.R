@@ -3,6 +3,8 @@
 function(x,n.iter=10,SMC=TRUE,fm="minres",correct=TRUE,sim=FALSE,fa="both",global=TRUE) { 
 p <- .05
  cl <- match.call()
+.Deprecated("fa.parallel.poly", msg = "fa.parallel.poly is deprecated.  Please use the fa.parallel function with the cor='poly' option.")
+
 
 n.obs <- dim(x)[1]
 	tx <- table(as.matrix(x))

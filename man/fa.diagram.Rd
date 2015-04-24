@@ -11,7 +11,7 @@ fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
      simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
     main,cex=NULL,marg=c(.5,.5,1,.5),adj=1, ...) 
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
-        main="Heterarchy diagram",...) 
+        main="Heterarchy diagram",l.cex,gap.size,...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
@@ -42,6 +42,8 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{rsize}{size of rectangles}
   \item{side}{on which side should error arrows go?}
   \item{cex}{modify font size}
+  \item{l.cex}{modify the font size in arrows, defaults to cex}
+  \item{gap.size}{The gap in the arrow for the label.  Can be adjusted to compensate for variations in cex or l.cex}
   \item{marg}{sets the margins to be wider than normal, returns them to the normal size upon exit}
   \item{adj}{how many different positions (1-3) should be used for the numeric labels. Useful if they overlap each other.}
   \item{node.font}{what font should be used for nodes in fa.graph  }
@@ -58,6 +60,7 @@ fa.diagram does not use Rgraphviz and is the preferred function.  fa.graph gener
 
 Hierarchical (bifactor) models may be drawn by specifying the g parameter as TRUE.  This allows for an graphical displays of various factor transformations with a bifactor structure (e.g., \code{\link{bifactor}} and \code{\link{biquartimin}}.  See \code{\link{omega}} for an alternative way to find these structures.  
 
+The \code{\link{het.diagram}} function will show the case of a hetarchical structure at multiple levels.  It can also be used to show the patterns of correlations between sets of scales (e.g., EPI, NEO, BFI).  The example is for showing the relationship between 3 sets of 4 variables from the Thurstone data set. The parameters l.cex and gap.size are used to adjust the font size of the labels and the gap in the lines.  
 
 In fa.rgraph although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram. 
 
@@ -96,6 +99,7 @@ fa.diagram(f3l,main="input from a matrix")
 Phi <- f3$Phi
 fa.diagram(f3l,Phi=Phi,main="Input from a matrix")
 fa.diagram(ICLUST(Thurstone,2,title="Two cluster solution of Thurstone"),main="Input from ICLUST")
+het.diagram(Thurstone,levels=list(1:4,5:8,3:7))
 }
 \keyword{ multivariate }
 \keyword{hplot}

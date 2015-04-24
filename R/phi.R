@@ -1,6 +1,5 @@
 # slight changes to combine phi and phi1 from W. Revelle
-# Leo GŸrtler 07-09-06
-# from http://www.personality-project.org/r/useful.r
+# Leo Gurtler 07-09-06  (umlaut omitted by CRAN check)
 #modified  05/18/08 to correct bug in output detected by Dylan Arena
 "phi" <-
  function(t,digits=2)

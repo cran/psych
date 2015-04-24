@@ -80,7 +80,7 @@ omega =  {
    print(round(t(object$omega.group),digits)) 	
            }, 
 
-scores =  { 
+scores =  { #also score.items
 cat("Call: ")
 print(object$Call)
 if(object$raw) {
@@ -91,6 +91,15 @@ cat("\nScale intercorrelations corrected for attenuation \n raw correlations bel
 	 result <- object$corrected
 	 },
  
+overlap =  { 
+cat("Call: ")
+print(object$Call)
+cat("\nScale intercorrelations adjusted for item overlap")
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations (corrected for overlap) below the diagonal, (standardized) alpha on the diagonal \n corrected (for overlap and reliability) correlations above the diagonal:\n") 
+	 print(object$corrected,digits) 
+	 result <- object$corrected
+	 },
+	 
 cluster.cor = { 
 cat("Call: ")
 print(object$Call)

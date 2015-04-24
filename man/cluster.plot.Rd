@@ -36,7 +36,7 @@ factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,
   
 }
 \details{Results of either a factor analysis or cluster analysis are plotted.  Each item is assigned to its highest loading factor, and then identified by variable name as well as cluster (by color). 
-
+The cluster assignments can be specified to override the automatic clustering by loading.
 Both of these functions may be called directly or by calling the generic plot function.  (see example).
   
 }

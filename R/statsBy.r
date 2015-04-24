@@ -2,7 +2,7 @@
 #modified July 9, 2014 to allow polychorics within groups
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 "statsBy" <-
-   function (data,group,cors=FALSE,method="pearson",poly=FALSE) { #  
+   function (data,group,cors=FALSE,method="pearson",poly=FALSE,na.rm=TRUE) { #  
     cl <- match.call()
   valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
@@ -21,23 +21,24 @@ z1 <- data[,group]
              }}
        xvals <- list()
        #find the statistics by group
-               temp <- by(data,z,colMeans,na.rm=TRUE)
+               temp <- by(data,z,colMeans,na.rm=na.rm)
                
                rownn <- lapply(temp,is.null)
                if(sum(as.integer(rownn)) > 0) {
               	 rown <-  names(temp)[-which(rownn==TRUE)] } else {rown <- names(temp) }              
                xvals$mean <- t(matrix(unlist(temp),nrow=ncol(data)))              
-               xvals$sd <-t(matrix(unlist(by(data,z,function(x) sapply(x,sd,na.rm=TRUE))),nrow=ncol(data)))
+               xvals$sd <-t(matrix(unlist(by(data,z,function(x) sapply(x,sd,na.rm=na.rm))),nrow=ncol(data)))
                xvals$n <- t(matrix(unlist(by(data,z,function(x) sapply(x,valid))),nrow=ncol(data)))
               
                
                colnames(xvals$mean) <- colnames(xvals$sd) <- colnames(xvals$n) <-  colnames(data)
                rownames(xvals$mean) <-  rownames(xvals$sd) <- rownames(xvals$n) <- rown
                               nH <- harmonic.mean(xvals$n)
-               nG <- nrow(xvals$mean)
-               GM <- colSums(xvals$mean*xvals$n)/colSums(xvals$n) 
-               MSb <- colSums(xvals$n*t((t(xvals$mean) - GM)^2))/(nG-1) #weight means by n
-               MSw <- colSums(xvals$sd^2*(xvals$n-1))/(colSums(xvals$n-1)) #find the pooled sd
+               nG <- nrow(xvals$mean)         #we need to fix this so it is just for the cells that are not NA
+               GM <- colSums(xvals$mean*xvals$n,na.rm=na.rm)/colSums(xvals$n,na.rm=na.rm) 
+               MSb <- colSums(xvals$n*t((t(xvals$mean) - GM)^2),na.rm=na.rm)/(nG-1) #weight means by n
+               MSw <- colSums(xvals$sd^2*(xvals$n-1),na.rm=na.rm)/(colSums(xvals$n-1))#find the pooled sd
+               
                xvals$F <- MSb/MSw
                N <- colSums(xvals$n)
              

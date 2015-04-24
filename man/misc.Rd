@@ -24,7 +24,8 @@ tableF(x,y)
 reflect(f,flip=NULL)
 progressBar(value,max,label=NULL) 
 shannon(x,correct=FALSE,base=2)
-test.all(p) 
+test.all(pl,package="psych",dependencies 
+      = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) 
 
 }
 \arguments{
@@ -41,7 +42,11 @@ test.all(p)
   \item{flip}{The factor or components to be reversed keyed (by factor number)}
   \item{correct}{Correct for the maximum possible information in this item}
   \item{base}{What is the base for the log function (default=2, e implies base = exp(1))}
-  \item{p}{The name of a package to be activated and then have all the examples tested.}
+  \item{pl}{The name of a package (or list of packages) to be activated and then have all the examples tested.}
+  \item{package}{Find the dependencies for this package, e.g., psych}
+  \item{dependencies}{Which type of dependency to examine?}
+  \item{find}{Look up the dependencies, and then test all of their examples}
+  \item{skip}{Do not test these dependencies}
 
 }
 \value{ 
@@ -57,9 +62,7 @@ or a series of dots (progressBar).
 
 \code{\link{shannon}} finds Shannon's H index of information.  Used for estimating the complexity or diversity of the distribution of responses in a vector or matrix. \deqn{H = -\sum{p_i log(p_i) }}
 
-\code{link{test.all}} allows one to test all the examples in specified package.  This allows us to make sure that those examples work when other packages are also loaded. 
-
-
+\code{\link{test.all}} allows one to test all the examples in specified package.  This allows us to make sure that those examples work when other packages (e.g., psych) are also loaded.  This is used when developing revisions to the psych package to make sure the the other packages work.  Some packages will not work and/or crash the system (e.g., DeducerPlugInScaling requires Java and even with Java, crashes when loaded, even if psych is not there!).  Alternatively, if testing a long list of dependencies, you can skip the first part by specifying them by name.
 
 }
 
@@ -86,9 +89,9 @@ f3r <- reflect(f3,2)  #reflect the second factor
 #find the complexity of the response patterns of the iqitems.
 round(shannon(iqitems),2) 
 #test.all('BinNor')  #Does the BinNor package work when we are using other packages
-best.items(lb,3,cut=.1)
+bestItems(lb,3,cut=.1)
 #to make this a latex table 
-#df2latex(best.items(lb,2,cut=.2))
+#df2latex(bestItems(lb,2,cut=.2))
 #
 data(bfi.dictionary)
 f2 <- fa(bfi[1:10],2)

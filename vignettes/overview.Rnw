@@ -1564,12 +1564,12 @@ The Big Five scales found above can be understood in terms of the item - whole c
 \end{tiny}
 
 \subsubsection{Empirical scale construction}
-There are some situations where one wants to identify those items that most relate to a particular criterion.  Although this will capitalize on chance and the results should interpreted cautiously, it does give a feel for what is being measured.  Consider the following example from the \pfun{bfi} data set.  The items that best predicted gender, education, and age may be found using the \pfun{best.scales} function.  This also shows the use of a dictionary that has the item content.
+There are some situations where one wants to identify those items that most relate to a particular criterion.  Although this will capitalize on chance and the results should interpreted cautiously, it does give a feel for what is being measured.  Consider the following example from the \pfun{bfi} data set.  The items that best predicted gender, education, and age may be found using the \pfun{bestScales} function.  This also shows the use of a dictionary that has the item content.
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 data(bfi)
-best.scales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
+bestScales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
 @
 \end{scriptsize}
 

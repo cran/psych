@@ -1,9 +1,6 @@
 "sim.structure" <- "sim.structural" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0) {
  cl <- match.call()
-#require(MASS)
-
-
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
     f <- superMatrix(fx,fy)} }
   f <- as.matrix(f)
@@ -32,7 +29,9 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
                                       observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + mu) 
   	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
   	         observed[] <- rbinom(n*nvar, cat, observedp)}
-  r <- cor(observed) } 
+  	  colnames(observed) <- colnames(model)
+  r <- cor(observed) 
+  } 
 
   	reliability <- diag(f %*% t(f))
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
@@ -46,7 +45,6 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
 "sim" <-
 function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
  cl <- match.call()
-#require(MASS)
 ##set up some default values 
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    if(is.null(Phi)) {Phi <- diag(1,4,4)
@@ -74,7 +72,7 @@ diag(model)<- 1                       # put ones along the diagonal
   #	observed <- mvrnorm(n = n, means, Sigma=model, tol = 1e-6, empirical = FALSE)
   	 eX <- eigen(model)
      observed <- matrix(rnorm(nvar * n),n)
-     observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + means)
+     observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + rep(means,n))
   r <- cor(observed) } 
   	reliability <- diag(f %*% t(f))
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
@@ -97,6 +95,7 @@ diag(model)<- 1                       # put ones along the diagonal
 	if(is.null(mu)) {mu <- rep(0,nvar)} 
 	if(n>0) {
 	#observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
+	observed <- matrix(rnorm(nvar*n),n)
 	 	 eX <- eigen(R)
                 observed.scores <- matrix(rnorm(nvar * n),n)
                 observed.scores <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed)+mu)

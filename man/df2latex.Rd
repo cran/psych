@@ -12,36 +12,37 @@
 }
 \usage{
 df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scriptsize",
-big.mark=NULL,drop.na=TRUE, heading="A table from the psych package in R",
-caption="df2latex",label="default", char=FALSE,stars=FALSE)
+       big.mark=NULL,drop.na=TRUE, heading="A table from the psych package in R",
+   caption="df2latex",label="default", char=FALSE, 
+    stars=FALSE,silent=FALSE,file=NULL,append=FALSE)
 cor2latex(x,use = "pairwise", method="pearson", adjust="holm",stars=FALSE,
        digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
      font.size ="scriptsize",
       heading="A correlation table from the psych package in R.",
-      caption="cor2latex",label="default")
+      caption="cor2latex",label="default",silent=FALSE,file=NULL,append=FALSE)
 fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
        cut=0,big=.3,alpha=.05,font.size ="scriptsize",
        heading="A factor analysis table from the psych package in R",
-       caption="fa2latex",label="default") 
+       caption="fa2latex",label="default",silent=FALSE,file=NULL,append=FALSE) 
 omega2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,cut=.2,
         font.size ="scriptsize", 
         heading="An omega analysis table from the psych package in R",
-        caption="omega2latex",label="default") 
+        caption="omega2latex",label="default",silent=FALSE,file=NULL,append=FALSE)
 
 irt2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,
-       font.size ="scriptsize",
-     heading="An IRT factor analysis table from R",caption="fa2latex",label="default")
+       font.size ="scriptsize", heading="An IRT factor analysis table from R",
+       caption="fa2latex",label="default",silent=FALSE,file=NULL,append=FALSE)
 ICC2latex(icc,digits=2,rowlabels=TRUE,apa=TRUE,ci=TRUE,
-font.size ="scriptsize",big.mark=NULL, drop.na=TRUE,
+   font.size ="scriptsize",big.mark=NULL, drop.na=TRUE,
     heading="A table from the psych package in R",
-   caption="ICC2latex",label="default",char=FALSE) 
+   caption="ICC2latex",label="default",char=FALSE,silent=FALSE,file=NULL,append=FALSE) 
 }
 
 \arguments{
   \item{x}{A data frame or matrix to convert to LaTeX. If non-square, then correlations will be found prior to printing in cor2latex}
   \item{digits}{Round the output to digits of accuracy.  NULL for formatting character data}
   \item{rowlabels}{If TRUE, use the row names from the matrix or data.frame}
-  \item{short.names}{Name the columns 1 .. N to save space}
+  \item{short.names}{Name the columns with abbreviated rownames to save space}
   \item{apa}{If TRUE formats table in APA style}
   \item{cumvar}{For factor analyses, should we show the cumulative variance accounted for?}
   \item{font.size}{e.g., "scriptsize", "tiny" or anyother acceptable LaTeX font size.}
@@ -62,8 +63,12 @@ font.size ="scriptsize",big.mark=NULL, drop.na=TRUE,
   \item{alpha}{If fa has returned confidence intervals, then what values of loadings should be boldfaced?}
   \item{icc}{Either the output of an ICC, or the data to be analyzed.}
   \item{ci}{Should confidence intervals of the ICC be displayed}
+  \item{silent}{If TRUE, do not print any output, just return silently -- useful if using Sweave}
+  \item{file}{If specified, write the output to this file}
+  \item{append}{If file is specified, then should we append (append=TRUE) or just write to the file}
 }
-\value{A LaTeX table.  Note that if showing "stars" for correlations, then one needs to use the siunitx  package in LaTex. }
+\value{A LaTeX table.  Note that if showing "stars" for correlations, then one needs to use the siunitx  package in LaTex. 
+  The entire LaTeX output is also returned invisibly.  If using Sweave to create tables, then the silent option should be set to TRUE and the returned object saved as a file.  See the last example.}
 
 \author{William Revelle with suggestions from Jason French and David Condon and Davide Morselli}
 
@@ -79,6 +84,18 @@ df2latex(describe(sat.act)[2:10],short.names=FALSE)
 cor2latex(Thurstone)
 cor2latex(sat.act,short.names=FALSE)
 fa2latex(fa(Thurstone,3),heading="Factor analysis from R in quasi APA style")
+
+#If using Sweave to create a LateX table as a separate file then set silent=TRUE
+#e.g., 
+#LaTex preamble 
+#....
+#<<print=FALSE,echo=FALSE>>= 
+#f3 <- fa(Thurstone,3)
+#fa2latex(f3,silent=TRUE,file='testoutput.tex')
+#@
+#
+#\input{testoutput.tex}
+
  }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

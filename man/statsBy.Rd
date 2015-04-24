@@ -7,10 +7,11 @@
 \description{When examining data at two levels (e.g., the individual and by some set of grouping variables), it is useful to find basic descriptive statistics (means, sds, ns per group, within group correlations) as well as between group statistics (over all descriptive statistics, and overall between group correlations). Of particular use is the ability to decompose a matrix of correlations at the individual level into correlations within group and correlations between groups. 
 }
 \usage{
-statsBy(data, group, cors = FALSE, method="pearson",poly=FALSE)
+statsBy(data, group, cors = FALSE, method="pearson",poly=FALSE,na.rm=TRUE)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
-faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,...)
+faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
+   min.n = 12, ...)
 }
 \arguments{
   \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  One of these columns should be the values of a grouping variable.}
@@ -18,6 +19,7 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
   \item{cors}{Should the results include the correlation matrix within each group?  Default is FALSE.}
 \item{method}{What kind of correlations should be found (default is Pearson product moment)}
 \item{poly}{Find polychoric correlations within groups if requested.}
+\item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
@@ -26,8 +28,9 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{nfactors}{The number of factors to extract in each subgroup}
 \item{rotate}{The factor rotation/transformation}
 \item{fm}{The factor method (see \code{\link{fa}} for details)}
-\item{free}{Allow each factor solution to be freely estimated}
+\item{free}{Allow the factor solution to be freely estimated for each individual (see note).}
 \item{all}{Report individual factor analyses for each group as well as the summary table}
+\item{min.n}{The minimum number of within subject cases before we factor analyze it.}
 \item{...}{Other parameters to pass to the fa function}
 }
 \details{Multilevel data are endemic in psychological research. In multilevel data, observations are taken on subjects who are nested within some higher level grouping variable.  The data might be experimental (participants are nested within experimental conditions) or observational (students are nested within classrooms, students are nested within college majors.) To analyze this type of data, one uses random effects models or mixed effect models, or more generally, multilevel models.  There are at least two very powerful packages (nlme and multilevel) which allow for complex analysis of hierarchical (multilevel) data structures.  \code{\link{statsBy}} is a much simpler function to give some of the basic descriptive statistics for two level models.  It is meant to supplement true multilevel modeling.
@@ -78,13 +81,13 @@ Consider the case of the relationship between various tests of ability when the 
 \item{etabg}{The correlation of the data with the group means.}
 \item{pbg}{The probability of the between group correlation}
 \item{pwg}{The probability of the within group correlation}
-\item{r}{In the case that we want the correlations in each group, r is a list of the within group correlations for every group.}
+\item{r}{In the case that we want the correlations in each group, r is a list of the within group correlations for every group. Set cors=TRUE}
 \item{within}{is just another way of displaying these correlations.  within is a matrix which reports the lower off diagonal correlations as one row for each group.}
-\item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes.  See the note. }
+\item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes. The cors option must be set to TRUE to get this. See the note. }
+
 
 }
 \references{ Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation and prediction.  Harcourt Brace.
-
 
 
 }
@@ -96,6 +99,8 @@ Consider the case of the relationship between various tests of ability when the 
 The statsBy.boot function will sometimes fail if sampling with replacement because if the group sizes differ drastically, some groups will be empty.  In this case, sample without replacement.  
 
 The statsBy.boot function can take a long time.  (As I am writing this, I am running 1000 replications of a problem with 64,000 cases and 84 groups.  It is taking about 3 seconds per replication on a MacBook Pro.)
+
+The \code{\link{faBy}} function takes the output of statsBy (with the cors=TRUE option) and then factors each individual subject.  By default, the solutions are organized so that the factors "match" the group solution in terms of their order.  It is also possible to attempt to force the solutions to match by order and also by using the TargetQ rotation function.  (free=FALSE)
 }
 
 \seealso{\code{\link{describeBy}} and the functions within the multilevel package.

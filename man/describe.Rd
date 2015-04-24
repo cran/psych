@@ -49,8 +49,8 @@ Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2
 
 The additional helper function \code{\link{describeData}} just scans the data array and reports on whether the data are all numerical, logical/factorial, or categorical.  This is a useful check to run if trying to get descriptive statistics on very large data sets where to improve the speed, the check option is FALSE.  
 
-The fast=TRUE option will lead to a speed up of about 50\% for larger problems.
-Note
+The fast=TRUE option will lead to a speed up of about 50\% for larger problems by not finding all of the statistics (see NOTE)
+
 }
 \value{
  A data.frame of the relevant statistics: \cr
@@ -69,9 +69,11 @@ Note
    standard error\cr
 }
 
-\note{For very large data sets that are data.frames, describe can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.
+\note{For very large data sets that are data.frames, describe can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data set includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.
 
 For the greatest speed, at the cost of losing information, do not ask for ranges or for skew and turn off check.  This is done automatically if the fast option is TRUE or for large data sets. 
+
+Note that by default, fast=NULL.  But if the number of cases x number of variables exceeds (ncol * nrow > 10^7), fast will be set to TRUE.  This will provide just n, mean, sd, min, max, range, and standard errors. To get all of the statistics (but at a cost of greater time) set fast=FALSE. 
 
 The problem seems to be a memory limitation in that the time taken is an accelerating function of nvars * nobs.  Thus, for a largish problem (72,000 cases with 1680 variables) which might take 330 seconds, doing it as two sets of 840 variable cuts the time down to 80 seconds.   }
 \author{ 

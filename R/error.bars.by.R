@@ -2,17 +2,17 @@
 function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
 xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
 arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
- lty,lines=TRUE, legend=0,pch,...)  # x   data frame with 
+ lty,lines=TRUE, legend=0,pch,density=-10,...)  # x   data frame with 
     {
 
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
     nvar <- ncol(x)
-    if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)
-     col12 <- col2rgb(colors,TRUE)/255
+    if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)}
+    if(!missing(density)) {col12 <- col2rgb(colors,TRUE)/255
     colors <- rgb(col12[1,],col12[2,],col12[3,],.5)
                n.color <- nvar}
-    density=-10
+    #density = -10
     
     if(missing(lty)) lty <- 1:8
  

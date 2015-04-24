@@ -44,7 +44,7 @@ replicateslist <- parallel::mclapply(1:n.iter,function(x) {
                                       X <- matrix(rnorm(nvar * n.obs),n.obs)
                                       X <-  t(eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(X))
                             } else {X <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,poly=poly,use=use,cor=cor,...=...) #call fa with the appropriate parameters
+  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,...=...) #call fa with the appropriate parameters
   if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)
                 
@@ -144,7 +144,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
  #this next section is taken (with minor modification to make ULS, WLS or GLS) from factanal        
  #it does the iterative calls to fit.residuals 
  #modified June 7, 2009 to add gls fits
- #Modified December 11, 2009 to use first derivatives from formula rather than emprical.  This seriously improves the speed.
+ #Modified December 11, 2009 to use first derivatives from formula rather than empirical.  This seriously improves the speed.
      "fit" <- function(S,nf,fm,covar) {
           S.smc <- smc(S,covar)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
@@ -220,12 +220,9 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         return(L)
     } ## now start the main function
     #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
- if (fm == "mle") fm <- "ml"  #to correct any confusion
+ if (fm == "mle" || fm =="MLE" || fm == "ML" ) fm <- "ml"  #to correct any confusion
  if (!any(fm %in%(c("pa","wls","gls","minres","minchi", "uls","ml","mle") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
- 
-# if((fm !="pa") & (fm != "wls")  & (fm != "gls") & (fm != "minres")  & (fm != "minchi")& (fm != "uls")& (fm != "ml")) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
-#  fm <- "minres" }
  
      x.matrix <- r
     n <- dim(r)[2]
@@ -282,8 +279,22 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     r.mat <- r
     Phi <- NULL 
     colnames(r.mat) <- rownames(r.mat) <- colnames(r)
+    if(any(is.na(r))) {
+       bad <- TRUE
+      tempr <-r
+      wcl <-NULL
+     while(bad) {
+     	wc <- table(which(is.na(tempr), arr.ind=TRUE))  #find the correlations that are NA
+    	wcl <- c(wcl,as.numeric(names(which(wc==max(wc)))))
+    	tempr <- r[-wcl,-wcl]
+    	if(any(is.na(tempr))) {bad <- TRUE} else {bad <- FALSE}
+         }
+
+     	cat('\nLikely variables with missing values are ',colnames(r)[wcl],' \n')
+      	stop("I am sorry: missing values (NAs) in the correlation matrix do not allow me to continue.\nPlease drop those variables and try again." )
+       }
      if(is.logical(SMC) )  {
-                  if(SMC) {if(nfactors < n/2)   {
+                  if(SMC) {if(nfactors <= n)   {#changed to <= n instead of < n/2 This warning seems to confuse people unnecessarily
                            diag(r.mat) <- smc(r,covar=covar) 
                            }  else {if (warnings) {
                            message("In fa, too many factors requested for this number of variables to use SMC for communality estimates, 1s are used instead")}
@@ -465,7 +476,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
     if(max(abs(loadings) > 1.0) && !covar) warning(' A Heywood case was detected.  Examine the loadings carefully.') 
-   result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
+    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)
     result$uniquenesses <- diag(r-model)

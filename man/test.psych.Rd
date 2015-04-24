@@ -18,9 +18,9 @@ test.psych(first=1,last=5,short=TRUE,all=FALSE)
 Uses 5 standard data sets: \cr
 USArrests               Violent Crime Rates by US State  (4 variables) \cr
 attitude               The Chatterjee-Price Attitude Data    \cr
-Harman23.cor\$cov       Harman Example 2.3 8 physical measurements  \cr
-Harman74.cor\$cov        Harman Example 7.4  24 mental measurements \cr
-ability.cov\$cov        8 Ability and Intelligence Tests  \cr
+Harman23.cor$cov       Harman Example 2.3 8 physical measurements  \cr
+Harman74.cor$cov        Harman Example 7.4  24 mental measurements \cr
+ability.cov$cov        8 Ability and Intelligence Tests  \cr
 
 It also uses the bfi and ability data sets from psych
  
@@ -49,7 +49,7 @@ When version 1.1.10 was released, it caused errors when compiling and testing on
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimax")
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bifactor")
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimin")
-#     f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bentlerT")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bentlerT")
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="geominT")
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")

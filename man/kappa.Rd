@@ -109,8 +109,8 @@ fleiss <- matrix(c(
 #Fleiss weights the similarities
 weights <- matrix(c(
  1.0000, 0.0000, 0.4444,
- 0.0000, 1.0000, 0.6666,
- 0.4444, 0.6666, 1.0000),ncol=3)
+ 0.0000, 1.0000, 0.6667,
+ 0.4444, 0.6667, 1.0000),ncol=3)
  
  cohen.kappa(fleiss,weights,n.obs=200)
  

@@ -8,7 +8,7 @@
 error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
 xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
 arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
- lty,lines=TRUE, legend=0,pch,...)
+ lty,lines=TRUE, legend=0,pch,density=-10,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,6 +35,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
   \item{lines}{By default, when plotting different groups, connect the groups with a line of type = lty.  If lines is FALSE, then do not connect the groups}
   \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
   \item{pch}{The first plot symbol to use.  Subsequent groups are pch + group}
+  \item{density}{How many lines/inch should fill the cats eyes.  If missing, non-transparent colors are used.  If negative, transparent colors are used.}
   \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
 
 }
@@ -48,7 +49,7 @@ Note in particular, if choosing to draw barplots, the starting value is 0.0 and 
 
 For up to three groups, the colors are by default "black", "blue" and "red". For more than 3 groups, they are by default rainbow colors with an alpha factor (transparency) of .5.
 
-To make colors semitransparent, see the last example.
+To make colors semitransparent, set the density to a negative number.  See the last example.
 
 }
 \value{Graphic output showing the means + x\% confidence intervals for each group.  For ci=1.96, and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region.
@@ -71,9 +72,14 @@ error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE,xlab="Education",
    main="95 percent confidence limits of Sat V and Sat Q", ylim=c(0,800),
    v.labels=c("SATV","SATQ"),legend=5,colors=c("red","blue") )
 #a better graph uses points not bars
+  #plot SAT V and SAT Q by education
 error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education",
     legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),
-     main="self reported SAT scores by education")  #plot SAT V and SAT Q by education
+     main="self reported SAT scores by education")
+#make the cats eyes semi-transparent by specifying a negative density
+error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education",
+    legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),
+     main="self reported SAT scores by education",density=-10)
 
 #now for a more complicated examples using 25 big 5 items scored into 5 scales
 #and showing age trends by decade 
@@ -93,6 +99,9 @@ data(bfi)   #The Big 5 data
       main="BFI age trends",legend=3,labels=colnames(scores$scores),
         xlab="Age",ylab="Mean item score")
 
+ error.bars.by(scores$scores,round(bfis$age/10)*10,by.var=TRUE,
+      main="BFI age trends",legend=3,labels=colnames(scores$scores),
+        xlab="Age",ylab="Mean item score",density=-10)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

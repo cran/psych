@@ -1,9 +1,20 @@
 #last modified December 1, 2014  by William Revelle 
 importFrom(mnormt,rmnorm,sadmvn,dmnorm)
 importFrom(parallel,mclapply,mcmapply)
+S3method(print,psych)
+S3method(biplot,psych)
+S3method(pairs,panels)
+S3method(plot,psych)
+S3method(plot,irt)
+S3method(plot,poly)
+S3method(plot,poly.parallel)
+S3method(plot,residuals)
+S3method(predict,psych)
+S3method(residuals,psych)
+S3method(summary,psych)
 export(alpha,
-best.items,
-best.scales,
+bestItems,
+bestScales,
 biplot.psych,
 bi.bars,
 biserial,
@@ -15,8 +26,14 @@ circ.sim,
 circ.sim.plot,
 circ.simulation,
 circadian.cor,
+circadian.phase,
+cosinor.plot,
+circadian.reliability,
 circadian.linear.cor,
 circadian.mean,
+circadian.sd,
+circadian.F,
+circadian.stats,
 circular.mean,
 circular.cor,
 cluster.cor,
@@ -47,6 +64,7 @@ count.pairwise,
 comorbidity,
 cosinor,
 congeneric.sim,
+cta.15,
 cta,
 d2r,
 df2latex,
@@ -262,6 +280,7 @@ sim.anova,
 sim.circ,
 simulation.circ,
 sim.congeneric,
+sim.correlation,
 sim.dichot,
 sim.general,
 sim.item,

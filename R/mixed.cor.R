@@ -17,7 +17,16 @@ cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than 
 if(length(dvars) > 0) {d <- matrix(x[,dvars],ncol=length(dvars))
               colnames(d) <- colnames(x)[dvars]} else {d <- NULL}
 if(length(pvars) > 0) {p <- matrix(x[,pvars],ncol=length(pvars))
-               colnames(p) <- colnames(x)[pvars] } else {p <- NULL}
+               colnames(p) <- colnames(x)[pvars] 
+               tab <- table(p) #now check to make sure that they are all on the same scale
+               if(length(tab) > ncat) stop("I tried to figure out which where continuous and which were polytomous, but failed.  Please try again by specifying x, p, and d.")
+               ok <- apply(p, 2,function (x) {if (length(table(x)) != (max(x,na.rm=TRUE) - min(x,na.rm=TRUE)+1)) {FALSE} else {TRUE}})
+               if(any(!ok)) {bad <- which(!ok)
+               cat("\n Some polytomous variables have fewer categories than they should.  Please check your data.  \nPotential bad items are ",colnames(p)[bad],"\n")
+             
+               stop("\nI am stopping because of the problem with polytomous data")
+               }
+                         } else {p <- NULL}
  if(length(cvars) > 0) {cont <- matrix(x[,cvars],ncol=length(cvars))
                        colnames(cont) <- colnames(x)[cvars] } else {cont <- NULL}
                        

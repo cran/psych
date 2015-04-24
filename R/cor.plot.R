@@ -6,9 +6,9 @@
 #Corrected feb 22, 2014 to not double plot text (reported by David Condon)
 #modified May 12 to allow for selection
 "cor.plot" <- 
-function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex=1,...){
+function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,...){
 if(keep.par) op <- par(no.readonly=TRUE)
-
+if(missing(MAR)) MAR <- 5
 if(is.null(main)) {main <- "Correlation plot" }
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {if(class(r)[2] =="omega") {r <- r$schmid$sl
 nff <- ncol(r)
@@ -59,7 +59,7 @@ if(nf == nvar) {r <- r[,ord1]
  pval <- pval[,ord1]} else {r <- r[,ord1] 
  pval <- t(pval[ord1,])}
  #reorder the columns to allow image to work
-MAR <- 5
+#MAR <- 5
 par(mar = c(MAR +max.len,MAR+max.len, 4, .5))
 
 if(show.legend) {   #set it up to do two plots

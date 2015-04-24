@@ -37,8 +37,25 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	if(nvar < 3 ) {message("Cluster analysis of items is only meaningful for more than 2 variables. Otherwise, you will find one cluster that is just the composite of the two.  Beta = Alpha = 2*r/(1+r).  Have you made a mistake? \n Try calling the alpha function to give some trivial statistics.")
 	  stop() }
 	if(is.null(colnames(r.mat))) {colnames(r.mat) <- paste("V",1:nvar,sep="")} 
+	
 	if(is.null(rownames(r.mat))) {rownames(r.mat) <- paste("V",1:nvar,sep="")} 
 	
+	#added 24/4/15 to check for bad data
+	if(any(is.na(r.mat))) {
+       bad <- TRUE
+      tempr <-r.mat
+      wcl <-NULL
+     while(bad) {
+     	wc <- table(which(is.na(tempr), arr.ind=TRUE))  #find the correlations that are NA
+    	wcl <- c(wcl,as.numeric(names(which(wc==max(wc)))))
+    	tempr <- r.mat[-wcl,-wcl]
+    	if(any(is.na(tempr))) {bad <- TRUE} else {bad <- FALSE}
+         }
+
+     	cat('\nLikely variables with missing values are ',colnames(r.mat)[wcl],' \n')
+      	 stop("I am sorry: missing values (NAs) in the correlation matrix do not allow me to continue.\nPlease drop those variables and try again." )
+       }
+       
 	#added this 30/12/13 to improve speed
 	if(ICLUST.options$SMC) {smc.items <- smc(r.mat)} else {smc.items <- rep(1,nvar)}  
 	

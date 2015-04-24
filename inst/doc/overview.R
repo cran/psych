@@ -551,7 +551,7 @@ irt.responses(scores$scores,iqitems[1:4],breaks=11)
 ### code chunk number 72: overview.Rnw:1570-1572
 ###################################################
 data(bfi)
-best.scales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
+bestScales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
 
 
 ###################################################

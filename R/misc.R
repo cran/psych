@@ -144,21 +144,21 @@ test.all <- function(p) {
 
 
 
-  "best.items" <- 
-function(x,c1=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) {
+  "bestItems" <- 
+function(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) {
 if((nrow(x) !=ncol(x)) && cor) {x <- cor(x,use="pairwise")} #convert to correlation if necessary
-if(abs) {ord <- order(abs(x[,c1]),decreasing=TRUE)
-  value <- x[ord,c1,drop=FALSE]
+if(abs) {ord <- order(abs(x[,criteria]),decreasing=TRUE)
+  value <- x[ord,criteria,drop=FALSE]
   value <- value[(abs(value) >cut),,drop=FALSE]
-  } else {ord <- order(x[,c1],decreasing=TRUE)
-  value <- x[ord,c1]
-  value <- value[abs(value) >cut] }
+  } else {ord <- order(x[,criteria],decreasing=TRUE)
+  value <- x[ord,criteria]
+  value <- value[abs(value) > cut] }
 value <- round(data.frame(value),digits)
 if((!is.null(dictionary)) && !is.factor(dictionary)) {temp <- lookup(rownames(value),dictionary)
    value <- merge(value,temp,by="row.names",all.x=TRUE,sort=FALSE)
    rownames(value) <- value[,"Row.names"]
    value <- value[-1]
-  if(abs) {ord <- order(abs(value[,c1]),decreasing=TRUE) } else {ord <- order(value[,c1],decreasing=TRUE)}
+  if(abs) {ord <- order(abs(value[,criteria]),decreasing=TRUE) } else {ord <- order(value[,criteria],decreasing=TRUE)}
    value <- value[ord,] 
    }
 return(value)
@@ -167,9 +167,9 @@ return(value)
   
   #lookup which x's are found in y[c1],return matches for y[]
  "lookup" <- 
-function(x,y,c1=NULL) {
-if (is.null(c1)) {temp <- match(x,rownames(y))} else {
-     temp <- match(x,y[,c1])}
+function(x,y,criteria=NULL) {
+if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
+     temp <- match(x,y[,criteria])}
  y <- (y[temp[!is.na(temp)],,drop=FALSE])
   return(y)}
  
@@ -198,8 +198,8 @@ if (is.null(c1)) {temp <- match(x,rownames(y))} else {
  #created 20/2/14
  #find the scales based upon the items that most correlate with a criteria
  #pure dust bowl empiricism
- 
- "best.scales" <- 
+ #modified 13/3/15 to handle the problem of missing item labels
+"bestScales" <- 
  function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,digits=2) {
 
 #first, declare a function to identify the bad items and drop them from the keys
@@ -213,25 +213,24 @@ findBad(key,r)}
 return(key)
 }
 
-short <- function(key,r) {
-
-kn <- names(key[abs(key[,1]) >0,1])
-if(is.null(kn)) kn <- names(which(abs(key[,1]) >0))
-cn <- colnames(key)
-ord <- order(abs(r[kn,cn]),decreasing=TRUE)
-kn <- kn[ord]
-result <- r[kn,cn,drop=FALSE]
-return(result)
+short <- function(key,r) { 
+ kn <- names(key[abs(key[,1]) >0,1])
+ if(is.null(kn)) kn <- names(which(abs(key[,1]) >0))
+ cn <- colnames(key)
+ ord <- order(abs(r[kn,cn]),decreasing=TRUE)
+ kn <- kn[ord]
+ result <- r[kn,cn,drop=FALSE]
+ return(result)
 }
-
+#begin the main function
  nvar <- ncol(x)
- if(nrow(x) != nvar) {r <- cor(x,use="pairwise")} else {r <- x}  #convert data to a correlation matrix
+ if(nrow(x) != nvar) {r <- cor(x,use="pairwise")} else {r <- x}  #convert data to a correlation matrix  #don't actually need to have  a square matrix
  ny <- length(criteria)
  nc <- length(cut)
  ni <- length(n.item)
  ord.name <- NULL
-if(length(cut) ==1)  cut <- rep(cut,ny)
-if(length(n.item) ==1) n.item <- rep(n.item,ny)
+if(length(cut) == 1)  cut <- rep(cut,ny)
+if(length(n.item) == 1) n.item <- rep(n.item,ny)
  if(ny > 1 ) {ord <- apply(abs(r[,criteria]),2,order,decreasing=TRUE) 
      for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[criteria[i],ord[n.item[i]+1,i]])) 
      ord.name <- c(ord.name, rownames(r)[ord[1:n.item[i],i]] )
@@ -252,28 +251,36 @@ if(length(n.item) ==1) n.item <- rep(n.item,ny)
  colnames(key) <- criteria
  
 if(any(is.na(r))) {#Are there any bad values
-for(i in 1:ny) {key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
-c[,i] <- colSums(key[,i] * r,na.rm=TRUE)}    #replace matrix addition with a colSums
-c <- t(c)
+  for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
+  c[,i] <- colSums(key[,i] * r,na.rm=TRUE)}    #replace matrix addition with a colSums
+  c <- t(c)
 } else {#otherwise, don't bother
+
 
  c<- t(key) %*% r    #we can do the matrix multiply because there are no bad data         
  }
+
  C <- c %*% key
- re <- diag(c[,criteria])/sqrt(diag(C))
+ if(ny < 2) {re <- c[,criteria]/sqrt(C) } else {
+ re <- diag(c[,criteria])/sqrt(diag(C))}
 ni <- colSums(abs(key))
 R <- cov2cor(C)
 
 short.key <- list()
 value <- list()
+
+
 for(i in 1:ny) {short.key[[criteria[i]]] <- short(key[,i,drop=FALSE],r) 
 
 if(!is.null(dictionary)) {if(!is.factor(dictionary)) {temp <- lookup(rownames(short.key[[criteria[i]]]),dictionary)
- # if(nrow(value) > nrow(temp))  value <- value[rownames(value) %in% dictionary[,1], ]
-  value[[criteria[i]]] <- data.frame(round(short.key[[criteria[i]]],digits=digits),temp)}}
+
+  value[[criteria[[i]]]] <- merge(short.key[[i]],temp,by="row.names",all.x=TRUE,sort=FALSE)
+ ord <- order(abs(value[[criteria[[i]]]][[criteria[[i]]]]),decreasing=TRUE)
+  value[[criteria[[i]]]] <- value[[criteria[[i]]]][ord,]
  } 
+ }}
 results <- list(r=re,n.items=ni,R=R,cut=cut,short.key=short.key,value=value,key=key,ordered=ord.name)
-class(results) <- c("psych","best.scales")
+class(results) <- c("psych","bestScales")
 return(results)
 }
  

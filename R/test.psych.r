@@ -129,6 +129,46 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
    fa.diagram(fa.results=f,fe.results=foe)
    
    #now test the iteration options in fa
+#Commented for official release uncommented for testing   
+#    f3 <- fa(bfi[1:15],3,n.iter=5)
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Varimax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bifactor")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimin")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bentlerT")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="geominT")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="cluster")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="biquartimin")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
+#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
+#    
+#     fpoly <- fa(bfi[1:10],2,n.iter=5,cor="poly")
+#     f1 <- fa(ability,n.iter=4)
+#     f1p <- fa(ability,n.iter=4,cor="tet")
+#     
+#    f3 <- principal(bfi[1:15],3,n.iter=1)
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Varimax")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="varimax")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="bifactor")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="varimin")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="bentlerT")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="geominT")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="equamax")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Promax")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="cluster")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="biquartimin")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="equamax")
+#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Promax")
+#    
+#     fpoly <- principal(bfi[1:10],2,n.iter=5,cor="poly")
+#     f1 <- principal(ability,n.iter=4)
+#     f1p <- principal(ability,n.iter=4,cor="tet")
+# 
+#  
+
+
     out <- list(out,fa.simple,psych.d)
  if (!short) { return(out)}
 

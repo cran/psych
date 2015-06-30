@@ -48,8 +48,11 @@ replicateslist <- parallel::mclapply(1:n.iter,function(x) {
   if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)
                 
-                   if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations? 
-                    replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])}  else 
+                   if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations?
+                   #we should report the target rotated phis, not the untarget rotated phis 
+                     replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(t.rot$Phi)])   #corrected 6/10/15
+                    #replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])
+                    }  else 
                    {replicates <- list(loadings=t.rot$loadings)}                
   }})
   
@@ -411,11 +414,11 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    			rotated <- GPArotation::targetT(loadings)
    			loadings <- rotated$loadings} ,
    			
-   	 bifactor = {rotated <- bifactor(loadings)$loadings},
-   	 TargetT =  {rotated <- TargetT(loadings,...)$loadings},
-   	equamax =  {rotated <- equamax(loadings)$loadings}, 
-   	varimin = {rotated <- varimin(loadings)$loadings},
-   	specialT =  {rotated <- specialT(loadings)$loadings}, 
+   	 bifactor = {loadings <- bifactor(loadings)$loadings},    #the next four solutions were not properly returning the values
+   	 TargetT =  {loadings <- TargetT(loadings,...)$loadings},
+   	equamax =  {loadings <- equamax(loadings)$loadings}, 
+   	varimin = {loadings <- varimin(loadings)$loadings},
+   	specialT =  {loadings <- specialT(loadings)$loadings}, 
    	Promax =   {pro <- Promax(loadings)
      			 loadings <- pro$loadings
      			  Phi <- pro$Phi },
@@ -450,7 +453,6 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
      		                             } else {message("Specified rotation not found, rotate='none' used")}
      	 } }}
      	 		
-
     signed <- sign(colSums(loadings))
     signed[signed==0] <- 1
     loadings <- loadings %*% diag(signed)  #flips factors to be in positive direction but loses the colnames

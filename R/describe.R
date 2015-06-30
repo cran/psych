@@ -54,6 +54,7 @@ function (x, head = 4, tail = 4)
 #changed October 12, 2011 to use apply because mean and sd are deprecated for data.frames
 #modified January 10, 2014 to add the check option to improve speed.  A few other improvements
 #modified December 2014 to add the fast option for large data sets
+#modified May 21, 2015 to allow non-numeric data to be described (but with a warning)
 "describe" <-
 function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL)   #basic stats after dropping non-numeric data
                                                  #slightly faster if we don't do skews
@@ -93,7 +94,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
     for(i in 1:ncol(x)) {   
         if(!is.numeric(x[[i]] ))  {
                                  if(fast)  {x[[i]] <- NA} else {
-                                  if(is.numeric(unlist(x[[i]]))) {
+                                  if(is.factor(unlist(x[[i]]))) {   #fixed 5/21/15
                                               x[[i]] <- as.numeric(x[[i]]) 
                           } else {x[[i]] <- NA} }
                

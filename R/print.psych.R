@@ -236,13 +236,53 @@ describeData = {if  (length(dim(x))==1) {class(x) <- "list"
 faBy = { cat("Call: ")
         print(x$Call)
         cat("\n Factor analysis by Groups\n")
+        cat("\nAverage standardized loadings (pattern matrix) based upon correlation matrix for all cases as well as each group\n")
+        cat("\nlow and high ", x$quant,"% quantiles\n")
+        print(x$faby.sum,digits)
+        if(!short) {  
+        print(x$mean.loading,digits=digits)
+        cat("\n Average factor intercorrelations for all cases and  each group\n")
+        print(x$mean.Phi,digits=2)
         cat("\nStandardized loadings (pattern matrix) based upon correlation matrix for all cases as well as each group\n")
         print(x$loadings,digits=digits)
         cat("\n With factor intercorrelations for all cases and for each group\n")
-        print(x$phis,digits=2)
+        print(x$Phi,digits=2)
         if(!is.null(x$fa)) {
         cat("\nFactor analysis results for each group\n")
-        print(x$fa)}
+        print(x$faby.sum,digits)
+        }}
+        
+       
+# cat("Factor Analysis with confidence intervals using method = ",x$f$fm )
+#   # cat("\nCall: ")
+#
+#   
+#   nfactors <-dim(x$loadings)[2]
+#    c("\n Confidence intervals\n")
+#    if(is.null(x[["ci"]])) { lc <- lci <- data.frame(unclass(x$loadings),x$low,x$highr)} else { lc <- lci <- data.frame(unclass(x$loadings),x$ci)}
+#   
+#   
+#    for(i in 1:nfactors) {
+#    lci[,(i-1)*3 +2 ] <- lc[,i] 
+#    lci[,(i-1)*3 +1 ] <- lc[,i+nfactors] 
+#    lci[,(i-1)*3 +3 ] <- lc[,i+nfactors*2] 
+#     }
+#     colnames(lci) <- paste(rep(c("low","coeff","upper"),nfactors),sep="")
+#    for(i in 1:nfactors) { colnames(lci)[(i-1)*3+2] <- colnames(x$loadings)[i] }
+#    
+#    cat("\n Coefficients and bootstrapped confidence intervals \n")
+#    print (round(lci,digits=digits))
+#   if(!is.null(x$Phi)) { phis <- x$Phi[lower.tri(x$Phi)]
+#    cci <- data.frame(lower=x$cis$ci.rot$lower,estimate = phis,upper= x$cis$ci.rot$upper)
+#     cnR <- abbreviate(colnames(x$loadings),minlength=5) 
+#       k <- 1
+#      for(i in 1:(nfactors-1)) {for (j in (i+1):nfactors) {
+#       rownames(cci)[k] <- paste(cnR[i],cnR[j],sep="-")
+#       k<- k +1 }}  #added 10/4/14
+#    cat("\n Interfactor correlations and bootstrapped confidence intervals \n")
+#    print(cci,digits=digits)}
+#   
+#}
         
 },
     
@@ -342,36 +382,47 @@ mchoice =  {
   },  
   
 mediate  = { cat("\nMediation analysis \n")
- cat("Call: ")
+
+cat("Call: ")
     print(x$Call)
-    dv <- colnames(x$direct)
+    dv <- x$names[1]
     iv <- rownames(x$direct)
-    cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv[1],". The mediating variable(s) = ", iv[-1],".")
+    mv <- x$names[-c(1:(length(iv)+1))]
+    cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv,". The mediating variable(s) = ", mv,".")
     if(!is.null(x$mod)) cat("  The moderating variable(s) = ", x$names[x$mod])
     
-    cat("\nTotal Direct effect(c) of ",iv[1], " on ", dv," = ",round(x$total,digits), "  S.E. = ", round(x$se.bx,digits), " t direct = ",round(x$tt,digits), "  with probability = ", signif(x$probt,digits))
-    cat("\nDirect effect of ",iv[1],  " on ", dv," removing ", iv[-1] ," = ",round(x$direct[1],digits), "  S.E. = ", round(x$se.beta[1],digits), " t direct = ",round(x$t[1],digits), "  with probability = ", signif(x$prob[1],digits))
-   
-   if(is.null(x$mod)) { cat("\nIndirect effect (c') of ",iv[1], " on ", dv," through " ,iv[-1] , "  = ", round(x$indirect,digits),"\n")
+   for(i in 1:length(iv)) { cat("\n\nTotal Direct effect(c) of ",iv[i], " on ", dv," = ",round(x$total[i],digits), "  S.E. = ", round(x$se.bx[i],digits), " t direct = ",round(x$tt[i],digits), "  with probability = ", signif(x$probt[i],digits))
+    cat("\nDirect effect (c') of ",iv[i],  " on ", dv," removing ", mv ," = ",round(x$direct[i],digits), "  S.E. = ", round(x$se.beta[i],digits), " t direct = ",round(x$t[i],digits), "  with probability = ", signif(x$prob[i],digits))
      
-    cat("\nMean bootstrapped indirect effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
-    cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-    print(round(x$abc,digits))
+   if(is.null(x$mod)) { cat("\nIndirect effect (ab) of ",iv[i], " on ", dv," through " ,mv , "  = ", round(x$indirect[i],digits),"\n")
+   cat("Mean bootstrapped indirect effect = ",round(x$mean.boot[i],digits), " with standard error = ",round(x$sd.boot[i],digits), " Lower CI = ",round(x$ci.quant[1,i],digits), "   Upper CI = ", round(x$ci.quant[2,i],digits))}
+     }
+   if(is.null(x$mod)) {
+     cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
+     if(!any(is.na(x$abc))) {print(round(x$abc,digits))} else {
+      cat("\n 'a'  paths \n")
+      print(round(x$a,digits))
+      cat("\n'b' paths \n")
+      print(round(x$b,digits))
+      cat("\n'ab' paths \n")
+      print(round(x$ab,digits))
+     }
     
     cat("\nratio of indirect to total effect=  ", round(x$ratit,digits))
     cat("\nratio of indirect to direct effect= ", round(x$ratid,digits))
     }  else {
     cat("\nEffect of interaction of ",iv[1], " with ", iv[2] , "  = ", round(x$direct[3],digits),"  S.E. = ", round(x$se.beta[3,1],digits), " t direct = ",round(x$t[3,1],digits), "  with probability = ", signif(x$prob[3,1],digits))
     cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$int.ind,digits))
-    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2],digits))
+    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2,i],digits))
     cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-    print(round(x$abc,digits))
+   if(!is.na(x$abc)) {print(round(x$abc,digits))} else {
+      print(round(x$a,digits))
+      print(round(x$b,digits))
+      print(round(x$ab,digits))
      }
-
-    cat("\nR2 of model = ", round(x$R2,digits))
-
-
-},
+   
+    cat("\nR2 of model = ", round(x$R2,digits)) 
+   }},
       
     
 mixed= { cat("Call: ")

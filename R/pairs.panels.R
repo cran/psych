@@ -201,7 +201,7 @@ for(i in 1:ncol(x)) {
                             colnames(x)[i] <- paste(colnames(x)[i],"*",sep="")}
            }
       
-par(pch = pch)
+#par(pch = pch)
 
  
  #this has been greatly cleaned up by includign the jiggle, show.points and ellipses options  inside the lower.panel functions, and scale is inside the panel.cor function 
@@ -209,24 +209,24 @@ par(pch = pch)
  if(!lm) { #the basic default is here
       if (smooth) {
         if(ellipses)  {
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother,  ...)} else {
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother.no.noellipse,  ...)}    
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother, pch=pch, ...)} else {
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother.no.noellipse,pch=pch,  ...)}    
         }
         else { #don't smooth, don't scale, not lm
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor,lower.panel=panel.ellipse,  ...) } 
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor,lower.panel=panel.ellipse,pch=pch,  ...) } 
     
     
     } else { #lm is TRUE
-        if(cor)  { #this case does not show the correlations, but rather shows the regression lines above and below the diagonal
+        if(!cor)  { #this case does not show the correlations, but rather shows the regression lines above and below the diagonal
                  if(ellipses) {
-     			     pairs(x, diag.panel = panel.hist.density, upper.panel = panel.lm.ellipse, lower.panel = panel.lm.ellipse,  ...)} else {
-     			     pairs(x, diag.panel = panel.hist.density, upper.panel = panel.lm, lower.panel = panel.lm,  ...)   }
+     			     pairs(x, diag.panel = panel.hist.density, upper.panel = panel.lm.ellipse, lower.panel = panel.lm.ellipse,pch=pch,  ...)} else {
+     			     pairs(x, diag.panel = panel.hist.density, upper.panel = panel.lm, lower.panel = panel.lm, pch=pch, ...)   }
      			
      			} else {  #the normal case is to show the regressions below and the rs above
      			
         	     if(ellipses) {
-     			    pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm.ellipse,  ...)} else {
-     			    pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm,  ...)   } 
+     			    pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm.ellipse,pch=pch,  ...)} else {
+     			    pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.lm,pch=pch,  ...)   } 
      	
      	
    			   }

@@ -11,9 +11,10 @@ caption="df2latex",label="default",char=FALSE,stars=FALSE,silent=FALSE,file=NULL
  nvar <- dim(x)[2]
  rname<- rownames(x)
 comment <- paste("%", match.call())
-header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
+header <- paste("\\begin{table}[htdp]",
 "\\caption{",caption,"}
 \\begin{center}
+\\begin{",font.size,"} 
 \\begin{tabular}",sep="")
 if(stars) {if(rowlabels) {
                header <- c(header,"{l",rep("S",(nvar)),"}\n")} else {header <- c(header,"{",rep("S",(nvar+1)),"}\n")}  } else {
@@ -32,10 +33,11 @@ if (stars){
       footer <- paste(" \\hline ")}
 footer <- paste(footer,"
 \\end{tabular}
+\\end{",font.size,"}
 \\end{center}
 \\label{",label,"}
 \\end{table} 
-\\end{",font.size,"}
+
 ",sep=""
 )
 
@@ -142,9 +144,10 @@ if(!is.null(f$complexity)) {x <- data.frame(x,h2=h2,u2=u2,com=f$complexity) } el
 #first set up the table
  nvar <- dim(x)[2]
 comment <- paste("% Called in the psych package ", match.call())
-header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
+header <- paste("\\begin{table}[htdp]",
 "\\caption{",caption,"}
 \\begin{center}
+\\begin{",font.size,"} 
 \\begin{tabular}",sep="")
 header <- c(header,"{l",rep("r",nvar),"}\n")
 if(apa) header <- c(header,
@@ -153,10 +156,11 @@ if(apa) header <- c(header,
 if(apa) {footer <- paste(" \\hline ")} 
 footer <- paste(footer,"
 \\end{tabular}
+\\end{",font.size,"}
 \\end{center}
 \\label{",label,"}
 \\end{table} 
-\\end{",font.size,"}
+
 ",sep=""
 )
 
@@ -179,7 +183,7 @@ footer <- paste(footer,"
  }
  if(big > 0) {temp <- fx[1:nfactors]  
    x <- x[1:nfactors]
-  temp[abs(x) > big] <- paste("\\bf{",temp[abs(x) > big],"}",sep="")
+  temp[!is.na(x) & (abs(x) > big)] <- paste("\\bf{",temp[!is.na(x) & (abs(x) > big)],"}",sep="")
    fx[1:nfactors] <- temp
    }
  value <- apply(fx,1,paste,collapse="  &  ") #insert & between columns

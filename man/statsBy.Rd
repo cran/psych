@@ -7,17 +7,20 @@
 \description{When examining data at two levels (e.g., the individual and by some set of grouping variables), it is useful to find basic descriptive statistics (means, sds, ns per group, within group correlations) as well as between group statistics (over all descriptive statistics, and overall between group correlations). Of particular use is the ability to decompose a matrix of correlations at the individual level into correlations within group and correlations between groups. 
 }
 \usage{
-statsBy(data, group, cors = FALSE, method="pearson",poly=FALSE,na.rm=TRUE)
+statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
+poly=FALSE, na.rm=TRUE)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
-   min.n = 12, ...)
+   min.n = 12,quant=.1, ...)
 }
 \arguments{
   \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  One of these columns should be the values of a grouping variable.}
   \item{group}{The names or numbers of the variable in data to use as the grouping variables.}
   \item{cors}{Should the results include the correlation matrix within each group?  Default is FALSE.}
+  \item{cor}{Type of correlation/covariance to find within groups and between groups.  The default is Pearson correlation.  To find within and between covariances, set cor="cov".  Although polychoric, tetrachoric, and mixed correlations can be found within groups, this does not make sense for the between groups or the pooled within groups.  In this case, correlations for each group will be as specified, but the between groups and pooled within will be Pearson. See the discussion below.}
 \item{method}{What kind of correlations should be found (default is Pearson product moment)}
+\item{use}{How to treat missing data.  use="pairwise" is the default}
 \item{poly}{Find polychoric correlations within groups if requested.}
 \item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
@@ -31,6 +34,7 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{free}{Allow the factor solution to be freely estimated for each individual (see note).}
 \item{all}{Report individual factor analyses for each group as well as the summary table}
 \item{min.n}{The minimum number of within subject cases before we factor analyze it.}
+\item{quant}{Show the upper and lower quant quantile of the factor loadings in faBy}
 \item{...}{Other parameters to pass to the fa function}
 }
 \details{Multilevel data are endemic in psychological research. In multilevel data, observations are taken on subjects who are nested within some higher level grouping variable.  The data might be experimental (participants are nested within experimental conditions) or observational (students are nested within classrooms, students are nested within college majors.) To analyze this type of data, one uses random effects models or mixed effect models, or more generally, multilevel models.  There are at least two very powerful packages (nlme and multilevel) which allow for complex analysis of hierarchical (multilevel) data structures.  \code{\link{statsBy}} is a much simpler function to give some of the basic descriptive statistics for two level models.  It is meant to supplement true multilevel modeling.
@@ -55,7 +59,7 @@ It is important to realize that the within group and between group correlations 
 
 There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value (pooled).  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
 
-If finding polychoric correlations, these two estimates will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
+If finding tetrachoric, polychoric, or mixed correlations, these two estimates will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
 
 Confidence values and significance  of  \eqn{r_{xy_{wg}}}, pwg, reflect the pooled number of cases within groups, while  \eqn{r_{xy_{bg}} }, pbg, the number of groups. These are not corrected for multiple comparisons.
 

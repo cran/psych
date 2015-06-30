@@ -4,7 +4,7 @@ function(object,digits=2,items=FALSE,...) {
 
 #figure what we are trying to summarize
 #omega, ICLUST, score.clusters,cluster.cor
-
+#faBy
 
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
@@ -21,19 +21,7 @@ if(length(class(object)) > 1)  { value <- class(object)[2] }
  
 switch(value, 
 
-vss = {
- if(object$title!="Very Simple Structure") {
- cat("\nVery Simple Structure of ", object$title,"\n") } else {cat("\nVery Simple Structure\n")} 
- cat("VSS complexity 1 achieves a maximimum of ")
- vss.max <- round(max(object$cfit.1) ,digits) 
- cat(vss.max," with " ,which.max(object$cfit.1), " factors\n") 
- cat("VSS complexity 2 achieves a maximimum of ")
-  vss.max <- round(max(object$cfit.2) ,digits) 
- cat(vss.max," with " ,which.max(object$cfit.2), " factors\n") 
- cat("\nThe Velicer MAP criterion achieves a minimum of ")
- vss.map <- round(max(object$map) ,digits) 
- cat(vss.map," with " ,which.min(object$map), " factors\n ") 
- },
+
  
 iclust = { cat("ICLUST (Item Cluster Analysis)") 
  cat("Call: ")
@@ -100,6 +88,20 @@ cat("\nScale intercorrelations corrected for attenuation \n raw correlations (co
 	 result <- object$corrected
 	 },
 	 
+vss = {
+ if(object$title!="Very Simple Structure") {
+ cat("\nVery Simple Structure of ", object$title,"\n") } else {cat("\nVery Simple Structure\n")} 
+ cat("VSS complexity 1 achieves a maximimum of ")
+ vss.max <- round(max(object$cfit.1) ,digits) 
+ cat(vss.max," with " ,which.max(object$cfit.1), " factors\n") 
+ cat("VSS complexity 2 achieves a maximimum of ")
+  vss.max <- round(max(object$cfit.2) ,digits) 
+ cat(vss.max," with " ,which.max(object$cfit.2), " factors\n") 
+ cat("\nThe Velicer MAP criterion achieves a minimum of ")
+ vss.map <- round(max(object$map) ,digits) 
+ cat(vss.map," with " ,which.min(object$map), " factors\n ") 
+ },
+	 
 cluster.cor = { 
 cat("Call: ")
 print(object$Call)
@@ -136,6 +138,15 @@ fa =  {
        print(round(object$Phi,digits))}
 },
 
+faBy = {cat("\nFactor analysis within groups with Call: ")
+ print(object$Call)
+ print(object$mean.loading,digits=digits)
+ print(object$mean.phi,digits = digits)
+ 
+ 
+ 
+ },
+      
 
 items= { 
     if(omega) {

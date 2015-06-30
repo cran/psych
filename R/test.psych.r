@@ -1,11 +1,11 @@
 #Quality control function to run through hard problems 
 "test.psych" <- 
 function(first=1,last=5,short=TRUE,all=FALSE) {  
-s1 <- USArrests         #  Violent Crime Rates by US State  (4 variables)
-s2 <- attitude          #The Chatterjee-Price Attitude Data
-s3 <- Harman23.cor$cov     #   Harman Example 2.3 8 physical measurements
-s4 <- Harman74.cor$cov     #   Harman Example 7.4  24 mental measurements
-s5 <- ability.cov$cov       #  6 Ability and Intelligence Tests 
+s1 <- datasets::USArrests         #  Violent Crime Rates by US State  (4 variables)
+s2 <- datasets::attitude          #The Chatterjee-Price Attitude Data
+s3 <- datasets::Harman23.cor$cov     #   Harman Example 2.3 8 physical measurements
+s4 <- datasets::Harman74.cor$cov     #   Harman Example 7.4  24 mental measurements
+s5 <- datasets::ability.cov$cov      #  6 Ability and Intelligence Tests 
 
 
 #convert covariance to correlation
@@ -77,8 +77,8 @@ for (i in first:last) {
 if(all) { #test of factoring and scoring singular data  -- fails on some platforms
 cat("\n Test of a singular matrix\n")
 #a test example of a singular matrix
-IRIS <- iris[,1:4]
-IRIS[,5] <- iris[,1]+iris[,2]
+IRIS <- datasets::iris[,1:4]
+IRIS[,5] <- datasets::iris[,1]+datasets::iris[,2]
 f.iris <- fa(IRIS,5,scores=TRUE) #this is get around the failure of tenBerge for a singular matrix
 p.iris <- principal(IRIS,5,scores=TRUE)
 #this will fail if not using minres or pa

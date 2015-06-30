@@ -69,7 +69,7 @@ pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
         pch=21,main="Fisher Iris data by Species") #to show color grouping
 
 pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
-   pch=21,main="Fisher Iris data by Species",hist.col="red") 
+  pch=21+as.numeric(iris$Species),main="Fisher Iris data by Species",hist.col="red") 
    #to show changing the diagonal
 
 #demonstrate not showing the data points

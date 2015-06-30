@@ -80,7 +80,7 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
     item.cor <-   sqrt(diag(1/(key.lambda6*scale.var))) %*% (item.cov)  # %*% diag(1/sqrt(item.var))
     rownames(item.cor) <- colnames(keys)
     } else {
-      item.cor <- C %*% keys /sqrt(key.lambda6*scale.var) }
+      item.cor <- r %*% keys /sqrt(key.lambda6*scale.var) }
    colnames(item.cor) <- colnames(r)
    item.cor <- t(item.cor)
 

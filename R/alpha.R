@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=TRUE,n.iter=1,delete=TRUE,use="pairwise") {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise") {  #find coefficient alpha given a data frame or a matrix
     
     alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -33,12 +33,19 @@
          response.freq <- response.frequencies(x,max=max)
          C <- cov(x,use=use)} else {C <- x}
         
-       
-         if(check.keys && is.null(keys)) {
-            p1 <- principal(x)
-            if(any(p1$loadings < 0)) warning("Some items were negatively correlated with total scale and were automatically reversed.")
-            keys <- 1- 2* (p1$loadings < 0 ) 
-            }  #keys is now a vector of 1s and -1s
+         p1 <- principal(x)
+      
+         if(any(p1$loadings < 0)) {if (check.keys) {warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
+                    keys <- 1- 2* (p1$loadings < 0 ) } else {
+                       warning("Some items were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option")
+                       cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option")
+                        } 
+                }
+           # if(check.keys && is.null(keys)) {
+           # p1 <- principal(x)
+           # if(any(p1$loadings < 0)) warning("Some items were negatively correlated with total scale and were automatically reversed.")
+            
+            #keys is now a vector of 1s and -1s
             
          if(is.null(keys)) {keys <- rep(1,nvar)} else {  
          			keys<- as.vector(keys) 

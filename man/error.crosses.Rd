@@ -5,7 +5,7 @@
 }
 \usage{
 error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL, 
-xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  
+xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +23,7 @@ xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)
   \item{arrow.len}{ Arrow length }
   \item{alpha}{alpha level of error bars }
   \item{sd}{if sd is TRUE, then draw means +/- 1 sd)}
+  \item{add}{if TRUE, overlay the values with a prior plot}
   \item{\dots}{ Other parameters for plot  }
 }
 \details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}

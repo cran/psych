@@ -1,8 +1,9 @@
 #developed July 4, 2012
 #modified July 9, 2014 to allow polychorics within groups
+#modified June 2, 2015 to include covariance, pearson, spearman, poly ,etc. in correlations
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 "statsBy" <-
-   function (data,group,cors=FALSE,method="pearson",poly=FALSE,na.rm=TRUE) { #  
+   function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE) { #  
     cl <- match.call()
   valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
@@ -45,8 +46,21 @@ z1 <- data[,group]
               npr <- (colSums(xvals$n-1)+nrow(xvals$n))/(nrow(xvals$n))
                xvals$ICC1 <- (MSb-MSw)/(MSb + MSw*(npr-1))
                xvals$ICC2 <- (MSb-MSw)/(MSb)
+               
+
     #if we want within group correlations, then find them  
-             if(cors) {if(!poly) { r <- by(data,z,function(x) cor(x[-gr],use="pairwise",method=method)) } else { r <- by(data,z,function(x) polychoric(x[-gr])$rho)}
+     # if(cors) {if(!poly) { r <- by(data,z,function(x) cor(x[-gr],use="pairwise",method=method)) } else { r <- by(data,z,function(x) polychoric(x[-gr])$rho)}
+               
+      #added 02/06/15
+       if(cors) {if (poly) {cor <- "poly"}
+       switch(cor, 
+       cor = {r <- by(data,z,function(x) cor(x[-gr],use=use,method=method))},
+       cov = {r <- by(data,z,function(x) cov(x[-gr],use=use))
+              covar <- TRUE},
+       tet = {r <- by(data,z,function(x) tetrachoric(x[-gr])$rho)},
+       poly = {r <- by(data,z,function(x) polychoric(x[-gr])$rho)},
+       mixed = {r <- by(data,z,function(x) mixed.cor(x[-gr])$rho)}
+       )         
                  
               nvars <-  ncol(r[[1]])
               xvals$r <- r   #store them as square matrices
@@ -77,7 +91,19 @@ z1 <- data[,group]
               }
 
               nvar <- ncol(data)-length(group) #we have dropped the grouping variable
-               if(!poly) {xvals$raw <- cor(data,use="pairwise",method=method)} else {xvals$raw <- polychoric(data)$rho}
+            #   if(!poly) {xvals$raw <- cor(data,use="pairwise",method=method)} else {xvals$raw <- polychoric(data)$rho}
+               
+        ##added 02/06/15
+         if (poly) cor <- "poly"
+            switch(cor, 
+       			cor = {xvals$raw  <- cor(data,use=use,method=method)},
+       			cov = {xvals$raw  <- cov(data,use=use) 
+              covar <- TRUE},
+             poly=  {xvals$raw <- polychoric(data)$rho},
+             tet = {xvals$raw <- tetrachoric(data)$rho},
+              mixed = {xvals$raw <- mixed.cor(data)$rho}   
+       )
+       
              new.data <- as.matrix( merge(xvals$mean,data,by=group,suffixes =c(".bg",""))) #drop the grouping variable(s) 
              new.data <- new.data[,(length(group)+1):ncol(new.data)]
              
@@ -87,10 +113,17 @@ z1 <- data[,group]
              t <- (xvals$rbg*sqrt(nG-2))/sqrt(1-xvals$rbg^2)
              
              if(nG > 2) {xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))} else {xvals$pbg <- NA}
-             xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
+        #     xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
+            if(cor %in% c("tet","poly","mixed","mixed.cor") ) cor <- "cor"
+            switch(cor, 
+      			 cor = {xvals$rwg  <- cor(diffs,use=use,method=method)},
+      			 cov = {xvals$rwg  <- cov(diffs,use=use) 
+              covar <- TRUE}
+       )
              xvals$nw <- pairwise(diffs)
-
-               t <- (xvals$rwg*sqrt(xvals$nw -2))/sqrt(1-xvals$rwg^2)
+               rwg <- cov2cor(xvals$rwg)
+               t <- (rwg*sqrt(xvals$nw -2))/sqrt(1-rwg^2)
+             
             xvals$pwg <- 2*(1 - pt(abs(t),(N - nG -2)))
             # colnames(xvals$rwg) <- rownames(xvals$rwg) <- paste(colnames(xvals$rwg),".wg",sep="")
              xvals$etabg <- diag(cor(new.data[,1:(nvar)],new.data[,(nvar+1):ncol(new.data)],use="pairwise",method=method) )#the means with the data

@@ -109,16 +109,16 @@ The "bifactor" rotation implements the Jennrich and Bentler (2011) bifactor rota
 
 There are two varimax rotation functions.  One, Varimax, in the GPArotation package does not by default apply Kaiser normalization.  The other, varimax, in the stats package, does.  It appears that the two rotation functions produce slightly different results even when normalization is set. For consistency with the other rotation functions, Varimax is probably preferred.
 
-There are three ways to handle dichotomous or polytomous responses: \code{\link{fa}} with the poly=TRUE option, \code{\link{fa.poly}} which will return the tetrachoric or polychoric correlation matrix, as well as the normal factor analysis output, and \code{\link{irt.fa}} which returns a two parameter irt analysis as well as the normal fa output. 
+There are three ways to handle dichotomous or polytomous responses: \code{\link{fa}} with the cor="poly" option, \code{\link{fa.poly}} which will return the tetrachoric or polychoric correlation matrix, as well as the normal factor analysis output, and \code{\link{irt.fa}} which returns a two parameter irt analysis as well as the normal fa output. 
 
 When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. The factor analysis results are available, however, as an object in the irt.fa output. 
 
-\code{\link{fa.poly}} is appropriate if the data are categorical (but just setting the poly=TRUE option works as well).  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
+\code{\link{fa.poly}} is appropriate if the data are categorical (but just setting the cor="poly" option works as well).  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
   
 
 The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. The default is to have n.iter =1 and thus not do bootstrapping.
 
-\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so). But, so will \code{\link{fa}} with the poly=TRUE option. Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
+\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so). But, so will \code{\link{fa}} with the cor="poly" option. Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
 
@@ -126,7 +126,7 @@ For those who like SPSS type output, the measure of factoring adequacy known as 
 
 For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted )
 
-
+The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 
 }
 \value{

@@ -31,7 +31,9 @@ Procedures such as \code{\link{summary}} and hmisc::describe do so.  The describ
 
 The range statistics (min, max, range) are most useful for data checking to detect coding errors, and should be found in early analyses of the data.  
 
-Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not  for alphanumeric data). If the check option is TRUE, variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name.  This is somewhat slower. 
+Although describe will work on data frames as well as matrices, it is important to realize that for data frames, descriptive statistics will be reported only for those variables where this makes sense (i.e., not  for alphanumeric data). 
+
+If the check option is TRUE, variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name.  This is somewhat slower. Note that in the case of categories or factors, the numerical ordering is not necessarily the one expected.  For instance, if education is coded "high school", "some college" , "finished college", then the default coding will lead to these as values of 2, 3, 1. Thus, statistics for those variables marked with * should be interpreted cautiously (if at all).
 
 In a typical study, one might read the data in from the clipboard (\code{\link{read.clipboard}}), show the splom plot of the correlations (\code{\link{pairs.panels}}), and then describe the data. 
 

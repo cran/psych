@@ -206,7 +206,7 @@ for(i in 1:nx) {
 } 
 if(nx >1) {
   for (i in 2:nx) {
-  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)))} 
+  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)),both=TRUE)} 
   } }
   
   if(ny>1) {for (i in 2:ny) {

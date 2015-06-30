@@ -183,7 +183,7 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.
   		}
 }
 
-"dia.curved.arrow" <- function(from,to,labels=NULL,scale=1,...) {
+"dia.curved.arrow" <- function(from,to,labels=NULL,scale=1,both=FALSE,...) {
      #note that the splines seem to go from left to right no matter what!
      #first determine whether to add or subtract the radius
      
@@ -213,7 +213,7 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.
  	 	lines(sp$y[1:(n/2-shift)],sp$x[1:(n/2-shift)])
      	lines(sp$y[(n/2+shift):n],sp$x[(n/2+shift):n])
      	arrows(sp$y[3],sp$x[3],sp$y[1],sp$x[1],length = .5*abs(sp$x[2]-sp$x[1]))
-     	#arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = .5*abs(sp$x[2]-sp$x[1]))
+     	if(both) arrows(sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],length = .5*abs(sp$x[2]-sp$x[1]))
   		text(sp$y[n/2],sp$x[n/2],labels,...)  
   		} else {
   		 x <- c(from[1],(from[1]+to[1])/2,to[1])
@@ -221,9 +221,12 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.
    		sp <- spline(x,y,n)
  	 	lines(sp$x[1:(n/2-shift)],sp$y[1:(n/2-shift)])
      	lines(sp$x[(n/2+shift):n],sp$y[(n/2+shift):n])
-     	if((from[1] > to[1] ) ) {arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 1*abs(sp$y[2]-sp$y[1])) } else {
+     	if(both) {
+     	  arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 1*abs(sp$y[2]-sp$y[1])) 
+     	  arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 1*abs(sp$y[2]-sp$y[1]))
+     	   } else {if((from[1] > to[1] ) ) {arrows(sp$x[3],sp$y[3],sp$x[1],sp$y[1],length = 1*abs(sp$y[2]-sp$y[1])) } else {
      	arrows(sp$x[n-3],sp$y[n-3],sp$x[n],sp$y[n],length = 1*abs(sp$y[2]-sp$y[1]))}
-  		text(sp$x[n/2],sp$y[n/2],labels,...)  
+  		text(sp$x[n/2],sp$y[n/2],labels,...)  }
   		}
 }
 

@@ -13,9 +13,9 @@
 \usage{
 \method{plot}{psych}(x,labels=NULL,...)
 \method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,
-     xlim,ylim,y2lab,...)
+     xlim,ylim,y2lab,lncol="black",...)
 \method{plot}{poly}(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,
-     keys=NULL,y2lab,...)
+     keys=NULL,y2lab,lncol="black",...)
 \method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
 
 }
@@ -34,6 +34,7 @@
   \item{keys}{Used in plotting irt results from irt.fa.}
   \item{y2lab}{ylab for test reliability, defaults to "reliability"}
   \item{qq}{if TRUE, plot qq plot of residuals, otherwise plot a cor.plot of residuals}
+  \item{lncol}{The color of the lines in the IRT plots.  Defaults to all being black, but it is possible to specify lncol as a vector of colors to be used.}
   \item{...}{other calls to plot}
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "IIC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.

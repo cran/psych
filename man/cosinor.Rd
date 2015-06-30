@@ -56,7 +56,7 @@ circadian.linear.cor(angle,x=NULL,data=NULL,hours=TRUE)
  \item{...}{any other graphic parameters to pass}
 }
 \details{
-When data represent angles (such as the hours of peak alertness or peak tension during the day), we need to apply circular statistics rather than the more normal linear statistics (see Jammalamadaka (2006) for a very clear set of examples of circular statistics). The generalization of the mean to circular data is to convert each angle into a vector, average the x and y coordinates, and convert the result back to an angle. 
+When data represent angles (such as the hours of peak alertness or peak tension during the day), we need to apply circular statistics rather than the more normal linear statistics (see Jammalamadaka (2006) for a very clear set of examples of circular statistics). The generalization of the mean to circular data is to convert each angle into a vector, average the x and y coordinates, and convert the result back to an angle. A statistic that represents the compactness of the observations is R which is the (normalized) vector length found by adding all of the observations together.  This will achieve a maximum value (1) when all the phase angles are the same and a minimum (0) if the phase angles are distributed uniformly around the clock.  
 
 The generalization of Pearson correlation to circular statistics is straight forward and is implemented in cor.circular in the circular package and in \code{\link{circadian.cor}} here.  Just as the Pearson r is a ratio of covariance to the square root of the product of two variances, so is the circular correlation.  The circular covariance of two circular vectors is defined as the average product of the sines of the deviations from the circular mean.  The variance is thus the average squared sine of the angular deviations from the circular mean.  Circular statistics are used for data that vary over a period (e.g., one day) or over directions (e.g., wind direction or bird flight).  Jammalamadaka and Lund (2006)  give a very good example of the use of circular statistics in calculating wind speed and direction.  
 
@@ -65,14 +65,14 @@ The code from CircStats and circular was adapted to allow for analysis of data f
 
 The cosinor function will either iteratively fit cosines of the angle to the observed data (opti=TRUE) or use the circular by linear regression to estimate the best fitting phase angle.  If cos.t <- cos(time) and sin.t = sin(time) (expressed in hours), then beta.c and beta.s may be found by regression and the phase is \eqn{sign(beta.c) * acos(beta.c/\sqrt(beta.c^2 + beta.s^2)) * 12/pi}
 
-Simulations (see examples) suggest that with incomplete times, perhaps the optimization procedure yields slightly better fits with the correct phase than does the linear model, but the differences are very small. In the presence of noisey data, these advantages seem to reverse.  The recommendation thus seems to be to use the linear model approach (the default).
+Simulations (see examples) suggest that with incomplete times, perhaps the optimization procedure yields slightly better fits with the correct phase than does the linear model, but the differences are very small. In the presence of noisey data, these advantages seem to reverse.  The recommendation thus seems to be to use the linear model approach (the default).  The fit statistic reported for cosinor is the correlation of the data with the model  [ cos(time - acrophase) ].
 
 The \code{\link{circadian.reliability}} function splits the data for each subject into a first and second half (by default, or into odd and even items) and then finds the best fitting phase for each half.  These are then correlated (using \code{\link{circadian.cor}}) and this correlation is then adjusted for test length using the conventional Spearman-Brown formula. Returned as object in the output are the statistics for the first and second part, as well as an ANOVA to compare the two halves.
 
 \code{\link{circular.mean}} and \code{\link{circular.cor}} are just \code{\link{circadian.mean}} and \code{\link{circadian.cor}} but with input given in radians rather than hours.
 
 
-The \code{\link{circadian.F}} will compare 2 or more groups in terms of their mean position.  This is adapted from the equivalent function in the circular pacakge.
+The \code{\link{circadian.F}} will compare 2 or more groups in terms of their mean position.  This is adapted from the equivalent function in the circular pacakge.  This is clearly a more powerful test the more each group is compact around its mean (large values of R). 
 }
 \value{
   \item{phase }{The phase angle that best fits the data (expressed in hours if hours=TRUE).}
@@ -95,7 +95,7 @@ Jammalamadaka, Sreenivasa and Lund, Ulric (2006),The effect of wind direction on
 }
 \author{William Revelle }
 
-\note{These functions have been adapted from the circular package to allow for ease of use with circadian data, particularly for data sets with missing data and multiple variables of interests.}
+\note{These functions have been adapted from the circular package to allow for ease of use with circadian data, particularly for data sets with missing data and multiple variables of interest.}
 
 \seealso{See the circular and CircStats packages. }
 

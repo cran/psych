@@ -1,11 +1,11 @@
 "error.crosses" <-
-function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,...)  # x  and y are data frame or descriptive stats
-    {if(is.null(x$mean)) {x <- describe(x)}
+function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,...)  # x  and y are data frame or descriptive stats
+    {if(is.vector(x)) {x <- describe(x)}
      xmin <- min(x$mean)
      xmax <- max(x$mean)
      if(sd) {max.sex <- max(x$sd,na.rm=TRUE)
                       if(is.null(xlim))  {xlim=c(xmin - max.sex,xmax + max.sex) }}  else {max.sex <- max(x$se,na.rm=TRUE)}       
-     if(is.null(y$mean)) {y <- describe(y)}
+     if(is.vector(y)) {y <- describe(y)}
      ymin <- min(y$mean)
      ymax <- max(y$mean)
      if(sd) {max.sey <- max(y$sd,na.rm=TRUE)
@@ -17,7 +17,7 @@ function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos
      if(is.null(main)) {if(!sd) { main = paste((1-alpha)*100,"% confidence limits",sep="") } else {main= paste("Means and standard deviations")} }
      if(is.null(xlab)) xlab <- "Group 1"
      if(is.null(ylab)) ylab <- "Group 2"
-     plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
+     if(!add) plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
      
     cix <- qt(1-alpha/2,x$n-1)
     ciy <- qt(1-alpha/2,y$n-1)

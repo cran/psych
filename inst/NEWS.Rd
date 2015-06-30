@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.5.5 (2015-04-24)}{
+\section{Changes in psych version 1.5.7 (2015-07-01}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.5.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.4 was released in April of 2015, the last two digits reflect the day of any modifications).
+      \item Version 1.5.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.4 was released in April of 2015, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -35,16 +35,47 @@
      \item combine the scoreOverlap functionality to scoreItems. (Probably not possible because can not be done with actual scores)  
      \item Add some power functions
      
-     
-     
+         
     }
   }
   } 
-
- \section{Changes in psych version 1.5.4 (2015-4-06)}{
+  
+  \section{Changes in psych version 1.5.6 (2015-6-20)}{
   \subsection{Additions}{
           \itemize{
-          \item  Fixed principal to be compatible with changes in fa wrt rotations
+      \item statsBy: Added the ability to find within group and between group covariances instead of just correlations.  This also allows the type of correlation to be specified.
+      \item mediate: Can now do more general mediation of x -> M  -> Y for multiple X variables and multiple M variables. 
+      \item mediate.diagram and moderate.diagram are now more functional
+      \item fa:  Added the option to reject weird solutions when doing iterations of factor solutions (suggested by Vencislav Popov)
+       \item fa, principal:  Improved documentation of principal and fa to explain the com variable.
+       \item alpha:  Changed the default for check.keys to be FALSE.  This will result in a warning saying that you probably want to reverse keys, and tells you how to do so. In response to comments by Oliver John saying that we were making it too easy to find alpha.
+       \item dia.arrow:  Added the both option to allow curved arrows to have heads at both ends (useful for setCor and mediate diagrams)  
+       \item plot.irt and plot.poly: Added the option to plot different colors for each item. (requested by Yanna Weisberg).
+       \item Explicitly declared all functions input from the stats, graphics, etc. cor R packages. 
+       \item pairs.panels can now draw multiple plot characters (see the second iris example).
+      \item faBy added a free or fixed option to force loadings to the pooled solution (if possible)
+    }  
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+           \item Fixed fa so that the bifactor, TargetT, equamax and varimin rotations return correctly (they were returning the unrotated solution). (Reported by Matthias Bellmann.)
+           \item describe: changed describe so that it will give (with *) stats for factors (replacing a functionality that disappeared sometime ago)
+              The resolves the problem reported by Alan Kelly.
+            \item Fixed a bug in fa2latex so it will boldface "big values" and cut small values instead of one or the other.  (Reported by Simon Kiss)
+            \item df2latex and fa2latex: corrected the location of font.size to be inside the table to work correctly (Reported by Simon Kiss).
+            \item pairs.panels  the cor option now works correctly (as specified in the help file) when showing the regression line (it had been reversed) 
+            }
+                       } 
+  }
+ 
+ 
+
+
+ \section{Changes in psych version 1.5.4 (2015-4-15)}{
+  \subsection{Additions}{
+          \itemize{
+          \item  principal: Fixed principal to be compatible with changes in fa wrt rotations
           \item Fixed schmid and omega to compatible with all rotations
           \item Modified setCor and mediate so that they just read in the relevant variables when finding the covariance matrix.
           \item Added a simulate data option to mediate to handle mediation models based upon covariance matrices.

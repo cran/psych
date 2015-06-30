@@ -113,8 +113,15 @@ x.df <- data.frame(x,rx,x2,rx2,xg)
 return(x.df)}
 
 
+"build.html.help" <- function(p="psych",fn = "/Volumes/Test/psych/man",out="/Volumes/Test/help/") {        
+    
+     db <- list.files(fn)
+     for (f in db) {tools::Rd2HTML(paste(fn,db[f]),out=paste(out,db[f]),package=p)
+     } 
+     }
+        
 
-
+    
 #shannon complexity index
 "shannon" <-  
    function(x,correct=FALSE,base=2) {if(is.null(dim(x))) {
@@ -380,3 +387,69 @@ pf <- alpha * (sexy)
 vp <- power * (1-sexy)
 pf/(pf+vp)}
 
+
+
+"bullseye" <- function(x,y,n) {
+for(i in 1:n) {dia.ellipse(x,y,e.size=i)}}
+
+
+"rel.val" <- function(n,sdx=.2,bars=TRUE,arrow.len=.05) {
+if(n>20) {pc <- "."} else {pc <- 16}
+
+plot(NA,xlim=c(0,10),ylim=c(0,10),axes=FALSE,xlab="",ylab="",main="Reliability and Validity as target shooting")
+#Reliable and valid
+x=3
+y=2
+bullseye(x,y,4)
+x1 <- x + rnorm(n,0,sdx)
+y1 <- y + rnorm(n,0,sdx)
+xm <- mean(x1)
+ym <- mean(y1)
+points(x1,y1,pch=pc)
+points(xm,ym,pch=20,col="red")
+if(bars) error.crosses(x1,y1,add=TRUE,arrow.len=arrow.len,labels="")
+text(x,y-2,"Reliable and valid")
+
+#unReliable and  invalid
+x=7
+y=7
+bullseye(x,y,4)
+x1 <- x + rnorm(n,1,1)
+y1 <- y + rnorm(n,1,1)
+xm <- mean(x1)
+ym <- mean(y1)
+points(x1,y1,pch=pc)
+points(xm,ym,pch=20,col="red")
+if(bars) error.crosses(x1,y1,add=TRUE,arrow.len=arrow.len,labels="")
+text(x,y-2,"Unreliable and Invalid")
+
+#reliable and invalid
+x=7
+y=2
+bullseye(x,y,4)
+x1 <- x + rnorm(n,1,sdx)
+y1 <- y + rnorm(n,1,sdx)
+xm <- mean(x1)
+ym <- mean(y1)
+points(x1,y1,pch=pc)
+points(xm,ym,pch=20,col="red")
+if(bars)error.crosses(x1,y1,add=TRUE,arrow.len=arrow.len,labels="")
+
+text(x,y-2,"Reliable and Invalid")
+
+
+#unreliable, but valid
+x=3
+y=7
+
+bullseye(x,y,4)
+x1 <- x + rnorm(n,0,1)
+y1 <- y + rnorm(n,0,1)
+xm <- mean(x1)
+ym <- mean(y1)
+points(x1,y1,pch=pc)
+points(xm,ym,pch=20,col="red")
+if(bars) error.crosses(x1,y1,add=TRUE,arrow.len=arrow.len,labels="")
+text(x,y-2,"Unreliable but Valid")
+}
+#rel.val(10,.5)

@@ -8,7 +8,7 @@
 }
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
-   check.keys=TRUE,n.iter=1,delete=TRUE,use="pairwise")
+   check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise")
 }
 
 \arguments{

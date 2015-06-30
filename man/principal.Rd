@@ -37,6 +37,8 @@ Some of the statistics reported are more appropriate for (maximum likelihood) fa
 Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  By default, the regression weights are found from the Structure matrix, not the Pattern matrix. 
 
 Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings. 
+
+The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the orthogonal component loadings (remember, that rotations or transformations do not change the communality).  
 }
 \value{
   
@@ -44,6 +46,7 @@ Jolliffe (2002) discusses why the interpretation of rotated components is compli
   \item{rotation}{which rotation was requested?}
   \item{n.obs}{number of observations specified or found}
    \item{communality}{Communality estimates for each item.  These are merely the sum of squared factor loadings for that item.}
+    \item{complexity}{Hoffman's index of complexity for each item.  This is just \eqn{\frac{(\Sigma a_i^2)^2}{\Sigma a_i^4}}{{(\Sigma a_i^2)^2}/{\Sigma a_i^4}} where a_i is the factor loading on the ith factor. From Hofmann (1978), MBR. See also  Pettersson and Turkheimer (2010).}
 
   \item{loadings }{A standard loading matrix of class ``loadings"}
   \item{fit }{Fit of the model to the correlation matrix }

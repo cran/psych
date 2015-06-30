@@ -1,6 +1,19 @@
-#last modified December 1, 2014  by William Revelle 
+#last modified July 1, 2015  by William Revelle 
+#added the various imports from stats, graphics, etc.
 importFrom(mnormt,rmnorm,sadmvn,dmnorm)
 importFrom(parallel,mclapply,mcmapply)
+
+importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,image,layout,legend, lines,mtext,par,persp,plot.new,plot.window, polygon,rect,segments,strheight,strwidth,text)
+
+importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,weighted.mean,promax,varimax)
+
+#importFrom(datasets,USArrests,attitude,Harman23.cor,Harman74.cov,ability.cov,iris)
+importFrom(utils,head,tail,read.table,write.table,read.fwf,stack,example,download.file,getFromNamespace)
+
+importFrom(grDevices,colorRampPalette,topo.colors,devAskNewPage,dev.flush,dev.hold, palette, grey,rainbow,rgb,col2rgb,trans3d)
+
+importFrom(methods,new)
+
 S3method(print,psych)
 S3method(biplot,psych)
 S3method(pairs,panels)
@@ -192,6 +205,7 @@ mat.sort,
 "%+%",
 mediate,
 mediate.diagram,
+moderate.diagram,
 minkowski,
 mixed.cor,
 mssd,

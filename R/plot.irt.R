@@ -1,8 +1,9 @@
 "plot.irt" <- 
-function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,xlim,ylim,y2lab,...) {
+function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,xlim,ylim,y2lab,lncol="black",...) {
 if(class(x)[2] == "irt.poly") {
 if(missing(type)) type = "IIC" 
-plot.poly(x=x,D=D,xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,main=main,type=type,cut=cut,labels=labels,keys=keys,y2lab=y2lab,...)} else {
+
+plot.poly(x=x,D=D,xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,main=main,type=type,cut=cut,labels=labels,keys=keys,y2lab=y2lab,lncol=lncol,...)} else {
 
 item <- x
 temp <- list()
@@ -46,13 +47,14 @@ if(type=="ICC") {
  		summtInfo <- NULL 
 		if(missing(main)) main <- "Item parameters from factor analysis"
 		if(missing(ylab)) ylab <- "Probability of Response"
+		if(length(lncol)<2) lncol <- rep(lncol,nvar)
 		ii <- 1 
 		while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main,...)
+		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main,col=lncol[1],...)
 		text(location[ii],.53,labels[ii])
 		for(i in (ii+1):nvar) {
   		 if(abs(discrimination[i])  > cut) {
-			lines(x,logistic(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ])
+			lines(x,logistic(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ],col=lncol[i],...)
 			text(location[i],.53,labels[i])}
 		}
 	}  else {  #not ICC
@@ -71,9 +73,9 @@ if(type=="ICC") {
 		testInfo <- rowSums(tInfo)
 		if(missing(ylab)) ylab <- "Test Information"
 		if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
-		
+		if(length(lncol)< 2) lncol <- rep(lncol,nvar)
 		op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main,...)
+		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main,col=lncol[1],...)
 		 ax4 <- seq(0,max(testInfo),max(testInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
@@ -84,14 +86,16 @@ if(type=="ICC") {
 		} else {
 		if(missing(ylab)) ylab <- "Item Information"
 	if(missing(main)) main <- "Item information from factor analysis"
+	if(length(lncol) <2) lncol <- rep(lncol,nvar)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
     if(missing(ylim)) {ylimit=c(0,max(tInfo)+.03)} else {ylimit <- ylim}
-	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main,...)
+	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main,col=lncol[1],...)
 text(location[ii],max(tInfo[,ii])+.03,labels[ii])
+
 for(i in (ii+1):nvar) {
     if(abs(discrimination[i])  > cut) {
-	lines(x,logisticInfo(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ])
+	lines(x,logisticInfo(x,a=discrimination[i]*D,d=location[i]),lty=c(1:6)[(i %% 6) + 1 ],col=lncol[i])
 	text(location[i],max(tInfo[,i])+.02,labels[i])
 	}}} 
 	if  (type !="ICC") {temp[[f]] <- list(AUC=AUC,max.info=max.info)
@@ -133,7 +137,7 @@ function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
 
 
 "plot.poly" <- 
-function(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,...) {
+function(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,lncol="black",...) {
 
 item <- x
 byKeys <- FALSE
@@ -155,6 +159,7 @@ x <- NULL
 
 nvar <- length(item$irt$discrimination[,1])
 ncat <- dim(item$irt$difficulty[[1]])[2]
+if(length(lncol) < 2) lncol <- rep(lncol,nvar)
 if(missing(type)) {type = "IIC"}   
 
 if(missing(D)) {D <- 1.702
@@ -193,19 +198,19 @@ if(missing(ylim)) ylim <- c(0,1)
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
 	if(discrimination[i] > 0 ) {
-		plot(x,logistic(x,a=-D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,...) 
+		plot(x,logistic(x,a=-D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...) 
 		text(0,.70,labels[i])} else { 
-		plot(x,logistic(x,a=D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,...)
+		plot(x,logistic(x,a=D*discrimination[i],d=location[i,1]),ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
 		text(max(0),.7,paste("-",labels[i],sep=""))
 			}
   for (j in 2:(ncat))  {
 		if(discrimination[i] > 0 ) {                              
-			lines(x,(-logistic(x,a=D*discrimination[i],d=location[i,j])+logistic(x,a=D*discrimination[i],d=location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ])
-			} else {lines(x,(-logistic(x,a=-D*discrimination[i],d= location[i,j])+logistic(x,a=-D*discrimination[i],d=location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ])}
+			lines(x,(-logistic(x,a=D*discrimination[i],d=location[i,j])+logistic(x,a=D*discrimination[i],d=location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ],col=lncol[i])
+			} else {lines(x,(-logistic(x,a=-D*discrimination[i],d= location[i,j])+logistic(x,a=-D*discrimination[i],d=location[i,j-1])),lty=c(1:6)[(j %% 6) + 1 ],col=lncol[i])}
 			}
 	if(discrimination[i] > 0 ) {                                     
-	lines(x,(logistic(x,a=D*discrimination[i],d=location[i,ncat])))
-	} else {lines(x,(logistic(x,a=-D*discrimination[i],d=location[i,ncat]))) }
+	lines(x,(logistic(x,a=D*discrimination[i],d=location[i,ncat])),col=lncol[i])
+	} else {lines(x,(logistic(x,a=-D*discrimination[i],d=location[i,ncat])),col=lncol[i]) }
 	}}
 	}  #now do the summary stuff for all cases
 	
@@ -254,7 +259,7 @@ for(i in 1:nvar) {
 	rsInfo <- rowSums(testInfo)
 	if(missing(ylim)) ylim = c(0,max(rsInfo))
 	op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
-	 plot(x,rsInfo,typ="l",ylim=ylim,ylab=ylab,xlab=xlab,main=main1,...)
+	 plot(x,rsInfo,typ="l",ylim=ylim,ylab=ylab,xlab=xlab,main=main1,col=lncol[1],...)
 	 ax4 <- seq(0,ylim[2],ylim[2]/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
@@ -268,11 +273,11 @@ for(i in 1:nvar) {
 	if(missing(ylim)) ylim <- c(0,1)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,...)
-	#xmax <- which
+	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
+
 if(discrimination[ii] > 0 ) {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,labels[ii])} else {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,paste("-",labels[ii],sep=""))}
 for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
-	lines(x,testInfo[,i],lty=c(1:6)[(i %% 6) + 1 ])
+	lines(x,testInfo[,i],lty=c(1:6)[(i %% 6) + 1 ],col=lncol[i])
 	if(discrimination[i] > 0 ) {
 	text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,labels[i]) } else {text(x[which.max(testInfo[,i])],max(testInfo[,i])+.03,paste("-",labels[i],sep=""))}
 	}}

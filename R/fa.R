@@ -379,6 +379,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     model <- loadings %*% t(loadings)  
     
     f.loadings <- loadings #used to pass them to factor.stats 
+    
+    rot.mat <- NULL
     if(rotate != "none") {if (nfactors > 1) {
 
 if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" | rotate =="targetT" | rotate =="bifactor"   | rotate =="TargetT"|
@@ -386,58 +388,80 @@ if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentl
 Phi <- NULL 
 switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psych
   varimax = {rotated <- stats::varimax(loadings)  #varimax is from stats, the others are from GPArotation 
-   			         loadings <- rotated$loadings},
+   			         loadings <- rotated$loadings
+   			         rot.mat <- rotated$rotmat},
    Varimax = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	       #varimax is from the stats package, Varimax is from GPArotations
    			#rotated <- do.call(rotate,list(loadings,...))
    			#rotated <- do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...))
    			rotated <- GPArotation::Varimax(loadings)
-   			loadings <- rotated$loadings} ,
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    	quartimax = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	      
    			#rotated <- do.call(rotate,list(loadings))
    			rotated <- GPArotation::quartimax(loadings)
-   			loadings <- rotated$loadings} ,
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    	bentlerT =  {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	       
    			#rotated <- do.call(rotate,list(loadings,...))
    			rotated <- GPArotation::bentlerT(loadings)
-   			loadings <- rotated$loadings} ,
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    	geominT	= {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	      
    			#rotated <- do.call(rotate,list(loadings,...))
    			rotated <- GPArotation::geominT(loadings)
-   			loadings <- rotated$loadings} ,
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    	targetT = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
-   	     
-   			#rotated <- do.call(rotate,list(loadings,...))
-   			rotated <- GPArotation::targetT(loadings)
-   			loadings <- rotated$loadings} ,
+   			rotated <- GPArotation::targetT(loadings,Tmat=diag(ncol(loadings)),...)
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    			
-   	 bifactor = {loadings <- bifactor(loadings)$loadings},    #the next four solutions were not properly returning the values
-   	 TargetT =  {loadings <- TargetT(loadings,...)$loadings},
-   	equamax =  {loadings <- equamax(loadings)$loadings}, 
-   	varimin = {loadings <- varimin(loadings)$loadings},
-   	specialT =  {loadings <- specialT(loadings)$loadings}, 
+   	 bifactor = {rot <- bifactor(loadings)
+   	             loadings <- rot$loadings
+   	            rot.mat <- t(solve(rot$Th))},  
+   	 TargetT =  {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   	            rot <- GPArotation::targetT(loadings,Tmat=diag(ncol(loadings)),...)
+   	              loadings <- rot$loadings
+   	            rot.mat <- t(solve(rot$Th))},
+   	equamax =  {rot <- equamax(loadings)
+   	              loadings <- rot$loadings
+   	            rot.mat <- t(solve(rot$Th))}, 
+   	varimin = {rot <- varimin(loadings)
+   	            loadings <- rot$loadings
+   	            rot.mat <- t(solve(rot$Th))},
+   	specialT =  {rot <- specialT(loadings)
+   	              loadings <- rot$loadings
+   	              rot.mat <- t(solve(rot$Th))}, 
    	Promax =   {pro <- Promax(loadings)
+     			loadings <- pro$loadings
+     			 Phi <- pro$Phi 
+     			 rot.mat <- pro$rotmat},
+     promax =   {pro <- stats::promax(loadings)   #from stats
      			 loadings <- pro$loadings
-     			  Phi <- pro$Phi },
-     promax =   {pro <- Promax(loadings)
-     			 loadings <- pro$loadings
-     			  Phi <- pro$Phi },	
+     			  rot.mat <- pro$rotmat
+     			  ui <- solve(rot.mat)
+     			  Phi <-  cov2cor(ui %*% t(ui))},	
      cluster = 	 {loadings <- varimax(loadings)$loadings           			
 								pro <- target.rot(loadings)
      			              	loadings <- pro$loadings
-     			                Phi <- pro$Phi},
+     			                Phi <- pro$Phi
+     			                 rot.mat <- pro$rotmat},
      biquartimin =    {ob <- biquartimin(loadings,)
                     loadings <- ob$loadings
-     				 Phi <- ob$Phi}, 
+     				 Phi <- ob$Phi
+     				 rot.mat <- t(solve(ob$Th))}, 
      TargetQ  =  {ob <- TargetQ(loadings,...)
                     loadings <- ob$loadings
-     				 Phi <- ob$Phi}, 
+     				 Phi <- ob$Phi
+     				  rot.mat <- t(solve(ob$Th))}, 
      specialQ = {ob <- specialQ(loadings,...)
                     loadings <- ob$loadings
-     				 Phi <- ob$Phi})
+     				 Phi <- ob$Phi
+     				 rot.mat <- t(solve(pro$Th))})
      } else {
      #The following oblique cases all use GPArotation			                
      if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ"  |rotate == "targetQ"  ) {
@@ -449,9 +473,12 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
      				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings
-     				 Phi <- ob$Phi}
+     				 Phi <- ob$Phi
+     				  rot.mat <- t(solve(ob$Th))}
      		                             } else {message("Specified rotation not found, rotate='none' used")}
-     	 } }}
+     	 }
+     	} 
+     	 }
      	 		
     signed <- sign(colSums(loadings))
     signed[signed==0] <- 1
@@ -486,7 +513,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result$e.values <- e.values  
     result$loadings <- loadings
     result$fm <- fm  #remember what kind of analysis we did
-    
+    result$rot.mat <- rot.mat
     if(!is.null(Phi) ) {result$Phi <- Phi      #the if statement was incorrectly including oblique.scores.  Fixed Feb, 2012 following a report by Jessica Jaynes
                        Structure <- loadings %*% Phi} else {Structure <- loadings}
                        class(Structure) <- "loadings"
@@ -514,3 +541,5 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     #modified April 4, 2011 to find the factor scores of the oblique factors
     #modified December 12, 2011 to report structure coefficients as well as pattern (loadings)
    #modified February 11, 2013 to correctly treat SMC=FALSE as 1s instead of 0s.
+   #modified spring, 2015 to use switch in the rotation options
+   #modified August 25, 2015 to add rot.mat as output

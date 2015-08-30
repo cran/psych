@@ -4,7 +4,7 @@
 \description{Test to make sure the psych functions run on basic test data sets
 }
 \usage{
-test.psych(first=1,last=5,short=TRUE,all=FALSE)
+test.psych(first=1,last=5,short=TRUE,all=FALSE,fapc=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -12,6 +12,7 @@ test.psych(first=1,last=5,short=TRUE,all=FALSE)
   \item{last}{last=5: test for datasets until last}
   \item{short}{short=TRUE - don't return any analyses}
   \item{all}{To get around a failure on certain Solaris 32 bit systems, all=FALSE is the default}
+  \item{fapc}{if fapc=TRUE, then do a whole series of tests of factor and principal component extraction and rotations.}  
 }
 \details{When modifying the psych package, it is useful to make sure that adding some code does not break something else.  The test.psych function tests the major functions on various standard data sets.  It  also shows off a number of the capabilities of the psych package.
 

@@ -12,7 +12,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FA
   \item{r}{a correlation matrix.  If a raw data matrix is used, the correlations will be found using pairwise deletions for missing values.}
   \item{nfactors}{Number of components to extract }
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
-  \item{rotate}{"none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.}
+  \item{rotate}{"none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution. See \code{\link{fa}} for all rotations avaiable.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{covar}{If false, find the correlation matrix from the raw data or convert to a correlation matrix if given a square matrix as input.}
   \item{scores}{If TRUE, find component scores}
@@ -30,7 +30,11 @@ For a n x n correlation matrix, the n principal components completely reproduce 
 
 It is important to recognize that rotated principal components are not principal components (the axes associated with the eigen value decomposition) but are merely components.  To point this out, unrotated principal components are labelled as PCi, while rotated PCs are now labeled as RCi (for rotated components) and obliquely transformed components as TCi (for transformed components). (Thanks to Ulrike Gromping for this suggestion.)
 
-Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin).
+Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin).  
+
+Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
+
+The rotation matrix  (rot.mat) is returned from all of these options. This is the inverse of the Th (theta?) object returned by the GPArotation package.  The correlations of the factors may be found by \eqn{\Phi = \theta' \theta}{Phi = Th' Th}
 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
@@ -67,6 +71,7 @@ The output from the print.psych function displays the component loadings (from t
  \item{weights}{The beta weights to find the principal components from the data}
  \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001)  For components, these are of course 1.0.}
 \item{valid}{The correlations of the component score estimates with the components, if they were to be found and unit weights were used. (So called course coding).}
+\item{rot.mat}{The rotation matrix used to produce the rotated component loadings. }
 }
 
 \author{ William Revelle}

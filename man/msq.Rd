@@ -118,13 +118,22 @@ Procedure. The data were collected over nine years, as part of a series of studi
 The EA and TA scales are from Thayer, the PA and NA scales are from Watson et al. (1988).
 Scales and items:
 
-Energetic Arousal: Active, Energetic, Vigorous, Wakeful, Wideawake, Full of Pep, Lively, -sleepy, -tired, - drowsy  (ADACL)
+Energetic Arousal: active, energetic, vigorous, wakeful, wide.awake, full.of.pep, lively, -sleepy, -tired, - drowsy  (ADACL)
 
 Tense Arousal: Intense, Jittery, fearful, tense, clutched up, -quiet, -still, - placid, - calm, -at rest  (ADACL)
 
-Positive Affect: active, excited, strong, inspired, determined, attentive, interested, enthusiastic, proud, alert  (PANAS)
+Positive Affect: active, alert, attentive, determined, enthusiastic, excited, inspired,  interested,  proud, strong  (PANAS)
 
-Negative Affect: jittery, nervous, scared, afraid, guilty, ashamed, distressed, upset, hostile, irritable  (PANAS)
+Negative Affect: afraid, ashamed,   distressed,  guilty,  hostile, irritable , jittery, nervous, scared, upset (PANAS)
+
+The PA and NA scales can in turn can be thought of as having subscales:  (See the PANAS-X)
+Fear:  afraid, scared, nervous, jittery    (not included  frightened, shaky)
+Hostility: angry, hostile, irritable, (not included:   scornful,  disgusted, loathing 
+guilt: ashamed, guilty,   (not included: blameworthy, angry at self, disgusted with self, dissatisfied with self)
+sadness: alone,  blue,  lonely, sad,  (not included: downhearted) 
+joviality: cheerful, delighted, energetic, enthusiastic, excited,  happy, lively,     (not included:  joyful)
+self-assurance: proud, strong, confident,       (not included: bold,  daring, fearless )   
+attentiveness:  alert, attentive,  determined  (not included: concentrating)
 
 The next set of circumplex scales were taken (I think) from Larsen and Diener (1992).  
 High activation: active, aroused, surprised, intense, astonished

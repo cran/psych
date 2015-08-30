@@ -71,6 +71,8 @@ The \code{\link{circadian.reliability}} function splits the data for each subjec
 
 \code{\link{circular.mean}} and \code{\link{circular.cor}} are just \code{\link{circadian.mean}} and \code{\link{circadian.cor}} but with input given in radians rather than hours.
 
+The \code{\link{circadian.linear.cor}} function will correlate a set of circular variables with a set of linear variables.  The first (angle) variables are circular, the second (x) set of variables are linear.  
+
 
 The \code{\link{circadian.F}} will compare 2 or more groups in terms of their mean position.  This is adapted from the equivalent function in the circular pacakge.  This is clearly a more powerful test the more each group is compact around its mean (large values of R). 
 }
@@ -103,7 +105,8 @@ Jammalamadaka, Sreenivasa and Lund, Ulric (2006),The effect of wind direction on
 time <- seq(1:24) #create a 24 hour time
 pure <- matrix(time,24,18) 
 colnames(pure) <- paste0("H",1:18)
-pure <- data.frame(time,cos((pure - col(pure))*pi/12)) #18 different phases
+pure <- data.frame(time,cos((pure - col(pure))*pi/12)*3 + 3)
+    #18 different phases but scaled to 0-6  match mood data
 matplot(pure[-1],type="l",main="Pure circadian arousal rhythms",
     xlab="time of day",ylab="Arousal") 
 op <- par(mfrow=c(2,2))
@@ -119,9 +122,9 @@ p <- cosinor(pure) #find the acrophases (should match the input)
 pp <- matrix(NA,nrow=6*24,ncol=4)
 pure <- as.matrix(pure)
 pp[,1] <- rep(pure[,1],6)
-pp[1:24,2:4] <- pure[1:24,2:4]
-pp[25:48,2:4] <- pure[1:24,5:7]
-pp[49:72,2:4] <- pure[1:24,8:10]
+pp[1:24,2:4] <- pure[1:24,2:4] 
+pp[25:48,2:4] <- pure[1:24,5:7] *2   #to test different variances
+pp[49:72,2:4] <- pure[1:24,8:10] *3
 pp[73:96,2:4] <- pure[1:24,11:13]
 pp[97:120,2:4] <- pure[1:24,14:16]
 pp[121:144,2:4] <- pure[1:24,17:19]

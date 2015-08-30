@@ -11,7 +11,7 @@ caption="df2latex",label="default",char=FALSE,stars=FALSE,silent=FALSE,file=NULL
  nvar <- dim(x)[2]
  rname<- rownames(x)
 comment <- paste("%", match.call())
-header <- paste("\\begin{table}[htdp]",
+header <- paste("\\begin{table}[htpb]",
 "\\caption{",caption,"}
 \\begin{center}
 \\begin{",font.size,"} 
@@ -144,7 +144,7 @@ if(!is.null(f$complexity)) {x <- data.frame(x,h2=h2,u2=u2,com=f$complexity) } el
 #first set up the table
  nvar <- dim(x)[2]
 comment <- paste("% Called in the psych package ", match.call())
-header <- paste("\\begin{table}[htdp]",
+header <- paste("\\begin{table}[htpb]",
 "\\caption{",caption,"}
 \\begin{center}
 \\begin{",font.size,"} 
@@ -263,7 +263,7 @@ rowmax <- apply(x,1,max, na.rm=TRUE)
 #first set up the table
  nvar <- ncol(x)
 comment <- paste("%", match.call())
-header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
+header <- paste("\\begin{",font.size,"} \\begin{table}[htpb]",
 "\\caption{",caption,"}
 \\begin{center}
 \\begin{tabular}",sep="")
@@ -352,7 +352,7 @@ vtotal <- sum(h2 + u2)
 #first set up the table
  nvar <- dim(x)[2]
 comment <- paste("% Called in the psych package ", match.call())
-header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
+header <- paste("\\begin{",font.size,"} \\begin{table}[htpb]",
 "\\caption{",caption," with cut = ",cut,"\n $\\omega_h  = ",round(f$omega_h,digits), "\\;\\;\\;\\alpha (\\lambda_3) = ",round(f$alpha,digits), "\\;\\;\\;\\lambda_6^* = ",round(f$G6,digits),"\\;\\;\\; \\omega_t = ",round(f$omega.tot,digits),"$ }
 \\begin{center}
 \\begin{tabular}",sep="")
@@ -423,7 +423,7 @@ x <- icc$results
  nvar <- dim(x)[2]
  rname<- rownames(x)
 comment <- paste("%", match.call())
-header <- paste("\\begin{",font.size,"} \\begin{table}[htdp]",
+header <- paste("\\begin{",font.size,"} \\begin{table}[[htpb]",
 "\\caption{",caption,"}
 \\begin{tabular}",sep="")
 

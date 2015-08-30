@@ -152,7 +152,7 @@ round(cong,2)
 @
  \end{scriptsize}
  
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 #plot.new()
@@ -346,7 +346,7 @@ sg3 <- structure.diagram(fxs,phi,fyx)
 
 \subsubsection{A  hierarchical structure among the latent predictors.}
 Measures of intelligence and psychopathology frequently have a general factor as well as multiple group factors.  The general factor then is thought to predict some dependent latent variable.  Compare this with the previous model (see Figure~\ref{fig:symbxy}). 
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 fxh  <- structure.list(9,list(X1=c(1:3),X2=c(4:6),X3=c(7:9),g=NULL))
@@ -403,7 +403,7 @@ ml3p
 In addition to the conventional oblique factor model, an alternative model is to consider the correlations between the factors to represent a higher order factor.   This can be shown either as a \iemph{bifactor} solution \cite{holzinger:37,schmid:57} with a general factor for all variables and a set of residualized group factors, or as a hierarchical structure.  An exploratory hierarchical model can be applied to this kind of data structure using the \pfun{omega} function.  Graphic options include drawing a Schmid - Leiman bifactor solution (Figure~\ref{fig:om:bi}) or drawing a hierarchical factor solution f(Figure~\ref{fig:om:hi}).
 
 \subsubsection{A bifactor solution}
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 om.bi <- omega(bifact)
@@ -416,7 +416,7 @@ om.bi <- omega(bifact)
 The \iemph{bifactor} solution has a general factor loading for each variable as well as a set of residual group factors.  This approach has been used extensively in the measurement of ability and has more recently been used in the measure of psychopathology \citep{reise:07}.  Data sets included in the \pfun{bifactor} data  include the original \citep{holzinger:37} data set (\pfun{holzinger}) as well as a set from \cite{reise:07} (\pfun{reise}) and a nine variable problem from Thurstone.
 
 \subsubsection{A hierarchical solution}
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 om.hi <- omega(bifact,sl=FALSE)
@@ -434,7 +434,7 @@ om.bi
 
 
 Yet one more way to treat the hierarchical structure of a data set is to consider hierarchical cluster analysis using the \pfun{ICLUST} algorithm (Figure~\ref{fig:iclust}). ICLUST is most appropriate for forming item composites.
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
@@ -532,7 +532,7 @@ mod.f3   #show it
 
 The structure being tested may be seen using \pfun{structure.graph}
 
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 #plot.new()
@@ -577,7 +577,7 @@ Compare this solution to the one reported below, and to the \Rpkg{sem} manual.
 A hierarchical solution to this data set was previously found by the \pfun{omega} function (Figure~\ref{fig:om:hi}).  The output of that analysis can be used as a model for a \fun{sem} analysis.  Once again, the \fun{stdCoef} function helps see the structure. Alternatively, using the \pfun{omega} function on the \pfun{Thurstone} data  will create the model for this particular data set.
 
 
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 om.hi <- omega(Thurstone,digits=3,sl=FALSE)
@@ -623,7 +623,7 @@ om.sem <- omegaSem(Thurstone,n.obs=213)
 
 Comparing the two models graphically (Figure~\ref{fig:omega:cfa} with Figure~\ref{fig:thurstone:bi} shows that while not identical, they are very similar.  The sem version is basically a forced simple structure. Notice that the values of $\omega_h$ are not identical from the EFA and CFA models.  The CFA solution yields higher values of $\omega_{h}$ because, by forcing a pure cluster solution (no cross loadings), the correlations between the factors is forced to be through the \emph{g} factor.
 
-\begin{figure}[htbp]
+\begin{figure}[htpb]
 \begin{center}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
 omega.diagram(om.sem,sort=FALSE)

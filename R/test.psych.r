@@ -1,6 +1,6 @@
 #Quality control function to run through hard problems 
 "test.psych" <- 
-function(first=1,last=5,short=TRUE,all=FALSE) {  
+function(first=1,last=5,short=TRUE,all=FALSE,fapc=FALSE) {  
 s1 <- datasets::USArrests         #  Violent Crime Rates by US State  (4 variables)
 s2 <- datasets::attitude          #The Chatterjee-Price Attitude Data
 s3 <- datasets::Harman23.cor$cov     #   Harman Example 2.3 8 physical measurements
@@ -128,45 +128,86 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
    foe <- fa.extension(R[ss,-ss],f)
    fa.diagram(fa.results=f,fe.results=foe)
    
-   #now test the iteration options in fa
-#Commented for official release uncommented for testing   
-#    f3 <- fa(bfi[1:15],3,n.iter=5)
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Varimax")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimax")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bifactor")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="varimin")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="bentlerT")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="geominT")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="cluster")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="biquartimin")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="equamax")
-#    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
-#    
-#     fpoly <- fa(bfi[1:10],2,n.iter=5,cor="poly")
-#     f1 <- fa(ability,n.iter=4)
-#     f1p <- fa(ability,n.iter=4,cor="tet")
-#     
-#    f3 <- principal(bfi[1:15],3,n.iter=1)
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Varimax")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="varimax")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="bifactor")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="varimin")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="bentlerT")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="geominT")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="equamax")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Promax")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="cluster")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="biquartimin")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="equamax")
-#    f3 <- principal(bfi[1:15],3,n.iter=1,rotate="Promax")
-#    
-#     fpoly <- principal(bfi[1:10],2,n.iter=5,cor="poly")
-#     f1 <- principal(ability,n.iter=4)
-#     f1p <- principal(ability,n.iter=4,cor="tet")
-# 
-#  
+   #now test the iteration options  and the rotation options in fa
+#not run by default for official testing
+if(fapc) {
+   data1 <- psych::bfi
+ 
+   f3 <- fa(data1[1:15],3,n.iter=5)
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="Varimax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="varimax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="quartimax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="bentlerT")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="geominT")
+    Target <- matrix(c(rep(1,5),rep(0,15),rep(1,5),rep(0,15),rep(1,5)),ncol=3)
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="targetT",Target=Target)
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="bifactor")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="TargetT",Target=Target)
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="equamax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="varimin")
+   #f3 <- fa(data1[1:15],3,n.iter=5,rotate="specialQ")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="Promax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="promax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="cluster")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="biquartimin")
+    Targ <- make.keys(15,list(f1=1:5,f2=6:10,f3=11:15)) 
+ 	Targ <- scrub(Targ,isvalue=1)  #fix the 0s, allow the NAs to be estimated
+	Targ <- list(Targ)  #input must be a list
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="TargetQ",Target=Targ)  #Michael Brown's 
+   #f3 <- fa(data1[1:15],3,n.iter=5,rotate="specialQ")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="oblimin")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="quartimin")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="simplimax")
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="geominQ")
+   
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="targetQ",Target=Target)
+   f3 <- fa(data1[1:15],3,n.iter=5,rotate="bentlerQ")
+   
+     data2 <- psych::ability
+    f1 <- fa(data2)
+    fpoly <- fa(data2[1:10],2,n.iter=5,cor="poly")
+    f1 <- fa(data2,n.iter=4)
+    f1p <- fa(data2,n.iter=4,cor="tet")
+    
+   p3 <- principal(data1[1:15],3,n.iter=1)
+   p3 <- principal(data1[1:15],3,rotate="Varimax")
+   p3 <- principal(data1[1:15],3,rotate="varimax")
+   p3 <- principal(data1[1:15],3,rotate="quartimax")
+   p3 <- principal(data1[1:15],3,rotate="bentlerT")
+    p3 <- principal(data1[1:15],3,rotate="geominT") 
+  Target <- matrix(c(rep(1,5),rep(0,15),rep(1,5),rep(0,15),rep(1,5)),ncol=3)
+    p3 <- principal(data1[1:15],3,rotate="targetT",Target=Target)
+       p3 <- principal(data1[1:15],3,rotate="TargetT",Target=Target)
+   p3 <- principal(data1[1:15],3,rotate="bifactor")
+   p3 <- principal(data1[1:15],3,rotate="varimin")
+   p3 <- principal(data1[1:15],3,rotate="bentlerT")
+   p3 <- principal(data1[1:15],3,rotate="geominT")
+   p3 <- principal(data1[1:15],3,rotate="equamax")
+   p3 <- principal(data1[1:15],3,rotate="Promax")
+      p3 <- principal(data1[1:15],3,rotate="promax")
+   p3  <- principal(data1[1:15],3,rotate="cluster")
+   p3  <- principal(data1[1:15],3,rotate="biquartimin")
+   p3  <- principal(data1[1:15],3,rotate="equamax")
+   Targ <- make.keys(15,list(f1=1:5,f2=6:10,f3=11:15)) 
+ 	Targ <- scrub(Targ,isvalue=1)  #fix the 0s, allow the NAs to be estimated
+	Targ <- list(Targ)  #input must be a list
+	p3  <- principal(data1[1:15],3,rotate="TargetQ",Target=Targ)
+	 p3  <- principal(data1[1:15],3,rotate="oblimin")
+   p3  <- principal(data1[1:15],3,rotate="quartimin")
+   p3  <- principal(data1[1:15],3,rotate="simplimax")
+    p3  <- principal(data1[1:15],3,rotate="geominQ")
+   p3  <- principal(data1[1:15],3,rotate="biquartimin")
+   p3  <- principal(data1[1:15],3,rotate="targetQ",Target=Target)
+      p3  <- principal(data1[1:15],3,rotate="bentlerQ")
+   
+	
+	
+    fpoly <- principal(data1[1:10],2,cor="poly")
+    
+    f1 <- principal(data2)
+    f1p <- principal(data2,cor="tet")
+}
+ 
 
 
     out <- list(out,fa.simple,psych.d)

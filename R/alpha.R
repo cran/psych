@@ -37,9 +37,9 @@
       
          if(any(p1$loadings < 0)) {if (check.keys) {warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
                     keys <- 1- 2* (p1$loadings < 0 ) } else {
-                       warning("Some items were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option")
+                       if(is.null(keys)) {warning("Some items were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option")
                        cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option")
-                        } 
+                        }} 
                 }
            # if(check.keys && is.null(keys)) {
            # p1 <- principal(x)

@@ -225,7 +225,11 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes five methods  of \iemph{factor analysis} (\iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} function. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria. These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}. Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}. Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes five methods  of \iemph{factor analysis} (\iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} function. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
+
+ Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}. 
+ 
+ Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
 
 Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{cor.plot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
@@ -398,7 +402,7 @@ Note that the number of subjects for those columns has decreased, and the minimu
 Sometimes categorical variables (e.g., college major, occupation, ethnicity) are to be analyzed using correlation or regression.  To do this, one can form ``dummy codes'' which are merely binary variables for each category.  This may be done using \pfun{dummy.code}. Subsequent analyses using these dummy coded variables may be using \pfun{biserial} or point biserial (regular Pearson r) to show effect sizes and may be plotted in e.g., \pfun{spider} plots.
 
 \subsection{Simple descriptive graphics}
-Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits (Figure~\ref{fig:error.bars})  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots (Figure~\ref{fig:violin}).  
+Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits (Figure~\ref{fig:error.bars})  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots (Figure~\ref{fig:violin}). (These are sometimes called ``lava-lamp" plots.)  
 
 \subsubsection{Scatter Plot Matrices}
 Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pfun{pairs.panels} function, adapted from the help menu for the \fun{pairs} function produces xy scatter plots of each pair of variables below the diagonal, shows the histogram of each variable on the diagonal, and shows the \iemph{lowess} locally fit regression line as well. An ellipse around the mean with the axis length reflecting one standard deviation of the x and y variables is also drawn. The x axis in each scatter plot represents the column variable, the y axis the row variable  (Figure~\ref{fig:pairs.panels}).  When plotting many subjects, it is both faster and cleaner to set the plot character (pch) to be '.'.  (See Figure~\ref{fig:pairs.panels} for an example.)
@@ -635,7 +639,7 @@ dev.off()
 \label{sect:corr.test}
 Correlations are wonderful descriptive statistics of the data but some people like to test whether these correlations differ from zero, or differ from each other. The \fun{cor.test} function (in the \Rpkg{stats} package)  will test the significance of a single correlation, and the \fun{rcorr} function in the \Rpkg{Hmisc} package will do this for many correlations.  In the \Rpkg{psych} package, the \pfun{corr.test} function reports the correlation (Pearson, Spearman, or Kendall) between all variables in either one or two data frames or matrices, as well as the number of observations for each case, and the (two-tailed) probability for each correlation.  Unfortunately, these probability values have not been corrected for multiple comparisons and so should be taken with a great deal of salt.  Thus, in \pfun{corr.test} and \pfun{corr.p} the  raw probabilities are reported below the diagonal and the probabilities adjusted for multiple comparisons using (by default) the Holm correction are reported above  the diagonal (Table~\ref{tab:corr.test}).  (See the \fun{p.adjust} function for a discussion of \cite{holm:79} and other corrections.)
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The \pfun{corr.test} function reports correlations,  cell sizes, and raw and adjusted probability values.  \pfun{corr.p} reports the probability values for a correlation matrix.  By default, the adjustment used is that of \cite{holm:79}.}
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
@@ -858,7 +862,7 @@ if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations
 @
 
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{Three correlated factors from the Thurstone 9 variable problem.  By default, the solution is transformed obliquely using oblimin. The extraction method is (by default) minimum residual.}
 \begin{scriptsize}
 \begin{center}
@@ -882,7 +886,7 @@ The solutions from the \pfun{fa}, the \pfun{factor.minres} and \pfun{factor.pa} 
 Using the Thurstone data set, three factors were requested  and then transformed into an independent clusters solution using \pfun{target.rot}  (Table~\ref{tab:Thurstone}).
 
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The extraction method was principal axis. The transformation was a targeted transformation to a simple cluster solution.}
 \begin{center}
 \begin{scriptsize}
@@ -907,7 +911,7 @@ f3o}
 Similar to the minres approach of minimizing the squared residuals, factor method ``wls" weights the squared residuals by their uniquenesses.  This tends to produce slightly smaller overall residuals. In the example of weighted least squares, the output is shown by using the \pfun{print} function with the cut option set to 0.  That is, all loadings are shown (Table~\ref{tab:Thurstone.wls}).
 
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The 9 variable problem from Thurstone is a classic example of factoring where there is a higher order factor, g, that accounts for the correlation between the factors. The factors were extracted using a weighted least squares algorithm.  All loadings are shown by using the cut=0 option in the \pfun{print.psych} function.}
 
 \begin{scriptsize}
@@ -954,7 +958,7 @@ A comparison of these three approaches suggests that the minres solution is more
 An alternative to factor analysis, which is unfortunately frequently confused with \iemph{factor analysis}, is \iemph{principal components analysis}.  Although the goals of \iemph{PCA} and \iemph{FA} are similar, PCA is a descriptive model of the data, while FA is a structural model.  Some psychologists  use PCA in a manner similar to factor analysis and thus the \pfun{principal} function produces output that is perhaps more understandable than that produced by \fun{princomp} in the \Rpkg{stats} package. Table~\ref{tab:pca} shows a PCA of the Thurstone 9 variable problem rotated using the \pfun{Promax} function. Note how the loadings from the factor model are similar but smaller than the principal component loadings. This is because the PCA model attempts to account for the entire variance of the correlation matrix, while FA accounts for just the \iemph{common variance}.  This distinction becomes most important for small correlation matrices. Also note how the goodness of fit statistics, based upon the residual off diagonal elements, is much worse than the \pfun{fa} solution.
 
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The Thurstone problem can also be analyzed using Principal Components Analysis.  Compare this to Table~\ref{tab:Thurstone}.  The loadings are higher for the PCA because the model accounts for the unique as well as the common variance.The fit of the off diagonal elements, however, is much worse than the \pfun{fa} results.}
 \begin{center}
 \begin{scriptsize}
@@ -1036,7 +1040,7 @@ ic <- iclust(bfi[1:25])
 \end{center}
 \end{figure}
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The summary statistics from an iclust analysis shows three large clusters and smaller cluster.}
 \begin{center}
 \begin{scriptsize}
@@ -1050,7 +1054,7 @@ summary(ic)  #show the results
 
 The previous analysis  (Figure~\ref{fig:iclust}) was done using the Pearson correlation. A somewhat cleaner structure is obtained when using the \pfun{polychoric} function to find polychoric correlations (Figure~\ref{fig:iclust.poly}).   Note that the first time finding the polychoric correlations some time, but the next three analyses were done using that correlation matrix (r.poly\$rho).  When using the console for input,  \pfun{polychoric} will report on its progress while working using \pfun{progressBar}.
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The \pfun{polychoric} and the \pfun{tetrachoric} functions can take a long time to finish and report their progress by a series of dots  as they work.  The dots are  suppressed when creating a Sweave document.}
 \begin{center}
 \begin{tiny}
@@ -1104,7 +1108,7 @@ ic.poly <- iclust(r.poly$rho,beta.size=3,title="ICLUST beta.size=3")
 \end{center}
 \end{figure}
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{The output from \pfun{iclust}includes the loadings of each item on each cluster. These are equivalent to factor structure loadings. By specifying the value of cut, small loadings are suppressed.  The default is for cut=0.su }
 \begin{center}
 \begin{scriptsize}
@@ -1124,7 +1128,7 @@ Exploratory factoring techniques are sometimes criticized because of the lack of
 
 Bootstrapped confidence intervals can also be found for the loadings of a factoring of a polychoric matrix.  \pfun{fa.poly} will find the polychoric correlation matrix and if the n.iter option is greater than 1, will then randomly resample the data (case wise) to give bootstrapped  samples.  This will take a long time for large number of items or interations.
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{An example of bootstrapped confidence intervals on 10 items from the Big 5 inventory. The number of bootstrapped samples was set to 20.  More conventional bootstrapping would use 100 or 1000 replications.  }
 \begin{tiny}
 \begin{center}
@@ -1151,7 +1155,7 @@ factor.congruence(f4,ic)
 
 A more complete comparison of oblique factor solutions (both minres and principal axis),  bifactor  and component solutions to the Thurstone data set  is done using the \pfun{factor.congruence} function. (See table~\ref{tab:congruence}).
 
-\begin{table}[htdp]
+\begin{table}[htpb]
 \caption{Congruence coefficients for oblique factor,  bifactor and component  solutions for the Thurstone problem.}
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
@@ -1938,7 +1942,8 @@ An example of converting the output from \pfun{fa} to \LaTeX appears in Table~\r
 
 % fa2latex % f3 
 % Called in the psych package  fa2latex % Called in the psych package  f3 
-\begin{scriptsize} \begin{table}[htdp]\caption{fa2latex}
+\begin{scriptsize} \begin{table}[htpb]
+\caption{fa2latex}
 \begin{center}
 \begin{tabular} {l r r r r r r }
  \multicolumn{ 6 }{l}{ A factor analysis table from the psych package in R } \cr 
@@ -2229,11 +2234,11 @@ Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
-\bibitem[\protect\astroncite{Revelle}{2014}]{psych}
-Revelle, W. (2014).
+\bibitem[\protect\astroncite{Revelle}{2015}]{psych}
+Revelle, W. (2015).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.4.12
+\newblock R package version 1.5.8
 
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).

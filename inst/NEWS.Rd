@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.5.7 (2015-07-01}{
+\section{Changes in psych version 1.5.9 (2015-09-01}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.5.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.4 was released in April of 2015, the last two digits reflect the day of any modifications).
+      \item Version 1.5.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.8 was released in August of 2015, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -39,6 +39,27 @@
     }
   }
   } 
+  
+   \section{Changes in psych version 1.5.8 (2015-8-28)}{
+  \subsection{Additions}{
+          \itemize{
+          \item Added rot.mat as an output to the fa and principal objects.  Cleaned up the fa and principal rotations so they all work.
+          \item Added amplitude, mean, and intercept to cosinor
+       }  
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+           \item alpha:  fixed the warning about reverse keying when keys have been specified (reported by Marc Heerdink)
+           \item Fixed the LaTeX bug in the vignettes (I was trying to float htdp instead of htpb) (as requested by CRAN)
+           \item Fixed the LaTex bug in df2latex  (same problem)
+            }
+                       } 
+  }
+ 
+ 
+
+
   
   \section{Changes in psych version 1.5.6 (2015-6-20)}{
   \subsection{Additions}{

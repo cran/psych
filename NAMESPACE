@@ -1,4 +1,4 @@
-#last modified July 1, 2015  by William Revelle 
+#last modified August 25, 2015  by William Revelle 
 #added the various imports from stats, graphics, etc.
 importFrom(mnormt,rmnorm,sadmvn,dmnorm)
 importFrom(parallel,mclapply,mcmapply)

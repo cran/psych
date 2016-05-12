@@ -44,6 +44,7 @@ conf.level <- alpha
                           result$ENull <- r2.off * n.obs  #the empirical null model
                           result$chi <- rstar.off * n.obs  #this is the empirical chi square
                           result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea
+                        
                           result$nh <- n.obs
                              if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
                                  result$crms <- sqrt(rstar.off/(2*result$dof) )

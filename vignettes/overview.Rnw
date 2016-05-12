@@ -155,7 +155,7 @@ r <- lowerCor(myData)
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
-cor.plot(r)
+corPlot(r)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
@@ -231,7 +231,7 @@ Psychometric applications emphasize techniques for dimension reduction including
  
  Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
 
-Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{cor.plot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
+Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{corPlot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
 
 This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
@@ -588,7 +588,7 @@ Perhaps a better way to see the structure in a correlation matrix is to display 
 \begin{scriptsize}
 <<corplot.png>>=
 png('corplot.png')
-cor.plot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
+corPlot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
 dev.off()
 @
 \end{scriptsize}
@@ -605,12 +605,12 @@ dev.off()
 png('circplot.png')
 circ <- sim.circ(24)
 r.circ <- cor(circ)
-cor.plot(r.circ,main='24 variables in a circumplex')
+corPlot(r.circ,main='24 variables in a circumplex')
 dev.off()
 @
 \end{scriptsize}
 \includegraphics{circplot.png}
-\caption{Using the cor.plot function to show the correlations in a circumplex. Correlations are highest near the diagonal, diminish to zero further from the diagonal, and the increase again towards the corners of the matrix.  Circumplex structures are common in the study of affect.}
+\caption{Using the corPlot function to show the correlations in a circumplex. Correlations are highest near the diagonal, diminish to zero further from the diagonal, and the increase again towards the corners of the matrix.  Circumplex structures are common in the study of affect.}
 \label{fig:cor.plot.circ}
 \end{center}
 \end{figure}

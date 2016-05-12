@@ -27,6 +27,7 @@ switch(value,
   stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
   vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
   cta = {print.psych.cta(x,digits=digits,all=all,...)},
+  mediate = {print.psych.mediate(x,digits=digits,short=short,...)},
 
 
 ##Now, for the smaller print jobs, just do it here.
@@ -214,6 +215,10 @@ cortest= {cat("Tests of correlation matrices \n")
          },
 
 
+cor.wt = {cat("Weighted Correlations \n")
+          cat("Call:")
+            print(x$Call)
+        lowerMat(x$r,digits=digits) },
 
          
 
@@ -381,48 +386,6 @@ mchoice =  {
 	 print(round(x$item.stats,digits=digits))}
   },  
   
-mediate  = { cat("\nMediation analysis \n")
-
-cat("Call: ")
-    print(x$Call)
-    dv <- x$names[1]
-    iv <- rownames(x$direct)
-    mv <- x$names[-c(1:(length(iv)+1))]
-    cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv,". The mediating variable(s) = ", mv,".")
-    if(!is.null(x$mod)) cat("  The moderating variable(s) = ", x$names[x$mod])
-    
-   for(i in 1:length(iv)) { cat("\n\nTotal Direct effect(c) of ",iv[i], " on ", dv," = ",round(x$total[i],digits), "  S.E. = ", round(x$se.bx[i],digits), " t direct = ",round(x$tt[i],digits), "  with probability = ", signif(x$probt[i],digits))
-    cat("\nDirect effect (c') of ",iv[i],  " on ", dv," removing ", mv ," = ",round(x$direct[i],digits), "  S.E. = ", round(x$se.beta[i],digits), " t direct = ",round(x$t[i],digits), "  with probability = ", signif(x$prob[i],digits))
-     
-   if(is.null(x$mod)) { cat("\nIndirect effect (ab) of ",iv[i], " on ", dv," through " ,mv , "  = ", round(x$indirect[i],digits),"\n")
-   cat("Mean bootstrapped indirect effect = ",round(x$mean.boot[i],digits), " with standard error = ",round(x$sd.boot[i],digits), " Lower CI = ",round(x$ci.quant[1,i],digits), "   Upper CI = ", round(x$ci.quant[2,i],digits))}
-     }
-   if(is.null(x$mod)) {
-     cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-     if(!any(is.na(x$abc))) {print(round(x$abc,digits))} else {
-      cat("\n 'a'  paths \n")
-      print(round(x$a,digits))
-      cat("\n'b' paths \n")
-      print(round(x$b,digits))
-      cat("\n'ab' paths \n")
-      print(round(x$ab,digits))
-     }
-    
-    cat("\nratio of indirect to total effect=  ", round(x$ratit,digits))
-    cat("\nratio of indirect to direct effect= ", round(x$ratid,digits))
-    }  else {
-    cat("\nEffect of interaction of ",iv[1], " with ", iv[2] , "  = ", round(x$direct[3],digits),"  S.E. = ", round(x$se.beta[3,1],digits), " t direct = ",round(x$t[3,1],digits), "  with probability = ", signif(x$prob[3,1],digits))
-    cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$int.ind,digits))
-    cat("\nMean bootstrapped indirect interaction effect = ",round(x$mean.boot[1],digits), " with standard error = ",round(x$sd.boot[1],digits), " Lower CI = ",round(x$ci.quant[1],digits), "   Upper CI = ", round(x$ci.quant[2,i],digits))
-    cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-   if(!is.na(x$abc)) {print(round(x$abc,digits))} else {
-      print(round(x$a,digits))
-      print(round(x$b,digits))
-      print(round(x$ab,digits))
-     }
-   
-    cat("\nR2 of model = ", round(x$R2,digits)) 
-   }},
       
     
 mixed= { cat("Call: ")

@@ -10,7 +10,8 @@
 \description{Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) (\eqn{\mu_0 \dots \mu_3)} as well as \eqn{\beta} (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and \eqn{\omega_h} and \eqn{\omega_t} (McDonald, 1999; Zinbarg et al., 2005). Greatest and lowest split-half values are found by brute force or sampling. 
 }
 \usage{
-splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL)
+splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,
+           key=NULL,use="pairwise")
 guttman(r,key=NULL) 
 tenberge(r)
 glb(r,key=NULL)
@@ -25,7 +26,7 @@ glb.fa(r,key=NULL)
   \item{covar}{Should the covariances or correlations be used for reliability calculations}
   \item{check.keys}{If TRUE, any item with a negative loading on the first factor will be flipped in sign}
  \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See if the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
- 
+ \item{use}{Should we find the correlations using "pairwise" or "complete" (see ?cor)}
 }
 \details{Surprisingly, more than a century after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. Using \code{\link{splitHalf}} for tests with 16 or fewer items, all possible splits may be found fairly easily.  For tests with 17 or more items, n.sample splits are randomly found. Thus, for 16 or fewer items, the upper and lower bounds are precise.  For 17 or more items, they are close but will probably slightly underestimate the highest and overestimate the lowest reliabilities.  
 

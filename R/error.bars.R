@@ -23,9 +23,9 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     if(is.null(ylim)) {if(is.na(max.x) | is.na(max.se) | is.na(min.x) | is.infinite(max.x)| is.infinite(min.x) | is.infinite(max.se)) {
                         ylim=c(0,1)} else {
                           if(bars) {
-                                   ylim=c(min(0,min.x- 2*max.se),max.x+2*max.se)
+                                   ylim=c(min(0,min.x- 3*max.se),max.x+3*max.se)
                                    } else {
-                                           ylim=c(min.x - 2*max.se,max.x+2*max.se)
+                                           ylim=c(min.x - 3*max.se,max.x+3*max.se)
                                            }}
                         }
     if(bars) {mp =barplot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
@@ -34,12 +34,12 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      box()
     } else {
     if(!add){
-     if(missing(xlim)) xlim<- c(.5,z+.5)
+     if(missing(xlim)) {if (is.null(x.stats$values)) {xlim<- c(.5,z+.5) } else {xlim <- c(min(x.stats$values)-.5,max(x.stats$values)+.5)}}
        if(is.null(x.stats$values)) {
      plot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,xlim=xlim,axes=FALSE,main=main,...) 
        axis(1,1:z,names,...)
        axis(2)
-     box()} else { plot(x.stats$values,x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...) }
+     box()} else { plot(x.stats$values,x.stats$mean,ylim=ylim,xlim=xlim,xlab=xlab,ylab=ylab,main=main,...) }
      
      
      } else {points(x.stats$mean,...) }
@@ -50,7 +50,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      if (length(labels)==0) lab <- rep("",z) else lab <-labels
-      s <- c(1:z)
+      s <- c(1:z)   #this allows us to address each one separately
     	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else { 
     	       
     	        if(is.null(x.stats$values)) {
@@ -61,7 +61,9 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
   if(eyes) { if(length(col) == 1) col <- rep(col,z)  
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)	   
-    for (s in 1:z){ if(!is.null(x.stats$n[s] )) {catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])}}
+    for (s in 1:z){ if(!is.null(x.stats$values[s] )) {
+            catseyes(x=x.stats$values[s],y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])} else {
+            catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])}}
     	  }
     	    }
    }
@@ -73,6 +75,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
    #modified June 15, 2010 to allow color bars to match color of lines and to have standard deviations as an option
    #modified Sept 11, 2013 to pass n -1 to the qt function (reported by Trevor Dodds)
    #modified March 10, 2014 add the capability to draw "cats eyes" 
+   #corrected April 22, 2016 to correctly handle the "stats" option with cats eyes
    
    
    
@@ -80,13 +83,16 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
      SCALE=.7
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)
-    if(n >1) {
-    norm <-  dt(ln,n-1)
+    if(is.null(n) || is.na(n))  {norm <- dnorm(ln) 
+     qt <- qnorm(alpha/2)
+     clim <- qnorm(alpha/2)} else {if(n >1) {
+    norm <-  dt(ln,n-1) 
+    clim <- qt(alpha/2,n-1)}}
     norm <- c(norm,-norm[rev])
     ln <- seq(-3,3,.1)
-    clim <- qt(alpha/2,n-1)
+    
     cln <- seq(clim,-clim,.01)
     cnorm <- dnorm(cln)
     cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	  
     polygon(norm*SCALE+x,c(ln,ln[rev])*se+y)
-    polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}}
+    polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}

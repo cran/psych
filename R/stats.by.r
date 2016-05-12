@@ -225,6 +225,7 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
 # 
 
 "cor.wt" <- function(data,vars=NULL, w=NULL,sds=NULL, cor=TRUE) {
+   cl <- match.call()
    if(is.list(data) && !is.data.frame(data)) {w <- data$n   #use the output from statsBy
                    sds <- data$sd
                    x <- data$mean} else {x <- data}
@@ -242,11 +243,17 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
    xc  <-  scale(x,center=means,scale=FALSE)  #these are the weighted centered data
    if(is.null(sds)) {xs <- xc /sqrt(w) } else {xs  <- xc * sds/sqrt(w)}
    xwt <- sqrt(wt) * xc
-       cov <- crossprod(xwt)             #/(1-colSums(wt^2,na.rm=TRUE))
+   #  added February 20, 2016 to consider missing values
+   if(any(is.na(xwt))) {
+   cov <- apply(xwt,2, function(x) colSums(xwt * x,na.rm=TRUE))
+   
+   }  else {#matrix algebra without matrices
+       cov <- crossprod(xwt) }            #/(1-colSums(wt^2,na.rm=TRUE))
     if(cor) {r <- cov2cor(cov)} else {r <- cov}
     xw <- wt * xc
-return(list(r=r,xwt = xwt,wt=wt,mean=means,xc=xc,xs=xs))}
+    result <-list(r=r,xwt = xwt,wt=wt,mean=means,xc=xc,xs=xs) 
+    result$Call <- cl
+    class(result) <- c("psych","cor.wt")
+return(result)}
    
    
-  
-        

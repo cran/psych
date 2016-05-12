@@ -1,5 +1,6 @@
 \name{cor.ci}
 \alias{cor.ci}
+\alias{corCi}
 \title{Bootstrapped confidence intervals for raw and composite correlations}
 
 \description{Although normal theory provides confidence intervals for correlations, this is particularly problematic with Synthetic Aperture Personality Assessment (SAPA) data where the individual items are Massively Missing at Random.  Bootstrapped confidence intervals are found for Pearson, Spearman, Kendall, tetrachoric, or polychoric correlations and for scales made from those correlations.
@@ -7,6 +8,9 @@
 \usage{
 cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, 
  poly = FALSE, method = "pearson", plot=TRUE,...)
+ corCi(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, 
+ poly = FALSE, method = "pearson", plot=TRUE,...)
+
 }
 
 \arguments{

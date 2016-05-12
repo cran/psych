@@ -1,15 +1,20 @@
 \name{cor.plot}
 \Rdversion{1.1}
 \alias{cor.plot}
+\alias{corPlot}
 \alias{cor.plot.upperLowerCi}
 \title{Create an image plot for a correlation or factor matrix}
 
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
+corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
+  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
+   pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...)
 cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
-   pval=NULL,cuts=c(.001,.01),cex,MAR,...)
+   pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...)
+   
           
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",...)
@@ -31,6 +36,8 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{select}{Select the subset of variables to plot}
   \item{cex}{Character size.  Should be reduced a bit for large numbers of variables.}
   \item{MAR}{Allows for adjustment of the margins if using really long labels or big fonts}
+  \item{upper}{Should the upper off diagonal matrix be drawn, or left blank?}
+  \item{diag}{Should we show the diagonal?}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 

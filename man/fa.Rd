@@ -43,7 +43,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
-  \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see factor.scores). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
+  \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. If SMC is a vector of length the number of variables, then these values are used as starting values in the case of fm='pa'. }
   \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
@@ -186,7 +186,7 @@ The output from the print.psych.fa function displays the factor loadings (from t
 \item{r.scores}{The correlations of the factor score estimates using the specified model, if they were to be found.  Comparing these correlations with that of the scores themselves will show, if an alternative estimate of factor scores is used (e.g., the tenBerge method), the problem of factor indeterminacy.  For these correlations will not necessarily be the same.  }
 
 \item{weights}{The beta weights to find the factor score estimates.  These are also used by the \code{\link{predict.psych}} function to find predicted factor scores for new cases.  }
-\item{scores}{The factor scores as requested.  Note that these scores reflect the choice of the way scores should be estimated (see scores in the input).  That is, simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see factor.scores).  The correlation between factor score estimates (r.scores) is based upon using the regression/Thurstone approach.  The actual correlation between scores will reflect the rotation algorithm chosen and may be found by correlating those scores.}
+\item{scores}{The factor scores as requested.  Note that these scores reflect the choice of the way scores should be estimated (see scores in the input).  That is, simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see \code{\link{factor.scores}}).  The correlation between factor score estimates (r.scores) is based upon using the regression/Thurstone approach.  The actual correlation between scores will reflect the rotation algorithm chosen and may be found by correlating those scores.}
 
 \item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
 
@@ -233,13 +233,19 @@ Correction to documentation: as of September, 2014, the oblique.scores option is
 
 \code{\link{ICLUST}} will do a hierarchical cluster analysis alternative to factor analysis or principal components analysis.
 
- \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis. 
+ \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis with one general factor. 
+ code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of higher order factors. 
+ 
 
 \code{\link{fa.sort}} will sort the factor loadings into echelon form. \code{\link{fa.organize}} will reorganize the factor pattern matrix into any arbitrary order of factors and items.  
 
 \code{\link{KMO}} and \code{\link{cortest.bartlett}} for various tests that some people like. 
 
 \code{\link{factor2cluster}} will prepare unit weighted scoring keys of the factors that can be used with \code{\link{scoreItems}}.
+
+\code{\link{fa.lookup}} will print the factor analysis loadings matrix along with the item ``content" taken from a dictionary of items.  This is useful when examining the meaning of the factors.  
+
+
 
 
 

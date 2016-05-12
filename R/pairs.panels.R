@@ -8,7 +8,7 @@
 #Also completely reorganized the main function to much cleaner
 
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,...)   #combines a splom, histograms, and correlations
 {
 
 #first define all the "little functions"
@@ -35,7 +35,8 @@ function(x, y, digits=2, prefix="",...)
      {
          usr <- par("usr"); on.exit(par(usr))
          par(usr = c(0, 1, 0, 1))
-         r  <- cor(x, y,use="pairwise",method=method)
+        if(is.null(wt)) { r  <- cor(x, y,use="pairwise",method=method)} else {
+        r <- cor.wt(data.frame(x,y),w=wt[,c(1:2)])$r[1,2]}
          txt <- format(c(round(r,digits), 0.123456789), digits=digits)[1]
          txt <- paste(prefix, txt, sep="")
          cex <- cex.cor*0.8/strwidth(txt)

@@ -4,12 +4,13 @@
 \alias{moderate.diagram}
 \title{Estimate and display direct and indirect effects of mediators and  moderator in path models}
 \description{
-Find the direct and indirect effects of a predictor in path models of mediation and moderation. Bootstrap confidence intervals for the indirect effects.  
+Find the direct and indirect effects of a predictor in path models of mediation and moderation. Bootstrap confidence intervals for the indirect effects.  Mediation models are just extended regression models making explicit the effect of particular covariates in the model. Moderation is done by multiplication of the predictor variables.   This function supplies basic mediation/moderation analyses for some of the classic problem types. 
 }
 \usage{
 mediate(y, x, m, data, mod = NULL, n.obs = NULL, use = "pairwise", n.iter = 5000, 
-       alpha = 0.05, std = FALSE)
-mediate.diagram(medi,digits=2,ylim=c(2,8),xlim=c(-1,10),main="Mediation model",...)
+       alpha = 0.05, std = FALSE,plot=TRUE)
+mediate.diagram(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE,
+     main="Mediation model",...)
 moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
 }
 
@@ -17,7 +18,7 @@ moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
   \item{y}{The dependent variable (or a formula suitable for a linear model)}
   \item{x}{One or more predictor variables}
   \item{m}{One (or more) mediating variables}
-  \item{data}{A data frame holding the data or a correlation  matrix. }
+  \item{data}{A data frame holding the data or a correlation or covariance  matrix. }
   \item{mod}{A moderating variable, if desired}
   \item{n.obs}{If the data are from a correlation or covariance matrix, 
      how many observations were used. This will lead to simulated data for the bootstrap.}
@@ -25,21 +26,26 @@ moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
   \item{n.iter}{Number of bootstrap resamplings to conduct}
   \item{alpha}{Set the width of the confidence interval to be 1 - alpha}
   \item{std}{standardize the covariances to find the standardized betas}
+  \item{plot}{Plot the resulting paths}
   \item{digits}{The number of digits to report in the mediate.diagram.} 
   \item{medi}{The output from mediate may be imported into mediate.diagram}
   \item{ylim}{The limits for the y axis in the mediate and moderate diagram functions}
   \item{xlim}{The limits for the x axis.  Make the minimum more negative if the x by x correlations do not fit.}
+  \item{show.c}{If FALSE, do not draw the c lines, just the partialed (c')  lines}
   \item{main}{The title for the mediate and moderate functions}
   \item{...}{Additional graphical parameters to pass to mediate.diagram}
 }
 \details{
 When doing linear modeling, it is frequently convenient to estimate the direct effect of a predictor controlling for the indirect effect of a mediator.  See Preacher and Hayes (2004) for a very thorough discussion of mediation.  The mediate function will do some basic mediation and moderation models, with bootstrapped confidence intervals for the mediation/moderation effects. 
 
-In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.
+Functionally, this is just regular linear regression and partial correlation with some different output.
 
-The number of y variables is currently limited to 1.  The number of predictor (x) variables may be 1 or more.  The number of mediating variables (m) can be one or more.
+In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original covariance/correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.
+
+The function has been tested against some of the basic cases and examples in Hayes (2013) and the associated data sets.
 
 
+For fine tuning the size of the graphic output, xlim and ylim can be specified in the mediate.diagram function. Otherwise, the graphics produced by mediate and moderate use the default xlim and ylim values.
 }
 \value{
 \item{total}{The total direct effect of x on y  (c)}
@@ -54,14 +60,17 @@ The number of y variables is currently limited to 1.  The number of predictor (x
 \item{b.int}{The interaction of x and mod (if specified)}
 }
 \references{
+
+Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional process analysis: A regression-based approach.  Guilford Press. 
+
 Preacher, Kristopher J and Hayes, Andrew F (2004) SPSS and SAS procedures for estimating indirect effects in simple mediation models. Behavior Research Methods, Instruments, \& Computers 36, (4) 717-731.
 
-Data from Preacher and Hayes (2004), and from Kerchoff (1974)
+Data from  Hayes (2013), Preacher and Hayes (2004), and from Kerchoff (1974)
 
 }
 \author{William Revelle
 }
-\note{Currently just does simple (and parallel) mediation and simple moderation.  The graphics are also fairly limited.  There are a number of other packages that do mediation analysis and they are probably preferred.  This function is supplied for the more basic cases.
+\note{ There are a number of other packages that do mediation analysis (e.g., sem and lavaan) and they are probably preferred.  This function is supplied for the more basic cases, with 1..k y variables, 1..n x variables, and 1 ..j mediators.  It will not do two step mediation.
 }
 
 
@@ -86,6 +95,27 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
  #n.iter set to 50 (instead of default of 5000) for speed of example
 mediate(1,2,3,sobel,n.iter=50)  #The example in Preacher and Hayes
 
+#the pmi covariance matrix from Hayes. 2013.
+#data set from Hayes, 2013 has 123 cases instead of the covariance matrix used here 
+
+C.pmi <- structure(c(0.251232840197254, 0.119718779155005, 0.157470345195255, 
+0.124533519925363, 0.03052112488338, 0.0734039717446355, 0.119718779155005, 
+1.74573503931761, 0.647207783553245, 0.914575836332134, 0.0133613221378115, 
+-0.0379181660669066, 0.157470345195255, 0.647207783553245, 3.01572704251633, 
+1.25128282020525, -0.0224576835932294, 0.73973743835799, 0.124533519925363, 
+0.914575836332134, 1.25128282020525, 2.40342196454751, -0.0106624017059843, 
+-0.752990470478475, 0.03052112488338, 0.0133613221378115, -0.0224576835932294, 
+-0.0106624017059843, 0.229241636678662, 0.884479541516727, 0.0734039717446355, 
+-0.0379181660669066, 0.73973743835799, -0.752990470478475, 0.884479541516727, 
+33.6509729441557), .Dim = c(6L, 6L), .Dimnames = list(c("cond", 
+"pmi", "import", "reaction", "gender", "age"), c("cond", "pmi", 
+"import", "reaction", "gender", "age")))
+
+ #n.iter set to 50 (instead of default of 5000) for speed of example
+mediate(y="reaction",x = "cond",m=c("pmi","import"),data=C.pmi,n.obs=123,n.iter=50)
+
+
+
 #Data from sem package taken from Kerckhoff (and in turn, from Lisrel manual)
 R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572, 
 0.489, 0.335), Siblings = c(-0.1, 1, -0.152, -0.108, -0.105, 
@@ -100,11 +130,13 @@ R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572,
 ))
 
  #n.iter set to 50 (instead of default of 5000) for speed of demo
-mediate("OccupAsp","Intelligence",m= 2:5,data=R.kerch,n.obs=767,n.iter=50)
-
+mod.k <- mediate("OccupAsp","Intelligence",m= c(2:5),data=R.kerch,n.obs=767,n.iter=50)
+mediate.diagram(mod.k) 
 #Compare the following solution to the path coefficients found by the sem package
-mediate(y="OccupAsp",x=c("Intelligence","Siblings","FatherEd","FatherOcc"),
-      m= 5:6,data=R.kerch,n.obs=767,n.iter=50)
+
+mod.k2 <- mediate(y="OccupAsp",x=c("Intelligence","Siblings","FatherEd","FatherOcc"),
+     m= c(5:6),data=R.kerch,n.obs=767,n.iter=50)
+mediate.diagram(mod.k2,show.c=FALSE) #simpler output 
 
 }
 

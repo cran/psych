@@ -40,7 +40,9 @@ If the input file that was copied into the clipboard was an Excel file with blan
 
 read.clipboard.lower and read.clipboard.upper are adapted from John Fox's read.moments function in the sem package.  They will read a lower (or upper) triangular matrix from the clipboard and return a full, symmetric matrix for use by factanal, \code{\link{factor.pa}} , \code{\link{ICLUST}} , etc.  If the diagonal is false, it will be replaced by 1.0s.  These two function were added to allow easy reading of examples from various texts and manuscripts with just triangular output. 
 
-Many articles will report lower triangular matrices with variable labels in the first column.  read.clipboard.lower (or read.clipboard.upper) will handle this case as well.
+Many articles will report lower triangular matrices with variable labels in the first column.  read.clipboard.lower  will handle this case. Names must be in the first column if names=TRUE is specified.
+
+Other articles will report upper triangular matrices with variable labels in the first row.  read.clipboard.upper will handle this.  Note that labels in the first column will not work for read.clipboard.upper.  The names, if present, must be in the first row.
 
 read.clipboard.fwf will read fixed format files from the clipboard.  It includes a patch to read.fwf which will not read from the clipboard or from remote file.  See read.fwf for documentation of how to specify the widths. }
 \value{the contents of the clipboard.

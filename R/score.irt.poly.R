@@ -1,4 +1,6 @@
 #revised August 31, 2012 to allow for estimation of all 0s or all 1s
+#modified March 10, 2016 to allow for quasi Bayesian estimates using normal theory
+#which doesn't seem to do what I want to do, so we are not doing it
 "score.irt.2" <- 
 function(stats,items,keys=NULL,cut=.3,bounds=c(-5,5),mod="logistic") {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
@@ -40,6 +42,7 @@ if(is.matrix(discrim)) discrim <- drop(discrim)
 
  for (i in 1:n.obs) {
  	progressBar(i,n.obs,"score.IRT")
+ 	#First we consider the case of all right or all wrong
  	if (count[i]>0) {if((sum(items.f[i,],na.rm=TRUE) ==0 )  | (prod(items.f[i,],na.rm=TRUE) ==  1 )) { 
  	if(sum(items.f[i,],na.rm=TRUE) ==0 ) {
  		if(mod=="logistic") {p <- log(1-(1-items.f[i,])/(1+exp(discrim*(diff))) )} else {  #logistic
@@ -63,8 +66,8 @@ if(is.matrix(discrim)) discrim <- drop(discrim)
  }
  	} else { #cat("the normal case",i )
  	if(mod=="logistic") {
-  myfit <-optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,])  #how to do an apply?
-    } else {myfit <-optimize(irt.2par.norm,bounds,beta=discrim,delta=diff,scores=items.f[i,])} #do a normal fit function
+  myfit <- optimize(irt.2par,bounds,beta=discrim,delta=diff,scores=items.f[i,])  #how to do an apply?
+    } else {myfit <- optimize(irt.2par.norm,bounds,beta=discrim,delta=diff,scores=items.f[i,])} #do a normal fit function
      		theta[i] <- myfit$minimum    
      		fit[i] <- myfit$objective  #fit of optimizing program 
      		}} else  {#cat("\nno items",i)

@@ -2,16 +2,18 @@
 \alias{factor.congruence}
 \alias{fa.congruence}
 \title{Coefficient of factor congruence }
-\description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although reported by Burt (1948), this is frequently known as the Tucker index of factor congruence.
+\description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although first reported by Burt (1948), this is frequently known as the Tucker index of factor congruence.
 }
 \usage{
-factor.congruence(x, y=NULL,digits=2)
+factor.congruence(x, y=NULL,digits=2,use=NULL)
+fa.congruence(x, y=NULL,digits=2,use=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A matrix of factor loadings or a list of matrices of factor loadings}
   \item{y}{ A second matrix of factor loadings (if x is a list, then y may be empty)}
   \item{digits}{Round off to digits}
+  \item{use}{If NULL, then no loading matrices may contain missing values.  If use="complete" then variables with any missing loadings are dropped (with a warning)}
 
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
@@ -34,6 +36,8 @@ For congruence coefficients, a = b= 0.  For correlations a=mean F1, b= mean F2.
 Input may either be matrices or factor analysis or principal components analyis output (which includes a loadings object), or a mixture of the two.
 
 To compare more than two solutions, x may be a list of matrices, all of which will be compared.
+
+Normally, all factor loading matrices should be complete (have no missing loadings).  In the case where some loadings are missing, if the use option is specified, then variables with missing loadings are dropped.
 
 
 }

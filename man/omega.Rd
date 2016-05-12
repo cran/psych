@@ -110,9 +110,12 @@ In addition, not all EFA solutions will produce workable CFA solutions.  Model m
 \code{\link{omegaFromSem}} takes the output from a sem model and uses it to find 
  \eqn{\omega_h}.  The estimate of factor indeterminacy, found by the multiple \eqn{R^2} of the variables with the factors, will not match that found by the EFA model.  In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
  
-The notion of omega may be applied to the individual factors as well as the overall test. A typical use of omega is to identify subscales of a total inventory.  Some of that variability is due to the general factor of the inventory, some to the specific variance of each subscale.  Thus, we can find a number of different omega estimates:   what percentage of the variance of the items identified with each subfactor is actually due to the general factor.  What variance is common but unique to the subfactor, and what is the total reliable variance of each subfactor.  
+The notion of omega may be applied to the individual factors as well as the overall test. A typical use of omega is to identify subscales of a total inventory.  Some of that variability is due to the general factor of the inventory, some to the specific variance of each subscale.  Thus, we can find a number of different omega estimates:   what percentage of the variance of the items identified with each subfactor is actually due to the general factor.  What variance is common but unique to the subfactor, and what is the total reliable variance of each subfactor.   These results are reported in omega.group object and in the last few lines of the normal output.
 
 The summary of the omega object is a reduced set of the most useful output. 
+
+
+The various objects returned from omega include:
 }
 \value{
  
@@ -129,6 +132,8 @@ The summary of the omega object is a reduced set of the most useful output.
   \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
   \item{model}{a matrix suitable to be given to the sem function for structure equation models}
   \item{sem}{The output from a sem analysis}
+  \item{omega.group}{The summary statistics for the omega total, omega hierarchical (general) and omega within each group.}
+  \item{scores}{Factor score estimates are found for the Schmid-Leiman solution.  To get scores for the hierarchical model see the note.} 
   \item{various fit statistics}{various fit statistics, see output}
 }
 
@@ -163,7 +168,27 @@ If the factor solution leads to an exactly orthogonal solution (probably only fo
 
 However, simulations based upon tetrachoric and polychoric correlations suggest that although the structure is better defined, that the estimates of omega are inflated over the true general factor saturation.
 
-When doing fm="pc", principal components are done for the original correlation matrix, but minres is used when examining the intercomponent correlations.  For otherwise an omega of 1 is found.  A warning is issued that the method was changed to minres.
+Omega returns factor scores based upon the Schmid-Leiman transformation.  To get the hierarchical factor scores, it is necessary to do this outside of omega. See the example (not run).
+
+Consider the case of the raw data in an object data.  Then 
+
+f3 <- fa(data,3,scores="tenBerge", oblique.rotation=TRUE
+f1 <- fa(f3$scores)
+hier.scores <- data.frame(f1$scores,f3$scores)
+
+When doing fm="pc", principal components are done for the original correlation matrix, but minres is used when examining the intercomponent correlations.   A warning is issued that the method was changed to minres for the higher order solution.  omega is a factor model, and finding loadings using principal components will overestimate the resulting solution.  This is particularly problematic for the amount of group saturation, and thus the omega.group statistics are overestimates.  
+
+The last three lines of omega report "Total, General and Subset omega for each subset".  These are available as the omega.group object in the output.
+
+The last of these (omega group)  is effectively what Steve Reise calls omegaS for the subset omega.
+
+The omega general is the amount of variance in the group that is accounted for by the general factor, the omega total is the amount of variance in the group accounted for by general + group.
+
+This is based upon a cluster solution (that is to say, every item is assigned to one group) and this is why for  first column the omega general and group do not add up to omega total.  Some of the variance is found in the cross loadings between groups.
+
+Reise and others like to report the ratio of the second line to the first line (what portion of the reliable variance is general factor) and the third row to the first (what portion of the reliable variance is within group but not general.  This may be found by using the omega.group object that is returned by omega. (See the last example.)
+
+
 }
 
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
@@ -193,7 +218,31 @@ omega(sim2,2,option="first") #but, if we define one of the two group factors
 data(ability.cov)   #has a covariance matrix
 omega(ability.cov$cov)
 
+#om <- omega(Thurstone)
+#round(om$omega.group,2)
+#round(om$omega.group[2]/om$omega.group[1],2)  #fraction of reliable that is general variance
+# round(om$omega.group[3]/om$omega.group[1],2)  #fraction of reliable that is group variance
+
+#To find factor score estimates for the hierarchical model it is necessary to 
+#do two extra steps.
+
+#Consider the case of the raw data in an object data.  (An example from simulation)
+# set.seed(42)
+# gload <- matrix(c(.9,.8,.7),nrow=3)
+# fload <- matrix(c(.8,.7,.6,rep(0,9),.7,.6,.5,rep(0,9),.7,.6,.4),   ncol=3)
+# data <- sim.hierarchical(gload=gload,fload=fload, n=100000, raw=TRUE)
+# 
+# f3 <- fa(data$observed,3,scores="tenBerge", oblique.scores=TRUE)
+# f1 <- fa(f3$scores)
+
+# om <- omega(data$observed,sl=FALSE) #draw the hierarchical figure
+# The scores from om are based upon the schmid-leiman factors and although the g factor 
+# is identical, the group factors are not.
+# This is seen in the following correlation matrix
+# hier.scores <- cbind(om$scores,f1$scores,f3$scores)
+# lowerCor(hier.scores)
+
 }
 }
-\keyword{ multivariate }% at least one, from doc/KEYWORDS
-\keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ multivariate }
+\keyword{ models }

@@ -12,11 +12,12 @@
 }
 \usage{
 \method{plot}{psych}(x,labels=NULL,...)
-\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,
-     xlim,ylim,y2lab,lncol="black",...)
+\method{plot}{irt}(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,
+ keys=NULL, xlim,ylim,y2lab,lncol="black",...)
 \method{plot}{poly}(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels,
      keys=NULL,y2lab,lncol="black",...)
-\method{plot}{residuals}(x,main="QQ plot of residuals",qq=TRUE,...)
+\method{plot}{residuals}(x,main,type=c("qq","chi","hist","cor"),std, bad=4,
+     numbers=TRUE, upper=FALSE,diag=FALSE,...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -28,13 +29,19 @@
   \item{xlim}{The limits for the x axis}
   \item{ylim}{Specify the limits for the y axis}
   \item{main}{Main title for graph}
-  \item{type}{"ICC" plots items, "IIC" plots item information, "test" plots test information, defaults to IIC. }
+  \item{type}{"ICC" plots items, "IIC" plots item information, "test" plots test information, defaults to IIC.,"qq" does a quantile plot,"chi" plots chi square distributions,"hist" shows the histogram,"cor" does a corPlot of the residuals. }
   \item{D}{The discrimination parameter}
   \item{cut}{Only plot item responses with discrimiantion greater than cut}
   \item{keys}{Used in plotting irt results from irt.fa.}
   \item{y2lab}{ylab for test reliability, defaults to "reliability"}
-  \item{qq}{if TRUE, plot qq plot of residuals, otherwise plot a cor.plot of residuals}
+  \item{bad}{label the most 1.. bad items in residuals}
+  \item{numbers}{if using the cor option in plot residuals, show the numeric values}
+  \item{upper}{if using the cor option in plot residuals, show the upper off diagonal
+    values}
+  \item{diag}{if using the cor option in plot residuals, show the diagonal values}
+  \item{std}{Standardize the resduals?}
   \item{lncol}{The color of the lines in the IRT plots.  Defaults to all being black, but it is possible to specify lncol as a vector of colors to be used.}
+  
   \item{...}{other calls to plot}
 }
 \details{Passes the appropriate values to plot.  For plotting the results of \code{\link{irt.fa}}, there are three options: type = "IIC" (default) will plot the item characteristic respone function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.
@@ -51,8 +58,9 @@ If plotting multiple factor solutions in plot.poly, then main can be a vector of
 
 It is also possible to create irt like plots based upon just a scoring key and item difficulties, or from a factor analysis and item difficulties.  These are not true IRT type analyses, in that the parameters are not estimated from the data, but are rather indications of item location and discrimination for arbitrary sets of items.  To do this, find \code{\link{irt.stats.like}} and then plot the results.
 
+\code{\link{plot.residuals}} allows the user to graphically examine the residuals of models formed by  \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{omega}}, as well as  \code{\link{principal}} and display them in a number of ways.  "qq" will show quantiles of standardized or unstandardized residuals, "chi" will show quantiles of the squared standardized or unstandardized residuals plotted against the expected chi square values, "hist" will draw the histogram of the raw or standardized residuals, and "cor" will show a corPlot of the residual correlations. 
 }
-\value{Graphic output for factor analysis, cluster analysis and item response analysis. 
+\value{Graphic output for factor analysis, cluster analysis and item response analysis.  
 
  
 }

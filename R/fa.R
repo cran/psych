@@ -512,9 +512,12 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result$values <-  eigens
     result$e.values <- e.values  
     result$loadings <- loadings
+    result$model <- model
+    #diag(result$model) <- diag(r) 
     result$fm <- fm  #remember what kind of analysis we did
     result$rot.mat <- rot.mat
-    if(!is.null(Phi) ) {result$Phi <- Phi      #the if statement was incorrectly including oblique.scores.  Fixed Feb, 2012 following a report by Jessica Jaynes
+    if(!is.null(Phi) ) {colnames(Phi)  <- rownames(Phi) <- colnames(loadings) #added 2/14/16 to help with fa.multi
+                        result$Phi <- Phi      #the if statement was incorrectly including oblique.scores.  Fixed Feb, 2012 following a report by Jessica Jaynes
                        Structure <- loadings %*% Phi} else {Structure <- loadings}
                        class(Structure) <- "loadings"
                        result$Structure <- Structure #added December 12, 2011   
@@ -543,3 +546,4 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    #modified February 11, 2013 to correctly treat SMC=FALSE as 1s instead of 0s.
    #modified spring, 2015 to use switch in the rotation options
    #modified August 25, 2015 to add rot.mat as output
+   #modified February 22, 2016 to keep the diagonal of the model as it should be -- e.g., the communalities

@@ -15,7 +15,7 @@
 \usage{
 \method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
      digits = 2,method="pearson", pch = 20, lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2, 
-     hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1, ...)
+     hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL, ...)
 %- maybe also 'usage' for other objects documented here.
 }
 \arguments{
@@ -36,6 +36,7 @@
   \item{rug}{if TRUE (default) draw a rug under the histogram, if FALSE, don't draw the rug}
   \item{breaks}{If specified, allows control for the number of breaks in the histogram (see the hist function)}
   \item{cex.cor}{If this is specified, this will change the size of the text in the correlations. this allows one to also change the size of the points in the plot by specifying the normal cex values. If just specifying cex, it will change the character size, if cex.cor is specified, then cex will function to change the point size.}
+  \item{wt}{If specified, then weight the correlations by a weights matrix (see note for some comments)}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 
@@ -60,7 +61,9 @@ If lm=TRUE, then the scatter plots are drawn above and below the diagonal, each 
 To find the probability "significance" of the correlations using normal theory, use \code{\link{corr.test}}.  To find confidence intervals using boot strapping procedures, use \code{\link{cor.ci}}.  To graphically show confidence intervals, see \code{\link{cor.plot.upperLowerCi}}.
 }
 
-\note{If the data are either categorical or character, this is flagged with an astrix for the variable name.  If character, they are changed to factors before plotting.}
+\note{If the data are either categorical or character, this is flagged with an astrix for the variable name.  If character, they are changed to factors before plotting.
+	
+	The wt parameter allows for scatter plots of the raw data while showing the weighted correlation matrix (found by using \code{\link{cor.wt}}). The current implementation uses the first two columns of the weights matrix for all analyses.  This is useful, but not perfect.  The use of this option would be to plot the means from a \code{\link{statsBy}} analysis and then display the weighted correlations by specifying the means and ns from the statsBy run.  See the final (not run) example.}
 \examples{
 
 pairs.panels(attitude)   #see the graphics window
@@ -80,6 +83,13 @@ pairs.panels(sat.act,pch=".")
 #show many variables with 0 gap between scatterplots
 # data(bfi)
 # pairs.panels(bfi,show.points=FALSE,gap=0)
+
+#plot raw data points and then the weighted correlations.
+#output from statsBy
+sb <- statsBy(sat.act,"education")
+pairs.panels(sb$mean,wt=sb$n)  #report the weighted correlations
+#compare with 
+pairs.panels(sb$mean) #unweighed correlations
 
 
 }

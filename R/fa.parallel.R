@@ -150,13 +150,17 @@ switch(fa,
           if(resample) {sim.far <- values.sim.mean[(nvariables+1):(2*nvariables)]
                         sim.far.ci <- values.ci[(nvariables+1):(2*nvariables)]
                         sim.se.far <- values.sim.se[(nvariables+1):(2*nvariables)]
-             points(sim.far,type ="l",lty="dashed",pch=2,col="red")}
+                        points(sim.far,type ="l",lty="dashed",pch=2,col="red")}
         if(sim) { if(resample) {sim.fa <- values.sim.mean[(3*nvariables+1):(4*nvariables)] 
                                 sim.fa.ci <- values.ci[(3*nvariables+1):(4*nvariables)]
                                 sim.se.fa <- values.sim.se[(3*nvariables+1):(4*nvariables)] } else {
                  sim.fa <- values.sim.mean[(nvariables+1):(2*nvariables)]
                  sim.fa.ci <- values.sim.mean[(nvariables+1):(2*nvariables)]
-                sim.se.fa <- values.sim.se[(nvariables+1):(2*nvariables)]}
+                sim.se.fa <- values.sim.se[(nvariables+1):(2*nvariables)]
+                sim.far <- NA  #added May 1, 2016
+                sim.far.ci <- NA
+                sim.se.far <- NA
+                }
         	points(sim.fa,type ="l",lty="dotted",pch=2,col="red")
         	fa.test <- which(!(fa.valuesx > sim.fa.ci))[1]-1 
         } else {sim.fa <- NA 

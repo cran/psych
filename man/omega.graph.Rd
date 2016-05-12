@@ -15,8 +15,8 @@ See the other structural diagramming functions, \code{\link{fa.diagram}} and \co
 In addition 
 }
 \usage{
-omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut=.2,simple=TRUE,
-      errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,
+omega.diagram(om.results,sl=TRUE,sort=TRUE,labels=NULL,flabels=NULL,cut=.2,
+gcut=.2,simple=TRUE,  errors=FALSE, digits=1,e.size=.1,rsize=.15,side=3,
     main=NULL,cex=NULL,color.lines=TRUE,marg=c(.5,.5,1.5,.5),adj=2, ...) 
 omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 6), 
     node.font = c("Helvetica", 14), edge.font = c("Helvetica", 10),  
@@ -28,6 +28,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{out.file}{ Optional output file for off line analysis using Graphviz }
   \item{sl}{ Orthogonal clusters using the Schmid-Leiman transform (sl=TRUE) or oblique clusters }
   \item{labels}{ variable labels }
+  \item{flabels}{Labels for the factors (not counting g)}
   \item{size}{size of graphics window }
   \item{node.font}{ What font to use for the items}
   \item{edge.font}{What font to use for the edge labels }

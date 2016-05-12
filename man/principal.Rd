@@ -30,7 +30,7 @@ For a n x n correlation matrix, the n principal components completely reproduce 
 
 It is important to recognize that rotated principal components are not principal components (the axes associated with the eigen value decomposition) but are merely components.  To point this out, unrotated principal components are labelled as PCi, while rotated PCs are now labeled as RCi (for rotated components) and obliquely transformed components as TCi (for transformed components). (Thanks to Ulrike Gromping for this suggestion.)
 
-Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin).  
+Rotations and transformations are either part of psych (Promax and cluster), of base R (varimax), or of GPArotation (simplimax, quartimax, oblimin, etc.).  
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
 
@@ -38,9 +38,9 @@ The rotation matrix  (rot.mat) is returned from all of these options. This is th
 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
-Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  By default, the regression weights are found from the Structure matrix, not the Pattern matrix. 
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  The regression weights are found from the Structure matrix, not the Pattern matrix. If the scores are found with the covar option = TRUE, then the scores are not standardized but are just mean centered.  
 
-Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings. 
+Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings (as reported in the structure matrix). 
 
 The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the orthogonal component loadings (remember, that rotations or transformations do not change the communality).  
 }
@@ -86,17 +86,22 @@ Revelle, W. An introduction to psychometric theory with applications in R (in pr
 
 \seealso{\code{\link{VSS}} (to test for the number of components or factors to extract), \code{\link{VSS.scree}} and \code{\link{fa.parallel}} to show a scree plot and compare it with random resamplings of the data), \code{\link{factor2cluster}} (for course coding keys), \code{\link{fa}} (for factor analysis), \code{\link{factor.congruence}} (to compare solutions), \code{\link{predict.psych}} to find factor/component scores for a new data set based upon the weights from an original data set. }
 \examples{
-#Four principal components of the Harmon 24 variable problem
+#Four principal components of the Harman 24 variable problem
 #compare to a four factor principal axes solution using factor.congruence
 pc <- principal(Harman74.cor$cov,4,rotate="varimax")
 mr <- fa(Harman74.cor$cov,4,rotate="varimax")  #minres factor analysis
 pa <- fa(Harman74.cor$cov,4,rotate="varimax",fm="pa")  # principal axis factor analysis
 round(factor.congruence(list(pc,mr,pa)),2)
 
-pc2 <- principal(Harman.5,2,rotate="varimax",scores=TRUE)
+pc2 <- principal(Harman.5,2,rotate="varimax")
 pc2
 round(cor(Harman.5,pc2$scores),2)  #compare these correlations to the loadings 
-biplot(pc2,main="Biplot of the Harman.5 socio-economic variables")
+#now do it for unstandardized scores, and transform obliquely
+pc2o <- principal(Harman.5,2,rotate="promax",covar=TRUE)
+pc2o
+round(cov(Harman.5,pc2o$scores),2) 
+pc2o$Structure    #this matches the covariances with the scores
+biplot(pc2,main="Biplot of the Harman.5 socio-economic variables",labels=paste0(1:12))
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

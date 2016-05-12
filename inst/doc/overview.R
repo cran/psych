@@ -129,7 +129,7 @@ round(diffs,2)
 ### code chunk number 16: corplot.png
 ###################################################
 png('corplot.png')
-cor.plot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
+corPlot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
 dev.off()
 
 
@@ -139,7 +139,7 @@ dev.off()
 png('circplot.png')
 circ <- sim.circ(24)
 r.circ <- cor(circ)
-cor.plot(r.circ,main='24 variables in a circumplex')
+corPlot(r.circ,main='24 variables in a circumplex')
 dev.off()
 
 

@@ -61,7 +61,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
       if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
       fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,np.obs=np.obs[ov,ov],...)}
      }
-Roe <- r[ov,ev]
+Roe <- r[ov,ev,drop=FALSE]
 fe <- fa.extension(Roe,fo,correct=correct)
 if(omega) fo$loadings <- fo$schmid$sl[,1:(ncol(fo$schmid$sl)-3)]
        

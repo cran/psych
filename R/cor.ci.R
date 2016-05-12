@@ -2,6 +2,11 @@
 
  "cor.ci" <- 
 function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,...) {
+corCi(x=x, keys = keys, n.iter = n.iter, p = p, overlap=overlap, poly = poly, method = method,plot=plot,...) }
+
+ "corCi" <- 
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,...) {
+
  cl <- match.call()
  n.obs <- dim(x)[1]
  

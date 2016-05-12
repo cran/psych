@@ -6,7 +6,7 @@
 }
 \usage{
 score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL, 
-      missing = TRUE, impute = "median", digits = 2,short=TRUE)
+      missing = TRUE, impute = "median", digits = 2,short=TRUE,skew=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +23,8 @@ score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL,
   \item{digits}{ How many digits of output }
   \item{short}{short=TRUE, just report the item statistics, \cr
                short=FALSE, report item statistics and subject scores as well}
+  \item{skew}{Should the skews and kurtosi of the raw data be reported? Defaults to FALSE because what is the meaning of skew for a multiple choice item?}
+  
 }
 \details{Basically combines \code{\link{score.items}} with a conversion from multiple choice to right/wrong.
 

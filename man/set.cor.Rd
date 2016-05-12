@@ -3,23 +3,26 @@
 \alias{setCor.diagram}
 \alias{set.cor}
 \alias{mat.regress}
+\alias{matReg} 
 \title{Set Correlation and Multiple Regression from matrix or raw input}
 \description{
  Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models")
+       main="Regression Models",plot=TRUE)
 setCor.diagram(sc,main="Regression model",digits=2,show=TRUE,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models")
+       main="Regression Models",plot=TRUE)    #an alias to setCor
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
+matReg(x,y,C,n.obs=0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
   \item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
+  \item{C}{A variance/covariance matrix, or a correlation matrix}
   \item{z}{the column names or numbers of the set of covariates}
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
 
@@ -30,6 +33,7 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
   \item{sc}{The output of setCor may be used for drawing diagrams}
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
   \item{show}{Show the matrix correlation between the x and y sets?}
+  \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
   \item{...}{Additional graphical parameters for setCor.diagram}
   
 }
@@ -62,6 +66,9 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  If the input is rectangular, correlations or covariances are found from the data.
  
  The print function reports t and p values for the beta weights, the summary function just reports the beta weights.
+ 
+ \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x, and y variables. Its output includes betas, se, t, p and R2.
+ It does not work on data matrices, nor does it take formula input. 
 }
 \value{
   

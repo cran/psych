@@ -63,7 +63,7 @@ function( diag = TRUE,names=FALSE,...) {
    }
    
 
-
+#fixed April 30, 2016
 "read.clipboard.upper" <-
 function( diag = TRUE,names=FALSE,...) {
     MAC<-Sys.info()[1]=="Darwin"    #are we on a Mac using the Darwin system?
@@ -77,8 +77,10 @@ function( diag = TRUE,names=FALSE,...) {
     
     n <- floor((sqrt(1 + 8 * m) - d )/2) #solve the quadratic for n
     
-     if(names) { name <- xij[c(1,1+cumsum(n:2))]
-               xij <- xij[-c(1,1+cumsum(n:2))]} 
+     if(names) { name <- xij[1:n]
+               xij <- xij[-c(1:n)] 
+               }
+            
    xij <- as.numeric(xij)
     X <- diag(n)
     X[lower.tri(X, diag = diag)] <- xij

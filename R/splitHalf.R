@@ -1,7 +1,7 @@
 #November 30, 2013
 #parts adapted from combn
 "splitHalf"<- 
-function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL) {
+function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,use="pairwise") {
 cl <- match.call()
 split <- function(o,n) {
 A <- B <-  rep(0,n)
@@ -20,7 +20,7 @@ minrb <- 2
 n <- ncol(r)
 n2 <- trunc(n/2)
 n.obs <- nrow(r)
-if(n.obs > n) { r <- cov(r,use="pairwise")}
+if(n.obs > n) { r <- cov(r,use=use)}
  if(!covar) r <- cov2cor(r) 
  
 if(check.keys && is.null(keys)) {

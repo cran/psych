@@ -7,7 +7,7 @@
 #modified 31/5/14 to allow for drawing factor extension derived omegas
 
 "omega.diagram" <-
-  function(om.results,sl=TRUE,sort=TRUE,labels=NULL,cut=.2,gcut=.2,simple=TRUE,errors=FALSE,
+  function(om.results,sl=TRUE,sort=TRUE,labels=NULL,flabels=NULL,cut=.2,gcut=.2,simple=TRUE,errors=FALSE,
     digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE
     ,marg=c(.5,.5,1.5,.5),adj=2, ...) {
      if(color.lines) { colors <- c("black","red")} else {colors <- c("black","black") }
@@ -52,7 +52,9 @@
    
     vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
-   if(sl) {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c("g",paste("F",1:num.factors,sep="")) }   # e.g.  "g"  "F'1" "F2" "F3"
+   if(!is.null(flabels)) {fact <- flabels} else { if(sl)  {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c(paste("F",1:num.factors,sep="")) }  } # e.g.  "g"  "F'1" "F2" "F3"
+ 
+   colnames(factors)[1:length(fact)] <- fact
    var.rect <- list()
    fact.rect <- list()
     max.len <- max(nchar(rownames(factors)))*rsize

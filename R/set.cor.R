@@ -1,10 +1,10 @@
 "set.cor" <-
-function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models")  {
-setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main)}
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE)  {
+setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot)}
 
 
 "setCor" <-
-function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models")  {
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE)  {
 
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
@@ -27,7 +27,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
                    if(!is.matrix(data)) data <- as.matrix(data)  
                    if(!is.numeric(data)) stop("The data must be numeric to proceed")
                     C <- cov(data,use=use)
-                    if(std) {m <- cov2cor(C)} else {m <- C}
+                    if(std) {m <- cov2cor(C)
+                             C <- m} else {m <- C}
                     raw <- TRUE}  else {
                     raw <- FALSE
                     if(!is.matrix(data)) data <- as.matrix(data)  
@@ -46,9 +47,9 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
         nxy <- numx+numy
         m.matrix <- m[c(x,y),c(x,y)]
      	x.matrix <- m[x,x,drop=FALSE]
-     	xc.matrix <- C[x,x,drop=FALSE]
+     	xc.matrix <- m[x,x,drop=FALSE]  #fixed19/03/15
      	xy.matrix <- m[x,y,drop=FALSE]
-     	xyc.matrix <- C[x,y,drop=FALSE]
+     	xyc.matrix <- m[x,y,drop=FALSE]  #fixed 19/03/15
      	y.matrix <- m[y,y,drop=FALSE]
      	
 
@@ -121,7 +122,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      	                     se.beta <- list() 
      	                     for (i in 1:length(y)) {
      	                     df <- n.obs-k-1
-     	                     se.beta[[i]] <- (sqrt((1-R2[i])/(df))*sqrt(1/uniq))}    #why is uniq not indexed if R2 is?
+     	                     se.beta[[i]] <- (sqrt((1-R2[i])/(df))*sqrt(1/uniq))}    
      	                     se <- matrix(unlist(se.beta),ncol=length(y))
      	                     colnames(se) <- colnames(beta)
      	                     rownames(se) <- rownames(beta)
@@ -161,10 +162,12 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      #	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      #	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
+       # coeff <- data.frame(beta=beta,se = se,t=tvalue, Probabilty=prob)
+       # colnames(coeff) <- c("Estimate", "Std. Error" ,"t value", "Pr(>|t|)")
      	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,Call = cl)} else {
      	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,Call = cl)}
      	class(set.cor) <- c("psych","setCor")
-     	setCor.diagram(set.cor,main=main)
+     	if(plot) setCor.diagram(set.cor,main=main)
      	return(set.cor)
      	
      	}

@@ -6,9 +6,9 @@
  Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
 }
 \usage{
-cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
      impute = TRUE)
+cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 }
 
 \arguments{
@@ -21,7 +21,7 @@ scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL,
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
   \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
 }
-\details{This is one of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.
+\details{This are two of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.
 
 In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.  This is similar to ideas suggested by Cureton (1966) and Bashaw and Anderson (1966) but uses the smc or the average interitem correlation (default).
 
@@ -58,23 +58,36 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 
 }
 \note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
+
+The second example uses the \code{\link{msq}} data set of 72 measures of motivational state to examine the overlap between four lower level scales and two higher level scales.
 }
 \seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha}}, and most importantly, \code{\link{scoreItems}}, which will do all of what cluster.cor does for most users.  cluster.cor is an important helper function for \code{\link{iclust}}
 }
 
 \examples{
+#use the msq data set that shows the structure of energetic and tense arousal
+small.msq <- msq[ c("active", "energetic", "vigorous", "wakeful", "wide.awake", 
+"full.of.pep", "lively", "sleepy", "tired", "drowsy","intense", "jittery", "fearful",
+ "tense", "clutched.up", "quiet", "still",    "placid", "calm", "at.rest") ]
+small.R <- cor(small.msq,use="pairwise")
+keys <- make.keys(small.R,list(
+EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
+       "lively", "-sleepy", "-tired", "-drowsy"),
+TA =c("intense", "jittery", "fearful", "tense", "clutched.up", "-quiet", "-still", 
+       "-placid", "-calm", "-at.rest") ,
 
-data(attitude)
-keys <- make.keys(attitude,list(first=1:3,second=4:7))
-
-r.mat <- cor(attitude)
-cluster.cor(keys,r.mat)
-#compare this to the correlations correcting for item overlap
-overlapping.keys <- make.keys(attitude,list(all=1:7,first=1:3,second=4:7,first2 = 1:3))
-cluster.cor(overlapping.keys,r.mat)  #unadjusted correlations
-scoreOverlap(overlapping.keys,attitude)  #adjusted correlations
-
-
+high.EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
+       "lively"),
+low.EA =c("sleepy", "tired", "drowsy"),
+lowTA= c("quiet", "still", "placid", "calm", "at.rest"),
+highTA = c("intense", "jittery", "fearful", "tense", "clutched.up")
+   ))
+      
+adjusted.scales <- scoreOverlap(keys,small.R)
+#compare with unadjusted
+confounded.scales <- cluster.cor(keys,small.R)
+summary(adjusted.scales)
+summary(confounded.scales)
 }
 
 \keyword{ multivariate }

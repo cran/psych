@@ -36,9 +36,12 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
 
 If within=TRUE, the error bars are corrected for the correlation with the other variables by reducing the variance by a factor of (1-smc).  This allows for comparisons between variables.
 
-The error bars are normally calculated from the data using the describe function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).  However, in this case, the error bars will be one s.e. rather than a function of the alpha level.
+The error bars are normally calculated from the data using the describe function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).  If n is included in the matrix of statistics, then the distribution is drawn for a t distribution for n-1 df.  If n is omitted (NULL) or is NA, then the distribution will be a normal distribution.  
+
 
 If sd is TRUE, then the error bars will represent one standard deviation from the mean rather than be a function of alpha and the standard errors.
+
+See the last two examples for the  case of plotting data with statistics from another function. 
   
 }
 \value{Graphic output showing the means + x% confidence intervals.  For ci=1.96  and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region. 
@@ -85,23 +88,36 @@ boxplot(attitude,add=TRUE)
 error.bars(attitude,add=TRUE,arrow.len=.2)
 
 #use statistics from somewhere else
-my.stats <- data.frame(values=c(1,4,8),mean=c(10,12,18),se=c(2,3,5))
-error.bars(stats=my.stats,type="b",main="data with confidence intervals")
-#note that in this case, the error bars are 1 s.e.  To modify that, change the s.e.
+#by specifying n, we are using the t distribution for confidences
+#The first example allows the variables to be spaced along the x axis
+my.stats <- data.frame(values=c(1,2,8),mean=c(10,12,18),se=c(2,3,5),n=c(5,10,20))
+ error.bars(stats=my.stats,type="b",main="data with confidence intervals")
+#don't connect the groups
+my.stats <- data.frame(values=c(1,2,8),mean=c(10,12,18),se=c(2,3,5),n=c(5,10,20))
+      error.bars(stats=my.stats,main="data with confidence intervals")
+#by not specifying value, the groups are equally spaced
+my.stats <- data.frame(mean=c(10,12,18),se=c(2,3,5),n=c(5,10,20))
+rownames(my.stats) <- c("First", "Second","Third")
+error.bars(stats=my.stats,xlab="Condition",ylab="Score")
+
 
 #Consider the case where we get stats from describe
 temp <- describe(attitude)
 error.bars(stats=temp)
-#these error bars will be just one s.e.
 
-#adjust the s.e. to vary by alpha level
-alpha <- .05
-temp[,"se"] <- temp[,"se"] * qt(1-alpha/2,temp[,"n"])
-error.bars(stats=temp)
 #show these do not differ from the other way by overlaying the two
-error.bars(attitude,add=TRUE)
+error.bars(attitude,add=TRUE,col="red")
 
-
+#n is omitted
+#the error distribution is a normal distribution
+my.stats <- data.frame(mean=c(2,4,8),se=c(2,1,2))
+rownames(my.stats) <- c("First", "Second","Third")
+error.bars(stats=my.stats,xlab="Condition",ylab="Score")
+#n is specified
+#compare this with small n which shows larger confidence regions
+my.stats <- data.frame(mean=c(2,4,8),se=c(2,1,2),n=c(10,10,3))
+rownames(my.stats) <- c("First", "Second","Third")
+error.bars(stats=my.stats,xlab="Condition",ylab="Score")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

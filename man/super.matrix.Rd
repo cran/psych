@@ -14,7 +14,7 @@ super.matrix(x, y)  #Deprecated
   \item{x}{A n x m matrix or a list of such matrices }
   \item{y}{A j x k matrix or a list of such matrices}
 }
-\details{Several functions, e.g., \code{\link{sim.structural}},\code{\link{structure.graph}}, \code{\link{make.keys}} use matrices that can be thought of as formed from a set of submatrices.  In particular, when using \code{\link{make.keys}} in order to score a set of items (\code{\link{score.items}}) or to form specified clusters (\code{\link{cluster.cor}}), it is convenient to define different sets of scoring keys for different sets of items and to combine these scoring keys into one super key.
+\details{Several functions, e.g., \code{\link{sim.structural}},\code{\link{structure.graph}}, \code{\link{make.keys}} use matrices that can be thought of as formed from a set of submatrices.  In particular, when using \code{\link{make.keys}} in order to score a set of items (\code{\link{scoreItems}} or \code{\link{scoreOverlap}}) or to form specified clusters (\code{\link{cluster.cor}}), it is convenient to define different sets of scoring keys for different sets of items and to combine these scoring keys into one super key.
 
 }
 \value{

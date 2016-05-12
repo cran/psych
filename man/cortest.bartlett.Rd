@@ -5,14 +5,18 @@
 \description{Bartlett (1951) proposed that -ln(det(R)*(N-1 - (2p+5)/6) was distributed as chi square if R were an identity matrix.  A useful test that residuals correlations are all zero.
 }
 \usage{
-cortest.bartlett(R, n = NULL)
+cortest.bartlett(R, n = NULL,diag=TRUE)
 }
 
 \arguments{
   \item{R}{A correlation matrix. (If R is not square, correlations are found and a warning is issued. }
-  \item{n}{Sample size (if not specified, 100 is assumed.}
+  \item{n}{Sample size (if not specified, 100 is assumed).}
+  \item{diag}{Will replace the diagonal of the matrix with 1s to make it a correlation matrix.}  
 }
 \details{More useful for pedagogical purposes than actual applications. The Bartlett test is asymptotically chi square distributed.
+
+Note that if applied to residuals from factor analysis (\code{\link{fa}}) or principal components analysis (\code{\link{principal}}) that the diagonal must be replaced with 1s. This is done automatically if diag=TRUE. (See examples.)  
+
 }
 \value{
   \item{chisq}{Assymptotically chisquare}
@@ -33,7 +37,13 @@ x <- matrix(rnorm(1000),ncol=10)
 r <- cor(x)
 cortest.bartlett(r)      #random data don't differ from an identity matrix
 data(bfi)
-cortest.bartlett(bfi)    #not an identity matrix
+cortest.bartlett(bfi[1:200,1:10])    #not an identity matrix
+f3 <- fa(Thurstone,3)
+f3r <- f3$resid
+cortest.bartlett(f3r,n=213,diag=FALSE)  #incorrect
+
+cortest.bartlett(f3r,n=213,diag=TRUE)  #correct (by default)
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -22,6 +22,8 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
                                           
      if (fm =="pc") {
         fact <- principal(model, nfactors,n.obs=n.obs,...)
+        fm <- 'minres'    #because we want to use factor analysis for the higher level factors
+        message("The higher order factor is found using minres -- see the notes")
     } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml")|(fm =="mle")  |(fm =="gls") |(fm =="minchi")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,covar=covar) } else {
      
         stop("The method of factor extraction you specified is not available")
@@ -111,9 +113,11 @@ switch(rotate,
    if (nfactors ==1) {gload <- c(1)
               warning("Omega_h and Omega_asymptotic are not meaningful with one factor") } else { colnames(factr) <- rownames(factr) <- paste("F",1:nfactors,sep="")  #make it a vector
    if (nfactors>2) {
-      
+   
+     
      gfactor <- fa(factr,fm=fm)   #The first factor of the factor intercorrelation matrix
                   #added fm=fm  March 5, 2011
+    
        gload <- loadings(gfactor) } else {gload<- c(NA,NA)   #consider the case of two factors 
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))

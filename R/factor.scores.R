@@ -15,7 +15,7 @@
        
    switch(method,   
     "Thurstone" = { w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
-     if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
+     	if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
                r <- cor.smooth(r)}
         
       w <- try(solve(r,f),silent=TRUE)
@@ -26,23 +26,26 @@
 
        }, 
       
-    "tenBerge" = { #Following Grice equation 8 to estimate scores for oblique solutions
-       L <- f %*% matSqrt(Phi)
-       r.5 <- invMatSqrt(r)
-       r <- cor.smooth(r)
-       inv.r <- try(solve(r),silent=TRUE)
-       if(class(inv.r)== as.character("try-error"))  {warning("The tenBerge based scoring could not invert the correlation matrix, regression scores found instead")
-                                                     ev <- eigen(r)
-     ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-       r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
-       diag(r)  <- 1
-      w <- solve(r,f)}  else {
-       C <- r.5 %*% L %*% invMatSqrt(t(L) %*% inv.r %*% L)
-       w <- r.5 %*% C %*% matSqrt(Phi)}
-       colnames(w) <- colnames(f)
-       rownames(w) <- rownames(f)
-       },
+  "tenBerge" = { #Following Grice equation 8 to estimate scores for oblique solutions (with a correction to the second line where r should r.inv
+        L <- f %*% matSqrt(Phi)
+        r.5 <- invMatSqrt(r)
        
+        r <- cor.smooth(r)
+        inv.r <- try(solve(r),silent=TRUE)
+        if(class(inv.r)== as.character("try-error"))  {warning("The tenBerge based scoring could not invert the correlation matrix, regression scores found instead")
+                                                      ev <- eigen(r)
+      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
+        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
+        diag(r)  <- 1
+       w <- solve(r,f)}  else {
+        C <- r.5 %*% L %*% invMatSqrt(t(L) %*% inv.r %*% L)    #note that this is the correct formula, per Grice personal communication
+        w <- r.5 %*% C %*% matSqrt(Phi)}
+        colnames(w) <- colnames(f)
+        rownames(w) <- rownames(f)
+        },
+
+ 
+
     "Harman" = { #Grice equation 10 -- 
        m <- t(f)  %*% f  #factor intercorrelations
        inv.m <- solve(m)
@@ -70,8 +73,8 @@
     },
     "none" = {w <- NULL},
     
-    "components" = {
-    w <- f }
+    "components" = {w <- try(solve(r,f),silent=TRUE )    #basically, just do the regression/Thurstone approach for components
+                    w <- f }
     )
     
     
@@ -93,8 +96,9 @@
       results$r.scores <- r.scores 
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
      } else {
-      
-     scores <- scale(x) %*% w    #standardize the data before doing the regression
+
+     if(method !="components") {scores <- scale(x) %*% w } else {  #standardize the data before doing the regression if using factors, 
+        scores <- x %*% w}       # for components, the data have already been zero centered and, if appropriate, scaled
      results <- list(scores=scores,weights=w)
      results$r.scores <- r.scores 
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors

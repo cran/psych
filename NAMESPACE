@@ -3,7 +3,7 @@
 importFrom(mnormt,rmnorm,sadmvn,dmnorm)
 importFrom(parallel,mclapply,mcmapply)
 
-importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,image,layout,legend, lines,mtext,par,persp,plot.new,plot.window, polygon,rect,segments,strheight,strwidth,text)
+importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,image,layout,legend, lines,mtext,par,persp,plot.new,plot.window, polygon,rect,segments,strheight,strwidth,text,axTicks)
 
 importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,weighted.mean,promax,varimax)
 
@@ -58,12 +58,14 @@ cohen.kappa,
 con2cat,
 correct.cor,
 cor.plot,
+corPlot,
 cor.plot.upperLowerCi,
 corFiml,
 cor.wt,
 cor2dist,
 cor2latex,
 cor.ci,
+corCi,
 cor.smooth,
 cor.smoother,
 corr.test,
@@ -123,6 +125,8 @@ fa.sort,
 fa2latex,
 fa.lookup,
 fac,
+fa.multi,
+fa.multi.diagram,
 fa.organize,
 fa.poly,
 fa.plot,
@@ -200,6 +204,7 @@ make.congeneric,
 make.hierarchical,
 make.keys,
 mardia,
+matReg,
 mat.regress,
 mat.sort,
 "%+%",

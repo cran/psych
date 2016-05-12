@@ -5,15 +5,35 @@
 #modified May 5, 2012 to add the keep.par option to allow more control of small graphics
 #Corrected feb 22, 2014 to not double plot text (reported by David Condon)
 #modified May 12 to allow for selection
-"cor.plot" <- 
-function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,...){
+#modified March 28, 2016 to add the upper option 
+"cor.plot" <- function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...){
+       corPlot(r=r,numbers=numbers,colors=colors,n=n,main=main,zlim=zlim,show.legend=show.legend,labels=labels,n.legend=n.legend,keep.par=keep.par,select=select,pval=pval,cuts=cuts,cex=cex,MAR=MAR,upper=upper,diag=diag,...)}
+"corPlot" <- 
+function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
 if(is.null(main)) {main <- "Correlation plot" }
-if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {if(class(r)[2] =="omega") {r <- r$schmid$sl
-nff <- ncol(r)
-r <- r[,1:(nff-3)]}  else {r <- r$loadings}  #fixed 12/31/14 to match revised omega
-} }
+if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {
+switch(class(r)[2],
+   omega  = {r <- r$schmid$sl
+             nff <- ncol(r)
+            r <- r[,1:(nff-3)]},
+    cor.ci ={ pval <- 2*(1-r$ptci)
+  r <- r$rho},
+  fa = {r <- r$loadings},
+  pc = {r <- r$loadings}
+  )  #end switch
+  }
+  }
+# 
+# if(class(r)[2] =="omega") {r <- r$schmid$sl
+# nff <- ncol(r)
+# r <- r[,1:(nff-3)]}  else {r <- r$loadings}  #fixed 12/31/14 to match revised omega
+# } else {if(class(r)[2] == "cor.ci") {
+#   pval <- r$ptci
+#   r <- r$rho
+# }  
+# }
 r <- as.matrix(r)
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
 
@@ -21,10 +41,12 @@ if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningfu
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]
 nvar <- dim(r)[1]
+if(!upper) r[col (r) > row(r) ] <- NA   #blank out the upper diagonal
+if(!diag) r[col(r) == row(r)] <- NA     #and the diagonal
 if(nf == nvar) r <- t(r)  # flip the matrix because grid requires it  but don't flip if a loadings matrix
-if(missing(pval)) {pval <- matrix(rep(1,nvar*nf),nvar)} else {if (length(pval) != nvar*nf) {
+if(missing(pval)|is.null(pval)) {pval <- matrix(rep(1,nvar*nf),nvar)} else {if (length(pval) != nvar*nf) {
         pr = matrix(0,nvar,nf)
-        pr[lower.tri(pr)] <- pval
+        pr [row(pr) > col(pr)] <- pval # pr[pval[pr]] <- pval
         pr <- pr + t(pr)
         diag(pr) <- 0
         pval <- pr}

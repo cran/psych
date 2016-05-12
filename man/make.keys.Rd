@@ -14,7 +14,7 @@ make.keys(nvars, keys.list, item.labels = NULL, key.labels = NULL)
   \item{key.labels}{ Labels for the scales can be specified here, or in the key.list }
   
 }
-\details{There are two ways to create keys for the \code{\link{score.items}} function. One is to laboriously do it in a spreadsheet and then copy them into R.  The other is to just specify them by item number in a list. Make keys allows one to specify items by name or by location or a mixture of both.
+\details{There are two ways to create keys for the \code{\link{scoreItems}} and \code{\link{scoreOverlap}} functions. One is to laboriously do it in a spreadsheet and then copy them into R.  The other is to just specify them by item number in a list. Make keys allows one to specify items by name or by location or a mixture of both.
 
 To address items by name it is necessary to specify item names, either by using the item.labels value, or by putting the name of the data file or the colnames of the data file to be scored into the first (nvars) position.
 
@@ -23,6 +23,8 @@ If specifying by number, then nvars is the total number of items in the object t
 See the examples for the various options.
 
 Note that make.keys was revised in Sept, 2013 to allow for keying by name.
+
+It is also possible to do several make.keys operations and then combine them using \code{\link{superMatrix}}.
 }
 \value{
   
@@ -30,7 +32,7 @@ Note that make.keys was revised in Sept, 2013 to allow for keying by name.
  
   
 }
-\seealso{ \code{\link{score.items}},  \code{\link{cluster.cor}} }
+\seealso{ \code{\link{scoreItems}}, \code{\link{scoreOverlap}}, \code{\link{cluster.cor}} \code{\link{superMatrix}} }
 \examples{
 data(attitude)  #specify the items by location
  key.list <- list(all=c(1,2,3,4,-5,6,7),

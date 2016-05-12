@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.5.9 (2015-09-01}{
+\section{Changes in psych version 1.6.5 (2016-05-20}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.5.9 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.8 was released in August of 2015, the last two digits reflect the day of any modifications).
+      \item Version 1.6.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.8 was released in August of 2015, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -32,15 +32,62 @@
      \item Start to use the drop=FALSE when doing subsetting
      \item fix vss to do any kind of rotation
      \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
-     \item combine the scoreOverlap functionality to scoreItems. (Probably not possible because can not be done with actual scores)  
+     \item combine the scoreOverlap functionality to scoreItems. (Probably not possible because can not be done with actual scores) 
+     \item Add an analysis if DIF to the irt functions 
      \item Add some power functions
+     \item Fix the help menu for describeBy to explain vectors are ok
+     \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman
+     \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).
+     \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
+     \item Fix bi.bars to that it handles height data from sapa
+     \item Find correlations before doing corPlot ? 
+       
      
+    
          
     }
   }
   } 
   
-   \section{Changes in psych version 1.5.8 (2015-8-28)}{
+     \section{Changes in psych version 1.6.4 (2016-04-20)}{
+  \subsection{Additions}{
+          \itemize{
+          \item To make the distinction between Principal Components and Rotated Components and Transformed Components, I have labeled them as PCi, RCi and TCi. I said I did that back in 2013 but I did not seem to have done it!
+          \item Modified principal so that it will now handle the covar option correctly when finding principal scores.
+          \item Modified bi.bars so that both the left and right panel are positive numbers (requested by Lorien Elleman).  Also added the ability to label the columns/rows.
+           \item Modified omega.diagram so that labels can be applied to the factors. 
+           \item Added the use option to splitHalf.  
+           \item Minor tweak to output of fa.extend for the case of extending to one variable.
+           \item Modified fa.congruence to consider the case of missing loadings (requested by Emil Ole William Kirkegaard)
+           \item Modified documentation to cortest.bartlett to reflect test residual matrices from fa.
+           \item Modified alpha to all the specification of n.obs if using correlation matrix.  This allows for finding the s.e. of alpha even from a correlation matrix.
+           \item Modified cor.wt to handle the problem of missing data 
+           \item Modified pairs.panels to allow plotting the raw data points but the weighted correlations
+            \item Add the ability to do two level hierarchical factor analysis (i.e, taking out n at level 1, m at level 2.  Currently we do this with m=1 for omega)
+           \item Added a warnings option to the alpha function as requested (repeatedly) by Markus Graf.
+           \item Added two experimental measures of unidimensionality/goodness of fit to alpha.
+           \item Modified mediate so that it handles moderation as well
+           \item Added the diag and upper option to corPlot and cor.plot to allow for blanking out the diagonal or upper off diagonal (Suggested by David Condon).
+           \item Added a number of options to plot.residuals to give more helpful displays
+           \item Added (improved) error.bars for taking in data from an external source.
+           \item Completely rewrote the mediate function to be more general and to have better graphics.  Added the ability to have multiple y variables.
+       }  
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+          \item Modified principal so that it will now handle the covar option correctly when finding principal scores. 
+          \item Corrected a bug in alpha (reported by Tamaki Hattori) to correctly find the s.e. of alpha.  I was slightly overestimating the correct values.   
+           \item Fixed a bug in setCor that was given incorrect SE for regressions in the case of std=TRUE (the other stats were correct, but the t and p values of the betas were wrong) 
+          \item Fixed a bug in error.bars that led to not drawing catseyes when importing using the stats option. Reported by Niall Bolger  
+          \item Fixed read.clipboard.upper so that it works properly with names=TRUE  
+          \item Fixed a bug in fa.parallel that would not report just fa=fa in the case of correlation matrices  (reported by Aaron Weidman)   
+      } 
+      }
+  }
+ 
+  
+   \section{Changes in psych version 1.5.8 (2015-8-29)}{
   \subsection{Additions}{
           \itemize{
           \item Added rot.mat as an output to the fa and principal objects.  Cleaned up the fa and principal rotations so they all work.

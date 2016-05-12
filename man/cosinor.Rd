@@ -18,7 +18,8 @@
 cosinor(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=24,
             plot=FALSE,opti=FALSE,na.rm=TRUE)
 cosinor.plot(angle,x=NULL,data = NULL, IDloc=NULL, ID=NULL,hours=TRUE, period=24,
- na.rm=TRUE,ylim=NULL,ylab="observed",xlab="time (double plotted)",main="Cosine fit",...) 
+ na.rm=TRUE,ylim=NULL,ylab="observed",xlab="Time (double plotted)",
+ main="Cosine fit",add=FALSE,multi=FALSE,typ="l",...)
            
 circadian.phase(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=24,
             plot=FALSE,opti=FALSE,na.rm=TRUE)
@@ -53,6 +54,9 @@ circadian.linear.cor(angle,x=NULL,data=NULL,hours=TRUE)
  \item{ylab}{The label of the yaxis}
  \item{xlab}{Labels for the x axis}
  \item{main}{the title of the graphic}
+ \item{add}{If doing multiple (spagetti) plots, set add = TRUE for the second and beyond plots}
+ \item{multi}{If doing multiple (spagetti) plots, set multi=TRUE for the first and subsequent plots}
+ \item{typ}{Pass the line type to graphics}
  \item{...}{any other graphic parameters to pass}
 }
 \details{
@@ -137,6 +141,13 @@ op <- par(mfrow=c(2,2))
  cosinor.plot(2,3,pure.df,IDloc=1,ID="2")
  cosinor.plot(2,3,pure.df,IDloc=1,ID="3")
  cosinor.plot(2,3,pure.df,IDloc=1,ID="4")
+ 
+ #now, show those in one panel as spagetti plots
+op <- par(mfrow=c(1,1))
+cosinor.plot(2,3,pure.df,IDloc=1,ID="1",multi=TRUE,ylim=c(0,20),ylab="Modeled")
+ cosinor.plot(2,3,pure.df,IDloc=1,ID="2",multi=TRUE,add=TRUE,lty="dotdash")
+ cosinor.plot(2,3,pure.df,IDloc=1,ID="3",multi=TRUE,add=TRUE,lty="dashed")
+ cosinor.plot(2,3,pure.df,IDloc=1,ID="4",multi=TRUE,add=TRUE,lty="dotted")
 
 set.seed(42)   #what else?
 noisy <- pure
@@ -148,8 +159,9 @@ small.pure <- pure[c(8,11,14,17,20,23),]
 small.noisy <- noisy[c(8,11,14,17,20,23),]
 small.time <- c(8,11,14,17,20,23)
 
-cosinor.plot(1,3,small.pure)
-cosinor.plot(1,3,small.noisy)
+cosinor.plot(1,3,small.pure,multi=TRUE)
+cosinor.plot(1,3,small.noisy,multi=TRUE,add=TRUE,lty="dashed")
+
          
 # sp <- cosinor(small.pure)
 # spo <- cosinor(small.pure,opti=TRUE) #iterative fit

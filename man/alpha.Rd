@@ -8,7 +8,7 @@
 }
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
-   check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise")
+   check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL)
 }
 
 \arguments{
@@ -22,6 +22,8 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
  \item{n.iter}{Number of iterations if bootstrapped confidence intervals are desired}
   \item{delete}{Delete items with no variance and issue a warning}
   \item{use}{Options to pass to the cor function: "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs". The default is "pairwise"}
+  \item{warnings}{By default print a warning and a message that items were reversed. Suppress the message if warnings = FALSE}
+  \item{n.obs}{If using correlation matrices as input, by specify the number of observations, we can find confidence intervals}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
@@ -54,11 +56,11 @@ Alternative functions \code{\link{score.items}} and  \code{\link{cluster.cor}} w
 
 Four alternative item-whole correlations are reported, three are conventional, one unique.  raw.r is the correlation of the item with the entire scale, not correcting for item overlap. std.r is the correlation of the item with the entire scale, if each item were standardized.  r.drop is the correlation of the item with the scale composed of the remaining items.  Although each of these are conventional statistics, they have the disadvantage that a) item overlap inflates the first and b) the scale is different for each item when an item is dropped. Thus, the fourth alternative, r.cor, corrects for the item overlap by subtracting the item variance but then replaces this with the best estimate of common variance, the smc. This is similar to a suggestion by Cureton (1966).
 
-If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).
+If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).  This requires the check.keys option to be TRUE.  Previous versions defaulted to have check.keys=TRUE, but some users complained that this made it too easy to find alpha without realizing that some items had been reversed (even though a warning was issued!).  Thus, I have set the default to be check.keys=FALSE with a warning that some items need to be reversed (if this is the case).  To suppress these warnings, set warnings=FALSE.  
 
 Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items. 
 
-When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).
+When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).  This is problematic because some simulations suggest these values are too small.  It is probably better to use bootstrapped value
 
 Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot object.  They may be plotted or described. 
 
@@ -81,7 +83,9 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
   \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
-  \item{boot}{a 5 column by n.iter matrix of boot strapped resampled values}
+  \item{boot}{a 6 column by n.iter matrix of boot strapped resampled values}
+  \item{Unidim}{An index of unidimensionality}
+  \item{Fit}{The fit of the off diagonal matrix}
   
 }
 \references{
@@ -105,7 +109,10 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 }
 \author{William Revelle }
 
-\note{By default, items that correlate negatively with the overall scale will be reverse coded.  This option may be turned off by setting check.keys = FALSE.  If items are reversed, then each item is subtracted from the  minimum item response + maximum item response where  min and max are taken over all items.  Thus, if the items intentionally differ in range, the scores will be off by a constant.  See \code{\link{scoreItems}} for a solution. }
+\note{By default, items that correlate negatively with the overall scale will be reverse coded.  This option may be turned off by setting check.keys = FALSE.  If items are reversed, then each item is subtracted from the  minimum item response + maximum item response where  min and max are taken over all items.  Thus, if the items intentionally differ in range, the scores will be off by a constant.  See \code{\link{scoreItems}} for a solution. 
+
+
+Two experimental measures of Goodness of Fit are returned in the output: Unidim and Fit. They are not printed or displayed, but are available for analysis. The first is an index of how well the modeled average correlations actually reproduce the original correlation matrix.  The second is how well the modeled correlations reproduce the off diagonal elements of the matrix. Both are indices of squared residuals compared to the squared original correlations.  These two measures are under development and might well be modified or dropped in subsequent versions.}
 
 \seealso{  \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{guttman}}, \code{\link{scoreItems}}, \code{\link{cluster.cor}}}
 \examples{

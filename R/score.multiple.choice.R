@@ -1,5 +1,5 @@
  "score.multiple.choice" <-  
-  function(key,data,score=TRUE,totals=FALSE,ilabels=NULL, missing=TRUE,impute="median", digits=2,short=TRUE) {
+  function(key,data,score=TRUE,totals=FALSE,ilabels=NULL, missing=TRUE,impute="median", digits=2,short=TRUE,skew=FALSE) {
   #convert a data matrix or data with multiple choice responses to correct/incorrect
      cl <- match.call()
   if(!is.matrix(data)) {if(!is.data.frame(data)) {stop("data must be either a data frame or matrix!")} else data <- as.matrix(data)}
@@ -14,8 +14,9 @@
      }   else {stop("key must have as many elements as columns of 'data' ")}
  
 if (score) {
-  item.stats <- describe(items,ranges=FALSE)[,2:7]
-  miss.rep <- rowSums(is.na(items))
+  if(skew) {item.stats <- describe(items,ranges=FALSE,skew=skew,fast=FALSE)[,2:7] } else {  #added the fast=FALSE on 2/25/16 in response to problem with large data sets reported by Rodrigo Travitzki 
+            item.stats <- describe(items,ranges=FALSE,skew=skew,fast=TRUE)[,2:4] }
+            miss.rep <- rowSums(is.na(items))
     if(missing) {
         miss <- which(is.na(items),arr.ind=TRUE)
         if(impute=="mean") {

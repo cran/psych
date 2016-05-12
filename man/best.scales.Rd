@@ -55,6 +55,10 @@ Similarly, given a correlation matrix, r, of the x variables, if you want to fin
 \code{\link{fa.lookup}} takes a factor/cluster analysis object (or just a keys like matrix), sorts it using \code{\link{fa.sort}} and then matches by row.name to the corresponding dictionary entries.
 }
 
+\note{
+
+To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the \code{link{bfi.dictionary}} as an example.
+}
 \references{
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{http://personality-project.org/r/book}). 
 
@@ -71,8 +75,9 @@ bs <- bestScales(bfi,criteria=c("gender","education","age"),dictionary=bfi.dicti
 bs
 f5 <- fa(bfi,5)
 m <- colMeans(bfi,na.rm=TRUE)
-item.lookup(f5,m,dictionary=bfi.dictionary)
-}
+item.lookup(f5,m,dictionary=bfi.dictionary[2])
+fa.lookup(f5,dictionary=bfi.dictionary[2])  #just show the item content, not the source of the items
 
+}
 \keyword{ models }
 \keyword{multivariate }

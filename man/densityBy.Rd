@@ -15,7 +15,7 @@ violinBy(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",de
 
 
 \arguments{
-  \item{x}{A data.frame or matrix}
+  \item{x}{A matrix or data.frame}
   \item{grp}{A grouping variable}
   \item{grp.name}{If the grouping variable is specified, the what names should be give to the group? Defaults to 1:ngrp}
   \item{ylab}{The y label}
@@ -39,8 +39,8 @@ The density plot of the data.
 }
 \author{William Revelle
 }
-\note{None yet}
-
+\note{Nothing yet}
+\seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}} and \code{\link{error.bars.by}} for graphic displays }
 \examples{
 densityBy(bfi[1:5])
 #not run

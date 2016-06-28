@@ -2,6 +2,7 @@
 \alias{cosinor}
 \alias{circadian.phase}
 \alias{cosinor.plot}
+\alias{cosinor.period}
 \alias{circadian.mean}
 \alias{circadian.sd}
 \alias{circadian.cor}
@@ -20,7 +21,8 @@ cosinor(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=24,
 cosinor.plot(angle,x=NULL,data = NULL, IDloc=NULL, ID=NULL,hours=TRUE, period=24,
  na.rm=TRUE,ylim=NULL,ylab="observed",xlab="Time (double plotted)",
  main="Cosine fit",add=FALSE,multi=FALSE,typ="l",...)
-           
+ cosinor.period(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=seq(23,26,1),
+            plot=FALSE,opti=FALSE,na.rm=TRUE)          
 circadian.phase(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=24,
             plot=FALSE,opti=FALSE,na.rm=TRUE)
 circadian.mean(angle,data=NULL, hours=TRUE,na.rm=TRUE)
@@ -42,7 +44,7 @@ circadian.linear.cor(angle,x=NULL,data=NULL,hours=TRUE)
   \item{group}{If doing comparisons by groups, specify the group code}.
   \item{min}{The minimum number of observations per subject to use when finding split half reliabilities.}
   \item{oddeven}{Reliabilities are based upon odd and even items (TRUE) or first vs. last half (FALSE).  Default is first and last half.}
-  \item{period}{Although time of day is assumed to have a 24 hour rhythm, other rhythms may be fit. }
+  \item{period}{Although time of day is assumed to have a 24 hour rhythm, other rhythms may be fit. If calling cosinor.period, a range may be specified.}
 \item{IDloc}{Which column number is the ID field}
 \item{ID}{What specific subject number should be plotted for one variable}
  \item{plot}{if TRUE, then plot the first variable (angle)} 

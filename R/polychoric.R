@@ -6,13 +6,24 @@
 #it does no error checking and works only for two dimensional integer data
 tableF <-
 function(x,y) {
-minx <- min(x,na.rm=TRUE)
+minx <- min(x,na.rm=TRUE)   #these probably could be found just once
 maxx <- max(x,na.rm=TRUE)
 miny <- min(y,na.rm=TRUE)
 maxy <- max(y,na.rm=TRUE)
 maxxy <- (maxx+(minx==0))*(maxy+(miny==0))
 dims=c(maxx + 1 - min(1,minx),maxy+1 - min(1,minx))
 bin <- x - minx+ (y-miny)*(dims[1])+ max(1,minx)
+ans <- matrix(tabulate(bin,maxxy),dims)
+ans
+}
+
+
+#perhaps even faster, but more importantly does not drop categories  - probably needs to be passed both x and y min and max
+tableFast <-   #revised and preferred, but requires specifying the min and max
+function(x,y,minx,maxx,miny,maxy) { #y and x can have separate min and max in the case of polydi,normally they are the same
+maxxy <-  (maxx+(minx==0))*(maxy+(minx==0))
+bin <- x-minx + (y-minx) *maxx+ 1
+dims=c(maxx + 1 - min(1,minx),maxy+1 - min(1,miny))
 ans <- matrix(tabulate(bin,maxxy),dims)
 ans
 }
@@ -48,11 +59,11 @@ ans
 # }
 
  polyBinBvn<- function (rho,rc,cc)  {   #adapted from John Fox's polychor
-      #recognizes that we don't need to calculate all cells because of degrees of freedom                               
- if ( min(rc,na.rm=TRUE) < -9999) rc <- rc[-1]          
-  if ( min(cc,na.rm=TRUE) < - 9999) cc <- cc[-1]
-  if (max(rc,na.rm=TRUE) > 9999)  rc <- rc[-length(rc)]
-  if (max(cc,na.rm=TRUE)  > 9999) cc <- cc[-length(cc)]
+      #but recognizes that we don't need to calculate all cells because of degrees of freedom                               
+#  if ( min(rc,na.rm=TRUE) < -9999) rc <- rc[-1]          
+#  if ( min(cc,na.rm=TRUE) < - 9999) cc <- cc[-1]
+#  if (max(rc,na.rm=TRUE) > 9999)  rc <- rc[-length(rc)]
+#  if (max(cc,na.rm=TRUE)  > 9999) cc <- cc[-length(cc)]
   row.cuts <- c(-Inf,rc,Inf)
   col.cuts <- c(-Inf,cc,Inf)
  # nr <- length(rc) + 1
@@ -78,9 +89,16 @@ ans
 }
 
 
- polyF <- function(rho,rc,cc,tab) { 
+#  polyF <- function(rho,rc,cc,tab) { 
+#       P <- polyBinBvn(rho, rc, cc) 
+#        -sum(tab * log(P)) }  #the  criterion to be minimized
+#        
+#revised 16/6/18 to cover the problem of 0 values in cells
+polyF <- function(rho,rc,cc,tab) {  #doesn't blow up in the case of 0 cell entries  added 16/6/18
       P <- polyBinBvn(rho, rc, cc) 
-       -sum(tab * log(P)) }  #the  criterion to be minimized
+      lP <- log(P)
+      lP[lP == -Inf] <- NA
+       -sum(tab * lP,na.rm=TRUE) }  #the  criterion to be minimized
        
        
 "wtd.table" <- function(x,y,weight) {
@@ -88,14 +106,19 @@ tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questio
 tab[is.na(tab)] <- 0
 return(tab)
 }      
+ 
   #modified 10/8/14 to create missing values when there are no cell entries
   #modified 3/6/14 to create missing values when the data are hopeless
-  "polyc" <-     #uses the tableF function instead of table
-function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5) {
-  if(is.null(weight )) {tab <- tableF(x,y) }   else {tab <- wtd.table(x,y,weight)} 
+
+ "polyc" <-     #uses the tableFast function instead of tableF
+function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5,gminx,gmaxx,gminy,gmaxy) {
+  if(is.null(weight )) {tab <- tableFast(x,y,gminx,gmaxx,gminy,gmaxy)
+   }   else {tab <- wtd.table(x,y,weight)}  #need to specify minx and maxx somehow
+   fixed <- 0 
   tot <- sum(tab)
   tab <- tab/tot
- 
+   if(correct > 0) {if(any(tab[]==0)) {fixed <- 1
+                 tab[tab==0] <- correct/tot }} #moved from below 16.6.22
  if(global) { rho <- optimize(polyF,interval=c(-1,1),rc=taux, cc=tauy,tab)#this uses the global taux and tauy
        } else { #use item row and column information for this pair, rather than global values
       #this seems to match the polycor function
@@ -109,15 +132,17 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5) {
 		tab <- tab[, !zerocols, drop=FALSE] 
     	csum <- colSums(tab)
     	rsum <- rowSums(tab)
-    	if(correct > 0) tab[tab==0] <- correct/tot
+    	#if(correct > 0) tab[tab==0] <- correct/tot
    		if(min(dim(tab)) < 2) {rho <- list(objective = NA) } else {
-    	 	cc <-  qnorm(cumsum(csum))[-length(csum)]
-     		 rc <-  qnorm(cumsum(rsum))[-length(rsum)]
+    	 	 cc <-  qnorm(cumsum(csum)[-length(csum)])
+     		 rc <-  qnorm(cumsum(rsum)[-length(rsum)])
     	 	rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc,tab)
+    	 	
         	}
         } else { rho <- list(objective = NA, rho= NA)}}
-     if(is.na(rho$objective)) {result <- list(rho=NA,objective=NA) } else {
-            result <- list(rho=rho$minimum,objective=rho$objective)}
+     if(is.na(rho$objective)) {result <- list(rho=NA,objective=NA,fixed=fixed) } else {
+            result <- list(rho=rho$minimum,objective=rho$objective,fixed=fixed)}
+   
   return(result)
   }
   
@@ -133,9 +158,12 @@ function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,wei
 if(polycor) message("The polycor option has been removed from the polychoric function in the psych package.  Please fix the call.")
 if(ML) message("The ML option has been removed from the polychoric function in the psych package.  Please fix the call.")
 if(std.err) message("The std.error option has been removed from the polychoric function in the psych package.  Please fix the call.")
-myfun <- function(x,i,j) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct) }
 
-matpLower <- function(x,nvar) {
+
+
+myfun <- function(x,i,j,gminx,gmaxx,gminy,gmaxy) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
+
+matpLower <- function(x,nvar,gminx,gmaxx,gminy,gmaxy) {
 k <- 1
 il <- vector()
 jl <- vector()
@@ -144,14 +172,22 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    jl [k] <- j
    k<- k+1}
    }
-poly <- mcmapply(function(i,j) myfun(x,i,j) , il,jl) 
+poly <- mcmapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
+#debugging, we turn off the mcmapply function and do it by hand
+# browser()
+# ppl <- list()
+# for (i in 2:nvar) {for (j in 1:(i-1)) {ppl[[i+j]] <- myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } }
 
 #now make it a matrix
 mat <- diag(nvar)
 if(length(dim(poly)) == 2) {
 mat[upper.tri(mat)] <- as.numeric(poly[1,]) #first row of poly is correlation, 2nd the fit
  mat <- t(mat) + mat
+ fixed <- as.numeric(poly[3,])
 diag(mat) <- 1 
+fixed <- sum(fixed) 
+if(fixed >0) message(fixed ," cells were adjusted for 0 values using the correction for continuity. Examine your data carefully.")
+
 return(mat)} else {
 warning("Something is wrong in polycor ")
 return(poly)
@@ -165,11 +201,18 @@ stop("we need to quit because something was seriously wrong.  Please look at the
 # polycor <- FALSE}
  if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
  cl <- match.call() 
+ 
 nvar <- dim(x)[2]
 nsub <- dim(x)[1]
+if((prod(dim(x)) == 4) | is.table(x))  {result <- polytab(x,correct=correct)
+                     print("You seem to have a table, I will return just one correlation.") } else {  #the main function
 x <- as.matrix(x)
-xt <- table(x)
+if(!is.numeric(x)) {x <- matrix(as.numeric(x),ncol=nvar)
+    message("Converted non-numeric input to numeric")}
+#xt <- table(x)   #this is clearly not a good idea
 #nvalues <- length(xt)  #find the number of response alternatives 
+
+
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
  #first delete any bad cases
@@ -180,74 +223,74 @@ if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric
             x <- x[,-bad] 
             nvar <- nvar - length(bad)
              }
-xmin <- apply(x,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
+ 
+
+ xmin <- apply(x,2,function(x) min(x,na.rm=TRUE))
+#if(global)  { xmin <- min(xmin)} 
+ xmin <- min(xmin)
 x <- t(t(x) - xmin +1)  #all numbers now go from 1 to nvalues
-xmax <- apply(x,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
+ 
+  gminx <- gminy <- 1  #allow for different minima if minmax is null
+  xmax <- apply(x,2,function(x)  max(x,na.rm=TRUE))
+#if(global) xmax <- max(xmax)     
+ xmax <- max(xmax)  #don't test for globality xmax
+ gmaxx <- gmaxy <- xmax #check for different maxima
+ 
 if (min(xmax) != max(xmax)) {global <- FALSE
-                      message("The items do not have an equal number of response alternatives, global set to FALSE")}
+                      message("The items do not have an equal number of response alternatives, global set to FALSE.")}
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
 tau <- qnorm(apply(xfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
 if(!is.matrix(tau)) tau <- matrix(tau,ncol=nvar)
-rownames(tau) <- names(xt)[1:(nvalues-1)]
+#rownames(tau) <- levels(as.factor(x))[1:(nvalues-1)]  #doesn't work if one response is missing
+rownames(tau) <- 1:(nvalues -1) 
 colnames(tau) <- colnames(x)
 
- 
 mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
-x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
+#x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly -- but we have already done it
 
-mat <- matpLower(x,nvar)  #the local copy has the extra paremeters   #do the multicore version
+mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
 
 
   if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
                         smooth <- FALSE}
-                     
+
  if(smooth) {mat <- cor.smooth(mat) }
+
  colnames(mat) <- rownames(mat) <- colnames(x)
  tau <- t(tau)
   result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
   
  class(result) <- c("psych","poly")
+ }
   return(result) 
   }
 
 
 
-
-
-
-#draft version to do one item at a time 
-#not public 
 #use polychor from John Fox to do the same
+#matches polychor output perfectly if correct=FALSE
 "polytab" <- 
-function(tab) {
+function(tab,correct=TRUE) {
+  
   tot <- sum(tab)
   tab <- tab/tot
-  
-  
- #use item row and column information for this pair, rather than global values
-      #this seems to match the polycor function
-      #the next five lines are taken directly from John Fox's polycor function
-      zerorows <- apply(tab, 1, function(x) all(x == 0))
-	zerocols <- apply(tab, 2, function(x) all(x == 0))
-	zr <- sum(zerorows)
-	#if (0 < zr) warning(paste(zr, " row", suffix <- if(zr == 1) "" else "s"," with zero marginal", suffix," removed", sep=""))
-	zc <- sum(zerocols)
-	#if (0 < zc) warning(paste(zc, " column", suffix <- if(zc == 1) "" else "s", " with zero marginal", suffix, " removed", sep=""))
-	tab <- tab[!zerorows, ,drop=FALSE]  
-	tab <- tab[, !zerocols, drop=FALSE] 
+  if(correct > 0) tab[tab==0] <- correct/tot 
+ #use item row and column information for this pair, rather than global values  
     csum <- colSums(tab)
     rsum <- rowSums(tab)
-     cc <-  qnorm(cumsum(csum))[-length(csum)]
-     rc <-  qnorm(cumsum(rsum))[-length(rsum)]
-    rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc,tab)
-     
-  result <- list(rho=rho$minimum,objective=rho$objective)
+     cc <-  qnorm(cumsum(csum[-length(csum)]))
+     rc <-  qnorm(cumsum(rsum[-length(rsum)]))
+     rho <- optimize(polyF,interval=c(-1,1),rc=rc, cc=cc,tab)
+
+  result <- list(rho=rho$minimum,objective=rho$objective,tau.row=rc,tau.col =cc)
   return(result)
   }
+
+##########################################################################################################
 
 #9/6/14  to facilitate mixed cor  we find polytomous by dichotomous correlations
 "polydi" <- function(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) {
@@ -255,9 +298,9 @@ function(tab) {
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
 
-myfun <- function(x,i,j,correct) {polyc(x[,i],x[,j],tau[,i],global=FALSE,weight=weight,correct=correct) }
+myfun <- function(x,i,j,correct,taup,taud,gminx,gmaxx,gminy,gmaxy,np) {polyc(x[,i],x[,j],taup[,i],taud[j-np],global=TRUE,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } #global changed to true 16/6/19
 
-matpLower <- function(x,np,nd) {
+matpLower <- function(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy) {
 k <- 1
 il <- vector()
 jl <- vector()
@@ -266,8 +309,8 @@ for(i in 1:np) {for (j in 1:nd) {
    jl [k] <- j
    k<- k+1}
    }
-poly <- mcmapply(function(i,j) myfun(x,i,j,correct=correct) , il,jl+np) 
-#poly <- mapply(function(i,j) myfun(x,i,j,correct=correct) , il,jl+np) 
+poly <- mcmapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl+np)  #the multicore version
+#poly <- mapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl +np)   #the normal version for debugging
 #now make it a matrix
 mat <- matrix(np,nd)
 mat <- as.numeric(poly[1,]) #first row of poly is correlation, 2nd the fit
@@ -281,10 +324,12 @@ return(mat)
  cl <- match.call() 
 np <- dim(p)[2]
 nd <- dim(d)[2]
+if(is.null(np)) np <- 1
+if(is.null(nd)) nd <- 1
 nsub <- dim(p)[1]
 p <- as.matrix(p)
 d <- as.matrix(d)
-pt <- table(p)
+pt <- table(p)    #why do we do this?
 #nvalues <- length(xt)  #find the number of response alternatives 
 nvalues <- max(p,na.rm=TRUE) - min(p,na.rm=TRUE) + 1
 dt <- table(d)
@@ -299,36 +344,43 @@ if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric
             np <- np - length(bad)
              }
 pmin <- apply(p,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
-p <- t(t(p) - pmin +1)  #all numbers now go from 1 to nvalues
+gminx <- min(pmin)
+p <- t(t(p) - gminx +1)  #all numbers now go from 1 to nvalues    but we should use global minimima
 dmin <- apply(d,2,function(x) min(x,na.rm=TRUE))
-d <-  t(t(d) - dmin +1)
+gminy <- min(dmin)
+d <-  t(t(d) - gminy +1)
 pmax <- apply(p,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
-if (min(pmax) != max(pmax)) {global <- FALSE
-                      message("The items do not have an equal number of response alternatives, global set to FALSE")}
+gmaxx <- max(pmax)
+if (min(pmax) != max(pmax)) {#global <- FALSE
+                      message("The items do not have an equal number of response alternatives, I am using the largest number of categories in the polytomous set")}
+gmaxy <- max(apply(d,2,function(x) max(x,na.rm=TRUE)))                      
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 pfreq <- apply(p,2,tabulate,nbins=nvalues)
 n.obs <- colSums(pfreq)
 pfreq <- t(t(pfreq)/n.obs)
-tau <- qnorm(apply(pfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
+taup <- qnorm(apply(pfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
 #if(!is.matrix(tau)) tau <- matrix(tau,ncol=nvar)
-rownames(tau) <- names(pt)[1:(nvalues-1)]
-colnames(tau) <- colnames(p)
 
+rownames(taup) <- names(pt)[1:(nvalues-1)]
+colnames(taup) <- colnames(p)
+dfreq <- apply(d,2,tabulate,nbins=2)
+if(nd < 2) {n.obsd <- sum(dfreq) } else {n.obsd <- colSums(dfreq) } 
+dfreq <- t(t(dfreq)/n.obsd)
+taud <-  qnorm(apply(dfreq,2,cumsum)) 
  
 mat <- matrix(0,np,nd)
 rownames(mat) <- colnames(p)
 colnames(mat)  <- colnames(d)
 #x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
 x <- cbind(p,d)
-mat <- matpLower(x,np,nd)  #the local copy has the extra paremeters   #do the multicore version
+mat <- matpLower(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
 
  
  mat <- matrix(mat,np,nd,byrow=TRUE)
  rownames(mat) <- colnames(p)
 colnames(mat)  <- colnames(d)
- tau <- t(tau)
-  result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
-  
+ taud <- t(taud)
+  result <- list(rho = mat,tau = taud,n.obs=nsub,Call=cl) 
  class(result) <- c("psych","polydi")
   return(result) 
   }

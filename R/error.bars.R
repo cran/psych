@@ -28,7 +28,7 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
                                            ylim=c(min.x - 3*max.se,max.x+3*max.se)
                                            }}
                         }
-    if(bars) {mp =barplot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
+    if(bars) {mp =barplot(x.stats$mean,ylim=ylim,xlab=xlab,ylab=ylab,main=main,col=col,...)
      axis(1,mp[1:z],names)
      axis(2)
      box()
@@ -96,3 +96,35 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	  
     polygon(norm*SCALE+x,c(ln,ln[rev])*se+y)
     polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}
+    
+    
+  #added May 30, 2016   
+ error.bars.tab <- function(t,way="columns",raw=FALSE,col=c('blue','red'),...) {
+rnames <- rownames(t)
+cnames <- colnames(t)
+t <- as.matrix(t)
+switch(way,
+columns = {p <- t(t(t)/colSums(t)) #convert to probabilities
+       if(!raw) {standard.error  <- t(sqrt(t(p * (1-p))/colSums(t)))} else {standard.error  <- t(sqrt(t(p * (1-p))*colSums(t)))}},
+rows  = {
+      t <- as.matrix(t)
+     p <- t/rowSums(t) #convert to probabilities
+     if(!raw) {standard.error  <-sqrt(p * (1-p)/rowSums(t)) } else {standard.error  <-sqrt(p * (1-p)* rowSums(t))}},
+both = {p <- t(t(t)/sum(t)) #convert to probabilities
+       if(!raw) {standard.error  <- t(sqrt(t(p * (1-p))/sum(t)))} else{standard.error  <- t(sqrt(t(p * (1-p))*sum(t)))}  })
+    
+
+colnames(p) <-colnames(t)
+rownames(p) <- rownames(t)
+nv <- ncol(t)
+ng <- nrow(t)
+if(raw) {p <- t}
+stats <- data.frame(mean=as.vector(p),
+                        se=as.vector(standard.error))
+rownames(stats) <- paste(rnames,rep(cnames,each=ng))
+space <- rep(.1,nv*ng)
+for(i in 1:(nv-1)) {space[ng*i + 1] <- 1}
+error.bars(stats=stats,bars=TRUE,space=space,
+ density=c(20,-10,20,-10),col=col,...)
+ invisible(list(p=p,stats=stats))
+}

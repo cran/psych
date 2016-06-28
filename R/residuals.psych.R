@@ -24,6 +24,7 @@ function(object,...) {
 
 #added Feb 4, 2012
 #modified April 15, 2016 to add chisquare and histograms as well as to identify variables
+#modified June 23, 2016 to make the names on the right hand side have pos=2
 "plot.residuals" <-
 function(x,main,type=c("qq","chi","hist","cor"),std,bad=4,numbers=TRUE,upper=FALSE,diag=FALSE,...) {
 if(missing(type)) type <- "qq"
@@ -57,7 +58,9 @@ qq= {  if(missing(std)) std <- TRUE
 		worst <- order(abs(x), decreasing = TRUE)}
 
     worstItems <- arrayInd(worst[1:bad],c(nr,nc))
-    text(xy$x[worst[1:bad]],xy$y[worst[1:bad]],paste(rname[worstItems[,2]],rname[worstItems[,1]]),pos=4,...)
+    pos <- rep(4,bad)
+    pos[x[worst[1:bad]]>0] <- 2
+    text(xy$x[worst[1:bad]],xy$y[worst[1:bad]],paste(rname[worstItems[,2]],rname[worstItems[,1]]),pos=pos,...)
 },
 
 chi = {#note that xy reported for qqplot is already sorted

@@ -165,13 +165,13 @@ if(missing(type)) {type = "IIC"}
 if(missing(D)) {D <- 1.702
 if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
 if(missing(xlim)) {x <- seq(-3,3,.1) } else {x <- seq(xlim[1],xlim[2],.1)} #used for item summary table
-summaryx <- x 
+ summaryx <- seq(-3,3,1)
 }		 
 if(D==1) {if(missing(xlab)) xlab <- "Latent Trait (logistic scale)"}
 if(missing(xlab)) xlab <- "Latent Trait"
 
 if(is.null(x)) {x <- seq(-4,4,.1)
-              summaryx <- seq(-3,3,1)} #used for item summary table
+    summaryx <- seq(-3,3,1)} #used for item summary table
 if(is.null(labels)) {if(!is.null(rownames(item$irt$discrimination)))  {labels = rownames(item$irt$discrimination)} else {labels <- 1:nvar}}
 
 lenx <- length(x)
@@ -285,7 +285,7 @@ for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
 	
 	#if (type !="ICC")  {
 	temp[[f]] <- testInfo
-	 
+
 	 sumInfo <- t(sumInfo) 
 	 rownames(sumInfo) <- labels
 	 colnames(sumInfo) <- summaryx
@@ -311,6 +311,7 @@ for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {
     rownames(AUC) <- rownames(max.info) <- rownames(item$rho)
     
     result <- list(AUC=AUC,max.info=max.info,sumInfo=sumtemp)
+ 
 	invisible(result)				
      class(result) <- c("psych","polyinfo")
    invisible(result)

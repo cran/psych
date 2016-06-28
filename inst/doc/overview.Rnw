@@ -464,14 +464,15 @@ violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by 
 \end{figure}
 
 
-
+\clearpage
 \subsubsection{Means and error bars}
 \label{sect:errorbars}
-Additional descriptive graphics include the ability to draw \iemph{error bars} on sets of data, as well as to draw error bars in both the x and y directions for paired data.  These are the functions
+Additional descriptive graphics include the ability to draw \iemph{error bars} on sets of data, as well as to draw error bars in both the x and y directions for paired data.  These are the functions \pfun{error.bars}, \pfun{error.bars.by}, \pfun{error.bars.tab}, and \pfun{error.crosses}. 
 
 \begin{description}
 \item [\pfun{error.bars}]  show the 95 \% confidence intervals for each variable in a data frame or matrix.  These errors are based upon normal theory and the standard errors of the mean. Alternative options include +/- one standard deviation or 1 standard error.  If the data are repeated measures, the error bars will be reflect the between variable correlations. By default, the confidence intervals are displayed using a ``cats eyes'' plot which emphasizes the distribution of confidence within the confidence interval. 
 \item [\pfun{error.bars.by}] does the same, but grouping the data by some condition.
+\item [\pfun{error.bars.tab}] draws bar graphs from tabular data with error bars based upon the standard error of proportion  ($\sigma_{p} = \sqrt{pq/N} $)
 \item [\pfun{error.crosses}]  draw the confidence intervals for an x set and a y set of the same size.
 \end{description}
 
@@ -485,7 +486,7 @@ data(epi.bfi)
 error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 @
 \end{scriptsize}
-\caption{Using the \pfun{error.bars.by} function shows that self reported personality scales on the Big Five Inventory vary as a function of the Lie scale on the EPI.  The ``cats eyes'' show the distribution of the confidence.  }
+\caption{Using the \pfun{error.bars.by} function shows that self reported personality scales on the Big Five Inventory vary as a function of the Lie scale on the EPI.  The ``cats eyes'' show the distribution of the confidence.   }
 \label{fig:error.bars}
 \end{center}
 \end{figure}
@@ -505,6 +506,27 @@ error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,
 \end{center}
 \end{figure}
 
+\subsubsection{Error bars for tabular data}
+However, it is sometimes useful to show error bars for tabular data, either found by the \fun{table} function or just directly input.  These may be found using the \pfun{error.bars.tab} function.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+T <- with(sat.act,table(gender,education))
+rownames(T) <- c("M","F")
+error.bars.tab(T,way="both",ylab="Proportion of Education Level",xlab="Level of Education",
+main="Proportion of sample by education level")
+@
+\end{scriptsize}
+\caption{The proportion of each education level that is Male or Female. By using the way="both" option, the percentages and errors are based upon the grand total.  Alternatively, way="columns" finds column wise percentages, way="rows" finds rowwise percentages.  The data can be converted to percentages (as shown) or by total count (raw=TRUE).  The function invisibly returns the probabilities and standard errors.  See the help menu for an example of entering the data as a data.frame.  }
+\label{fig:dynamite}
+\end{center}
+\end{figure}
+
+
+
+\clearpage
 
 \subsubsection{Two dimensional displays of means and errors}
 Yet another way to display data for different conditions is to use the \pfun{errorCrosses} function.  For instance, the effect of various movies on both ``Energetic Arousal'' and ``Tense Arousal'' can be seen in one graph and compared to the same movie manipulations on ``Positive Affect'' and ``Negative Affect''. Note how Energetic Arousal is increased by three of the movie manipulations, but that Positive Affect increases following the Happy movie only.
@@ -547,6 +569,8 @@ with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
 \end{center}
 \end{figure}
 
+
+
 \clearpage
 \subsubsection{Correlational structure}
 \label{sect:lowerCor}
@@ -588,12 +612,12 @@ Perhaps a better way to see the structure in a correlation matrix is to display 
 \begin{scriptsize}
 <<corplot.png>>=
 png('corplot.png')
-corPlot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
+corPlot(Thurstone,numbers=TRUE,upper=FALSE,diag=FALSE,main="9 cognitive variables from Thurstone")
 dev.off()
 @
 \end{scriptsize}
 \includegraphics{corplot.png}
-\caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color.  By using the 'numbers' option, the values are displayed as well. }
+\caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color.  By using the 'numbers' option, the values are displayed as well. By default, the complete matrix is shown.  Setting upper=FALSE and diag=FALSE shows a cleaner figure. }
 \label{fig:cor.plot}
 \end{center}
 \end{figure}
@@ -610,7 +634,7 @@ dev.off()
 @
 \end{scriptsize}
 \includegraphics{circplot.png}
-\caption{Using the corPlot function to show the correlations in a circumplex. Correlations are highest near the diagonal, diminish to zero further from the diagonal, and the increase again towards the corners of the matrix.  Circumplex structures are common in the study of affect.}
+\caption{Using the corPlot function to show the correlations in a circumplex. Correlations are highest near the diagonal, diminish to zero further from the diagonal, and the increase again towards the corners of the matrix.  Circumplex structures are common in the study of affect. For circumplex structures, it is perhaps useful to show the complete matrix.}
 \label{fig:cor.plot.circ}
 \end{center}
 \end{figure}
@@ -1109,7 +1133,7 @@ ic.poly <- iclust(r.poly$rho,beta.size=3,title="ICLUST beta.size=3")
 \end{figure}
 
 \begin{table}[htpb]
-\caption{The output from \pfun{iclust}includes the loadings of each item on each cluster. These are equivalent to factor structure loadings. By specifying the value of cut, small loadings are suppressed.  The default is for cut=0.su }
+\caption{The output from \pfun{iclust} includes the loadings of each item on each cluster. These are equivalent to factor structure loadings. By specifying the value of cut, small loadings are suppressed.  The default is for cut=0.su }
 \begin{center}
 \begin{scriptsize}
 <<print=TRUE,echo=TRUE>>=

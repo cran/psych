@@ -1,8 +1,16 @@
 "irt.fa" <- 
-function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",...) {
+function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",sort=TRUE,...) {
 cl <- match.call()
 if (is.matrix(x) | is.data.frame(x)) {
 	if(is.null(n.obs)) n.obs <- dim(x)[1]
+	   nvar <- ncol(x)
+	    vname <- colnames(x)
+	 x <- as.matrix(x)
+       if(!is.numeric(x)) {message("Converted non-numeric matrix input to numeric. \n Are you sure you wanted to do this?\n Please check your data")
+         x <- matrix(as.numeric(x),ncol=nvar)}
+             
+	     colnames(x) <- vname 
+	 
 	tx <- table(as.matrix(x))
 	if(dim(tx)[1] ==2) {tet <- tetrachoric(x,correct=correct)
 	    typ = "tet"} else {tet <- polychoric(x)
@@ -18,7 +26,9 @@ if (is.matrix(x) | is.data.frame(x)) {
    			  }  else {stop("x must  be a data.frame or matrix or the result from tetra or polychoric")}
               }
 t <- fa(r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,fm=fm,...)
-
+if(sort) {t <- fa.sort(t)   #added 04/06/16
+     if(typ !="tet" ) {tau <- tau[t$order,] } else {tau <- tau[t$order] }
+     }
 
 nf <- dim(t$loadings)[2]
 
@@ -67,9 +77,11 @@ return(result)
 
 #convert a factor analysis output to an IRT output
 #December 9, 2012
+#modifed June 5, 2016 to allow sorted output to work
 "fa2irt" <- function(f,rho,plot=TRUE,n.obs=NULL) {
 cl <- match.call()
 tau <- rho$tau
+if(!is.null(f$order)) {if (!is.null(ncol(tau))) { tau <- tau[f$order,] } else {tau <- tau[f$order] }}  #adjust for sorting
 r <- rho$rho
 nf <- ncol(f$loadings)
 diffi <- list() 

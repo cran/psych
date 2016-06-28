@@ -8,6 +8,7 @@
 \alias{reflect}
 \alias{shannon}
 \alias{test.all}
+
  
 \title{Miscellaneous helper functions for the psych package}
 \description{This is a set of minor, if not trivial, helper functions.
@@ -47,6 +48,7 @@ test.all(pl,package="psych",dependencies
   \item{dependencies}{Which type of dependency to examine?}
   \item{find}{Look up the dependencies, and then test all of their examples}
   \item{skip}{Do not test these dependencies}
+  
 
 }
 \value{ 

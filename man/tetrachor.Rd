@@ -30,7 +30,7 @@ poly.mat(x, short = TRUE, std.err = FALSE, ML = FALSE)
   
 a) a data frame or matrix of dichotmous data (e.g., the lsat6 from the bock data set) or discrete numerical (i.e., not too many levels, e.g., the big 5 data set, bfi) for polychoric, or continuous for the case of biserial and polyserial. 
 
-b) a 2 x 2 table of cell counts or cell frequencies (for tetrachoric)
+b) a 2 x 2 table of cell counts or cell frequencies (for tetrachoric) or an n x m table of cell counts  (for both tetrachoric and polychoric). 
 
 c) a vector with elements corresponding to the four cell frequencies (for tetrachoric)
 
@@ -38,9 +38,9 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 }
 \item{y}{A (matrix or dataframe) of discrete scores. In the case of tetrachoric, these should be dichotomous, for polychoric not too many levels, for biserial they should be discrete (e.g., item responses) with not too many (<10?) categories.}
 \item{correct}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
-\item{smooth}{if TRUE and if the tetrachoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
+\item{smooth}{if TRUE and if the tetrachoric/polychoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
 
-\item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution. This will make a difference in the presence of lots of missing data. } 
+\item{global}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution, or to doing one correlation at a time. global=TRUE borrows information for one item pair from the other pairs using those item's frequencies.   This will make a difference in the presence of lots of missing data. With very small sample sizes with global=FALSE and correct=TRUE, the function will fail (for as yet underdetermined reasons. } 
 \item{polycor}{A no longer used option, kept to stop other packages from breaking.}
 
 \item{weight}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
@@ -70,7 +70,7 @@ Consider the test data set from Kirk (1973) who reports the effectiveness of a M
 
 Examples include the lsat6 and lsat7 data sets in the \code{\link{bock}} data.
 
-The polychoric function forms matrices of polychoric correlations by either using John Fox's polychor function or by an local function (polyc) and will also report the tau values for each alternative.  
+The polychoric function forms matrices of polychoric correlations by an local function (polyc) and will also report the tau values for each alternatives.  Earlier versions used  John Fox's polychor function which has now been replaced by the polyc function. 
 
 polychoric replaces poly.mat and is recommended.   poly.mat is an alternative wrapper to the polycor function. 
 
@@ -85,9 +85,11 @@ A biserial correlation (not to be confused with the point-biserial correlation w
 The 'ad hoc' polyserial correlation, rps is just \eqn{r = r * sqrt(n-1)/n) \sigma y /\sum(zpi) } where zpi are the ordinates of the normal curve at the normal equivalent of the cut point boundaries between the item responses. (Olsson, 1982) 
 
 
-All of these were inspired by (and adapted from) John Fox's polychor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package. 
+All of these were inspired by (and adapted from) John Fox's polychor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package.  The results from polychoric  match the polychor answers to at least 5 decimals when using correct=FALSE, and global = FALSE. 
 
 Particularly for tetrachoric correlations from sets of data with missing data, the matrix will sometimes not be positive definite.  Various smoothing alternatives are possible, the one done here is to do an eigen value decomposition of the correlation matrix, set all negative eigen values to   10 * .Machine$double.eps, normalize the positive eigen values to sum to the number of variables, and then reconstitute the correlation matrix.   A warning is issued when this is done.
+
+For very small data sets, the correction for continuity for the polychoric correlations can lead to difficulties, particularly if using the global=FALSE option, or if doing just one correlation at a time. Setting a smaller correction value (i.e., correct =.1) seems to help.  
 
 For combinations of continous, categorical, and dichotomous variables, see \code{\link{mixed.cor}}.
 
@@ -98,6 +100,7 @@ If using data with a variable number of response alternatives, it is necessary t
 
  \item{rho}{The (matrix) of tetrachoric/polychoric/biserial correlations}
  \item{tau}{The normal equivalent of the cutpoints}
+ \item{fixed}{If any correlations were adjusted for continuity, the total number of adjustments will be reported. }
 
 }
 \references{
@@ -113,6 +116,11 @@ U.Olsson, F.Drasgow, and N.Dorans (1982). The polyserial correlation coefficient
 William Revelle
 }
 \note{For tetrachoric, in the degenerate case of a cell entry with zero observations, a correction for continuity is applied and .5 is added to the cell entry.  A warning is issued.  If correct=FALSE the correction is not applied.
+This correction is, by default, on.  It can be adjusted by specifying a smaller value.  See the examples.
+
+For correct=FALSE, the results agree perfectly with John Fox's polycor function.  
+
+
 
 Switched to using sadmvn from the mnormt package to speed up by 50\%. 
 }
@@ -137,10 +145,13 @@ tetrachoric(matrix(c(61661,1610,85,20),2,2)) #Mplus reports .35
 tetrachoric(matrix(c(62503,105,768,0),2,2)) #Mplus reports -.10
 tetrachoric(matrix(c(24875,265,47,0),2,2)) #Mplus reports  0
 
+polychoric(matrix(c(61661,1610,85,20),2,2)) #Mplus reports .35
+polychoric(matrix(c(62503,105,768,0),2,2)) #Mplus reports -.10
+polychoric(matrix(c(24875,265,47,0),2,2)) #Mplus reports  0
+
 #Do not apply continuity correction- compare with previous analysis
 tetrachoric(matrix(c(24875,265,47,0),2,2), correct=0) 
-
-
+polychoric(matrix(c(24875,265,47,0),2,2), correct=0)  #the same result
 #these next examples are impossible!
 
 tetrachoric(c(0.02275000, 0.0227501320, 0.500000000))
@@ -150,7 +161,7 @@ tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000))
 tetrachoric(c(.2, .15, .1))
 tetrachoric(c(.2, .1001, .1))
  #} else {
- #       message("Sorry, you must have mvtnorm installed")}
+ #       message("Sorry, you must have mnormt installed")}
 
 # 4 plots comparing biserial to point biserial and latent Pearson correlation
 set.seed(42)

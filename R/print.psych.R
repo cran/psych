@@ -390,9 +390,9 @@ mchoice =  {
     
 mixed= { cat("Call: ")
     print(x$Call)
-    if(is.null(x$rho)) {if(lower) {print(lowerMat(x,digits=digits))} else {print(x,digits)} } else {
-    if(lower) {if(length(x$rho)>1) print(lowerMat (x$rho),digits=digits)} else {print(x$rho,digits)}}
-   },
+    if(is.null(x$rho)) {if(lower) {lowerMat(x,digits=digits)} else {print(x,digits)} } else {
+    if(lower) {if(length(x$rho)>1) { lowerMat (x$rho,digits=digits)} else {print(x$rho,digits)}}
+   }},
    
  
  paired.r = {cat("Call: ")

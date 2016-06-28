@@ -1,5 +1,6 @@
 \name{principal}
 \alias{principal}
+\alias{pca}
 \title{ Principal components analysis (PCA)}
 \description{Does an eigen value decomposition and returns eigen values, loadings, and degree of fit for a specified number of components.  Basically it is just  doing a principal components analysis (PCA) for n principal components of either a correlation or covariance matrix.  Can show the residual correlations as well. The quality of reduction in the squared correlations is reported by comparing residual correlations to original correlations. Unlike princomp, this returns a subset of just the best nfactors. The eigen vectors are rescaled by the sqrt of the eigen values to produce the component loadings more typical in factor analysis.
 }
@@ -20,7 +21,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FA
   \item{impute}{"median" or "mean" values are used to replace missing values} 
   \item{oblique.scores}{If TRUE (default), then the component scores are based upon the structure matrix.  If FALSE, upon the pattern matrix.}
   \item{method}{Which way of finding component scores should be used. The default is "regression"}
-  \item{...}{other parameters to pass to functions such as factor.scores}
+  \item{...}{other parameters to pass to functions such as factor.scores or the various rotation functions.  }
   }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 
@@ -42,7 +43,7 @@ Although for items, it is typical to find component scores by scoring the salien
 
 Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings (as reported in the structure matrix). 
 
-The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the orthogonal component loadings (remember, that rotations or transformations do not change the communality).  
+The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the (squared) orthogonal component loadings (remember, that rotations or transformations do not change the communality).  
 }
 \value{
   
@@ -74,6 +75,10 @@ The output from the print.psych function displays the component loadings (from t
 \item{rot.mat}{The rotation matrix used to produce the rotated component loadings. }
 }
 
+
+\note{By default, the accuracy of the varimax rotation function seems to be less than the Varimax function. This can be enhanced by specifying eps=1e-14 in the call to principal if using varimax rotation. Furthermore, note that Varimax by default does not apply the Kaiser normalization, but varimax does. Gottfried Helms compared these two rotations with those produced by SPSS and found identical values if using the appropriate options. (See the last two examples.)
+
+}
 \author{ William Revelle}
 \references{
 
@@ -102,6 +107,12 @@ pc2o
 round(cov(Harman.5,pc2o$scores),2) 
 pc2o$Structure    #this matches the covariances with the scores
 biplot(pc2,main="Biplot of the Harman.5 socio-economic variables",labels=paste0(1:12))
+
+#For comparison with SPSS  (contributed by Gottfried Helms)
+pc2v <- principal(iris[1:4],2,rotate="varimax",normalize=FALSE,eps=1e-14)
+print(pc2v,digits=7)
+pc2V <- principal(iris[1:4],2,rotate="Varimax",eps=1e-7)
+print(pc2V,digits=7) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

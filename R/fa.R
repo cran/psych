@@ -16,13 +16,13 @@
 #15/1/15  Fixed the way we handle missing and imputation to actually work.
 #19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
  cl <- match.call()
   if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                #  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, ...=...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, weight=weight,...=...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
 
 # if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
@@ -108,7 +108,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -243,13 +243,15 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         }
     		#if(fm=="minchi") 
     		np.obs <- count.pairwise(r)    #used if we want to do sample size weighting
-    		if(covar) {cor <- "cov"}  
+    		if(covar) {cor <- "cov"} 
+    		if(!is.null(weight) ) cor <-"wtd"
     # if given a rectangular matrix, then find the correlation or covariance 
     #multiple ways of find correlations or covariances
     switch(cor, 
        cor = {r <- cor(r,use=use)},
        cov = {r <- cov(r,use=use) 
               covar <- TRUE},
+       wtd = { r <- cor.wt(r,w=weight)$r},
        tet = {r <- tetrachoric(r)$rho},
        poly = {r <- polychoric(r)$rho},
        mixed = {r <- mixed.cor(r,use=use)$rho},
@@ -257,7 +259,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 
        )
-       
+      
+
     		
     
            } else { matrix.input <- TRUE #don't return the correlation matrix
@@ -394,25 +397,25 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    	       #varimax is from the stats package, Varimax is from GPArotations
    			#rotated <- do.call(rotate,list(loadings,...))
    			#rotated <- do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...))
-   			rotated <- GPArotation::Varimax(loadings)
+   			rotated <- GPArotation::Varimax(loadings,...)
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
    	quartimax = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	      
    			#rotated <- do.call(rotate,list(loadings))
-   			rotated <- GPArotation::quartimax(loadings)
+   			rotated <- GPArotation::quartimax(loadings,...)
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
    	bentlerT =  {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	       
    			#rotated <- do.call(rotate,list(loadings,...))
-   			rotated <- GPArotation::bentlerT(loadings)
+   			rotated <- GPArotation::bentlerT(loadings,...)
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
    	geominT	= {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	      
    			#rotated <- do.call(rotate,list(loadings,...))
-   			rotated <- GPArotation::geominT(loadings)
+   			rotated <- GPArotation::geominT(loadings,...)
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
    	targetT = {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
@@ -420,37 +423,37 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
    			
-   	 bifactor = {rot <- bifactor(loadings)
+   	 bifactor = {rot <- bifactor(loadings,...)
    	             loadings <- rot$loadings
    	            rot.mat <- t(solve(rot$Th))},  
    	 TargetT =  {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
    	            rot <- GPArotation::targetT(loadings,Tmat=diag(ncol(loadings)),...)
    	              loadings <- rot$loadings
    	            rot.mat <- t(solve(rot$Th))},
-   	equamax =  {rot <- equamax(loadings)
+   	equamax =  {rot <- equamax(loadings,...)
    	              loadings <- rot$loadings
    	            rot.mat <- t(solve(rot$Th))}, 
-   	varimin = {rot <- varimin(loadings)
+   	varimin = {rot <- varimin(loadings,...)
    	            loadings <- rot$loadings
    	            rot.mat <- t(solve(rot$Th))},
-   	specialT =  {rot <- specialT(loadings)
+   	specialT =  {rot <- specialT(loadings,...)
    	              loadings <- rot$loadings
    	              rot.mat <- t(solve(rot$Th))}, 
-   	Promax =   {pro <- Promax(loadings)
+   	Promax =   {pro <- Promax(loadings,...)
      			loadings <- pro$loadings
      			 Phi <- pro$Phi 
      			 rot.mat <- pro$rotmat},
-     promax =   {pro <- stats::promax(loadings)   #from stats
+     promax =   {pro <- stats::promax(loadings,...)   #from stats
      			 loadings <- pro$loadings
      			  rot.mat <- pro$rotmat
      			  ui <- solve(rot.mat)
      			  Phi <-  cov2cor(ui %*% t(ui))},	
-     cluster = 	 {loadings <- varimax(loadings)$loadings           			
+     cluster = 	 {loadings <- varimax(loadings,...)$loadings           			
 								pro <- target.rot(loadings)
      			              	loadings <- pro$loadings
      			                Phi <- pro$Phi
      			                 rot.mat <- pro$rotmat},
-     biquartimin =    {ob <- biquartimin(loadings,)
+     biquartimin =    {ob <- biquartimin(loadings,...)
                     loadings <- ob$loadings
      				 Phi <- ob$Phi
      				 rot.mat <- t(solve(ob$Th))}, 

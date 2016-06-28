@@ -66,21 +66,30 @@ violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by 
 
 
 ###################################################
-### code chunk number 9: overview.Rnw:483-485
+### code chunk number 9: overview.Rnw:484-486
 ###################################################
 data(epi.bfi)
 error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 
 
 ###################################################
-### code chunk number 10: overview.Rnw:498-500
+### code chunk number 10: overview.Rnw:499-501
 ###################################################
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,
         labels=c("Male","Female"),ylab="SAT score",xlab="")
 
 
 ###################################################
-### code chunk number 11: overview.Rnw:516-526
+### code chunk number 11: overview.Rnw:515-519
+###################################################
+T <- with(sat.act,table(gender,education))
+rownames(T) <- c("M","F")
+error.bars.tab(T,way="both",ylab="Proportion of Education Level",xlab="Level of Education",
+main="Proportion of sample by education level")
+
+
+###################################################
+### code chunk number 12: overview.Rnw:538-548
 ###################################################
 op <- par(mfrow=c(1,2))
   data(affect)
@@ -95,20 +104,20 @@ op <- par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 12: overview.Rnw:540-542
+### code chunk number 13: overview.Rnw:562-564
 ###################################################
 data(bfi)
 with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
 
 
 ###################################################
-### code chunk number 13: overview.Rnw:556-557
+### code chunk number 14: overview.Rnw:580-581
 ###################################################
 lowerCor(sat.act)
 
 
 ###################################################
-### code chunk number 14: overview.Rnw:564-570
+### code chunk number 15: overview.Rnw:588-594
 ###################################################
 female <- subset(sat.act,sat.act$gender==2)
  male <- subset(sat.act,sat.act$gender==1)
@@ -119,22 +128,22 @@ round(both,2)
 
 
 ###################################################
-### code chunk number 15: overview.Rnw:576-578
+### code chunk number 16: overview.Rnw:600-602
 ###################################################
 diffs <-  lowerUpper(lower,upper,diff=TRUE)
 round(diffs,2)
 
 
 ###################################################
-### code chunk number 16: corplot.png
+### code chunk number 17: corplot.png
 ###################################################
 png('corplot.png')
-corPlot(Thurstone,numbers=TRUE,main="9 cognitive variables from Thurstone")
+corPlot(Thurstone,numbers=TRUE,upper=FALSE,diag=FALSE,main="9 cognitive variables from Thurstone")
 dev.off()
 
 
 ###################################################
-### code chunk number 17: circplot.png
+### code chunk number 18: circplot.png
 ###################################################
 png('circplot.png')
 circ <- sim.circ(24)
@@ -144,7 +153,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 18: spider.png
+### code chunk number 19: spider.png
 ###################################################
 png('spider.png')
 op<- par(mfrow=c(2,2))
@@ -154,68 +163,68 @@ dev.off()
 
 
 ###################################################
-### code chunk number 19: overview.Rnw:645-646
+### code chunk number 20: overview.Rnw:669-670
 ###################################################
 corr.test(sat.act)
 
 
 ###################################################
-### code chunk number 20: overview.Rnw:657-658
+### code chunk number 21: overview.Rnw:681-682
 ###################################################
 r.test(50,.3)
 
 
 ###################################################
-### code chunk number 21: overview.Rnw:664-665
+### code chunk number 22: overview.Rnw:688-689
 ###################################################
 r.test(30,.4,.6)
 
 
 ###################################################
-### code chunk number 22: overview.Rnw:672-673
+### code chunk number 23: overview.Rnw:696-697
 ###################################################
 r.test(103,.4,.5,.1)
 
 
 ###################################################
-### code chunk number 23: overview.Rnw:679-680
+### code chunk number 24: overview.Rnw:703-704
 ###################################################
 r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B 
 
 
 ###################################################
-### code chunk number 24: overview.Rnw:688-689
+### code chunk number 25: overview.Rnw:712-713
 ###################################################
 cortest(sat.act)
 
 
 ###################################################
-### code chunk number 25: overview.Rnw:700-701
+### code chunk number 26: overview.Rnw:724-725
 ###################################################
 draw.tetra()
 
 
 ###################################################
-### code chunk number 26: overview.Rnw:712-713
+### code chunk number 27: overview.Rnw:736-737
 ###################################################
 draw.cor(expand=20,cuts=c(0,0))
 
 
 ###################################################
-### code chunk number 27: overview.Rnw:733-734
+### code chunk number 28: overview.Rnw:757-758
 ###################################################
 setCor(y = 5:9,x=1:4,data=Thurstone)
 
 
 ###################################################
-### code chunk number 28: overview.Rnw:741-743
+### code chunk number 29: overview.Rnw:765-767
 ###################################################
 sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 
 
 ###################################################
-### code chunk number 29: overview.Rnw:755-769
+### code chunk number 30: overview.Rnw:779-793
 ###################################################
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
@@ -234,32 +243,32 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 
 
 ###################################################
-### code chunk number 30: overview.Rnw:771-772
+### code chunk number 31: overview.Rnw:795-796
 ###################################################
 preacher <- mediate(1,2,3,sobel)  #The example in Preacher and Hayes
 
 
 ###################################################
-### code chunk number 31: overview.Rnw:779-780
+### code chunk number 32: overview.Rnw:803-804
 ###################################################
 mediate.diagram(preacher)
 
 
 ###################################################
-### code chunk number 32: overview.Rnw:791-793
+### code chunk number 33: overview.Rnw:815-817
 ###################################################
 preacher <- setCor(1,c(2,3),sobel,std=FALSE)
 setCor.diagram(preacher)
 
 
 ###################################################
-### code chunk number 33: overview.Rnw:860-861
+### code chunk number 34: overview.Rnw:884-885
 ###################################################
 if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} 
 
 
 ###################################################
-### code chunk number 34: overview.Rnw:869-872
+### code chunk number 35: overview.Rnw:893-896
 ###################################################
 if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} else {
 f3t <- fa(Thurstone,3,n.obs=213)
@@ -267,7 +276,7 @@ f3t }
 
 
 ###################################################
-### code chunk number 35: overview.Rnw:893-897
+### code chunk number 36: overview.Rnw:917-921
 ###################################################
 if(!require('GPArotation')) {stop('GPArotation must be installed to do rotations')} else {
 f3 <- fa(Thurstone,3,n.obs = 213,fm="pa")
@@ -276,130 +285,130 @@ f3o}
 
 
 ###################################################
-### code chunk number 36: overview.Rnw:918-920
+### code chunk number 37: overview.Rnw:942-944
 ###################################################
 f3w <- fa(Thurstone,3,n.obs = 213,fm="wls")
 print(f3w,cut=0,digits=3)
 
 
 ###################################################
-### code chunk number 37: overview.Rnw:932-933
+### code chunk number 38: overview.Rnw:956-957
 ###################################################
 plot(f3t)
 
 
 ###################################################
-### code chunk number 38: overview.Rnw:945-946
+### code chunk number 39: overview.Rnw:969-970
 ###################################################
 fa.diagram(f3t)
 
 
 ###################################################
-### code chunk number 39: overview.Rnw:965-967
+### code chunk number 40: overview.Rnw:989-991
 ###################################################
 p3p <-principal(Thurstone,3,n.obs = 213,rotate="Promax")
 p3p
 
 
 ###################################################
-### code chunk number 40: overview.Rnw:986-988
+### code chunk number 41: overview.Rnw:1010-1012
 ###################################################
 om.h <- omega(Thurstone,n.obs=213,sl=FALSE)
 op <- par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 41: overview.Rnw:999-1000
+### code chunk number 42: overview.Rnw:1023-1024
 ###################################################
 om <- omega(Thurstone,n.obs=213)
 
 
 ###################################################
-### code chunk number 42: overview.Rnw:1033-1035
+### code chunk number 43: overview.Rnw:1057-1059
 ###################################################
 data(bfi)
 ic <- iclust(bfi[1:25])
 
 
 ###################################################
-### code chunk number 43: overview.Rnw:1047-1048
+### code chunk number 44: overview.Rnw:1071-1072
 ###################################################
 summary(ic)  #show the results
 
 
 ###################################################
-### code chunk number 44: overview.Rnw:1061-1063
+### code chunk number 45: overview.Rnw:1085-1087
 ###################################################
 data(bfi)
 r.poly <- polychoric(bfi[1:25]) #the ... indicate the progress of the function
 
 
 ###################################################
-### code chunk number 45: overview.Rnw:1076-1078
+### code chunk number 46: overview.Rnw:1100-1102
 ###################################################
 ic.poly <- iclust(r.poly$rho,title="ICLUST using polychoric correlations")
 iclust.diagram(ic.poly) 
 
 
 ###################################################
-### code chunk number 46: overview.Rnw:1089-1091
+### code chunk number 47: overview.Rnw:1113-1115
 ###################################################
 ic.poly <- iclust(r.poly$rho,5,title="ICLUST using polychoric correlations for nclusters=5")
 iclust.diagram(ic.poly) 
 
 
 ###################################################
-### code chunk number 47: overview.Rnw:1102-1103
+### code chunk number 48: overview.Rnw:1126-1127
 ###################################################
 ic.poly <- iclust(r.poly$rho,beta.size=3,title="ICLUST beta.size=3")
 
 
 ###################################################
-### code chunk number 48: overview.Rnw:1115-1116
+### code chunk number 49: overview.Rnw:1139-1140
 ###################################################
 print(ic,cut=.3)
 
 
 ###################################################
-### code chunk number 49: overview.Rnw:1135-1137
+### code chunk number 50: overview.Rnw:1159-1161
 ###################################################
 fa(bfi[1:10],2,n.iter=20)
 
 
 
 ###################################################
-### code chunk number 50: overview.Rnw:1150-1152
+### code chunk number 51: overview.Rnw:1174-1176
 ###################################################
 f4 <- fa(bfi[1:25],4,fm="pa")
 factor.congruence(f4,ic)
 
 
 ###################################################
-### code chunk number 51: overview.Rnw:1161-1162
+### code chunk number 52: overview.Rnw:1185-1186
 ###################################################
 factor.congruence(list(f3t,f3o,om,p3p))
 
 
 ###################################################
-### code chunk number 52: overview.Rnw:1206-1207
+### code chunk number 53: overview.Rnw:1230-1231
 ###################################################
 vss <- vss(bfi[1:25],title="Very Simple Structure of a Big 5 inventory")
 
 
 ###################################################
-### code chunk number 53: overview.Rnw:1215-1216
+### code chunk number 54: overview.Rnw:1239-1240
 ###################################################
 vss
 
 
 ###################################################
-### code chunk number 54: overview.Rnw:1226-1227
+### code chunk number 55: overview.Rnw:1250-1251
 ###################################################
 fa.parallel(bfi[1:25],main="Parallel Analysis of a Big 5 inventory")
 
 
 ###################################################
-### code chunk number 55: overview.Rnw:1245-1250
+### code chunk number 56: overview.Rnw:1269-1274
 ###################################################
 v16 <- sim.item(16)
 s <- c(1,3,5,7,9,11,13,15)
@@ -409,7 +418,7 @@ fa.diagram(f2,fe=fe)
 
 
 ###################################################
-### code chunk number 56: overview.Rnw:1303-1307
+### code chunk number 57: overview.Rnw:1327-1331
 ###################################################
 set.seed(17)
 r9 <- sim.hierarchical(n=500,raw=TRUE)$observed
@@ -418,7 +427,7 @@ alpha(r9)
 
 
 ###################################################
-### code chunk number 57: overview.Rnw:1314-1317
+### code chunk number 58: overview.Rnw:1338-1341
 ###################################################
 
 alpha(attitude,keys=c("complaints","critical"))
@@ -426,45 +435,45 @@ alpha(attitude,keys=c("complaints","critical"))
 
 
 ###################################################
-### code chunk number 58: overview.Rnw:1324-1326
+### code chunk number 59: overview.Rnw:1348-1350
 ###################################################
 
 alpha(attitude)
 
 
 ###################################################
-### code chunk number 59: overview.Rnw:1333-1335
+### code chunk number 60: overview.Rnw:1357-1359
 ###################################################
 items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
 alpha(items$observed)  #item response analysis of congeneric measures
 
 
 ###################################################
-### code chunk number 60: overview.Rnw:1388-1389
+### code chunk number 61: overview.Rnw:1412-1413
 ###################################################
 om.9 <- omega(r9,title="9 simulated variables")
 
 
 ###################################################
-### code chunk number 61: overview.Rnw:1400-1401
+### code chunk number 62: overview.Rnw:1424-1425
 ###################################################
 om.9
 
 
 ###################################################
-### code chunk number 62: overview.Rnw:1409-1410
+### code chunk number 63: overview.Rnw:1433-1434
 ###################################################
 omegaSem(r9,n.obs=500)
 
 
 ###################################################
-### code chunk number 63: overview.Rnw:1419-1420
+### code chunk number 64: overview.Rnw:1443-1444
 ###################################################
 splitHalf(r9)
 
 
 ###################################################
-### code chunk number 64: overview.Rnw:1442-1460
+### code chunk number 65: overview.Rnw:1466-1484
 ###################################################
 #the old way is by location-- specify the total number of items
 keys <- make.keys(nvars=28,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
@@ -487,7 +496,7 @@ keys <- make.keys(bfi,keys.list) #specify the data file to be scored (bfi)
 
 
 ###################################################
-### code chunk number 65: overview.Rnw:1467-1471
+### code chunk number 66: overview.Rnw:1491-1495
 ###################################################
  keys.1<- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
 keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
@@ -496,14 +505,14 @@ keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
 
 
 ###################################################
-### code chunk number 66: overview.Rnw:1481-1483
+### code chunk number 67: overview.Rnw:1505-1507
 ###################################################
  scores <- scoreItems(keys,bfi)
  scores
 
 
 ###################################################
-### code chunk number 67: scores
+### code chunk number 68: scores
 ###################################################
 png('scores.png')
 pairs.panels(scores$scores,pch='.',jiggle=TRUE)
@@ -511,7 +520,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 68: overview.Rnw:1509-1512
+### code chunk number 69: overview.Rnw:1533-1536
 ###################################################
 r.bfi <- cor(bfi,use="pairwise")
 scales <- scoreItems(keys,r.bfi)
@@ -519,7 +528,7 @@ summary(scales)
 
 
 ###################################################
-### code chunk number 69: overview.Rnw:1522-1528
+### code chunk number 70: overview.Rnw:1546-1552
 ###################################################
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
@@ -530,7 +539,7 @@ describe(iq.tf)  #compare to previous results
 
 
 ###################################################
-### code chunk number 70: overview.Rnw:1546-1552
+### code chunk number 71: overview.Rnw:1570-1576
 ###################################################
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
@@ -541,21 +550,21 @@ irt.responses(scores$scores,iqitems[1:4],breaks=11)
 
 
 ###################################################
-### code chunk number 71: overview.Rnw:1564-1566
+### code chunk number 72: overview.Rnw:1588-1590
 ###################################################
  m <- colMeans(bfi,na.rm=TRUE)
   item.lookup(scales$item.corrected[,1:3],m,dictionary=bfi.dictionary[1:2])
 
 
 ###################################################
-### code chunk number 72: overview.Rnw:1574-1576
+### code chunk number 73: overview.Rnw:1598-1600
 ###################################################
 data(bfi)
 bestScales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
 
 
 ###################################################
-### code chunk number 73: overview.Rnw:1600-1604
+### code chunk number 74: overview.Rnw:1624-1628
 ###################################################
 set.seed(17)
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
@@ -564,7 +573,7 @@ test
 
 
 ###################################################
-### code chunk number 74: overview.Rnw:1611-1616
+### code chunk number 75: overview.Rnw:1635-1640
 ###################################################
 op <- par(mfrow=c(3,1))
 plot(test,type="ICC")
@@ -574,7 +583,7 @@ op <- par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 75: overview.Rnw:1627-1630
+### code chunk number 76: overview.Rnw:1651-1654
 ###################################################
 data(bfi)
 e.irt <- irt.fa(bfi[11:15])
@@ -582,43 +591,43 @@ e.irt
 
 
 ###################################################
-### code chunk number 76: overview.Rnw:1637-1638
+### code chunk number 77: overview.Rnw:1661-1662
 ###################################################
 e.info  <- plot(e.irt,type="IIC")
 
 
 ###################################################
-### code chunk number 77: overview.Rnw:1649-1650
+### code chunk number 78: overview.Rnw:1673-1674
 ###################################################
 print(e.info,sort=TRUE)
 
 
 ###################################################
-### code chunk number 78: overview.Rnw:1679-1680
+### code chunk number 79: overview.Rnw:1703-1704
 ###################################################
 iq.irt <- irt.fa(iq.tf)
 
 
 ###################################################
-### code chunk number 79: overview.Rnw:1692-1693
+### code chunk number 80: overview.Rnw:1716-1717
 ###################################################
 plot(iq.irt,type='test') 
 
 
 ###################################################
-### code chunk number 80: overview.Rnw:1704-1705
+### code chunk number 81: overview.Rnw:1728-1729
 ###################################################
 iq.irt 
 
 
 ###################################################
-### code chunk number 81: overview.Rnw:1711-1712
+### code chunk number 82: overview.Rnw:1735-1736
 ###################################################
 om <- omega(iq.irt$rho,4)
 
 
 ###################################################
-### code chunk number 82: overview.Rnw:1726-1740
+### code chunk number 83: overview.Rnw:1750-1764
 ###################################################
 v9 <- sim.irt(9,1000,-2.,2.,mod="normal") #dichotomous items
 items <- v9$items
@@ -637,14 +646,14 @@ colnames(scores.df) <- c("True theta","irt theta","total","fit","rasch","total",
 
 
 ###################################################
-### code chunk number 83: overview.Rnw:1749-1751
+### code chunk number 84: overview.Rnw:1773-1775
 ###################################################
  pairs.panels(scores.df,pch='.',gap=0)
  title('Comparing true theta for IRT, Rasch and  classically based scoring',line=3)
 
 
 ###################################################
-### code chunk number 84: overview.Rnw:1814-1818
+### code chunk number 85: overview.Rnw:1838-1842
 ###################################################
 
 C <- cov(sat.act,use="pairwise")
@@ -653,14 +662,14 @@ summary(model1)
 
 
 ###################################################
-### code chunk number 85: overview.Rnw:1821-1823
+### code chunk number 86: overview.Rnw:1845-1847
 ###################################################
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
 
 
 ###################################################
-### code chunk number 86: overview.Rnw:1906-1930
+### code chunk number 87: overview.Rnw:1930-1954
 ###################################################
 xlim=c(0,10)
 ylim=c(0,10)
@@ -689,7 +698,7 @@ dia.curved.arrow(mr,lr$top)
 
 
 ###################################################
-### code chunk number 87: overview.Rnw:2042-2043
+### code chunk number 88: overview.Rnw:2066-2067
 ###################################################
 sessionInfo()
 

@@ -1,7 +1,7 @@
 \name{print.psych}
 \alias{print.psych}
 \alias{summary.psych}
-
+\alias{anova.psych}
 
 \title{ Print and summary functions for the psych class }
 \description{Give limited output (print) or somewhat more detailed (summary) for most of the functions in psych. 
@@ -10,6 +10,7 @@
 \method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...)
 
 \method{summary}{psych}(object,digits=2,items=FALSE,...)
+\method{anova}{psych}(object,object2,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,6 +23,7 @@
   \item{sort}{Cluster loadings are in sorted order}
   \item{short}{Controls how much to print}
   \item{lower}{For square matrices, just print the lower half of the matrix} 
+  \item{object2}{Another object from fa or omega}
   \item{...}{More options to pass to summary and print}
 }
 \details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available,  ask for the structure of the particular object: (str(theobject).

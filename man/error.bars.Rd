@@ -1,5 +1,6 @@
 \name{error.bars}
 \alias{error.bars}
+\alias{error.bars.tab}
 \title{Plot means and confidence intervals}
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
 }
@@ -8,10 +9,12 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
   main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05,sd=FALSE, labels = NULL, 
    pos = NULL,  arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE,
    col="blue",...)
+error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
 \arguments{
   \item{x}{ A data frame or matrix of raw data }
+  \item{t}{A table of frequencies}
   \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe)}
   \item{ylab}{y label}
   \item{xlab}{x label}
@@ -29,6 +32,8 @@ error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable"
   \item{bars}{bars=TRUE will draw a bar graph if you really want to do that}
   \item{within}{should the error variance of a variable be corrected by 1-SMC?}
   \item{col}{color(s) of the catseyes.  Defaults to blue.} 
+  \item{way}{Percentages are based upon the row totals (default) column totals, or grand total of the data Table}
+  \item{raw}{If raw is FALSE, display the graphs in terms of probability, raw TRUE displays the data in terms of raw counts}
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
 }
 
@@ -42,13 +47,15 @@ The error bars are normally calculated from the data using the describe function
 If sd is TRUE, then the error bars will represent one standard deviation from the mean rather than be a function of alpha and the standard errors.
 
 See the last two examples for the  case of plotting data with statistics from another function. 
+
+Alternatively, \code{\link{error.bars.tab}} will take tabulated data and convert to either row, column or overall percentages, and then plot these as percentages with the equivalent standard error (based upon sqrt(pq/N)).
   
 }
 \value{Graphic output showing the means + x% confidence intervals.  For ci=1.96  and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region. 
 
 These confidence regions are based upon normal theory and do not take into account any skew in the variables.  More accurate confidence intervals could be found by resampling.
 
- 
+The error.bars.tab function will return (invisibly) the cell means and standard errors.
 }
 
 \author{William Revelle}
@@ -118,6 +125,18 @@ error.bars(stats=my.stats,xlab="Condition",ylab="Score")
 my.stats <- data.frame(mean=c(2,4,8),se=c(2,1,2),n=c(10,10,3))
 rownames(my.stats) <- c("First", "Second","Third")
 error.bars(stats=my.stats,xlab="Condition",ylab="Score")
+
+
+#example of arrest rates (as percentage of condition)
+arrest <- data.frame(Control=c(14,21),Treated =c(3,23))
+rownames(arrest) <- c("Arrested","Not Arrested")
+error.bars.tab(arrest,ylab="Probability of Arrest",xlab="Control vs Treatment",
+main="Probability of Arrest varies by treatment")
+
+
+#Show the raw  rates 
+error.bars.tab(arrest,raw=TRUE,ylab="Number Arrested",xlab="Control vs Treatment",
+main="Count of Arrest varies by treatment")
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

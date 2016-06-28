@@ -21,7 +21,8 @@ switch(class(r)[2],
     cor.ci ={ pval <- 2*(1-r$ptci)
   r <- r$rho},
   fa = {r <- r$loadings},
-  pc = {r <- r$loadings}
+  pc = {r <- r$loadings},
+  principal = {r <- r$loadings}
   )  #end switch
   }
   }
@@ -37,6 +38,9 @@ switch(class(r)[2],
 r <- as.matrix(r)
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
 
+minx <- min(r,na.rm=TRUE)
+maxx <- max(r,na.rm=TRUE)
+if ( (minx < -1) | (maxx > 1)) r <- cor(r,use="pairwise") #find the correlations if it is not a factor matrix nor a correlation matrix
 
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]

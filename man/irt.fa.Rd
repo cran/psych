@@ -8,7 +8,8 @@
 Although exploratory factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
 }
 \usage{
-irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",...)
+irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",
+        sort=TRUE,...)
 irt.select(x,y)
 fa2irt(f,rho,plot=TRUE,n.obs=NULL)
 }
@@ -23,6 +24,7 @@ fa2irt(f,rho,plot=TRUE,n.obs=NULL)
   \item{fm}{The default factor extraction is minres.  See \code{\link{fa}} for the other options.}
   \item{f}{The object returned from \code{\link{fa}} }
   \item{rho}{The object returned from \code{\link{polychoric}} or \code{\link{tetrachoric}}.  This will include both a correlation matrix and the item difficulty levels.}
+  \item{sort}{Should the factor loadings be sorted before preparing the item information tables.  Defaults to TRUE as this is more useful for tabular output.}
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{

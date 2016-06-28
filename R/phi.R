@@ -15,3 +15,11 @@
    phi <- (t[1,1]/total - c.sum[1]*r.sum[1]) /sqrt(v)
    names(phi) <- NULL
 return(round(phi,digits))  }
+
+#does not return chi square values
+phi2chi <- function(phi,n.obs) {
+chi <- phi^2 * (n.obs)
+p <- 1 - pchisq(chi,1)
+return(list(chi=chi,p=p))}
+
+

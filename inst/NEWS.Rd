@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.6.5 (2016-05-20}{
+\section{Changes in psych version 1.6.7 (2016-06-30}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.6.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.5.8.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.5.8 was released in August of 2015, the last two digits reflect the day of any modifications).
+      \item Version 1.6.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.6.4 was released in April of 2016, the last two digits reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -16,7 +16,7 @@
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
-      \item Add labels to factor.plot for more than 2 factors?  -- this will be hard   
+     
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
      \item add option to do subject density and item density plot to IRT plot.
@@ -40,7 +40,10 @@
      \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
      \item Fix bi.bars to that it handles height data from sapa
-     \item Find correlations before doing corPlot ? 
+     \item Consider alternative number of factor options
+     \item Clean up the various sim functions so that they are better documented
+     \item Do to cor2latex what we did in df2latex (i.e., add cut and big options)
+   
        
      
     
@@ -48,6 +51,37 @@
     }
   }
   } 
+  
+\section{Changes in psych version 1.6.6 (2016-06-20)}{
+  \subsection{Additions}{
+          \itemize{
+         \item Added an iterative option to cosinor so that it can do phase adjustment.
+         \item Added error.bars.tab to do plots of tabular data with error bars
+         \item Added a sort option to irt.fa so that items are sorted by factor loading.
+         \item Added pca as an alias to principal
+         \item Added the cut and big option to df2latex
+         \item Added a few cross references to make it easier to find functions.
+         \item Modified describe to take character vectors and matrices
+          \item Added labels to factor.plot for more than 2 factors.  Not as hard as I thought. Added a show.names options to plot the labels without overwriting a point. 
+          \item Modified corPlot to find correlations if input is a non square matrix or data.frame (but not an object from fa or omega).
+         \item Modified describe (and therefore, describeBy) so that it can take more options (including interquartile range) and quantiles (requested by Gilbert Gregory).  
+         \item Added a weight option to fa to weight subjects by a weighting vector (requested by Mike Hammer).
+         \item Added anova.psych  to allow for tests for chisquare differences between factor solutions. 
+         \item Serious modifications to biplot.psych, fa.plot, and cluster.plot to allow names (labels) in the multi-panel (more than 2 factor) option.  Also added the choose option to plot just one selected pair of factors from a larger set.  This is useful if showing a 3 or 4 factor biplot  and then "blowing up" one of the pairs. 
+         \item Serious analysis of the use of global and correct for examples of small data sets provided by Gabriele Cantaluppi.  Some resulting improvement in documentation and options. 
+       }  
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+         \item Changed principal (and fa) so that when it calls GPA::rotation(Varimax) it passes options (such as eps=1e-7) to get more accuracy. (Reported by Gottfried Helms)
+         \item Fixed error.bars.by to handle the case of a single variable
+         \item Fixed plot.irt.poly so that it communicates correctly with irt2latex for multiple factor case
+         \item Fixed irt2latex so that it handles results from plotting irt as well as directly from irt.fa
+         \item Fixed polychoric so that it returns meaningful tau values in the presence of missing categories (reported by Gabriele Cantaluppi).  polychoric was returning incorrect values of correlations and tau for the case of item responses differing in the number of alternatives, or with different minima.  Particularly a problem with very small sample sizes.  Also generally improved polychoric.
+      } 
+      }
+  }
   
      \section{Changes in psych version 1.6.4 (2016-04-20)}{
   \subsection{Additions}{

@@ -6,6 +6,7 @@
 \alias{fac}
 \alias{fa.poly}
 
+
 \title{Exploratory Factor analysis using MinRes (minimum residual) as well as EFA by Principal Axis, Weighted Least Squares or Maximum Likelihood }
 \description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares (OLS) to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares (WLS). Perhaps the most conventional technique is principal axes (PAF).  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal function) is probably preferred.  Bootstrapped confidence intervals of the loadings and interfactor correlations are found by fa  with n.iter > 1. }
 
@@ -13,12 +14,12 @@
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
- alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",...)
+ alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",...)
+oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
 
 fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
  impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
@@ -245,6 +246,7 @@ Correction to documentation: as of September, 2014, the oblique.scores option is
 
 \code{\link{fa.lookup}} will print the factor analysis loadings matrix along with the item ``content" taken from a dictionary of items.  This is useful when examining the meaning of the factors.  
 
+\code{\link{anova.psych}} allows for testing the difference between two (presumably nested) factor models .
 
 
 

@@ -8,6 +8,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
     nvar <- ncol(x)
+    if(is.null(nvar)) nvar <- 1  #added May 21, 2016 to handle the case of a single variable
     if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)}
     if(!missing(density)) {col12 <- col2rgb(colors,TRUE)/255
     colors <- rgb(col12[1,],col12[2,],col12[3,],.5)
@@ -86,7 +87,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     group.stats <- describeBy(x,group)
     n.group <- length(group.stats)
     n.var <- ncol(x)
-    
+     if(is.null(n.var)) n.var <- 1 
     #first set up some defaults to allow the specification of colors, lty, and pch dynamically and with defaults
     if(missing(pch)) pch <- seq(15,(15+n.group))
     if(missing(lty)) lty <- 1:8
@@ -204,3 +205,4 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    
    #corrected Feb 2, 2011 to plot alpha/2 rather than alpha 
    #modifed Feb 2, 2011 to not plot lines if they are not desired.
+   #modified May 21, 2016 to handle a case of a single vector having no columns

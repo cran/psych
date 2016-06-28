@@ -55,9 +55,10 @@ function (x, head = 4, tail = 4)
 #modified January 10, 2014 to add the check option to improve speed.  A few other improvements
 #modified December 2014 to add the fast option for large data sets
 #modified May 21, 2015 to allow non-numeric data to be described (but with a warning)
+#further modified June 21, 2016 to allow for character input as well as well reporting quantiles 
 "describe" <-
-function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL)   #basic stats after dropping non-numeric data
-                                                 #slightly faster if we don't do skews
+function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE)   #basic stats after dropping non-numeric data
+                             #slightly faster if we don't do skews
 {                      
  cl <- match.call()
 #first, define a local function
@@ -68,10 +69,11 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    	    if (prod(dim(x)) > 10^7) {fast <- TRUE } else {fast <- FALSE}}  #the default is to use fast for large data sets
    	if(fast) {skew <- FALSE
    	         }
-   		 
+   	numstats <- 10 + length(quant)	+ IQR 
     if ( is.null(dim(x)[2]))  {        #do it for vectors or 
     	    len  <- 1
-    	    stats = matrix(rep(NA,10),ncol=10)    #create a temporary array
+    	    nvar <- 1
+    	    stats = matrix(rep(NA,numstats),ncol=numstats)    #create a temporary array
 			stats[1, 1] <-  valid(x )			
 			stats[1, 2] <-  mean(x, na.rm=na.rm )
 			stats[1,10] <- sd(x,na.rm=na.rm)
@@ -83,25 +85,41 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
 			stats[1,7] <-  mad(x,na.rm=na.rm) 
 			stats[1,8] <-  kurtosi(x,na.rm=na.rm,type=type) 
 			vars <- 1
+			 if(!is.null(quant)) { Qnt <- quantile(x,prob=quant,na.rm=TRUE)
+             stats[1,(IQR+11):numstats] <- t(Qnt)}
+             if(IQR) {Quart <- t(quantile(x,prob=c(.25,.75),na.rm=TRUE))
+             Iqr <- Quart[,2] -Quart[,1] 
+             stats[1,11] <- Iqr
+             }
+			rownames(stats) <- "X1"
     	} else {
-    	
-   stats = matrix(rep(NA,ncol(x)*10),ncol=10)    #create a temporary array
+   nvar <- ncol(x)	
+   stats = matrix(rep(NA,nvar*numstats),ncol=numstats)    #create a temporary array
+   
+   if(is.null(colnames(x))) colnames(x) <- paste0("X",1:ncol(x))
    rownames(stats) <- colnames(x)
    stats[,1] <- apply(x,2,valid)
-   vars <- c(1:ncol(x))
+   vars <- c(1:nvar)
    ##adapted from the pairs function to convert logical or categorical to numeric 
-    if(check) {
-    for(i in 1:ncol(x)) {   
+
+    if(!is.matrix(x) && check) {  #does not work for matrices
+    for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                  if(fast)  {x[[i]] <- NA} else {
-                                  if(is.factor(unlist(x[[i]]))) {   #fixed 5/21/15
-                                              x[[i]] <- as.numeric(x[[i]]) 
+                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
+                                  
+                                 # if(is.factor(unlist(x[[i]]))) { #fixed 5/21/15
+                                 #             x[[i]] <- as.numeric(x[[i]])} 
+        
                           } else {x[[i]] <- NA} }
                
               rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")}
               } }
       
     x <- as.matrix(x)
+    if(!is.numeric(x)) {message("Converted non-numeric matrix input to numeric.  Are you sure you wanted to do this. Please check your data")
+                x <- matrix(as.numeric(x),ncol=nvar)
+               rownames(stats) <- paste0(rownames(stats),"*")} 
    
     stats[,2] <- apply(x, 2,mean,na.rm=na.rm )
     stats[,10] <- apply(x,2,sd,na.rm=na.rm)
@@ -123,25 +141,60 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
 		if(interp) {stats[, 3] <- apply(x,2,interp.median,na.rm=na.rm  ) }  else {stats[,3] <- apply(x,2,median,na.rm=na.rm) } 
 		}} 
 		
+    if(!is.null(quant)) { Qnt <- apply(x,2,quantile,prob=quant,na.rm=TRUE)
+    stats[,(IQR+11):numstats] <- t(Qnt)}
     
-    
+    if(IQR) {Quart <- t(apply(x,2,quantile,prob=c(.25,.75),na.rm=TRUE))
+             Iqr <- Quart[,2] - Quart[,1] 
+             stats[,11] <- Iqr
+             }
     }  #end of maxtrix input
      #now summarize the results 
-    if (ranges) {
-    			if(skew){
-    			   answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
-    			   range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))  #the typical (maximum) case
-                        } else {
-                                 if(!fast) {
-                                     answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[,3],trimmed =stats[,9],
-                                     mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1]))  #somewhat shorter 
-                                           } else {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1]))  #even shorter 
-                                                   }
-                               }} else {
-                                       if(skew){answer <-  data.frame(vars,n = stats[,1],mean=stats[,2], sd =stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))} else {
-               answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))}}  #the minimal case -- fixed 1/2/2014
-                
-   # answer <-data.frame(var=vars,temp, se = temp$sd/sqrt(temp$n))  #replaced with forming the answer in the if statements  10/1/2014 to improve memory management
+     if (numstats > (10 + IQR)) {
+     colnames(stats)[(11+IQR):numstats] <- paste0("Q",quant[1:length(quant)])}
+    
+    #the following output was cleaned up on June 22, 2016 added the quantile information.
+    
+    #the various options are ranges, skew, fast, numstats > 10
+    if(fast) { answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1])) }  #minimal case
+    
+    #if((!skew) && ranges) {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1])) }
+    if(skew) {
+        if(ranges) { answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
+    				 range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) } else {
+            		 answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) }
+             } else {if(ranges) {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1])) } else {
+             answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))   }
+            }
+    if(IQR) answer <- data.frame(answer,IQR=stats[,11])
+          
+    if (numstats > (10+ IQR)) {if(nvar > 1 ) {answer <- data.frame(answer, stats[,(IQR+11):numstats])   #add the quantile information
+                                     } else { 
+
+                                       answer <- data.frame(answer, t(stats[,(IQR+11):numstats])) }
+                        }     
+                         
+    
+#  {if (ranges) {
+#     	if(skew){ 
+#     		 
+#     		 
+#     	   if(numstats > 10) {  answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
+#     			   range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8], se=stats[,10]/sqrt(stats[,1]), stats[,(11:numstats)])}  else {
+#     		 answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
+#     		 range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))}  #the typical (maximum) case
+#                            } else {
+#                                  if(!fast) {
+#                                      if(numstats > 10) {
+#                                      answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[,3],trimmed =stats[,9],
+#                                      mad = stats[,7],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1]))  #somewhat shorter 
+#                                            } else {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1]))  #even shorter 
+#                                                    }
+#                                }} else {
+#                                        if(skew){answer <-  data.frame(vars,n = stats[,1],mean=stats[,2], sd =stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1]))} else {
+#                answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))}}  #the minimal case -- fixed 1/2/2014
+#      }         
+# answer <-data.frame(var=vars,temp, se = temp$sd/sqrt(temp$n))  #replaced with forming the answer in the if statements  10/1/2014 to improve memory management
    
     class(answer) <- c("psych","describe","data.frame")
     return(answer)

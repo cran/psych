@@ -14,11 +14,11 @@ If the input is an object of class "kmeans", then the cluster centers are plotte
 
 
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,
-          title = "Cluster plot",pch=18,pos,...)
+          title = "Cluster plot",pch=18,pos,show.points=TRUE,choose=NULL,...)
 fa.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title, 
-             jiggle=FALSE,amount=.02,pch=18,pos,...)
+             jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,...)
 factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,
-                  amount=.02,pch=18,pos,...)  #deprecated
+                  amount=.02,pch=18,pos,show.points=TRUE,...)  #deprecated
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,6 +32,8 @@ factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,
   \item{amount}{if jiggle=TRUE, then how much should the points be jittered?}
   \item{pch}{factor and clusters are shown with different pch values, starting at pch+1}
   \item{pos}{Position of the text for labels for two dimensional plots. 1=below, 2 = left, 3 = above, 4= right}
+  \item{show.points}{When adding labels to the points, should we show the points as well as the labels.  For many points, better to not show them, just the labels.}
+  \item{choose}{Specify the factor/clusters to plot}
   \item{...}{Further options to plot}
   
 }
@@ -51,6 +53,9 @@ Both of these functions may be called directly or by calling the generic plot fu
 circ.data <- circ.sim(24,500)
 circ.fa <- fa(circ.data,2)
 plot(circ.fa,cut=.5)
+f5 <- fa(bfi[1:25],5) 
+plot(f5,labels=colnames(bfi)[1:25],show.points=FALSE)
+plot(f5,labels=colnames(bfi)[1:25],show.points=FALSE,choose=c(1,2,4))
 }
 
 \keyword{multivariate }

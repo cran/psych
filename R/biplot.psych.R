@@ -2,76 +2,52 @@
 #the three or more dimensional case remains the same as before
 #The code for the two dimensional case is adapted (heavily) from the stats:::biplot function
 #corrected April 9, 2015 to allow multiple biplots in the same window 
+#Seriously modified June 25, 2016 to allow better control for labels, as well as just generally cleaner code
 
 "biplot.psych" <-
-function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,...) {
-if(is.null(x$scores)) stop("Biplot requires factor/component scores:")
+function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,...) {
+if(is.null(x$scores)) stop("Biplot requires factor/component scores. \nYou need to r run fa/pca from the raw data")
 op <- par()
 old.par <- par(no.readonly = TRUE)
 on.exit(par(old.par)) 
 MAR <- par("mar")
-
+MFROW <- par("mfrow")
 #fa.poly nests the fa and scores within a list
 if(is.list(x$scores)) x$scores <- x$scores$scores  #the case of fa.poly output
 if(is.list(x$fa)) x$loadings <- x$fa$loadings  #once again, the case of fa.poly
-
+if(!is.null(choose)) {  #plot just a pair 
+     x$scores <- x$scores[,choose,drop=FALSE]
+     x$loadings <- x$loadings[,choose,drop=FALSE]
+     }
 colnames(x$scores) <- colnames(x$loadings)
+if((missing(group)) || (is.null(group))) group <- rep(1,nrow(x$scores))
 
 #if(missing(pos)) pos <- NULL
 #if(is.null(labels)) {if(nrow(x$scores) > maxpoints ) {labels = rep(".",dim(x$scores)[1] )} else {labels = rep("o",dim(x$scores)[1] )}}
 
 n.dims <- dim(x$loadings)[2]
 #this is taken directly from biplot
-if (missing(col)) {
-        col <- par("col")
-        if (!is.numeric(col)) 
-            col <- match(col, palette(), nomatch = 1L)
-        col <- c(col, col + 1L)
-    }
-    else if (length(col) == 1L) 
-        col <- c(col, col)
+# if (missing(col)) {
+#         col <- par("col")
+#         if (!is.numeric(col)) 
+#             col <- match(col, palette(), nomatch = 1L)
+#         col <- c(col, col + 1L)
+#     }
+#     else if (length(col) == 1L) 
+#         col <- c(col, col)
+if(missing(col)) {col <-  c("black","red","blue","#FF0000FF", "#00FF00FF", "#00FFFFFF", "#0000FFFF" ,"#FF00FFFF")}  #rainbow + black, red
+ ch.col <- col
  
-#here is where we add some plotting controls that are missing from stats:::biplot       
-if (n.dims == 2) {
- # biplot(x$scores[,1:2],x$loadings[,1:2],xlabs=labels, cex=cex,main=main,xlim=xlim.s,ylim=ylim.s,...) 
+#here is where we add some plotting controls that are missing from stats:::biplot  
+     
+if (n.dims == 2) { #just do a one panel graph
+
   op <- par(pty = "s")
   if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
- 
-    
-#There are three different conditions
-#1 just show the (unlabeled) points
-#2 don't show the points, but put in labels at their locations
-#3 show the points with labels near them according to pos
- choice <- "one"
- if(!is.null(labels)) {
-     if(missing(pos))  {choice <- "two" } else {choice <- "three"}
-     }
- 
-switch(choice,
- "one" = {plot(x$scores, xlim = xlim.s, ylim = ylim.s,  col=col[1],cex=cex[1],main=main,pch=pch, ...) } ,
- "two" = {plot(x$scores,typ='n',  xlim = xlim.s, ylim = ylim.s,  col=col[1],cex=cex[1],main=main,pch=pch, ...)   
-       text(x$scores,labels=labels,col=col[1],pos=NULL,cex=cex[1])
-       },
- "three" = {plot(x$scores,  xlim = xlim.s, ylim = ylim.s,  col=col[1],cex=cex[1],main=main,pch=pch, ...)   
-       text(x$scores,labels=labels,col=col[1],pos=pos,cex=cex[1])
-       })
-
-   par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
-    dev.hold()
-    #on.exit(dev.flush(), add = TRUE)
-    on.exit(dev.flush(), add = FALSE)
-    plot(x$loadings, axes = FALSE, type = "n", xlim = xlim.f, ylim = ylim.f,
-      xlab = "", ylab = "", col = col[1L], ...)
-    
-    text(x$loadings, labels = rownames(x$loadings), cex = cex[2L], col = col[2L], ...)
-     arrows(0, 0, x$loadings[, 1L] * 0.8, x$loadings[, 2L] * 0.8, col = col[2L], 
-            length = arrow.len)
-    axis(3, col = col[2L], ...)
-    axis(4, col = col[2L], ...)
-    box(col = col[1L])
-   
-    
   
+  #plotone does the work
+ plotone(x$scores,x$loading,labels=labels,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )
+ 
   } else {  #the case of 3 or more factors -- we do the equivalent of a pairs plot
 	op1 <- par(mfrow=c(n.dims,n.dims), mar=c(2,3,3,2))
 	if(nrow(x$scores) > maxpoints) {labels <- rep(".",nrow(x$scores))} else {labels <- rep("o",nrow(x$scores))}
@@ -83,10 +59,52 @@ switch(choice,
      	if(class(tryd) != "try-error") {
     	 lines(d)}
   } else {
-        biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim.s,ylim=ylim.s,pch=pch,...)}
+   
+     #  biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim.s,ylim=ylim.s,pch=pch,...)}
+      plotone(x$scores[,c(j,i)],x$loadings[,c(j,i)],main=NULL,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )}  #work on this way of doing it
            }  }
    }
    par("mar"=MAR) #this puts the margins back to what they were when we started. Important for multiple biplots
+   par("mfrow"=MFROW) 
 }
 
+ plotone <- function( scores,loadings,labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,ch.col=c("black","blue"),...)  { 
+#There are three different conditions
+#1 just show the (unlabeled) points
+#2 don't show the points, but put in labels at their locations
+#3 show the points with labels near them according to pos
+
+ choice <- "one"
+ if(!is.null(labels)) {
+     if(missing(pos))  {choice <- "two" } else {choice <- "three"}
+     }
+
+switch(choice,   #we plot the scores here for scores > abs(cut) on x and y
+ "one" = {plot(scores, xlim = xlim.s, ylim = ylim.s, cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) } ,
+ "two" = {plot(scores,typ='n',  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) 
+       labels[sqrt((abs(scores[,1])^2  +   abs(scores[,2])^2 ) ) <  cuts] <-   NA
+       text(scores,labels=labels,col=ch.col[group],pos=NULL,cex=cex[1])
+       },
+ "three" = {plot(scores,  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) 
+        labels[sqrt((abs(scores[,1])^2 + abs(scores[,2])^2)) <  cuts] <-   NA  
+       text(scores,labels=labels,pos=pos,cex=cex[1],col=ch.col[group])
+       })
+
+   par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
+    dev.hold()
+    #on.exit(dev.flush(), add = TRUE)
+    on.exit(dev.flush(), add = FALSE)
+    plot(loadings, axes = FALSE, type = "n", xlim = xlim.f, ylim = ylim.f,
+      xlab = "", ylab = "", col = col[1L], ...)
+    labels <- rownames(loadings)
+    labels[sqrt(loadings[,1]^2  + loadings[,2]^2) <  cutl] <-   NA
+    text(loadings, labels = labels, cex = cex[2L], col = col[2L], ...)
+     arrows(0, 0, loadings[, 1L] * 0.8, loadings[, 2L] * 0.8, col = col[2L], 
+            length = arrow.len)
+    axis(3, col = col[2L], ...)
+    axis(4, col = col[2L], ...)
+    box(col = col[1L])
+   
+}    
+  
 

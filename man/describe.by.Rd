@@ -44,8 +44,10 @@ An alternative function (\code{\link{statsBy}}) returns a list of means, n, and 
 
 
 
-\seealso{  \code{\link{describe}},  \code{\link{statsBy}} }
+\seealso{  \code{\link{describe}},  \code{\link{statsBy}}, \code{\link{densityBy}} and \code{\link{violinBy}}
+ as well as \code{\link{error.bars}} and \code{\link{error.bars.by}} for other graphical displays. }
 \examples{
+
 data(sat.act)
 describeBy(sat.act,sat.act$gender) #just one grouping variable	
 #describeBy(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables

@@ -6,10 +6,11 @@
 "df2latex" <- 
 function(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,
 font.size ="scriptsize",big.mark=NULL, drop.na=TRUE, heading="A table from the psych package in R",
-caption="df2latex",label="default",char=FALSE,stars=FALSE,silent=FALSE,file=NULL,append=FALSE) {
+caption="df2latex",label="default",char=FALSE,stars=FALSE,silent=FALSE,file=NULL,append=FALSE,cut=0,big=.0) {
 #first set up the table
  nvar <- dim(x)[2]
  rname<- rownames(x)
+ tempx <- x
 comment <- paste("%", match.call())
 header <- paste("\\begin{table}[htpb]",
 "\\caption{",caption,"}
@@ -42,7 +43,8 @@ footer <- paste(footer,"
 )
 
 #now put the data into it
-if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)} else {x <- try(round(x,digits=digits)) }}
+if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)} else {x <- try(round(x,digits=digits)) }
+       if(cut > 0) x[abs(x) < cut] <- NA }
       }
  
  cname <- colnames(x)
@@ -53,7 +55,11 @@ if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)
  
 if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {if(rowlabels) {allnames <- c("  &  ",names1,lastname,"\\cr \n")} else {
              allnames <- c(names1,lastname,"\\cr \n")}}
-if(!char) {if(is.null(big.mark)) { x <- format(x,drop0trailing=FALSE)} else   #to keep the digits the same
+if(!char) {if(is.null(big.mark)) { x <- format(x,drop0trailing=FALSE)
+     if(big > 0) {x[tempx > big] <- paste0("\\bf{",x[tempx > big],"}") }
+     
+     
+     } else   #to keep the digits the same
                       {x <- prettyNum(x,big.mark=",",drop0trailing=FALSE)} 
    }   
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
@@ -253,9 +259,9 @@ invisible(result)
  
  "irt2latex" <- 
 function(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,font.size ="scriptsize", heading="An IRT factor analysis table from R",caption="fa2latex" ,label="default",silent=FALSE,file=NULL,append=FALSE) {
-nf <- length(f$plot$sumInfo)   #create nf tables 
+if(class(f)[2] != "polyinfo" ) {nf <- length(f$plot$sumInfo) } else {nf <- length(f$sumInfo) }  #create nf tables 
 for(i in (1:nf)) { 
-x <- f$plot$sumInfo[[i]]
+if(class(f)[2] != "polyinfo" ) {x <- f$plot$sumInfo[[i]]} else {x <- f$sumInfo[[i]] }
 if(nf>1) {
 rowmax <- apply(x,1,max, na.rm=TRUE)
  rowmax <- which(rowmax <.001,arr.ind=TRUE) 
@@ -297,7 +303,7 @@ footer <- paste(footer,"
 
  #now put it all together
 
- test.info <- colSums(f$plot$sumInfo[[i]])
+if(class(f)[2] != "polyinfo" ) {test.info <- colSums(f$plot$sumInfo[[i]])} else {test.info <- colSums(f$sumInfo[[i]])}
  sem <- sqrt(1/test.info)
  reliab <- 1 - 1/test.info
  summary <- rbind(test.info,sem,reliab)

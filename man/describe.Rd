@@ -5,11 +5,11 @@
 \description{
 There are many summary statistics available in R; this function
   provides the ones most useful for scale construction and item analysis in classic psychometrics. 
-  Range is most useful for the first pass in a data set, to check for coding errors. 
+  Range is most useful for the first pass in a data set, to check for coding errors.  
 }
 \usage{
 describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
-type=3,check=TRUE,fast=NULL)
+type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE)
 describeData(x,head=4,tail=4) 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -22,7 +22,12 @@ describeData(x,head=4,tail=4)
   \item{trim}{trim=.1 -- trim means by dropping the top and bottom trim fraction}
   \item{type}{Which estimate of skew and kurtosis should be used?  (See details.) }
   \item{check}{Should we check for non-numeric variables?  Slower but helpful.}
-  \item{fast}{if TRUE, will do n, means, sds, ranges for an improvement in speed.  If NULL, will switch to fast mode for large (ncol * nrow > 10^7) problems, otherwise defaults to fast = FALSE}
+  \item{fast}{if TRUE, will do n, means, sds, ranges for an improvement in speed.  If 
+  NULL, will switch to fast mode for large (ncol * nrow > 10^7) problems, otherwise 
+  defaults to fast = FALSE}
+  \item{quant}{if not NULL, will find the specified quantiles (e.g. quant=c(.25,.75) will 
+  find the 25th and 75th percentiles)}
+  \item{IQR}{If TRUE, show the interquartile range}
   \item{head}{show the first 1:head cases for each variable in describeData}
   \item{tail}{Show the last nobs-tail cases for each variable in describeData}
 }
@@ -87,20 +92,23 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 
 
 
+
+
 \references{Joanes, D.N. and Gill, C.A (1998).  Comparing measures of sample skewness and kurtosis.  The Statistician, 47, 183-189.}
 
-\seealso{ \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{pairs.panels}}, \code{\link{read.clipboard}}, \code{\link{error.crosses}} }
+\seealso{ \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{read.clipboard}}.  Then, for graphic output, see \code{\link{error.crosses}}, \code{\link{pairs.panels}}, \code{\link{error.bars}}, \code{\link{error.bars.by}} and \code{\link{densityBy}}, or \code{\link{violinBy}}}
+
 \examples{
 data(sat.act)
 describe(sat.act)
 
 describe(sat.act,skew=FALSE)
-describeData(sat.act)
+describe(sat.act,IQR=TRUE) #show the interquartile Range
+describe(sat.act,quant=c(.1,.25,.5,.75,.90) ) #find the 10th, 25th, 50th, 
+                   #75th and 90th percentiles
+ 
+describeData(sat.act) #the fast version 
    
-
-
-
-
 
 
 }

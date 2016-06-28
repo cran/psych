@@ -21,3 +21,20 @@ temp[i,] <- res.list[[i]][[var]]
 return(temp)
 }
  
+#  crossValidate <- function(data,group,ntrials=10,cors=FALSE,replace=FALSE,method="pearson",x,y) {
+#  cl <- match.call()
+#   subjects <- 1:nrow(data)
+#   sub2 <- nrow(data)/2
+#    result <- vector("list",ntrials) #supposedly allocates more memory
+# 
+#     for (i in 1:ntrials) {
+#     progressBar(i,ntrials,"crossValidate")
+#     samp <- sample(subjects,size =sub2,replace=replace)
+#     resultA <- statsBy(data[samp,],group,cors=cors,method=method)
+#     resultB <- statsBy(data[-samp,],group,cors=cors,method=method)
+#     result[[i]] <- cor(resultA$mean,resultB,
+#     
+# }
+# 
+# 
+# }

@@ -103,6 +103,7 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    k<- k+1}
    }
 tet <- mcmapply(function(i,j) myfun(x,i,j) , il,jl)
+#tet <- mapply(function(i,j) myfun(x,i,j) , il,jl)   #for debugging, we do not do parallel cores
 #now make it a matrix
 mat <- diag(nvar)
 mat[upper.tri(mat)] <- as.numeric(tet[1,]) #first row of poly is correlation, 2nd the fit
@@ -291,6 +292,8 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
   }}
   nvar <- dim(x)[2]
   n.obs <- dim(x)[1]
+ # if(!is.numeric(x)) {x <- matrix(as.numeric(x),ncol=nvar)
+  #  message("Converted non-numeric input to numeric")}
   if(!is.null(weight)) {if (length(weight)!= n.obs) stop("The number of weights must match the number of observations") }
  if (n.obs == nvar) {result <- tetrac(x,correct=correct,i=1,j=1,global=FALSE)} else {
  #first delete any bad cases

@@ -3,7 +3,7 @@
 #added the switch capability, August 25, 2011 following suggestions by Joshua Wiley
 
 "print.psych" <-
-function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...) { 
+function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,signif=NULL,...) { 
 
 if(length(class(x)) > 1)  { value <- class(x)[2] } else {
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -15,6 +15,7 @@ if(value =="set.cor") value <- "setCor"
 switch(value,
 
 ## the following functions have their own print function
+esem  = {print.psych.esem(x,digits=digits,short=short,cut=cut,...)},
  extension = { print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extend = {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  fa =  {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
@@ -222,11 +223,18 @@ cor.wt = {cat("Weighted Correlations \n")
 
          
 
-describe= {if  (length(dim(x))==1) {class(x) <- "list"
+describe= {if(!is.null(x$signif)) {
+        if( missing(signif) ) signif <-x$signif
+          x$signif <- NULL }
+         if  (length(dim(x))==1) {class(x) <- "list"
               attr(x,"call") <- NULL
+              if(!missing(signif)) x <- signifNum(x,digits=signif)
               print(round(x,digits=digits))
                   } else  {class(x) <- "data.frame" 
+                   if(!missing(signif)) x <- signifNum(x,digits=signif)
             print(round(x,digits=digits)) }
+         },
+describeBy = {print(unclass(x),digits=digits)
          },
          
 describeData = {if  (length(dim(x))==1) {class(x) <- "list"
@@ -702,6 +710,12 @@ cat("Correlation within groups \n")
 lowerMat(x$rwg)
 }
 },
+
+tau = {cat("Tau values from dichotomous or polytomous data \n")
+        class(x) <- NULL
+        print(x,digits)
+     },
+
 
             
    

@@ -12,7 +12,7 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 }
 
 \arguments{
-  \item{keys}{ A matrix of cluster keys }
+  \item{keys}{A list of scale/cluster keys, or a  matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
   \item{r}{Either a correlation matrix or a raw data matrix}
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
@@ -70,7 +70,7 @@ small.msq <- msq[ c("active", "energetic", "vigorous", "wakeful", "wide.awake",
 "full.of.pep", "lively", "sleepy", "tired", "drowsy","intense", "jittery", "fearful",
  "tense", "clutched.up", "quiet", "still",    "placid", "calm", "at.rest") ]
 small.R <- cor(small.msq,use="pairwise")
-keys <- make.keys(small.R,list(
+keys.list <- list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
        "lively", "-sleepy", "-tired", "-drowsy"),
 TA =c("intense", "jittery", "fearful", "tense", "clutched.up", "-quiet", "-still", 
@@ -81,13 +81,17 @@ high.EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of
 low.EA =c("sleepy", "tired", "drowsy"),
 lowTA= c("quiet", "still", "placid", "calm", "at.rest"),
 highTA = c("intense", "jittery", "fearful", "tense", "clutched.up")
-   ))
+   ) 
+   
+keys <- make.keys(small.R,keys.list)
       
-adjusted.scales <- scoreOverlap(keys,small.R)
+adjusted.scales <- scoreOverlap(keys.list,small.R)
 #compare with unadjusted
 confounded.scales <- cluster.cor(keys,small.R)
 summary(adjusted.scales)
-summary(confounded.scales)
+#note that the EA and high and low EA and TA and high and low TA 
+# scale correlations are confounded
+summary(confounded.scales) 
 }
 
 \keyword{ multivariate }

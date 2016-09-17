@@ -156,10 +156,11 @@ function(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) {
 if((nrow(x) !=ncol(x)) && cor) {x <- cor(x,use="pairwise")} #convert to correlation if necessary
 if(abs) {ord <- order(abs(x[,criteria]),decreasing=TRUE)
   value <- x[ord,criteria,drop=FALSE]
-  value <- value[(abs(value) >cut),,drop=FALSE]
+  count <- sum(abs(value) > cut,na.rm=TRUE)
+  value <- value[1:count,,drop=FALSE]
   } else {ord <- order(x[,criteria],decreasing=TRUE)
   value <- x[ord,criteria]
-  value <- value[abs(value) > cut] }
+  value <- value[value,criteria > cut] }
 value <- round(data.frame(value),digits)
 if((!is.null(dictionary)) && !is.factor(dictionary)) {temp <- lookup(rownames(value),dictionary)
    value <- merge(value,temp,by="row.names",all.x=TRUE,sort=FALSE)
@@ -183,6 +184,7 @@ if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
  #use lookup to take fa/ic output and show the results 
 "fa.lookup"  <-
    function(f,dictionary,digits=2) {
+   
    f <- fa.sort(f)
   
    if(!(is.matrix(f) || is.data.frame(f))) {h2 <- f$communality
@@ -338,11 +340,17 @@ function(fa.results,o=NULL,i=NULL,cn=NULL) {
      }
    new}
                          
-   
+   "keys.lookup" <- function(keys.list,dictionary) {
+      if(is.list(keys.list)) { items <-  sub("-","",unlist(keys.list))
+   f <- make.keys(items,keys.list)}
+    keys.list <- fa.sort(f)
+     contents <- lookup(rownames(f), y=dictionary)
+    rownames(contents)[rowSums(f) <0 ] <- paste0(rownames(contents)[rowSums(f)<0],"-")
+     return(contents)
+    }
   
   "item.lookup" <- 
-function (f,m, dictionary,cut=.3, digits = 2) 
-{
+function (f,m, dictionary,cut=.3, digits = 2) {
     f <- fa.sort(f)
     if (!(is.matrix(f) || is.data.frame(f))) {
         h2 <- f$communality
@@ -380,6 +388,7 @@ function (f,m, dictionary,cut=.3, digits = 2)
      }
     return(res)
 }
+
 
 
 "falsePositive" <- function(sexy=.1,alpha=.05,power=.8) {
@@ -453,3 +462,40 @@ if(bars) error.crosses(x1,y1,add=TRUE,arrow.len=arrow.len,labels="")
 text(x,y-2,"Unreliable but Valid")
 }
 #rel.val(10,.5)
+
+
+# "cor2" <- function(x,y,digits=2,use="pairwise",method="pearson") {
+# R <- cor(x,y,use=use,method=method)
+# print(round(R,digits))
+# invisible(R)}
+
+"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson") {
+multi <- FALSE
+if(is.list(x) && is.null(y)) {multi <- TRUE
+ n <- length(x)
+xi <- x[[1]]
+ for (i in 2:n) {xi <- cbind(xi,x[[i]])} 
+R <- cor(xi,use=use,method=method) }else {
+R <- cor(x,y,use=use,method=method)}
+if(multi) {lowerMat(R,digits) } else {print(round(R,digits))}
+invisible(R)}
+
+levels2numeric <- function(x) {
+n.var <- ncol(x)
+for(item in 1:n.var) {
+if (is.factor(x[,item])) x[,item] <- as.numeric(x[,item])}
+invisible(x)
+}
+
+
+signifNum <-  function(x,digits=2) {
+if(!is.null(ncol(x))) {sign <- rep(1,prod(dim(x)))} else {
+      sign <- rep(1,length(x))}
+sign[which(x < 0)] <- -1
+base <- trunc(log10(sign*x))
+mantissa <-  x/10^base
+pretty <- round(mantissa,digits=digits-1) * 10^base 
+pretty[which ((sign * x) == 0,arr.ind=TRUE)] <- 0 #fix the ones that are -Inf 
+pretty}
+
+

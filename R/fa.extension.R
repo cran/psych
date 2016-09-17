@@ -9,6 +9,7 @@
           if(!is.null(fo$Phi)) {Phi <- fo$Phi} else {Phi <- NULL}
           
        fl <- fo$loadings 
+       fs <- fo$Structure
        
      } else {if (class(fo)[2] == "omega") {
          omega <- TRUE
@@ -44,6 +45,7 @@ if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- fl  %*% t
 
 #created December 8, 2012 to allow for extension and goodness of fits of total model
 #modified 31/5/14 to allow for omega extension as well 
+#modified 04-09/16 to pass the Structure matrix as well
 "fa.extend" <- 
 function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE, ...) {
  cl <- match.call()
@@ -83,6 +85,7 @@ if(omega) result$schmid$sl <- foe
               result$schmid$gloading <- fo$schmid$gloading
               result$schmid$oblique <- oblique
             }
+   if(is.null(fo$Phi)) {result$Structure <- foe } else { result$Structure <- foe %*% fo$Phi}
     result$fe=fe
     result$Phi=fo$Phi
     result$fn="fa"

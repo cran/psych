@@ -21,9 +21,13 @@ r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL,
   \item{twotailed}{ should a twotailed or one tailed test be used }
 }
 \details{Depending upon the input, one of four different tests of correlations is done.
-1) For a sample size n, find the t value for a single correlation. 
+1) For a sample size n, find the t value for a single correlation where \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}
+}{t = r* sqrt(n-2)/sqrt(1-r^2) } and 
 
-2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores. 
+\deqn{se = \sqrt{\frac{1-r^2}{n-2}}) }{se = sqrt((1-r^2)/(n-2))}.
+
+2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores: 
+\deqn{z = \frac{z_1  - z_2}{\sqrt{\frac{1}{(n_1 - 3) + (n_2 - 3)}}}}{t = (z_1  - z_2) * sqrt(1/((n_1)-3 + (n_2-3)))}.
 
 3) For sample size n, and correlations r12, r13 and r23 test for the difference of two dependent correlations (r12 vs r13).  
 
@@ -44,7 +48,11 @@ r.test(n=103, r12=.4, r13=.5,r23=.1)
   \item{p}{probability value of z or t}
 
 }
-\references{Olkin, I. and Finn, J. D. (1995). Correlations redux. Psychological Bulletin, 118(1):155-164. 
+\references{
+
+Cohen, J. and Cohen, P. and West, S.G. and Aiken, L.S. (2003) Applied multiple regression/correlation analysis for the behavioral sciences, L.Erlbaum Associates, Mahwah, N.J.
+
+Olkin, I. and Finn, J. D. (1995). Correlations redux. Psychological Bulletin, 118(1):155-164. 
 
 Steiger, J.H. (1980), Tests for comparing elements of a correlation matrix, Psychological Bulletin, 87, 245-251. 
 
@@ -54,7 +62,7 @@ Williams, E.J.  (1959) Regression analysis. Wiley, New York, 1959.
 }
 \author{William Revelle }
 \note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations. Instead, he recommends Williams' test. (See also Dunn and Clark, 1971). These tests follow Steiger's advice.
-
+The test of two independent correlations is just a z test of the difference of the  Fisher's z transformed correlations divided by the standard error of the difference.  (See Cohen et al, p 49).
 }
 \seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
 \examples{

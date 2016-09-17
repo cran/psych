@@ -8,6 +8,8 @@
 \alias{reflect}
 \alias{shannon}
 \alias{test.all}
+\alias{cor2}
+\alias{levels2numeric}
 
  
 \title{Miscellaneous helper functions for the psych package}
@@ -15,11 +17,12 @@
 lowerCor finds the correlation of x variables and then prints them using 
 lowerMat which is a trivial, but useful, function to round off and print the lower triangle of a matrix.
 reflect reflects the output of a factor analysis or principal components analysis so that one or more factors is reflected. (Requested by Alexander Weiss.)
-progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names. fa.lookup returns sorted factor analysis output with item labels.
+progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names. fa.lookup returns sorted factor analysis output with item labels. \code{\link{cor2}} correlates two data.frames (of equal length). levels2numeric converts dataframe columns that are categorical/levels to numeric values. 
 }
 \usage{
 psych.misc()
 lowerCor(x,digits=2,use="pairwise",method="pearson")
+cor2(x,y,digits=2,use="pairwise",method="pearson")
 lowerMat(R, digits = 2)
 tableF(x,y)
 reflect(f,flip=NULL)
@@ -27,6 +30,7 @@ progressBar(value,max,label=NULL)
 shannon(x,correct=FALSE,base=2)
 test.all(pl,package="psych",dependencies 
       = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) 
+ levels2numeric(x)     
 
 }
 \arguments{
@@ -55,10 +59,11 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{tableF}} is fast alternative to the table function for creating two way tables of numeric variables.  It does not have any of the elegant checks of the table function and thus is much faster.  Used in the \code{\link{tetrachoric}} and \code{\link{polychoric}} functions to maximize speed.
 
-The lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3 (lowerMat)
-or a series of dots (progressBar).
+\code{\link{lowerCor}} Finds and prints (using \code{\link{lowerMat}}) the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places. 
 
-\code{\link{lowerCor}} prints the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places. 
+\code{\link{lowerMat}}Shows the lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3
+
+\code{\link{progressBar}} Display a series of dots as we progress through a slow loop (removed from anything  using multicores). 
 
 \code{\link{tableF}} (for tableFast) is a cut down version of table that does no error checking, nor returns pretty output, but is significantly faster than table.  It will just work on two integer vectors.  This is used in polychoric an tetrachoric for about a 50\% speed improvement for large problems.  
 
@@ -66,6 +71,9 @@ or a series of dots (progressBar).
 
 \code{\link{test.all}} allows one to test all the examples in specified package.  This allows us to make sure that those examples work when other packages (e.g., psych) are also loaded.  This is used when developing revisions to the psych package to make sure the the other packages work.  Some packages will not work and/or crash the system (e.g., DeducerPlugInScaling requires Java and even with Java, crashes when loaded, even if psych is not there!).  Alternatively, if testing a long list of dependencies, you can skip the first part by specifying them by name.
 
+\code{\link{cor2}} will find and display the correlations between two sets of variables, rounded to digits, using the other options. If x is a list of multiple sets (two or more), then all sets are correlated.  
+
+\code{\link{levels2numeric}}converts character data with levels to numeric data.  Used in the SAPA analyses where we code some variables, (e.g., gender, education) with character codes to help in the documentation of files, but want to do analyses of correlations with other categorical variables. 
 }
 
 \details{
@@ -98,6 +106,15 @@ bestItems(lb,3,cut=.1)
 data(bfi.dictionary)
 f2 <- fa(bfi[1:10],2)
 fa.lookup(f2,bfi.dictionary)
+
+sa1 <-sat.act[1:2]
+sa2 <- sat.act[3:4]
+sa3 <- sat.act[5:6]
+cor2(sa1,sa2)
+cor2(list(sa1,sa2))  #show within set and between set cors
+cor2(list(sa1,sa2,sa3))
+
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

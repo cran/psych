@@ -122,7 +122,7 @@ conf.level <- alpha
    	Fm <-  result$objective   #objective function of model     
    	Mm <- Fm/( n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2))
    	M0 <- F0* 2 /(n*(n-1))
-    nm <- ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #
+       nm <- ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #
    	result$null.model <- F0
    	result$null.dof <- n * (n-1) /2
    	if (!is.na(n.obs)) {result$null.chisq <-  F0 * ((n.obs-1) -(2 * n + 5)/6 )

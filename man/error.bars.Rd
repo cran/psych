@@ -60,7 +60,7 @@ The error.bars.tab function will return (invisibly) the cell means and standard 
 
 \author{William Revelle}
 
-\seealso{ \code{\link{error.crosses}} for two way error bars, \code{\link{error.bars.by}} for error bars for different groups
+\seealso{ \code{\link{error.crosses}} for two way error bars, \code{\link{error.bars.by}} for error bars for different groups as well as \code{\link{error.dots}} 
 
 In addition, as pointed out by Jim Lemon on the R-help news group, error bars or confidence intervals may be drawn using 
 \tabular{ll}{

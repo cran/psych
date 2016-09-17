@@ -60,9 +60,12 @@ as part of the Synthetic Apeture Personality Assessment (SAPA \url{http://sapa-p
 }
 \references{Goldberg, L.R. (1999) A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In Mervielde, I. and Deary, I. and De Fruyt, F. and Ostendorf, F. (eds) Personality psychology in Europe. 7. Tilburg University Press. Tilburg, The Netherlands.
 
-Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. }
+Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cognition: New Methods for examining the Personality-Cognition Link In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. }
 
 \seealso{\code{\link{bi.bars}} to show the data by age and gender, \code{\link{irt.fa}} for item factor analysis applying the irt model.} 
+
+\note{The bfi data set and items should not be confused with the BFI (Big Five Inventory) of Oliver John and colleagues (John, O. P., Donahue, E. M., & Kentle, R. L. (1991). The Big Five Inventory--Versions 4a and 54. Berkeley, CA: University of California,Berkeley, Institute of Personality and Social Research.)
+}
 \examples{
 data(bfi)
 describe(bfi)
@@ -71,12 +74,10 @@ describe(bfi)
   list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
-  keys <- make.keys(bfi,keys.list)
-  
- scores <- scoreItems(keys[1:27,],bfi[1:27]) #don't score age 
+ scores <- scoreItems(keys.list,bfi)
  scores
  #show the use of the fa.lookup with a dictionary
- fa.lookup(keys,bfi.dictionary[,1:4])
+ keys.lookup(keys.list,bfi.dictionary[,1:4])
  
 }
 \keyword{datasets}

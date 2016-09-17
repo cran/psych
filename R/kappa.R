@@ -33,6 +33,7 @@ return(list(kappa=kappa,weighted.kappa = wkappa))
 cl <- match.call()
 p <- dim(x)[1]
 len <- p
+bad <- FALSE
 if ((dim(x)[2] == p) ||(dim(x)[2]  < 3))   {result <- cohen.kappa1(x, w=w,n.obs=n.obs,alpha=alpha) } else {
 nvar <- dim(x)[2]
 ck <- matrix(NA,nvar,nvar)
@@ -45,7 +46,10 @@ for (i in 2:nvar ) {
    for (j in 1:(i-1) ) {
    x1 <- data.frame(x[,i],x[,j])
    x1 <- na.omit(x1)
-    result[[paste(colnames(ck)[j],rownames(ck)[i])]] <- cohen.kappa1(x1, w=w,n.obs=n.obs,alpha=alpha)
+   ck1 <- cohen.kappa1(x1, w=w,n.obs=n.obs,alpha=alpha)
+    result[[paste(colnames(ck)[j],rownames(ck)[i])]] <- ck1
+    if(ck1$bad) {warning("No variance detected in cells " ,i,"  ",j)
+    bad <- TRUE}
     ck[i,j] <- result[[k]]$kappa
     ck[j,i] <- result[[k]]$weighted.kappa
     k <- k + 1
@@ -53,7 +57,9 @@ for (i in 2:nvar ) {
    }
     result[[1]] <- ck
    }
- class(result) <- c("psych","kappa")
+ if(bad) message("At least one item had no variance.  Try describe(your.data) to find the problem.")
+ 
+  class(result) <- c("psych","kappa")
  return(result)
  }
    
@@ -62,6 +68,7 @@ for (i in 2:nvar ) {
 cl <- match.call()
 p <- dim(x)[1]
 len <- p
+bad <- FALSE
 
 
 if (dim(x)[2]!= p) {
@@ -111,6 +118,10 @@ Vark <-  (1/(tot*(1-pc)^4))*    (tr(x * (I * (1-pc)   - (rs %+% t(cs ))*(1-po))^
 Varkw <-  (1/(tot*(1-wpc)^4))*  (sum(x * (w * (1-wpc)- (colw %+% t(roww ))*(1-wpo))^2 ) -(wpo*wpc - 2*wpc +wpo)^2    )   
 if(tr(w) > 0) {wkappa <- (wpo-wpc)/(1-wpc) } else { wkappa <- 1- wpo/wpc}
 if((!is.null(n.obs)) & (tot==1))  tot <- n.obs
+if(is.na(Vark) || (Vark < 0)) {bad <- TRUE
+   Vark <- 0}
+   if(is.na(Varkw) || (Varkw < 0)) {bad <- TRUE
+   Varkw <- 0}
 bounds <- matrix(NA,2,3)
 colnames(bounds) <- c("lower","estimate","upper")
 rownames(bounds) <- c("unweighted kappa","weighted kappa")
@@ -120,7 +131,7 @@ bounds[1,1] <- kappa + qnorm(alpha/2) * sqrt(Vark)
 bounds[1,3] <- kappa - qnorm(alpha/2) * sqrt(Vark)
 bounds[2,1] <- wkappa + qnorm(alpha/2) * sqrt(Varkw) 
 bounds[2,3] <- wkappa - qnorm(alpha/2) * sqrt(Varkw)
-result <- list(kappa=kappa,weighted.kappa = wkappa,n.obs=tot,agree=x,weight=w,var.kappa =Vark, var.weighted = Varkw,confid=bounds,plevel=alpha,Call=cl)
+result <- list(kappa=kappa,weighted.kappa = wkappa,n.obs=tot,agree=x,weight=w,var.kappa =Vark, var.weighted = Varkw,confid=bounds,plevel=alpha,bad=bad,Call=cl)
 class(result) <- c("psych","kappa")
 return(result)
 }

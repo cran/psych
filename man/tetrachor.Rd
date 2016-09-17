@@ -72,7 +72,9 @@ Examples include the lsat6 and lsat7 data sets in the \code{\link{bock}} data.
 
 The polychoric function forms matrices of polychoric correlations by an local function (polyc) and will also report the tau values for each alternatives.  Earlier versions used  John Fox's polychor function which has now been replaced by the polyc function. 
 
-polychoric replaces poly.mat and is recommended.   poly.mat is an alternative wrapper to the polycor function. 
+For finding one polychoric correlation from a table, see the Olsson example (below).
+
+\code{\link{polychoric}} replaces \code{\link{poly.mat}} and is recommended.   \code{\link{poly.mat}} was an alternative wrapper to the polycor function. 
 
 biserial and polyserial correlations are the inferred latent correlations equivalent to the observed point-biserial and point-polyserial correlations (which are themselves just Pearson correlations).
 
@@ -108,6 +110,8 @@ If using data with a variable number of response alternatives, it is necessary t
 A. Gunther and M. Hofler. Different results on tetrachorical correlations in mplus and stata-stata announces modified procedure. Int J Methods Psychiatr Res, 15(3):157-66, 2006.
 
 David Kirk (1973) On the numerical approximation of the bivariate normal (tetrachoric) correlation coefficient. Psychometrika, 38, 259-268.
+
+U. Olsson, Maximum Likelihood Estimation of the Polychoric Correlation Coefficient, Psychometrika, 44:443-460.
 
 U.Olsson, F.Drasgow, and N.Dorans (1982). The polyserial correlation coefficient. Psychometrika, 47:337-347. 
 
@@ -152,10 +156,22 @@ polychoric(matrix(c(24875,265,47,0),2,2)) #Mplus reports  0
 #Do not apply continuity correction- compare with previous analysis
 tetrachoric(matrix(c(24875,265,47,0),2,2), correct=0) 
 polychoric(matrix(c(24875,265,47,0),2,2), correct=0)  #the same result
-#these next examples are impossible!
 
-tetrachoric(c(0.02275000, 0.0227501320, 0.500000000))
-tetrachoric(c(0.0227501320, 0.0227501320, 0.500000000))
+
+#examples from Kirk 1973  
+#note that Kirk's tables have joint probability followed by marginals, but 
+#tetrachoric needs marginals followed by joint probability
+
+tetrachoric(c(.5,.5,.333333))   #should be .5
+tetrachoric(c(.5,.5,.1150267))  #should be -.75
+tetrachoric(c(.5,.5,.397584))   #should e .8
+tetrachoric(c(.158655254,.158655254,.145003)) #should be .99
+
+
+#the example from Olsson, 1979
+ x <- as.table(matrix(c(13,69,41,6,113,132,0,22,104),3,3))
+ polychoric(x,correct=FALSE)
+#Olsson reports rho = .49, tau row = -1.77, -.14 and tau col =  -.69, .67
 
 #give a vector of two marginals and the comorbidity
 tetrachoric(c(.2, .15, .1))

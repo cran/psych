@@ -24,7 +24,7 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
         fact <- principal(model, nfactors,n.obs=n.obs,...)
         fm <- 'minres'    #because we want to use factor analysis for the higher level factors
         message("The higher order factor is found using minres -- see the notes")
-    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml")|(fm =="mle")  |(fm =="gls") |(fm =="minchi")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,covar=covar) } else {
+    } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml")|(fm =="mle")  |(fm =="gls") |(fm =="minchi") |(fm =="minrank")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,covar=covar) } else {
      
         stop("The method of factor extraction you specified is not available")
         

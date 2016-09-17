@@ -17,9 +17,8 @@ df2latex(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,font.size ="scripts
     stars=FALSE,silent=FALSE,file=NULL,append=FALSE,cut=0,big=0)
 cor2latex(x,use = "pairwise", method="pearson", adjust="holm",stars=FALSE,
        digits=2,rowlabels=TRUE,lower=TRUE,apa=TRUE,short.names=TRUE,
-     font.size ="scriptsize",
-      heading="A correlation table from the psych package in R.",
-      caption="cor2latex",label="default",silent=FALSE,file=NULL,append=FALSE)
+     font.size ="scriptsize", heading="A correlation table from the psych package in R.",
+      caption="cor2latex",label="default",silent=FALSE,file=NULL,append=FALSE,cut=0,big=0)
 fa2latex(f,digits=2,rowlabels=TRUE,apa=TRUE,short.names=FALSE,cumvar=FALSE,
        cut=0,big=.3,alpha=.05,font.size ="scriptsize",
        heading="A factor analysis table from the psych package in R",

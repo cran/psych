@@ -23,5 +23,18 @@ return(keys)}
 
 
 
+#Basically, the opposite of make.keys
+#Takes a keys matrix and converts it to a list structure (with negative signs appropriately placed)   
+#9/10/16
+   "keys2list" <- function(keys,sign=TRUE) {
+      keys.list <- list()
+      nkeys <- ncol(keys)
+      for (i in 1:nkeys) {temp <- rownames(keys)[which(keys[,i] < 0)]
+     if(sign && (length(temp)  >0)) temp <- paste0("-",temp)
+      keys.list[[i]] <- c(rownames(keys)[which(keys[,i] > 0)],temp) 
+      } 
+      names(keys.list) <- colnames(keys)
+      keys.list}
+      
 
 

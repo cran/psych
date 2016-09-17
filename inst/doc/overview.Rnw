@@ -542,9 +542,9 @@ colors <- c("black","red","white","blue")
  films <- c("Sad","Horror","Neutral","Happy")
 affect.stats <- errorCircles("EA2","TA2",data=affect[-c(1,20)],group="Film",labels=films,
 xlab="Energetic Arousal",   ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,
-cex=2,col=colors, main =' Movies effect on arousal')
+cex=2,colorsl=colors, main =' Movies effect on arousal')
  errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",
-  ylab="Negative Affect", pch=16,cex=2,col=colors,  main ="Movies effect on affect")
+  ylab="Negative Affect", pch=16,cex=2,colors=colors,  main ="Movies effect on affect")
 op <- par(mfrow=c(1,1))
 @
 \end{scriptsize}
@@ -1281,6 +1281,42 @@ fa.diagram(f2,fe=fe)
 
 Another way to examine the overlap between two sets is the use of \iemph{set correlation} found by \pfun{set.cor} (discussed later). 
 
+\subsection{Exploratory Structural Equation Modeling (ESEM)}
+
+Generaizing  the procedures of factor extension, we can do Exploratory Structural Equation Modeling (ESEM). Traditional Exploratory Factor Analysis (EFA) examines how latent variables can account for the correlations within a data set.  All loadings and cross loadings are found and rotation is done to some approximation of simple structure.  Traditional Confirmatory Factor Analysis (CFA) tests such models by fitting just a limited number of loadings and typically does not allow any (or many) cross loadings.  Structural Equation Modeling then applies two such measurement models, one to a set of X variables, another to a set of Y variables, and then tries to estimate the correlation between these two sets of latent variables.  (Some SEM procedures estimate all the parameters from the same model, thus making the loadings in set Y affect those in set X.)  It is possible to do a similar, exploratory modeling (ESEM) by conducting two Exploratory Factor Analyses, one in set X, one in set Y, and then finding the correlations of the X factors with the Y factors, as well as the correlations of the Y variables with the X factors and the X variables with the Y factors.  
+
+Consider the simulated data set of three ability variables, two motivational variables, and three outcome variables:
+
+<<print=FALSE,echo=FALSE, fig=FALSE,eps=FALSE>>=
+fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)  
+fy <- matrix(c(.6,.5,.4),ncol=1)
+rownames(fx) <- c("V","Q","A","nach","Anx")
+rownames(fy)<- c("gpa","Pre","MA")
+Phi <-matrix( c(1,0,.7,.0,1,.7,.7,.7,1),ncol=3)
+gre.gpa <- sim.structural(fx,Phi,fy)
+print(gre.gpa)
+@
+
+We can fit this by using the \pfun{esem} function and then draw the solution (see Figure~\ref{fig:esem}) using the \pfun{esem.diagram} function (which is normally called automatically by \pfun{esem}.
+
+
+<<print=FALSE,echo=FALSE, fig=FALSE,eps=FALSE>>=
+esem.example <- esem(gre.gpa$model,varsX=1:5,varsY=6:8,nfX=2,nfY=1,n.obs=1000,plot=FALSE)
+esem.example
+@
+
+\begin{figure}[htpb]
+\begin{center}
+<<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+ esem.diagram(esem.example)
+@
+\caption{An example of a Exploratory Structure Equation Model.}
+\label{fig:esem}
+\end{center}
+\end{figure}
+
+
+
 \section{Classical Test Theory and  Reliability}
 
 
@@ -1451,7 +1487,36 @@ splitHalf(r9)
 A typical research question in personality involves an inventory of multiple items purporting to measure multiple constructs.  For example, the data set \pfun{bfi} includes 25 items thought to measure five dimensions of personality (Extraversion, Emotional Stability, Conscientiousness, Agreeableness, and Openness).  The data may either be the raw data or a correlation matrix (\pfun{scoreItems}) or just a correlation matrix of the items ( \pfun{cluster.cor} and \pfun{cluster.loadings}). When finding reliabilities for multiple scales, item reliabilities can be estimated using the squared multiple correlation of an item with all other items, not just those that are keyed for a particular scale.  This leads to an estimate of G6*.  
 
 \subsubsection{Scoring from raw data}
-To score these five scales from the 25 items, use the \pfun{scoreItems} function with the helper function \pfun{make.keys}.  Logically, scales are merely the weighted composites of a set of items.  The weights used are -1, 0, and 1.  0 implies do not use that item in the scale, 1 implies a positive weight (add the item to the total score), -1 a negative weight (subtract the item from the total score, i.e., reverse score the item).  Reverse scoring an item is equivalent to subtracting the item from the maximum  + minimum possible value for that item.  The minima and maxima can be estimated from all the items, or can be specified by the user.
+To score these five scales from the 25 items, use the \pfun{scoreItems} function and a list of items to be scored on each scale (a keys.list).  Items may be listed by location (convenient but dangerous), or name (probably safer). 
+
+Make a keys.list by by specifying the items for each scale, preceding items to be negatively keyed with a - sign:
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE>>=
+ #the newer way is probably preferred 
+     
+keys.list  <- list(agree=c("-A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C2","-C4","-C5"),
+      extraversion=c("-E1","-E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","-O2","O3","O4","-O5")) 
+      
+      
+#this can also be done  by location--
+keys.list  <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
+ Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),
+ Openness = c(21,-22,23,24,-25))
+          
+#These two approaches can be mixed if desired
+ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
+           extraversion=c("-E1","-E2","E3","E4","E5"),
+            neuroticism=c(16:20),openness = c(21,-22,23,24,-25)) 
+
+  keys.list
+@
+\end{scriptsize}
+
+
+\begin{tiny}In the past (prior to version 1.6.9, the keys.list was then converted a keys matrix using  the helper function \pfun{make.keys}. This is no longer necessary.  Logically, scales are merely the weighted composites of a set of items.  The weights used are -1, 0, and 1.  0 implies do not use that item in the scale, 1 implies a positive weight (add the item to the total score), -1 a negative weight (subtract the item from the total score, i.e., reverse score the item).  Reverse scoring an item is equivalent to subtracting the item from the maximum  + minimum possible value for that item.  The minima and maxima can be estimated from all the items, or can be specified by the user.
 
 There are two different ways that scale scores tend to be reported.  Social psychologists and educational psychologists tend to report the scale score as the \emph{average item score} while many personality psychologists tend to report the \emph{total item score}.  The default option for \pfun{scoreItems} is to report item averages (which thus allows interpretation in the same metric as the items) but totals can be found as well. Personality researchers should be encouraged to report scores based upon item means and  avoid using the total score although some reviewers are adamant about the following the tradition of total scores.  
 
@@ -1462,48 +1527,30 @@ First, create keys matrix using the \pfun{make.keys} function.   (The keys matri
 
 Note that the number of items to specify in the \pfun{make.keys} function is the total number of items in the inventory.  This is done automatically in the new way of forming keys, but if using the older way, the number must be specified. That is, if scoring just 5 items from a 25 item inventory, \pfun{make.keys} should be told that there are 25 items. \pfun{make.keys} just changes a list of items on each scale to make up a scoring matrix.  Because the \pfun{bfi} data set has 25 items as well as 3 demographic items, the number of variables is specified as 28. 
 
-\begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
-#the old way is by location-- specify the total number of items
-keys <- make.keys(nvars=28,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
- Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),
- Openness = c(21,-22,23,24,-25)),
- item.labels=colnames(bfi))
-#the newer way is probably preferred -- specify the name of the data set to be scored.
-     
-keys <- make.keys(bfi,list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
-      extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
-       openness = c("O1","-O2","O3","O4","-O5")) ) #specify the data file to be scored (bfi)
-       
-#These two approaches can be mixed if desired
- keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
-           extraversion=c("-E1","-E2","E3","E4","E5"),
-            neuroticism=c(16:20),openness = c(21,-22,23,24,-25)) 
-keys <- make.keys(bfi,keys.list) #specify the data file to be scored (bfi)
-#In any case, the resulting keys file is just a matrix of -1, 0 and 1s.
-  keys
-@
-\end{scriptsize}
+\end{tiny}
 
-The use of multiple key matrices for different inventories is facilitated by using the \pfun{superMatrix} function to combine two or more matrices.  This allows convenient scoring of large data sets combining multiple inventories with keys based upon each individual inventory.  Pretend for the moment that the big 5 items were made up of two inventories, one consisting of the first 10 items, the second the last 18 items. (15 personality items + 3 demographic items.) Then the following code would work:
+
+%The use of multiple key matrices for different inventories is facilitated by using the \pfun{superMatrix} function to combine two or more matrices.  This allows convenient scoring of large data sets combining multiple inventories with keys based upon each individual inventory.  Pretend for the moment that the big 5 items were made up of two inventories, one consisting of the first 10 items, the second the last 18 items. (15 personality items + 3 demographic items.) Then the following code would work:
+%
+%\begin{scriptsize}
+%<<print=FALSE,echo=TRUE>>=
+% keys.1<- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
+%keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
+% Openness = c(11,-12,13,14,-15)))
+% keys.25 <- superMatrix(list(keys.1,keys.2))
+%@
+%\end{scriptsize}
+%The resulting keys matrix is identical to that found above except that it does not include the extra 3 demographic items.  This is useful when scoring the raw items because the response frequencies for each category are reported, and for the demographic data,  
+%
+%This use of making multiple key matrices and then combining them into one super matrix of keys is particularly useful when combining demographic information with items to be scores.  A set of demographic keys can be made and then these can be combined with the keys for the particular scales.
+%
+%Now use these keys in combination with the raw data to score the items, calculate basic reliability and intercorrelations, and find the item-by scale correlations for each item and each scale.  By default, missing data are replaced by the median for that variable. 
+
+Then, use this keys list to score the items. 
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
- keys.1<- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
-keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
- Openness = c(11,-12,13,14,-15)))
- keys.25 <- superMatrix(list(keys.1,keys.2))
-@
-\end{scriptsize}
-The resulting keys matrix is identical to that found above except that it does not include the extra 3 demographic items.  This is useful when scoring the raw items because the response frequencies for each category are reported, and for the demographic data,  
-
-This use of making multiple key matrices and then combining them into one super matrix of keys is particularly useful when combining demographic information with items to be scores.  A set of demographic keys can be made and then these can be combined with the keys for the particular scales.
-
-Now use these keys in combination with the raw data to score the items, calculate basic reliability and intercorrelations, and find the item-by scale correlations for each item and each scale.  By default, missing data are replaced by the median for that variable. 
-
-\begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
- scores <- scoreItems(keys,bfi)
+ scores <- scoreItems(keys.list,bfi)
  scores
 @
 \end{scriptsize}
@@ -1532,7 +1579,7 @@ Consider the same \pfun{bfi} data set, but first find the correlations, and then
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 r.bfi <- cor(bfi,use="pairwise")
-scales <- scoreItems(keys,r.bfi)
+scales <- scoreItems(keys.list,r.bfi)
 summary(scales)
 @
 \end{scriptsize}
@@ -1742,7 +1789,7 @@ om <- omega(iq.irt$rho,4)
 
 \subsection{IRT based scoring}
 
-The primary advantage of IRT analyses is examining the item properties (both difficulty and discrimination).  With complete data, the scores based upon simple total scores and based upon IRT are practically identical (this may be seen in the examples for \pfun{score.irt}).  However, when working with data such as those found in the Synthetic Aperture Personality Assessment (\iemph{SAPA})  project, it is advantageous to use IRT based scoring.  \iemph{SAPA} data might have 2-3 items/person sampled from scales with 10-20 items.  Simply finding the average of the three (classical test theory) fails to consider that the items might differ in either discrimination or in difficulty.  The \pfun{score.irt} function applies basic IRT to this problem.
+The primary advantage of IRT analyses is examining the item properties (both difficulty and discrimination).  With complete data, the scores based upon simple total scores and based upon IRT are practically identical (this may be seen in the examples for \pfun{scoreIrt}).  However, when working with data such as those found in the Synthetic Aperture Personality Assessment (\iemph{SAPA})  project, it is advantageous to use IRT based scoring.  \iemph{SAPA} data might have 2-3 items/person sampled from scales with 10-20 items.  Simply finding the average of the three (classical test theory) fails to consider that the items might differ in either discrimination or in difficulty.  The \pfun{scoreIrt} function applies basic IRT to this problem.
 
 Consider 1000 randomly generated subjects with scores on 9 true/false items differing in difficulty.  Selectively drop the hardest items for the 1/3 lowest subjects, and the 4 easiest items for the 1/3 top subjects (this is a crude example of what tailored testing would do).    Then score these subjects:
 
@@ -1758,8 +1805,8 @@ items <- items[ord,]
 items[1:333,5:9] <- NA
 items[334:666,3:7] <- NA
 items[667:1000,1:4] <- NA
-scores <- score.irt(test,items)
-unitweighted <- score.irt(items=items,keys=rep(1,9))
+scores <- scoreIrt(test,items)
+unitweighted <- scoreIrt(items=items,keys=rep(1,9))
 scores.df <- data.frame(true=v9$theta[ord],scores,unitweighted)
 colnames(scores.df) <- c("True theta","irt theta","total","fit","rasch","total","fit")
 @
@@ -1779,8 +1826,39 @@ These results are seen in Figure~\ref{fig:score.irt.pdf}.
 \end{center}
 \end{figure}
 
+\subsubsection{1 versus 2 parameter IRT scoring}
 
+In Item Response Theory, items can be assumed to be equally discriminating but to differ in their difficulty (the Rasch model) or to vary in their discriminability.  Two functions (\pfun{scoreIrt.1pl} and \pfun{scoreIrt.2pl}) are meant to find multiple IRT based scales using the Rasch model or the 2 parameter model.  Both allow for negatively keyed as well as positively keyed items.  Consider the \pfun{bfi} data set with scoring keys key.list and items listed as an item.list. (This is the same as the key.list, but with the negative signs removed.)
 
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE>>=
+keys.list  <- list(agree=c("-A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C3","-C4","-C5"),
+      extraversion=c("-E1","-E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","-O2","O3","O4","-O5")) 
+    
+   item.list <- list(agree=c("A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C3","C4","C5"),
+      extraversion=c("E1","E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","O2","O3","O4","O5")) 
+
+bfi.1pl <- scoreIrt.1pl(keys.list,bfi)  #the one parameter solution
+bfi.2pl <- scoreIrt.2pl(item.list,bfi)  #the two parameter solution
+bfi.ctt <- scoreFast(keys.list,bfi) # fast scoring function
+
+@
+\end{scriptsize}
+We can compare these three ways of doing the analysis using the \pfun{cor2} function which correlates two separate data frames.  All three models produce vey simillar results for the case of almost complete data.  It is when we have massively missing completely at random data (MMCAR) that the results show the superiority of the irt scoring.
+\begin{scriptsize}
+<<print=FALSE,echo=TRUE>>=
+#compare the solutions using the cor2 function
+ cor2(bfi.1pl,bfi.ctt)
+cor2(bfi.2pl,bfi.ctt)
+ cor2(bfi.2pl,bfi.1pl)
+@
+\end{scriptsize}
 
 
 

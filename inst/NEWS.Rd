@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.6.7 (2016-06-30}{
+\section{Changes in psych version 1.6.9 (2016-09-15}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.6.7 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.4.  The second digit reflects the year (i.e., 2014), the third set the month (i.e., 1.6.4 was released in April of 2016, the last two digits reflect the day of any modifications).
+      \item Version 1.6.10 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.9.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.9 was released in September of 2016, the last two digits of development versions reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -11,12 +11,11 @@
   }
   \subsection{To do}{
     \itemize{
-      \item Suggestions are welcome, but the current list includes (and has included for a long time, so lets be patient):
+      \item Suggestions are welcome, but the current list includes the following(and has included for a long time, so lets be patient):
       \item Add confirmatory clustering to ICLUST
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
       \item Add signal detetection function as an option for dichotmous data. (in progress)
       \item Add the ability to create multiple groups in sim.irt functions
-     
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
      \item add option to do subject density and item density plot to IRT plot.
@@ -29,28 +28,63 @@
      
      \item Check the bias in bootstrap resampling using cor.ci  
      \item Consider using the log option in pnorm 
-     \item Start to use the drop=FALSE when doing subsetting
-     \item fix vss to do any kind of rotation
+     \item Start to use the drop=FALSE when doing subsetting (doing this more and more)
+   
      \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
-     \item combine the scoreOverlap functionality to scoreItems. (Probably not possible because can not be done with actual scores) 
-     \item Add an analysis if DIF to the irt functions 
+     \item Add an analysis if DIF to the irt functions  (requested by David Condon)
      \item Add some power functions
      \item Fix the help menu for describeBy to explain vectors are ok
      \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman
      \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
-     \item Fix bi.bars to that it handles height data from sapa
-     \item Consider alternative number of factor options
+     \item Consider alternative number of factor options (done in nfactors?)
      \item Clean up the various sim functions so that they are better documented
-     \item Do to cor2latex what we did in df2latex (i.e., add cut and big options)
-   
-       
-     
-    
-         
+     \item Clean up documentation of score.irt etc.  (partly done)
+     \item Add complexity  to omega solution
+     \item Add statistic to fa to report max fa. (partly done with fm = minrank)
+     \item Parallize iterations for confidence intervals in omega 
+     \item Probably should drop much of the stats when doing iterations with fa or omega
+     \item Find unbiased cis when doing bootstrap
+          
     }
   }
   } 
+  
+  \section{Changes in psych version 1.6.9 (2016-09-18)}{
+  \subsection{Additions}{
+          \itemize{ 
+          \item Made it clearer that score.irt with the keys option is basically a Rasch model.That is,  tau and equal loadings are specified by keys.
+          \item Serious rewriting of scoreIrt  (both for dichtonous and polytomous items) to make it able to use multiple cores (speeding up at least 8 times) and making the code more efficient when scoring multiple scales.
+           \item Added scoreIrt.1pl and scoreIrt.2pl to more easily find Rasch like and 2 parameter solutions. 
+          \item Added scoreFast to (very) rapidly find mean or total scores with or without imputation (ala scoreItems) but not to bother finding all the complicated statistics which take a lot longer to find. In addition, it just bothers to look at the items that to be scored, rather than all the items in the items set.  
+          \item Added a trivial function (cor2) to correlate two or more sets of data (x and y), round to 2 decimals, save and print the results.  Truly trivial, but a time saver when comparing solutions.
+            \item Added more functionality to dotchart and created error.dots.
+            \item Added r2t,t2r,chi2r,r2chi as trivial conversion functions
+        \item Added read.file, write.file, read.file.csv, write.file.csv as helper functions for input/output
+        \item Added the ability to do Minimum Rank Factor Analysis (following a request by Michael Paul Grosz)
+        \item Added an option to print.psych to allow significant digits to be controlled for describe (requested by Jeremy Biesanz)
+        \item Added an exploratory structural equation function (esem) to  do exploratory modeling, and esem.diagram to show it. 
+        \item Added keys2list  which converts a scoring key matrix to a list form.
+        \item Added the ability to just pass a keys.list to scoreItems, scoreOverlap, scoreIrt.1pl.  This clearly simplifies the call.
+        \item Added another helper function: keys.lookup that takes a keys.list and a dictionary and displays the content of the items to be scored. 
+         \item Did to cor2latex what we did in df2latex (i.e., add cut and big options)
+          \item Fixed vss to do any kind of rotation (that is, just pass the rotation to fa).
+          \item Modified error.crosses to  allow specifying text, point, and error arrows separately (suggested  and with help from Arnaud Defaye)
+          \item Minor change to tr to allow it consider na.rm=TRUE, and for cohen.kappa to handle cases of items with no variance. 
+        
+       }  
+   }
+\subsection{Bugs Fixed}{
+
+   \itemize{
+         \item Fixed subtle problem when handling missing data for score.irt for raw scores. Prior versions (< 1.6.7) would report incorrect total scores for cases with missing items that were to be scored negative. 
+         \item Corrected the reference to Revelle, Wilt and Rosenthal in the bfi data set.
+        \item Fixed a subtle problem in print.psych.iclust that was causing errors in the development version of R for PCs.  
+        \item Added mu backinto sim.hierarchical (thanks for Alan Robinson for noticing it was gone).
+        \item fixed bug in cor.wt for the problem of a vector of weights rather than a matrix of weights (Reported by Emil Kirkegaard)
+               } 
+      }
+  }
   
 \section{Changes in psych version 1.6.6 (2016-06-20)}{
   \subsection{Additions}{

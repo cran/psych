@@ -43,7 +43,7 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
        cat("\nWith eigenvalues of:\n")
        print(eigenvalues,digits=digits)
  		}
- 	else {
+ 	else {if(is.null(cut)) cut <- 0   #added 8/9/16
 	 cat("\nItem by Cluster Structure matrix:\n")
 	    load <- unclass(x$loadings)
 	    load <- round(load,digits)
@@ -66,4 +66,4 @@ print(round(x$purified$corrected,digits=digits))  }
 
 cat("\nCluster fit = ",round(x$fit$clusterfit,digits), "  Pattern fit = ",round(x$fit$patternfit,digits), " RMSR = ",round(x$fit$patternrmse,digits), "\n")
 
-   }# end of if ICLUST
+   }# end of print.psych.ICLUST

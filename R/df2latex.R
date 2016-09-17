@@ -85,7 +85,7 @@ invisible(result)
  
  cor2latex <- function (x, use = "pairwise", method="pearson", adjust="holm", stars = FALSE, digits=2, rowlabels = TRUE, lower = TRUE, apa = TRUE, 
                        short.names = TRUE, font.size = "scriptsize", heading = "A correlation table from the psych package in R.", 
-                       caption = "cor2latex", label = "default",silent=FALSE,file=NULL,append=FALSE)
+                       caption = "cor2latex", label = "default",silent=FALSE,file=NULL,append=FALSE,cut=0,big=.0)
 {
 if(stars) heading  <- paste(heading, "Adjust for multiple tests = ",adjust )
 if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analysis, just report it
@@ -130,7 +130,7 @@ if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analy
     if(stars) {char<- TRUE} else {char <- FALSE}
   return(df2latex(R, digits = digits, rowlabels = rowlabels, 
                   apa = apa, short.names = short.names, font.size = font.size, 
-                  heading = heading, caption = caption, label = label, char=TRUE,stars = stars,silent=silent,file=file,append=append))
+                  heading = heading, caption = caption, label = label, char=TRUE,stars = stars,silent=silent,file=file,append=append,cut=cut,big=big))
 }
 
 "fa2latex" <- 

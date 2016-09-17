@@ -233,7 +233,8 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
                         w <- w[,vars]
                         sds <- sds[,vars] }              
    if(is.null(w)) w <- matrix(rep(rep(1/nrow(x),nrow(x)),ncol(x)),nrow=nrow(x),ncol=ncol(x))
-   wt <- t(t(w)/colSums(w))
+   if(is.null(ncol(w))) {wt <- w/sum(w) } else {
+   wt <- t(t(w)/colSums(w))}
    cnames <- colnames(x)
     for (i in 1:ncol(x)) {if(is.factor(x[,i]) || is.logical(x[,i])) {
              x[,i] <- as.numeric(x[,i])

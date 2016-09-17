@@ -7,7 +7,7 @@
 \description{Give limited output (print) or somewhat more detailed (summary) for most of the functions in psych. 
 }
 \usage{
-\method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,...)
+\method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,signif=NULL,...)
 
 \method{summary}{psych}(object,digits=2,items=FALSE,...)
 \method{anova}{psych}(object,object2,...)
@@ -23,10 +23,11 @@
   \item{sort}{Cluster loadings are in sorted order}
   \item{short}{Controls how much to print}
   \item{lower}{For square matrices, just print the lower half of the matrix} 
-  \item{object2}{Another object from fa or omega}
+  \item{object2}{Another object from fa or omega})
+  \item{signif}{If not NULL,  a numeric value, show just signif number of leading digits for describe output}
   \item{...}{More options to pass to summary and print}
 }
-\details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available,  ask for the structure of the particular object: (str(theobject).
+\details{Most of the psych functions produce too much output.  print.psych and summary.psych use generic methods for printing just the highlights.  To see what else is available,  ask for the structure of the particular object: (str(theobject) ).
 
 Alternatively, to get complete output, unclass(theobject) and then print it. This may be done by using the all=TRUE option.
 
@@ -35,6 +36,7 @@ As an added feature, if the promax function is applied to a factanal loadings ma
 }
 \value{ Various psych functions produce copious output.  This is a way to summarize the most important parts of the output of the score.items, cluster.scores, and ICLUST functions.  See those ( \code{\link{score.items}}, \code{\link{cluster.cor}}, \code{\link{cluster.loadings}}, or \code{\link{ICLUST}}) for details on what is produced.
 
+The signf option is available for the output from  \code{\link{describe}} to adjust the number of digits shown for all columns.  This is slightly different from what happens if you specify digits, which rounds all output to the number of digits.   print(x,signif=3) will print just the 3 largest digits of x, which will frequently result in scientific notation for any column where that would be appropriate for at least one row.
 
 }
 

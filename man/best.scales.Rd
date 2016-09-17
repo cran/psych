@@ -4,6 +4,7 @@
 \alias{lookup}
 \alias{fa.lookup}
 \alias{item.lookup}
+\alias{keys.lookup}
 \title{A set of functions for factorial and empirical scale construction} 
 
 \description{When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items) , or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading or criteria correlations and display the item content. 
@@ -15,12 +16,14 @@ bestItems(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2)
 lookup(x,y,criteria=NULL)
 fa.lookup(f,dictionary,digits=2)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
+keys.lookup(keys.list,dictionary)
 }
 \arguments{
 \item{x}{A data matrix or data frame depending upon the function.}
 \item{y}{A data matrix or data frame or a vector}
 \item{criteria}{Which variables (by name or location) should be the empirical target for bestScales and bestItems}
 \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
+\item{keys.list}{A list of scoring keys suitable to use for make.keys}
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
 \item{abs}{if TRUE, sort by absolute value in bestItems}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}

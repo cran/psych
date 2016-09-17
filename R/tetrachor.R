@@ -59,7 +59,7 @@ function(x,y=NULL,taux,tauy,i,j,correct=.5,global=TRUE,weight=NULL) {
           }  else   {
               
  if((sum(tab) > 1) && (min(tab) == 0) && (correct > 0)) {
-    warning("For i = ", i," j = ",j, "  A cell entry of 0 was replaced with .5.  Check your data!")
+    message("For i = ", i," j = ",j, "  A cell entry of 0 was replaced with correct =  ", correct, ".  Check your data!")
     tab[tab==0] <- correct  #correction for continuity
 
     }

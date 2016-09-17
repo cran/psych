@@ -53,6 +53,13 @@
 \newcommand{\wra}[1]{\textcolor{blue}{#1}}  %bill's comments
 
 \newcommand{\ve}[1]{{\textbf{#1}}} %trying to get a vector command
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+ \def\vec#1{\ensuremath{\mathchoice
+                     {\mbox{\boldmath$\displaystyle\mathbf{#1}$}}
+                     {\mbox{\boldmath$\textstyle\mathbf{#1}$}}
+                     {\mbox{\boldmath$\scriptstyle\mathbf{#1}$}}
+                     {\mbox{\boldmath$\scriptscriptstyle\mathbf{#1}$}}}}%
+
 
 
 \makeindex         % used for the subject index
@@ -443,6 +450,41 @@ ic <- ICLUST(bifact,title="Hierarchical cluster analysis of bifact data")
 \label{fig:iclust}
 \end{center}
 \end{figure}
+
+\section{Exploratory Structural Equation Modeling (ESEM)}
+
+Traditional Exploratory Factor Analysis (EFA) examines how latent variables can account for the correlations within a data set.  All loadings and cross loadings are found and rotation is done to some approximation of simple structure.  Traditional Confirmatory Factor Analysis (CFA) tests such models by fitting just a limited number of loadings and typically does not allow any (or many) cross loadings.  Structural Equation Modeling then applies two such measurement models, one to a set of X variables, another to a set of Y variables, and then tries to estimate the correlation between these two sets of latent variables.  (Some SEM procedures estimate all the parameters from the same model, thus making the loadings in set Y affect those in set X.)  It is possible to do a similar, exploratory modeling (ESEM) by conducting two Exploratory Factor Analyses, one in set X, one in set Y, and then finding the correlations of the X factors with the Y factors, as well as the correlations of the Y variables with the X factors and the X variables with the Y factors.  
+
+Consider the simulated data set of three ability variables, two motivational variables, and three outcome variables:
+
+<<print=FALSE,echo=FALSE, fig=FALSE,eps=FALSE>>=
+fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)  
+fy <- matrix(c(.6,.5,.4),ncol=1)
+rownames(fx) <- c("V","Q","A","nach","Anx")
+rownames(fy)<- c("gpa","Pre","MA")
+Phi <-matrix( c(1,0,.7,.0,1,.7,.7,.7,1),ncol=3)
+gre.gpa <- sim.structural(fx,Phi,fy)
+print(gre.gpa)
+@
+
+We can fit this by using the \pfun{esem} function and then draw the solution (see Figure~\ref{fig:esem}) using the \pfun{esem.diagram} function (which is normally called automatically by \pfun{esem}.
+
+
+<<print=FALSE,echo=FALSE, fig=FALSE,eps=FALSE>>=
+esem.example <- esem(gre.gpa$model,varsX=1:5,varsY=6:8,nfX=2,nfY=1,n.obs=1000,plot=FALSE)
+esem.example
+@
+
+\begin{figure}[htpb]
+\begin{center}
+<<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+ esem.diagram(esem.example)
+@
+\caption{An example of a Exploratory Structure Equation Model.}
+\label{fig:esem}
+\end{center}
+\end{figure}
+
 
 \section{Confirmatory models}
 

@@ -8,6 +8,7 @@
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
    cl <- match.call()
    raw.data <- TRUE
+   if(is.list(keys)) keys <-make.keys(items,keys)   #added 9/9/16
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
@@ -58,21 +59,22 @@
        		items[miss]<- item.means[miss[,2]]} else { 
        		item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
         	items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
-         scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
-          C <- cov(items,use="pairwise")
+        	 scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
+        	C <- cov(items,use="pairwise")
           cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
           cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
         }  else { #handle the case of missing data without imputation
            scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
            totals <- FALSE  #just in case it was not already false
+           #we could try to parallelize this next loop
            for (scale in 1:n.keys) {
-           pos.item <- items[,which(keys[,scale] > 0)]
-           neg.item <- items[,which(keys[,scale] < 0)]
-           neg.item <- max + min - neg.item
-           sub.item <- cbind(pos.item,neg.item)
-           scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
-           rs <- rowSums(!is.na(sub.item))
-           num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
+           	pos.item <- items[,which(keys[,scale] > 0)]
+          	neg.item <- items[,which(keys[,scale] < 0)]
+          	 neg.item <- max + min - neg.item
+           	sub.item <- cbind(pos.item,neg.item)
+           	scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
+          	 rs <- rowSums(!is.na(sub.item))
+          	 num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
           # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
            		} # end of scale loop
        	
@@ -177,3 +179,4 @@
  #need to rethink the short option.  Why bother since summary and print don't show scores anyway
  #added missing score to count missing responses for each scale instead of just the overall.
  #Modified November 22, 2013 to add confidence intervals for alpha 
+ #modified Sept 9, 2016 to add the keys.list option for the scoring keys

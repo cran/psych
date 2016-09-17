@@ -221,10 +221,20 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         E <- eigen(S,symmetric = TRUE)
         L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
         return(L)
-    } ## now start the main function
+    }
+   #this takes advantage of the glb.algebraic function to do min.rank factor analysis 
+  "MRFA" <- function(S,nf) {
+   com.glb <- glb.algebraic(S)
+   L <- FAout.wls(1-com.glb$solution,S,nf)
+   h2 <- com.glb$solution
+   result <- list(loadings =L, communality = h2)
+   }  
+    
+    
+     ## now start the main function
     #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
  if (fm == "mle" || fm =="MLE" || fm == "ML" ) fm <- "ml"  #to correct any confusion
- if (!any(fm %in%(c("pa","wls","gls","minres","minchi", "uls","ml","mle") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if (!any(fm %in%(c("pa","minrank","wls","gls","minres","minchi", "uls","ml","mle") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
      x.matrix <- r
@@ -338,11 +348,20 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
           eigens <- eigens$values
        } 
        
+       if(fm=="minrank")  {mrfa <- MRFA(r,nfactors)
+         loadings <- mrfa$loadings
+         model <- loadings %*% t(loadings)
+          e.values <- eigen(r)$values
+         S <- r
+         diag(S) <- diag(model)
+         eigens <- eigen(S)$values
+          }
+          
        if((fm == "wls") | (fm=="minres") |(fm=="minchi") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle")) { 
        uls <- fit(r,nfactors,fm,covar=covar)
        
        e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  
-       result$par <- uls$res
+      result.res  <- uls$res
       
        loadings <- uls$loadings
        model <- loadings %*% t(loadings)
@@ -374,6 +393,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
     ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
     minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+    minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
     minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
     
     rownames(loadings) <- rownames(r)
@@ -494,6 +514,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
     ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
     minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+     minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
     uls =  {colnames(loadings) <- paste("ULS",1:nfactors,sep='')},
     minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
         #just in case the rotation changes the order of the factors, sort them
@@ -511,6 +532,9 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)
+    if(fm == "minrank") {result$communalities <- mrfa$communality} else {if(fm=="pa") {result$communalities <- comm1} else {result$communalities <- 1- result.res$par}}
+   
+    
     result$uniquenesses <- diag(r-model)
     result$values <-  eigens
     result$e.values <- e.values  

@@ -97,9 +97,9 @@ colors <- c("black","red","white","blue")
  films <- c("Sad","Horror","Neutral","Happy")
 affect.stats <- errorCircles("EA2","TA2",data=affect[-c(1,20)],group="Film",labels=films,
 xlab="Energetic Arousal",   ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,
-cex=2,col=colors, main =' Movies effect on arousal')
+cex=2,colorsl=colors, main =' Movies effect on arousal')
  errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",
-  ylab="Negative Affect", pch=16,cex=2,col=colors,  main ="Movies effect on affect")
+  ylab="Negative Affect", pch=16,cex=2,colors=colors,  main ="Movies effect on affect")
 op <- par(mfrow=c(1,1))
 
 
@@ -418,7 +418,32 @@ fa.diagram(f2,fe=fe)
 
 
 ###################################################
-### code chunk number 57: overview.Rnw:1327-1331
+### code chunk number 57: overview.Rnw:1290-1297
+###################################################
+fx <-matrix(c( .9,.8,.6,rep(0,4),.6,.8,-.7),ncol=2)  
+fy <- matrix(c(.6,.5,.4),ncol=1)
+rownames(fx) <- c("V","Q","A","nach","Anx")
+rownames(fy)<- c("gpa","Pre","MA")
+Phi <-matrix( c(1,0,.7,.0,1,.7,.7,.7,1),ncol=3)
+gre.gpa <- sim.structural(fx,Phi,fy)
+print(gre.gpa)
+
+
+###################################################
+### code chunk number 58: overview.Rnw:1303-1305
+###################################################
+esem.example <- esem(gre.gpa$model,varsX=1:5,varsY=6:8,nfX=2,nfY=1,n.obs=1000,plot=FALSE)
+esem.example
+
+
+###################################################
+### code chunk number 59: overview.Rnw:1310-1311
+###################################################
+ esem.diagram(esem.example)
+
+
+###################################################
+### code chunk number 60: overview.Rnw:1363-1367
 ###################################################
 set.seed(17)
 r9 <- sim.hierarchical(n=500,raw=TRUE)$observed
@@ -427,7 +452,7 @@ alpha(r9)
 
 
 ###################################################
-### code chunk number 58: overview.Rnw:1338-1341
+### code chunk number 61: overview.Rnw:1374-1377
 ###################################################
 
 alpha(attitude,keys=c("complaints","critical"))
@@ -435,84 +460,77 @@ alpha(attitude,keys=c("complaints","critical"))
 
 
 ###################################################
-### code chunk number 59: overview.Rnw:1348-1350
+### code chunk number 62: overview.Rnw:1384-1386
 ###################################################
 
 alpha(attitude)
 
 
 ###################################################
-### code chunk number 60: overview.Rnw:1357-1359
+### code chunk number 63: overview.Rnw:1393-1395
 ###################################################
 items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,categorical=TRUE) #500 responses to 4 discrete items
 alpha(items$observed)  #item response analysis of congeneric measures
 
 
 ###################################################
-### code chunk number 61: overview.Rnw:1412-1413
+### code chunk number 64: overview.Rnw:1448-1449
 ###################################################
 om.9 <- omega(r9,title="9 simulated variables")
 
 
 ###################################################
-### code chunk number 62: overview.Rnw:1424-1425
+### code chunk number 65: overview.Rnw:1460-1461
 ###################################################
 om.9
 
 
 ###################################################
-### code chunk number 63: overview.Rnw:1433-1434
+### code chunk number 66: overview.Rnw:1469-1470
 ###################################################
 omegaSem(r9,n.obs=500)
 
 
 ###################################################
-### code chunk number 64: overview.Rnw:1443-1444
+### code chunk number 67: overview.Rnw:1479-1480
 ###################################################
 splitHalf(r9)
 
 
 ###################################################
-### code chunk number 65: overview.Rnw:1466-1484
+### code chunk number 68: overview.Rnw:1494-1514
 ###################################################
-#the old way is by location-- specify the total number of items
-keys <- make.keys(nvars=28,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
- Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),
- Openness = c(21,-22,23,24,-25)),
- item.labels=colnames(bfi))
-#the newer way is probably preferred -- specify the name of the data set to be scored.
+ #the newer way is probably preferred 
      
-keys <- make.keys(bfi,list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
-      extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
-       openness = c("O1","-O2","O3","O4","-O5")) ) #specify the data file to be scored (bfi)
-       
+keys.list  <- list(agree=c("-A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C2","-C4","-C5"),
+      extraversion=c("-E1","-E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","-O2","O3","O4","-O5")) 
+      
+      
+#this can also be done  by location--
+keys.list  <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
+ Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),
+ Openness = c(21,-22,23,24,-25))
+          
 #These two approaches can be mixed if desired
  keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C2","-C4","-C5"),
            extraversion=c("-E1","-E2","E3","E4","E5"),
             neuroticism=c(16:20),openness = c(21,-22,23,24,-25)) 
-keys <- make.keys(bfi,keys.list) #specify the data file to be scored (bfi)
-#In any case, the resulting keys file is just a matrix of -1, 0 and 1s.
-  keys
+
+  keys.list
 
 
 ###################################################
-### code chunk number 66: overview.Rnw:1491-1495
+### code chunk number 69: overview.Rnw:1552-1554
 ###################################################
- keys.1<- make.keys(10,list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10)))
-keys.2 <- make.keys(15,list(Extraversion=c(-1,-2,3:5),Neuroticism=c(6:10),
- Openness = c(11,-12,13,14,-15)))
- keys.25 <- superMatrix(list(keys.1,keys.2))
-
-
-###################################################
-### code chunk number 67: overview.Rnw:1505-1507
-###################################################
- scores <- scoreItems(keys,bfi)
+ scores <- scoreItems(keys.list,bfi)
  scores
 
 
 ###################################################
-### code chunk number 68: scores
+### code chunk number 70: scores
 ###################################################
 png('scores.png')
 pairs.panels(scores$scores,pch='.',jiggle=TRUE)
@@ -520,15 +538,15 @@ dev.off()
 
 
 ###################################################
-### code chunk number 69: overview.Rnw:1533-1536
+### code chunk number 71: overview.Rnw:1580-1583
 ###################################################
 r.bfi <- cor(bfi,use="pairwise")
-scales <- scoreItems(keys,r.bfi)
+scales <- scoreItems(keys.list,r.bfi)
 summary(scales)
 
 
 ###################################################
-### code chunk number 70: overview.Rnw:1546-1552
+### code chunk number 72: overview.Rnw:1593-1599
 ###################################################
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
@@ -539,7 +557,7 @@ describe(iq.tf)  #compare to previous results
 
 
 ###################################################
-### code chunk number 71: overview.Rnw:1570-1576
+### code chunk number 73: overview.Rnw:1617-1623
 ###################################################
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
@@ -550,21 +568,21 @@ irt.responses(scores$scores,iqitems[1:4],breaks=11)
 
 
 ###################################################
-### code chunk number 72: overview.Rnw:1588-1590
+### code chunk number 74: overview.Rnw:1635-1637
 ###################################################
  m <- colMeans(bfi,na.rm=TRUE)
   item.lookup(scales$item.corrected[,1:3],m,dictionary=bfi.dictionary[1:2])
 
 
 ###################################################
-### code chunk number 73: overview.Rnw:1598-1600
+### code chunk number 75: overview.Rnw:1645-1647
 ###################################################
 data(bfi)
 bestScales(bfi,criteria=c("gender","education","age"),cut=.1,dictionary=bfi.dictionary[,1:3])
 
 
 ###################################################
-### code chunk number 74: overview.Rnw:1624-1628
+### code chunk number 76: overview.Rnw:1671-1675
 ###################################################
 set.seed(17)
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
@@ -573,7 +591,7 @@ test
 
 
 ###################################################
-### code chunk number 75: overview.Rnw:1635-1640
+### code chunk number 77: overview.Rnw:1682-1687
 ###################################################
 op <- par(mfrow=c(3,1))
 plot(test,type="ICC")
@@ -583,7 +601,7 @@ op <- par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 76: overview.Rnw:1651-1654
+### code chunk number 78: overview.Rnw:1698-1701
 ###################################################
 data(bfi)
 e.irt <- irt.fa(bfi[11:15])
@@ -591,43 +609,43 @@ e.irt
 
 
 ###################################################
-### code chunk number 77: overview.Rnw:1661-1662
+### code chunk number 79: overview.Rnw:1708-1709
 ###################################################
 e.info  <- plot(e.irt,type="IIC")
 
 
 ###################################################
-### code chunk number 78: overview.Rnw:1673-1674
+### code chunk number 80: overview.Rnw:1720-1721
 ###################################################
 print(e.info,sort=TRUE)
 
 
 ###################################################
-### code chunk number 79: overview.Rnw:1703-1704
+### code chunk number 81: overview.Rnw:1750-1751
 ###################################################
 iq.irt <- irt.fa(iq.tf)
 
 
 ###################################################
-### code chunk number 80: overview.Rnw:1716-1717
+### code chunk number 82: overview.Rnw:1763-1764
 ###################################################
 plot(iq.irt,type='test') 
 
 
 ###################################################
-### code chunk number 81: overview.Rnw:1728-1729
+### code chunk number 83: overview.Rnw:1775-1776
 ###################################################
 iq.irt 
 
 
 ###################################################
-### code chunk number 82: overview.Rnw:1735-1736
+### code chunk number 84: overview.Rnw:1782-1783
 ###################################################
 om <- omega(iq.irt$rho,4)
 
 
 ###################################################
-### code chunk number 83: overview.Rnw:1750-1764
+### code chunk number 85: overview.Rnw:1797-1811
 ###################################################
 v9 <- sim.irt(9,1000,-2.,2.,mod="normal") #dichotomous items
 items <- v9$items
@@ -639,21 +657,51 @@ items <- items[ord,]
 items[1:333,5:9] <- NA
 items[334:666,3:7] <- NA
 items[667:1000,1:4] <- NA
-scores <- score.irt(test,items)
-unitweighted <- score.irt(items=items,keys=rep(1,9))
+scores <- scoreIrt(test,items)
+unitweighted <- scoreIrt(items=items,keys=rep(1,9))
 scores.df <- data.frame(true=v9$theta[ord],scores,unitweighted)
 colnames(scores.df) <- c("True theta","irt theta","total","fit","rasch","total","fit")
 
 
 ###################################################
-### code chunk number 84: overview.Rnw:1773-1775
+### code chunk number 86: overview.Rnw:1820-1822
 ###################################################
  pairs.panels(scores.df,pch='.',gap=0)
  title('Comparing true theta for IRT, Rasch and  classically based scoring',line=3)
 
 
 ###################################################
-### code chunk number 85: overview.Rnw:1838-1842
+### code chunk number 87: overview.Rnw:1834-1850
+###################################################
+keys.list  <- list(agree=c("-A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C3","-C4","-C5"),
+      extraversion=c("-E1","-E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","-O2","O3","O4","-O5")) 
+    
+   item.list <- list(agree=c("A1","A2","A3","A4","A5"),
+      conscientious=c("C1","C2","C3","C4","C5"),
+      extraversion=c("E1","E2","E3","E4","E5"),
+      neuroticism=c("N1","N2","N3","N4","N5"),
+      openness = c("O1","O2","O3","O4","O5")) 
+
+bfi.1pl <- scoreIrt.1pl(keys.list,bfi)  #the one parameter solution
+bfi.2pl <- scoreIrt.2pl(item.list,bfi)  #the two parameter solution
+bfi.ctt <- scoreFast(keys.list,bfi) # fast scoring function
+
+
+
+###################################################
+### code chunk number 88: overview.Rnw:1855-1859
+###################################################
+#compare the solutions using the cor2 function
+ cor2(bfi.1pl,bfi.ctt)
+cor2(bfi.2pl,bfi.ctt)
+ cor2(bfi.2pl,bfi.1pl)
+
+
+###################################################
+### code chunk number 89: overview.Rnw:1916-1920
 ###################################################
 
 C <- cov(sat.act,use="pairwise")
@@ -662,14 +710,14 @@ summary(model1)
 
 
 ###################################################
-### code chunk number 86: overview.Rnw:1845-1847
+### code chunk number 90: overview.Rnw:1923-1925
 ###################################################
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
 
 
 ###################################################
-### code chunk number 87: overview.Rnw:1930-1954
+### code chunk number 91: overview.Rnw:2008-2032
 ###################################################
 xlim=c(0,10)
 ylim=c(0,10)
@@ -698,7 +746,7 @@ dia.curved.arrow(mr,lr$top)
 
 
 ###################################################
-### code chunk number 88: overview.Rnw:2066-2067
+### code chunk number 92: overview.Rnw:2144-2145
 ###################################################
 sessionInfo()
 

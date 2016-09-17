@@ -1,25 +1,28 @@
 \name{scoreItems}
 \alias{scoreItems}
+\alias{scoreFast}
 \alias{score.items}
 \alias{response.frequencies}
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
-\description{Given a matrix or data.frame of k keys for n items (-1, 0, 1), and a matrix or data.frame of items scores for m items and N people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
+\description{Given a list of items and the direction to score them (a keys.list) or a matrix or data.frame of k keys for n items (-1, 0, 1), and a matrix or data.frame of items scores for m items and N people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  Although prior versions used a keys matrix, it is now possible to just use a list of scoring keys. See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
 }
 \usage{
 scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
  delete=TRUE, min = NULL, max = NULL, digits = 2)
  score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
  delete=TRUE, min = NULL, max = NULL, digits = 2) 
+ scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none",
+ delete=TRUE, min = NULL, max = NULL, digits = 2)
   response.frequencies(items,max=10,uniqueitems=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{keys}{A matrix or dataframe of -1, 0, or 1 weights for each item on each scale. May be created by hand, or by using \code{\link{make.keys}} }
+  \item{keys}{A list of scoring keys or a matrix or dataframe of -1, 0, or 1 weights for each item on each scale which may be created by hand, or by using \code{\link{make.keys}}. Just using a list of scoring keys (see example) is probably more convenient.}
   \item{items}{ Matrix or dataframe of raw item scores}
   \item{totals}{ if TRUE  find total scores, if FALSE (default), find average scores }
   \item{ilabels}{ a vector of item labels. }
   \item{missing}{missing = TRUE is the normal case and data are imputed according to the impute option.  missing=FALSE, only complete cases are scored.}
-  \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores.  }
+  \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores. impute = "none" is probably more appropriate for a large number of missing cases (e.g., SAPA data). }
   \item{delete}{if delete=TRUE, automatically delete items with no variance (and issue a warning)}
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data.  min and max should be specified if items differ in their possible minima or maxima.  See notes for details.}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
@@ -29,6 +32,8 @@ scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="med
   
 }
 \details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for scoreItems is the average as it would seem to make more sense to report scale scores in the metric of the item.  
+
+When scoring more than one scale, it is convenient to have list of the items on each scale and the direction to score the items.  This may be converted to a keys.matrix using \code{\link{make.keys}} or may be entered as a keys.list directly.  
 
 Various estimates of scale reliability include ``Cronbach's alpha", Guttman's Lambda 6, and the average interitem correlation.  For k = number of items in a scale, and av.r = average correlation between items in the scale, alpha = k * av.r/(1+ (k-1)*av.r).  Thus, alpha is an increasing function of test length as well as the test homeogeneity.  
 
@@ -65,7 +70,11 @@ Correlations between scales are attenuated by a lack of reliability.  Correcting
 
 By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
 
+
+
 \code{\link{scoreItems}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
+
+\code{\link{scoreFast}} just finds the scores (with or without imputation) and does not report other statistics.  It is much faster!
 }
 \value{ 
  \item{scores }{Sum or average scores for each subject on the k scales}
@@ -122,7 +131,10 @@ Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revel
 
 If scales are formed from overlapping sets of items, their correlations will be inflated.  This is corrected for when using the \code{\link{scoreOverlap}} function which, although it will not produce scores, will report scale intercorrelations corrected for item overlap. 
 
-In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.}
+In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.
+
+\code{\link{score.irt}} will find both  IRT based estimates as well as average item response scores.  These latter correlate perfectly with those found by scoreItems.  If using a keys matrix, the score.irt results are based upon the item difficulties with the assumption that all items are equally discriminating (effectively a Rasch model).  These scores are probably most useful  in the case of massively missing data because they can take into account the item difficulties. 
+}
 \examples{
 
 #see  the example including the bfi data set
@@ -130,8 +142,9 @@ data(bfi)
 keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   conscientious=c("C1","C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
-  keys <- make.keys(bfi,keys.list)
- scores <- scoreItems(keys,bfi,min=1,max=6)
+  keys <- make.keys(bfi,keys.list)  #no longer necessary
+ scores <- scoreItems(keys,bfi,min=1,max=6)  #using a keys matrix 
+ scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.lit
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
  scores <- scoreItems(keys[1:27,],bfi[1:27],min=1,max=6)
@@ -145,7 +158,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  missing.bfi <- bfi
  missing.bfi[1:1000,3:8] <- NA
  missing.bfi[1001:2000,c(1:2,9:10)] <- NA
- scores <- scoreItems(keys,missing.bfi,impute="none",min=1,max=6)
+ scores <- scoreItems(keys.list,missing.bfi,impute="none",min=1,max=6)
  scores
  describe(scores$scores)  #the actual scores themselves
 

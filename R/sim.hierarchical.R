@@ -1,6 +1,7 @@
 # A function to create a correlation matrix with a hierarchical structure
 # The default values match those of Jensen and Weng
 #dropped the call to mvrnorm Nov 28, 2014
+#and added back the mu parameter in Sept,2016 (thanks to Alan Robinson for noticing this)
 "sim.hierarchical" <-
 function (gload=NULL,fload=NULL,n=0,raw=FALSE,mu = NULL) {
 cl <- match.call()
@@ -15,12 +16,13 @@ cl <- match.call()
   nvar <- dim(fload)[1]
   colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
   if(n>0) {
-   # if(is.null(mu)) mu <- rep(0,nvar)
+    if(is.null(mu)) mu <- rep(0,nvar)
   	#observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
   	 #the next 3 lines replaces mvrnorm (adapted from mvrnorm, but without the checks)
                                       eX <- eigen(model)
-                                      observed <- matrix(rnorm(nvar * n),n)
+                                      observed <-matrix(rnorm(nvar * n),n)
                                       observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed))
+                                      observed <- t(t(observed) + mu)
                                       colnames(observed) <- paste("V",1:nvar,sep="")
   	 r <- cor(observed)
   	 if(!raw) { 

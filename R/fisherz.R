@@ -10,6 +10,16 @@ function(rho) {2*rho/sqrt(1-rho^2)}
 "d2r" <- 
 function(d) {d/sqrt(d^2+4)}
 
+"t2r" <- function(t,df) {t^2/(t^2 + df)}
+
+"g2r" <- function(g,df,n) {g/sqrt(g^2 + 4*df/n)}
+
+"chi2r" <- function(chi,n) {sqrt(chi/n)}
+
+"r2chi" <- function(rho,n) { chi <- rho^2 *n}
+
+
+
 
   
 

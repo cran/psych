@@ -56,6 +56,7 @@ function (x, head = 4, tail = 4)
 #modified December 2014 to add the fast option for large data sets
 #modified May 21, 2015 to allow non-numeric data to be described (but with a warning)
 #further modified June 21, 2016 to allow for character input as well as well reporting quantiles 
+#tried to improve the speed by using multicores, but this requires using s or lapply which don't do what I need.
 "describe" <-
 function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE)   #basic stats after dropping non-numeric data
                              #slightly faster if we don't do skews

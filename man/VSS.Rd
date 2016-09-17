@@ -31,7 +31,7 @@ nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
 \item{\dots}{parameters to pass to the factor analysis program 
       The most important of these is if using a correlation matrix is covmat= xx}
 }
-\details{Determining the most interpretable number of factors from a factor analysis is perhaps one of the greatest challenges in factor analysis.  There are many solutions to this problem, none of which is uniformly the best.  "Solving the number of factors problem is easy, I do it everyday before breakfast.  But knowing the right solution is harder" (Kaiser, 195x).  
+\details{Determining the most interpretable number of factors from a factor analysis is perhaps one of the greatest challenges in factor analysis.  There are many solutions to this problem, none of which is uniformly the best.  "Solving the number of factors problem is easy, I do it everyday before breakfast."  But knowing the right solution is harder. (Horn and Engstrom, 1979) (Henry Kaiser in personal communication with J.L. Horn, as cited by Horn and Engstrom, 1979, MBR p 283).  
 
 Techniques most commonly used include
 

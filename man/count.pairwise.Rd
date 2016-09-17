@@ -7,7 +7,7 @@
 }
 \usage{
 count.pairwise(x, y = NULL,diagonal=TRUE)
-pairwiseDescribe(x,diagonal=FALSE) 
+pairwiseDescribe(x,diagonal=FALSE,...) 
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -15,6 +15,7 @@ pairwiseDescribe(x,diagonal=FALSE)
   \item{x}{ An input matrix, typically a data matrix ready to be correlated. }
   \item{y}{ An optional second input matrix }
   \item{diagonal}{if TRUE, then report the diagonal, else fill the diagonals with NA}
+  \item{...}{Other parameters to pass to describe}
 }
 
 \value{result = matrix of counts of pairwise observations
@@ -35,7 +36,7 @@ count.pairwise(x)
 count.pairwise(y)
 count.pairwise(x,y)
 count.pairwise(x,diagonal=FALSE)
-pairwiseDescribe(x)
+pairwiseDescribe(x,quant=c(.1,.25,.5,.75,.9))
 }
 
     

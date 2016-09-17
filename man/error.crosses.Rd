@@ -5,7 +5,8 @@
 }
 \usage{
 error.crosses(x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL, 
-xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,...)  
+xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,
+colors=NULL,col.arrows=NULL,col.text=NULL,...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +25,9 @@ xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,
   \item{alpha}{alpha level of error bars }
   \item{sd}{if sd is TRUE, then draw means +/- 1 sd)}
   \item{add}{if TRUE, overlay the values with a prior plot}
+  \item{colors}{What color(s) should be used for the plot character? Defaults to black}
+  \item{col.arrows}{What color(s) should be used for the arrows -- defaults to colors}
+  \item{col.text}{What color(s) should be used for the text -- defaults to colors}
   \item{\dots}{ Other parameters for plot  }
 }
 \details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}
@@ -66,12 +70,13 @@ error.crosses(g1.stats,g2.stats,sd=TRUE)
 #four films were given (sad, horror, neutral, happy)
 #with a pre and post test
 data(affect)
-colors <- c("black","red","white","blue")
+colors <- c("black","red","green","blue")
 films <- c("Sad","Horror","Neutral","Happy")
 affect.mat <- describeBy(affect[10:17],affect$Film,mat=TRUE)
  error.crosses(affect.mat[c(1:4,17:20),],affect.mat[c(5:8,21:24),],
     labels=films[affect.mat$group1],xlab="Energetic Arousal",
-     ylab="Tense Arousal",col=colors[affect.mat$group1],pch=16,cex=2)
+     ylab="Tense Arousal",colors = 
+     colors[affect.mat$group1],pch=16,cex=2)
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

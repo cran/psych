@@ -8,6 +8,7 @@ fa = {residual <- object$residual},
 principal = {residual <- object$residual},
 omega = {residual <- object$stats$residual},
 irt.fa ={residual <- object$fa$residual},
+esem = {residual <- object$residual},
 extension = {residual <- object$resid})
 
 class(residual) <- c("psych","residuals")

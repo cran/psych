@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Draw pairs of bargraphs based on two groups}
 \description{When showing e.g., age or education distributions for two groups, it is convenient to plot them back to back.  bi.bars will do so.}
-\usage{bi.bars(x,grp,horiz,color,label=NULL,...) }
+\usage{bi.bars(x,grp,horiz,color,label=NULL,zero=FALSE,xlab,ylab,...) }
 
 \arguments{
   \item{x}{The data to be drawn}
@@ -11,7 +11,10 @@
   \item{horiz}{horizontal (default) or vertical bars}
   \item{color}{colors for the two groups -- defaults to blue and red}
   \item{label}{If specified, labels  for the dependent axis } 
-  \item{\dots}{Further parameters to pass to the graphing program}
+  \item{zero}{If TRUE, subtract the minimum value to make the numbers range from 0 to max -min.  This is useful if  showing heights}
+  \item{xlab}{xaxis label if appropriate}
+  \item{ylab}{y axis label otherwise}
+ \item{\dots}{Further parameters to pass to the graphing program}
 }
 \details{A trivial, if useful, function to draw back to back histograms/barplots. One for each group.}
 \value{a graphic}

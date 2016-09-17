@@ -7,9 +7,9 @@ function (x, y=NULL,diagonal=TRUE)
    if(!diagonal) diag(n) <- NA
        return(n) }
     
-pairwiseDescribe <- function(x,diagonal=FALSE) {
+pairwiseDescribe <- function(x,diagonal=FALSE,...) {
 cp <- count.pairwise(x,diagonal=diagonal)
 cp <- as.vector(cp[lower.tri(cp)])
-describe(cp,skew=FALSE)
+describe(cp,...)
 }  
     

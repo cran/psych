@@ -1,5 +1,5 @@
 "error.crosses" <-
-function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,...)  # x  and y are data frame or descriptive stats
+function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,add=FALSE,colors=NULL,col.arrows=NULL,col.text=NULL,...)  # x  and y are data frame or descriptive stats
     {if(is.vector(x)) {x <- describe(x)}
      xmin <- min(x$mean)
      xmax <- max(x$mean)
@@ -17,7 +17,12 @@ function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos
      if(is.null(main)) {if(!sd) { main = paste((1-alpha)*100,"% confidence limits",sep="") } else {main= paste("Means and standard deviations")} }
      if(is.null(xlab)) xlab <- "Group 1"
      if(is.null(ylab)) ylab <- "Group 2"
-     if(!add) plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,...)
+      if(is.null(colors)) colors <- "black"
+     if(is.null(col.arrows)) col.arrows <- colors
+     if(is.null(col.text))  col.text <- colors
+     
+     if(!add) plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,col=colors,...)
+    
      
     cix <- qt(1-alpha/2,x$n-1)
     ciy <- qt(1-alpha/2,y$n-1)
@@ -29,17 +34,20 @@ function (x,y,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,pos
     
      if (is.null(pos)) {locate <- rep(1,z)} else {locate <- pos}
      if (is.null(labels))  {labels <- rownames(x)}
-    if (is.null(labels))  {lab <- paste("V",1:z,sep="")}  else {lab <-labels}
+     if (is.null(labels))  {lab <- paste("V",1:z,sep="")}  else {lab <-labels}
+     if(length(col.arrows) < z) {col.arrows <- rep(col.arrows, z)}
+     if(length(col.text) < z) {col.text <- rep(col.text, z)}
     
         for (i in 1:z)  
     	{xcen <- x$mean[i]
     	 ycen <- y$mean[i]
     	 xse  <- x$se[i]
     	 yse <-  y$se[i]
-    	 arrows(xcen-cix[i]* xse,ycen,xcen+ cix[i]* xse,ycen,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	 arrows(xcen,ycen-ciy[i]* yse,xcen,ycen+ ciy[i]*yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	text(xcen,ycen,labels=lab[i],pos=locate[i],cex=1,offset=offset)     #puts in labels for all points
+    	 arrows(xcen-cix[i]* xse,ycen,xcen+ cix[i]* xse,ycen,length=arrow.len, angle = 90, code=3,col = col.arrows[i], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	 arrows(xcen,ycen-ciy[i]* yse,xcen,ycen+ ciy[i]*yse,length=arrow.len, angle = 90, code=3,col =col.arrows[i], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	text(xcen,ycen,labels=lab[i],pos=locate[i],offset=offset,col = col.text[i],...)     #puts in labels for all points
     	}	
    }
 #Sept 11, 2013 changed n to n-1 in call to qt  (following a suggestion by Trevor Dodds)
+#modified Sept 15, 2016 with help from Arnaud Defaye
 

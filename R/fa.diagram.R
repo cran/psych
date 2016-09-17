@@ -6,6 +6,7 @@
 #thus, I am trying to combine these two approaches
 #some small revisions, March 2015 to allow cex to be passed to dia.ellipse and dia.rect
 
+
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
     digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5),adj=1, ...) {

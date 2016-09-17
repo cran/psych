@@ -90,7 +90,9 @@ The problem seems to be a memory limitation in that the time taken is an acceler
 Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 }
 
+\note{The object returned is a data frame with the normal precision of R.  However, to control the number of digits displayed, you can set digits in a print command, rather than losing precision at the descriptive stats level.  See the last two examples.  One just sets the number of digits, one gives uses signif  to make 'prettier'  output where all numbers are displayed to the same number of digits.
 
+}
 
 
 
@@ -106,9 +108,16 @@ describe(sat.act,skew=FALSE)
 describe(sat.act,IQR=TRUE) #show the interquartile Range
 describe(sat.act,quant=c(.1,.25,.5,.75,.90) ) #find the 10th, 25th, 50th, 
                    #75th and 90th percentiles
+                   
+                   
  
 describeData(sat.act) #the fast version 
    
+#now show how to adjust the displayed number of digits
+ des <- describe(sat.act)  #find the descriptive statistics.  Keep the original accuracy
+ des  #show the normal output, which is rounded to 2 decimals
+ print(des,digits=3)  #show the output, but round to 3 (trailing) digits
+ print(des, signif=3) #round all numbers to the 3 significant digits 
 
 
 }

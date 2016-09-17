@@ -19,4 +19,4 @@ xy  <- x %*% t(one) + t(y %*% t(one.y) )  #sum the vectors in a rectangular arra
  "tr" <- 
 function(m) {
 if (!is.matrix(m) |(dim(m)[1] != dim(m)[2]) ) stop ("m must be a square matrix")
-return(sum(diag(m))) }
+return(sum(diag(m),na.rm=TRUE)) }

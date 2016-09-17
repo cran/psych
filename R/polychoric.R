@@ -219,7 +219,7 @@ if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric
   item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0)  & delete) {
-            for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
+            for (baddy in 1:length(bad)) {message( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
             x <- x[,-bad] 
             nvar <- nvar - length(bad)
              }
@@ -255,7 +255,7 @@ colnames(mat) <- rownames(mat) <- colnames(x)
 mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
 
 
-  if(any(is.na(mat))) {warning("some correlations are missing, smoothing turned off")
+  if(any(is.na(mat))) {message("some correlations are missing, smoothing turned off")
                         smooth <- FALSE}
 
  if(smooth) {mat <- cor.smooth(mat) }
@@ -339,7 +339,7 @@ if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric
   item.var <- apply(p,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0)  & delete) {
-            for (baddy in 1:length(bad)) {warning( "Item = ",colnames(p)[bad][baddy], " had no variance and was deleted")}
+            for (baddy in 1:length(bad)) {message( "Item = ",colnames(p)[bad][baddy], " had no variance and was deleted")}
             p <- p[,-bad] 
             np <- np - length(bad)
              }

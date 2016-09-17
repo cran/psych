@@ -5,9 +5,14 @@
 \alias{r2t}
 \alias{r2d}
 \alias{d2r}
+\alias{t2r}
+\alias{g2r}
+\alias{chi2r}
+\alias{r2chi}
 
-\title{ Fisher r to z and z to r and confidence intervals}
-\description{Convert a correlation to a z score or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r.  
+\title{Transformations of r including Fisher r to z and z to r and confidence intervals}
+\description{Convert a correlation to a z or t, or d, or chi
+ score or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r. g2r converts Hedge's g to a correlation.   t2r converts a t test to r, r2t converts a correlation to a t-test value. chi2r converts a chi square to r, r2chi converts it back. 
 }
 \usage{
 fisherz(rho)
@@ -16,15 +21,25 @@ r.con(rho,n,p=.95,twotailed=TRUE)
 r2t(rho,n)
 r2d(rho)
 d2r(d)
+t2r(t,df)
+g2r(g,df,n)
+chi2r(chi,n)
+r2chi(rho,n)
+
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{rho}{ a Pearson r }
   \item{z}{A Fisher z}
   \item{n}{Sample size for confidence intervals}
+  \item{df}{degrees of freedom for t, or g}
   \item{p}{Confidence interval}
   \item{twotailed}{Treat p as twotailed p}
   \item{d}{an effect size (Cohen's d)}
+  \item{g}{An effect size (Hedge's g)}
+  \item{t}{A student's t value}
+  \item{chi}{A chi square}
 }
 
 \value{ z value corresponding to r  (fisherz) \\

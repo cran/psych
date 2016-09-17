@@ -108,8 +108,66 @@ function(header=FALSE,widths=rep(1,10),...) {  #
 #added May, 2014 to read from https files
 "read.https" <-
 function(filename,header=TRUE) {
-temp <- tempfile()   #create a temporary file
-download.file(filename,destfile=temp,method="curl") #copy the https file to temp
-result <- read.table(temp,header=header) #now, do the normal read.table command
-unlink(temp) #get rid of the temporary file
-return(result)}  #give us the result
+	temp <- tempfile()   #create a temporary file
+	download.file(filename,destfile=temp,method="curl") #copy the https file to temp
+	result <- read.table(temp,header=header) #now, do the normal read.table command
+	unlink(temp) #get rid of the temporary file
+	return(result)}  #give us the result
+
+
+#two useful helper functions
+#August, 2016
+"read.file" <- function(f=NULL,header=TRUE,...) {
+ if(missing(f)) f <- file.choose()
+ suffix <- file_ext(f)
+ switch(suffix, 
+   sav = {result <- read.spss(f,use.value.labels=FALSE,to.data.frame=TRUE,...)
+         message('Data from the SPSS sav file ', f ,' has been loaded.')},
+   csv = {result <- read.table(f,header=header,sep=",",...)
+         message('Data from the .csv file ', f ,' has been loaded.')},
+   txt = {result <- read.table(f,header=header,...)
+          message('Data from the .txt file ', f , ' has been loaded.') },
+  text = {result <- read.table(f,header=header,...)
+          message('Data from the .text file ', f , ' has been loaded.')},
+   data =  {result <- read.table(f,header=header,...) 
+           message('Data from the .data file ', f , ' has been loaded.')},
+    dat =  {result <- read.table(f,header=header,...) 
+           message('Data from the .data file ', f , ' has been loaded.')},
+    rds = {result <- readRDS(f,...)
+          message('File ',f ,' has been loaded.')},
+   Rds  = {result <- readRDS(f,...)
+          message('File ',f ,' has been loaded.')},
+   Rda = {result <- f
+          message('To load this .rda file, you must \nload("',f ,'")')},
+   rda  = {result <- f
+          message('To load this .rda file, you must \nload("',f ,'")')},
+    jmp  = {result <- f
+          message('I am sorrry.  To read this .jmp file, it must first be saved as a "txt" or "csv" file.')},
+   {message ("I  am sorry. \nI can not tell from the suffix what file type is this.  I will try just a normal read.table but can not guarantee the result.")
+        result <- read.table(f,header=header,...)}
+   )
+   return (result)
+   }
+ 
+ "read.file.csv" <- function(f=NULL,header=TRUE,...) {
+ if(missing(f)) f <- file.choose()
+ read.table(f,header=header,sep=",",...) }
+ 
+ "write.file" <- function(x,f=NULL,row.names=FALSE,...) {
+	 if(missing(f))  f <- file.choose(TRUE)
+ 	 suffix <- file_ext(f)
+	 switch(suffix, 
+ 		 txt = {write.table(x,f, row.names=row.names, ...)},
+ 		text =   {write.table(x,f,row.names=row.names,...)},
+ 		csv =  {write.table(x,f,sep=",", row.names=row.names,...) },
+ 		Rds = {saveRDS(x,f)},
+ 		rds = {saveRDS(x,f)})
+   }
+ 
+  "write.file.csv" <- function(x,f=NULL,row.names=FALSE,...) {
+ if(missing(f))  f <- file.choose(TRUE)
+ write.table(x,f,sep=",",row.names=row.names,...) }
+ 
+
+
+

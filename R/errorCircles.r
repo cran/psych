@@ -61,10 +61,16 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
 }
    
    "errorCircles" <-
-function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,add=FALSE,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,bars=TRUE,circles=TRUE,...) { # x  and y are data frame or descriptive stats
+function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,add=FALSE,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,bars=TRUE,circles=TRUE,colors=NULL,col.arrows=NULL,col.text=NULL,...) { # x  and y are data frame or descriptive stats
      
      xvar <- x
      yvar <- y
+     
+      if(is.null(colors)) colors <- "black"
+     if(is.null(col.arrows)) col.arrows <- colors
+     if(is.null(col.text))  col.text <- colors
+     
+     
     # if((length(xvar) ==1) && (length(yvar)==1) && !is.null(group)) {data <- statsBy(data[,c(group,xvar,yvar)],group=group)} else {
      if(!is.null(group)) {data <- statsBy(data,group=group)}
   #  }
@@ -112,9 +118,9 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
         if(is.null(ylab)) ylab <- colnames(data$mean)[yvar]
      }
      if(add)  {  
-      if(paired) {points(x$mean,typ="p",...) } else {points(x$mean,y$mean,typ="p",...)}
+      if(paired) {points(x$mean,typ="p",col=colors,...) } else {points(x$mean,y$mean,typ="p",col=colors,...)}
     } else {
-     if(paired) {plot(x$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="p",...) } else {plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="p",...)}
+     if(paired) {plot(x$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="p",col=colors,...) } else {plot(x$mean,y$mean,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,main=main,typ="p",col=colors,...)}
     }
      N <-x$n
      Nmax <- max(N)
@@ -129,6 +135,9 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
      if (is.null(pos)) {locate <- rep(1,z)} else {locate <- pos}
      if (is.null(labels))  {labels <- rownames(x$mean)}
     if (is.null(labels))  {lab <- paste("V",1:z,sep="")}  else {lab <-labels}
+    if(length(colors) < z) colors <- rep(colors,z)
+     if(length(col.text) < z) col.text <- rep(col.text,z)
+       if(length(col.arrows) < z) col.arrows <- rep(col.arrows,z)
     
         for (i in 1:z)  
     	{ if(paired) { xcen <- x$mean[i,1]
@@ -140,47 +149,24 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
     	 ycen <- y$mean[i]
     	 xse  <- x$se[i]
     	 yse <-  y$se[i]}
-    if(bars) {if(max(x$se,na.rm=TRUE) > 0) 	 arrows(xcen-cix[i]* xse,ycen,xcen+ cix[i]* xse,ycen,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	if(max(y$se,na.rm=TRUE) >0 )  arrows(xcen,ycen-ciy[i]* yse,xcen,ycen+ ciy[i]*yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
+    if(bars) {if(max(x$se,na.rm=TRUE) > 0) 	 arrows(xcen-cix[i]* xse,ycen,xcen+ cix[i]* xse,ycen,length=arrow.len, angle = 90, code=3,col = col.arrows[i], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	if(max(y$se,na.rm=TRUE) >0 )  arrows(xcen,ycen-ciy[i]* yse,xcen,ycen+ ciy[i]*yse,length=arrow.len, angle = 90, code=3,col =col.arrows[i], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 }
     	
-    	text(xcen,ycen,labels=lab[i],pos=locate[i],cex=1,offset=offset)     #puts in labels for all points
+   
+    		text(xcen,ycen,labels=lab[i],pos=locate[i],col=col.text[i],offset=offset,...)     #puts in labels for all points
     if(circles) { xrange <- xlim[2] - xlim[1]
                 yrange <- ylim[2] - ylim[1]
                 xscale <-max(x$se)
                 yscale <-max(y$se)
-    ellipse(xcen,ycen,sqrt(xscale*x$n[i]/Nmax),sqrt( yscale*x$n[i]/Nmax))
+    ellipse(xcen,ycen,sqrt(xscale*x$n[i]/Nmax),sqrt( yscale*x$n[i]/Nmax),col=col.arrows[i])
     	}
     	}	
     if(!is.null(group)) return(invisible(data))
    }
-   
-   
-  
 
-"cor.wt" <- function(data,vars=NULL, w=NULL,sds=NULL, cor=TRUE) {
-   if(is.list(data) && !is.data.frame(data)) {w <- data$n   #use the output from statsBy
-                   sds <- data$sd
-                   x <- data$mean} else {x <- data}
-    if(!is.null(vars)) {x <- x[,vars] 
-                        w <- w[,vars]
-                        sds <- sds[,vars] }              
-   if(is.null(w)) w <- matrix(rep(rep(1/nrow(x),nrow(x)),ncol(x)),nrow=nrow(x),ncol=ncol(x))
-   wt <- t(t(w)/colSums(w))
-   cnames <- colnames(x)
-    for (i in 1:ncol(x)) {if(is.factor(x[,i]) || is.logical(x[,i])) {
-             x[,i] <- as.numeric(x[,i])
-             colnames(x)[i] <- paste(cnames[i],"*",sep="")
-             }}
-   means <- colSums(x * wt,na.rm=TRUE) 
-   xc  <-  scale(x,center=means,scale=FALSE)  #these are the weighted centered data
-   if(is.null(sds)) {xs <- xc /sqrt(w) } else {xs  <- xc * sds/sqrt(w)}
-   xwt <- sqrt(wt) * xc
-       cov <- crossprod(xwt)             #/(1-colSums(wt^2,na.rm=TRUE))
-    if(cor) {r <- cov2cor(cov)} else {r <- cov}
-    xw <- wt * xc
-return(list(r=r,xwt = xwt,wt=wt,mean=means,xc=xc,xs=xs))}
-   
-   
-  
-        
+    	
+    	
+    	
+    	
+    	

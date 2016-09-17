@@ -5,8 +5,8 @@
 \description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although first reported by Burt (1948), this is frequently known as the Tucker index of factor congruence.
 }
 \usage{
-factor.congruence(x, y=NULL,digits=2,use=NULL)
-fa.congruence(x, y=NULL,digits=2,use=NULL)
+factor.congruence(x, y=NULL,digits=2,use=NULL,structure=FALSE)
+fa.congruence(x, y=NULL,digits=2,use=NULL,structure=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +14,7 @@ fa.congruence(x, y=NULL,digits=2,use=NULL)
   \item{y}{ A second matrix of factor loadings (if x is a list, then y may be empty)}
   \item{digits}{Round off to digits}
   \item{use}{If NULL, then no loading matrices may contain missing values.  If use="complete" then variables with any missing loadings are dropped (with a warning)}
-
+  \item{structure}{If TRUE, find the factor congruences based upon the Structure matrix (if available), otherwise based upon the pattern matrix.}
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
 

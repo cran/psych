@@ -116,20 +116,24 @@ if(is.null(cut)) cut <- .2
    function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
      if(is.null(cut)) cut <- .2
 	 cat( x$title,"\n") 
+	 if(!is.null(x$Call)) {# we have run this from omegaSem so we should print omega results first
 	 cat("Call: ")
      print(x$Call)
    print.psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
-   cat("\n Omega Hierarchical from a confirmatory model using sem = ", round(x$omega.efa$omega,digits))
-    cat("\n Omega Total  from a confirmatory model using sem = ", round(x$omega.efa$omega.tot,digits),"\n")
+   x <- x$omega.efa
+   } 
+   cat("\n The following analyses were done using the ", x$sem," package \n") 
+   cat("\n Omega Hierarchical from a confirmatory model using sem = ", round(x$omega,digits))
+    cat("\n Omega Total  from a confirmatory model using sem = ", round(x$omega.tot,digits),"\n")
    cat("With loadings of \n")
-   loads <- x$omega.efa$cfa.loads
+   loads <- x$cfa.loads
    class(loads) <- NULL
    nfactor <- ncol(loads)
-             tn <- colnames(loads)
+             tn <- c("g", paste0("F",1:(nfactor-1),"*"))
 	        loads <- data.frame(loads)
 	        colnames(loads) <- tn  #this seems weird, but otherwise we lose the F* name
 	       
-           load.2 <- loads     
+           load.2 <- as.matrix(loads)     
 	        h2 <- round(rowSums(load.2^2),digits)
 	        loads <- round(loads,digits)
 	    	fx <- format(loads,digits=digits)
@@ -137,16 +141,43 @@ if(is.null(cut)) cut <- .2
          	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
             h2 <- round(rowSums(load.2^2),digits)
          	u2 <- 1 - h2
+         	p2 <- loads[,1]^2/h2
          	
-         	p2 <- loads[,ncol(loads)]
          	mp2 <- mean(p2)
          	vp2 <- var(p2)
+         	 
          	p2 <- round(p2,digits)
-	    	print(cbind(fx,h2,u2),quote="FALSE")
+	    	print(cbind(fx,h2,u2,p2),quote="FALSE")
 	    
 	   loads <- as.matrix(load.2) 
 	   eigenvalues <- diag(t(loads) %*% loads)
        cat("\nWith eigenvalues of:\n")
        ev.rnd <- round(eigenvalues,digits)
        print(ev.rnd,digits=digits)
+       
+     maxmin <- max(eigenvalues[2:nfactor])/min(eigenvalues[2:nfactor])
+  	 gmax <- eigenvalues[1]/max(eigenvalues[2:nfactor])
+  	 
+      ECV <- eigenvalues[1]/sum(eigenvalues)
+      if(!is.null(x$Fit)) {
+      cat("\nThe degrees of freedom of the confimatory model are ",x$Fit[[1]]$df, " and the fit is ", x$Fit[[1]]$stat, " with p = ",x$Fit[[1]]$pvalue)
+      }
+   	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits))
+    cat("\nmean percent general = ",round(mp2,digits), "   with sd = ", round(sqrt(vp2),digits), "and cv of ",round(sqrt(vp2)/mp2,digits),"\n")
+     cat("Explained Common Variance of the general factor = ", round(ECV,digits),"\n")
+   
+     cat("\nMeasures of factor score adequacy             \n")
+ # rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+   fsa.df <- t(data.frame(sqrt(x$gR2),x$gR2,2*x$gR2 -1))
+   rownames(fsa.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
+   colnames(fsa.df) <- tn
+   print(round(fsa.df,digits))
+  
+  cat("\n Total, General and Subset omega for each subset\n")
+   colnames(x$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   rownames(x$omega.group) <- tn
+   print(round(t(x$omega.group),digits))
+   
+   cat("\nTo get the standard sem fit statistics, ask for summary on the fitted object")
+   
    }

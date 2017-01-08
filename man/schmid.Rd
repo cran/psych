@@ -14,7 +14,7 @@ schmid(model, nfactors = 3, fm = "minres",digits=2,rotate="oblimin",
   \item{nfactors}{ Number of factors to extract }
   \item{fm}{the default is to do minres. fm="pa" for principal axes, fm="pc" for principal components, fm = "minres" for minimum residual (OLS), pc="ml" for maximum likelihood }
   \item{digits}{if digits not equal NULL, rounds to digits}
-  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. The third option is the promax criterion}
+  \item{rotate}{The default, oblimin, produces somewhat more correlated factors than the alternative, simplimax. Other options include Promax (not Kaiser normalized) or promax (Promax with Kaiser normalization).  See \code{\link{fa}} for possible oblique rotations.}
   \item{n.obs}{Number of observations, used to find fit statistics if specified.  Will be calculated if input is raw data}
   \item{option}{When asking for just two group factors, option can be for "equal", "first" or "second"}
   \item{Phi}{If Phi is specified, then the analysis is done on a pattern matrix with the associated factor intercorrelation (Phi) matrix. This allows for reanalysess of published results}

@@ -1,6 +1,7 @@
 \name{esem}
 \alias{esem}
 \alias{esem.diagram}
+\alias{interbattery}
 
 \title{Perform and Exploratory Structural Equation Model (ESEM) by using factor extension techniques}
 
@@ -12,6 +13,8 @@ esem(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL, fm = "minres",
 esem.diagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
 regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
      main="Exploratory Structural Model", ...)
+interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor", 
+       use = "pairwise",weight=NULL)
 }
 \arguments{
  \item{r}{A correlation matrix or a raw data matrix suitable for factor analysis}
@@ -40,9 +43,13 @@ regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
    \item{regression}{Not yet implemented}
    }
 \details{
-Factor analysis as implemented in \code{\link{fa}} attempts to  summarize the covariance (correlational) structure of a set of variables with a small set of latent variables or ``factors".  This solution may be `extended' into a larger space with more variables without changing the original solution (see \code{\link{fa.extension}}.  Similarly,  the factors of a second set of variables  (the Y set) may be extended into the original (X ) set.  Doing so allows two independent measurement models, a measurement model for X and a measurement model for Y.  These two sets of latent variables may then be correlated to for an Exploratory Structural Equation Model.  (This is exploratory because it is based upon exploratory factor analysis (EFA) rather than a confirmatory factor model (CFA) using more traditional Structural Equation Modeling packages such as sem, lavaan, or Mx.)
+Factor analysis as implemented in \code{\link{fa}} attempts to  summarize the covariance (correlational) structure of a set of variables with a small set of latent variables or ``factors".  This solution may be `extended' into a larger space with more variables without changing the original solution (see \code{\link{fa.extension}}.  Similarly,  the factors of a second set of variables  (the Y set) may be extended into the original (X ) set.  Doing so allows two independent measurement models, a measurement model for X and a measurement model for Y.  These two sets of latent variables may then be correlated too for an Exploratory Structural Equation Model.  (This is exploratory because it is based upon exploratory factor analysis (EFA) rather than a confirmatory factor model (CFA) using more traditional Structural Equation Modeling packages such as sem, lavaan, or Mx.)
 
-Although the output seems very similar to that of a normal EFA using  \code{\link{fa}}, it is actually two independent factor analyses (of the X and the Y sets) that are then mutually extended into each other.  That is, the loadings and structure matrices from sets X and Y are merely combined.  
+Although the output seems very similar to that of a normal EFA using  \code{\link{fa}}, it is actually two independent factor analyses (of the X and the Y sets) that are then mutually extended into each other.  That is, the loadings and structure matrices from sets X and Y are merely combined, and the correlations between the two sets of factors are found.
+
+Interbattery factor analysis was developed by Tucker (1958) as a way of comparing the factors in common to two batteries of tests.   (Currently under development). Using some straight forward linear algebra It is straight forward to find the factors of the intercorrelations between the two sets of variables.  This does not require estimating communalities and is highly related to the procedures of canonical correlation.  
+
+The difference between the esem and the interbattery approach is that the first factors the X set and then relates those factors to factors of the Y set.  Interbattery factor analysis, on the other hand, tries to find one set of factors that links both sets but is still distinct from factorinh both sets together.  
 }
 \value{
 \item{communality}{The amount of variance in each of the X and Y variables accounted for by the total model.}
@@ -77,6 +84,9 @@ Although the output seems very similar to that of a normal EFA using  \code{\lin
 }
 \references{
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+
+Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika, 23, 111-136.
+
 
 }
 \author{William Revelle}
@@ -122,6 +132,17 @@ print(gre.gpa)
 example <- esem(gre.gpa$model,varsX=1:5,varsY=6:8,nfX=2,nfY=1,n.obs=1000,plot=FALSE)
 example
 esem.diagram(example,simple=FALSE)
+
+#compare two alternative solutions to the first 2 factors of the neo.
+#solution 1 is the normal 2 factor solution.
+#solution 2 is an esem with 1 factor for the first 6 variables, and 1 for the second 6.
+f2 <- fa(neo[1:12,1:12],2)
+es2 <- esem(neo,1:6,7:12,1,1)
+summary(f2)
+summary(es2)
+fa.congruence(f2,es2)
+
+
 }
 
 \keyword{ multivariate }

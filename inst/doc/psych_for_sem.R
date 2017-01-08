@@ -274,7 +274,7 @@ round(residuals(sem.one),2)
 ###################################################
 ### code chunk number 33: psych_for_sem.Rnw:541-545
 ###################################################
-f1 <- factanal(covmat=bifact,factors=1)
+f1 <- fa(bifact)
 mod.f1 <- structure.sem(f1)
 sem.f1 <- sem(mod.f1,bifact,100)
 sem.f1
@@ -314,7 +314,7 @@ om.th.bi  <- omega(Thurstone,digits=3)
 ###################################################
 ### code chunk number 38: psych_for_sem.Rnw:608-611
 ###################################################
-sem.bi <- sem(om.th.bi$model,Thurstone,213) #use the model created by omega
+sem.bi <- sem(om.th.bi$model$sem,Thurstone,213) #use the model created by omega
 summary(sem.bi,digits=2)
 stdCoef(sem.bi,digits=2)
 
@@ -328,7 +328,7 @@ om.hi <- omega(Thurstone,digits=3,sl=FALSE)
 ###################################################
 ### code chunk number 40: psych_for_sem.Rnw:633-637
 ###################################################
-sem.hi <- sem(om.hi$model,Thurstone,213)
+sem.hi <- sem(om.hi$model$sem,Thurstone,213)
 summary(sem.hi,digits=2)
 stdCoef(sem.hi,digits=2)
 anova(sem.hi,sem.bi)
@@ -338,9 +338,9 @@ anova(sem.hi,sem.bi)
 ### code chunk number 41: psych_for_sem.Rnw:646-651
 ###################################################
 om.holz.bi <- omega(Holzinger,4)
-sem.holz.bi <- sem(om.holz.bi$model,Holzinger,355)
+sem.holz.bi <- sem(om.holz.bi$model$sem,Holzinger,355)
 om.holz.hi <- omega(Holzinger,4,sl=FALSE)
-sem.holz.hi <- sem(om.holz.hi$model,Holzinger,355)
+sem.holz.hi <- sem(om.holz.hi$model$sem,Holzinger,355)
 anova(sem.holz.bi,sem.holz.hi)
 
 

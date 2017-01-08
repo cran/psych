@@ -19,10 +19,12 @@
   if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "extend")) ) {extend <- TRUE
         class(om.results)[2] <- "omega"} else {extend <- FALSE}
  if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "omegaSem")) ) {
+    #did we do an omegaSem or just an omegaFromSem?
+    if(is.null(om.results$omega.efa$cfa.loads)) {cfa.loads <- om.results$cfa.loads} else {cfa.loads <- om.results$omega.efa$cfa.loads}
       #  factors <- as.matrix(om.results$omega.efa$cfa.loads[,2:ncol(om.results$omega.efa$cfa.loads)])
-      if(sort) om.results$omega.efa$cfa.loads <- fa.sort(om.results$omega.efa$cfa.loads)
-      factors <- as.matrix(om.results$omega.efa$cfa.loads)
-        gloading <- om.results$omega.efa$cfa.loads[,1,drop=FALSE]
+      if(sort) cfa.loads <- fa.sort(cfa.loads)
+      factors <- as.matrix(cfa.loads)
+        gloading <- cfa.loads[,1,drop=FALSE]
         nvar <- num.var <- nrow(gloading)
         num.factors <- ncol(factors) -1
         sl=TRUE

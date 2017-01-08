@@ -8,7 +8,7 @@
 }
 \usage{
 scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
- delete=TRUE, min = NULL, max = NULL, digits = 2)
+ delete=TRUE, min = NULL, max = NULL, digits = 2,n.obs=NULL)
  score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
  delete=TRUE, min = NULL, max = NULL, digits = 2) 
  scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none",
@@ -28,6 +28,7 @@ scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="med
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
   \item{uniqueitems}{If specified, the set of possible unique response categories}
   \item{digits}{ Number of digits to report }
+  \item{n.obs}{If scoring from a correlation matrix, specify the number of subjects allows for the calculation of the confidence intervals for alpha.}
 
   
 }
@@ -144,7 +145,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
   keys <- make.keys(bfi,keys.list)  #no longer necessary
  scores <- scoreItems(keys,bfi,min=1,max=6)  #using a keys matrix 
- scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.lit
+ scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.list
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
  scores <- scoreItems(keys[1:27,],bfi[1:27],min=1,max=6)
@@ -161,6 +162,14 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  scores <- scoreItems(keys.list,missing.bfi,impute="none",min=1,max=6)
  scores
  describe(scores$scores)  #the actual scores themselves
+ 
+ #If we want to delete scales scores for people who did not answer some items for one 
+ #(or more) scales, we can do the following:
+ 
+  scores <- scoreItems(keys.list,missing.bfi,totals=TRUE,min=1,max=6) #find total scores
+  describe(scores$scores) #note that missing data were replaced with median for the item
+  scores$scores[scores$missing > 0] <- NA  #get rid of cases with missing data
+  describe(scores$scores)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

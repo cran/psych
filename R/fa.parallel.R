@@ -10,7 +10,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
  nsub <- dim(x)[1]
  nvariables <- dim(x)[2]
  resample <- TRUE  #this is used as a flag for correlation matrices
- if((nsub == nvariables) && !sim)  {warning("You specified a correlation matrix, but asked to just resample (sim was set to FALSE).  This is impossible, so sim is set to TRUE")
+ if((isCorrelation(x)) && !sim)  {warning("You specified a correlation matrix, but asked to just resample (sim was set to FALSE).  This is impossible, so sim is set to TRUE")
   	  sim <- TRUE
   	  resample <- FALSE}
  if (!is.null(n.obs)) { nsub <- n.obs 
@@ -35,7 +35,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   	  sim <- TRUE
   	  resample <- FALSE}
   	}   	 } else {
-  	if (nsub==nvariables) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The number of subjects is arbitrarily set to be 100  ") 
+  	if (isCorrelation(x)) {warning("It seems as if you are using a correlation matrix, but have not specified the number of cases. The number of subjects is arbitrarily set to be 100  ") 
   	rx <- x
   	nsub = 100
   	n.obs=100
@@ -119,7 +119,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    if(se.bars) {values.sim.se <- apply(values,2,sd,na.rm=TRUE)/sqrt(n.iter)} else {values.sim.se <- apply(values,2,sd,na.rm=TRUE)}
   
     ymax <- max(valuesx,values.sim.mean)
-    
+     sim.pcr <- sim.far <- NA
 switch(fa, 
   pc = { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Component Number",pch=4,col="blue")
         if(resample) { sim.pcr <- values.sim.mean[1:nvariables] 
@@ -198,9 +198,9 @@ switch(fa,
    	 
      points(sim.pc,type ="l",lty="dotted",pch=4,col="red")
      points(sim.fa,type ="l",lty="dotted",pch=4,col="red")
-     sim.pcr <- sim.far <- NA
-#points(sim.pcr,type ="l",lty="dashed",pch=4,col="red")
-#     points(sim.far,type ="l",lty="dashed",pch=4,col="red")
+    # sim.pcr <- sim.far <- NA   @#removed Dec 31, 2016
+     points(sim.pcr,type ="l",lty="dashed",pch=2,col="red")
+     points(sim.far,type ="l",lty="dashed",pch=2,col="red")
       pc.test <- which(!(valuesx > sim.pc.ci))[1]-1 
       fa.test <- which(!(fa.valuesx > sim.fa.ci))[1]-1  
      } else {      #sim is false

@@ -20,7 +20,7 @@ make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
 
 Given a matrix of item factor loadings (fload) and of loadings of these factors on a general factor (gload), we create a population correlation matrix by using the general factor law (R = F' theta F where theta = g'g).  
 
-To create sample values, we use the \code{\link{mvrnorm}} function from MASS.
+To create sample values, we use  code adapted from the \code{\link{mvrnorm}} function in MASS.
 
 The default is to return population correlation matrices. Sample correlation matrices are generated if n >0.  Raw data are returned if raw = TRUE.
 

@@ -10,7 +10,7 @@ fa.parallel(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plo
 n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
 sim=TRUE,quant=.95,cor="cor",use="pairwise")
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
-       fa="both",global=TRUE) 
+       fa="both",global=TRUE)   #deprecated
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -79,7 +79,8 @@ For comparability with other algorithms (e.g, the paran function in the paran pa
   
 }
 
-\note{Although by default the test is applied to the mean eigen values, this can be modified by setting the quant parameter to any particular quantile. The actual simulated data are also returned (invisibly) in the value object.  Thus, it is possible to do descriptive statistics on those to choose a preferred comparison.  See the last example (not run)
+\note{Although by default the test is applied to the 95th percentile eigen values, this can be modified by setting the quant parameter to any particular quantile. The actual simulated data are also returned (invisibly) in the value object.  Thus, it is possible to do descriptive statistics on those to choose a preferred comparison.  See the last example (not run)
+   The simulated and resampled data tend to be very similar, so for a slightly cleaner figure, set sim=FALSE.  
 
   }
 \references{

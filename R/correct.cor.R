@@ -27,7 +27,7 @@ return(result)
 "KMO" <-
 function(r) {
 cl <- match.call()
-if(nrow(r) > ncol(r)) r <- cor(r,use="pairwise")
+if(!isCorrelation(r)) r <- cor(r,use="pairwise")
   Q <- try(solve(r))
   if(class(Q) == as.character("try-error")) {message("matrix is not invertible, image not found")
         Q <- r}

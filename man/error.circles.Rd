@@ -7,7 +7,7 @@
 errorCircles(x, y, data, ydata = NULL, group=NULL, paired = FALSE, labels = NULL, 
 main = NULL, xlim = NULL, ylim = NULL, xlab = NULL, ylab = NULL,add=FALSE, pos = NULL,
  offset = 1, arrow.len = 0.2, alpha = 0.05, sd = FALSE, bars = TRUE, circles = TRUE,
- colors=NULL,col.arrows=NULL,col.text=NULL, ...)
+ colors=NULL,col.arrows=NULL,col.text=NULL,circle.size=1, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,12 +35,15 @@ main = NULL, xlim = NULL, ylim = NULL, xlab = NULL, ylab = NULL,add=FALSE, pos =
   \item{colors}{Plot the points using colors -- default is black}
   \item{col.text}{What color for the text labels (defaults to colors)}
   \item{col.arrows}{What color should the arrows and circles be?  Defaults to colors}
+  \item{circle.size}{A scaling parameter for the error.circles.  Defaults to 1, but can be adjusted downwards to make them less instrusive.}
   \item{\dots}{ Other parameters for plot  }
 
 
 }
 \details{
 When visualizing the effect of an experimental manipulation or the relationship of multiple groups, it is convenient to plot their means as well as their confidence regions in a two dimensional space.  
+
+The diameter of the enclosing circle (ellipse) scales as 1/sqrt(N) * the maximum standard error of all variables.  That is to say, the area of the ellipse reflects sample size.  
 }
 \value{If the group variable is specified, then the statistics from \code{\link{statsBy}} are (invisibly) returned.  
 }
@@ -69,6 +72,9 @@ affect.stats <- errorCircles("EA2","TA2",data=affect[-c(1,20)],group="Film",labe
       pch=16,cex=2,colors=colors, main ="EA and TA pre and post affective movies")
 #now, use the stats from the prior run 
 errorCircles("EA1","TA1",data=affect.stats,labels=films,pch=16,cex=2,colors=colors,add=TRUE)
+
+#show sample size with the size of the circles
+errorCircles("SATV","SATQ",sat.act,group="education")
 
 #Can also provide error.bars.by functionality
  errorCircles(2,5,group=2,data=sat.act,circles=FALSE,pch=16,colors="blue",

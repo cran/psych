@@ -84,6 +84,7 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
     num.factors <- num.xfactors + num.yfactors
     
     sem <- matrix(rep(NA),6*(num.var*num.factors + num.factors),ncol=3)    #this creates an output model for sem analysis
+    lavaan <- vector("list",num.xfactors + num.yfactors) #create a list for lavaan
     colnames(sem) <- c("Path","Parameter","Value")
     var.rect <- list()
     fact.rect <- list()
@@ -146,23 +147,29 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
                                     } }
                               } 
       if (num.xfactors ==1) { 
+                lavaan[[1]] <- paste(fact[1],"=~ ")
                       for(i in 1:num.xvar) {
                        sem[i,1] <- paste(fact[1],"->",vars[i],sep="")
+                       lavaan[[1]] <-  paste0(lavaan[[1]], ' + ', vars[i]) 
                           if(is.numeric(factors[i])) {sem[i,2] <- vars[i]} else {sem[i,2] <- factors[i] }
                         }}  #end of if num.xfactors ==1 
        k <- num.xvar+1 
   
                    k <- 1
-                   for (i in 1:num.xvar) {
+                    
+                 
                    for (f in 1:num.xfactors) { #if (!is.numeric(factors[i,f]) ||  (abs(factors[i,f]) > cut))
+                     lavaan[[f]] <- paste0(fact[f] ," =~ ")
+                     for (i in 1:num.xvar) {
                    if((!is.numeric(factors[i,f] ) && (factors[i,f] !="0"))||  ((is.numeric(factors[i,f]) && abs(factors[i,f]) > cut ))) {
                               
                               sem[k,1] <- paste(fact[f],"->",vars[i],sep="")
+                               lavaan[[f]] <-  paste0(lavaan[[f]], ' + ', vars[i]) 
                              if(is.numeric(factors[i,f])) {sem[k,2] <- paste("F",f,vars[i],sep="")} else {sem[k,2] <- factors[i,f]}
                               k <- k+1 }   #end of if 
                          }  
                         }      
-   }  #end of if num.xfactors >0     
+   }  #end of if num.xfactors > 0     
   if(errors) {  for (i in 1:num.xvar) {if(lr) { dia.self(var.rect[[i]],side=2) } else { dia.self(var.rect[[i]],side=1)}
                                           sem[k,1] <- paste(vars[i],"<->",vars[i],sep="")
                                           sem[k,2] <- paste("x",i,"e",sep="")
@@ -320,7 +327,10 @@ if(!regression) {
      		} 
 model=sem[1:(k-1),] 
 class(model) <- "mod"   #suggested by John Fox to make the output cleaner
-return(invisible(model)) }
+lavaan <- unlist(lavaan)
+lavaan <- noquote(lavaan)
+result <- list(sem=model,lavaan=lavaan) 
+return(invisible(result)) }
    }
    
  

@@ -60,6 +60,9 @@ Zwick, R.  (1988) Another look at interrater agreement. Psychological Bulletin, 
 To avoid confusion with Kappa (from vcd) or the kappa function from base, the function was originally named wkappa. With additional features modified from psy::ckappa to allow input with a different number of categories, the function has been renamed cohen.kappa.  
 
 Unfortunately, to make it more confusing, the weights described by Cohen are a function of the reciprocals of those discucssed by Fleiss and Cohen. The cohen.kappa function uses the appropriate formula for Cohen or Fleiss-Cohen weights. 
+
+There are some cases where the large sample size approximation of Fleiss et al. will produce confidence intervals exceeding +/- 1.  Clearly, for these cases, the upper (or lower for negative values) should be set to 1.  Boot strap resampling shows the problem is that the values are not symmetric.  See the last (unrun) example.
+
 }
 
 
@@ -139,6 +142,14 @@ ratings <- matrix(rep(1:5,4),ncol=4)
 ratings[1,2] <- ratings[2,3] <- ratings[3,4] <- NA
 ratings[2,1] <- ratings[3,2] <- ratings[4,3] <- 1
 cohen.kappa(ratings)
+ 
+ 
+ #In the case of confidence intervals being artificially truncated to +/- 1, it is 
+ #helpful to compare the results of a boot strap resample
+ #ck.boot <-function(x,s=1:nrow(x)) {cohen.kappa(x[s,])$kappa}
+ #library(boot)
+ #ckb <- boot(x,ck.boot,R=1000)
+ #hist(ckb$t)
  
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

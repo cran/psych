@@ -375,7 +375,7 @@ These two models can be compared using structural modeling procedures (see below
 Given correlation matrices such as those seen above for congeneric or bifactor models, the question becomes how best to estimate the underlying structure.  Because these data sets were generated from a known model, the question becomes how well does a particular model recover the underlying structure.
 
 \subsection{Exploratory simple structure models}
-The technique of \iemph{principal components} provides a set of weighted linear composites that best aproximates a particular correlation or covariance matrix.  If these are then \iemph{rotated} to provide a more interpretable solution, the components are no longer the \iemph{principal} components.  The \pfun{principal} function will extract the first n principal components (default value is 1) and if n>1, rotate to \iemph{simple structure} using a \fun{varimax}, \fun{quartimin}, or \pfun{Promax} criterion.
+The technique of \iemph{principal components} provides a set of weighted linear composites that best approximates a particular correlation or covariance matrix.  If these are then \iemph{rotated} to provide a more interpretable solution, the components are no longer the \iemph{principal} components.  The \pfun{principal} function will extract the first n principal components (default value is 1) and if n>1, rotate to \iemph{simple structure} using a \fun{varimax}, \fun{quartimin}, or \pfun{Promax} criterion.
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
@@ -539,7 +539,7 @@ round(residuals(sem.one),2)
 Alternatively, the output from an exploratory factor analysis can be used as input to the structure.sem function.
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
-f1 <- factanal(covmat=bifact,factors=1)
+f1 <- fa(bifact)
 mod.f1 <- structure.sem(f1)
 sem.f1 <- sem(mod.f1,bifact,100)
 sem.f1
@@ -606,7 +606,7 @@ om.th.bi  <- omega(Thurstone,digits=3)
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
-sem.bi <- sem(om.th.bi$model,Thurstone,213) #use the model created by omega
+sem.bi <- sem(om.th.bi$model$sem,Thurstone,213) #use the model created by omega
 summary(sem.bi,digits=2)
 stdCoef(sem.bi,digits=2)
 @
@@ -631,7 +631,7 @@ om.hi <- omega(Thurstone,digits=3,sl=FALSE)
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
-sem.hi <- sem(om.hi$model,Thurstone,213)
+sem.hi <- sem(om.hi$model$sem,Thurstone,213)
 summary(sem.hi,digits=2)
 stdCoef(sem.hi,digits=2)
 anova(sem.hi,sem.bi)
@@ -645,9 +645,9 @@ Similar analyses can be done with other data that are organized hierarchically. 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 om.holz.bi <- omega(Holzinger,4)
-sem.holz.bi <- sem(om.holz.bi$model,Holzinger,355)
+sem.holz.bi <- sem(om.holz.bi$model$sem,Holzinger,355)
 om.holz.hi <- omega(Holzinger,4,sl=FALSE)
-sem.holz.hi <- sem(om.holz.hi$model,Holzinger,355)
+sem.holz.hi <- sem(om.holz.hi$model$sem,Holzinger,355)
 anova(sem.holz.bi,sem.holz.hi)
 @
 \end{scriptsize}

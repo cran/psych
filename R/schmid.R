@@ -12,7 +12,13 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
 #if Phi is not Null, then we have been given a factor matrix, otherwise
 #model is a correlation matrix, or if not, the correlation matrix is found
 #nfactors is the number of factors to extract
-      if(!requireNamespace('GPArotation')) {stop("I am sorry, you need to have the  GPArotation package installed")}
+if(!requireNamespace('GPArotation')) {stop("I am sorry, you need to have the  GPArotation package installed")}
+#there are two types of input
+# 1: from a factor analysis and or rotation function with a matrix of loadings and a Phi matrix
+# 2: raw data or a correlation/covariance matrix  (from e.g, omega)
+# 3 Input is the output of a factor analysis 
+  if(is.list(model)) {if((class(model)[1] == "psych") && (class(model)[2] == "fa")) {Phi <- model$Phi
+                model <- model$loadings} else {stop("input is a list, but is not from of class 'fa' ")}}
   if(is.null(Phi)) {  #the normal case
       normal.case <- TRUE
       nvar <-dim(model)[2]
@@ -32,8 +38,11 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
      orth.load <- loadings(fact)
     } else {model <- as.matrix(model)
             Phi <- as.matrix(Phi)
-            fact <- model %*% Phi  #find the orthogonal matrix from the oblique pattern and the Phi matrix
-            orth.load <- fact
+            fact <- model %*% Phi  #find the orthogonal (structure) matrix from the oblique pattern and the Phi matrix
+            orth.load <- fact   #but this is not the correct factor  solution
+            ev <- eigen(Phi)
+            orth.load <- model %*% ev$vector %*% sqrt(diag(ev$values))
+            colnames(orth.load) <- colnames(Phi)
             nfactors <- dim(fact)[2]
             normal.case <-FALSE}
    
@@ -45,10 +54,16 @@ function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=N
            } else {  #the normal case is nfactors > 2
 switch(rotate,
     simplimax = {obminfact <- GPArotation::simplimax(orth.load)},
-    promax  =    {obminfact  <- Promax(orth.load)
-     								 rotmat <- obminfact$rotmat
-                   						Phi <- obminfact$Phi
-           							 },
+ #    promax  =    {obminfact  <- Promax(orth.load)
+#      								 rotmat <- obminfact$rotmat
+#                    						Phi <- obminfact$Phi
+#            							 },
+       promax =   {#to match revised fa call 
+                pro <- kaiser(orth.load,rotate="Promax",...)   #calling promax will now do the Kaiser normalization before doing Promax rotation
+     			 obminfact <- pro
+     			  rot.mat <- pro$rotmat
+     			  Phi <- pro$Phi 
+     			},	      							 
     Promax = {obminfact  <- Promax(orth.load)
      								 rotmat <- obminfact$rotmat
                    						Phi <- obminfact$Phi
@@ -68,11 +83,34 @@ switch(rotate,
      			              	loadings <- obminfact$loadings
      			                Phi <- obminfact$Phi
      			                 },
-    oblimin = 	{ obminfact <- try(GPArotation::oblimin(orth.load))
+     oblimin = 	{ obminfact <- try(GPArotation::oblimin(orth.load))
            							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
-                   						    Phi <- obminfact$Phi}}
+                   						    Phi <- obminfact$Phi}},
+       geominQ = 	{ obminfact <- try(GPArotation::geominQ(orth.load))
+           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        message("\nThe geominQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
+           							        rotmat <- obminfact$rotmat
+                   						    Phi <- obminfact$Phi}},
+                   						    
+       bentlerQ = 	{ obminfact <- try(GPArotation::bentlerQ(orth.load))
+           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        message("\nThe bentlerQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
+           							        rotmat <- obminfact$rotmat
+                   						    Phi <- obminfact$Phi}},            						    
+        targetQ =   { obminfact <- try(GPArotation::targetQ(orth.load,...))
+           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        message("\nThe targetQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
+           							        rotmat <- obminfact$rotmat
+                   						    Phi <- obminfact$Phi}},          						    
+                   						      
+         biquartimin =    {obminfact <- biquartimin(orth.load,...)
+                    loadings <- obminfact$loadings
+     				 Phi <- obminfact$Phi
+     				 rot.mat <- t(solve(obminfact$Th))}
+                   						    
+               						    
      )
                         
      			                       
@@ -105,7 +143,9 @@ switch(rotate,
     if(nfactors > 1) rownames(obminfact$loadings) <- attr(model,"dimnames")[[1]]
     
     if(!normal.case) { fload <- model
-                        factr <- Phi} else {
+                        factr <- Phi
+                        model <- fload %*% Phi %*% t(fload)
+                        diag(model) <- 1} else {
                     	fload <- obminfact$loadings
                                 #factr <- t(obminfact$Th) %*% (obminfact$Th)
                     	factr <- obminfact$Phi}

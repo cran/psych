@@ -6,19 +6,24 @@
 }
 \usage{
 factor.scores(x, f, Phi = NULL, method = c("Thurstone", "tenBerge", "Anderson", 
-       "Bartlett", "Harman","components"),rho=NULL)}
+       "Bartlett", "Harman","components"),rho=NULL,impute="none")}
 \arguments{
   \item{x}{Either a matrix of data if scores are to be found, or a correlation matrix if just the factor weights are to be found.}
-  \item{f}{The output from the \code{\link{fa}} function, or a factor loading matrix.}
-  \item{Phi}{If a pattern matrix is provided, then what were the factor intercorrelations.  Does not need to be specified if f is the output from the \code{\link{fa}} function.}
+  \item{f}{The output from the \code{\link{fa}} or \code{\link{irt.fa}} functions, or a factor loading matrix.}
+  \item{Phi}{If a pattern matrix is provided, then what were the factor intercorrelations.  Does not need to be specified if f is the output from the  \code{\link{fa}} or \code{\link{irt.fa}} functions.}
   \item{method}{Which of four factor score estimation procedures should be used. Defaults to "Thurstone" or regression based weights.  See details below for the other four methods.}
   \item{rho}{If x is a set of data and rho is specified, then find scores based upon the fa results and the correlations reported in rho.  Used when scoring fa.poly results.}
+  \item{impute}{By default, only complete cases are scored.  But, missing data can be imputed using "median" or "mean".  The number of missing by subject is reported.
 }
+}
+
 \details{Although the factor analysis model is defined at the structural level, it is undefined at the data level.  This is a well known but little discussed problem with factor analysis.  
 
-Factor scores represent estimates of common part of the variables and should not be thought of as identical to the factors themselves. If a factor scores is thought of as a chop stick stuck into the center of an ice cream cone and factor scores are represented by straws anywhere along the edge of the cone the problem of factor indeterminacy becomes clear, for depending on the shape of the cone, two straws can be negatively correlated with each other. (The imagery is taken from Niels Waller, adapted from Stanley Mulaik). In a very clear discussion of the problem of factor score indeterminacy, Grice (2001) reviews several alternative ways of estimating factor scores and considers weighting schemes that will produce uncorrelated factor score estimates as well as the effect of using course coded (unit weighted) factor weights.
+Factor scores represent estimates of common part of the variables and should not be thought of as identical to the factors themselves. If a factor is thought of as a chop stick stuck into the center of an ice cream cone and factor score estimates are represented by straws anywhere along the edge of the cone the problem of factor indeterminacy becomes clear, for depending on the shape of the cone, two straws can be negatively correlated with each other. (The imagery is taken from Niels Waller, adapted from Stanley Mulaik). In a very clear discussion of the problem of factor score indeterminacy, Grice (2001) reviews several alternative ways of estimating factor scores and considers weighting schemes that will produce uncorrelated factor score estimates as well as the effect of using course coded (unit weighted) factor weights.
 
 \code{\link{factor.scores}} uses four different ways of estimate factor scores.  In all cases, the factor score estimates are based upon the data matrix, X, times a weighting matrix, W, which weights the observed variables.
+
+For polytomous or dichotmous data, factor scores can be estimated using Item Response Theory techniques (e.g., using \code{link{irt.fa}} and then \code{link{scoreIrt}}.  Such scores are still just factor score estimates, for the IRT model is a latent variable model equivalent to factor analysis.  
 
 \itemize{
 \item method="Thurstone" finds the regression based weights: \eqn{W = R^{-1} F} where R is the correlation matrix and F is the factor loading matrix. 
@@ -42,6 +47,8 @@ Factor scores represent estimates of common part of the variables and should not
 \itemize{
 \item scores (the factor scores if the raw data is given)
 \item weights (the factor weights) 
+\item r.scores  (The correlations of the factor score estimates.)
+\item missing   A vector of the number of missing observations per subject
 }
 }
 \references{

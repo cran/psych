@@ -24,9 +24,16 @@ n.obs <- nrow(r)
        }
 varnames <- colnames(r)[vars]
 R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the selected variables
+ nX <- length(varsX)
+ nY <-length(varsY)
+ df1 <- nX *(nX-1)/2 - nfX * nX + nfX * (nfX-1)/2
+  df2 <- nY *( nY-1)/2 - nfY * nY + nfY * (nfY-1)/2 
+
   f1 <- fa.extend(R,nfX,ov=varsX,ev=varsY,fm=fm,rotate=rotate,...)
  
   loads1 <- f1$loadings[varnames,,drop=FALSE]
+  
+  
   S1 <- f1$Structure[varnames,,drop=FALSE]
  if(!is.null(ncol(S1)))  colnames(loads1) <- colnames(S1) <- paste0("X",1:ncol(loads1))
   Phi1 <- f1$Phi
@@ -56,10 +63,12 @@ if(!is.null(Phi2))  Phi[(nfX+1):(nfX+nfY),(nfX+1):(nfX+nfY)] <- Phi2
   result$loadsY <- loadsY
   result$PhiX <- Phi1
   result$PhiY <- Phi2
+   result$esem.dof <- df1 + df2
   result$fm <- fm
   result$fx <- f1$fo
  result$fy <- f2$fo
  result$Phi <- Phi
+
  result$Call <- cl
  class(result) <- c("psych","esem")
  if(plot) esem.diagram(result)
@@ -82,8 +91,10 @@ result <- list()
 
  r2 <- sum(r*r)
  rstar2 <- sum(residual*residual)
-
+  #Alternatively, we can recognize that we are not estimating all of these
+  #this is results$esem.dof
  result$dof <- dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+ 
 r2.off <- r2 - tr(r)
 diag(residual) <- 0
 rstar.off <- sum(residual^2)
@@ -96,7 +107,8 @@ rstar.off <- sum(residual^2)
 #     if(is.na(n.obs)) {result$n.obs=NA 
 #     			      result$PVAL=NA} else {result$n.obs=n.obs}
  m.inv.r <- diag(1,n,n)   #this is because the m.inv.r is not estimated 
-    result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+  #  result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+   
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n   #this is what Tucker Lewis call F
 result$objective <- rstar2   #because the normal way doesn't work
 #     if(is.infinite(result$objective)) {result$objective <- rstar2
@@ -114,7 +126,7 @@ result$objective <- rstar2   #because the normal way doesn't work
   result$chi <- rstar.off * n.obs  #this is the empirical chi square
   result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea                      
   result$nh <- n.obs
-                             if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
+                             if (result$dof > 0) {result$EPVAL <- pchisq(result$chi,        result$dof, lower.tail = FALSE)
 result$crms <- sqrt(rstar.off/(2*result$dof) )
  result$EBIC <- result$chi - result$dof * log(n.obs) 
  result$ESABIC <- result$chi - result$dof * log((n.obs+2)/24) } else {result$EPVAL <- NA
@@ -122,7 +134,7 @@ result$crms <- sqrt(rstar.off/(2*result$dof) )
 result$EBIC <- NA
  result$ESABIC <- NA}
                                  
-                                  result$fit <-1-rstar2/r2
+     result$fit <-1-rstar2/r2
     result$fit.off <- 1-rstar.off/r2.off
     result$sd <- sd(as.vector(residual)) #this is the non-sample size weighted root mean square residual
     result$factors <- nfactors
@@ -141,25 +153,26 @@ result$EBIC <- NA
    print(x$Call)
    nitems <- nrow(x$loadings)
    nfactors <- ncol(x$loadings)
-   if(!short) {
+  
    
    cat("\nFor the 'X' set:\n")
   x$loadsX <- as.matrix(x$loadsX)
    print(round(x$loadsX,digits=digits))
- if(!is.null(ncol(x$PhiX))){   cat("\nWith factor intercorrelations of \n")
+ if(!short) { if(!is.null(ncol(x$PhiX))){   cat("\nWith factor intercorrelations of \n")
  print(round(x$PhiX,digits=digits)) }
- 
+   }
   
    
      cat("\nFor the 'Y' set:\n")
      x$loadsY <- as.matrix(x$loadsY)
    print(round(x$loadsY,digits=digits))
- 
+   if(!short) {
     if(!is.null(ncol(x$PhiY))) {  cat("\nWith factor intercorrelations of \n")
     print(round(x$PhiY,digits=digits))
     }
+    }
    
-   } else {
+  if(!short) {
      cat('\nStandardized  pattern coefficients on the X and Y sets using Factor Extension\n')
      L <- cbind(x$loadings,x$communality,1-x$communality)
      
@@ -197,7 +210,7 @@ result$EBIC <- NA
   
      if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
    	
-   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with MLE Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
+   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with fitted Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
   
      
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))
@@ -208,10 +221,52 @@ if(!is.null(x$ESABIC)) {cat("\nESABIC = ",round(x$ESABIC,digits))}
 
 if(!is.null(x$fit)) cat("\nFit based upon off diagonal values =", round(x$fit.off,digits))
  	
- 	if(short)  cat("\nTo see the item loadings for the X and Y sets separately, and the associated fa output, print with  short=FALSE.\n")
+ 	if(short)  cat("\nTo see the item loadings for the X and Y sets combined, and the associated fa output, print with  short=FALSE.\n")
  	 
 # cat("\nTo	 report the factor analysis of the X and Y sets with their associated statistics, run  fa on the X and Y sets separately.")
   
+  }
+  
+  
+  "interbattery" <- function(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor", use = "pairwise",weight=NULL) {
+   cl <- match.call()
+vars <- c(varsX,varsY)
+if(is.null(n.obs)) n.obs <- NA
+
+if(ncol(r)  < nrow(r)) {#find the correlations
+n.obs <- nrow(r) 
+   switch(cor, 
+       cor = {r <- cor(r,use=use)},
+       cov = {r <- cov(r,use=use) 
+              covar <- TRUE}, 
+       tet = {r <- tetrachoric(r)$rho},
+       poly = {r <- polychoric(r)$rho},
+       mixed = {r <- mixed.cor(r,use=use)$rho},
+       Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
+       YuleQ = {r <- YuleCor(r,1)$rho},
+       YuleY = {r <- YuleCor(r,.5)$rho } 
+       )
+       }
+varnames <- colnames(r)[vars]
+R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the selected 
+  r12 <- r[varsX,varsY]
+  H1 <- r12 %*% t(r12)
+  E1  <- eigen(H1)
+  W1 <- E1$vectors[,1:nfX,drop=FALSE]
+  gamma1 <- sqrt(E1$values[1:nfX,drop=FALSE])
+  A1 <- W1 %*% diag(sqrt(gamma1),ncol=nfX)
+  W2 <- t(r12) %*% W1 %*% diag(1/gamma1,ncol=nfX)
+  A2 <- W2 %*% diag(sqrt(gamma1))
+  As <- colSums(sign(A1))
+  flip <- diag(sign(As),ncol=nfX)
+  A1 <- A1 %*% flip
+    As <- colSums(sign(A2))
+  flip <- diag(sign(As),ncol=nfX)
+  A2 <- A2 %*% flip
+  
+  colnames(A1) <- colnames(A2) <- paste0("IB",1:ncol(A1))
+  rownames(A1) <- rownames(r12)
+  return(list(A1=A1,A2 = A2,loadings=rbind(A1,A2),Call=cl))
   }
 
   

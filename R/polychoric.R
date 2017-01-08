@@ -105,7 +105,9 @@ polyF <- function(rho,rc,cc,tab) {  #doesn't blow up in the case of 0 cell entri
 tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questionr:wtd.table
 tab[is.na(tab)] <- 0
 return(tab)
-}      
+}  
+
+    
  
   #modified 10/8/14 to create missing values when there are no cell entries
   #modified 3/6/14 to create missing values when the data are hopeless

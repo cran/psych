@@ -1,5 +1,5 @@
 "irt.fa" <- 
-function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",sort=TRUE,...) {
+function(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",sort=FALSE,...) {
 cl <- match.call()
 if (is.matrix(x) | is.data.frame(x)) {
 	if(is.null(n.obs)) n.obs <- dim(x)[1]

@@ -18,7 +18,7 @@
 "fa" <- 
 function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
  cl <- match.call()
-  if(dim(r)[1] == dim(r)[2] ) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
+  if(isCorrelation(r)) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                #  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
@@ -36,7 +36,7 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
  
 replicateslist <- parallel::mclapply(1:n.iter,function(x) {
 # replicateslist <- lapply(1:n.iter,function(x) {
- if(dim(r)[1] == dim(r)[2]) {#create data sampled from multivariate normal with observed correlation
+ if(isCorrelation(r)) {#create data sampled from multivariate normal with observed correlation
                                       mu <- rep(0, nvar)
                                       #X <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, empirical = FALSE)
                                       #the next 3 lines replaces mvrnorm (taken from mvrnorm, but without the checks)
@@ -239,7 +239,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
  
      x.matrix <- r
     n <- dim(r)[2]
-    if (n!=dim(r)[1]) {  matrix.input <- FALSE  #return the correlation matrix in this case
+    if (!isCorrelation(r)) {  matrix.input <- FALSE  #return the correlation matrix in this case
                        n.obs <- dim(r)[1]
      
         if(missing) { #impute values 
@@ -459,15 +459,18 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    	specialT =  {rot <- specialT(loadings,...)
    	              loadings <- rot$loadings
    	              rot.mat <- t(solve(rot$Th))}, 
-   	Promax =   {pro <- Promax(loadings,...)
+   	Promax =   {pro <- Promax(loadings,...)  #Promax without Kaiser normalization
      			loadings <- pro$loadings
      			 Phi <- pro$Phi 
      			 rot.mat <- pro$rotmat},
-     promax =   {pro <- stats::promax(loadings,...)   #from stats
+     promax =   {#pro <- stats::promax(loadings,...)   #from stats
+                pro <- kaiser(loadings,rotate="Promax",...)   #calling promax will now do the Kaiser normalization before doing Promax rotation
      			 loadings <- pro$loadings
      			  rot.mat <- pro$rotmat
-     			  ui <- solve(rot.mat)
-     			  Phi <-  cov2cor(ui %*% t(ui))},	
+     			 # ui <- solve(rot.mat)
+     			 # Phi <-  cov2cor(ui %*% t(ui))
+     			  Phi <- pro$Phi 
+     			},	
      cluster = 	 {loadings <- varimax(loadings,...)$loadings           			
 								pro <- target.rot(loadings)
      			              	loadings <- pro$loadings

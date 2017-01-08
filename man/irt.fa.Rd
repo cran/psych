@@ -9,7 +9,7 @@ Although exploratory factor analysis and Item Response Theory seem to be very di
 }
 \usage{
 irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minres",
-        sort=TRUE,...)
+        sort=FALSE,...)
 irt.select(x,y)
 fa2irt(f,rho,plot=TRUE,n.obs=NULL)
 }
@@ -24,7 +24,7 @@ fa2irt(f,rho,plot=TRUE,n.obs=NULL)
   \item{fm}{The default factor extraction is minres.  See \code{\link{fa}} for the other options.}
   \item{f}{The object returned from \code{\link{fa}} }
   \item{rho}{The object returned from \code{\link{polychoric}} or \code{\link{tetrachoric}}.  This will include both a correlation matrix and the item difficulty levels.}
-  \item{sort}{Should the factor loadings be sorted before preparing the item information tables.  Defaults to TRUE as this is more useful for tabular output.}
+  \item{sort}{Should the factor loadings be sorted before preparing the item information tables.  Defaults to FALSE as this is more useful for scoring items. For tabular output it is better to have sort=TRUE.}
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{

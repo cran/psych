@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.6.9 (2016-09-15}{
+\section{Changes in psych version 1.7.01 (2017-01-01}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.6.10 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.9.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.9 was released in September of 2016, the last two digits of development versions reflect the day of any modifications).
+      \item Version 1.7.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.12.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.12 was released in December of 2016, the last two digits of development versions reflect the day of any modifications).
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -45,10 +45,68 @@
      \item Parallize iterations for confidence intervals in omega 
      \item Probably should drop much of the stats when doing iterations with fa or omega
      \item Find unbiased cis when doing bootstrap
-          
-    }
+    
+     \item Allow  the choice between regression vs. correlation in esem between X and Y sets.
+     \item Allow for different rotation options in X and Y sets in esem, allow omega style hierarchical structure for x (and y)
+     \item Fix bug in esem.diagram for ability- bifactor 3,3 simple=FALSE,cut=.2
+     
+      \item parallelize iterations when bootstrapping fa   
+      \item fix alpha so that it can just select a small subset of items to score
+     
+      \item Add in cross validation as an option to best.scales/bestItems.
+     
+      \item Add interbattery diagram to the structure.
+    
+      \item fix bug in lavaan.diagram for lr=FALSE
+     
+      \item Add option to omegaSem to generate code for lavaan for a  hierarchical model
+     \item Add the df in mediate
   }
   } 
+  }
+  
+ \section{Changes in psych version 1.6.12 (2016-12-31)}{
+    \subsection{Additions}{
+          \itemize{ 
+            \item allow scaling of circles in error.circles (suggested by Josh Wilt)
+             \item Added char2numeric to solve a problem of categorical data from a questionnaire.
+               \item Added a helper function dfOrder to sort data.frames on multiple columns.
+             \item Added interbattery for interbattery factor analysis.
+             \item Changed the print line for MLE chi square to say model based chi square.
+             \item Added Promax as a possible rotation in kaiser, and added the m = option to it as well. (In response to some correspondence with Stefan Dombroski).
+         \item Clarified the KMO and cortest.bartlett help pages.
+          \item Started to get rid of all of the deprecated functions.  (or at least move to them to unique help files).
+             \item Added a trivial but useful function isCorrelation to improve the tests in alpha, scoreItems, etc.
+    \item Serious reworking of omegaSem and omegaFromSem to allow the use of lavaan or sem to do cfa as part of omega.  Also, it is now possible to do omega directly from a sem/lavaan run.
+     \item Added lavaan as a source of omegaSem and omegaFromSem.  Also, for omegaFromSem, added some of the normal omegasubscale output (suggested by  André Kretzschmar).
+  \item fixed alpha, principal, fa, kmo and omega to check if the input is a symmetric correlation matrix or just a strange case of raw data (following a suggestion by Adam Liter).
+  \item Modified cohen.kappa to truncate confidence limits to +/- 1 and added a discussion to the help page describing how to do a boot strap of cohen.kappa to examine the distribution of cohen.kappa (suggested by Andreas Spitzmueller).
+  \item allowed scoreItems to handle variables that are factors.  Added a warning when scoring total scores with impute="none" when missing data are found.
+  \item Added a parameter to densityBy (violinBy0 to allow for scaling the widths by sample size.
+  \item Added a helper function, dfOrder to sort (order) a data.frame by multiple columns
+  \item Completely revised scoreIrt (and the associated functions) to get around problems with all 0 or all 1s and to make the function faster, and perhaps more accurate.
+  \item Changed the sort option in irt.fa to be FALSE (makes scoring easier).
+    \item Fixed VSS so that it reports not the biggest, but also the first where the sign changes.
+     \item Allow imputation in factor scores (e.g. median or mean imputation for items) (requested by Stephan Daus).  Also report the number of missing observations per subject when doing factor scores.
+   
+    
+                      }
+                                       }
+      \subsection{Bugs Fixed}{
+          \itemize{ 
+              \item  Fixed the RMSEA in fa.stats.  Although the confidence intervals were correct, the RMSEA value was slightly inflated.  Reported chi squares were correct, just the RMSEA was slightly off. 
+        \item omega and schmid incorrectly estimated total variance in case of being given a factor loading matrix and correlation matrix as input instead of the more normal case of a raw data set or a correlation matrix. 
+        \item Bug fixed in scoreIrt where the values for the scores for people who gave all of the highest possible scores was incorrect (reported by Roland Leeuwen ).  In addition, the scoreIrt.poly was not properly doing normal scoring but was in fact just doing logistic scoring.  Fixed.  This bug was affecting those people with max or min responses, and thus was particularly a problem for short scales.
+        \item Fixed a bug in scoreItems for cases where some variables (not scored) are categorical (Reported by Ronald Fischer). 
+         \item Fixed bug in fa.parallel where it is not drawing both resampled and simulated lines.  (reported by Alexander Weiss). This was intentionally added in about March to make a cleaner diagram, but now I am discussing this in the help file. 
+   \item Allow specification of the direction of items in the scoreIrt.2pl to match the keys.list (previously it would match the factor analysis which could be backwards for some scales with many reversed items).
+       \item Did not need to fix bug in wtd.table in polychoric by adding in minx and maxx, etc. (reported by Jeovani Schmitt) because this can be handled by settting global=FALSE.
+     
+             }
+           }
+     }
+   
+          
   
   \section{Changes in psych version 1.6.9 (2016-09-18)}{
   \subsection{Additions}{

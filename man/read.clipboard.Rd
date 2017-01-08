@@ -11,7 +11,7 @@
 \alias{write.file.csv}
 \alias{read.https}
 \title{Shortcuts for reading from the clipboard or a file}
-\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .dat, .data, .csv, .sav.  Files with suffixes of  .rds, and Rds, are read using readRDS. Files with suffixes .rda and .Rda are not  loaded. but a comment is issued to allow easy load. The default values for read.spss are adjusted for more standard input. 
+\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .dat, .data, .csv, .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files with suffixes .rda and .Rda are not  loaded. but a comment is issued to allow easy load of the corresponding workspace. The default values for read.spss are adjusted for more standard input from SPSS files.  
 Input from the clipboard is easy but a bit obscure, particularly for Mac users. This is just an easier way to do so.  Data may be copied to the clipboard from Excel spreadsheets, csv files, or fixed width formatted files and then into a data.frame. Data may also be read from lower  (or upper) triangular matrices and filled out to square matrices.
 }
 \usage{
@@ -51,9 +51,10 @@ write.file.csv(x,f=NULL,row.names=FALSE,...)
 
 The \code{\link{read.file}} function combines the \code{\link{file.choose}} and either \code{\link{read.table}} or \code{\link{read.spss}} (from foreign) or \code{\link{load}} or \code{\link{readRDS}} commands. By examining the file suffix, it chooses the appropriate way to read. For more complicated file structures, see the foreign package.  
 
+The foreign function \code{\link{read.spss}} is used to read SPSS .sav files using the most common options.  Just as  \code{\link{read.spss}}  issues various warnings, so does  \code{\link{read.file}}.   In general, these can be ignored.  For more detailed information about using  \code{\link{read.spss}}, see the help pages in the foreign package.
+
 
 The \code{\link{write.file}} function combines the \code{\link{file.choose}} and either \code{\link{write.table}} or \code{\link{saveRDS}}. By examining the file suffix, it chooses the appropriate way to write. For more complicated file structures, see the foreign package, or the save function in R Base.  
-
 
 \code{\link{read.clipboard}} was based upon a suggestion by Ken Knoblauch to the R-help listserve.
 
@@ -66,12 +67,15 @@ Many articles will report lower triangular matrices with variable labels in the 
 Other articles will report upper triangular matrices with variable labels in the first row.  read.clipboard.upper will handle this.  Note that labels in the first column will not work for read.clipboard.upper.  The names, if present, must be in the first row.
 
 read.clipboard.fwf will read fixed format files from the clipboard.  It includes a patch to read.fwf which will not read from the clipboard or from remote file.  See read.fwf for documentation of how to specify the widths. }
-\value{the contents of the clipboard.
+\value{the contents of the file to be read or of the clipboard.
 }
 
 \author{ William Revelle}
 
 \examples{
+#Because these are dynamic functions, they need to be run interactively and 
+# can not be shown as examples.
+
 #my.data <- read.file()   #search the directory for a file and then read it.
 #my.data <- read.clipboad()
 #my.data <- read.clipboard.csv()
@@ -79,4 +83,4 @@ read.clipboard.fwf will read fixed format files from the clipboard.  It includes
 #my.matrix <- read.clipboard.lower()
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
-\keyword{ models }% __ONLY ONE__ keyword per line
+\keyword{ IO }% __ONLY ONE__ keyword per line

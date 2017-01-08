@@ -1,10 +1,7 @@
 \name{fa}
 \alias{fa}
-\alias{factor.pa} 
-\alias{factor.minres} 
-\alias{factor.wls}  
 \alias{fac}
-\alias{fa.poly}
+
 
 
 \title{Exploratory Factor analysis using MinRes (minimum residual) as well as EFA by Principal Axis, Weighted Least Squares or Maximum Likelihood }
@@ -21,27 +18,14 @@ fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALS
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
 oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
 
-fa.poly(x,nfactors=1,n.obs = NA, n.iter=1, rotate="oblimin", SMC=TRUE,  missing=FALSE,
- impute="median", min.err = .001, max.iter=50, symmetric=TRUE, warnings=TRUE,
- fm="minres",alpha=.1, p =.05,scores="regression", oblique.scores=TRUE,
-        weight=NULL,global=TRUE,...)  #deprecated
-        
-factor.minres(r, nfactors=1, residuals = FALSE, rotate = "varimax",n.obs = NA,
-scores = FALSE,SMC=TRUE, missing=FALSE,impute="median",min.err = 0.001, digits = 2,
- max.iter = 50,symmetric=TRUE,warnings=TRUE,fm="minres")    #deprecated
-
-factor.wls(r,nfactors=1,residuals=FALSE,rotate="varimax",n.obs = NA,
-scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
- digits=2,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="wls")  #deprecated
 }
 
 \arguments{
   \item{r}{A correlation or covariance matrix or a raw data matrix. If raw data, the correlation matrix will be found using pairwise deletion. If covariances are supplied, they will be converted to correlations unless the covar option is TRUE.}
-  \item{x}{For fa.poly.ci, only raw data may be used}
   \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
   \item{np.obs}{The pairwise number of observations. Used if using a correlation matrix and asking for a minchi solution.}
-   \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax.}
+   \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "Promax", "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax. SPSS seems to do a Kaiser normalization before doing Promax, this is done here by the call to "promax" which does the normalization before calling Promax in GPArotation.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
@@ -50,7 +34,6 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
   \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
-  \item{digits}{ How many digits of output should be returned-- deprecated -- now specified in the print function}
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
@@ -62,7 +45,7 @@ scores=FALSE,SMC=TRUE,missing=FALSE,impute="median", min.err = .001,
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
   \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
-  \item{global}{should overall taus be used in polychoric or should they be found for each pair.  Necessary to be set to false in the case of different number of alternatives for each item.}
+
   \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -104,7 +87,7 @@ It is sometimes useful to extend the factor solution to variables that were not 
 
 For dichotomous items or polytomous items, it is recommended to analyze the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlations rather than the Pearson correlations. This may be done by specifying cor="poly" or cor="tet" or cor="mixed" if the data have a mixture of dichotomous, polytomous, and continous variables.  
 
-Analysis of dichotomous or polytomous data may also be done by using  \code{\link{irt.fa}} or \code{\link{fa.poly}}  functions.  In the first case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results. In the later case, a typical factor loadings matrix is returned, but the tetrachoric/polychoric correlation matrix and item statistics are saved for reanalysis by \code{\link{irt.fa}}. (See also the \code{\link{mixed.cor}} function to find correlations from a mixture of continuous, dichotomous, and polytomous items.)
+Analysis of dichotomous or polytomous data may also be done by using  \code{\link{irt.fa}} or simply setting the cor="poly" option.  In the first case,  the factor analysis results are reported in Item Response Theory (IRT) terms, although the original factor solution is returned in the results. In the later case, a typical factor loadings matrix is returned, but the tetrachoric/polychoric correlation matrix and item statistics are saved for reanalysis by \code{\link{irt.fa}}. (See also the \code{\link{mixed.cor}} function to find correlations from a mixture of continuous, dichotomous, and polytomous items.)
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
@@ -117,16 +100,16 @@ There are two varimax rotation functions.  One, Varimax, in the GPArotation pack
 
 The rotation matrix  (rot.mat) is returned from all of these options. This is the inverse of the Th (theta?) object returned by the GPArotation package.  The correlations of the factors may be found by \eqn{\Phi = \theta' \theta}{Phi = Th' Th}
 
-There are three ways to handle dichotomous or polytomous responses: \code{\link{fa}} with the cor="poly" option, \code{\link{fa.poly}} which will return the tetrachoric or polychoric correlation matrix, as well as the normal factor analysis output, and \code{\link{irt.fa}} which returns a two parameter irt analysis as well as the normal fa output. 
+There are two ways to handle dichotomous or polytomous responses: \code{\link{fa}} with the cor="poly" option which will return the tetrachoric or polychoric correlation matrix, as well as the normal factor analysis output, and \code{\link{irt.fa}} which returns a two parameter irt analysis as well as the normal fa output. 
 
 When factor analyzing items with dichotomous or polytomous responses, the \code{\link{irt.fa}} function provides an Item Response Theory representation of the factor output. The factor analysis results are available, however, as an object in the irt.fa output. 
 
-\code{\link{fa.poly}} is appropriate if the data are categorical (but just setting the cor="poly" option works as well).  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
+\code{\link{fa.poly}} is deprecated, for its functioning is matched by setting cor="poly".  It will produce normal factor analysis output but also will save the polychoric matrix  (rho) and items difficulties (tau) for subsequent irt analyses.  \code{\link{fa.poly}} will,  by default, find factor scores if the data are available.  The correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}} and then this matrix is factored.  Weights from the factors are then applied to the original data to estimate factor scores.
   
 
 The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. This leads to an error in the case of Heywood cases.  The probably better alternative is to just find the mean bootstrapped value and find the confidence intervals based upon the observed range of values. The default is to have n.iter =1 and thus not do bootstrapping.
 
-\code{\link{fa.poly}} will find confidence intervals for a factor solution for dichotomous or polytomous items (set n.iter > 1 to do so). But, so will \code{\link{fa}} with the cor="poly" option. Perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
+If using polytomous or dichotomous items, it is perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
 
@@ -163,7 +146,7 @@ The output from the print.psych.fa function displays the factor loadings (from t
  
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
  
- \item{Phi}{If oblique rotations (using oblimin from the GPArotation package or promax) are requested, what is the interfactor correlation.}
+ \item{Phi}{If oblique rotations (e.g,m using oblimin from the GPArotation package or promax) are requested, what is the interfactor correlation?}
  \item{communality.iterations}{The history of the communality estimates (For principal axis only.) Probably only useful for teaching what happens in the process of iterative fitting.}
  
  \item{residual}{The matrix of residual correlations after the factor model is applied. To display it conveniently, use the \code{\link{residuals}} command. }
@@ -230,6 +213,8 @@ The communality for a variable is the amount of variance accounted for by all of
  
 
 A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.
+
+The print function for the fa output will return (invisibly) an object (Vaccounted) that matches the printed output for the variance accounted for by each factor, as well as the cumulative variance, and the percentage of variance accounted for by each factor. 
 
 Correction to documentation: as of September, 2014, the oblique.scores option is correctly explained. (It had been backwards.)  The default (oblique.scores=FALSE) finds scores based upon the Structure matrix, while oblique.scores=TRUE finds them based upon the pattern matrix.  The latter case matches factanal.  This error was detected by Mark Seeto. }
 
@@ -301,6 +286,10 @@ factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
 #f5  #names are not in ascending numerical order (see note)
 #colnames(f5$loadings) <- paste("F",1:5,sep="")
 #f5
+
+#Get the variance accounted for object from the print function
+p <- print(mr3)
+round(p$Vaccounted,2)
 }
 
 \keyword{ multivariate }

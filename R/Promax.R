@@ -1,6 +1,7 @@
 "Promax" <- 
-function (x, m = 4) 
+function (x,m=4, normalize=FALSE, pro.m = 4) 
 {
+if(missing(m)) m  <- pro.m
  if(!is.matrix(x) & !is.data.frame(x) )  {
         if(!is.null(x$loadings)) x <- as.matrix(x$loadings)
       } else {x <- x}   

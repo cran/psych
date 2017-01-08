@@ -4,7 +4,7 @@ function(object,digits=2,items=FALSE,...) {
 
 #figure what we are trying to summarize
 #omega, ICLUST, score.clusters,cluster.cor
-#faBy
+#faBy, esem
 
 #if(!is.null(object$title)) { cat("\nSummary of an analysis of ",object$title)}
 	
@@ -109,6 +109,33 @@ cat("\nScale intercorrelations corrected for attenuation \n raw correlations bel
 	 print(object$corrected,digits) 
      result <- object$corrected
 
+},
+
+esem =  {
+  cat("\nExploratory Structural Equation Modeling  with Call: ")
+   print(object$Call)
+   
+   nfactors <- dim(object$loadings)[2]
+    objective <- object$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
+    cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(object$n.obs)) {cat("The number of observations was ",object$n.obs, " with Chi Square = ",round(object$STATISTIC,digits), " with prob < ", signif(object$PVAL,digits),"\n")}
+   }
+
+
+    if(!is.null(object$rms)) {cat("\nThe root mean square of the residuals (RMSA) is ", round(object$rms,digits),"\n") }
+    if(!is.null(object$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$crms,digits),"\n") }
+    
+   
+   	if(!is.null(object$TLI)) {cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
+  
+   	if(!is.null(object$RMSEA)) {cat("\nRMSEA index = ",round(object$RMSEA[1],digits+1), " and the", (1- object$RMSEA[4])*100,"% confidence intervals are ",round(object$RMSEA[2:3],digits+1))  }
+   
+   	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))}
+  if(!is.null(object$Phi)) {
+   
+       colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
+       print(round(object$Phi,digits))}
 },
 
 fa =  {

@@ -24,7 +24,8 @@ data(Reise)
 
 \details{Holzinger and Swineford (1937) introduced the bifactor model (one general factor and several group factors) for mental abilities.  This is a nice demonstration data set of a hierarchical factor structure that can be analyzed using the \code{\link{omega}} function or using sem. The bifactor model is typically used in measures of cognitive ability.
 
-There are several ways to analyze such data.  One is to use the \code{\link{omega}} function to do a hierarchical factoring using the schmid-leiman transformation.  Another is to a regular factor analysis and use either a \code{\link{bifactor}} or  \code{\link{biquartimin}} rotation. These latter two functions implement the Jennrich and Bentler  (2011) bifactor and biquartimin transformations.
+There are several ways to analyze such data.  One is to use the \code{\link{omega}} function to do a hierarchical factoring using the Schmid-Leiman transformation. This can then be done as an exploratory and then as a confirmatory model using \code{\link{omegaSem}}. Another way is to do a regular factor analysis and use either a \code{\link{bifactor}} or  \code{\link{biquartimin}} rotation. These latter two functions implement the Jennrich and Bentler  (2011) bifactor and biquartimin transformations.  The \code{\link{bifactor}} rotation suffers from the problem of local minima (Mansolf and Reise, 2016) and thus a mixture of exploratory and confirmatory analysis might be preferred. 
+
 
 
 The 14 variables are ordered to reflect 3 spatial tests, 3 mental speed tests, 4 motor speed tests, and 4 verbal tests.  The sample size is 355.
@@ -77,6 +78,8 @@ Holzinger, Karl and Swineford, Frances (1937) The Bi-factor method.  Psychometri
 Holzinger, K., & Swineford, F. (1939). A study in factor analysis: The stability of a bifactor solution. Supplementary Educational Monograph, no. 48. Chicago: University of Chicago Press.
 
 McDonald, Roderick P. (1999) Test theory: A unified treatment. L. Erlbaum Associates. Mahwah, N.J.
+
+Mansolf, Maxwell  and   Reise, Steven P. (2016) Exploratory Bifactor Analysis: The Schmid-Leiman Orthogonalization and Jennrich-Bentler Analytic Rotations, Multivariate Behavioral Research, 51:5, 698-717, DOI: 10.1080/00273171.2016.1215898
 
 Reise, Steven and Morizot, Julien and Hays, Ron (2007) The role of the bifactor model in resolving dimensionality issues in health outcomes measures. Quality of Life Research. 16, 19-31.
 

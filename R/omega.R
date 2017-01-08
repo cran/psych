@@ -9,7 +9,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
       nvar <- dim(m)[2]
       raw.data <- NULL
       if(is.null(Phi)) {   #the normal case is to do the factor analysis of the raw data or the correlation matrix
-      if(dim(m)[1] != dim(m)[2]) {
+      if(!isCorrelation(m)) {
                             n.obs <- dim(m)[1]
                             m <- as.matrix(m)
                             raw.data <- m #added 9/1/14
@@ -35,8 +35,8 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
        
       gf <-schmid(m,nfactors,fm,digits,rotate=rotate,n.obs=n.obs,Phi=Phi,option=option,covar=covar, ...)
       if(!is.null(Phi)) { model <- m
-                         nfactors <- dim(model)[2]
-                          m <- factor.model(model,Phi=Phi,U2=FALSE)
+                          nfactors <- dim(model)[2]
+                          m <- factor.model(model,Phi=Phi,U2=FALSE)  #estimate the correlation matrix from the factor model
                           nvar <- dim(m)[2]
                           if(is.null(rownames(m))) {colnames(m) <- rownames(m) <- paste("V",1:nvar)}
                           }
@@ -104,7 +104,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      omt[1] <- om.tot 
      om.group <- data.frame(total=omt,general=omgo,group=omg)
      rownames(om.group) <- colnames(gf$sl)[1:(nfactors+1)]
-
+  #we should standardize the raw.data before doing the next step
      if(!is.null(raw.data)) {scores <- raw.data %*%  omega.stats$weights} else {scores<- NULL} 
      }
      omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group,scores=scores)
@@ -120,7 +120,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
 "omega" <- 
 function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) {
  cl <- match.call()
-  if(is.data.frame(m) || is.matrix(m)) {if(dim(m)[1] == dim(m)[2] ) {if(is.na(n.obs) && (n.iter>1)) stop("You must specify the number of subjects if giving a correlation matrix")
+  if(is.data.frame(m) || is.matrix(m)) {if(isCorrelation(m)) {if(is.na(n.obs) && (n.iter > 1)) stop("You must specify the number of subjects if giving a correlation matrix")
                                 # if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
                   }

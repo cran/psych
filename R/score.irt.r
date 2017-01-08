@@ -14,8 +14,38 @@
 #probably because we took parallelization one step too far
 #I have not removed that extra level
 
-#
-#the function to do 2  parameter dichotomous IRT
+####  The scoring of dichotomous data 
+#the function to do 2  parameter dichotomous IRT\
+
+#these should be put into the score.irt.2 function for speed
+#taken out for debugging purposes
+irt.2par.norm <-  function(x,delta,beta,scores) {
+  fit <- -1*(log(scores*(1-pnorm(beta*(delta-x))) + (1-scores)*(1-pnorm(beta*(x-delta)))))
+  mean(fit,na.rm=TRUE)
+  } 
+#This does the logistic fit 
+ irt.2par <- function(x,delta,beta,scores) { 
+  fit <- -1*(log(scores/(1+exp(beta*(delta-x))) + (1-scores)/(1+exp(beta*(x-delta))) ))
+  mean(fit,na.rm=TRUE)
+  }  
+
+#These next two functions were added to add limits to the fitting functions for the cases of all wrong and all right
+irtLimit.2par <- function(x,delta,beta,scores) {
+minItem <- which.min(delta*beta) 
+maxItem <- which.max(delta*beta) 
+fit <- -scores*log(1/(1+exp(beta*(delta-x)))) - (1-scores)*log(1/(1+exp(beta*(x-delta)))) - log(1/(1+exp(beta[minItem] *(delta[minItem]-x-1)))) - log(1/(1+exp(beta[maxItem] *(x-delta[maxItem]-1 )))   ) 
+mean(fit,na.rm=TRUE)
+}
+   
+   
+irtLimit.2par.norm <-  function(x,delta,beta,scores) {
+minItem <- which.min(delta*beta) 
+maxItem <- which.max(delta*beta) 
+  fit <- -( scores*log(1-pnorm(beta*(delta-x)))   +(1-scores)*log(1-pnorm(beta*(x-delta)))   +log(1-pnorm(beta[minItem]*(delta[minItem]-x -1 ))) + log( 1-pnorm(beta[maxItem]*(x- delta[maxItem] -1 )) )          )
+  mean(fit,na.rm=TRUE)
+  } 
+ 
+
 "score.irt.2" <- 
 function(stats,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic") {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
@@ -23,53 +53,51 @@ function(stats,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic") {
 #This does the normal fit
 #has several internal functions
 
-irt.2par.norm <-  function(x,delta,beta,scores) {
-  fit <- -1*(log(scores*(1-pnorm(beta*(delta-x))) + (1-scores)*(1-pnorm(beta*(x-delta)))))
-  mean(fit,na.rm=TRUE)
-  } 
-#This does the logistic fit 
- irt.2par <- function(x,delta,beta,scores) { 
-  fit <- -1*(log(scores/(1+exp(beta*(delta-x))) + (1-scores)/(1+exp(beta*(x-delta)))))
-  mean(fit,na.rm=TRUE)
-  }  
-###  
+
 ##the next two are the parallelized functions
-#parallelize by subject seems most helpful
+#parallelize by subject seems most helpful?ms
 bySubject <- function(i,count.f,total.f,items.f,discrim.f,diffi.f) {
 
  	#First we consider the case of all right or all wrong
  	#but we also need to consider the person with no data!
- 	if (count.f[i] > 0) {if((sum(items.f[i,],na.rm=TRUE) ==0 )  | (prod(items.f[i,],na.rm=TRUE) ==  1 )) { 
+ if (count.f[i] > 0) {
+     beta=discrim.f[!is.na(items.f[i,])]
+ 	 delta=diffi.f[!is.na(items.f[i,])]
+ 	 
+ if((sum(items.f[i,],na.rm=TRUE) ==0 )  || (prod(items.f[i,],na.rm=TRUE) ==  1 )) { 
+ 		
  	if(sum(items.f[i,],na.rm=TRUE) ==0 ) {
- 		if(mod=="logistic") {p <- log(1-(1-items.f[i,])/(1+exp(discrim.f*(diffi.f))) )} else {  #logistic
- 				p <- log(1-(pnorm(items.f[i,]*discrim.f*diffi.f))) }  #normals
-  	 pall <- exp(sum(p,na.rm=TRUE))
-   
-   #	theta[i] <- qnorm(pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
-   theta <- qnorm(pnorm(qnorm(pall)))  #the z value of the quantile value of pall
-   	fit <- 0 
- 	 # cat ("\nThe case of all wrong",i,theta[i])
- 	} else {  #the case of all right	
- 		if(mod == "logistic") {	p <- log((items.f[i,])/(1+exp(discrim.f*(diffi.f))) )} else  { 
- 	                        	p <- log((items.f[i,])*(1 - pnorm(1- discrim.f*(diffi.f)) ))  } 
- 	
- 	 pall <- exp(sum(p,na.rm=TRUE))
-  # theta <- qnorm(1-pnorm(qnorm(pall))/2)  #the z value of 1/2 the quantile value of pall
-   theta <- qnorm(1-pnorm(qnorm(pall))) #or, perhaps just hte z value of the quantile value of pall
-   fit <- 0 
-       }
- 	} else { #cat("the normal case",i )
- 	
- 	 	beta=discrim.f[!is.na(items.f[i,])]
- 	   delta=diffi.f[!is.na(items.f[i,])]
+    #the case of all wrong  
+    # we model this as 
+    #although probably we don't need to do this anymore
+     if(mod =="logistic") {
+ 	       myfit <-  optimize(irtLimit.2par,bounds,beta=beta,delta=delta,scores = rep(0,sum(!is.na(items.f[i,] )))) } else {
+ 	                   
+ 	        myfit <-  optimize(irtLimit.2par.norm,bounds,beta=beta,delta=delta, scores = rep(0,sum(!is.na(items.f[i,]))))
+                
+                       }
+   	  theta <- myfit$minimum
+   	  fit <- myfit$objective 
+ 	 }  else {
+ 	  	if(prod(items.f[i,],na.rm=TRUE) ==  1 ) {
+
+  if (mod=="logistic") {  myfit <- optimize(irtLimit.2par,bounds,beta=beta,delta=delta,scores = rep(1,sum(!is.na(items.f[i,])))) #do the logistic fit 
+                        } else {
+                       myfit <- optimize(irtLimit.2par.norm,bounds,beta=beta,delta=delta,scores = rep(1,sum(!is.na(items.f[i,]))))
+                       } #do a normal fit function   
+     		theta <- myfit$minimum    
+     		fit <- myfit$objective 
+                 }
+   }} else {
+ 	 
  	   scores=t(items.f[i,!is.na(items.f[i,])]) #make this numeric in the case of weird (highly missing) data
  	if(mod=="logistic") {
-  myfit <- optimize(irt.2par,bounds,beta=beta,delta=delta,scores=scores)  #how to do an apply?
-  #myfit <- optimize(irt.2par,bounds,beta=discrim.f,delta=diffi.f,scores=items.f[i,])
-    } else {myfit <- optimize(irt.2par.norm,bounds,beta=beta,delta=delta,scores=scores)} #do a normal fit function   # do this one as well
-     		
+            myfit <- optimize(irtLimit.2par,bounds,beta=beta,delta=delta,scores=scores)  #do the logistic fit 
+         } else {
+             myfit <- optimize(irtLimit.2par.norm,bounds,beta=beta,delta=delta,scores=scores)} #do a normal fit function   
      		theta <- myfit$minimum    
      		fit <- myfit$objective  #fit of optimizing program 
+  
      		}} else  {#cat("\nno items for subject",i)
              total.f[i]  <- NA
      		 theta <- NA
@@ -103,7 +131,7 @@ if(is.null(keys)) {#drop the items with discrim < cut
                        
 	items.f <- items[,(abs(discrim[,f]) > cut) ,drop=FALSE]  #get rid of the those items that are not being processed for this factor
 	diffi.f <- diff[(abs(discrim[,f]) > cut)]   #and the redundant diffi
-	discrim.f <- discrim[(abs(discrim[,f]) >cut),drop=FALSE ]  #and get rid of the unnecessary discrim values
+	discrim.f <- discrim[(abs(discrim[,f]) > cut),drop=FALSE ]  #and get rid of the unnecessary discrim values
 
      } else { #the  case of scoring with a keys vector
                    
@@ -131,7 +159,7 @@ if(is.matrix(discrim)) discrim.F.vect <- drop(discrim.F.vect)
 #actually, making this mcmapply and the call to bigFunction mapply seems to be the solution
 #especially when we are doing scoreIrt.1pl or scoreIrt.2pl which is already doing the parallelsim there
 
-subjecttheta <-mcmapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
+subjecttheta <-mapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
 
 subjecttheta <- matrix(unlist(subjecttheta),ncol=3,byrow=TRUE)
 theta <- subjecttheta[,1]
@@ -162,11 +190,14 @@ return(scores)
 
  nf <- length(stats$difficulty)
  n.obs <- dim(items)[1]
+ 
+min.item <- min(items,na.rm=TRUE)  #uses local minima --probably  problematic for small number of items
+items <- items - min.item #this converts scores to positive values from 0  up  (needed to do the fitting function)
 
 #this parallels by factor  which in turn is parallelized by subject in bySubject
 #use mapply for debugging, mcmapply for parallel processing
 #since we are already parallelizing by scale when we call scoreIrt.1pl or .2pl, this is not necessary to parallelize
-scores <-  mapply(bigFunction,c(1:nf),MoreArgs=list(n.obs=n.obs,items=items,stats=stats,keys=keys, cut=cut, bounds=bounds, mod=mod))
+scores <- mcmapply(bigFunction,c(1:nf),MoreArgs=list(n.obs=n.obs,items=items,stats=stats,keys=keys, cut=cut, bounds=bounds, mod=mod))
 
 nf <- length(stats$difficulty)
 scores <- matrix(unlist(scores),ncol=nf*3)
@@ -175,20 +206,29 @@ colnames(scores) <- paste(rep(c("theta","total","fit"),each=nf),1:nf,sep="")
 return(scores)  
                     
 }#end of score.irt.2
-#############
+###################
 
-very.close <- function(x,y,tolerance = .Machine$double.eps) {
-abs(x-y) < tolerance}
+#####################
+
+
 
 "score.irt.poly" <- 
 function(stats,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic") {
 #find the person parameters in a 2 parameter model we use deltas and betas from irt.discrim and irt.person.rasch
 #find the person  parameter
 #created July 4, 2011
- irt.2par.poly <- function(x,delta,beta,scores) {
-  fit <- -1*(log(scores/(1+exp(beta*(delta-x))) + (1-scores)/(1+exp(beta*(x-delta)))))
-  mean(fit,na.rm=TRUE)
-  }  
+#revised Dec 31, 2016 to match irt.2
+# this optimizes the logistic function,
+#   irt.2par.poly <- function(x,delta,beta,scores) {
+#    fit <- -(scores*log(1/(1+exp(beta*(delta-x)))) + (1-scores)*log(1/(1+exp(beta*(x-delta)))))
+#    mean(fit,na.rm=TRUE)
+#    }  
+#  
+#  irt.2par.poly.norm <-  function(x,delta,beta,scores) {
+#   fit <- -1*(log(scores*(1-pnorm(beta*(delta-x))) + (1-scores)*(1-pnorm(beta*(x-delta)))))
+#   mean(fit,na.rm=TRUE)
+#   }  
+
 ####The function that is  parallelized
 big.poly <- function(f,n.obs,stats,items,keys=NULL,cut=.3,bounds=c(-5,5),mod="logistic") {
 nf <- ncol(stats$discrimination)
@@ -212,11 +252,8 @@ cat <- dim(diff)[2]
 ###
 if(!is.null(keys)) {item.f <- item.f[,(abs(keys[,f] )> 0) ,drop=FALSE]  #get rid of the those items that are not being processed for this factor
 discrim.f <- discrim[(abs(keys[,f]) > 0),drop=FALSE ]  #and get rid of the unnecessary discrim values
-#diffi.f <- diff[(abs(keys[,f]) > 0),drop=FALSE]   #and the redundant diffi
-diffi.f <- diff[(abs(keys[,f]) > 0),byrows=TRUE]
+diffi.f <- diff[(abs(keys[,f]) > 0),byrows=TRUE]   #and the redundant diffi
 
-#diffi.vect <- as.vector(t(diffi.f)) 
-#diffi.vect <- as.vector(diffi.f) 
 diffi.vect <- as.vector(t(diff[(abs(keys[,f]) > 0),byrows=TRUE]))
 discrim.F.vect <- rep(discrim.f,each=cat)
 } else { discrim.f <- discrim
@@ -242,39 +279,50 @@ discrim.F.vect <- rep(discrim.f,each=cat)
  count <- rowSums(!is.na(item.f))
 
 
-#but now, we need to the next step one at a time (I think)
+#but now, we need to do the next step one at a time (I think)
  for (subj in 1:n.obs) {	
  	if (count[subj]> 0)  { #just do cases where we actually have data
  	       newscore <-  NULL
  	       score <- item.f[subj,] #just the items to be scored
- 	        if((very.close(total[subj],min.item)) | (very.close(total [subj],(max.item+min.item)) )){ # first check for all lowest responses or all highest responses  
- 	           	 if(very.close(total[subj],min.item)) { # The case of all wrong
- 	            	if(mod=="logistic") { p <- log(1-1/(1+exp(abs(discrim.f[!is.na(item.f[subj,])])*diffi.f[!is.na(item.f[subj,]),-1])))} else {  #logistic   
- 					p <- log(1-(pnorm(1- abs(discrim.f[!is.na(item.f[subj,])])*diffi.f[!is.na(item.f[subj,]),-1])) ) }  #normals
-  	        pall <- exp(sum(p,na.rm=TRUE)) 
-  	         theta[subj] <- qnorm(pnorm(qnorm(pall))) 
-  	         fit[subj] <- 0} else {
- 	       if(very.close(total [subj],(max.item+min.item))) {#all right
- 	            if(mod == "logistic") {	 p <- log(1/(1+exp(abs(discrim.f[!is.na(item.f[subj,])])*diffi.f[!is.na(item.f[subj,]),])))} else  { 
- 	                        	p <- log((1)*(1 - pnorm(1- abs(discrim.f[!is.na(item.f[subj,])])*diffi.f[!is.na(item.f[subj,]),])) )  } 
-
- 	           pall <- exp(sum(p,na.rm=TRUE))
-              theta[subj] <- qnorm(1-pnorm(qnorm(pall)))  #the z value of  the quantile value of pall
-            fit[subj] <- 0 } 
- 	       }} else {  #just process those items where we have some responses
-
-           for (i in 1:ncol(item.f)) {  #Treat the items as a series of 1 or 0 responses  - but note that cat = max - min
+ 	       for (i in 1:ncol(item.f)) {  #Treat the items as a series of 1 or 0 responses  - but note that cat = max - min
                  if(is.na(score[i])) {newscore <- c(newscore,rep(NA,cat)) } else {
                    if(very.close(score[i],( cat))) {newscore <- c(newscore,rep(1,cat))
                     } else {
                         newscore <- c(newscore,rep(1,score[i]),rep(0,cat-score[i])) }
                  
                       }}
- 	        myfit <- optimize(irt.2par.poly,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore) 
+ 	         beta=discrim.F.vect[!is.na(score)]  #does this handle  missing values  -- need to fix?
+ 	         delta=diffi.vect[!is.na(score)]
+ 	         
+ 	         
+ 	        if((very.close(total[subj],min.item)) | (very.close(total [subj],(max.item+min.item)) )){ # first check for all lowest responses or all highest responses  
+ 	           	 if(very.close(total[subj],min.item)) { # The case of all wrong
+ 	           	 
+ 	           	 #we need to make sure that this value is less than any value for non=minimal responses  
+ 	           	 #do the same thing that we do for the score.irt.2  
+ 	           	 
+ 	           	   if(mod =="logistic") {
+ 	           	    myfit <- optimize(irtLimit.2par,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore)} else {myfit <- suppressWarnings(optimize(irtLimit.2par.norm,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore)) }
+ 	               
+   	  theta[subj]  <- myfit$minimum
+   	  fit[subj] <- myfit$objective
+ 	           	 
+  	       } else {
+ 	       if(very.close(total [subj],(max.item+min.item))) {#all right
+ 	              if(mod=="logistic") { myfit <- optimize(irtLimit.2par,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore) } else {
+ 	                                    myfit <- suppressWarnings(optimize(irtLimit.2par.norm,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore)) }
+     		theta[subj] <- myfit$minimum    
+     		fit[subj] <- myfit$objective 
+ 	         
+ 	        }}
+ 	       
+ 	       } else {  #just process those items where we have some responses  that are neither max nor min
+ 	       if(mod=="logistic") { myfit <- optimize(irtLimit.2par,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore) } else {myfit <- suppressWarnings(optimize(irtLimit.2par.norm,bounds,beta=discrim.F.vect,delta=diffi.vect,scores=newscore)) }
      		theta[subj] <- myfit$minimum    
      		fit[subj] <- myfit$objective  #fit of optimizing program
- 
-     		}} else {
+     		}
+     	
+     		} else {
          	fit[subj] <- NA
   			theta[subj] <- NA 
     			}    #end if else
@@ -299,7 +347,7 @@ discrim.F.vect <- rep(discrim.f,each=cat)
  n.obs <- dim(items)[1]
  nvar <- dim(items)[2]
 
-#mcmapply for parallel, mappy for debugging
+#mcmapply for parallel, mapply for debugging
 scores   <-  mcmapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=.3,bounds=bounds,mod=mod))
  
 
@@ -310,11 +358,21 @@ colnames(scores) <- paste(rep(c("theta","total","fit"),each=nf),1:nf,sep="")
 return(scores)
 } #end of score.irt.poly 
 
+#################################################
+#
+#     The main function 
+#
+# which in turn calls either the dichotomous scoring (score.irt.2) 
+# or the polytomous version (scoreIrt.poly
+#operates either as score.irt (deprecated) or scoreIrt (preferred)
+############################################################
+
 "score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic")	{
-   message("score.irt has been replaced by scoreIrt, please change your call")
+   message("score.irt is deprecated and has been replaced by scoreIrt, please change your call")
    scoreIrt(stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod) }
    
 "scoreIrt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic")	  {
+#depending upon what has already been done (in the stats object), we fire off different scoring functions
 #added the tau option in switch in case we have already done irt.tau   6/29/16
 #we need to adjust the discrimination order from irt.fa to match the order of the items
 if(!is.null(keys) && is.list(keys)){   select <- sub("-","",unlist(keys))
@@ -368,7 +426,15 @@ if(!is.null(keys)) {colnames(scores) <-c( paste(colnames(keys),"theta",sep="-"),
 return(scores)
 }
 
+############ END of scoreIrt  ##################
+####
+#Various helper functions
 
+very.close <- function(x,y,tolerance = .Machine$double.eps) {
+abs(x-y) < tolerance}
+
+
+#####
 #find tau from dichotomous or polytomous data without bothering to find the correlations
 #useful for score.irt
 #modified July 14, 2016 to speed up significantly by dropping the xt <- table(x)  line
@@ -440,25 +506,32 @@ plot(theta,stats.m[,i],ylim=c(0,1),typ="l",xlab="theta",ylab="P(response)",main=
 #scores multiple scales with full 2pl parameters
 #gets around the problem of tau differences for 0/1 and 1/6 scales.
 #Requires finding the correlation matrix for each scale, rather than taking advantage of a prior correlation matrix
+#modifed Jan 3, 2017 to reverse key scales where the keys and the factor solution are backwards (e.g., stability vs. neuroticism)
 scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),mod="logistic") {
    nvar <- length(itemLists)
+
    select <- sub("-","",unlist(itemLists)) #select just the items that will be scored
     select <- select[!duplicated(select)]
    items <- items[select]  #this should reduce memory load
    #we turn off the sorting option in irt.fa so that the item discriminations match the scoring order
    #small function is called using parallel processing
    smallFunction <- function(i,selection,correct,cut=cut,bounds=bounds,mod=mod) {
+        direction <- rep(1,length(selection[[i]]))
+        neg <- grep("-", selection[[i]])
+       direction[neg] <- -1 
       select <- sub("-","",selection[[i]])
       selectedItems <- as.matrix(items[select])
       if(!messages) {suppressMessages(stats <- irt.fa(selectedItems,correct=correct,plot=FALSE,sort=FALSE))} else {
                               stats <- irt.fa(selectedItems,correct=correct,plot=FALSE,sort=FALSE)}
+                              flip <- sum(sign(stats$irt$discrimination * direction))
+                              if(flip < 0 )  stats$irt$discrimination <-  -stats$irt$discrimination 
+                             
       scores <- scoreIrt(stats,selectedItems,cut=cut,bounds=bounds,mod=mod)
       scores <- scores$theta
   }
    #use mapply for debugging, mcmapply for parallel processing
    #items is global and not passed to save memory
-   scoresList <- mcmapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
-
+   scoresList <-mcmapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
    colnames(scoresList) <- names(itemLists)
    return(scoresList)
    }
@@ -498,17 +571,101 @@ scoreIrt.1pl <- function(keys.list,items,correct=.5,messages=FALSE,cut=.3,bounds
    }
    
 
-   
 
-      
-   
 
+
+
+#################################
+#The following are useful demonstration functions for examining how fitting works
+#
+# Might make public if we document them
+#
+#############################################
+
+#show how the fitting function works for the case without limits on the fits
+#demonstrates the problem of all wrong or all right
+#Also shows the difference between normal and logistic fits
+###############
+testIrt <- function(score,delta,beta,mod="logistic",limits=TRUE,lower=-4) {x <- seq(lower,-lower,.1)
+  y <- x
+  if(limits) {
+    for(j in 1:nrow(score)) {scores <- score[j,]
+    for (i in 1:length(x)) {if(mod=="logistic") {y[i] <- irtLimit.2par(x[i],delta,beta,scores) } else {y[i] <- irtLimit.2par.norm(x[i],delta,beta,scores)}  
+  }
+   plot(y ~ x)
+    for(k in 1:length(scores)) {
+  text( -1 + .5*k,(max(y) + min(y) )*1/3,(scores[k]))}
+    text(0,(max(y) + min(y))/2,round(x[which(y == min(y))],2))
+  }} else {
+  for(j in 1:nrow(score)) {scores <- score[j,]
+  for (i in 1:length(x)) {if(mod=="logistic") {y[i] <- irt.2par(x[i],delta,beta,scores) } else {y[i] <- irt.2par.norm(x[i],delta,beta,scores)}  } 
  
+  plot(y ~ x) 
+  for(k in 1:length(scores)) {
+  text( -1 + .5*k,(max(y) + min(y) )*2/3,(scores[k]))}
+  text(0,(max(y) + min(y))/2,round(x[which(y == min(y))],2))
+  }
+  }
+  } 
+  
+
+
+
+#an alternative, and much simpler model (but that does not handle missing data)
+simpleScore  <- function(scores,delta,beta,mod="logistic") {
+  if (mod=="logistic") {estimate <- (-(scores %*%log(1/(1 + exp(-beta*delta))) - (1-scores)%*%log(1-1/(1+exp(-delta*beta)))))
+    plog <- rowMeans(estimate)
+     } else {
+           estimate <- -1*(((scores)%*%log(beta*(1-pnorm((delta)))) - (1-(scores))%*%log(beta *pnorm(delta))))
+           plog <- (rowMeans(estimate))} 
+return(plog)
+}
+
+
+
+#removed links to ltm since ltm does not work for polytomous data
+test.irt <- function(nvar = 9, n.obs=1000,mod="logistic",type="tetra", low=-3, high=3,seed=NULL) {
+if(!is.null(seed)) set.seed(seed)
+if(type =="tetra" ) { x.sim <- sim.irt(nvar=nvar,n=n.obs,low=low,high=high,mod=mod)} else { x.sim <- sim.poly(nvar=nvar,n=n.obs,low=low,high=high,mod=mod)}
+x.irt <- irt.fa(x.sim$items[,1:nvar],sort=FALSE,plot=FALSE)
+#if(!requireNamespace("ltm")) {stop("The ltm package is required when running  test.irt")}
+# x.ltm <- ltm::ltm(x.sim$items~z1)
+#	x.ltm.sc <- ltm::factor.scores(x.ltm)
+#	ltm.responses <- table2df(x.ltm.sc$score.dat,x.ltm.sc$score.dat[,nvar+1])
+#	ltm.responses <- data.frame(ltm.responses[,c(1:nvar,nvar+3)])
+#	colnames(ltm.responses) <- c(colnames(x.sim$items),"ltm")
+#	ltm.responses  <- dfOrder(ltm.responses,c(1:nvar)) 
+
+
+xnvart <- data.frame(x.sim$items,theta = x.sim$theta)
+xnvart <- dfOrder(xnvart,c(1:nvar))
+
+x.fsall <- psych::factor.scores(xnvart[1:nvar],x.irt$fa,method="regression")$scores
+x.df <- data.frame(xnvart, fs=x.fsall)
+#cor2(x.df,ltm.responses)
+
+xdelta <- x.irt$irt$difficulty[[1]]
+xbeta <- x.irt$irt$discrimination
+x.scores <- data.matrix(x.df[1:nvar])
+irt.sc <- scoreIrt(x.irt,x.scores)
+irt.scn <- scoreIrt(x.irt,x.scores,mod="normal")
+ras <- 1
+ x.tot <- rowSums(x.scores[,1:nvar])
+
+
+if(type=="tetra") {
+pl2<- simpleScore(x.scores,xdelta,xbeta)
+pl1<- simpleScore(x.scores,xdelta,rep(ras,nvar))
+pn2 <- simpleScore(x.scores,xdelta,xbeta,mod="normal")
+pn1<- simpleScore(x.scores,xdelta,rep(ras,nvar),mod="normal")
+
+
+
+ x.df.sc <- data.frame(logist2pl=pl2,pl1,pn2, pn1 ,x.tot, fs =x.df$MR1,irt.sc[,1],irt.scn[,1],theta=x.df$theta)
+ colnames(x.df.sc) <- c("PL2", "PL1", "PN2", "PN1","total", "factor","irt","irt-N","theta")
+ } else {x.df.sc <- data.frame(x.tot, fs =x.df$MR1,irt.sc[,1],irt.scn[,1],theta=x.df$theta)
+  colnames(x.df.sc) <- c("total", "factor","irt","irt-N","theta")}
  
- 
- 
- 
- 
- 
- 
- 
+pairs.panels(x.df.sc)
+invisible(x.df.sc)
+ }

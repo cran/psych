@@ -131,6 +131,10 @@ bounds[1,1] <- kappa + qnorm(alpha/2) * sqrt(Vark)
 bounds[1,3] <- kappa - qnorm(alpha/2) * sqrt(Vark)
 bounds[2,1] <- wkappa + qnorm(alpha/2) * sqrt(Varkw) 
 bounds[2,3] <- wkappa - qnorm(alpha/2) * sqrt(Varkw)
+if(any(abs(bounds) > 1)) {bounds[bounds > 1] <- 1
+                          bounds[bounds < -1] <- -1
+                          warning("upper or lower confidence interval exceed  abs(1)  and set to +/- 1. ")
+                          }
 result <- list(kappa=kappa,weighted.kappa = wkappa,n.obs=tot,agree=x,weight=w,var.kappa =Vark, var.weighted = Varkw,confid=bounds,plevel=alpha,bad=bad,Call=cl)
 class(result) <- c("psych","kappa")
 return(result)

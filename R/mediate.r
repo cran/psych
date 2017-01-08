@@ -155,7 +155,7 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
      result <- list(var.names=var.names,a=a,b=b,ab=ab,c=c,direct=direct,indirect=indirect,cprime = cprime, total.reg=total.reg,a.reg=a.reg,b.reg=b.reg,cprime.reg=cprime.reg,boot=boots,boot.values = boot,sdnames=colnames(data),C=C,  Call=cl)
    
     class(result) <- c("psych","mediate")
-   if(plot) { if(is.null(mod)) { mediate.diagram(result) } else {mediate.diagram(result,main="Moderation model")}
+   if(plot) {if(is.null(m)) {moderate.diagram(result) } else { if(is.null(mod)) { mediate.diagram(result) } else {mediate.diagram(result,main="Moderation model")} }
    }
   
     return(result)	
@@ -286,6 +286,8 @@ boot.moderate <- function(data,x,y,m,mod,n.iter=10,std=FALSE,use="pairwise") {
    # if(dim(x$a)) {mv <- names(x$a)} else {mv <- colnames(x$a)
     cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv,". The mediating variable(s) = ", mv,".")
    if(!is.null(x$mod)) cat("  The moderating variable(s) = ",mod)
+  
+  if(!is.null(mv)) {
    for(j in 1:ndv) { 
    for(i in 1:niv) { cat("\n\nTotal Direct effect(c) of ",iv[i], " on ", dv[j]," = ",round(x$direct[i,j],digits), "  S.E. = ", round(x$total.reg$se[i,j],digits), " t direct = ",round(x$total.reg$t[i,j],digits), "  with probability = ", signif(x$total.reg$prob[i,j],digits))
     cat("\nDirect effect (c') of ",iv[i],  " on ", dv[i]," removing ", mv ," = ",round(x$indirect[i,j],digits), "  S.E. = ", round(x$cprime.reg$se[i,j],digits), " t direct = ",round(x$cprime.reg$t[i,j],digits), "  with probability = ", signif(x$cprime.reg$prob[i,j],digits))
@@ -372,7 +374,16 @@ boot.moderate <- function(data,x,y,m,mod,n.iter=10,std=FALSE,use="pairwise") {
     cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$indirect,digits))
     cat("\nMean bootstrapped indirect interaction effect = ",round(x$boot$mean[1],digits), " with standard error = ",round(x$boot$sd[1],digits), " Lower CI = ",round(x$boot$ci.ab[1],digits), "   Upper CI = ", round(x$boot$ci.ab[2,i],digits))
     cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-    }     
+    } 
+    } else {#This is a pure moderation model, just show it
+     # for(i in 1:ndv) {
+     # cat("\n\nEffect of interaction of ",iv[1], " with ", iv[2] ," on ", dv[i], "  = ", round(x$direct[3,i],digits),"  S.E. = ", round(x$total.reg$se[3,i],digits), " t direct = ",round(x$total.reg$t[3,i],digits), "  with probability = ", signif(x$total.reg$prob[3,i],digits))
+            # } 
+        cat("\nDirect and moderated direct effects \n")
+        print(round(x$direct,digits))
+         cat("\nProbability of Direct and moderated direct effects \n")
+        print(signif(x$total.reg$prob),digits)
+     }  
 }
 
    
@@ -480,10 +491,10 @@ var.names <- rownames(medi$direct)
 x.names <- rownames(medi$direct)
 y.names <- colnames(medi$direct)
 beta <- round(medi$direct,digits)
-c <- round(medi$total,digits)
-cprime <-round(medi$direct[1],digits) 
+#c <- round(medi$total,digits)
+#cprime <-round(medi$direct[1],digits) 
 nx <- length(x.names)
-ny <- length(y.names)  #should be 1
+ny <- length(y.names)
 top <- max(nx,ny)
 xlim=c(-nx/3,10)
 ylim=c(0,top)
@@ -492,17 +503,39 @@ x <- list()
 y <- list()
 x.scale <- top/(nx+1)
 y.scale <- top/(ny+1)
-plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
-for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i]) }
- 
-y[[1]] <- dia.rect(7,top-y.scale,y.names[1]) 
- dia.arrow(x[[1]]$right,y[[1]]$left,labels=paste("c = ",c),pos=3,...)
- dia.arrow(x[[1]]$right,y[[1]]$left,labels=paste("c' = ",cprime),pos=1,...)
 
- 
-for(i in 2:nx) {
-   dia.arrow(x[[i]]$right,y[[1]]$left,labels = beta[i,1],adj=2)
+plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
+
+# viv <- 1:nx
+# for(i in 1:nx)  {
+# if((nx %% 2)== 0) {
+# viv[i] <- switch(i,7,3,6,4,8,2,9,1,10)  } else { viv[i] <- switch(i,5,7,3,6,4,8,2,9)}
+#  x[[i]]  <- dia.rect(1,viv[i],iv[i])}
+#  
+#  vdv <- 1:ny
+#  y <- list()
+#  for (i in 1:ny) {
+#  if((ny %% 2)== 0) {
+# vdv[i] <- switch(i,6,4,7,3,8,2,9,1,10)  } else { vdv[i] <- switch(i,5,7,3,6,4,8,2,9)}
+#  y[[i]] <- dia.rect(9,vdv[i],dv[i]) 
+#  }
+
+for(i in 1:nx) {x[[i]] <- dia.rect(2,top-i*x.scale,x.names[i]) }
+for(j in 1: ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j]) }
+y[[1]] <- dia.rect(7,top-y.scale,y.names[1]) 
+# dia.arrow(x[[1]]$right,y[[j]]$left,labels=paste("c = ",c),pos=3,...)
+#dia.arrow(x[[1]]$right,y[[j]]$left,labels=paste("c' = ",cprime),pos=1,...)
+
+for(j in 1:ny){
+for(i in 1:nx) {
+   dia.arrow(x[[i]]$right,y[[j]]$left,labels = beta[i,1],adj=2)
    }
+   }
+if(nx >1) {
+  for (i in 2:nx) {
+  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,round(medi$C[i,k],2),scale= -(abs(k-i)),both=TRUE)} 
+  } }
+
 }  
      		 
      	

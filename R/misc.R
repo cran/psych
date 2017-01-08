@@ -499,3 +499,34 @@ pretty[which ((sign * x) == 0,arr.ind=TRUE)] <- 0 #fix the ones that are -Inf
 pretty}
 
 
+#October 25, 2016
+"char2numeric" <- function(x) {
+ nvar <- ncol(x)
+ for(i in 1:nvar) {   
+        if(!is.numeric(x[[i]] ))  {
+                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
+                          } else {x[[i]] <- NA} }
+              } 
+              invisible(x)} 
+
+
+"isCorrelation" <-  function(x) {
+return(!is.data.frame(x) && isSymmetric(x))}
+
+
+#will only work for data.frames (not matrices)
+dfOrder <- function(object,columns) {nc <- length(columns)
+  if(!is.data.frame(object)) stop("I am sorry, I can only sort data.frames.")
+   temp <- colnames(object)
+   increase <- sign(columns)
+   templist <- list()
+   for (i in 1:nc) {
+  		 templist[[i]] <- as.name (temp[abs(columns[i])])
+   		object[abs(columns[i])] <- increase[i] *object[abs(columns[i])]
+                    }
+   ord <- with(object,do.call(order,templist))
+   object <- object[ord,]
+   for(i in 1:nc) {object[abs(columns[i])] <- increase[i] *object[abs(columns[i])]}
+    return(object)
+    }
+

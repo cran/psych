@@ -61,7 +61,7 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
 }
    
    "errorCircles" <-
-function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,add=FALSE,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,bars=TRUE,circles=TRUE,colors=NULL,col.arrows=NULL,col.text=NULL,...) { # x  and y are data frame or descriptive stats
+function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,add=FALSE,pos=NULL,offset=1,arrow.len=.2,alpha=.05,sd=FALSE,bars=TRUE,circles=TRUE,colors=NULL,col.arrows=NULL,col.text=NULL,circle.size=1,...) { # x  and y are data frame or descriptive stats
      
      xvar <- x
      yvar <- y
@@ -157,8 +157,8 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
     		text(xcen,ycen,labels=lab[i],pos=locate[i],col=col.text[i],offset=offset,...)     #puts in labels for all points
     if(circles) { xrange <- xlim[2] - xlim[1]
                 yrange <- ylim[2] - ylim[1]
-                xscale <-max(x$se)
-                yscale <-max(y$se)
+                xscale <-max(x$se) *circle.size
+                yscale <-max(y$se) *circle.size
     ellipse(xcen,ycen,sqrt(xscale*x$n[i]/Nmax),sqrt( yscale*x$n[i]/Nmax),col=col.arrows[i])
     	}
     	}	

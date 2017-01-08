@@ -48,9 +48,13 @@ irt.tau(x)    #find the tau values for the x object
 }
 \details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
-The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item. In this case, the scores are estimated by finding the probability of missing every item taken, converting this to a quantile score based upon the normal distribution, and then assigning a z value equivalent to 1/2 of that quantile.  Similarly, if a person gets all the items they take correct, their score is defined as the quantile of the z equivalent to the probability of getting all of the items correct, and then moving up the distribution half way.  If these estimates exceed either the upper or lower bounds, they are adjusted to those boundaries. 
+The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item. Formerly (prior to 1.6.12) this was done by  estimating these taial scores  by finding the probability of missing every item taken, converting this to a quantile score based upon the normal distribution, and then assigning a z value equivalent to 1/2 of that quantile.  Similarly, if a person gets all the items they take correct, their score is defined as the quantile of the z equivalent to the probability of getting all of the items correct, and then moving up the distribution half way.  If these estimates exceed either the upper or lower bounds, they are adjusted to those boundaries. 
 
-There are several more elegant packages in R that provide Full Information Maximum Likeliood IRT based estimates.  The estimates from scoreIrt do not do so.  However,  \code{\link{scoreIrt}} seems to do a good job of recovering the basic structure.
+As of 1.6.9, the procedure is very different.  We now assume that all items are bounded with one passed item that is easier than all items given, and one failed item that is harder than any item given.  This produces much cleaner results.
+
+There are several more elegant packages in R that provide Full Information Maximum Likeliood IRT based estimates. In particular, the MIRT package seems especially good.  The ltm package give equivalent estimates to MIRT for dichotomous data but produces unstable estimates for polytomous data and should be avoided.   
+
+Although the scoreIrt estimates are are not FIML based they seem to correlated with  the MIRT estiamtes with values exceeding .99.  Indeed, based upon very limited simulations there are some small hints that the solutions match the true score estimates  slightly better than do the MIRT estimates.  \code{\link{scoreIrt}} seems to do a good job of recovering the basic structure.
 
 The two wrapper functions \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} are very fast and are meant for scoring one or many scales at a time with a one factor model (\code{\link{scoreIrt.2pl}}) or just Rasch like scoring.  Just specify the scoring direction for a number of scales  (\code{\link{scoreIrt.1pl}}) or just items to score  for a number of scales \code{\link{scoreIrt.2pl}}.  \code{\link{scoreIrt.2pl}} will then apply \code{\link{irt.fa}} to the items for each scale separately, and then find the 2pl scores. 
 
@@ -81,7 +85,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 \author{William Revelle, David Condon
 }
 \note{
-It is very important to note that when using \code{\link{irt.fa}} to find the discriminations, to set the sort option to be FALSE.  Otherwise, the discriminations willn not match the item order.  
+It is very important to note that when using \code{\link{irt.fa}} to find the discriminations, to set the sort option to be FALSE. This is now the default.  Otherwise, the discriminations will not match the item order.  
 
 Always under development.  Suggestions for improvement are most appreciated.
 

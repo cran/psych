@@ -25,12 +25,17 @@
     #begin main function
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
+    if(!is.null(keys)){#two 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
+    if( is.list(keys)) { select <- sub("-","",unlist(keys))   #added 9/26/16 to speed up scoring one scale from many
+      x <- x[select] 
+      keys <- make.keys(x,keys)}}
+      
     nvar <- dim(x)[2]
     nsub <- dim(x)[1]
     scores <- NULL
     response.freq <- NULL
    
-    if (nsub !=nvar)  { #find the correlations if we are given  raw data
+    if (!isCorrelation(x))  { #find the correlations if we are given  raw data
        item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0) && delete) {

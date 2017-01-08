@@ -97,7 +97,7 @@ colors <- c("black","red","white","blue")
  films <- c("Sad","Horror","Neutral","Happy")
 affect.stats <- errorCircles("EA2","TA2",data=affect[-c(1,20)],group="Film",labels=films,
 xlab="Energetic Arousal",   ylab="Tense Arousal",ylim=c(10,22),xlim=c(8,20),pch=16,
-cex=2,colorsl=colors, main =' Movies effect on arousal')
+cex=2,colors=colors, main =' Movies effect on arousal')
  errorCircles("PA2","NA2",data=affect.stats,labels=films,xlab="Positive Affect",
   ylab="Negative Affect", pch=16,cex=2,colors=colors,  main ="Movies effect on affect")
 op <- par(mfrow=c(1,1))
@@ -488,7 +488,7 @@ om.9
 ###################################################
 ### code chunk number 66: overview.Rnw:1469-1470
 ###################################################
-omegaSem(r9,n.obs=500)
+omegaSem(r9,n.obs=500,lavaan=FALSE)
 
 
 ###################################################
@@ -623,7 +623,7 @@ print(e.info,sort=TRUE)
 ###################################################
 ### code chunk number 81: overview.Rnw:1750-1751
 ###################################################
-iq.irt <- irt.fa(iq.tf)
+iq.irt <- irt.fa(ability)
 
 
 ###################################################

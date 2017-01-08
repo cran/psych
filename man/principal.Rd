@@ -39,11 +39,11 @@ The rotation matrix  (rot.mat) is returned from all of these options. This is th
 
 Some of the statistics reported are more appropriate for (maximum likelihood) factor analysis rather than principal components analysis, and are reported to allow comparisons with these other models. 
 
-Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{score.items}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  The regression weights are found from the Structure matrix, not the Pattern matrix. If the scores are found with the covar option = TRUE, then the scores are not standardized but are just mean centered.  
+Although for items, it is typical to find component scores by scoring the salient items (using, e.g., \code{\link{scoreItems}}) component scores are found  by regression where the regression weights are \eqn{R^{-1} \lambda}{R^(-1) lambda} where \eqn{\lambda}{lambda} is the matrix of component loadings.   The regression approach is done  to be parallel with the factor analysis function \code{\link{fa}}.  The regression weights are found from the inverse of the correlation matrix times the component loadings.   This has the result that the component scores are standard scores (mean=0, sd = 1) of the standardized input.  A comparison to the scores from \code{\link{princomp}} shows this difference.  princomp does not, by default, standardize the data matrix, nor are the components themselves standardized.  The regression weights are found from the Structure matrix, not the Pattern matrix. If the scores are found with the covar option = TRUE, then the scores are not standardized but are just mean centered.  
 
-Jolliffe (2002) discusses why the interpretation of rotated components is complicated.  The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings (as reported in the structure matrix). 
+Jolliffe (2002) discusses why the interpretation of rotated components is complicated.   Rencher (1992) discourages the use of rotated components. The approach used here is consistent with the factor analytic tradition.  The correlations of the items with the component scores closely matches (as it should) the component loadings (as reported in the structure matrix). 
 
-The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the (squared) orthogonal component loadings (remember, that rotations or transformations do not change the communality).  
+The output from the print.psych function displays the component loadings (from the pattern matrix), the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the component loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared component loadings. But for an oblique solution, it is the row sum of the (squared) orthogonal component loadings (remember, that rotations or transformations do not change the communality).  This information is returned (invisibly) from the print function as the object Vaccounted.
 }
 \value{
   
@@ -86,6 +86,8 @@ Grice, James W.  (2001), Computing and evaluating factor scores. Psychological M
 
 Jolliffe, I. (2002)  Principal Component Analysis (2nd ed). Springer.
 
+Rencher, A. C. (1992) Interpretation of Canonical Discriminant Functions, Canonical Variates, and Principal Components, the American Statistician, (46) 217-225.
+
 Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
 }
 
@@ -112,7 +114,8 @@ biplot(pc2,main="Biplot of the Harman.5 socio-economic variables",labels=paste0(
 pc2v <- principal(iris[1:4],2,rotate="varimax",normalize=FALSE,eps=1e-14)
 print(pc2v,digits=7)
 pc2V <- principal(iris[1:4],2,rotate="Varimax",eps=1e-7)
-print(pc2V,digits=7) 
+p <- print(pc2V,digits=7)
+round(p$Vaccounted,2)   # the amount of variance accounted for is returned as an object of print
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

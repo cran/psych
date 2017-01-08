@@ -5,28 +5,45 @@
      }
 
 "scoreItems"  <-
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,n.obs=NULL) {
    cl <- match.call()
    raw.data <- TRUE
-   if(is.list(keys)) keys <-make.keys(items,keys)   #added 9/9/16
+   if(is.list(keys)) keys <- make.keys(items,keys)   #added 9/9/16
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
-     abskeys <- abs(keys)
-     keynames <- colnames(keys)
-   num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
-  num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
+    abskeys <- abs(keys)
+    keynames <- colnames(keys)
+    num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
+    num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
     if (!missing) items <-  na.omit(items) 
     n.subjects <- dim(items)[1]
-     if ((dim(items)[1] == dim(items)[2])  &&  (((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1)))) {warning("You have an equal number of rows and columns but do not seem to have  a correlation matrix.  I will treat this as a data matrix.")} # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
-    if ((dim(items)[1] == dim(items)[2])  &&  (!((min(items,na.rm=TRUE) < -1) || (max(items,na.rm=TRUE) > 1)))){ #this is the case of scoring correlation matrices instead of raw data  (checking for rare case as well)       
+     if ((dim(items)[1] == dim(items)[2])  &&  !isCorrelation(items)) {warning("You have an equal number of rows and columns but do not seem to have  a correlation matrix.  I will treat this as a data matrix.")} # with the exception for the very unusual case of exactly as many items as cases reported by Jeromy Anglim 
+    if ((dim(items)[1] == dim(items)[2])  &&  isCorrelation(items)){ #this is the case of scoring correlation matrices instead of raw data  (checking for rare case as well)       
      raw.data <- FALSE
+     totals <- FALSE #because we don't have the raw data, totals would be meaningless
+
      n.subjects <- 0
      C <- as.matrix(items)
      cov.scales <- t(keys) %*% C %*% keys  #fast, but does not handle the problem of NA correlations
      cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys) # this is sum(C^2)  for finding ase
      response.freq <- NULL
            }  else {
+    #check to make sure all items are numeric  --  if not, convert them to numeric if possible, flagging the item that we have done so 
+     if(!is.matrix(items)) {  #does not work for matrices
+    for(i in 1:n.items) {   
+        if(!is.numeric(items[[i]] ))  {
+                               
+                                  if(is.factor(unlist(items[[i]])) | is.character(unlist(items[[i]]))) {  items[[i]] <- as.numeric(items[[i]]) 
+                                  
+                                colnames(items)[i] <- paste0(colnames(items)[i],"*")
+        
+                          } else {items[[i]] <- NA} }
+                         
+               }
+              } 
+      
+
    items <- as.matrix(items)
     
     response.freq <- response.frequencies(items)
@@ -65,14 +82,14 @@
           cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
         }  else { #handle the case of missing data without imputation
            scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
-           totals <- FALSE  #just in case it was not already false
+          if(raw.data &&  totals == TRUE) warning("Specifying totals = TRUE without imputation can lead to serious problems.  Are you sure?")  #just in case it was not already false        #do we want to allow totals anyway?
            #we could try to parallelize this next loop
            for (scale in 1:n.keys) {
            	pos.item <- items[,which(keys[,scale] > 0)]
           	neg.item <- items[,which(keys[,scale] < 0)]
           	 neg.item <- max + min - neg.item
            	sub.item <- cbind(pos.item,neg.item)
-           	scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
+           	if(!totals) {scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)} else {scores[,scale] <- rowSums(sub.item,na.rm=TRUE)}
           	 rs <- rowSums(!is.na(sub.item))
           	 num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
           # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
@@ -133,7 +150,7 @@
       item.rc <- C %*% keys /sqrt(corrected.var*item.var) }
     colnames(item.rc) <- slabels
    
-  if(n.subjects >0) {ase <- sqrt(Q/ n.subjects )} else {ase=NULL}  #only meaningful if we have raw data
+  if(n.subjects > 0) {ase <- sqrt(Q/ n.subjects )} else {if(!is.null(n.obs)) {ase <- sqrt(Q/ n.obs )} else {ase=NULL}}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
    rownames(item.rc) <- ilabels
@@ -156,7 +173,7 @@
 
    if (!raw.data) { 
      if(impute =="none") {
-       rownames(alpha.ob) <- "alpha.observed"
+       #rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
        results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,Call=cl)} else {
                             results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,Call=cl)}  } else {

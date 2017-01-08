@@ -1,8 +1,11 @@
-"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL) {
+"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,impute="none") {
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
+    if(length(class(f)) >1) { if(class(f)[2] =="irt.fa" ) f <- f$fa  }
+    
      if(!is.matrix(f)) {Phi <- f$Phi
      f <- loadings(f)
+      if(ncol(f)==1) {method <- "Thurstone"}
       }
      nf <- dim(f)[2]
       if(is.null(Phi)) Phi <- diag(1,nf,nf)
@@ -96,11 +99,22 @@
       results$r.scores <- r.scores 
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
      } else {
-
+         missing <- rowSums(is.na(x))
+    if(impute !="none") {
+       x <- data.matrix(x)
+        miss <- which(is.na(x),arr.ind=TRUE)
+        if(impute=="mean") {
+       		item.means <- colMeans(x,na.rm=TRUE)   #replace missing values with means
+       		x[miss]<- item.means[miss[,2]]} else { 
+       		item.med   <- apply(x,2,median,na.rm=TRUE) #replace missing with medians
+        	x[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
+     }
+      
      if(method !="components") {scores <- scale(x) %*% w } else {  #standardize the data before doing the regression if using factors, 
         scores <- x %*% w}       # for components, the data have already been zero centered and, if appropriate, scaled
      results <- list(scores=scores,weights=w)
-     results$r.scores <- r.scores 
+     results$r.scores <- r.scores
+     results$missing <- missing 
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
      }
      }

@@ -2,7 +2,7 @@
 \alias{cortest.bartlett}
 
 \title{Bartlett's test that a correlation matrix is an identity matrix }
-\description{Bartlett (1951) proposed that -ln(det(R)*(N-1 - (2p+5)/6) was distributed as chi square if R were an identity matrix.  A useful test that residuals correlations are all zero.
+\description{Bartlett (1951) proposed that -ln(det(R)*(N-1 - (2p+5)/6) was distributed as chi square if R were an identity matrix.  A useful test that residuals correlations are all zero. Contrast to the Kaiser-Meyer-Olkin test.
 }
 \usage{
 cortest.bartlett(R, n = NULL,diag=TRUE)
@@ -16,6 +16,8 @@ cortest.bartlett(R, n = NULL,diag=TRUE)
 \details{More useful for pedagogical purposes than actual applications. The Bartlett test is asymptotically chi square distributed.
 
 Note that if applied to residuals from factor analysis (\code{\link{fa}}) or principal components analysis (\code{\link{principal}}) that the diagonal must be replaced with 1s. This is done automatically if diag=TRUE. (See examples.)  
+
+An Alternative way of testing whether a correlation matrix is factorable (i.e., the correlations differ from 0) is the Kaiser-Meyer-Olkin \code{\link{KMO}} test of factorial adequacy. 
 
 }
 \value{

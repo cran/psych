@@ -10,6 +10,8 @@
 \alias{test.all}
 \alias{cor2}
 \alias{levels2numeric}
+\alias{char2numeric}
+\alias{isCorrelation}
 
  
 \title{Miscellaneous helper functions for the psych package}
@@ -17,7 +19,7 @@
 lowerCor finds the correlation of x variables and then prints them using 
 lowerMat which is a trivial, but useful, function to round off and print the lower triangle of a matrix.
 reflect reflects the output of a factor analysis or principal components analysis so that one or more factors is reflected. (Requested by Alexander Weiss.)
-progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names. fa.lookup returns sorted factor analysis output with item labels. \code{\link{cor2}} correlates two data.frames (of equal length). levels2numeric converts dataframe columns that are categorical/levels to numeric values. 
+progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}}) works through a tedious calculation.  shannon finds the Shannon index (H) of diversity or of information. test.all tests all the examples in a package.  best.items sorts a factor matrix for absolute values and displays the expanded items names. fa.lookup returns sorted factor analysis output with item labels. \code{\link{cor2}} correlates two data.frames (of equal length). levels2numeric and char2numeric convert dataframe columns that are categorical/levels to numeric values. 
 }
 \usage{
 psych.misc()
@@ -30,7 +32,9 @@ progressBar(value,max,label=NULL)
 shannon(x,correct=FALSE,base=2)
 test.all(pl,package="psych",dependencies 
       = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) 
- levels2numeric(x)     
+ levels2numeric(x) 
+ char2numeric(x) 
+ isCorrelation(x) #test if an object is a symmetric matrix    
 
 }
 \arguments{
@@ -74,6 +78,8 @@ test.all(pl,package="psych",dependencies
 \code{\link{cor2}} will find and display the correlations between two sets of variables, rounded to digits, using the other options. If x is a list of multiple sets (two or more), then all sets are correlated.  
 
 \code{\link{levels2numeric}}converts character data with levels to numeric data.  Used in the SAPA analyses where we code some variables, (e.g., gender, education) with character codes to help in the documentation of files, but want to do analyses of correlations with other categorical variables. 
+
+\code{\link{char2numeric}}converts character data with levels to numeric data.  Used for cases when data from questionnaires include the response categories rathere than numeric data.  Unless the levels of the data are in meaningful order, the numeric results are not useful.  Most useful if doing polychoric analyses.
 }
 
 \details{

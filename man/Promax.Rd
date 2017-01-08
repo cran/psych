@@ -17,7 +17,7 @@
 bifactor(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 biquartimin(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 TargetQ(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
-Promax(x, m = 4)
+Promax(x,m=4, normalize=FALSE, pro.m = 4) 
 target.rot(x,keys=NULL)
 varimin(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, maxit = 1000)
 vgQ.bimin(L)   #called by bifactor
@@ -29,11 +29,12 @@ equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000)
 \arguments{
   \item{x}{A loadings matrix}
   \item{m}{the power to which to raise the varimax loadings (for Promax)}
+  \item{pro.m}{the power to which to raise the various loadings in Promax.}
   \item{keys}{An arbitrary target matrix, can be composed of  any weights, but probably -1,0, 1 weights.  If missing, the target is the independent cluster structure determined by assigning every item to it's highest loaded factor.}
   \item{L}{A loadings matrix}
   \item{Target}{A matrix of values (mainly 0s, some 1s, some NAs) to which the matrix is transformed.}  
   \item{Tmat}{An initial rotation matrix}
-  \item{normalize}{parameter passed to optimization routine (GPForth in the GPArotation package}
+  \item{normalize}{parameter passed to optimization routine (GPForth in the GPArotation package and Promax)}
   \item{eps}{parameter passed to optimization routine (GPForth in the GPArotation package) }
   \item{maxit}{parameter passed to optimization routine (GPForth in the GPArotation package)}
 }
@@ -62,7 +63,7 @@ target.rot will not handle targets that have linear dependencies (e.g., a pure b
 }
 \value{
   \item{loadings }{Oblique factor loadings}
-  \item{rotmat}{The rotation matrix applied to the original loadings to produce the promax soluion or the targeted matrix}
+  \item{rotmat}{The rotation matrix applied to the original loadings to produce the promax solution or the targeted matrix}
   \item{Phi}{The interfactor correlation matrix}
 }
 \references{

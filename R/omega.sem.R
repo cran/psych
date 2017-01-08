@@ -10,7 +10,8 @@ if(is.list(om.results)) {
   
    num.var <- dim(factors)[1]   #how many variables?
   if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}  #g, h2,u2,p2
-  
+ # if(num.factors ==1) {warning("giving lavaan code for a 1 factor omega doesn't really make sense.")}
+  # return(list(sem=NULL,lavaan=NULL))}
    gloading <- om.results$schmid$gloading
    
     } else {factors <- om.results
@@ -22,12 +23,14 @@ if(is.list(om.results)) {
       vars <- paste("V",1:num.var,sep="")  
    if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
    
-   
+   lavaan <- vector("list",nf+1)
    if (sl) {
             sem <- matrix(rep(NA,6*(2*num.var + num.factors)),ncol=3)  #used for sem diagram
+            
             } else {
             
             sem <- matrix(rep(NA,6*(num.var + num.factors)+3),ncol=3)  #used for sem diagram
+            
                        }
             
   #show the cluster structure with ellipses
@@ -35,26 +38,36 @@ if(is.list(om.results)) {
    l <- matrix(factors[,2:(num.factors+1)],ncol=num.factors) } else { l <- factors }
    
    m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max),  ncol = 1)
-        
+     lavaan[[1]] <- 'g =~ '    
   if (sl) { 
           k <- num.var
+         
          for (i in 1:num.var) {  
                                  sem[i,1] <- paste(fact[1],"->",vars[i],sep="")
-                                 sem[i,2] <- vars[i]               
+                                 sem[i,2] <- vars[i]
+                                 lavaan[[1]] <- paste0(lavaan[[1]], '+', vars[i])               
             } 
             
          } else { 
-         
+          
           k <- num.factors
           for (j in 1:num.factors) {
            sem[j,1] <- paste(fact[1],"->",fact[1+j],sep="")
            sem[j,2] <- paste("g",fact[1+j],sep="")
+        lavaan[[1]] <- paste0(lavaan[[1]], ' + ', fact[1+j]) 
+        
+          
                  } 
                  }
+  if(num.factors > 1)  for(j in 1:num.factors) { lavaan[[1+j]] <- paste0('F',j ,"=~ ")}
+   
+
    for (i in 1:num.var) { 
-                           sem[i+k,1] <- paste(fact[1+m1[i]],"->",vars[i],sep="")
-                          sem[i+k,2] <- paste(fact[1+m1[i]],vars[i],sep="")
-                        }  
+                         sem[i+k,1] <- paste(fact[1+m1[i]],"->",vars[i],sep="")
+                        sem[i+k,2] <- paste(fact[1+m1[i]],vars[i],sep="")
+                        if(num.factors > 1) lavaan[[1+ m1[i ]]] <- paste0(lavaan[[1 + m1[i] ]] ,' + ', vars[i])
+                        } 
+                    
 
  if(sl) {
        k <- num.var*2
@@ -90,11 +103,10 @@ if(is.list(om.results)) {
              k <- k+1
           }
           
-     
- 
-
-
 colnames(sem) <- c("Path","Parameter","Initial Value")
-return(sem=sem[1:k,])
+lavaan <- unlist(lavaan)
+lavaan <- noquote(lavaan)
+return(list(sem=sem[1:k,],lavaan=lavaan))
+#return(list(sem=sem[1:k,],)
    }
  

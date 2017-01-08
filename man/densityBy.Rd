@@ -8,9 +8,9 @@
 Median and 25th and 75th percentile lines are added to the display. If a grouping variable is specified, densityBy will draw violin plots for each variable and for each group. }
 \usage{
 densityBy(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",density=20,
-         restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20, ...)
+         restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...)
 violinBy(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",density=20,
-         restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20, ...) 
+         restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL,...) 
 }
 
 
@@ -28,6 +28,7 @@ violinBy(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",de
   \item{col}{Allows for specification of colours.  The default for 2 groups is 
           blue and red, for more group levels, rainbows.}
  \item{pch}{The plot character for the mean is by default a small filled circle.  To not show the mean, use pch=NA }
+ \item{scale}{If NULL, scale the widths by the square root of sample size, otherwise scale by the value supplied.}
   \item{\dots}{Other graphic parameters}
 }
 \details{

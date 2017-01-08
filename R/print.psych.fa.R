@@ -156,7 +156,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
      if((!is.null(x$nh)) && (!is.na(x$nh))) {cat("\nThe harmonic number of observations is " ,round(x$nh)) }
      if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
    	 if(x$fn != "principal") { 
-   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with MLE Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
+   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with Likelihood Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
   
      
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}

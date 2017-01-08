@@ -131,9 +131,11 @@ conf.level <- alpha
     
      #The estimatation of RMSEA and the upper and lower bounds are taken from John Fox's summary.sem with minor modifications
       if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
-      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)  
-   
-
+     # RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)  
+     #note that the result$objective is not actually the chi square unless we adjust it ala Tucker 
+     #thus, the RMSEA was slightly off.  This was fixed October 29, 2016 to be  
+      RMSEA <- max( (chisq/(result$dof * (n.obs-1))-1/(n.obs-1)),0)   #changed to this from above October 29, 2016
+    
       
         tail <- conf.level/2    #this had been incorrectly listed as (1-conf.level)/2  which gave extraordinarily narrow confidence boundaries, fixed August 25, 2011
         N <- max <- n.obs

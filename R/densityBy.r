@@ -1,12 +1,14 @@
-"violinBy" <- "densityBy" <- function(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",density=20,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20, ...) {
+"violinBy" <- "densityBy" <- function(x,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",density=20,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
 SCALE=.3  #how wide are the plots?
 
+count.valid <- function(x) {sum(!is.na(x)) }
 if(missing(col)) {col <- c("blue","red")}
 nvar <- nvarg <- ncol(x)
 if(!is.null(grp)) {
  if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp]	
  Qnt <-  apply(x,2,function(xx) by(xx,grp,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE))
 meanX <- apply(x,2,function(xx) by(xx,grp,mean,na.rm=TRUE))
+nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
 meanX <- matrix(unlist(meanX))
    Qnt <- matrix(unlist(Qnt),nrow=5)
    ngrp <- ncol(Qnt)/nvar
@@ -20,6 +22,7 @@ Q25 <-  Qnt[4,]
 Q75 <-  Qnt[5,]
 rangex <- apply(x,2,range,na.rm=TRUE)
 names <- colnames(x)
+tot.n.obs <- nrow(x)
 
 if(!is.null(grp)) {
 if(missing(grp.name)) grp.name <- 1:ngrp
@@ -42,7 +45,7 @@ if(!add) {plot(meanX,ylim=c(min(minx),max(maxx)),xlim=xlim,axes=FALSE,xlab=xlab,
 if(!is.null(grp)) d <- unlist(d,recursive=FALSE)
 rev <- (length(d[[1]]$y):1) #this prevents a line down the middle
 for(i in 1:nvarg) {
-width <- SCALE/max(d[[i]]$y)
+if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
 polygon(width*c(-d[[i]]$y,d[[i]]$y[rev])+i,c(d[[i]]$x,d[[i]]$x[rev]),density=density,col=col[i],...)
 dmd <- max(which(d[[i]]$x<medx[i]))
 d25 <- max(which(d[[i]]$x <= Q25[i]))
@@ -55,6 +58,7 @@ segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y
  }
 #created March 10, 2014 following a discussion of the advantage of showing distributional values
 #modified March 22, 2014 to add the grouping variable
-#basically just a violin plot. 
+#basically just a violin plot.
+#modified December, 2016 to allow for scaling of the widths of the plots by sample size. 
 
 

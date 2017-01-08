@@ -4,7 +4,7 @@
 \alias{omegaFromSem}
 \alias{omegah}
 \title{  Calculate McDonald's  omega estimates of general and total factor saturation }
-\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem package.  This is done by omegaSem and omegaFromSem.
+\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem or lavaan packages.  This is done by omegaSem and omegaFromSem. omegaFromSem will convert appropriate sem/lavaan objects to find omega
 }
 \usage{
 omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,
@@ -12,17 +12,17 @@ omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,
     plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE, ...)
 omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE,digits=2,title="Omega",
   sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",
-  Phi = NULL, option="equal",...)
+  Phi = NULL, option="equal",lavaan=TRUE,...)
   
 omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, 
 digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
    n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) 
 
-
+omegaFromSem(fit,m=NULL,flip=TRUE,plot=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi is specified, an oblique factor pattern matrix }
+  \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi) is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
  \item{n.iter}{How many replications to do in omega for bootstrapped estimates}
   \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components (see note), or  fm="ml" for maximum likelihood.}
@@ -41,6 +41,8 @@ digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
   \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
   \item{option}{In the two factor case (not recommended), should the loadings be equal, emphasize the first factor, or emphasize the second factor. See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
   \item{covar}{defaults to FALSE and the correlation matrix is found (standardized variables.)  If TRUE, the do the calculations on the unstandardized variables and use covariances.}
+  \item{lavaan}{if FALSE, will use John Fox's sem package to do the omegaSem.  If TRUE, will use Yves Rosseel's lavaan package. }
+  \item{fit}{The fitted object from lavaan or sem. For lavaan, this includes the correlation matrix and the variable names and thus m needs not be specified.}
   \item{...}{Allows additional parameters to be passed through to the factor routines.  }
   
 }
@@ -107,6 +109,8 @@ The input to omega may be a correlation matrix or a raw data matrix, or a factor
 
 In addition, not all EFA solutions will produce workable CFA solutions.  Model misspecifications will lead to very strange CFA estimates. 
 
+It is also possible to give \code{\link{omega}} a factor pattern matrix and the associated factor intercorrelation.  In this case, the analysis will be done on these matrices.  This is particularly useful if one is not satisfied with the exploratory EFA solutions and rotation options and somehow comes up with an alternative. (For instance, one might want to do a EFA using fm='pa' with a Kaiser normalized Promax solution with a specified m value.)  
+
 \code{\link{omegaFromSem}} takes the output from a sem model and uses it to find 
  \eqn{\omega_h}.  The estimate of factor indeterminacy, found by the multiple \eqn{R^2} of the variables with the factors, will not match that found by the EFA model.  In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
  
@@ -130,11 +134,12 @@ The various objects returned from omega include:
   \item{schmid$phi}{the correlation matrix of the oblique factors}
   \item{schmid$gloading}{The loadings on the higher order, g, factor of the oblimin factors}
   \item{key}{A vector of -1 or 1 showing which direction the items were scored.}
-  \item{model}{a matrix suitable to be given to the sem function for structure equation models}
+  \item{model}{a list of two elements, one suitable to give  to the sem function for structure equation models, the other, to give to the lavaan package. }
   \item{sem}{The output from a sem analysis}
   \item{omega.group}{The summary statistics for the omega total, omega hierarchical (general) and omega within each group.}
   \item{scores}{Factor score estimates are found for the Schmid-Leiman solution.  To get scores for the hierarchical model see the note.} 
   \item{various fit statistics}{various fit statistics, see output}
+  \item{OmegaSem}{ is an object that contains the fits for the OmegaSem output.}
 }
 
 
@@ -158,11 +163,11 @@ Maintainer: William Revelle  \email{  revelle@northwestern.edu  }
 }
 \note{Requires the GPArotation package.
 
-The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as \code{\link{Promax}}.
+The default rotation uses oblimin from the GPArotation package.  Alternatives include the simplimax function, as well as \code{\link{Promax}} or the \code{\link{promax}} rotations.  promax will do a Kaiser normalization before applying Promax rotation.
 
 If the factor solution leads to an exactly orthogonal solution (probably only for demonstration data sets), then use the rotate="Promax" option to get a solution.
 
-\code{\link{omegaSem}} requires the sem package.  \code{\link{omegaFromSem}} uses the output from the sem package.
+\code{\link{omegaSem}} requires the sem or lavaan packages.  \code{\link{omegaFromSem}} uses the output from the sem or lavaan package.
 
 \code{\link{omega}} may be run on raw data (finding either  Pearson or  tetrachoric/polychoric corrlations, depending upon the poly option) a correlation matrix, a polychoric correlation matrix (found by e.g., \code{\link{polychoric}}), or the output of a previous omega run.  This last case is particularly useful when working with categorical data using the poly=TRUE option.  For in this case, most of the time is spent in finding the correlation matrix.  The matrix is saved as part of the omega output and may be used as input for subsequent runs.  A similar feature is found in \code{\link{irt.fa}} where the output of one analysis can be taken as the input to the subsequent analyses.  
 
@@ -188,7 +193,11 @@ This is based upon a cluster solution (that is to say, every item is assigned to
 
 Reise and others like to report the ratio of the second line to the first line (what portion of the reliable variance is general factor) and the third row to the first (what portion of the reliable variance is within group but not general.  This may be found by using the omega.group object that is returned by omega. (See the last example.)
 
+If using the lavaan=TRUE option in \code{\link{omegaSem}} please note that variable names can not start with a digit (e.g. 4.Letter.Words in the  \code{\link{Thurstone}} data set. The leading digit needs to be removed. 
 
+ \code{\link{omegaSem}} will do an exploratory efa and omega, create (and return) the commands for doing either a sem or lavaan analysis.  The commands are returned as the model object.  This can be used for further sem/lavaan analyses.  
+ 
+ Omega can also be found from  an analysis  done using lavaan or sem directly by calling  \code{\link{omegaFromSem}} with the original correlation matrix and the fit of the sem/lavaan model.  See the last (not run) example)
 }
 
 \seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
@@ -236,11 +245,24 @@ omega(ability.cov$cov)
 # f1 <- fa(f3$scores)
 
 # om <- omega(data$observed,sl=FALSE) #draw the hierarchical figure
-# The scores from om are based upon the schmid-leiman factors and although the g factor 
+# The scores from om are based upon the Schmid-Leiman factors and although the g factor 
 # is identical, the group factors are not.
 # This is seen in the following correlation matrix
 # hier.scores <- cbind(om$scores,f1$scores,f3$scores)
 # lowerCor(hier.scores)
+#
+#jensen <- sim.hierarchical()   #create a hierarchical structure
+#om.jen <- omegaSem(jensen,lavaan=TRUE)  #do the exploratory omega with confirmatory as well
+#lav.mod <- om.jen$omegaSem$model$lavaan #get the lavaan code or create it yourself
+# lav.mod <- 'g =~ +V1+V2+V3+V4+V5+V6+V7+V8+V9
+#              F1=~  + V1 + V2 + V3             
+#              F2=~  + V4 + V5 + V6 
+#              F3=~  + V7 + V8 + V9 '  
+#lav.jen <- cfa(lav.mod,sample.cov=jensen,sample.nobs=500,orthogonal=TRUE,std.lv=TRUE)
+# omegaFromSem(jensen,lav.jen)
+
+
+
 
 }
 }

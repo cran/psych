@@ -8,7 +8,7 @@
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,n.obs=NULL) {
    cl <- match.call()
    raw.data <- TRUE
-   if(is.list(keys)) keys <- make.keys(items,keys)   #added 9/9/16
+   if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]

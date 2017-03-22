@@ -15,7 +15,8 @@
 \usage{
 \method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
      digits = 2,method="pearson", pch = 20, lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2, 
-     hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL, ...)
+     hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL,
+     smoother=FALSE, ...)
 %- maybe also 'usage' for other objects documented here.
 }
 \arguments{
@@ -37,6 +38,7 @@
   \item{breaks}{If specified, allows control for the number of breaks in the histogram (see the hist function)}
   \item{cex.cor}{If this is specified, this will change the size of the text in the correlations. this allows one to also change the size of the points in the plot by specifying the normal cex values. If just specifying cex, it will change the character size, if cex.cor is specified, then cex will function to change the point size.}
   \item{wt}{If specified, then weight the correlations by a weights matrix (see note for some comments)}
+  \item{smoother}{If TRUE, then smooth.scatter the data points  -- slow but pretty with lots of subjects }
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 

@@ -101,7 +101,7 @@ Further note that the inter-scale correlations are based upon the correlations o
 
 An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 
-When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items.
+When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items. Compare two examples of scoring the \code{\link{bfi}} data set.
 
 } 
 \references{
@@ -148,7 +148,8 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.list
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
- scores <- scoreItems(keys[1:27,],bfi[1:27],min=1,max=6)
+ scores <- scoreItems(keys[1:25,],bfi[1:25]) #we do not need to specify min or max if
+           #there are no values (such as age) outside the normal item range.
  scores
  #The scores themselves are available in the scores$scores object.  I.e.,
  describe(scores$scores)

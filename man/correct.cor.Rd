@@ -20,7 +20,7 @@ Examples of the output of this function are seen in \code{\link{cluster.loadings
 }
 \value{Raw correlations below the diagonal, reliabilities on the diagonal, disattenuated above the diagonal.
 }
-\references{ http://personality-project.org/revelle/syllabi/405.syllabus.html }
+\references{ Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/} }
 \author{
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 }
@@ -49,8 +49,13 @@ clusters <- matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2)
 cluster.cor(clusters,cor(attitude))
 #
 #best
-scores <- score.items(matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2),attitude)
+scores <- scoreItems(matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2),attitude)
 scores$corrected
+
+#However, to do the more general case of correcting correlations for reliabilty
+#corrected <- cor2cov(x.cor,1/alpha)
+#diag(corrected) <- 1
+
 
 }
 \keyword{ models }% at least one, from doc/KEYWORDS

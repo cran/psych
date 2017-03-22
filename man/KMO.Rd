@@ -10,19 +10,19 @@ KMO(r)
   \item{r}{A correlation matrix or a data matrix (correlations will be found)}
 }
 
-\details{Let  \eqn{S^2 = diag(R^{-1})^{-1} } and \eqn{Q = SR^{-1}S}.  Then Q is said to the be the anti-image intercorrelation matrix.  Let \eqn{sumr2 = \sum{R^2}} and \eqn{sumq2 = \sum{Q^2}} for all off diagonal elements of R and Q, then  \eqn{SMA=sumr2)/(sumr2 + sumq2)}.  Although originally MSA was 1 - sumq2/sumr2  (Kaiser, 1970), this was modified in Kaiser and Rice, (1974) to be   \eqn{SMA=sumr2)/(sumr2 + sumq2)}.  This is the formula used by Dziuban and Shirkey (1974) and by SPSS.
+\details{Let  \eqn{S^2 = diag(R^{-1})^{-1} } and \eqn{Q = SR^{-1}S}.  Then Q is said to  be the anti-image intercorrelation matrix.  Let \eqn{sumr2 = \sum{R^2}} and \eqn{sumq2 = \sum{Q^2}} for all off diagonal elements of R and Q, then  \eqn{SMA=sumr2/(sumr2 + sumq2)}.  Although originally MSA was 1 - sumq2/sumr2  (Kaiser, 1970), this was modified in Kaiser and Rice, (1974) to be   \eqn{SMA=sumr2/(sumr2 + sumq2)}.  This is the formula used by Dziuban and Shirkey (1974) and by SPSS.
 	
-	In his delightfully flamboyant style, Kaiser (1975)
-	suggested that KMO > .9 were marvelous, in the .80s, mertitourious, in the .70s, middling, in the .60s, medicore, in the 50s, miserable, and  less than .5, unacceptable.
+In his delightfully flamboyant style, Kaiser (1975)
+suggested that KMO > .9 were marvelous, in the .80s, mertitourious, in the .70s, middling, in the .60s, medicore, in the 50s, miserable, and  less than .5, unacceptable.
 	
 	An alternative measure of whether the matrix is factorable is the Bartlett test  \code{\link{cortest.bartlett}} which tests the degree that the matrix deviates from an identity matrix.
 	
 	}
 \value{
 \itemize{
-\item{MSA}{The overall Measure of Sampling Adequacy}
-\item{MSAi}{The measure of sampling adequacy for each item}
-item{Image}{The Image correlation matrix (Q)}
+\item{MSA}{ The overall Measure of Sampling Adequacy}
+\item{MSAi}{ The measure of sampling adequacy for each item}
+item{Image}{ The Image correlation matrix (Q)}
 }
 }
 \references{

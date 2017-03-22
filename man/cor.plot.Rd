@@ -54,12 +54,16 @@ Modified following suggestions by David Condon and Josh Wilt to use a more meani
 Unless specified, the font size is dynamically scaled to have a cex =  10/max(nrow(r),ncol(r).  This can produce fairly small fonts for large problems.  
 The font size of the labels may be adjusted using cex.axis which defaults to one.  
 
-By default \code{\link{cor.ci}} calls cor.plot.upperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call cor.plot directly.
+By default \code{\link{cor.ci}} calls cor.plot.upperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call corPlot directly.
 
 If using the output of \code{\link{corr.test}}, the upper off diagonal will be scaled by the corrected probability, the lower off diagonal the scaling is the uncorrected probabilities.
 
-If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{cor.plot.upperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals. } 
+If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{cor.plot.upperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals. 
 
+
+To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  
+
+}
 \author{William Revelle
 }
 
@@ -86,6 +90,17 @@ rs <- corr.test(sat.act[1:200,] ) #find the probabilities of the correlations
 cor.plot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values") 
  #Show the upper and lower confidence intervals
 cor.plot.upperLowerCi(R=rs,numbers=TRUE) 
+
+#do multiple plots
+op <- par(mfrow=c(2,2))
+corPlot(ability,show.legend=FALSE,keep.par=FALSE,upper=FALSE)
+f4 <- fa(ability,4)
+corPlot(f4,show.legend=FALSE,keep.par=FALSE,numbers=TRUE)
+om <- omega(ability,4)
+corPlot(om,show.legend=FALSE,keep.par=FALSE,numbers=TRUE)
+par(op)
+
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

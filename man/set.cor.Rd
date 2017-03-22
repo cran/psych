@@ -11,7 +11,7 @@
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE)
-setCor.diagram(sc,main="Regression model",digits=2,show=TRUE,...)
+setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE)    #an alias to setCor
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
@@ -32,7 +32,7 @@ matReg(x,y,C,n.obs=0)
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   \item{sc}{The output of setCor may be used for drawing diagrams}
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
-  \item{show}{Show the matrix correlation between the x and y sets?}
+  \item{show}{Show the unweighted matrix correlation between the x and y sets?}
   \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
   \item{...}{Additional graphical parameters for setCor.diagram}
   
@@ -49,7 +49,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  R2 between two sets is just \deqn{R^2 = 1- \frac{\left | R_{yx} \right |}{\left | R_y \right | \left |R_x\right |}  =  1 - \prod(1-\rho_i^2)   }{R2 = 1- |R| /(|Ry| * |Rx|)} where R is the  complete correlation matrix of the x and y variables and Rx and Ry are the two sets involved.
 
  
- Unfortunately, the R2 is sensitive to one of the canonical correlations being very high.  An alternative, T2, is the proportion of additive variance and is the average of the squared canonicals.  (Cohen et al., 2003), see also Cramer and Nicewander (1979).  This average, because it includes some very small canonical correlations, will tend to be too small.  Cohen et al. admonition is appropriate: "In the final analysis, however, analysts must be guided by their substantive and methodological conceptions of the problem at hand in their choice of a measure of association." ( p613). 
+ Unfortunately, the R2 is sensitive to one of the canonical correlations being very high.  An alternative, T2, is the proportion of additive variance and is the average of the squared canonicals.  (Cohen et al., 2003), see also Cramer and Nicewander (1979).  This  average, because it includes some very small canonical correlations, will tend to be too small.  Cohen et al. admonition is appropriate: "In the final analysis, however, analysts must be guided by their substantive and methodological conceptions of the problem at hand in their choice of a measure of association." ( p613). 
  
  Yet another measure of the association between two sets is just the simple, unweighted correlation between the two sets. That is, 
  \deqn{R_{uw}  =\frac{ 1 R_{xy} 1' }{(1R_{yy}1')^{.5} (1R_{xx}1')^{.5}}    }{Ruw=1Rxy1' / (sqrt(1Ryy1'* 1Rxx1'))} where Rxy is the matrix of correlations between the two sets.  This is just  the simple (unweighted) sums of the correlations in each matrix. This technique exemplifies the robust beauty of linear models and  is particularly appropriate in the case of one dimension in both x and y, and will be a drastic underestimate in the case of items where the betas differ in sign. 
@@ -63,9 +63,11 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  If the number of observations is entered, then the conventional confidence intervals, statistical significance, and shrinkage estimates are  reported.
  
- If the input is rectangular, correlations or covariances are found from the data.
+ If the input is rectangular (not square), correlations or covariances are found from the data.
  
  The print function reports t and p values for the beta weights, the summary function just reports the beta weights.
+ 
+ The Variance Inflation Factor is reported but should be taken with the normal cautions of interpretation discussed by Guide and Ketokivm.  That is to say, VIF > 10 is not a magic cuttoff to define colinearity.  It is merely 1/(1-smc(R(x)).
  
  \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x, and y variables. Its output includes betas, se, t, p and R2.
  It does not work on data matrices, nor does it take formula input. 
@@ -75,6 +77,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
   \item{beta }{the beta weights for each variable in X for each variable in Y}
   \item{R}{The multiple R for each equation (the amount of change a unit in the predictor set leads to in the criterion set). }
   \item{R2 }{The multiple R2 (\% variance acounted for) for each equation}
+  \item{VIF}{The Variance Inflation Factor which is just 1/(1-smc(x))}
   \item{se}{Standard errors of beta weights (if n.obs is specified)}
   \item{t}{t value of beta weights (if n.obs is specified)}
   \item{Probability}{Probability of beta = 0 (if n.obs is specified)}
@@ -100,13 +103,15 @@ H. Hotelling. (1936) Relations between two sets of variates. Biometrika 28(3/4):
 
 E.Cramer and W. A. Nicewander (1979) Some symmetric, invariant measures of multivariate association. Psychometrika, 44:43-54.
 
-
+V. D. R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefining some methodological criteria for the journal.  Journal of Operations Management. 37. v-viii.
 
 }
 
-\note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to set.cor from mat.regress to reflect the estimation of the set correlation. 
+\note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to setCor from mat.regress to reflect the estimation of the set correlation. 
 
 The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621 but does match the formula on page 615, except for the typo in the estimation of F (see Cohen 1982).   The difference seems to be that they are adding in a correction factor of df 2 = df2 + df1.  
+
+
 
 }
 

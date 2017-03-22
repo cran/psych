@@ -1,6 +1,7 @@
 #developed July 4, 2012
 #modified July 9, 2014 to allow polychorics within groups
 #modified June 2, 2015 to include covariance, pearson, spearman, poly ,etc. in correlations
+#Fixed March 3, 2017 to not weight empty cells in finding ICCs
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 "statsBy" <-
    function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE) { #  
@@ -8,11 +9,12 @@
   valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
     }
-#defing a function to count pairwise observations
+#define a function to count pairwise observations
   pairwise <- function(x) {n <- t(!is.na(x)) %*% (!is.na(x))
               n}
-#get the grouping information           
-gr <- which(colnames(data) %in% group)      
+#get the grouping information
+if(is.character(group)) {
+gr <- which(colnames(data) %in% group) } else {gr <- group}      
 z1 <- data[,group]
        z <- z1
        cnames <- colnames(data)
@@ -34,16 +36,16 @@ z1 <- data[,group]
                
                colnames(xvals$mean) <- colnames(xvals$sd) <- colnames(xvals$n) <-  colnames(data)
                rownames(xvals$mean) <-  rownames(xvals$sd) <- rownames(xvals$n) <- rown
-                              nH <- harmonic.mean(xvals$n)
-               nG <- nrow(xvals$mean)         #we need to fix this so it is just for the cells that are not NA
+                             # nH <- harmonic.mean(xvals$n)     #this will be 0 if any is zero -- but is not used anyway
+               nG <- colSums(!is.na(xvals$mean))         #fixed this so it is just for the cells that are not NA
                GM <- colSums(xvals$mean*xvals$n,na.rm=na.rm)/colSums(xvals$n,na.rm=na.rm) 
                MSb <- colSums(xvals$n*t((t(xvals$mean) - GM)^2),na.rm=na.rm)/(nG-1) #weight means by n
-               MSw <- colSums(xvals$sd^2*(xvals$n-1),na.rm=na.rm)/(colSums(xvals$n-1))#find the pooled sd
+               MSw <- colSums(xvals$sd^2*(xvals$n-1*(xvals$n>0)),na.rm=na.rm)/(colSums(xvals$n-1*(xvals$n>0)))#find the pooled sd   #fix this for 0 cell size
                
                xvals$F <- MSb/MSw
                N <- colSums(xvals$n)
              
-              npr <- (colSums(xvals$n-1)+nrow(xvals$n))/(nrow(xvals$n))
+              npr <- (colSums(xvals$n-1*(xvals$n > 0))+colSums(xvals$n >0))/(colSums(xvals$n >0))
                xvals$ICC1 <- (MSb-MSw)/(MSb + MSw*(npr-1))
                xvals$ICC2 <- (MSb-MSw)/(MSb)
                
@@ -68,12 +70,14 @@ z1 <- data[,group]
               xvals$within <- t(matrix(unlist(lower),nrow=nvars*(nvars-1)/2))  #string them out as well
              
               cnR <- abbreviate(cnames[-gr],minlength=5) 
-             
+           
       k <- 1
        colnames(xvals$within) <- paste("V",1:ncol(xvals$within))
       for(i in 1:(nvars-1)) {for (j in (i+1):nvars) {
       	colnames(xvals$within)[k] <- paste(cnR[i],cnR[j],sep="-")
      	 k<- k +1 }} 
+     	 rownames(xvals$within) <- paste0("z",names(xvals$r))
+
              
              wt <- by(data,z,function(x) count.pairwise(x[-gr]))
              lower.wt <- t(matrix(unlist(lapply(wt,function(x) x[lower.tri(x)])    )  ,nrow=nvars*(nvars-1)/2))
@@ -101,7 +105,7 @@ z1 <- data[,group]
               covar <- TRUE},
              poly=  {xvals$raw <- polychoric(data)$rho},
              tet = {xvals$raw <- tetrachoric(data)$rho},
-              mixed = {xvals$raw <- mixed.cor(data)$rho}   
+             mixed = {xvals$raw <- mixed.cor(data)$rho}   
        )
        
              new.data <- as.matrix( merge(xvals$mean,data,by=group,suffixes =c(".bg",""))) #drop the grouping variable(s) 
@@ -110,21 +114,29 @@ z1 <- data[,group]
              diffs <- new.data[,(nvar+1):ncol(new.data)] - new.data[,1:nvar]
              colnames(diffs) <- paste(colnames(new.data)[(nvar + 1):ncol(new.data)], ".wg", sep = "")
              xvals$rbg <- cor(new.data[,1:nvar],use="pairwise",method=method)  #the between group (means)
-             t <- (xvals$rbg*sqrt(nG-2))/sqrt(1-xvals$rbg^2)
+             #t <- rep(NA,(length(nG)-length(gr)))
              
-             if(nG > 2) {xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))} else {xvals$pbg <- NA}
-        #     xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
+             if(all(nG > 2)) {
+             t <- (xvals$rbg*sqrt(nG[-gr]-2))/sqrt(1-xvals$rbg^2)
+            # if(any(nG < 3) ) {#warning("Number of groups must be at least 2")
+            
+              xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))
+              } else { t <- xvals$pbg <- NA }
+                      #     xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
             if(cor %in% c("tet","poly","mixed","mixed.cor") ) cor <- "cor"
             switch(cor, 
       			 cor = {xvals$rwg  <- cor(diffs,use=use,method=method)},
       			 cov = {xvals$rwg  <- cov(diffs,use=use) 
               covar <- TRUE}
        )
+       
              xvals$nw <- pairwise(diffs)
                rwg <- cov2cor(xvals$rwg)
                t <- (rwg*sqrt(xvals$nw -2))/sqrt(1-rwg^2)
-             
-            xvals$pwg <- 2*(1 - pt(abs(t),(N - nG -2)))
+               
+               
+            if(all(nG > 2)) {
+            xvals$pwg <- 2*(1 - pt(abs(t),(N[-gr] - nG[-gr] -2)))} else {xvals$pwg <- NA}
             # colnames(xvals$rwg) <- rownames(xvals$rwg) <- paste(colnames(xvals$rwg),".wg",sep="")
              xvals$etabg <- diag(cor(new.data[,1:(nvar)],new.data[,(nvar+1):ncol(new.data)],use="pairwise",method=method) )#the means with the data
              xvals$etawg <- diag(cor(new.data[,(nvar+1):ncol(new.data)],diffs,use="pairwise",method=method)) #the deviations and the data

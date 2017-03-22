@@ -1,9 +1,10 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.7.01 (2017-01-01}{
+\section{Changes in psych version 1.7.4 (2017-03-20}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.7.1 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.6.12.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.12 was released in December of 2016, the last two digits of development versions reflect the day of any modifications).
+      \item Version 1.7.4 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.7.3.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.12 was released in December of 2016, the last two digits of development versions reflect the day of any modifications). 1.7.3 was  released in March, 2017,
+       
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
@@ -18,7 +19,7 @@
       \item Add the ability to create multiple groups in sim.irt functions
       \item Find canonical loadings in set.cor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
-     \item add option to do subject density and item density plot to IRT plot.
+     \item Add option to do subject density and item density plot to IRT plot.
     \item note that the df in setCor should reflect the number of cases actually used   
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
@@ -49,21 +50,66 @@
      \item Allow  the choice between regression vs. correlation in esem between X and Y sets.
      \item Allow for different rotation options in X and Y sets in esem, allow omega style hierarchical structure for x (and y)
      \item Fix bug in esem.diagram for ability- bifactor 3,3 simple=FALSE,cut=.2
-     
+     \item Improve documentation for esem
       \item parallelize iterations when bootstrapping fa   
-      \item fix alpha so that it can just select a small subset of items to score
-     
-      \item Add in cross validation as an option to best.scales/bestItems.
-     
-      \item Add interbattery diagram to the structure.
-    
-      \item fix bug in lavaan.diagram for lr=FALSE
-     
+      \item fix alpha so that it can just select a small subset of items to score  
+      \item Add in cross validation as an option to best.scales/bestItems.     
+      \item Add interbattery diagram to the structure.    
+      \item fix bug in lavaan.diagram for lr=FALSE   
       \item Add option to omegaSem to generate code for lavaan for a  hierarchical model
      \item Add the df in mediate
+     \item Make sure that output is "tidy" 
+     \item add Meng's test of correlations
+     \item Fix scoreIRT.2pl so that it does not choke on 1 items scales
+     \item Add an additional object to corr.test and corr.p to give p adjusted cis (requested by Lorien Elleman)
+      \item Add Krippendorf's alpha?
   }
   } 
   }
+  
+   \section{Changes in psych version 1.7.3.21 (2017-03-21)}{
+    \subsection{Additions}{
+          \itemize{ 
+        \item Added sim.multi to simulate and draw within subject data. 
+        \item Minor modifications to corPlot for labelling (and added a comment to the help file to show how to do multiple plots to answer a query from Yuji Shimohira Calvo)
+        \item Modified cohen.kappa so that the number of levels can be specified if there are some levels that are missing completely (requested by Amy Finnegan).
+         \item Added multilevel.reliability (mlr) to find various generalizability coefficients for three way (subjects x time x items) data following chapters by Pat Shrout and Sean Lane.
+        \item Added a helper function (mlArrange) to convert semi-wide data into long data.  Useful for multilevel analyses of three way data sets.
+        \item Added mlPlot to plot multilevel (id x time * item) data.
+        \item Added a plot option to fa.parallel to allow suppression of plotting (requested by David Copndon)
+        \item Added autoR to find autocorrelations based upon mssd. This is useful for multiple time points.  
+         \item Added a trivial helper function r2c (and cor2cov) to convert a correlation matrix to a covariance matrix.
+        \item Added VIF (Variance Inflation Factor) which is just 1/(1-smc)  to setCor.
+        \item Added a note to alpha about the dplyr problem and added a fix to the problem (as reported by Adam Liter).
+        \item Added a discussion to the fa.rd documentation discussing the problem of estimating the minimum residual.  (Inspired by correspondence with Hao Wu and Mikko Ronkko).
+        \item Added a new vignette (intro) and modified the overview vignette.  Meant to make the introduction and overvies easier to read.
+        \item Added a new function:  unidim  to estimate the unidimensionality of a set of items. 
+        \item Inspired by a question from Jared Smith, added several new features to scatter.hist, as well as removed a few bugs.
+        \item While patching pairs.panels (see bugs fixed), add smoother option to all the other options.
+        \item Added cor2cov (and then temporarily removed because of conflict with lavaan.shiny call to lavaan::cor2cov).  
+        }
+        
+          }
+      \subsection{Bugs Fixed}{
+          \itemize{ 
+              \item ScoreIrt: corrected cut so that it passes through to lower level functions (reported by David Condon)
+              \item rownames for corr.p$ci were incorrectly labeled (reported by Lorien Elleman)
+             \item Fixed a bug in finding RMSEA and the confidence intervals thereof.  (Reported by Hao Wu).  Possibly the error was introduced in 1.6.12 
+     \item Fixed plotIrt so that it correctly rescales ylim for each factor rather than just the first factor.
+     \item The lag parameter in mssd was not being used.  Fixed.
+     \item The handling of missing data by groups in statsBy is fixed for finding ICC1. This was producing seriously incorrect ICC1 and ICC2s with a great deal of missing data. That is for SAPA data, when grouping by ZCTA, many items were missing.  (Reported by Lorien Elleman). 
+     \item Fixed a bug in scoreItems and scoreOverlap when keys are already a data.frame rather than a matrix.  (Reported by Jeromy Anglim).
+     \item Cleaned up various problems in mediate and print.psych.mediate so more complicate problems will work.
+     \item Modified isCorrelation to test for symmetric matices but dropping colnames and rownames.  (This led to a problem with the neo data set.  Reported by Hao Wu.)
+     \item Changed the neo data set from data.frame to matrix.
+     \item Fixed omegaFromSem and print.psych.omega to handle case of 1 factor sem model (which would normally be thought of as inappropriate, but some people wanted.)
+     \item Fixed a problem with printing describeBy  output. (Reported by David Uttall.)
+     \item Fixed a problem with esem for the case of having more variables in the correlation matrix than being analyzed in the esem statement. 
+    \item Fixed a bug in pairs.panels where it was ignoring the show.points option in several option cases.  (Reported by Matthew Labrum).
+  
+              }
+              }
+             }
   
  \section{Changes in psych version 1.6.12 (2016-12-31)}{
     \subsection{Additions}{
@@ -89,9 +135,8 @@
     \item Fixed VSS so that it reports not the biggest, but also the first where the sign changes.
      \item Allow imputation in factor scores (e.g. median or mean imputation for items) (requested by Stephan Daus).  Also report the number of missing observations per subject when doing factor scores.
    
-    
-                      }
-                                       }
+     }
+   }
       \subsection{Bugs Fixed}{
           \itemize{ 
               \item  Fixed the RMSEA in fa.stats.  Although the confidence intervals were correct, the RMSEA value was slightly inflated.  Reported chi squares were correct, just the RMSEA was slightly off. 
@@ -101,6 +146,8 @@
          \item Fixed bug in fa.parallel where it is not drawing both resampled and simulated lines.  (reported by Alexander Weiss). This was intentionally added in about March to make a cleaner diagram, but now I am discussing this in the help file. 
    \item Allow specification of the direction of items in the scoreIrt.2pl to match the keys.list (previously it would match the factor analysis which could be backwards for some scales with many reversed items).
        \item Did not need to fix bug in wtd.table in polychoric by adding in minx and maxx, etc. (reported by Jeovani Schmitt) because this can be handled by settting global=FALSE.
+       
+    \item Minor fix in the default labels for the fa.parallel function (suggested by Meik Michalke)
      
              }
            }

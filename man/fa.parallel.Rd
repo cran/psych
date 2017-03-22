@@ -8,7 +8,7 @@
 \usage{
 fa.parallel(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",
 n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
-sim=TRUE,quant=.95,cor="cor",use="pairwise")
+sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE)   #deprecated
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
@@ -34,6 +34,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
  \item{quant}{if nothing is specified, the empirical eigen values are compared to the mean of the resampled or simulated eigen values.  If a value (e.g., quant=.95) is specified, then the eigen values are compared against the matching quantile of the simulated data.  Clearly the larger the value of quant, the few factors/components will be identified.}
  \item{global}{If doing polychoric analyses (fa.parallel.poly) and the number of alternatives differ across items, it is necessary to turn off the global option}
  \item{...}{additional plotting parameters, for plot.poly.parallel}
+ \item{plot}{By default, fa.parallel draws the eigen value plots.  If FALSE, suppresses the graphic output}
 }
 \details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}). Both the VSS and the MAP criteria are included in the \code{link{nfactors}} function which also reports the  mean item complexity and the BIC for each of multiple solutions.   fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 

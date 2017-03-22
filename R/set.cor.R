@@ -85,7 +85,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
     		      	 	 rownames(beta) <- x
     		 rownames(R2) <- colnames(R2) <- y
      		 }
-     	
+     	 VIF <- 1/(1-smc(x.matrix))
 
      	
      	#now find the unit weighted correlations  
@@ -164,8 +164,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
         
        # coeff <- data.frame(beta=beta,se = se,t=tvalue, Probabilty=prob)
        # colnames(coeff) <- c("Estimate", "Std. Error" ,"t value", "Pr(>|t|)")
-     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,Call = cl)} else {
-     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,Call = cl)}
+     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,VIF=VIF,Call = cl)} else {
+     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,VIF=VIF,Call = cl)}
      	class(set.cor) <- c("psych","setCor")
      	if(plot) setCor.diagram(set.cor,main=main)
      	return(set.cor)
@@ -181,7 +181,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
 #this gets around the problem that some users have large data sets, but only want a few variables in the regression
 
 
-setCor.diagram <- function(sc,main="Regression model",digits=2,show=TRUE,...) { 
+setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,...) { 
 
 beta <- round(sc$beta,digits)
 x.matrix <- round(sc$x.matrix,digits)
@@ -216,7 +216,7 @@ if(nx >1) {
   for (k in 1:(i-1)) {dia.curved.arrow(y[[i]]$right,y[[k]]$right,y.matrix[i,k],scale=(abs(i-k)))} 
   }}
   for(i in 1:ny) {dia.self(y[[i]],side=3,scale=.2) }
- if(show) {text((10-nx/3)/2,0,paste("unweighted matrix correlation  = ",round(sc$Ruw,digits)))}
+ if(show) {text((10-nx/3)/2,0,paste("Unweighted matrix correlation  = ",round(sc$Ruw,digits)))}
 }
 		 
      		 

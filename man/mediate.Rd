@@ -40,10 +40,17 @@ When doing linear modeling, it is frequently convenient to estimate the direct e
 
 Functionally, this is just regular linear regression and partial correlation with some different output.
 
+In the case of two predictor variables, X and M, and a criterion variable Y, then the direct effect of X on Y, labeled with the path c, is said to be mediated by the effect of x on M (path a) and the effect of M on Y (path b).  This partial effect (a b) is said to mediate the direct effect of X --c--> Y:     X --a ->  M  --b--> Y with X --c'--> Y where c' = c - ab.
+
+Testing the significance of the ab mediation effect is done through bootstrapping many random resamples (with replacement) of the data.  
+
+For moderation, the moderation effect of Z on the relationship between X -> Y is found by taking the (centered) product of X and Z and then adding this XZ term into the regression.
+
 In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original covariance/correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.
 
 The function has been tested against some of the basic cases and examples in Hayes (2013) and the associated data sets.
 
+Unless there is a temporal component that allows one to directly distinguish causal paths (time does not reverse direction), interpreting mediation models is problematic. Some people find it useful to compare the differences between mediation models where the causal paths (arrows) are reversed.  This is a mistake  and should not be done (Thoemmes, 2015). 
 
 For fine tuning the size of the graphic output, xlim and ylim can be specified in the mediate.diagram function. Otherwise, the graphics produced by mediate and moderate use the default xlim and ylim values.
 }
@@ -64,6 +71,8 @@ For fine tuning the size of the graphic output, xlim and ylim can be specified i
 Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional process analysis: A regression-based approach.  Guilford Press. 
 
 Preacher, Kristopher J and Hayes, Andrew F (2004) SPSS and SAS procedures for estimating indirect effects in simple mediation models. Behavior Research Methods, Instruments, \& Computers 36, (4) 717-731.
+
+Thoemmes, Felix (2015) Reversing arrows in mediation models does not distinguish plausible models.  Basic and applied social psychology, 27: 226-234. 
 
 Data from  Hayes (2013), Preacher and Hayes (2004), and from Kerchoff (1974)
 
@@ -132,11 +141,17 @@ R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572,
  #n.iter set to 50 (instead of default of 5000) for speed of demo
 mod.k <- mediate("OccupAsp","Intelligence",m= c(2:5),data=R.kerch,n.obs=767,n.iter=50)
 mediate.diagram(mod.k) 
+#print the path values 
+mod.k
+
 #Compare the following solution to the path coefficients found by the sem package
 
 mod.k2 <- mediate(y="OccupAsp",x=c("Intelligence","Siblings","FatherEd","FatherOcc"),
      m= c(5:6),data=R.kerch,n.obs=767,n.iter=50)
 mediate.diagram(mod.k2,show.c=FALSE) #simpler output 
+
+#print the path values
+mod.k2
 
 }
 

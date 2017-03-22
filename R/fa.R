@@ -15,6 +15,7 @@
 #6/12/14  Added the ability to find tetrachorics, polychorics, or mixed cors.
 #15/1/15  Fixed the way we handle missing and imputation to actually work.
 #19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
+
 "fa" <- 
 function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
  cl <- match.call()
@@ -63,16 +64,16 @@ means <- colMeans(replicates,na.rm=TRUE)
 sds <- apply(replicates,2,sd,na.rm=TRUE)
 
 if(length(means) > (nvar * nfactors) ) {
-   means.rot <- means[(nvar*nfactors +1):length(means)]
-   sds.rot <-      sds[(nvar*nfactors +1):length(means)]  
-   ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
-  ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot  
-   ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)    } else  {
+   	means.rot <- means[(nvar*nfactors +1):length(means)]
+   	sds.rot <-      sds[(nvar*nfactors +1):length(means)]  
+	ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
+  	ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot  
+   	ci.rot <- data.frame(lower=ci.rot.lower,upper=ci.rot.upper)    } else  {
         rep.rots <- NULL
-         means.rot <- NULL
-         sds.rot <- NULL
-         z.rot <- NULL
-         ci.rot <- NULL }
+        means.rot <- NULL
+        sds.rot <- NULL
+        z.rot <- NULL
+        ci.rot <- NULL }
    
    means <- matrix(means[1:(nvar*nfactors)],ncol=nfactors)
    sds <- matrix(sds[1:(nvar*nfactors)],ncol=nfactors)
@@ -103,8 +104,8 @@ return(results)
  }
  #written May 1 2011
  #modified May 8, 2014 to make cis an object in f to make sorting easier
-
-
+ 
+########################################################
 #the main function 
 
 "fac" <- 
@@ -122,19 +123,22 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        
          if(nf >1 ) {loadings <- eigens$vectors[,1:nf] %*% diag(sqrt(eigens$values[1:nf])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
          model <- loadings %*% t(loadings)
-    #use switch to clean up the code
-    switch(fm,
+#use switch to clean up the code
+ switch(fm,
     wls = {residual <- sd.inv %*% (S- model)^2 %*% sd.inv},
     gls = {residual <- (S.inv %*%(S - model))^2 } ,
     uls = {residual <- (S - model)^2},  
-    minres = {residual <- (S - model)^2
-            diag(residual) <- 0},
+  #  minres = {residual <- (S - model)^2
+  #             diag(residual) <- 0},
+    minres = {residual <- (S-model)
+              residual <- residual[lower.tri(residual)]
+              residual <- residual^2},                 
     minchi = {residual <- (S - model)^2   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
             residual <- residual * np.obs
             diag(residual) <- 0
             })
         
-   #     #weighted least squares weights by the importance of each variable   
+#     #weighted least squares weights by the importance of each variable   
 #        if(fm == "wls" ) {residual <- sd.inv %*% (S- model)^2 %*% sd.inv} else {if (fm=="gls") {residual <- (S.inv %*%(S - model))^2 } else {residual <- (S - model)^2 #this last is the uls case
 #        if(fm == "minres") {diag(residual) <- 0}   #this is minimum residual factor analysis, ignore the diagonal
 #        if(fm=="minchi") {residual <- residual * np.obs
@@ -159,11 +163,18 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                           	control = c(list(fnscale=1,
                  			parscale = rep(0.01, length(start))), control),
                  			nf = nf, S = S)
-                 } else {
+                 } else { 
+                    if(fm=="minres") { 
+                		 	res <- optim(start, fit.residuals,gr=FAgr.minres2, method = "L-BFGS-B", lower = .005, 
+                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  			length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
+                  		
+                  		} else   { 
                 		 	res <- optim(start, fit.residuals,gr=FAgr.minres, method = "L-BFGS-B", lower = .005, 
                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
-                  		}
+                  			}
+                  			}
    
    if((fm=="wls") | (fm=="gls") ) {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
     result <- list(loadings=Lambda,res=res,S=S)
@@ -204,6 +215,21 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         if(fm=="minchi") {g <- g*np.obs}
         diag(g)/Psi^2                             #normalized 
     }
+    
+     FAgr.minres2 <- function(Psi, S, nf,S.inv,fm)  #the first derivatives 
+    {
+        sc <- diag(1/sqrt(Psi))
+        Sstar <- sc %*% S %*% sc
+        E <- eigen(Sstar, symmetric = TRUE)
+        L <- E$vectors[, 1:nf, drop = FALSE]
+        load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
+        load <- diag(sqrt(Psi)) %*% load
+         g <- load %*% t(load) + diag(Psi) - S      # g <- model - data
+        if(fm=="minchi") {g <- g*np.obs}
+                                     #normalized 
+        diag(g)/Psi^2  
+    }
+          
           
  #this was also taken from factanal        
     FAout <- function(Psi, S, q) {
@@ -387,14 +413,15 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
              colnames(loadings) <- "MR1" }
      
     
-    switch(fm, 
-    wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
-    pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
-    gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
-    ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
-    minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
-    minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
-    minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
+	switch(fm, 
+    	wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
+		pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
+    	gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
+   		ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
+    	minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
+   	 	minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
+		minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')}
+		)
     
     rownames(loadings) <- rownames(r)
     loadings[loadings==0.0] <- 10^-15    #added to stop a problem with varimax if loadings are exactly 0
@@ -531,10 +558,11 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     if(!is.null(Phi)) {Phi <- Phi[ev.order,ev.order] } #January 20, 2009 but, then, we also need to change the order of the rotation matrix!
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
-    if(max(abs(loadings) > 1.0) && !covar) warning(' A Heywood case was detected.  Examine the loadings carefully.') 
+    if(max(abs(loadings) > 1.0) && !covar) warning(' A loading greater than abs(1) was detected.  Examine the loadings carefully.') 
     result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)
+    if(max(result$communality > 1.0) && !covar) warning("An ultra-Heywood case was detected.  Examine the results carefully")
     if(fm == "minrank") {result$communalities <- mrfa$communality} else {if(fm=="pa") {result$communalities <- comm1} else {result$communalities <- 1- result.res$par}}
    
     

@@ -58,8 +58,8 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
   
  
   if(nmod > 0 ) {if(!raw) {stop("Moderation analysis requires the raw data")
-   } else {ivXm <- matrix(data[,x] * data[,mod],ncol=length(mod)) #add in a moderating variable as a product term
-       
+   } else {ivXm <- matrix(data[,x] * data[,mod],ncol=length(x)) #add in a moderating variable as a product term  - just works for one mod
+      
        colnames(ivXm) <- paste0(abbreviate(x),"X",abbreviate(mod))
       data <- cbind(data,ivXm)
         
@@ -134,7 +134,8 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
             mean.boot <- colMeans(boot)
             sd.boot <- apply(boot,2,sd)
             ci.quant <- apply(boot,2, function(x) quantile(x,c(alpha/2,1-alpha/2),na.rm=TRUE)) 
-            mean.boot <- matrix(mean.boot)
+            mean.boot <- matrix(mean.boot,nrow=numx)
+            sd.boot <- matrix(sd.boot,nrow=numx)
             ci.ab <- matrix(ci.quant,nrow=2*numx * numy)
             boots <- list(mean=mean.boot,sd=sd.boot,ci=ci.quant,ci.ab=ci.ab)
               } 
@@ -217,7 +218,7 @@ boot.mediate <- function(data,x,y,m,n.iter=10,std=FALSE,use="pairwise") {
  # ab <- a %*% b    #each individual path  #this probably is only correct for the numx = 1 model
 #  if((numx > 1) & (numy > 1)) {for (i in 1:numx) {ab[i,] <- a[i,] * b}}
   # ab <- a * b  #we don't really need this
-  indirect <-  beta.x - beta[1:numx]  #this is c' = c - ab
+  indirect <-  beta.x - beta[1:numx,1:numy]  #this is c' = c - ab
  # result[iteration,] <- c(indirect,ab)  #this is a list of vectors
   result[iteration,] <- c(indirect)  #this is a list of vectors
    }
@@ -308,15 +309,17 @@ boot.moderate <- function(data,x,y,m,mod,n.iter=10,std=FALSE,use="pairwise") {
     
     cat("\n\n Full output  \n")
      cat("\n Total effect estimates (c) \n")
+      
         for(j in 1:ndv) {
     dft <- round(data.frame(direct=x$total.reg$beta[,j],se = x$total.reg$se[,j],t=x$total.reg$t[,j]),digits)
     dftp <- cbind(dft,p = signif(x$total.reg$prob[,j],digits=digits+1))
     colnames(dftp) <- c(dv[j],"se","t","Prob")
     rownames(dftp) <- rownames(x$total.reg$beta)
+     print(dftp)
     }
    
    
-    print(dftp)
+   
     
      cat("\nDirect effect estimates     (c') \n")
      for(j in 1:ndv) {
@@ -326,8 +329,9 @@ boot.moderate <- function(data,x,y,m,mod,n.iter=10,std=FALSE,use="pairwise") {
      dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[1:niv,j],digits=digits+1))
      }
       colnames(dfdp) <- c(dv[j],"se","t","Prob")
-     }
+     
    print(dfdp)
+   }
     
      
     cat("\n 'a'  effect estimates \n")
@@ -361,11 +365,13 @@ boot.moderate <- function(data,x,y,m,mod,n.iter=10,std=FALSE,use="pairwise") {
       }
  
       cat("\n 'ab'  effect estimates \n")
-      #does not work yet for ndv > 1  for boot
+     
  for (j in 1:ndv) {
-      dfab  <- round(data.frame(indirect=x$ab[,j],boot = x$boot$mean[,j],sd=x$boot$sd,lower = x$boot$ci[1,],upper= x$boot$ci[2,]),digits)
+      dfab  <-round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],sd=x$boot$sd[,j],lower=x$boot$ci[1,(niv*(j-1)+niv):(niv*(j-1)+niv)],
+      upper=x$boot$ci[2,(niv*(j-1)+niv):(niv *(j-1)+niv)]),digits)
       rownames(dfab) <- rownames(x$ab)
       colnames(dfab)[1] <- dv[j]
+      
       print(round(dfab,digits))
       }
 

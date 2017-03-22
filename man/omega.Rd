@@ -259,8 +259,13 @@ omega(ability.cov$cov)
 #              F2=~  + V4 + V5 + V6 
 #              F3=~  + V7 + V8 + V9 '  
 #lav.jen <- cfa(lav.mod,sample.cov=jensen,sample.nobs=500,orthogonal=TRUE,std.lv=TRUE)
-# omegaFromSem(jensen,lav.jen)
+# omegaFromSem(lav.jen,jensen)
 
+#try a one factor solution -- this is not recommended, but sometimes done
+#it will just give omega_total
+# lav.mod.1 <- 'g =~ +V1+V2+V3+V4+V5+V6+V7+V8+V9 '  
+#lav.jen.1<- cfa(lav.mod.1,sample.cov=jensen,sample.nobs=500,orthogonal=TRUE,std.lv=TRUE)
+# omegaFromSem(lav.jen.1,jensen)
 
 
 

@@ -29,7 +29,7 @@ esem  = {print.psych.esem(x,digits=digits,short=short,cut=cut,...)},
   vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
   cta = {print.psych.cta(x,digits=digits,all=all,...)},
   mediate = {print.psych.mediate(x,digits=digits,short=short,...)},
-
+  multilevel = {print.psych.multilevel(x,digits=digits,short=short,...)},
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
@@ -52,6 +52,14 @@ alpha = {
 	 cat("\nNon missing response frequency for each item\n")
 	 print(round(x$response.freq,digits=digits))}
 },
+
+autoR = {cat("\nAutocorrelations \n")
+      if(!is.null(x$Call)) {cat("Call: ")
+           print(x$Call)}
+       print(round(x$autoR,digits=digits))
+       
+ },
+
 bestScales ={ 
      df <- data.frame(correlation=x$r,n.items = x$n.items)
     cat("The items most correlated with the criteria yield r's of \n")
@@ -234,7 +242,11 @@ describe= {if(!is.null(x$signif)) {
                    if(!missing(signif)) x <- signifNum(x,digits=signif)
             print(round(x,digits=digits)) }
          },
-describeBy = {print(unclass(x),digits=digits)
+describeBy = {cat("\n Descriptive statistics by group \n")
+              if(!is.null(x$Call)){ cat("Call: " )
+              print(x$Call) }
+            class(x) <- "by"
+            print(x,digits=digits) 
          },
          
 describeData = {if  (length(dim(x))==1) {class(x) <- "list"
@@ -264,39 +276,7 @@ faBy = { cat("Call: ")
         cat("\nFactor analysis results for each group\n")
         print(x$faby.sum,digits)
         }}
-        
-       
-# cat("Factor Analysis with confidence intervals using method = ",x$f$fm )
-#   # cat("\nCall: ")
-#
-#   
-#   nfactors <-dim(x$loadings)[2]
-#    c("\n Confidence intervals\n")
-#    if(is.null(x[["ci"]])) { lc <- lci <- data.frame(unclass(x$loadings),x$low,x$highr)} else { lc <- lci <- data.frame(unclass(x$loadings),x$ci)}
-#   
-#   
-#    for(i in 1:nfactors) {
-#    lci[,(i-1)*3 +2 ] <- lc[,i] 
-#    lci[,(i-1)*3 +1 ] <- lc[,i+nfactors] 
-#    lci[,(i-1)*3 +3 ] <- lc[,i+nfactors*2] 
-#     }
-#     colnames(lci) <- paste(rep(c("low","coeff","upper"),nfactors),sep="")
-#    for(i in 1:nfactors) { colnames(lci)[(i-1)*3+2] <- colnames(x$loadings)[i] }
-#    
-#    cat("\n Coefficients and bootstrapped confidence intervals \n")
-#    print (round(lci,digits=digits))
-#   if(!is.null(x$Phi)) { phis <- x$Phi[lower.tri(x$Phi)]
-#    cci <- data.frame(lower=x$cis$ci.rot$lower,estimate = phis,upper= x$cis$ci.rot$upper)
-#     cnR <- abbreviate(colnames(x$loadings),minlength=5) 
-#       k <- 1
-#      for(i in 1:(nfactors-1)) {for (j in (i+1):nfactors) {
-#       rownames(cci)[k] <- paste(cnR[i],cnR[j],sep="-")
-#       k<- k +1 }}  #added 10/4/14
-#    cat("\n Interfactor correlations and bootstrapped confidence intervals \n")
-#    print(cci,digits=digits)}
-#   
-#}
-        
+                
 },
     
 guttman =  {
@@ -619,6 +599,8 @@ setCor= { cat("Call: ")
            print(round(x$R,digits))
             cat("multiple R2 \n") 
             print(x$R2,digits)
+            cat("\nMultiple Inflation Factor (VIF) = 1/(1-SMC) = \n")
+            print(round(x$VIF,digits=digits))
              cat("\n Unweighted multiple R \n") 
            print(round(x$ruw,digits))
              cat(" Unweighted multiple R2 \n") 
@@ -704,11 +686,14 @@ cat("Intraclass Correlation 2 (Reliability of group differences) \n")
 print(round(x$ICC2,digits))
 cat("eta^2 between groups  \n")
 print(round(x$etabg^2,digits))
+ if(short) { cat("\nTo see the correlations between and within groups, use the short=FALSE option in your print statement.")}
+	        
 if(!short) {cat("Correlation between groups \n")
-lowerMat(x$rbg)
-cat("Correlation within groups \n")
-lowerMat(x$rwg)
+	lowerMat(x$rbg)
+	cat("Correlation within groups \n")
+	lowerMat(x$rwg)
 }
+ cat("\nMany results are not shown directly. To see specific objects select from the following list:\n",names(x))
 },
 
 tau = {cat("Tau values from dichotomous or polytomous data \n")

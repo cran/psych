@@ -83,6 +83,7 @@ function(x,na.rm=TRUE,plot=TRUE) {
  cl <- match.call()
 x <- as.matrix(x)     #in case it was a dataframe
 if(na.rm) x <- na.omit(x)
+if(nrow(x) >  0) {
 n <- dim(x)[1]
 p <- dim(x)[2]
 x <- scale(x,scale=FALSE)  #zero center
@@ -105,7 +106,7 @@ if(plot) {qqnorm(d)
           qqline(d)}
 results <- list(n.obs=n,n.var=p, b1p = b1p,b2p = b2p,skew=M.skew,small.skew=small.skew,p.skew=p.skew,p.small=p.small,kurtosis=M.kurt,p.kurt=p.kurt,d = d,Call=cl)
 class(results) <- c("psych","mardia")
-return(results)
+return(results) } else {warning("no cases with complete data, mardia  quit.")}
 }
 
 

@@ -26,7 +26,8 @@ function(R,digits=2) {
 	 if(nrow(R) == ncol(R) ) {fx[!lowleft] <- ""}
 	 for(k in seq(0,nvar,k1)) { if(k<nvar) {
 	print(fx[(k+1):nvar,(k+1):min((k1+k),nvar)],quote=FALSE)}
-	}}
+	}
+	invisible(R[lower.tri(R,diag=FALSE)])}
 	
 "lowerCor" <- 
 function(x,digits=2,use="pairwise",method="pearson") {
@@ -72,16 +73,19 @@ if(!is.null(f$Phi)) f$Phi <- flip %*% f$Phi %*% t(flip)
 return(f)
 }
 
-
+#patched March 1, 2017 to get the df right for lags 
 #developed January 10, 2012 to find the mean square of successive differences
 #see Von Neuman et al. 1941
 "mssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
 if(is.null(group)) {
-if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(length(x)-1)} else {
+if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)} else {
 x <- as.matrix(x)
-n <- colSums(!is.na(x)) -1
+if(NCOL(x) == 1) {
+  result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)
+  } else {
+n <- colSums(!is.na(x)) -1 -lag
 result <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/n}
-} else {
+} } else {
 x <- as.matrix(x) #added 26/5/14
 if(NROW(group) != NROW(x)) group <- x[,group]  #added 26/5/14
 nvar <- ncol(x)
@@ -97,10 +101,61 @@ rownames(result) <- rown
 }
 return(result)}
 
+
 "rmssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
-return(sqrt(mssd(x,lag=lag,group=group,na.rm=na.rm))) }
+return(sqrt(mssd(x,group=group,lag=lag,na.rm=na.rm))) }
 
 
+
+##### Added March 1, 2017
+"autoR" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
+
+if(is.null(group)) {
+n.obs <- NROW(x)
+if(is.vector(x)) {
+
+ mssd <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)
+ v1 <- sd(x[1:(n.obs-lag)],na.rm=na.rm)^2
+ v2 <- sd(x[(lag+1):n.obs],na.rm=na.rm)^2
+ r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
+ result <- list(autorR = r,rssd=sqrt(mssd))
+ } else {
+x <- as.matrix(x)
+n <- colSums(!is.na(x))
+mssd <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(n-1)
+v1 <- apply(x[1:(n.obs-lag),],2,sd, na.rm=na.rm)^2
+v2 <- apply(x[(lag+1):n.obs,],2, sd,na.rm=na.rm)^2
+ r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
+ result <- list(autoR = r,rssd=sqrt(mssd))
+}
+} else {
+ cl <- match.call()
+x <- as.matrix(x) #added 26/5/14
+if(NROW(group) != NROW(x)) group <- x[,group]  #added 26/5/14
+nvar <- ncol(x)
+cname <- colnames(x)
+temp <- by(x,group, autoR,na.rm=na.rm,lag=lag)
+
+
+ rownn <- lapply(temp,is.null)
+               if(sum(as.integer(rownn)) > 0) {
+               rown <-  names(temp)[-which(rownn==TRUE)] } else {rown <- names(temp) } 
+
+tm <- t(matrix(unlist(temp),nrow=nvar*2))
+autoR <- tm[,1:nvar]
+rmssd  <- tm[,(nvar+1):(nvar*2)]
+
+ colnames(autoR) <- colnames(rmssd) <- cname
+ rownames(autoR) <- rownames(rmssd) <- rown
+
+result <- list(autoR = autoR,rmssd=rmssd,Call=cl)
+}
+class(result) <- c("psych","autoR")
+return(result)}
+
+
+
+#####
 sim.mssd <- function(n,r,g=.1) {
 rw <- rnorm(n,sqrt(1/(1-r^2)))
 x  <- xg <- rep(0,n)
@@ -511,22 +566,49 @@ pretty}
 
 
 "isCorrelation" <-  function(x) {
-return(!is.data.frame(x) && isSymmetric(x))}
+return(!is.data.frame(x) && isSymmetric(unname(x)))}
 
 
 #will only work for data.frames (not matrices)
-dfOrder <- function(object,columns) {nc <- length(columns)
+dfOrder <- function(object,columns=NULL) {if(is.null(columns)) columns <- 1:ncol(object)
+ nc <- length(columns)
+ cn <-colnames(object)
+  temp <- rep(1,nc)
+  if(is.character(columns)) {  #treat character strings 
+    temp [strtrim(columns,1)=="-"] <- -1
+    if(any(temp < 0) )  {columns <- sub("-","",columns) }
+    columns <- which(colnames(object) %in% columns)
+   } else {temp <- sign(columns)
+      columns <- abs(columns)
+    }
+    
+  if(any(temp < 0)) {object [temp <0] <- -object[temp < 0 ]
+   }
+  bad <- FALSE
   if(!is.data.frame(object)) stop("I am sorry, I can only sort data.frames.")
-   temp <- colnames(object)
-   increase <- sign(columns)
+   #temp <- colnames(object)
    templist <- list()
-   for (i in 1:nc) {
-  		 templist[[i]] <- as.name (temp[abs(columns[i])])
-   		object[abs(columns[i])] <- increase[i] *object[abs(columns[i])]
+   increase <- sign(temp)
+   for (i in 1:nc) {if(!is.numeric(object[[(columns[i])]])) bad<- TRUE}
+    if(bad) {if(any(increase < 0)) {stop("I am sorry, I can not sort data.frames with characters in decreasing order") } else {
+     for(i in 1:nc) { templist[[i]] <- columns[[i]]   }
+     ord <- with(object,do.call(order,templist))
+     object <- object[ord,]
+          }
+          } else { 
+  
+    for (i in 1:nc) {
+   		 templist[[i]] <- as.name(cn[columns[i]])
+    		 object[,(columns[i])] <- increase[i] *object[,(columns[i])]
                     }
+
    ord <- with(object,do.call(order,templist))
    object <- object[ord,]
-   for(i in 1:nc) {object[abs(columns[i])] <- increase[i] *object[abs(columns[i])]}
+   for(i in 1:nc) {object[,(columns[i])] <- increase[i] *object[,(columns[i])]}
+   }
     return(object)
     }
+    
+    
+ 
 

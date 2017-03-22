@@ -2,6 +2,7 @@
 \alias{fisherz}
 \alias{fisherz2r}
 \alias{r.con}
+\alias{r2c}
 \alias{r2t}
 \alias{r2d}
 \alias{d2r}
@@ -11,8 +12,8 @@
 \alias{r2chi}
 
 \title{Transformations of r including Fisher r to z and z to r and confidence intervals}
-\description{Convert a correlation to a z or t, or d, or chi
- score or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r. g2r converts Hedge's g to a correlation.   t2r converts a t test to r, r2t converts a correlation to a t-test value. chi2r converts a chi square to r, r2chi converts it back. 
+\description{Convert a correlation to a z or t, or d, or chi or covariance matrix
+  or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r. g2r converts Hedge's g to a correlation.   t2r converts a t test to r, r2t converts a correlation to a t-test value. chi2r converts a chi square to r, r2chi converts it back.  r2c and cor2cov convert a correlation matrix to a covariance matrix.
 }
 \usage{
 fisherz(rho)
@@ -25,6 +26,8 @@ t2r(t,df)
 g2r(g,df,n)
 chi2r(chi,n)
 r2chi(rho,n)
+r2c(rho,sigma)
+#cor2cov(rho,sigma)
 
 
 }
@@ -40,6 +43,7 @@ r2chi(rho,n)
   \item{g}{An effect size (Hedge's g)}
   \item{t}{A student's t value}
   \item{chi}{A chi square}
+  \item{sigma}{a vector of standard deviations to be used to convert a correlation matrix to a covariance matrix}
 }
 
 \value{ z value corresponding to r  (fisherz) \\
@@ -47,6 +51,7 @@ r corresponding to z (fisherz2r) \\
 lower and upper p confidence intervals (r.con) \\
 t with n-2 df (r2t)
 r corresponding to effect size d or d corresponding to r.
+r2c is the reverse of the cor2con function of base R.  It just converts a correlation matrix to the corresponding covariance matrix given a vector of standard deviations.
 }
 
 
@@ -67,6 +72,7 @@ round(zs,2)
  p <- (1-pt(t,n-2))/2
  r.rc <- data.frame(r=r,z=fisherz(r),lower=rc[,1],upper=rc[,2],t=t,p=p)
  round(r.rc,2)
+
 
 }
 

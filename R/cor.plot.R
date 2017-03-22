@@ -6,41 +6,35 @@
 #Corrected feb 22, 2014 to not double plot text (reported by David Condon)
 #modified May 12 to allow for selection
 #modified March 28, 2016 to add the upper option 
+#modified Feb 4, 2017 to label plots and to find correlations by default
 "cor.plot" <- function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...){
        corPlot(r=r,numbers=numbers,colors=colors,n=n,main=main,zlim=zlim,show.legend=show.legend,labels=labels,n.legend=n.legend,keep.par=keep.par,select=select,pval=pval,cuts=cuts,cex=cex,MAR=MAR,upper=upper,diag=diag,...)}
 "corPlot" <- 
 function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
-if(is.null(main)) {main <- "Correlation plot" }
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {
 switch(class(r)[2],
    omega  = {r <- r$schmid$sl
              nff <- ncol(r)
-            r <- r[,1:(nff-3)]},
-    cor.ci ={ pval <- 2*(1-r$ptci)
-  r <- r$rho},
-  fa = {r <- r$loadings},
-  pc = {r <- r$loadings},
-  principal = {r <- r$loadings}
+            r <- r[,1:(nff-3)]
+           if(is.null(main)) {main <- "Omega plot" }},
+  cor.ci ={ pval <- 2*(1-r$ptci)
+           r <- r$rho},
+  fa = {r <- r$loadings
+         if(is.null(main)) {main <- "Factor Loadings plot" }},
+  pc = {r <- r$loadings
+       if(is.null(main)) {main <- "PCA Loadings plot" }
+            },
+  principal = {r <- r$loadings
+        if(is.null(main)) {main <- "PCA Loadings plot" }}    
   )  #end switch
   }
-  }
-# 
-# if(class(r)[2] =="omega") {r <- r$schmid$sl
-# nff <- ncol(r)
-# r <- r[,1:(nff-3)]}  else {r <- r$loadings}  #fixed 12/31/14 to match revised omega
-# } else {if(class(r)[2] == "cor.ci") {
-#   pval <- r$ptci
-#   r <- r$rho
-# }  
-# }
+  } else { if(!isCorrelation(r)) r <- cor(r,use="pairwise")  
+          if(is.null(main)) {main <- "Correlation plot" }}  
+
 r <- as.matrix(r)
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
-
-minx <- min(r,na.rm=TRUE)
-maxx <- max(r,na.rm=TRUE)
-if ( (minx < -1) | (maxx > 1)) r <- cor(r,use="pairwise") #find the correlations if it is not a factor matrix nor a correlation matrix
 
 if(is.null(n)) {n <- dim(r)[2]}
 nf <- dim(r)[2]

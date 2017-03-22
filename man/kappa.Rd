@@ -8,7 +8,7 @@
 weighted.kappa is (probability of observed matches - probability of expected matches)/(1 - probability of expected matches).  Kappa just considers the matches on the main diagonal.  Weighted kappa considers off diagonal elements as well.
 }
 \usage{
-cohen.kappa(x, w=NULL,n.obs=NULL,alpha=.05)  
+cohen.kappa(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL)  
 wkappa(x, w = NULL)    #deprectated
 }
 
@@ -17,6 +17,8 @@ wkappa(x, w = NULL)    #deprectated
   \item{w}{A p x p matrix of weights.  If not specified, they are set to be 0 (on the diagonal) and (distance from diagonal) off the diagonal)^2. }
   \item{n.obs}{Number of observations (if input is a square matrix.}
   \item{alpha}{Probability level for confidence intervals}
+  \item{levels}{Specify the number of levels if some levels of x or y are completely missing}
+  
 }
 \details{When cateogorical judgments are made with two cateories, a measure of relationship is the phi coefficient.  However, some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis) or to categorize the stages of a disease.  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
 
@@ -29,6 +31,8 @@ cohen.kappa may use either similarity weighting (diagonal = 0) or dissimilarity 
 The input may be a two column data.frame or matrix with columns representing the two judges and rows the subjects being rated. Alternatively, the input may be a square n x n matrix of counts or proportion of matches.  If proportions are used, it is necessary to specify the number of observations (n.obs) in order to correctly find the confidence intervals.
 
 The confidence intervals are based upon the variance estimates discussed by Fleiss, Cohen, and Everitt who corrected the formulae of Cohen (1968) and Blashfield.
+
+Some data sets will include data with numeric categories with some category values missing completely.  In the sense that kappa is a measure of category relationship, this should not matter.  But when finding weighted kappa, the number of categories weighted will be less than the number of categories potentially in the data.  This can be remedied by specifying the levels parameter.
 }
 
 \value{
@@ -136,6 +140,13 @@ xy.df <- data.frame(x,y)
 ck <- cohen.kappa(xy.df)
 ck
 ck$agree
+
+#The problem of missing categories (from Amy Finnegan)
+numbers <- data.frame(rater1=c(6,3,7,8,7),
+                      rater2=c(6,1,8,5,10))
+cohen.kappa(numbers)  #compare with the next analysis
+cohen.kappa(numbers,levels=1:10)  #specify the number of levels 
+              #   these leads to slightly higher weighted kappa
   
 #finally, input can be a data.frame of ratings from more than two raters
 ratings <- matrix(rep(1:5,4),ncol=4)

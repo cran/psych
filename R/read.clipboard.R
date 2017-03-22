@@ -117,11 +117,12 @@ function(filename,header=TRUE) {
 
 #two useful helper functions
 #August, 2016
-"read.file" <- function(f=NULL,header=TRUE,...) {
+#modified Jan 2017
+"read.file" <- function(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,...) {
  if(missing(f)) f <- file.choose()
  suffix <- file_ext(f)
  switch(suffix, 
-   sav = {result <- read.spss(f,use.value.labels=FALSE,to.data.frame=TRUE,...)
+   sav = {result <- read.spss(f,use.value.labels=use.value.labels,to.data.frame=to.data.frame)
          message('Data from the SPSS sav file ', f ,' has been loaded.')},
    csv = {result <- read.table(f,header=header,sep=",",...)
          message('Data from the .csv file ', f ,' has been loaded.')},
@@ -135,20 +136,42 @@ function(filename,header=TRUE) {
            message('Data from the .data file ', f , ' has been loaded.')},
     rds = {result <- readRDS(f,...)
           message('File ',f ,' has been loaded.')},
+      R = {result <- dget(f,...)
+          message('File ',f ,' has been loaded.')},
+      r = {result <- dget(f,...)
+          message('File ',f ,' has been loaded.')},
    Rds  = {result <- readRDS(f,...)
           message('File ',f ,' has been loaded.')},
+    #the next options use load rather than read 
    Rda = {result <- f
-          message('To load this .rda file, you must \nload("',f ,'")')},
+           load(f, .GlobalEnv)
+          message('The file(s) in ',f,' have been loaded into your environment.') },
    rda  = {result <- f
-          message('To load this .rda file, you must \nload("',f ,'")')},
+          load(f, .GlobalEnv)
+          message('The file(s) in ',f,' have been loaded into your environment.') },
+    Rdata =   {result <- f
+          load(f, .GlobalEnv)
+          message('The file(s) in ',f,' have been loaded into your environment.') },
+    RData =   {result <- f
+          load(f, .GlobalEnv)
+          message('The file(s) in ',f,' have been loaded into your environment.') },
+     rdata =   {result <- f
+          load(f, .GlobalEnv)
+          message('The file(s) in ',f,' have been loaded into your environment.') },
     jmp  = {result <- f
           message('I am sorrry.  To read this .jmp file, it must first be saved as a "txt" or "csv" file.')},
-   {message ("I  am sorry. \nI can not tell from the suffix what file type is this.  I will try just a normal read.table but can not guarantee the result.")
-        result <- read.table(f,header=header,...)}
+   {message ("I  am sorry. \nI can not tell from the suffix what file type is this.  Rather than try to read it, I will let you specify a better format.")
+       }
    )
    return (result)
    }
- 
+   
+"read.file.spss" <- function(f=NULL,use.value.labels=FALSE,to.data.frame=TRUE,...) {
+   if(missing(f)) f <- file.choose()
+   result <- read.spss(f,use.value.labels=use.value.labels,to.data.frame=to.data.frame,...)
+         message('Data from the SPSS sav file ', f ,' has been loaded.')
+return(result)
+} 
  "read.file.csv" <- function(f=NULL,header=TRUE,...) {
  if(missing(f)) f <- file.choose()
  read.table(f,header=header,sep=",",...) }
@@ -160,6 +183,10 @@ function(filename,header=TRUE) {
  		 txt = {write.table(x,f, row.names=row.names, ...)},
  		text =   {write.table(x,f,row.names=row.names,...)},
  		csv =  {write.table(x,f,sep=",", row.names=row.names,...) },
+ 		R =  {dput(x,f,...) },
+ 		r =  {dput(x,f, ...) },
+ 		rda = {save(x,file=f,...)},
+ 		Rda ={save(x,file=f,...)},
  		Rds = {saveRDS(x,f)},
  		rds = {saveRDS(x,f)})
    }

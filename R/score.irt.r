@@ -159,7 +159,7 @@ if(is.matrix(discrim)) discrim.F.vect <- drop(discrim.F.vect)
 #actually, making this mcmapply and the call to bigFunction mapply seems to be the solution
 #especially when we are doing scoreIrt.1pl or scoreIrt.2pl which is already doing the parallelsim there
 
-subjecttheta <-mapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
+subjecttheta <-mcmapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
 
 subjecttheta <- matrix(unlist(subjecttheta),ncol=3,byrow=TRUE)
 theta <- subjecttheta[,1]
@@ -348,7 +348,7 @@ discrim.F.vect <- rep(discrim.f,each=cat)
  nvar <- dim(items)[2]
 
 #mcmapply for parallel, mapply for debugging
-scores   <-  mcmapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=.3,bounds=bounds,mod=mod))
+scores   <-  mcmapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod))
  
 
 scores <- matrix(unlist(scores),ncol=nf*3)
@@ -531,7 +531,7 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
   }
    #use mapply for debugging, mcmapply for parallel processing
    #items is global and not passed to save memory
-   scoresList <-mcmapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
+   scoresList <-mapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
    colnames(scoresList) <- names(itemLists)
    return(scoresList)
    }

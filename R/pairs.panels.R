@@ -1,14 +1,16 @@
 #Adapted from the help for pairs
 #modified December 15, 2011 to add the rug option
 #further modified March 30, 2012 to add the method of correlation option (suggested by Carsten Dormann).
+#Fixed a bug in show.points on  March 18, 2017  (reported by Matthew Labrum)
 #by moving all the little functions to be outside the main function, this allows method and rug to be passed to these lower order functions.
 #this should allow for somewhat cleaner code for the other functions
 #modified March 15, 2015 to add the ability to control the size of the correlation separately from the cex variable in the points
 #also added the ability to set the number of breaks in the histograms
-#Also completely reorganized the main function to much cleaner
+#Also completely reorganized the main function to be much cleaner
+#would like to add the smoothScatter function as an option
 
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,smoother=FALSE,...)   #combines a splom, histograms, and correlations
 {
 
 #first define all the "little functions"
@@ -58,7 +60,8 @@ function (x, y,pch = par("pch"),
   r = cor(x, y,use="pairwise",method=method)
  if(jiggle) { x <- jitter(x,factor=factor)
   y <- jitter(y,factor=factor)}
- if(show.points)  points(x, y, pch = pch, ...)
+ if(smoother) {smoothScatter(x,y,add=TRUE, nrpoints=0)} else {if(show.points)  points(x, y, pch = pch, ...)}
+ 
     ok <- is.finite(x) & is.finite(y)
     if (any(ok)) 
         lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), 
@@ -98,7 +101,7 @@ function (x, y,  pch = par("pch"),
     xlim <- ylim
     if(jiggle) { x <- jitter(x,factor=factor)
   y <- jitter(y,factor=factor)}
-    points(x, y, pch = pch,ylim = ylim, xlim= xlim,...)
+  if(smoother) {smoothScatter(x,y,add=TRUE, nrpoints=0)} else {if(show.points) {points(x, y, pch = pch,ylim = ylim, xlim= xlim, ...)}}# if(show.points) points(x, y, pch = pch,ylim = ylim, xlim= xlim,...)
     ok <- is.finite(x) & is.finite(y)
     if (any(ok)) 
         abline(lm(y[ok]~ x[ok]), 
@@ -116,7 +119,7 @@ function (x, y, pch = par("pch"),
     xlim <- ylim
     if(jiggle) { x <- jitter(x,factor=factor)
   y <- jitter(y,factor=factor)}
-    points(x, y, pch = pch, ylim = ylim, xlim= xlim,...)
+    if(smoother) {smoothScatter(x,y,add=TRUE, nrpoints=0)} else {if(show.points) {points(x, y, pch = pch, ...)}}
     ok <- is.finite(x) & is.finite(y)
     if (any(ok)) 
         abline(lm(y[ok]~ x[ok]), 
@@ -143,7 +146,7 @@ function(x=0,y=0,xs=1,ys=1,r=0,col.smooth,add=TRUE,segments=51,...) {
     ellipse <- unit.circle %*% shape 
     ellipse[,1] <- ellipse[,1]*xs + x
     ellipse[,2] <- ellipse[,2]*ys + y
-    points(x,y,pch=19,col=col.smooth,cex=1.5 )  #draw the mean
+    if(show.points) points(x,y,pch=19,col=col.smooth,cex=1.5 )  #draw the mean
     lines(ellipse, ...)   }    
  }
 
@@ -158,7 +161,8 @@ function (x, y,   pch = par("pch"),
    r = cor(x, y,use="pairwise",method=method)
    if(jiggle) { x <- jitter(x,factor=factor)
   y <- jitter(y,factor=factor)}
- if(show.points) points(x, y, pch = pch, ...)
+  if(smoother) {smoothScatter(x,y,add=TRUE, nrpoints=0)} else {if(show.points) {points(x, y, pch = pch, ...)}}
+ 	
  angles <- (0:segments) * 2 * pi/segments
     unit.circle <- cbind(cos(angles), sin(angles))
      if(!is.na(r)) {
@@ -201,7 +205,7 @@ for(i in 1:ncol(x)) {
         if(is.character(x[[i]] ))  { x[[i]] <- as.numeric(as.factor(x[[i]]) )
                             colnames(x)[i] <- paste(colnames(x)[i],"*",sep="")}
            }
-      
+ n.obs <- nrow(x)     
 #par(pch = pch)
 
  
@@ -210,11 +214,15 @@ for(i in 1:ncol(x)) {
  if(!lm) { #the basic default is here
       if (smooth) {
         if(ellipses)  {
+           if(cor) {
             pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother, pch=pch, ...)} else {
+             pairs(x, diag.panel = panel.hist.density, upper.panel = panel.smoother, lower.panel = panel.smoother, pch=pch, ...)} } else {
             pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother.no.noellipse,pch=pch,  ...)}    
         }
         else { #don't smooth, don't scale, not lm
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor,lower.panel=panel.ellipse,pch=pch,  ...) } 
+            if(cor) {pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor,lower.panel=panel.ellipse,pch=pch,  ...) } else {
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.ellipse,lower.panel=panel.ellipse,pch=pch,  ...) }}
+            
     
     
     } else { #lm is TRUE

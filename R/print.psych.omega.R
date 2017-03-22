@@ -122,23 +122,29 @@ if(is.null(cut)) cut <- .2
    print.psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
    x <- x$omega.efa
    } 
-   cat("\n The following analyses were done using the ", x$sem," package \n") 
-   cat("\n Omega Hierarchical from a confirmatory model using sem = ", round(x$omega,digits))
-    cat("\n Omega Total  from a confirmatory model using sem = ", round(x$omega.tot,digits),"\n")
-   cat("With loadings of \n")
    loads <- x$cfa.loads
    class(loads) <- NULL
    nfactor <- ncol(loads)
+   cat("\n The following analyses were done using the ", x$sem," package \n") 
+  if(nfactor > 1) { cat("\n Omega Hierarchical from a confirmatory model using sem = ", round(x$omega,digits)) } else {
+   
+    cat("\n With only 1 factor specified in the sem model, we can only calculate omega Total.\n You should probably rerun the sem specifying either a bifactor or hierarchical model.\n") }
+         
+    cat("\n Omega Total  from a confirmatory model using sem = ", round(x$omega.tot,digits),"\n")
+   cat("With loadings of \n")
+   
+    loads <- data.frame(loads)
+   if(nfactor > 1) {
              tn <- c("g", paste0("F",1:(nfactor-1),"*"))
-	        loads <- data.frame(loads)
-	        colnames(loads) <- tn  #this seems weird, but otherwise we lose the F* name
-	       
-           load.2 <- as.matrix(loads)     
+
+	        colnames(loads) <- tn }  #this seems weird, but otherwise we lose the F* name } 
+	       load.2 <- as.matrix(loads)     
 	        h2 <- round(rowSums(load.2^2),digits)
 	        loads <- round(loads,digits)
 	    	fx <- format(loads,digits=digits)
+	    	if(nfactor > 1 ) {
 	    	nc <- nchar(fx[1,3], type = "c")  
-         	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")
+         	fx[abs(loads)< cut] <- paste(rep(" ", nc), collapse = "")}
             h2 <- round(rowSums(load.2^2),digits)
          	u2 <- 1 - h2
          	p2 <- loads[,1]^2/h2
@@ -165,7 +171,7 @@ if(is.null(cut)) cut <- .2
    	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits))
     cat("\nmean percent general = ",round(mp2,digits), "   with sd = ", round(sqrt(vp2),digits), "and cv of ",round(sqrt(vp2)/mp2,digits),"\n")
      cat("Explained Common Variance of the general factor = ", round(ECV,digits),"\n")
-   
+if(nfactor > 1) {
      cat("\nMeasures of factor score adequacy             \n")
  # rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of factor score estimates")
    fsa.df <- t(data.frame(sqrt(x$gR2),x$gR2,2*x$gR2 -1))
@@ -177,7 +183,7 @@ if(is.null(cut)) cut <- .2
    colnames(x$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
    rownames(x$omega.group) <- tn
    print(round(t(x$omega.group),digits))
-   
+   }
    cat("\nTo get the standard sem fit statistics, ask for summary on the fitted object")
    
    }

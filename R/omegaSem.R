@@ -121,7 +121,7 @@ omt.sem <- (Vt - uniq)/Vt
 class(cfa.loads) <- "loadings"
 results <- list(omega=omh.sem,omega.tot = omt.sem,cfa.loads=cfa.loads,gR2=gR2,omega.group=om.group,Fit=Fit,sem=sem)
 class(results) <- c("psych","omegaSem")
-if(plot) omega.diagram(results,sort=FALSE)
+if(plot) {if(n.fact > 1) { omega.diagram(results,sort=FALSE)} else {if(sem == 'lavaan') lavaan.diagram(fit,cut=0) } }
 return(results)
 }
 

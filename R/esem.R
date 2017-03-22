@@ -4,6 +4,8 @@
 "esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",plot=TRUE,cor="cor",use="pairwise",weight=NULL,...) {
 #vars <- order(c(vars1,vars2))
  cl <- match.call()
+ if(is.numeric(varsX)) varsX <- colnames(r)[varsX]
+ if(is.numeric(varsY)) varsY <- colnames(r)[varsY] 
 vars <- c(varsX,varsY)
 if(is.null(n.obs)) n.obs <- NA
 
@@ -22,7 +24,9 @@ n.obs <- nrow(r)
        YuleY = {r <- YuleCor(r,.5)$rho } 
        )
        }
-varnames <- colnames(r)[vars]
+#varnames <- colnames(r)[vars]
+varnames <- vars
+rownames(r) <- colnames(r)
 R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the selected variables
  nX <- length(varsX)
  nY <-length(varsY)
@@ -47,8 +51,10 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
   S12 <- cbind(S1,S2)
   S12 <- as.matrix(S12)
  Phi <- t(S12) %*% solve(R) %*% S12
- loadsX <- f1$loadings[colnames(R)[varsX],,drop=FALSE]
- loadsY <- f2$loadings[colnames(R)[varsY],,drop=FALSE]
+ loadsX <- f1$loadings[varsX,,drop=FALSE]
+ loadsY <- f2$loadings[varsY,,drop=FALSE]
+# loadsX <- f1$loadings[colnames(R)[varsX],,drop=FALSE]
+# loadsY <- f2$loadings[colnames(R)[varsY],,drop=FALSE]
  diag(Phi) <- 1
  #now, a kludge to make it better -- but not actually, so dropped 
 if(FALSE) {if(!is.null(Phi1)) Phi[1:nfX,1:nfX] <- Phi1

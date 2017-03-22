@@ -1,7 +1,7 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise")  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE)  { 
  cl <- match.call()
 # if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
@@ -110,7 +110,14 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
 #parallelism stops here
 #now combine the results   	
    	
-   if(is.null(ylabel)) {if (fa!="pc") {ylabel <- "eigenvalues of principal components and factor analysis"} else { ylabel  <- "eigen values of principal components"}}
+   if(is.null(ylabel)) {
+   ylabel <- switch(fa,           #switch implementation suggested by Meik Michalke   3/20/17
+         pc = "eigen values of principal components",
+         fa = "eigen values of principal factors",
+         both =  "eigenvalues of principal components and factor analysis")
+    }
+        
+         
    values<- t(matrix(unlist(templist),ncol=n.iter))
    
   
@@ -120,12 +127,13 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   
     ymax <- max(valuesx,values.sim.mean)
      sim.pcr <- sim.far <- NA
+
 switch(fa, 
-  pc = { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Component Number",pch=4,col="blue")
+  pc = {    if (plot) { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Component Number",pch=4,col="blue")}
         if(resample) { sim.pcr <- values.sim.mean[1:nvariables] 
                        sim.pcr.ci <- values.ci[1:nvariables]
                        sim.se.pcr <- values.sim.se[1:nvariables]
-         points(sim.pcr,type ="l",lty="dashed",pch=4,col="red")} else {sim.pcr <- NA
+            if (plot) { points(sim.pcr,type ="l",lty="dashed",pch=4,col="red")}} else {sim.pcr <- NA
               sim.se.pc <- NA}
        if(sim) {    
         if(resample) {sim.pc <- values.sim.mean[(nvariables+1):(2*nvariables)] 
@@ -134,7 +142,7 @@ switch(fa,
         } else {sim.pc <- values.sim.mean[1:nvariables]
                 sim.pc.ci <- values.ci[1:nvariables]
                 sim.se.pc <- values.sim.se[1:nvariables]}
-        points(sim.pc,type ="l",lty="dotted",pch=4,col="red")
+           if (plot) { points(sim.pc,type ="l",lty="dotted",pch=4,col="red")}
         pc.test <- which(!(valuesx > sim.pc.ci))[1]-1} else { 
            sim.pc <- NA
            sim.pc.ci <- NA 
@@ -144,13 +152,13 @@ switch(fa,
         sim.far <- NA
         sim.fa <- NA 
     },
-  fa = { ylabel <-  "eigen values of principal factors"
-        plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=2,col="blue")
+  fa = { #ylabel <-  "eigen values of principal factors"     should not be changed if set (reported by Meik Michalke)
+            if (plot) {plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=2,col="blue")}
          sim.se.pc <- NA
           if(resample) {sim.far <- values.sim.mean[(nvariables+1):(2*nvariables)]
                         sim.far.ci <- values.ci[(nvariables+1):(2*nvariables)]
                         sim.se.far <- values.sim.se[(nvariables+1):(2*nvariables)]
-                        points(sim.far,type ="l",lty="dashed",pch=2,col="red")}
+                          if (plot) {  points(sim.far,type ="l",lty="dashed",pch=2,col="red")}}
         if(sim) { if(resample) {sim.fa <- values.sim.mean[(3*nvariables+1):(4*nvariables)] 
                                 sim.fa.ci <- values.ci[(3*nvariables+1):(4*nvariables)]
                                 sim.se.fa <- values.sim.se[(3*nvariables+1):(4*nvariables)] } else {
@@ -161,7 +169,7 @@ switch(fa,
                 sim.far.ci <- NA
                 sim.se.far <- NA
                 }
-        	points(sim.fa,type ="l",lty="dotted",pch=2,col="red")
+        	    if (plot) {points(sim.fa,type ="l",lty="dotted",pch=2,col="red")}
         	fa.test <- which(!(fa.valuesx > sim.fa.ci))[1]-1 
         } else {sim.fa <- NA 
         fa.test <- which(!(fa.valuesx > sim.far.ci))[1]-1 }
@@ -169,8 +177,8 @@ switch(fa,
          sim.pcr <- NA
          sim.se.pc <- NA
          pc.test <- NA },
-  both = { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor/Component Number",pch=4,col="blue")
-           points(fa.valuesx,type="b",pch=2,col="blue")
+  both = {     if (plot) {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor/Component Number",pch=4,col="blue")
+           points(fa.valuesx,type="b",pch=2,col="blue")}
      if(sim) {  
    	 if(resample) {
    	 sim.pcr <- values.sim.mean[1:nvariables]
@@ -196,11 +204,11 @@ switch(fa,
    	  pc.test <- which(!(valuesx > sim.pc.ci))[1]-1  
       fa.test <- which(!(fa.valuesx > sim.fa.ci))[1]-1 }
    	 
-     points(sim.pc,type ="l",lty="dotted",pch=4,col="red")
+        if (plot) { points(sim.pc,type ="l",lty="dotted",pch=4,col="red")
      points(sim.fa,type ="l",lty="dotted",pch=4,col="red")
     # sim.pcr <- sim.far <- NA   @#removed Dec 31, 2016
      points(sim.pcr,type ="l",lty="dashed",pch=2,col="red")
-     points(sim.far,type ="l",lty="dashed",pch=2,col="red")
+     points(sim.far,type ="l",lty="dashed",pch=2,col="red")}
       pc.test <- which(!(valuesx > sim.pc.ci))[1]-1 
       fa.test <- which(!(fa.valuesx > sim.fa.ci))[1]-1  
      } else {      #sim is false
@@ -216,8 +224,8 @@ switch(fa,
     sim.se.pc <- NA
     pc.test <- which(!(valuesx > sim.pcr.ci))[1]-1  
     fa.test <- which(!(fa.valuesx > sim.far.ci))[1]-1 } 
-    if(resample) { points(sim.pcr,type ="l",lty="dashed",pch=4,col="red")
-        points(sim.far,type ="l",lty="dashed",pch=4,col="red") 
+    if(resample) {     if (plot) {points(sim.pcr,type ="l",lty="dashed",pch=4,col="red")
+        points(sim.far,type ="l",lty="dashed",pch=4,col="red") }
      } } 
 )  
 
@@ -251,7 +259,7 @@ switch(fa,
     	}
 
 
-if(show.legend) {
+if(show.legend && plot) {
 if(is.null(n.obs)) {   #that is, do we have real data or a correlation matrix
 switch(fa,  
 both = {if(sim) {legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"),
@@ -296,7 +304,7 @@ fa =  {legend("topright", c("FA  Actual Data", " FA  Simulated Data"), col = c("
    
 
 colnames(values) <- paste0("Sim",1:ncol(values))
-if(fa!= "pc") abline(h=1)
+if(fa!= "pc" && plot) abline(h=1)
 results <- list(fa.values = fa.valuesx,pc.values=valuesx,pc.sim=sim.pc,pc.simr = sim.pcr,fa.sim=sim.fa,fa.simr = sim.far,nfact=fa.test,ncomp=pc.test, Call=cl) 
 
 
@@ -310,6 +318,7 @@ colnames(values)[1:(2*nvariables)] <- c(paste0("C",1:nvariables),paste0("F",1:nv
 if(sim) {
 if(resample) colnames(values)[(2*nvariables +1):ncol(values)] <- c(paste0("CSim",1:nvariables),paste0("Fsim",1:nvariables))
 } 
+
 results$nfact <- fa.test}
 
 results$ncomp <- pc.test

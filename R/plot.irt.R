@@ -138,7 +138,7 @@ function(x,d=0, a=1,c=0,z=1) {c + (z-c)*exp(a*(d-x))*a^2/(1+exp(a*(d-x)))^2}
 
 "plot.poly" <- 
 function(x,D,xlab,ylab,xlim,ylim,main,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,y2lab,lncol="black",...) {
-
+if(missing(ylim)) {dynamic.ylim <- TRUE} else {dynamic.ylim <- FALSE}
 item <- x
 byKeys <- FALSE
 if((is.data.frame(x)) | (is.matrix(x))) {nf <- dim(x)[2] -1} else {
@@ -193,7 +193,7 @@ if(type=="ICC") { #this draws the item characteristic curves
 if(missing(main)) {main <- "Item parameters from factor analysis"
                   main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
 if(missing(ylab)) ylab <- "Probability of Response"
-if(missing(ylim)) ylim <- c(0,1)
+if(dynamic.ylim) ylim <- c(0,1)
 	
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
@@ -257,7 +257,7 @@ for(i in 1:nvar) {
 	if(missing(y2lab)) y2lab <- "Reliability"
 	
 	rsInfo <- rowSums(testInfo)
-	if(missing(ylim)) ylim = c(0,max(rsInfo))
+	if(dynamic.ylim) ylim = c(0,max(rsInfo))
 	op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
 	 plot(x,rsInfo,typ="l",ylim=ylim,ylab=ylab,xlab=xlab,main=main1,col=lncol[1],...)
 	 ax4 <- seq(0,ylim[2],ylim[2]/4)
@@ -270,7 +270,7 @@ for(i in 1:nvar) {
 	 } else { if(type != "ICC") {
 	if(missing(ylab)) ylab <- "Item Information"
 	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
-	if(missing(ylim)) ylim <- c(0,1)
+	if(dynamic.ylim) ylim <- c(0,1)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
 	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)

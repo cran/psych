@@ -25,6 +25,7 @@
     #begin main function
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
+    if(class(x)[1] != "data.frame") x <- fix.dplyr(x)    #to get around a problem created by dplyr
     if(!is.null(keys)){#two 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
     if( is.list(keys)) { select <- sub("-","",unlist(keys))   #added 9/26/16 to speed up scoring one scale from many
       x <- x[select] 
@@ -208,3 +209,17 @@
   #added item.c  (raw correlation) 1/10/15
   #corrected 1/16/16 corrected the formula for Q following a suggestion by Tamaki Hattori
   #added the n.obs option to allow us to find standard errors even from correlation matrices
+  
+  
+#a kludge to get around a problem introduced by dplyr which changes the class structure of data frames.
+#created in response to a problem raised by Adam Liter   (February, 2017) 
+  "fix.dplyr" <- function (object) {
+   if(is.data.frame(object)) {   
+   cn <- class(object)
+df <- which(cn=="data.frame")
+cn.not <- cn[-df]
+cn <- c("data.frame",cn.not)
+class(object) <- cn
+      } 
+invisible(object) 
+}

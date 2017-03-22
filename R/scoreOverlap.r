@@ -4,7 +4,7 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE) { #fu
  tol=sqrt(.Machine$double.eps)    #machine accuracy
  cl <- match.call()
  bad <- FALSE
- if(is.list(keys)) keys <- make.keys(r,keys)  #added 9/9/16
+ if(is.list(keys) & (!is.data.frame(keys))) keys <- make.keys(r,keys)  #added 9/9/16    (and then modified March 4, 2017
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
  if(any(abs(r[!is.na(r)]) > 1)) warning("Something is seriously wrong with the correlation matrix, some correlations had absolute values > 1!  Please check your data.")

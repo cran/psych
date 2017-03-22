@@ -18,7 +18,10 @@ function(d) {d/sqrt(d^2+4)}
 
 "r2chi" <- function(rho,n) { chi <- rho^2 *n}
 
-
+"cor2cov" <- "r2c" <- function(rho,sigma) { sigma <- diag(sigma)
+cov <- sigma %*% rho %*% sigma
+colnames(cov) <- rownames(cov) <- colnames(rho)
+return(cov)}
 
 
   

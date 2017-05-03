@@ -117,14 +117,16 @@ function(filename,header=TRUE) {
 
 #two useful helper functions
 #August, 2016
-#modified Jan 2017
-"read.file" <- function(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,...) {
+#modified Jan/April 2017 to include SAS xpt 
+"read.file" <- function(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",widths=NULL,...) {
  if(missing(f)) f <- file.choose()
  suffix <- file_ext(f)
+ if(!missing(widths)) { result <- read.fwf(f,widths,...) 
+        message("The fixed width file ", f, "has been loaded.") } else {
  switch(suffix, 
    sav = {result <- read.spss(f,use.value.labels=use.value.labels,to.data.frame=to.data.frame)
          message('Data from the SPSS sav file ', f ,' has been loaded.')},
-   csv = {result <- read.table(f,header=header,sep=",",...)
+   csv = {result <- read.table(f,header=header,sep=sep,...)
          message('Data from the .csv file ', f ,' has been loaded.')},
    txt = {result <- read.table(f,header=header,...)
           message('Data from the .txt file ', f , ' has been loaded.') },
@@ -142,6 +144,10 @@ function(filename,header=TRUE) {
           message('File ',f ,' has been loaded.')},
    Rds  = {result <- readRDS(f,...)
           message('File ',f ,' has been loaded.')},
+    XPT = { result <- read.xport(f,...)
+          message('File ',f ,' has been loaded.')},
+    xpt = { result <- read.xport(f,...)
+          message('File ',f ,' has been loaded.')},
     #the next options use load rather than read 
    Rda = {result <- f
            load(f, .GlobalEnv)
@@ -158,11 +164,17 @@ function(filename,header=TRUE) {
      rdata =   {result <- f
           load(f, .GlobalEnv)
           message('The file(s) in ',f,' have been loaded into your environment.') },
+    #this section handles (or complains) about jmp and SAS files.
+  
     jmp  = {result <- f
-          message('I am sorrry.  To read this .jmp file, it must first be saved as a "txt" or "csv" file.')},
+          message('I am sorrry.  To read this .jmp file, it must first be saved as either a "txt" or "csv" file. If you insist on using SAS formats, try .xpt or .XPT')},
+    sas7bdat = {result <- f
+          message('I am sorry.  To read this .sas7bdat file, it must first be saved as either a xpt, or XPT file in SAS, or as a "txt" or "csv" file. ?read.ssd in foreign for help.')},
+          
    {message ("I  am sorry. \nI can not tell from the suffix what file type is this.  Rather than try to read it, I will let you specify a better format.")
        }
    )
+   }
    return (result)
    }
    

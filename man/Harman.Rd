@@ -25,7 +25,7 @@ The Burt data set probably has a typo in the original correlation matrix.  Chang
 
 As pointed out by Jan DeLeeuw, the Burt data set is a subset of 8 variables from the original 11 reported by Burt in 1915.  That matrix has the same problem. See \code{\link{burt}}.
 
-Other example data sets that are useful demonstrations of factor analysis are the seven bifactor examples  in \code{\link{bifactor}} and the 24 ability measures in \code{\link{Harman74.cor}}
+Other example data sets that are useful demonstrations of factor analysis are the seven bifactor examples  in \code{\link{Bechtoldt}} and the 24 ability measures in \code{\link{Harman74.cor}}
 
 There are several other Harman  examples in the psych package (i.e., \link{Harman.8}) as well as in the dataseta and  GPArotation packages.  The Harman 24 mental tests problem is in the basic datasets package at \link{Harman74.cor}.  
 

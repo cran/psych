@@ -8,7 +8,7 @@
 \description{Chi square and other goodness of fit statistics are found based upon the fit of a factor or components model to a correlation matrix.  Although these statistics are normally associated with a maximum likelihood solution, they can be found for minimal residual (OLS), principal axis, or principal component solutions as well.  Primarily called from within these functions, factor.stats can be used by itself. Measures of factorial adequacy and validity follow the paper by Grice, 2001.
 }
 \usage{
-fa.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) 
+fa.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL) 
 factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) 
 }
 
@@ -18,7 +18,7 @@ factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL)
   \item{phi}{A factor intercorrelation matrix if the factor solution was oblique.}
   \item{n.obs}{The number of observations for the correlation matrix.  If not specified, and a correlation matrix is used, chi square will not be reported. Not needed if the input is a data matrix.}
   \item{np.obs}{The pairwise number of subjects for each pair in the correlation matrix.  This is used for finding observed chi square.}
-  \item{alpha}{alpha level of confidence intervals for RMSEA}
+  \item{alpha}{alpha level of confidence intervals for RMSEA (twice the confidence at each tail)}
   \item{fm}{flag if components are being given statistics}
 }
 \details{Combines the goodness of fit tests used in \code{\link{fa}} and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.

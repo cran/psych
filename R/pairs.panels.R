@@ -10,7 +10,7 @@
 #would like to add the smoothScatter function as an option
 
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,smoother=FALSE,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,smoother=FALSE,stars=FALSE,...)   #combines a splom, histograms, and correlations
 {
 
 #first define all the "little functions"
@@ -41,7 +41,11 @@ function(x, y, digits=2, prefix="",...)
         r <- cor.wt(data.frame(x,y),w=wt[,c(1:2)])$r[1,2]}
          txt <- format(c(round(r,digits), 0.123456789), digits=digits)[1]
          txt <- paste(prefix, txt, sep="")
-         cex <- cex.cor*0.8/strwidth(txt)
+         if(stars) {pval <- r.test(sum(!is.na(x*y)),r)$p
+                  symp <- symnum(pval, corr = FALSE,cutpoints = c(0,  .001,.01,.05, 1),
+                symbols = c("***","**","*"," "),legend=FALSE)
+                txt <- paste0(txt,symp)}
+         cex <- cex.cor*0.8/(max(strwidth("0.12***"),strwidth(txt)))
          if(scale)  {cex1 <- cex  * abs(r)
          if(cex1 < .25) cex1 <- .25 #otherwise they just vanish
          text(0.5, 0.5, txt, cex = cex1) } else {

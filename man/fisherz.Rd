@@ -1,8 +1,7 @@
 \name{fisherz}
 \alias{fisherz}
 \alias{fisherz2r}
-\alias{r.con}
-\alias{r2c}
+\alias{r.con}\alias{r2c}
 \alias{r2t}
 \alias{r2d}
 \alias{d2r}
@@ -10,6 +9,7 @@
 \alias{g2r}
 \alias{chi2r}
 \alias{r2chi}
+\alias{cor2cov}
 
 \title{Transformations of r including Fisher r to z and z to r and confidence intervals}
 \description{Convert a correlation to a z or t, or d, or chi or covariance matrix
@@ -24,10 +24,10 @@ r2d(rho)
 d2r(d)
 t2r(t,df)
 g2r(g,df,n)
-chi2r(chi,n)
+chi2r(chi2,n)
 r2chi(rho,n)
 r2c(rho,sigma)
-#cor2cov(rho,sigma)
+cor2cov(rho,sigma)
 
 
 }
@@ -42,16 +42,17 @@ r2c(rho,sigma)
   \item{d}{an effect size (Cohen's d)}
   \item{g}{An effect size (Hedge's g)}
   \item{t}{A student's t value}
-  \item{chi}{A chi square}
+  \item{chi2}{A chi square}
   \item{sigma}{a vector of standard deviations to be used to convert a correlation matrix to a covariance matrix}
 }
 
-\value{ z value corresponding to r  (fisherz) \\
-r corresponding to z (fisherz2r) \\
-lower and upper p confidence intervals (r.con) \\
-t with n-2 df (r2t)
-r corresponding to effect size d or d corresponding to r.
-r2c is the reverse of the cor2con function of base R.  It just converts a correlation matrix to the corresponding covariance matrix given a vector of standard deviations.
+\value{ 
+\item{z}{ value corresponding to r  (fisherz)} 
+\item{r}{r corresponding to z (fisherz2r)} 
+\item{r.con}{lower and upper p confidence intervals (r.con)}
+\item{t}{t with n-2 df (r2t)}
+\item{r}{r corresponding to effect size d or d corresponding to r.}
+\item{r2c}{r2c  is the reverse of the cor2con function of base R.  It just converts a correlation matrix to the corresponding covariance matrix given a vector of standard deviations.}
 }
 
 
@@ -61,16 +62,18 @@ Maintainer: William Revelle  \email{revelle@northwestern.edu }
 
 \examples{
 
-cors <- seq(-.9,.9,.1)
-zs <- fisherz(cors)
-rs <- fisherz2r(zs)
-round(zs,2)
  n <- 30
  r <- seq(0,.9,.1)
+ d <- r2d(r)
  rc <- matrix(r.con(r,n),ncol=2)
  t <- r*sqrt(n-2)/sqrt(1-r^2)
- p <- (1-pt(t,n-2))/2
- r.rc <- data.frame(r=r,z=fisherz(r),lower=rc[,1],upper=rc[,2],t=t,p=p)
+ p <- (1-pt(t,n-2))*2
+ r1 <- t2r(t,(n-2))
+ r2 <- d2r(d)
+ chi <- r2chi(r,n)
+ r3 <- chi2r(chi,n)
+ r.rc <- data.frame(r=r,z=fisherz(r),lower=rc[,1],upper=rc[,2],t=t,p=p,d=d,
+     chi2=chi,d2r=r2,t2r=r1,chi2r=r3)
  round(r.rc,2)
 
 

@@ -58,16 +58,18 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
   
  
   if(nmod > 0 ) {if(!raw) {stop("Moderation analysis requires the raw data")
-   } else {ivXm <- matrix(data[,x] * data[,mod],ncol=length(x)) #add in a moderating variable as a product term  - just works for one mod
+   } else { cen.data <- scale(data,scale=FALSE)
+   ivXm <- matrix(cen.data[,x] * cen.data[,mod],ncol=length(x)) #add in a moderating variable as a product term  - just works for one mod
       
        colnames(ivXm) <- paste0(abbreviate(x),"X",abbreviate(mod))
-      data <- cbind(data,ivXm)
+      data <- cbind(cen.data,ivXm)
         
              # if(!(mod %in% m)) {m <- c(m,mod,colnames(ivXm))} else {m <- c(m,colnames(ivXm))}  #this is questionable C
               if(nmod > 0)   {ivX <- c(x,mod,colnames(ivXm))
               x <- ivX  #the x variables now include the moderator and the x * mod products
               var.names$IV <- x  
               } 
+
               C <- cov(data,use=use)
               if(std) {  C <- cov2cor(C)}
               }
@@ -492,7 +494,7 @@ if(numx >1) {
   
 xlim=c(0,10)
 
-plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
+#plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
 var.names <- rownames(medi$direct)
 x.names <- rownames(medi$direct)
 y.names <- colnames(medi$direct)
@@ -539,7 +541,7 @@ for(i in 1:nx) {
    }
 if(nx >1) {
   for (i in 2:nx) {
-  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,round(medi$C[i,k],2),scale= -(abs(k-i)),both=TRUE)} 
+  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,round(medi$C[i+1,k+1],2),scale= -(abs(k-i)),both=TRUE)} 
   } }
 
 }  

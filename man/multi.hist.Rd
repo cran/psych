@@ -10,7 +10,7 @@ May be used for single variables.
 }
 \usage{multi.hist(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",
       dcol=c("black","black"),dlty=c("dashed","dotted"),
-      main="Histogram, Density, and Normal Fit",...)
+      main="Histogram, Density, and Normal Fit",breaks=21,...)
 histBy(x,var,group,density=TRUE,alpha=.5,breaks=21,col,xlab,
             main="Histograms by group",...) 
 }

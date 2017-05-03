@@ -196,7 +196,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
 #                answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))}}  #the minimal case -- fixed 1/2/2014
 #      }         
 # answer <-data.frame(var=vars,temp, se = temp$sd/sqrt(temp$n))  #replaced with forming the answer in the if statements  10/1/2014 to improve memory management
-   
+
     class(answer) <- c("psych","describe","data.frame")
     return(answer)
 }

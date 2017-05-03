@@ -10,13 +10,13 @@ function(rho) {2*rho/sqrt(1-rho^2)}
 "d2r" <- 
 function(d) {d/sqrt(d^2+4)}
 
-"t2r" <- function(t,df) {t^2/(t^2 + df)}
+"t2r" <- function(t,df) {sqrt(t^2/(t^2 + df))}  #fixed April 27, 2017
 
 "g2r" <- function(g,df,n) {g/sqrt(g^2 + 4*df/n)}
 
-"chi2r" <- function(chi,n) {sqrt(chi/n)}
+"chi2r" <- function(chi2,n) {sqrt(chi2/n)}
 
-"r2chi" <- function(rho,n) { chi <- rho^2 *n}
+"r2chi" <- function(rho,n) { chi2 <-( rho^2 *n)}
 
 "cor2cov" <- "r2c" <- function(rho,sigma) { sigma <- diag(sigma)
 cov <- sigma %*% rho %*% sigma

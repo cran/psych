@@ -20,7 +20,7 @@
 \usepackage{epstopdf}
 \usepackage{makeidx}        % allows index generation
 \usepackage[authoryear,round]{natbib} 
-\usepackage{gensymb}
+%\usepackage{gensymb}
 \usepackage{longtable}
 %\usepackage{geometry}   
 \usepackage{amssymb}    
@@ -367,7 +367,7 @@ It is possible to automatically load  \Rpkg{psych} and other functions by creati
 
 \subsection{Getting the data by using read.file}
 \label{sect:read}
-Although many find copying the data to the clipboard and then using the \pfun{read.clipboard} functions (see below), a helpful alternative is to read the data in directly.  This can be done using the \pfun{read.file} function which calls \fun{file.choose} to find the file and then based upon the suffix of the file, chooses the appropriate way to read it.  For files with suffixes of .txt, .text, .r, .rds, .rda, .csv, or  .sav,  the file will be read correctly.  
+Although many find copying the data to the clipboard and then using the \pfun{read.clipboard} functions (see below), a helpful alternative is to read the data in directly.  This can be done using the \pfun{read.file} function which calls \fun{file.choose} to find the file and then based upon the suffix of the file, chooses the appropriate way to read it.  For files with suffixes of .txt, .text, .r, .rds, .rda, .csv, .xpt, or  .sav,  the file will be read correctly. 
 
 \begin{Schunk}
 \begin{Sinput}
@@ -375,7 +375,23 @@ Although many find copying the data to the clipboard and then using the \pfun{re
 \end{Sinput}
 \end{Schunk} 
 
-If the file is a .RData file (with suffix of .RData, .Rda, .rda, .Rdata, or .rdata) the object will be loaded.  Depending what was stored, this might be several objects.  If the file is a .sav file from SPSS, it will be read with the most useful default options (converting the file to a data.frame and converting character fields to numeric). Alternative options may be specified.  .csv files (comma separated files), normal .txt or .text files, .data, or .dat files will be read as well.  These are assumed to have a header row of variable labels.
+ If the file contains Fixed Width Format (fwf) data, the column information can be specified with the widths command.  
+ 
+ \begin{Schunk}
+\begin{Sinput}
+ my.data <- read.file(widths = c(4,rep(1,35))  #will read in a file without a header row and 36 fields, the first of which is 4 colums, the rest of which are 1 column each.
+\end{Sinput}
+\end{Schunk} 
+
+If the file is a .RData file (with suffix of .RData, .Rda, .rda, .Rdata, or .rdata) the object will be loaded.  Depending what was stored, this might be several objects.  If the file is a .sav file from SPSS, it will be read with the most useful default options (converting the file to a data.frame and converting character fields to numeric). Alternative options may be specified.  If it is an export file from SAS (.xpt or .XPT) it will be read.  .csv files (comma separated files), normal .txt or .text files, .data, or .dat files will be read as well.  These are assumed to have a header row of variable labels (header=TRUE).  If the data do not have a header row, you must specify read.file(header=FALSE).  
+
+To read SPSS files and to keep the value labels, specify  use.value.labels=TRUE.  
+
+\begin{Schunk}
+\begin{Sinput}
+ my.spss  <- read.file(use.value.labels=TRUE)  #this will keep the value labels for .sav files
+\end{Sinput}
+\end{Schunk} 
 
 
 \subsection{Data input from the clipboard}
@@ -423,13 +439,13 @@ Once the data are read in, then \pfun{describe} or \pfun{describeBy} will provid
 \item[\pfun{describeBy}] reports descriptive statistics broken down by some categorizing variable (e.g., gender, age, etc.)
 \end{description}
 
-\begin{tiny}
+\begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 library(psych)
 data(sat.act) 
 describe(sat.act)  #basic descriptive statistics
 @
-\end{tiny}
+\end{scriptsize}
 
 These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.
 
@@ -501,7 +517,7 @@ Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pf
 
 \begin{description}
 \label{sect:pairs}
-\item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.  When plotting many data points (as in the case of the sat.act data, it is possible to specify that the plot character is a period to get a somewhat cleaner graphic.  However, in this figure, to show the outliers, we use colors and a larger plot character.
+\item[\pfun{pairs.panels} ] will show the pairwise scatter plots of all the variables as well as histograms, locally smoothed regressions, and the Pearson correlation.  When plotting many data points (as in the case of the sat.act data, it is possible to specify that the plot character is a period to get a somewhat cleaner graphic.  However, in this figure, to show the outliers, we use colors and a larger plot character.  If we want to indicate 'significance' of the correlations by the conventional use of 'magic astricks' we can set the \pfun{stars}=TRUE option.
 \end{description}
 
 \begin{figure}[htbp]
@@ -510,7 +526,7 @@ Scatter Plot Matrices (SPLOMS) are very useful for describing the data.  The \pf
 <<pairspanels>>=
 png( 'pairspanels.png' )
 sat.d2 <- data.frame(sat.act,d2) #combine the d2 statistics from before with the sat.act data.frame
-pairs.panels(sat.d2,bg=c("yellow","blue")[(d2 > 25)+1],pch=21)
+pairs.panels(sat.d2,bg=c("yellow","blue")[(d2 > 25)+1],pch=21,stars=TRUE)
 dev.off()
 @
 \end{scriptsize}
@@ -682,11 +698,15 @@ The \pfun{bi.bars} function summarize the characteristics of two groups (e.g., m
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+   %  <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
 data(bfi)
+<<bibars>>=
+png( 'bibars.png' )
 with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
+dev.off()
 @
 \end{scriptsize}
+\includegraphics{bibars.png}
 \caption{A bar plot of the age distribution for males and females shows the use of \pfun{bi.bars}.  The data are males and females from 2800 cases collected using the \iemph{SAPA} procedure and are available as part of the \pfun{bfi} data set. }
 \label{fig:bibars}
 \end{center}

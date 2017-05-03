@@ -8,9 +8,9 @@
 }
 \usage{
 scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
- delete=TRUE, min = NULL, max = NULL, digits = 2,n.obs=NULL)
+ delete=TRUE, min = NULL, max = NULL, digits = 2,n.obs=NULL,select=TRUE)
  score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
- delete=TRUE, min = NULL, max = NULL, digits = 2) 
+ delete=TRUE, min = NULL, max = NULL, digits = 2,select=TRUE) 
  scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none",
  delete=TRUE, min = NULL, max = NULL, digits = 2)
   response.frequencies(items,max=10,uniqueitems=NULL)
@@ -29,6 +29,7 @@ scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="med
   \item{uniqueitems}{If specified, the set of possible unique response categories}
   \item{digits}{ Number of digits to report }
   \item{n.obs}{If scoring from a correlation matrix, specify the number of subjects allows for the calculation of the confidence intervals for alpha.}
+  \item{select}{By default, just find the statistics of those items that are included in scoring keys.  This allows scoring of data sets that have bad data for some items that are not included in the scoring keys.}
 
   
 }
@@ -69,7 +70,13 @@ Alpha is a poor estimate of the general factor saturation of a test (see Revelle
 
 Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  
 
-By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.
+
+There are several alternative ways to treat missing values.  By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.  The number of missing responses for each person for each scale is reported in the missing object.  One possibility is to drop scores just for those scales with missing responses.  This may be done adding the code:
+
+scores$scores[scores$missing >0] <- NA 
+
+This is shown in the last example.
+
 
 
 

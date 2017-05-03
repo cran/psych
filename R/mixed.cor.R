@@ -1,4 +1,55 @@
-#modified April 29th to get around the problem of missing rows or columns in the polychoric function.
+
+
+#mixedCor was added April 28, 2017 to make mixed.cor easier to use
+
+"mixedCor" <- function(data=NULL,c=NULL,p=NULL,d=NULL,smooth=TRUE,correct=.5,global=TRUE,ncat=8,use="pairwise",method="pearson",weight=NULL) {
+cl <- match.call() 
+original <- colnames(data)
+organize <- FALSE   #the default is to specify the continuous, the polytomous and the dichotomous
+if(missing(c) && missing(p)  && missing(d)) { #figure out which kinds of variables we are using 
+organize <- TRUE
+nvar <- ncol(data)
+x <- as.matrix(data)
+tab <- apply(x,2,function(x) table(x))
+if(is.list(tab)) {len <- lapply(tab,function(x) length(x))} else {len <- dim(tab)[1] }
+dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
+pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
+cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
+
+if(length(dvars) > 0) {d <- as.matrix(x[,dvars],ncol=length(dvars))
+              colnames(d) <- colnames(x)[dvars]} else {d <- NULL}
+if(length(pvars) > 0) {p <- as.matrix(x[,pvars],ncol=length(pvars))
+               colnames(p) <- colnames(x)[pvars] 
+               tab <- table(p) #now check to make sure that they are all on the same scale
+               if(length(tab) > ncat) stop("I tried to figure out which where continuous and which were polytomous, but failed.  Please try again by specifying x, p, and d.")
+               ok <- apply(p, 2,function (x) {if (length(table(x)) != (max(x,na.rm=TRUE) - min(x,na.rm=TRUE)+1)) {FALSE} else {TRUE}})
+               if(any(!ok)) {bad <- which(!ok)
+               cat("\n Some polytomous variables have fewer categories than they should.  Please check your data.  \nPotential bad items are ",colnames(p)[bad],"\n")
+             
+               stop("\nI am stopping because of the problem with polytomous data")
+               }
+                         } else {p <- NULL}
+ if(length(cvars) > 0) {cont <- matrix(x[,cvars],ncol=length(cvars))
+                       colnames(cont) <- colnames(x)[cvars] } else {cont <- NULL}
+                       
+Rho <- mixed.cor1(cont,p, d,smooth=smooth,global=global,correct=correct,use=use,method=method,weight=weight)
+oldorder <- c(cvars,pvars,dvars)
+ord <- order(oldorder)
+Rho$rho <- Rho$rho[ord,ord]
+} else {# organization is specified
+#if ((p+ d) == nvar)
+if(!missing(c)) x <- data[c]
+if(!missing(p)) p <- data[p]
+if(!missing(d)) d <- data[d]
+Rho <- mixed.cor1(x=x,p=p,d=d,smooth=smooth,global=global,correct=correct,use=use,method=method,weight=weight)}
+orig <- original %in%  colnames(Rho$rho)
+orig <- original[orig]
+Rho$rho <- Rho$rho[orig,orig]  #organize them in the way they came in
+Rho$Call <- cl
+return(Rho)
+}
+
+#modified April 29th (2014) to get around the problem of missing rows or columns in the polychoric function.
 #modified 1/1/14 to add multicore capability
 "mixed.cor" <- 
 function(x=NULL,p=NULL,d=NULL,smooth=TRUE,correct=.5,global=TRUE,ncat=8,use="pairwise",method="pearson",weight=NULL)  {
@@ -14,9 +65,9 @@ dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
 pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
 cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
 
-if(length(dvars) > 0) {d <- matrix(x[,dvars],ncol=length(dvars))
+if(length(dvars) > 0) {d <- as.matrix(x[,dvars],ncol=length(dvars))
               colnames(d) <- colnames(x)[dvars]} else {d <- NULL}
-if(length(pvars) > 0) {p <- matrix(x[,pvars],ncol=length(pvars))
+if(length(pvars) > 0) {p <- as.matrix(x[,pvars],ncol=length(pvars))
                colnames(p) <- colnames(x)[pvars] 
                tab <- table(p) #now check to make sure that they are all on the same scale
                if(length(tab) > ncat) stop("I tried to figure out which where continuous and which were polytomous, but failed.  Please try again by specifying x, p, and d.")

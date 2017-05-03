@@ -1,13 +1,19 @@
-\name{mixed.cor}
+\name{mixedCor}
+\alias{mixedCor}
 \alias{mixed.cor}
 \title{Find correlations for mixtures of continuous, polytomous, and dichotomous variables}
-\description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixed.cor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
+\description{For data sets with continuous, polytomous and dichotmous variables, the absolute Pearson correlation is downward biased from the underlying latent correlation.  mixedCor finds Pearson correlations for the continous variables, \code{\link{polychoric}}s for the polytomous items, \code{\link{tetrachoric}}s for the dichotomous items, and the \code{\link{polyserial}} or \code{\link{biserial}} correlations for the various mixed variables. Results include the complete correlation matrix, as well as the separate correlation matrices and difficulties for the polychoric and tetrachoric correlations.
 }
 \usage{
+mixedCor(data=NULL,c=NULL,p=NULL,d=NULL,smooth=TRUE,correct=.5,global=TRUE,ncat=8,
+             use="pairwise",method="pearson",weight=NULL)
+             
 mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=.5,global=TRUE, 
         ncat=8,use="pairwise",method="pearson",weight=NULL)
 }
 \arguments{
+  \item{data}{The data set to be analyzed (either a matrix or dataframe)}
+  \item{c}{The names (or locations) of the continuous variables) (may be missing)}
   \item{x}{A set of continuous variables (may be missing) or, if p and d are missing, the variables to be analyzed.}
   \item{p}{A set of polytomous items (may be missing)}
   \item{d}{A set of dichotomous items (may be missing)}
@@ -28,7 +34,8 @@ Item response analyses using \code{\link{irt.fa}} may be done separately on the 
 
 This function is not quite as flexible as the hetcor function in John Fox's polychor package. 
 
-Note that the variables may be organized by type of data: first continuous, then polytomous, then dichotomous. This is done by simply specifying x, p, and d. This is advantageous in the case of some continuous variables having a limited number of categories because of subsetting.  }
+Note that the variables may be organized by type of data:  continuous, polytomous, and dichotomous. This is done by simply specifying c, (or x in mixed.cor), p, and d. This is advantageous in the case of some continuous variables having a limited number of categories because of subsetting.  
+}
 \value{
  \item{rho}{The complete matrix}
  \item{rx}{The Pearson correlation matrix for the continuous items}
@@ -39,22 +46,29 @@ Note that the variables may be organized by type of data: first continuous, then
 \author{William Revelle}
 \note{mixed.cor was designed for the SAPA project (\url{http://sapa-project.org}) with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
 
+\code{\link{mixedCor}} was added in April, 2017 to be slightly more user friendly.
+
 When finding correlations between dummy coded SAPA data (e.g., of occupations), the real correlations are all slightly less than zero because of the ipsatized nature of the data.  This leads to a non-positive definite correlation matrix because the matrix is no longer of full rank. Smoothing will correct this, even though this might not be desired.  Turn off smoothing in this case.
 
  Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  However, this automatic detection will lead to problems if the variables such as age are limited to less than 8 categories but those category values differ from the polytomous items.  The fall back is to specify x, p, and d. }
 
 \references{
 W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-cognition link. In A.Gruszka, G. Matthews, and B. Szymura, editors,  Handbook of Individual Differences in Cognition: Attention, Memory and Executive
-  Control, chapter 2, pages 27-49. Springer, 2010.}
+  Control, chapter 2, pages 27-49. Springer, 2010.
 
+W Revelle, D. M. Condon,  J. Wilt,  J.A. French,  A. Brown, and L G. Elleman(2016) Web and phone based data collection using planned missing designs in Nigel G. Fielding and Raymond M. Lee and Grant Blank (eds) SAGE Handbook of Online Research Methods, Sage Publications, Inc.
 
+}
 
-\seealso{ \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{score.items}}, \code{\link{score.irt}}
+\seealso{ \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{scoreItems}},  \code{\link{scoreOverlap}} \code{\link{scoreIrt}}
 }
 \examples{
 data(bfi) 
-r <- mixed.cor(bfi[,c(1:5,26,28)])
+r <- mixedCor(data=bfi[,c(1:5,26,28)])
 r
+#this is the same as
+r <- mixedCor(data=bfi,p=1:5,c=28,d=26)
+r #note how the variable order reflects the original order in the data
 #compare to raw Pearson
 #note that the biserials and polychorics are not attenuated
 rp <- cor(bfi[c(1:5,26,28)],use="pairwise")

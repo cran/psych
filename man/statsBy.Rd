@@ -8,7 +8,7 @@
 }
 \usage{
 statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
-poly=FALSE, na.rm=TRUE)
+poly=FALSE, na.rm=TRUE,alpha=.05)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
@@ -21,8 +21,9 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
   \item{cor}{Type of correlation/covariance to find within groups and between groups.  The default is Pearson correlation.  To find within and between covariances, set cor="cov".  Although polychoric, tetrachoric, and mixed correlations can be found within groups, this does not make sense for the between groups or the pooled within groups.  In this case, correlations for each group will be as specified, but the between groups and pooled within will be Pearson. See the discussion below.}
 \item{method}{What kind of correlations should be found (default is Pearson product moment)}
 \item{use}{How to treat missing data.  use="pairwise" is the default}
-\item{poly}{Find polychoric correlations within groups if requested.}
+\item{poly}{Find polychoric.tetrachoric correlations within groups if requested.}
 \item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
+\item{alpha}{The alpha level for the confidence intervals for the ICC1 and ICC2}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
@@ -78,6 +79,8 @@ Consider the case of the relationship between various tests of ability when the 
 \item{n}{The number of cases for each group and for each variable.}
 \item{ICC1}{The intraclass correlation reflects the amount of total variance associated with the grouping variable.}
 \item{ICC2}{The intraclass correlation (2) reflecting how much the groups means differ.}
+\item{ci1}{The confidence intervals for the ICC1}
+\item{ci2}{The confidence intervals for the ICC2}
 \item{F}{The F from a one-way anova of group means.}
 \item{rwg}{The pooled within group correlations.}
 \item{rbg}{The sample size weighted between group correlations. }

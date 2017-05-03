@@ -8,6 +8,7 @@
 \alias{score.irt.2}
 \alias{irt.stats.like}
 \alias{irt.tau}
+\alias{irt.se}
 \title{Find Item Response Theory (IRT) based scores for dichotomous or polytomous items}
 
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{scoreIrt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. \code{\link{scoreIrt.2pl}} will score lists of scales.
@@ -30,6 +31,7 @@ score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-4,4),mod="logistic")
 irt.stats.like(items,stats,keys=NULL,cut=.3)
    
 irt.tau(x)    #find the tau values for the x object
+irt.se(stats,scores=0,D=1.702)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +47,8 @@ irt.tau(x)    #find the tau values for the x object
   \item{correct}{What value should be used for continuity correction when finding the
      tetrachoric or polychoric correlations when using irt.fa}
   \item{messages}{Should messages be suppressed when running multiple scales?}
+  \item{scores}{A single score or a vector of scores to find standard errors}
+  \item{D}{The scaling function for the test information statistic used in irt.se}
 }
 \details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
@@ -68,6 +72,8 @@ Such irt based scores are particularly useful if finding scales based upon massi
 David Condon has added a very nice function to do 2PL analysis for a number of scales at one time.  \code{\link{scoreIrt.2pl}} takes the raw data file and a list of items to score for each of multiple scales.  These are then factored (currently just one factor for each scale) and the loadings and difficulties are used for scoring.  
 
 There are conventionally two different metrics and models that are used.  The logistic metric and model and the normal metric and model. These are chosen using the mod parameter.
+
+\code{\link{irt.se}} finds the standard errors for scores with a particular value.  These are based upon the information curves calculated by \code{\link{irt.fa}} and are not based upon the particular score of a particular subject.
 }
 \value{
  \item{scores}{A data frame of theta estimates, total scores based upon raw sums, and estimates of fit.}

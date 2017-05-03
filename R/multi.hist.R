@@ -1,5 +1,5 @@
 "multi.hist" <-
-function(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),main="Histogram, Density, and Normal Fit",...) {
+function(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),main="Histogram, Density, and Normal Fit",breaks=21,...) {
 if((!is.matrix(x)) & (!is.data.frame(x))) {nvar <- 1
     x <- as.matrix(x,ncol=1) } else {
     x <- as.data.frame(x) 
@@ -14,15 +14,15 @@ if (length(dcol)<2) dcol <- c(dcol,dcol)
      par(mfrow=c(nrow,ncol))       #set new graphic parameters
      for (i in 1:nvar) {
     	 xlab=names(x)[i]                #get the names for the variables
-    	if(density) {histo.density(x[,i],xlab=xlab,main=main,freq=freq,bcol,dcol=dcol,dlty=dlty,...)} else {
-    				hist(x[,i],main=main,xlab=xlab,freq=freq,bcol,dcol=dcol,dlty=dlty,...)}
+    	if(density) {histo.density(x[,i],xlab=xlab,main=main,freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)} else {
+    				hist(x[,i],main=main,xlab=xlab,freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)}
     }  #draw the histograms for each variable
      on.exit(par(old.par))   #set the graphic parameters back to the original
      }
 
 "histo.density" <- 
-function(x,main="Histogram, Density, and Normal Fit",freq=FALSE,xlab=NULL,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),...) {
-h <-  hist(x,plot=FALSE)
+function(x,main="Histogram, Density, and Normal Fit",freq=FALSE,xlab=NULL,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),breaks=21,...) {
+h <-  hist(x,plot=FALSE,breaks=breaks)
 m1 <- mean(x,na.rm=TRUE)
 s1 <- sd(x,na.rm=TRUE)
 d <- density(x,na.rm=TRUE)

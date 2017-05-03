@@ -200,25 +200,37 @@ return(result)
 cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	cat("Call: ")
 	print(x$Call)
+	
 	cat("\nThe data had ",x$n.obs, " observations taken over ", x$n.time ," time intervals for ", x$n.items, "items.\n")
+	
+	mat <- list(n.obs = x$n.obs,n.time = x$n.time,n.items = x$n.items)    #save these 
 	cat("\n Alternative estimates of reliabilty based upon Generalizability theory\n")
 	
-	if(!is.null(x$RkF)) cat("\nRkF  = ",round(x$RkF,digits) , "Reliability of average of all ratings across all items and  times (Fixed time effects)")
-	if(!is.null(x$R1R))cat("\nR1R  = ",round(x$R1R,digits),"Generalizability of a single time point across all items (Random time effects)")
-	if(!is.null(x$RkR))cat("\nRkR  = ",round(x$RkR,digits),"Generalizability of average time points across all items (Random time effects)")
-	if(!is.null(x$Rc)) cat("\nRc   = ",round(x$Rc,digits),"Generalizability of change (fixed time points, fixed items) ")
-	if(!is.null(x$RkRn) )cat("\nRkRn = ",round(x$RkRn,digits),"Generalizability of between person differences averaged over time (time nested within people)")
-	if(!is.null(x$Rcn)) cat("\nRcn  = ",round(x$Rcn,digits),"Generalizability of within person variations averaged over items  (time nested within people)")
+	if(!is.null(x$RkF)){ cat("\nRkF  = ",round(x$RkF,digits) , "Reliability of average of all ratings across all items and  times (Fixed time effects)")
+	 mat["RkF"] <- x$RkF}
+	if(!is.null(x$R1R)) {cat("\nR1R  = ",round(x$R1R,digits),"Generalizability of a single time point across all items (Random time effects)")
+		 mat["R1R"] <- x$R1R}
+	
+	if(!is.null(x$RkR)) {cat("\nRkR  = ",round(x$RkR,digits),"Generalizability of average time points across all items (Random time effects)")
+	  mat["RkR"] <- x$RkR}
+	if(!is.null(x$Rc))  {cat("\nRc   = ",round(x$Rc,digits),"Generalizability of change (fixed time points, fixed items) ")
+	   mat["Rc"] <- x$Rc}
+	if(!is.null(x$RkRn) ) {cat("\nRkRn = ",round(x$RkRn,digits),"Generalizability of between person differences averaged over time (time nested within people)")
+	    mat["RkRn"] <- x$RkRn}
+	if(!is.null(x$Rcn)) {cat("\nRcn  = ",round(x$Rcn,digits),"Generalizability of within person variations averaged over items  (time nested within people)")
+	   mat["Rcn"] <- x$Rcn}
 	
 	if(!x$lmer && !is.null(x$RkF) ) {cat("\n\n These reliabilities are derived from the components of variance estimated by ANOVA \n") 
 		if(!is.null(x$components)) {
 	     if(!any(is.na(x$components[1:8,1])) & any(x$components[1:8,1] < 0))  { warning("The ANOVA based estimates are suspect, probably due to missing data, try using lmer")}
 	        }} else {
 	 if(x$lmer ) { cat("\n\n These reliabilities are derived from the components of variance estimated by lmer \n")}}
-	if(!is.null(x$components) && !is.na(x$components[1,1])) print(round(x$components[1:8,],digits=digits))
+	if(!is.null(x$components) && !is.na(x$components[1,1]))  {      print(round(x$components[1:8,],digits=digits))
+	mat["components"] <- list( x$components[1:8,1])}
 		if(!is.null(x$components) && !is.na(x$components[9,1] )) {
 		if(!x$lmer) {cat("\n The nested components of variance estimated from lme are:\n")} else {cat("\n The nested components of variance estimated from lmer are:\n")}
-	   print(x$components[9:12,],digits=digits)} else {cat("\nNested components were not found because lme was not used\n")}
+	   print(x$components[9:12,],digits=digits)
+	   mat["lmer"] = list(x$components[9:12,1])} else {cat("\nNested components were not found because lme was not used\n")}
 	
 	
 	if(!short) {cat("\n\n Three way ANOVA or lmer analysis \n")
@@ -237,6 +249,8 @@ cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	         if(short) { cat("\nTo see the ANOVA and alpha by subject, use the short = FALSE option.")}
 	         if(!all) {cat("\n To see the summaries of the ICCs by subject and time, use all=TRUE")}
 	         cat("\n To see specific objects select from the following list:\n",names(x)[-c(1:10)])
+	invisible(mat)
+	         
 	}
 	
 	
@@ -312,3 +326,66 @@ long <- mlArrange(x =x,grp=grp,Time=Time,items=items,extra=extra)
 print(plot1)
 invisible(long)
 }
+
+"print.psych.multilevel.mat" <- function(x,digits=2,all=FALSE,short=TRUE) {
+cat("\nMultilevel Generalizability analysis ",x$title," \n")
+if(length(x) < 21 ) items <- length(x)
+
+temp <- matrix(unlist(x),ncol=items,byrow=FALSE)
+
+rownames(temp) <- c("n.obs","n.time","n,items","RkF","R1R","RkR","Rc","RkRn","Rcn","ID","Time","Items","ID x Time","ID x items","Time x items","residual","Total","Id","ID (time)","residual","total")
+
+	
+	
+	cat("\nThe data had ",x$n.obs, " observations taken over ", x$n.time ," time intervals for ", x$n.items, "items.\n")
+	
+	mat <- list(n.obs = x$n.obs,n.time = x$n.time,n.items = x$n.items)    #save these 
+	cat("\n Alternative estimates of reliabilty based upon Generalizability theory\n")
+	
+	if(!is.null(x$RkF)){ cat("\nRkF  = ",round(x$RkF,digits) , "Reliability of average of all ratings across all items and  times (Fixed time effects)")
+	 mat["RkF"] <- x$RkF}
+	if(!is.null(x$R1R)) {cat("\nR1R  = ",round(x$R1R,digits),"Generalizability of a single time point across all items (Random time effects)")
+		 mat["R1R"] <- x$R1R}
+	
+	if(!is.null(x$RkR)) {cat("\nRkR  = ",round(x$RkR,digits),"Generalizability of average time points across all items (Random time effects)")
+	  mat["RkR"] <- x$RkR}
+	if(!is.null(x$Rc))  {cat("\nRc   = ",round(x$Rc,digits),"Generalizability of change (fixed time points, fixed items) ")
+	   mat["Rc"] <- x$Rc}
+	if(!is.null(x$RkRn) ) {cat("\nRkRn = ",round(x$RkRn,digits),"Generalizability of between person differences averaged over time (time nested within people)")
+	    mat["RkRn"] <- x$RkRn}
+	if(!is.null(x$Rcn)) {cat("\nRcn  = ",round(x$Rcn,digits),"Generalizability of within person variations averaged over items  (time nested within people)")
+	   mat["Rcn"] <- x$Rcn}
+	
+	if(!x$lmer && !is.null(x$RkF) ) {cat("\n\n These reliabilities are derived from the components of variance estimated by ANOVA \n") 
+		if(!is.null(x$components)) {
+	     if(!any(is.na(x$components[1:8,1])) & any(x$components[1:8,1] < 0))  { warning("The ANOVA based estimates are suspect, probably due to missing data, try using lmer")}
+	        }} else {
+	 if(x$lmer ) { cat("\n\n These reliabilities are derived from the components of variance estimated by lmer \n")}}
+	if(!is.null(x$components) && !is.na(x$components[1,1]))  {      print(round(x$components[1:8,],digits=digits))
+	mat["components"] <- list( x$components[1:8,])}
+		if(!is.null(x$components) && !is.na(x$components[9,1] )) {
+		if(!x$lmer) {cat("\n The nested components of variance estimated from lme are:\n")} else {cat("\n The nested components of variance estimated from lmer are:\n")}
+	   print(x$components[9:12,],digits=digits)
+	   mat["lmer"] = list(x$components[9:12,])} else {cat("\nNested components were not found because lme was not used\n")}
+	
+	
+	if(!short) {cat("\n\n Three way ANOVA or lmer analysis \n")
+	print(x$ANOVA,digits=digits)
+	 cat("\nvariance components from lme(r)\n")
+	 print(x$s.lme,digits=digits)
+	 cat("\n Alpha reliability by subjects)\n")
+	 print(x$alpha,digits) }
+	
+	 if(all) {
+	          cat("\n Intraclass Correlations by subjects (over time and items) \n")
+	          print(x$summary.by.person,digits)
+	          cat("\n Intraclass Correlations by time (over subjects and items) \n")
+	          print(x$summary.by.time,digits) }
+	    
+	         if(short) { cat("\nTo see the ANOVA and alpha by subject, use the short = FALSE option.")}
+	         if(!all) {cat("\n To see the summaries of the ICCs by subject and time, use all=TRUE")}
+	         cat("\n To see specific objects select from the following list:\n",names(x)[-c(1:10)])
+	invisible(mat)
+	         
+	}
+	

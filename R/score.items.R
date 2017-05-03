@@ -1,14 +1,25 @@
 "score.items"  <-
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,select=TRUE) {
  message("score.items has been replaced by scoreItems, please change your call")
-     scoreItems(keys=keys,items=items,totals=totals,ilabels=ilabels,missing=missing,impute=impute,delete=delete,min=min,max=max,digits=digits)
+     scoreItems(keys=keys,items=items,totals=totals,ilabels=ilabels,missing=missing,impute=impute,delete=delete,min=min,max=max,digits=digits,select=select)
      }
 
 "scoreItems"  <-
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,n.obs=NULL) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,n.obs=NULL,select=TRUE) {
    cl <- match.call()
    raw.data <- TRUE
-   if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
+  # if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
+   
+   if(is.list(keys) & (!is.data.frame(keys))) { if (select) {
+  #  select <- sub("-","",unlist(keys))  #then, replaced with select option, Apri 8, 2017
+  select <- selectFromKeyslist(colnames(items),keys)
+      select <- select[!duplicated(select)]
+      }  else {select <- 1:ncol(items) }   
+# if (!isCorrelation(r)) {r <- cor(r[select],use="pairwise")} else {r <- r[select,select]}
+
+ keys <- make.keys(items[,select],keys)} else {select <- 1:ncol(items) }
+   #modified once again April 6,2017 to allow for selecting items 
+   
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
@@ -22,13 +33,14 @@
     if ((dim(items)[1] == dim(items)[2])  &&  isCorrelation(items)){ #this is the case of scoring correlation matrices instead of raw data  (checking for rare case as well)       
      raw.data <- FALSE
      totals <- FALSE #because we don't have the raw data, totals would be meaningless
-
+      items <- items[select,select]  #we have a correlation matrix, but we don't want all of it
      n.subjects <- 0
      C <- as.matrix(items)
      cov.scales <- t(keys) %*% C %*% keys  #fast, but does not handle the problem of NA correlations
      cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys) # this is sum(C^2)  for finding ase
      response.freq <- NULL
            }  else {
+     items <- items[,select]  #select just the items that we want to score.  This is faster and robust to bad items
     #check to make sure all items are numeric  --  if not, convert them to numeric if possible, flagging the item that we have done so 
      if(!is.matrix(items)) {  #does not work for matrices
     for(i in 1:n.items) {   
@@ -197,3 +209,12 @@
  #added missing score to count missing responses for each scale instead of just the overall.
  #Modified November 22, 2013 to add confidence intervals for alpha 
  #modified Sept 9, 2016 to add the keys.list option for the scoring keys
+ 
+ "selectFromKeyslist" <- function(itemname,keys) {nkey <- length(keys)
+ select <- NULL
+   for (key in 1:nkey) {
+      if(is.numeric(keys[[key]])) {select <- c(select,itemname[abs(unlist(keys[[key]]))]) } else {select <- c(select,sub("-", "", unlist(keys[[key]]))) }    
+    }
+    return(select)}
+      
+  

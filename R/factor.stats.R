@@ -4,7 +4,7 @@ function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
    fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm)}
 
 "fa.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
@@ -131,13 +131,14 @@ conf.level <- alpha
     
      #The estimatation of RMSEA and the upper and lower bounds are taken from John Fox's summary.sem with minor modifications
       if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
-     # RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)  
+      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #put back 4/21/17
      #note that the result$objective is not actually the chi square unless we adjust it ala Tucker 
      #thus, the RMSEA was slightly off.  This was fixed October 29, 2016 to be  
-      RMSEA <- sqrt(max( (chisq/(result$dof * (n.obs))-1/(n.obs)),0))   #changed to this from above October 29, 2016 and then changed to N February 28, 2017
+     # RMSEA <- sqrt(max( (chisq/(result$dof * (n.obs))-1/(n.obs)),0))   #changed to this from above October 29, 2016 and then changed to N February 28, 2017
     #Seem to have dropped the sqrt part of this at some point 
       
-        tail <- conf.level/2    #this had been incorrectly listed as (1-conf.level)/2  which gave extraordinarily narrow confidence boundaries, fixed August 25, 2011
+    tail <- conf.level/2    #this had been incorrectly listed as (1-conf.level)/2  which gave extraordinarily narrow confidence boundaries, fixed August 25, 2011
+       
         N <- max <- n.obs
         df <- result$dof
         #chi.sq.statistic <- RMSEA^2 * df * (N - 1) + df
@@ -148,35 +149,57 @@ conf.level <- alpha
         
         
         
-        max <- max(max,chi.sq.statistic) +2* max
+        max <- max(n.obs,chi.sq.statistic) +2* n.obs
         
          #the alternative to this is to use the uniroot technique of Yves Rosseel in  lavaan
+         
+         #### from Hao Wu
+#          LB<-function(T){
+# + if (pchisq(df=df,q=T)<=0.95) return(0) else
+# + sqrt(uniroot(function(x) {pchisq(df=df,ncp=x,q=T)-0.95},c(0,10000))$root/nstar/df)
+# + }
+# 
+# > UB<-function(T){
+# + if (pchisq(df=df,q=T)<=0.05) return(0) else
+# + sqrt(uniroot(function(x) {pchisq(df=df,ncp=x,q=T)-0.05},c(0,10000))$root/nstar/df)
+# + }
 
-         #Finally implement February 2017 
-       upperlambda <- function(lam)   {tail - pchisq(chi.sq.statistic, df, ncp=lam)^2 }
-      res <- try(uniroot(f = upperlambda,lower=0,upper=max)$root,silent=TRUE) 
-        if(class(res)=="try-error") {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
-                                        res <- NULL
-                                          lam.U <- NA} else {lam.U <- res}
- 		#	if (is.null(res) || is.na(res$objective) || res$objective < 0){
- 		#		max <- 0
- 		#		warning("cannot find upper bound of RMSEA")
- 		#		break
- 		#		}	
- 				
- 	 lowerlambda <- function(lam)   {1- tail - pchisq(chi.sq.statistic, df, ncp=lam)^2 }
-      res <- try(uniroot(f = lowerlambda,lower=0,upper=max)$root,silent=TRUE) 
-        if(class(res)=="try-error") {#message("In factor.stats, I could not find the RMSEA lower bound . Sorry about that")
-                                        res <- NULL
-                                          lam.L <- 0} else {lam.L <- res}
- 		#	if (is.null(res) || is.na(res$objective) || res$objective < 0){
- 		#		max <- 0
- 		#		warning("cannot find lower bound of RMSEA")
- 		#		break
- 		#		}				
-       
-        
-        
+##
+       #Finally implement February 2017 
+#        upperlambda <- function(lam)   {tail - pchisq(chi.sq.statistic, df, ncp=lam)^2 }
+      RMSEA.U <- 0  #in case we can not find it
+      if(pchisq(df=result$dof,q=result$STATISTIC) > tail){ RMSEA.U <-    try( sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)- tail},c(0,max))$root/(n.obs-1)/result$dof),silent=TRUE)
+    
+        if(class( RMSEA.U)=="try-error") {if(RMSEA <= 0 ) {RMSEA.U <- 0} else {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
+       #if the fit is super good, then the chisq is too small to get an upper bound.  Report it as 0.
+                                         RMSEA.U <- NA}}
+         
+    }
+#                                           lam.U <- NA} else {lam.U <- res}
+#  		#	if (is.null(res) || is.na(res$objective) || res$objective < 0){
+#  		#		max <- 0
+#  		#		warning("cannot find upper bound of RMSEA")
+#  		#		break
+#  		#		}	
+#  				
+#  	 lowerlambda <- function(lam)   {1- tail - pchisq(chi.sq.statistic, df, ncp=lam)^2 }
+
+   RMSEA.L <- 0  #in case we can not find it
+   if(pchisq(df=result$dof,q=result$STATISTIC) > (1-tail)) {    RMSEA.L   <-     try( sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)-1 + tail},c(0,max))$root/(n.obs-1)/result$dof) ,silent=TRUE)
+        if(class(RMSEA.L)=="try-error") {#message("In factor.stats, I could not find the RMSEA lower bound . Sorry about that")
+                                         RMSEA.L <- NA}
+        } else {RMSEA.L <- 0}
+#                                           lam.L <- 0} else {lam.L <- res}
+#  		#	if (is.null(res) || is.na(res$objective) || res$objective < 0){
+#  		#		max <- 0
+#  		#		warning("cannot find lower bound of RMSEA")
+#  		#		break
+#  		#		}				
+ #However, this was giving the wrong results and so I implemented the following
+ #suggested by Hao Wu April, 2017      
+#RMSEA.U <-     sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)- alpha},c(0,10000))$root/(n.obs-1)/result$dof)
+#RMSEA.L   <-      sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)-1 + alpha},c(0,10000))$root/(n.obs-1)/result$dof) 
+         
   #       while (max > 1){
 #              res <- try(optimize(function(lam) (tail - pchisq(chi.sq.statistic, df, ncp=lam))^2, interval=c(0, max)),silent=TRUE)
 #               if(class(res)=="try-error") {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
@@ -208,21 +231,20 @@ conf.level <- alpha
 #              }
 # 
 # 
-  #       lam.L <- if (max <= 1) NA else res$minimum  #lam is the ncp
+#       lam.L <- if (max <= 1) NA else res$minimum  #lam is the ncp
 #        this RMSEA calculation is probably not right because it will sometimes (but rarely) give cis that don't include the estimate   
  
-         RMSEA.U <- sqrt(lam.U/((N)*df) )   #lavaan uses sqrt(lam.U/((N)*df) )  sem uses sqrt(lam.U/((N-1)*df) )
-         RMSEA.L <- min(sqrt(lam.L/((N)*df) ),RMSEA)
+       #  RMSEA.U <- sqrt(lam.U/((N)*df) )   #lavaan uses sqrt(lam.U/((N)*df) )  sem uses sqrt(lam.U/((N-1)*df) )
+      #   RMSEA.L <- min(sqrt(lam.L/((N)*df) ),RMSEA)
          if(!is.na(RMSEA.U) && RMSEA.U < RMSEA) RMSEA.U <- NA 
            if(!is.na(RMSEA.L) && RMSEA.L  > RMSEA) RMSEA.L  <- NA 
-        result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, conf.level)
+        result$RMSEA <- c(RMSEA, RMSEA.L, RMSEA.U, 1-conf.level)
         names(result$RMSEA) <- c("RMSEA","lower","upper","confidence")
         result$BIC <- chisq - df * log(N) 
         result$SABIC <- chisq - df * log((N+2)/24) # added 1/27/2014
          }
        }  
    
-        
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients

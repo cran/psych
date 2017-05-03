@@ -45,12 +45,17 @@ sumInfo <- matrix(NA,ncol=nvar,nrow=length(summaryx))
 summaryx <- as.matrix(summaryx,ncol=1)
 if(type=="ICC") {
  		summtInfo <- NULL 
-		if(missing(main)) main <- "Item parameters from factor analysis"
+ 		
+ 		 if(nf > 1) {
+	if(missing(main)) {main1 <- paste("Item parameters from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Item parameters from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
+	#	if(missing(main)) main <- "Item parameters from factor analysis"
 		if(missing(ylab)) ylab <- "Probability of Response"
-		if(length(lncol)<2) lncol <- rep(lncol,nvar)
+		if(length(lncol) < 2) lncol <- rep(lncol,nvar)
 		ii <- 1 
 		while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main,col=lncol[1],...)
+		plot(x,logistic(x,a=discrimination[ii]*D,d=location[ii]),ylim=c(0,1),ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
 		text(location[ii],.53,labels[ii])
 		for(i in (ii+1):nvar) {
   		 if(abs(discrimination[i])  > cut) {
@@ -68,14 +73,19 @@ if(type=="ICC") {
 	AUC <- colSums(tInfo)
 	max.info <- apply(tInfo,2,which.max)
 	if(type=="test") {
-		if(missing(main)) main <- "Test information -- item parameters from factor analysis"
+	 if(nf > 1) {
+
+	if(missing(main)) {main1 <- paste("Test information -- item parameters from factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Test information -- item parameters from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
+	#	if(missing(main)) main <- "Test information -- item parameters from factor analysis"
 		if(missing(y2lab)) y2lab <- "Reliability"
 		testInfo <- rowSums(tInfo)
 		if(missing(ylab)) ylab <- "Test Information"
 		if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
 		if(length(lncol)< 2) lncol <- rep(lncol,nvar)
 		op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main,col=lncol[1],...)
+		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main1,col=lncol[1],...)
 		 ax4 <- seq(0,max(testInfo),max(testInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
@@ -85,12 +95,17 @@ if(type=="ICC") {
 	 op <- par(op)   #set them back to what we had before
 		} else {
 		if(missing(ylab)) ylab <- "Item Information"
-	if(missing(main)) main <- "Item information from factor analysis"
+	#if(missing(main)) main <- "Item information from factor analysis"
+	 if(nf > 1) {
+	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Item information from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
+	
 	if(length(lncol) <2) lncol <- rep(lncol,nvar)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
     if(missing(ylim)) {ylimit=c(0,max(tInfo)+.03)} else {ylimit <- ylim}
-	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main,col=lncol[1],...)
+	plot(x,logisticInfo(x,a=discrimination[ii]*D,d=location[ii]),ylim=ylimit,ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
 text(location[ii],max(tInfo[,ii])+.03,labels[ii])
 
 for(i in (ii+1):nvar) {
@@ -189,11 +204,18 @@ for(f in 1:nf) {if(byKeys) {discrimination <- item$irt$discrimination[,1]} else 
 
 if(type=="ICC") { #this draws the item characteristic curves
   #summtInfo <- NULL 
+  
+   if(nf > 1) {
+	if(missing(main)) {main1 <- paste("Item parameters from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Item parameters from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
 
-if(missing(main)) {main <- "Item parameters from factor analysis"
-                  main1 <- paste(main,'  ',f)} else {if ( length(main) > 1) main1 <- main[f]}
+# if(missing(main)) {main1 <- "Item parameters from factor analysis"
+#                   if(nf > 1) {main1 <- paste(main1,' for factor ',f)} else {if ( length(main) > 1) main1 <- main[f]}}  else {if(nf > 1) {main1 <-paste( main,' for factor ',f)} else {main1 <- main}}
 if(missing(ylab)) ylab <- "Probability of Response"
 if(dynamic.ylim) ylim <- c(0,1)
+
+
 	
 for(i in 1:nvar) {
  if (abs(discrimination[i]) > cut) {
@@ -251,8 +273,16 @@ for(i in 1:nvar) {
 	if(type=="test") { 
 
 	
-	if(missing(main)) {main <- "Test information for factor "
-	                  main1 <- paste(main,' ',f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste(main,'',f)}}
+	 if(nf > 1) {
+	if(missing(main)) {main1 <- paste("Test information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Test information from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
+	# if(missing(main)) {main1 <- "Test information from factor analysis "
+# 	                 if(nf > 1) {
+# 	                  main1 <- paste(main1,' for factor ',f)} else {
+# 	                  if (length(main) > 1) {main1 <- main[f]
+# 	                  } else {if(nf > 1) {main1 <- paste(main, ' for factor ',f)} else {main1 <- main}}
+# 	                  }
 	if(missing(ylab)) ylab <- "Test Information"
 	if(missing(y2lab)) y2lab <- "Reliability"
 	
@@ -269,7 +299,10 @@ for(i in 1:nvar) {
 	 op <- par(op)
 	 } else { if(type != "ICC") {
 	if(missing(ylab)) ylab <- "Item Information"
-	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}
+	   if(nf > 1) {
+	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
+	} else {if(missing(main)) {main1 <- paste("Item information from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
+	
 	if(dynamic.ylim) ylim <- c(0,1)
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
@@ -354,4 +387,21 @@ class(results) <- c("psych","irt.poly")
 return(results)
 }
    
-   
+"irt.se" <- function( stats,scores=0, D=1.702) {  
+    if(missing(D)) D <- 1.702
+    nf <- length(stats$irt$difficulty)
+    nscore <- length(scores)
+    info <- matrix(NA,ncol=nf,nrow=nscore)
+    for(i in 1:nscore) {
+    for (f in 1:nf) {
+    discrimination=stats$irt$discrimination[,f] * D
+    location=stats$irt$difficulty[[f]] 
+    info[i,f]  <- sum(logisticInfo(x=scores[i],d=location*sign(discrimination),a=discrimination))}
+    }
+    se <- sqrt(1/info)
+    info.df <- data.frame(scores,info,se = se)
+    return(info.df)
+    }
+    
+    
+     

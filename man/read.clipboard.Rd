@@ -11,12 +11,13 @@
 \alias{write.file.csv}
 \alias{read.https}
 \title{Shortcuts for reading from the clipboard or a file}
-\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .dat, .data, .csv, .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
+\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .dat, .data, .csv, .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Fixed Width Files saved in .txt mode may be read if widths is specified. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
 Input from the clipboard is easy but a bit obscure, particularly for Mac users. This is just an easier way to do so.  Data may be copied to the clipboard from Excel spreadsheets, csv files, or fixed width formatted files and then into a data.frame. Data may also be read from lower  (or upper) triangular matrices and filled out to square matrices.
 }
 \usage{
-read.file(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,...)
- #for .txt, .text, .csv, .sav, .rds, or .rda files
+read.file(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",
+widths=NULL, ...)
+ #for .txt, .text, .csv, .sav, .xpt, .rds, or .rda files
 
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
@@ -38,7 +39,7 @@ write.file.csv(x,f=NULL,row.names=FALSE,...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{header}{Does the first row have variable labels (generally assumed to be TRUE). }
-  \item{sep}{What is the designated separater between data fields?}
+  \item{sep}{What is the designated separater between data fields? For typical csv files, this will be a comma, but if commas designate decimals, then a ; can be used to designate different records.  }
   \item{diag}{for upper or lower triangular matrices, is the diagonal specified or not}
   \item{names}{for read.clipboard.lower or upper, are colnames in the  the first column}
   \item{widths}{how wide are the columns in fixed width input.  The default is to read 10 columns of size 1. }
@@ -51,9 +52,11 @@ write.file.csv(x,f=NULL,row.names=FALSE,...)
 }
 \details{A typical session of R might involve data stored in text files, generated online, etc. Although it is easy to just read from a file (particularly if using \code{\link{file.choose}}, copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user). This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
 
-The \code{\link{read.file}} function combines the \code{\link{file.choose}} and either \code{\link{read.table}} or \code{\link{read.spss}} (from foreign) or \code{\link{load}} or \code{\link{readRDS}} commands. By examining the file suffix, it chooses the appropriate way to read. For more complicated file structures, see the foreign package. For even more complicated file structures, see the rio package. 
+The \code{\link{read.file}} function combines the \code{\link{file.choose}} and either \code{\link{read.table}}, \code{\link{read.fwf}}, \code{\link{read.spss}} or  \code{\link{read.xport}}(from foreign) or \code{\link{load}} or \code{\link{readRDS}} commands. By examining the file suffix, it chooses the appropriate way to read. For more complicated file structures, see the foreign package. For even more complicated file structures, see the rio package. 
 
-Note that \code{\link{read.file}} assumes by default that the first row has column labels (header =TRUE).  If this is not true, then make sure to specify header = FALSE.  
+Note that \code{\link{read.file}} assumes by default that the first row has column labels (header =TRUE).  If this is not true, then make sure to specify header = FALSE.  If the file is fixed width, the assumption is that it does not have a header field.  In the unlikely case that a fwf file does have a header, then you probably should try fn <- file.choose() and then my.data <- read.fwf(fn,header=TRUE,widths=   widths)
+
+ 
 
 
 Currently supported input formats are 
@@ -72,9 +75,13 @@ Currently supported input formats are
 .rdata     \tab       A R data structure (created using save) \cr
 .R        \tab       A R data structure created using dput \cr
 .r        \tab       A R data structure created using dput \cr
+.xpt      \tab       A SAS data file in xport format \cr
+.XPT      \tab       A SAS data file in XPORT format  \cr
 }
 
 The foreign function \code{\link{read.spss}} is used to read SPSS .sav files using the most common options.  Just as  \code{\link{read.spss}}  issues various warnings, so does  \code{\link{read.file}}.   In general, these can be ignored.  For more detailed information about using  \code{\link{read.spss}}, see the help pages in the foreign package.
+
+If you have a file written by JMP, you must first export to a csv or text file.
 
 
 The \code{\link{write.file}} function combines the \code{\link{file.choose}} and either \code{\link{write.table}} or \code{\link{saveRDS}}. By examining the file suffix, it chooses the appropriate way to write. For more complicated file structures, see the foreign package, or the save function in R Base.  
@@ -115,6 +122,8 @@ read.clipboard.fwf will read fixed format files from the clipboard.  It includes
 # can not be shown as examples.
 
 #my.data <- read.file()   #search the directory for a file and then read it.
+#the example data set from read.delim in the readr package to read a remote csv file
+#my.data  <-read.file("https://github.com/tidyverse/readr/raw/master/inst/extdata/mtcars.csv")
 #my.data <- read.clipboad()
 #my.data <- read.clipboard.csv()
 #my.data <- read.clipboad(header=FALSE)

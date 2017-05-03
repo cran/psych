@@ -126,7 +126,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
      
 
 
-results <- list(rho=rho, means=means.rot,sds=sds.rot,tci=tci,ptci=ptci,ci=ci.rot,Call= cl,replicates=rep.rots)
+results <- list(rho=rho, means=means.rot,sds=sds.rot,tci=tci,ptci=ptci,ci=ci.rot,Call= cl,replicates=replicates)
 #if(plot) {cor.plot.upperLowerCi(results,numbers=TRUE,cuts=c(.001,.01,.05),...) }  #automatically plot the results
 if(plot) {cor.plot(rho,numbers=TRUE,cuts=c(.001,.01,.05),pval =  2*(1-ptci),...) }
 class(results) <- c("psych","cor.ci")
@@ -158,6 +158,7 @@ n <- floor((sqrt(1 + 8 * m) +1)/2)
     diag(X) <- 1 
 colnames(X) <- rownames(X) <- cn
 if(is.null(R$ptci))  {pval <- R$p} else {pval = 2*(1-R$ptci)}
+
 cor.plot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)  
 class(X) <-  c("psych","cor.cip")
 colnames(X) <- abbreviate(rownames(X,4))

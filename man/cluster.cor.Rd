@@ -7,7 +7,7 @@
 }
 \usage{
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
-     impute = TRUE)
+     impute = TRUE,select=TRUE)
 cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 }
 
@@ -20,6 +20,7 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
  \item{item.smc}{the smcs of the items may be passed into the function for speed, or calculated if SMC=TRUE }
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
   \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
+  \item{select}{By default, just find statistics for items included in the scoring keys. This allows for finding scores from matrices with bad items if they are not included in the set of scoring keys.}
 }
 \details{This are two of the functions used in the SAPA (\url{http://sapa-project.org}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.
 

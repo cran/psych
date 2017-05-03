@@ -564,9 +564,11 @@ pretty}
               } 
               invisible(x)} 
 
-
-"isCorrelation" <-  function(x) {
-return(!is.data.frame(x) && isSymmetric(unname(x)))}
+#this just shows if it is a matrix
+"isCorrelation" <-  function(x) {value <- FALSE
+  if(NROW(x) == NCOL(x)) {
+  if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
+return(value)}
 
 
 #will only work for data.frames (not matrices)

@@ -295,6 +295,7 @@ function(tab,correct=TRUE) {
 ##########################################################################################################
 
 #9/6/14  to facilitate mixed cor  we find polytomous by dichotomous correlations
+#4/08/17  fixed to not do table(p) or table(d)  
 "polydi" <- function(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) {
 
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
@@ -331,11 +332,12 @@ if(is.null(nd)) nd <- 1
 nsub <- dim(p)[1]
 p <- as.matrix(p)
 d <- as.matrix(d)
-pt <- table(p)    #why do we do this?
+#pt <- table(p)    #why do we do this?
 #nvalues <- length(xt)  #find the number of response alternatives 
 nvalues <- max(p,na.rm=TRUE) - min(p,na.rm=TRUE) + 1
-dt <- table(d)
-if(length(dt)!=2) stop("You did not supply a dichotomous variable")
+#dt <- table(d)
+dvalues <- max(d,na.rm=TRUE) - min(d,na.rm=TRUE) + 1
+if(dvalues !=2) stop("You did not supply a dichotomous variable")
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
  #first delete any bad cases
   item.var <- apply(p,2,sd,na.rm=na.rm)
@@ -346,11 +348,17 @@ if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric
             np <- np - length(bad)
              }
 pmin <- apply(p,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
-gminx <- min(pmin)
-p <- t(t(p) - gminx +1)  #all numbers now go from 1 to nvalues    but we should use global minimima
+#gminx <- min(pmin)
+minx <- min(pmin)
+p <- t(t(p) - pmin +1)  #all numbers now go from 1 to nvalues 
+#p <- t(t(p) - gminx +1)  #all numbers now go from 1 to nvalues    but we should use global minimima
 dmin <- apply(d,2,function(x) min(x,na.rm=TRUE))
-gminy <- min(dmin)
-d <-  t(t(d) - gminy +1)
+#gminy <- min(dmin)
+miny <- min(dmin)
+#d <-  t(t(d) - gminy +1)
+d <-  t(t(d) - dmin +1)
+gminx <- gminy <- 1    #set the global minima to 1
+
 pmax <- apply(p,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
 gmaxx <- max(pmax)
 if (min(pmax) != max(pmax)) {#global <- FALSE
@@ -360,11 +368,13 @@ gmaxy <- max(apply(d,2,function(x) max(x,na.rm=TRUE)))
 pfreq <- apply(p,2,tabulate,nbins=nvalues)
 n.obs <- colSums(pfreq)
 pfreq <- t(t(pfreq)/n.obs)
-taup <- qnorm(apply(pfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
+taup <- as.matrix(qnorm(apply(pfreq,2,cumsum))[1:(nvalues-1),],ncol=ncol(pfreq))  #these are the normal values of the cuts
 #if(!is.matrix(tau)) tau <- matrix(tau,ncol=nvar)
 
-rownames(taup) <- names(pt)[1:(nvalues-1)]
+#rownames(taup) <- names(pt)[1:(nvalues-1)]
+rownames(taup) <- paste(1:(nvalues-1))
 colnames(taup) <- colnames(p)
+
 dfreq <- apply(d,2,tabulate,nbins=2)
 if(nd < 2) {n.obsd <- sum(dfreq) } else {n.obsd <- colSums(dfreq) } 
 dfreq <- t(t(dfreq)/n.obsd)

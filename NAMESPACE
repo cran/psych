@@ -6,10 +6,10 @@ importFrom(lattice,xyplot,strip.custom)
 importFrom(nlme,lme,VarCorr)
 importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,image,layout,legend, lines,mtext,par,persp,plot.new,plot.window, polygon,rect,segments,strheight,strwidth,text,axTicks,title,smoothScatter)
 
-importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,weighted.mean,promax,varimax,uniroot)
+importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,symnum,weighted.mean,promax,varimax,uniroot)
 
 #importFrom(datasets,USArrests,attitude,Harman23.cor,Harman74.cov,ability.cov,iris)
-importFrom(utils,head,tail,read.table,write.table,read.fwf,stack,example,download.file,getFromNamespace)
+importFrom(utils,head,tail,read.table,write.table,read.fwf,stack,example,download.file,getFromNamespace,View)
 
 importFrom(grDevices,colorRampPalette,topo.colors,devAskNewPage,dev.flush,dev.hold, palette, grey,rainbow,rgb,col2rgb,trans3d)
 
@@ -17,7 +17,7 @@ importFrom(methods,new)
 
 importFrom(tools,file_ext)
 
-importFrom(foreign,read.spss)
+importFrom(foreign,read.spss,read.xport)
 
 S3method(print,psych)
 S3method(biplot,psych)
@@ -73,7 +73,7 @@ cor.plot.upperLowerCi,
 corFiml,
 cor.wt,
 cor2dist,
-#cor2cov,
+cor2cov,
 cor2latex,
 cor.ci,
 corCi,
@@ -197,6 +197,7 @@ irt.discrim,
 irt.item.diff.rasch,
 irt.person.rasch,
 irt.responses,
+irt.se,
 irt.stats.like,
 irt.tau,
 item.dichot,
@@ -236,6 +237,7 @@ mediate,
 mediate.diagram,
 moderate.diagram,
 minkowski,
+mixedCor,
 mixed.cor,
 mssd,
 multi.hist,
@@ -285,6 +287,7 @@ psych,
 phi.demo,
 phi.list,
 psych.misc,
+quickView,
 radar,
 rangeCorrection,
 read.clipboard,

@@ -364,8 +364,8 @@ ty <- table(y)
  
 "biserial" <- 
 function(x,y) { 
-x <- as.matrix(x)
-y <- as.matrix(y)
+x <- as.matrix(x,drop=FALSE)
+y <- as.matrix(y,drop=FALSE)
 nx <- dim(x)[2]
 ny <- dim(y)[2]
 if(is.null(nx)) nx <- 1

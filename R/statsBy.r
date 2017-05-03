@@ -4,7 +4,7 @@
 #Fixed March 3, 2017 to not weight empty cells in finding ICCs
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 "statsBy" <-
-   function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE) { #  
+   function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE,alpha=.05) { #  
     cl <- match.call()
   valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
@@ -43,13 +43,35 @@ z1 <- data[,group]
                MSw <- colSums(xvals$sd^2*(xvals$n-1*(xvals$n>0)),na.rm=na.rm)/(colSums(xvals$n-1*(xvals$n>0)))#find the pooled sd   #fix this for 0 cell size
                
                xvals$F <- MSb/MSw
-               N <- colSums(xvals$n)
+               N <- colSums(xvals$n)  #overall N for each variable
              
               npr <- (colSums(xvals$n-1*(xvals$n > 0))+colSums(xvals$n >0))/(colSums(xvals$n >0))
                xvals$ICC1 <- (MSb-MSw)/(MSb + MSw*(npr-1))
                xvals$ICC2 <- (MSb-MSw)/(MSb)
                
-
+               #now, figure out the cis for the ICCs  
+               #taken from the ICC function
+                F11 <- MSb/MSw
+  #df11n <- n.obs-1
+  #df11d <- n.obs*(nj-1)
+  df11n <- nG - 1
+  df11d <- nG* (npr-1) 
+ 
+  p11 <- 1-pf(F11,df11n,df11d)
+  #F21 <- MSB/MSE
+  df21n <- N - 1
+  df21d <-  N * (npr-1) 
+ # p21 <- 1-pf(F21,df21n,df21d)
+ # F31 <- F21
+ F1L <- F11 / qf(1-alpha/2,df11n,df11d)  
+ F1U <- F11 * qf(1-alpha/2,df11d,df11n)
+ L1 <- (F1L-1)/(F1L+(npr-1))
+ U1 <- (F1U -1)/(F1U+(npr-1))
+ L2 <- 1-1/F1L
+ U2 <- 1 -1/F1U
+ xvals$ci1 <-as.matrix(data.frame(L1 = L1,U1 = U1) ) 
+ xvals$ci2 <- as.matrix(data.frame(L2 = L2,U2 = U2) )    
+ 
     #if we want within group correlations, then find them  
      # if(cors) {if(!poly) { r <- by(data,z,function(x) cor(x[-gr],use="pairwise",method=method)) } else { r <- by(data,z,function(x) polychoric(x[-gr])$rho)}
                
@@ -141,7 +163,7 @@ z1 <- data[,group]
              xvals$etabg <- diag(cor(new.data[,1:(nvar)],new.data[,(nvar+1):ncol(new.data)],use="pairwise",method=method) )#the means with the data
              xvals$etawg <- diag(cor(new.data[,(nvar+1):ncol(new.data)],diffs,use="pairwise",method=method)) #the deviations and the data
             names(xvals$etabg)  <- colnames(xvals$rbg)
-            
+         
             xvals$nwg <- N - nG
             xvals$nG <- nG
             xvals$Call <- cl

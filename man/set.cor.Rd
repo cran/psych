@@ -10,10 +10,10 @@
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE)
+       main="Regression Models",plot=TRUE,show=FALSE)
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE)    #an alias to setCor
+       main="Regression Models",plot=TRUE,show=FALSE)    #an alias to setCor
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
 matReg(x,y,C,n.obs=0)
 }

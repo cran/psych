@@ -1,10 +1,16 @@
 "scoreOverlap" <-
-function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE) { #function to score clusters according to the key matrix, correcting for item overlap
+function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select=TRUE) { #function to score clusters according to the key matrix, correcting for item overlap
 				
  tol=sqrt(.Machine$double.eps)    #machine accuracy
  cl <- match.call()
  bad <- FALSE
- if(is.list(keys) & (!is.data.frame(keys))) keys <- make.keys(r,keys)  #added 9/9/16    (and then modified March 4, 2017
+ if(is.list(keys) & (!is.data.frame(keys))) { if (select) {
+    select <- selectFromKeyslist(colnames(r),keys)
+ # select <- sub("-","",unlist(keys))   #added April 7, 2017
+      select <- select[!duplicated(select)]
+      }  else {select <- 1:ncol(r) }   
+ if (!isCorrelation(r)) {r <- cor(r[select],use="pairwise")} else {r <- r[select,select]}
+ keys <- make.keys(r,keys)}  #added 9/9/16    (and then modified March 4, 2017
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
  if(any(abs(r[!is.na(r)]) > 1)) warning("Something is seriously wrong with the correlation matrix, some correlations had absolute values > 1!  Please check your data.")

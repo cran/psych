@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.7.4 (2017-03-20}{
+\section{Changes in psych version 1.7.5 (2017-04-15}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.7.4 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.7.3.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.12 was released in December of 2016, the last two digits of development versions reflect the day of any modifications). 1.7.3 was  released in March, 2017,
+      \item Version 1.7.5 is the development release of the psych package. It is available at the repository at \url{http://personality-project.org/r}. The released version is 1.7.4.  The second digit reflects the year (i.e., 2016), the third set the month (i.e., 1.6.12 was released in December of 2016, the last two digits of development versions reflect the day of any modifications). 1.7.3 was  released in March, 2017,
        
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
@@ -38,7 +38,7 @@
      \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman
      \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
-     \item Consider alternative number of factor options (done in nfactors?)
+    
      \item Clean up the various sim functions so that they are better documented
      \item Clean up documentation of score.irt etc.  (partly done)
      \item Add complexity  to omega solution
@@ -63,9 +63,51 @@
      \item Fix scoreIRT.2pl so that it does not choke on 1 items scales
      \item Add an additional object to corr.test and corr.p to give p adjusted cis (requested by Lorien Elleman)
       \item Add Krippendorf's alpha?
+      
+     
+      
   }
   } 
   }
+  
+    \section{Changes in psych version 1.7.4 (2017-04-25)}{
+    \subsection{Additions}{
+          \itemize{ 
+        \item Added read.xport to the read.file so we can read SAS export files. Also added the widths parameter so that read.file can read a fixed width file.  
+        \item Added select option to  scoreItems and scoreOverlap to just score the items selected (to enhance speed for big sets of items and short scales).
+        \item Added a private function (selectFromKeyslist)  to handle numeric and character keys.lists when doing selection.
+        \item Added irt.se  to find standard errors based upon the test information
+        \item Added show = FALSE to setCor to allow the option of showing the unweighted matrix correlation (Had removed this in prior release, but decided for teaching purposes, is is convenient.)
+        \item Added the ability to define the separator when reading csv files in read.file
+        \item Added breaks=21 to multi.hist to allow for better plotting control
+        \item Added the ability to plot asymmetric correlation matrices in corPlot (requested by Anne Zola)
+        \item Added the correction option to fa.parallel when doing tetrachoric or polychoric correlations.  It had been set to .5 without the ability to set it to 0. (Inspired by a question from Ismail Cukadar).
+        \item Added stars as an option to pairs.panels and corPlot.  This is for those people who insist on showing 'significance' values.  Also added scale as an option when showing the numbers (to show significance by number size.)
+        \item Added quickView to complement headTail and topBottom.  Added from and to parameters to all three functions.
+        \item Added top=4 and bottom=4 to replace hlength and tlength in headTail and topBottom. Makes more obvious code.
+        \item Added Vaccounted for fa and pca (as requested by various stackoverflow users).
+        \item Dropped the message about matrices not being square in cortest.  (Just an irritant when doing R CMD check and testing the intro.rnw file)
+        \item Modified plot.parallel to go from ymin rather than 0.  Suggested by Hao Wu.
+        \item Added confidence intervals for the ICC1 and ICC2 to the output for statsBy (requested by Lorien Elleman)
+        \item Added mixedCor as an improvement to mixed.cor.  Somewhat cleaner interface.
+       
+        }
+        
+          }
+      \subsection{Bugs Fixed}{
+          \itemize{ 
+            \item Modified the minres solution in fa following very helpful suggestions from Hao Wu.  Basically, the first derivative wrong and the solution was slightly incorrect.  This has now been fixed for minres.  fm="old.min" keeps the old solution.  The fm="uls" uses  empirical first derivatives works to give the unweighted least squares  solution.   This is discussed in the fa help page as well.  
+              \item Fixed RMSEA error  (as reported by Hao Wu). In version 1.6.12 I had changed the RMSEA formula  from the Tucker formula to the one used in sem and now have reverted to the Tucker formula (as described in the help page.) 
+              \item Fixed cor.plot.upperLowerCi so that it works again and also reports replications
+              \item patch to mixed.cor for figuring out what kind of data we have. Basically, set all minima to 1 so that polydi won't croak
+              \item moderate.diagram was drawing incorrect X paths.
+              \item plot.irt was not labelling factor numbers 
+              \item t2r was not taking the sqrt and thus was giving much to small rs.  fixed.
+              \item In describeBy, changed nrow to NROW to correct error thrown by the affect data set for the development versin of linux (although that seems to have been a temporary error.)
+              \item Modified isCorrelation yet again to treat the case of symmetric correlation matrices stored as data frames.  (Used in some class examples!)
+              }
+              }
+             }
   
    \section{Changes in psych version 1.7.3.21 (2017-03-21)}{
     \subsection{Additions}{

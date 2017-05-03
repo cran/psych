@@ -8,7 +8,7 @@
 \usage{
 fa.parallel(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",
 n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
-sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE)
+sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE)   #deprecated
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
@@ -24,7 +24,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
   \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate.  This matches the call to fa}
- \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See tetrachoric)}
+ \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See tetrachoric)  If set to 0, then no correction is applied, otherwise, the default is to add .5 observations to the cell.}
  \item{sim}{For continuous data, the default is to resample as well as to generate random normal data.  If sim=FALSE, then just show the resampled results. These two results are very similar. This does not make sense in the case of  correlation matrix, in which case resampling is impossible. In the case of polychoric or tetrachoric data, in addition to randomizing the real data, should we compare the solution to random simulated data.  This will double the processing time, but will yiedl basically show the same result.}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
  \item{se.bars}{Should the error bars be standard errors (the default) or 1 standard deviation (se.bars=FALSE).  With many iterations, the standard errors are very small and some prefer to see the broader range.}

@@ -115,7 +115,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
  
  ##first some functions that are internal to fa
  #this does the WLS or ULS fitting  depending upon fm 
-  "fit.residuals" <- function(Psi,S,nf,S.inv,fm) {
+  "fit.residuals" <- function(Psi,S,nf,S.inv=NULL,fm) {
               diag(S) <- 1- Psi
               if(!is.null(S.inv)) sd.inv <- diag(1/diag(S.inv))
               eigens <- eigen(S)
@@ -130,9 +130,15 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     uls = {residual <- (S - model)^2},  
   #  minres = {residual <- (S - model)^2
   #             diag(residual) <- 0},
+    ols = {residual <- (S-model)
+          residual <- residual[lower.tri(residual)]
+          residual <- residual^2},  
     minres = {residual <- (S-model)
               residual <- residual[lower.tri(residual)]
-              residual <- residual^2},                 
+              residual <- residual^2}, 
+    old.min = {residual <- (S-model)
+              residual <- residual[lower.tri(residual)]
+              residual <- residual^2},                  
     minchi = {residual <- (S - model)^2   #min chi does a minimum residual analysis, but weights the residuals by their pairwise sample size
             residual <- residual * np.obs
             diag(residual) <- 0
@@ -148,10 +154,12 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
          error <- sum(residual)
          }
   
- #this next section is taken (with minor modification to make ULS, WLS or GLS) from factanal        
+ #this next section is taken (with minor modification to make ULS, WLS or GLS) from factanal 
+ #it has been further modified with suggestions by Hao Wu to improve the ols/minres solution (Apri, 2017)       
  #it does the iterative calls to fit.residuals 
  #modified June 7, 2009 to add gls fits
  #Modified December 11, 2009 to use first derivatives from formula rather than empirical.  This seriously improves the speed.
+ #but does not seem to improve the accuracy of the minres/ols solution (note added April, 2017)
      "fit" <- function(S,nf,fm,covar) {
           S.smc <- smc(S,covar)
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
@@ -164,19 +172,33 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                  			parscale = rep(0.01, length(start))), control),
                  			nf = nf, S = S)
                  } else { 
-                    if(fm=="minres") { 
+                   if(fm=="ols" ) { #don't use a gradient 
+                   start <- diag(S)- smc(S)
+  	                      res <- optim(start, FA.OLS, method = "L-BFGS-B", lower = .005, 
+                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  			length(start)))), nf= nf, S=S )
+   
+                     } else {
+                    if((fm=="minres")| (fm=="uls")) {  #which is actually the same as OLS but we use the gradient 
+                    start <- diag(S)- smc(S)     
+                            #does not use first derivatives
+                		 	res <- optim(start, fit.residuals,gr=FAgr.minres, method = "L-BFGS-B", lower = .005, 
+                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  			length(start)))), nf= nf, S=S,fm=fm)
+                  	
+                  	
+                  		
+                  		} else   {   #this is the case of old.min
+                  		   start <- diag(S)- smc(S)
                 		 	res <- optim(start, fit.residuals,gr=FAgr.minres2, method = "L-BFGS-B", lower = .005, 
                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
-                  		
-                  		} else   { 
-                		 	res <- optim(start, fit.residuals,gr=FAgr.minres, method = "L-BFGS-B", lower = .005, 
-                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
-                  			length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
+                				
+                  			}
                   			}
                   			}
    
-   if((fm=="wls") | (fm=="gls") ) {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
+   if((fm=="wls") | (fm=="gls") | (fm =="ols") | (fm =="uls")| (fm=="minres") |  (fm=="old.min")) {Lambda <- FAout.wls(res$par, S, nf)} else { Lambda <- FAout(res$par, S, nf)}
     result <- list(loadings=Lambda,res=res,S=S)
     }
     
@@ -203,34 +225,45 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         diag(g)/Psi^2                             #normalized 
     }
     
-     FAgr.minres <- function(Psi, S, nf,S.inv,fm)  #the first derivatives 
-    {
-        sc <- diag(1/sqrt(Psi))
-        Sstar <- sc %*% S %*% sc
-        E <- eigen(Sstar, symmetric = TRUE)
-        L <- E$vectors[, 1:nf, drop = FALSE]
-        load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
-        load <- diag(sqrt(Psi)) %*% load
-        g <- load %*% t(load) + diag(Psi) - S     # g <- model - data
-        if(fm=="minchi") {g <- g*np.obs}
-        diag(g)/Psi^2                             #normalized 
-    }
+#      FAgr.minres.old <- function(Psi, S, nf,S.inv,fm)  #the first derivatives -- no longer used
+#     {  sc <- diag(1/sqrt(Psi))
+#         Sstar <- sc %*% S %*% sc
+#         E <- eigen(Sstar, symmetric = TRUE)
+#         L <- E$vectors[, 1:nf, drop = FALSE]
+#         load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
+#         load <- diag(sqrt(Psi)) %*% load
+#         model <- load %*% t(load)
+#         g <- diag(Psi) -  diag(S -model) # g <- model - data
+#         if(fm=="minchi") {g <- g*np.obs}
+#         diag(g)/Psi^2                             #normalized 
+#     }
     
-     FAgr.minres2 <- function(Psi, S, nf,S.inv,fm)  #the first derivatives 
-    {
+     FAgr.minres2 <- function(Psi, S, nf,S.inv,fm)  #the first derivatives used by old.min
+    { 
         sc <- diag(1/sqrt(Psi))
-        Sstar <- sc %*% S %*% sc
+       Sstar <- sc %*% S %*% sc
         E <- eigen(Sstar, symmetric = TRUE)
         L <- E$vectors[, 1:nf, drop = FALSE]
-        load <- L %*% diag(sqrt(pmax(E$values[1:nf] - 1, 0)), nf)
+         load <- L %*% diag(sqrt(pmax(E$values[1:nf]-1 , 0)), nf)
         load <- diag(sqrt(Psi)) %*% load
-         g <- load %*% t(load) + diag(Psi) - S      # g <- model - data
+         g <- load %*% t(load) + diag(Psi) - S     # g <- model - data
         if(fm=="minchi") {g <- g*np.obs}
                                      #normalized 
-        diag(g)/Psi^2  
+        diag(g)/Psi^2
     }
-          
-          
+    
+    FAgr.minres <- function(Psi, S, nf,fm)  #the first derivatives used by minres
+    { Sstar <- S - diag(Psi)
+        E <- eigen(Sstar, symmetric = TRUE)
+        L <- E$vectors[, 1:nf, drop = FALSE]
+         load <- L %*% diag(sqrt(pmax(E$values[1:nf] , 0)), nf)
+       # load <- diag(sqrt(Psi)) %*% load
+         g <- load %*% t(load) + diag(Psi) - S     # g <- model - data
+        #if(fm=="minchi") {g <- g*np.obs}
+                                     #normalized 
+        diag(g)
+    }
+                               
  #this was also taken from factanal        
     FAout <- function(Psi, S, q) {
         sc <- diag(1/sqrt(Psi))
@@ -248,6 +281,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
         L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
         return(L)
     }
+    
    #this takes advantage of the glb.algebraic function to do min.rank factor analysis 
   "MRFA" <- function(S,nf) {
    com.glb <- glb.algebraic(S)
@@ -255,12 +289,87 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
    h2 <- com.glb$solution
    result <- list(loadings =L, communality = h2)
    }  
-    
-    
+   
+   
+   #The next  function was adapted by WR from a suggestion by Hao Wu (April 12, 2017)
+   
+FA.OLS <- function(Psi,S,nf) {
+  
+     E <- eigen(S-diag(Psi),symmetric=T)
+     U <-E$vectors[,1:nf,drop=FALSE]
+     D <- E$values[1:nf,drop=FALSE]  
+     D [D < 0] <- 0
+	if(length(D) < 2) {L <- U * sqrt(D)} else { L <- U %*% diag(sqrt(D))} #gets around a weird problem for nf=1
+	     model <- L %*% t(L)
+     diag(model) <- diag(S)
+     return(sum((S-model)^2)/2)
+ }
+  ##The gradient function  speeds up the function drastically but is incorrect and is not used
+   FAgr.OLS <- function(Psi, S, nf)  #the first derivatives -- seems bad
+    {   E <- eigen(S-diag(Psi), symmetric = TRUE)
+        U <- E$vectors[, 1:nf, drop = FALSE]
+        D <- E$values[1:nf]  
+        D [D < 0] <-0
+        L <- U %*% diag(sqrt(D))
+        model <- L %*% t(L)
+        g <- diag(Psi) -  diag(S -model) # g <- model - data
+        diag(g)/Psi^2  
+       #(diag(g) - Psi)/Psi
+    }
+
+###############################
+##############################
+# These functions are now commented out, used to test fa
+# #now test this
+# test.ols <- function(R,nf) {   #this does not agree with Hao Wu -- something is wrong with the gradient
+# start <- diag(R)- smc(R)
+#   	res <- optim(start, FA.OLS,gr=FAgr.OLS, method = "L-BFGS-B", lower = .005, 
+#                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+#                   			length(start)))), nf= nf, S=R)
+#     Lambda <- FAout.wls(res$par, R, nf)   
+# }
+# 
+# test.ols <- function(R,nf) {   #this agrees with the Hao solution-- not using a gradient
+# start <- diag(R)- smc(R)
+#   	res <- optim(start, FA.OLS, method = "L-BFGS-B", lower = .005, 
+#                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+#                   			length(start)))), nf= nf, S=R )
+#     Lambda1 <- FAout.wls(res$par, R, nf)
+#    
+# }
+
+##########
+#the following two functions, sent by Hao Wu have been used for benchmarking, but are not used in fa.
+##Now I define a function to minimize the FOLS function above w.r.t the unique variances. It returns the standardized loadings, raw loadings, unique variances, OLS function value and convergence status (0= convergence).
+#the Hao Wu functions (although not used, they are included here for completeness
+# FOLS<-function(Psi,S,fac){
+#      eig<-eigen(S-diag(Psi),symmetric=T);
+#      U<-eig$vectors[,1:fac];
+#      D<-eig$values[1:fac];
+#      D[D<0]<-0;
+#      L<-U%*%diag(sqrt(D),fac,fac);
+#      Omega<-L%*%t(L);
+#      diag(Omega)<-diag(S);
+#      return(sum((S-Omega)^2)/2);
+#  }
+# 
+#  EFAOLS2 <- function(S,Psi0=1/diag(chol2inv(chol(S))),fac) {
+#      efa <- nlminb(Psi0,FOLS,lower=0,S=S,fac=fac)
+#      fit.OLS<-efa$objective
+#      fit.Psi<-efa$par
+#      eig<-eigen(S-diag(fit.Psi),symmetric=T)
+#      U<-eig$vectors[,1:fac]
+#      D<-eig$values[1:fac]
+#      D [D<0] <-0 
+#      fit.L<-U%*%diag(sqrt(D),fac,fac)
+#      return(list(st.L=diag(1/diag(S))%*%fit.L,L=fit.L,Psi=fit.Psi,F=fit.OLS,convergence=efa$convergence))
+#      }
+#     
+ ##############################   
      ## now start the main function
     #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
  if (fm == "mle" || fm =="MLE" || fm == "ML" ) fm <- "ml"  #to correct any confusion
- if (!any(fm %in%(c("pa","minrank","wls","gls","minres","minchi", "uls","ml","mle") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if (!any(fm %in%(c("pa","minrank","wls","gls","minres","minchi", "uls","ml","mle","ols" ,"old.min") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
      x.matrix <- r
@@ -290,6 +399,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
        wtd = { r <- cor.wt(r,w=weight)$r},
        tet = {r <- tetrachoric(r)$rho},
        poly = {r <- polychoric(r)$rho},
+        tetrachoric = {r <- tetrachoric(r)$rho},
+       polyvchoric = {r <- polychoric(r)$rho},
        mixed = {r <- mixed.cor(r,use=use)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
@@ -374,7 +485,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
           eigens <- eigens$values
        } 
        
-       if(fm=="minrank")  {mrfa <- MRFA(r,nfactors)
+       if (fm=="minrank")  {mrfa <- MRFA(r,nfactors)
          loadings <- mrfa$loadings
          model <- loadings %*% t(loadings)
           e.values <- eigen(r)$values
@@ -383,7 +494,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
          eigens <- eigen(S)$values
           }
           
-       if((fm == "wls") | (fm=="minres") |(fm=="minchi") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle")) { 
+       if((fm == "wls") | (fm=="minres") |(fm=="minchi") | (fm=="gls") | (fm=="uls")|(fm== "ml")|(fm== "mle") | (fm=="ols") | (fm=="old.min")) { 
        uls <- fit(r,nfactors,fm,covar=covar)
        
        e.values <- eigen(r)$values  #eigen values of pc: used for the summary stats --  
@@ -592,6 +703,25 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result$np.obs <- np.obs
     result$fn <- "fa"
     result$fm <- fm
+    
+     #Find the summary statistics of Variance accounted for
+     #normally just found in the print function  (added 4/22/17)
+     #from  the print function
+      if(is.null(Phi)) {if(nfactors > 1)  {vx <- colSums(loadings^2) } else {vx <- sum(loadings^2)
+    }} else {vx <- diag(Phi %*% t(loadings) %*% loadings)
+      	 }
+          
+     	vtotal <- sum(result$communality + result$uniquenesses)
+             names(vx) <- colnames(loadings)
+          varex <- rbind("SS loadings" =   vx)
+          varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
+         if (nfactors > 1) {
+                      varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/vtotal))
+                       varex <- rbind(varex, "Proportion Explained"=  vx/sum(vx))
+                      varex <- rbind(varex, "Cumulative Proportion"=  cumsum(vx/sum(vx))) 
+                      }
+     
+    result$Vaccounted <- varex
     result$Call <- cl
     class(result) <- c("psych", "fa")
     return(result) }

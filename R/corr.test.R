@@ -146,3 +146,10 @@ result$Call<- cl
 class(result) <- c("psych", "corr.test")
 return(result)
  }
+ 
+ 
+ 
+ 
+ 
+
+

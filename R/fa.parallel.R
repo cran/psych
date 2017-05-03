@@ -1,7 +1,7 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
  cl <- match.call()
 # if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
@@ -23,8 +23,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
        cor = {rx <- cor(x,use=use)},
        cov = {rx <- cov(x,use=use) 
               covar <- TRUE},
-       tet = {rx <- tetrachoric(x)$rho},
-       poly = {rx <- polychoric(x)$rho},
+       tet = {rx <- tetrachoric(x,correct=correct)$rho},
+       poly = {rx <- polychoric(x,correct=.5)$rho},
        mixed = {rx <- mixed.cor(x,use=use)$rho},
        Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
        YuleQ = {rx <- YuleCor(x,1)$rho},
@@ -46,8 +46,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
        cor = {rx <- cor(x,use=use)},
        cov = {rx <- cov(x,use=use) 
               covar <- TRUE},
-       tet = {rx <- tetrachoric(x)$rho},
-       poly = {rx <- polychoric(x)$rho},
+       tet = {rx <- tetrachoric(x,correct=correct)$rho},
+       poly = {rx <- polychoric(x,correct=correct)$rho},
        mixed = {rx <- mixed.cor(x,use=use)$rho},
        Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
        YuleQ = {rx <- YuleCor(x,1)$rho},
@@ -125,11 +125,12 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
     if(!missing(quant)) {values.ci = apply(values,2,function(x) quantile(x,quant))} else {values.ci <- values.sim.mean}
    if(se.bars) {values.sim.se <- apply(values,2,sd,na.rm=TRUE)/sqrt(n.iter)} else {values.sim.se <- apply(values,2,sd,na.rm=TRUE)}
   
+   ymin <- min(valuesx,values.sim.mean)
     ymax <- max(valuesx,values.sim.mean)
      sim.pcr <- sim.far <- NA
 
 switch(fa, 
-  pc = {    if (plot) { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Component Number",pch=4,col="blue")}
+  pc = {    if (plot) { plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Component Number",pch=4,col="blue")}
         if(resample) { sim.pcr <- values.sim.mean[1:nvariables] 
                        sim.pcr.ci <- values.ci[1:nvariables]
                        sim.se.pcr <- values.sim.se[1:nvariables]
@@ -153,7 +154,7 @@ switch(fa,
         sim.fa <- NA 
     },
   fa = { #ylabel <-  "eigen values of principal factors"     should not be changed if set (reported by Meik Michalke)
-            if (plot) {plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=2,col="blue")}
+            if (plot) {plot(fa.valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Factor Number",pch=2,col="blue")}
          sim.se.pc <- NA
           if(resample) {sim.far <- values.sim.mean[(nvariables+1):(2*nvariables)]
                         sim.far.ci <- values.ci[(nvariables+1):(2*nvariables)]
@@ -177,7 +178,7 @@ switch(fa,
          sim.pcr <- NA
          sim.se.pc <- NA
          pc.test <- NA },
-  both = {     if (plot) {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor/Component Number",pch=4,col="blue")
+  both = {     if (plot) {plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Factor/Component Number",pch=4,col="blue")
            points(fa.valuesx,type="b",pch=2,col="blue")}
      if(sim) {  
    	 if(resample) {
@@ -344,9 +345,10 @@ fa.values.sim <- x$fa.sim
 valuesx <- x$pc.values
 values.sim <- x$pc.sim
 ymax <- max(valuesx,values.sim$mean)
+ymin <- min(valuesx,values.sim$mean)
 ylabel <-  "eigen values of principal factors"
 if (!is.null(valuesx)) {
-            plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(0,ymax),xlab="Factor Number",pch=4,col="blue") }
+            plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Factor Number",pch=4,col="blue") }
            
         	points(values.sim$mean,type ="l",lty="dotted",pch=2,col="red")
         if(error.bars) {

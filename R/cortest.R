@@ -3,7 +3,7 @@ function(R1,R2=NULL, n1=NULL,n2=NULL,fisher=TRUE,cor=TRUE) {
 cl <- match.call()
 
 if ((dim(R1)[1] != dim(R1)[2])  & cor) {n1 <- dim(R1)[1] 
-                             message("R1 was not square, finding R from data")
+                            # message("R1 was not square, finding R from data")
                              R1 <- cor(R1,use="pairwise")}
  
 if(!is.matrix(R1) ) R1 <- as.matrix(R1)  #converts data.frames to matrices if needed

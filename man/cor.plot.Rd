@@ -9,11 +9,13 @@
 }
 \usage{
 corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
-  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
-   pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...)
+  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
+  cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, symmetric=TRUE,stars=FALSE,
+   adjust="holm",xaxis=1, xlas=0,ylas=2,...)
 cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
-  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,
-   pval=NULL,cuts=c(.001,.01),cex,MAR,upper=TRUE,diag=TRUE,...)
+ show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
+  cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
+  symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,...)
    
           
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
@@ -33,11 +35,18 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{keep.par}{restore the graphic parameters when exiting}
   \item{pval}{scale the numbers by their pvals, categorizing them based upon the values of cuts}
   \item{cuts}{Scale the numbers by the categories defined by pval < cuts}
+  \item{scale}{Should the size of the numbers be scaled by the significance level?}
   \item{select}{Select the subset of variables to plot}
   \item{cex}{Character size.  Should be reduced a bit for large numbers of variables.}
   \item{MAR}{Allows for adjustment of the margins if using really long labels or big fonts}
   \item{upper}{Should the upper off diagonal matrix be drawn, or left blank?}
   \item{diag}{Should we show the diagonal?}
+  \item{symmetric}{By default, if given a non-symmetric matrix, we find the correlations using pair.wise complete and then show them.  If wanting to display a non-symmetric matrix, then specify that symmetric is FALSE}
+  \item{stars}{For those people who like to show the 'significance' of correlations by using magic astricks, set stars=TRUE}
+  \item{adjust}{If showing significance, should we adjust for multiple tests?  The default is to show zero order probabilities below the diagonal and adjust these using the 'holm' correction above the diagonal. Use adjust = "none" if no adjustment is desired.}
+  \item{xlas}{Orientation of the x axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
+  \item{ylas}{Orientation of the y axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
+  \item{xaxis}{By default, draw this below the figure.  If xaxis=3, then it wil be drawn above the figure}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
@@ -61,7 +70,7 @@ If using the output of \code{\link{corr.test}}, the upper off diagonal will be s
 If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{cor.plot.upperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals. 
 
 
-To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  
+To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  See the last examples.  
 
 }
 \author{William Revelle
@@ -77,28 +86,43 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 cor.plot(Thurstone,main="9 cognitive variables from Thurstone") 
 #just blue implies positive manifold
 #select just some variables to plot
-cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone",select=1:4)
+cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone",select=c(1:3,7:9))
+#now show a non-symmetric plot
+cor.plot(Thurstone[4:9,1:3], zlim=c(0,1),main="9 cognitive variables
+ from Thurstone",numbers=TRUE,symmetric=FALSE)
+
+#Two ways of including stars to show significance
+#From the raw data
+corPlot(sat.act,numbers=TRUE,stars=TRUE)
+#from a correlation matrix with pvals
+cp <- corr.test(sat.act)  #find the correlations and pvals
+r<- cp$r
+p <- cp$p
+corPlot(r,numbers=TRUE,diag=FALSE,stars=TRUE, pval = p,main="Correlation plot
+ with Holm corrected 'significance'")
 
 #now red means less than .5
-cor.plot(mat.sort(Thurstone),TRUE,zlim=c(0,1), 
+corPlot(mat.sort(Thurstone),TRUE,zlim=c(0,1), 
        main="9 cognitive variables from Thurstone (sorted by factor loading) ")
 simp <- sim.circ(24)
-cor.plot(cor(simp),main="24 variables in a circumplex")
+corPlot(cor(simp),main="24 variables in a circumplex")
 
 #scale by raw and adjusted probabilities
 rs <- corr.test(sat.act[1:200,] ) #find the probabilities of the correlations
-cor.plot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values") 
+corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values") 
  #Show the upper and lower confidence intervals
 cor.plot.upperLowerCi(R=rs,numbers=TRUE) 
 
-#do multiple plots
+#do multiple plots 
+#Also show the xaxis option
 op <- par(mfrow=c(2,2))
 corPlot(ability,show.legend=FALSE,keep.par=FALSE,upper=FALSE)
 f4 <- fa(ability,4)
-corPlot(f4,show.legend=FALSE,keep.par=FALSE,numbers=TRUE)
+corPlot(f4,show.legend=FALSE,keep.par=FALSE,numbers=TRUE,xlas=3)
 om <- omega(ability,4)
-corPlot(om,show.legend=FALSE,keep.par=FALSE,numbers=TRUE)
+corPlot(om,show.legend=FALSE,keep.par=FALSE,numbers=TRUE,xaxis=3)
 par(op)
+
 
 
 }

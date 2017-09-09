@@ -1,5 +1,5 @@
 "residuals.psych" <- 
-function(object,...) {
+function(object,diag=TRUE,...) {
 result <- NULL
 if(length(class(object)) > 1)  { value <- class(object)[2] } else {stop("No appropriate residual found")}
 switch(value,
@@ -10,14 +10,14 @@ omega = {residual <- object$stats$residual},
 irt.fa ={residual <- object$fa$residual},
 esem = {residual <- object$residual},
 extension = {residual <- object$resid})
-
+if(!diag)  diag(residual) <- NA 
 class(residual) <- c("psych","residuals")
 return(residual)
 }
 #added January 30, 2012
 "resid.psych" <- 
-function(object,...) {
-    residuals(object)
+function(object,diag=TRUE,...) {
+    residuals(object,diag=diag,...)
 }
 
 

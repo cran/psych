@@ -75,8 +75,10 @@ function(fx,Phi=NULL,fy=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simpl
      num.factors <- num.xfactors + num.yfactors
      }
     
-    sem <- matrix(rep(NA),6*(num.var*num.factors + num.factors),ncol=3)
+   # sem <- matrix(rep(NA),6*(num.var*num.factors + num.factors),ncol=3)
+    sem <- matrix(NA,nrow=6*(num.var*num.factors + num.factors),ncol=3)
     colnames(sem) <- c("Path","Parameter","Value")
+  
    
    edge.weights <- rep(1,num.var*2*num.factors)
     
@@ -98,7 +100,7 @@ function(fx,Phi=NULL,fy=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simpl
    edge.arrows <-rep("open",num.var*2*k)
    #edge.weights <- rep(1,num.var*2*k)
    
- 
+
   if (num.xfactors ==1) { 
        
     for (i in 1:num.xvar) { clust.graph <- addEdge(fact[1], vars[i], clust.graph,1) 
@@ -306,7 +308,7 @@ if(!is.null(out.file) ){toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAtt
 
 model=sem[1:(k-1),]
 class(model) <- "mod"   #suggested by John Fox to make the output cleaner
-return(model)
+invisible(model)
    }
    
  

@@ -13,7 +13,7 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FA
   \item{r}{a correlation matrix.  If a raw data matrix is used, the correlations will be found using pairwise deletions for missing values.}
   \item{nfactors}{Number of components to extract }
   \item{residuals}{ FALSE, do not show residuals, TRUE, report residuals }
-  \item{rotate}{"none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution. See \code{\link{fa}} for all rotations avaiable.}
+  \item{rotate}{"none", "varimax", "quartimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution. See \code{\link{fa}} for all rotations avaiable.}
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics.}
   \item{covar}{If false, find the correlation matrix from the raw data or convert to a correlation matrix if given a square matrix as input.}
   \item{scores}{If TRUE, find component scores}

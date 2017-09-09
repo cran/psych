@@ -18,6 +18,7 @@ function (x,n=8,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,plot=TRUE
   cl <- match.call()
   if (rotate=="oblimin") {if(!requireNamespace('GPArotation')) {stop("You must have GPArotation installed to use oblimin rotation")}}
   old_rotate=rotate  #used to remember which rotation to use
+
   
             #start Function definition
   #first some preliminary functions

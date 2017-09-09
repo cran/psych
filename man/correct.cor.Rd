@@ -49,7 +49,8 @@ clusters <- matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2)
 cluster.cor(clusters,cor(attitude))
 #
 #best
-scores <- scoreItems(matrix(c(rep(1,3),rep(0,7),rep(1,4)),ncol=2),attitude)
+keys <- make.keys(attitude,list(first=1:3,second=4:7))
+scores <- scoreItems(keys,attitude)
 scores$corrected
 
 #However, to do the more general case of correcting correlations for reliabilty

@@ -1,12 +1,14 @@
 \name{describeBy}
 \alias{describeBy}
 \alias{describe.by}
+
 \title{ Basic summary statistics by group}
 \description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Partly a wrapper for by and \code{\link{describe}}
 }
 \usage{
 describeBy(x, group=NULL,mat=FALSE,type=3,digits=15,...)
 describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +26,8 @@ describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
 The type parameter specifies which version of skew and kurtosis should be found.  See \code{\link{describe}} for more details. 
 
 An alternative function (\code{\link{statsBy}}) returns a list of means, n, and standard deviations for each group.  This is particularly useful if finding weighted correlations of group means using \code{\link{cor.wt}}. More importantly, it does a proper within and between group decomposition of the correlation.
+
+\code{\link{cohen.d}}  will work for two groups. It converts the data into mean differences and pools the within group standard deviations.  Returns cohen.d statistic as well as the multivariate generalization (Mahalanobis D). 
 }
 \value{
  A data.frame of the relevant statistics broken down by group: \cr
@@ -44,7 +48,7 @@ An alternative function (\code{\link{statsBy}}) returns a list of means, n, and 
 
 
 
-\seealso{  \code{\link{describe}},  \code{\link{statsBy}}, \code{\link{densityBy}} and \code{\link{violinBy}}
+\seealso{  \code{\link{describe}},  \code{\link{statsBy}}, \code{\link{densityBy}} and \code{\link{violinBy}},  \code{\link{cohen.d}},  \code{\link{cohen.d.by}}, and  \code{\link{cohen.d.ci}}
  as well as \code{\link{error.bars}} and \code{\link{error.bars.by}} for other graphical displays. }
 \examples{
 

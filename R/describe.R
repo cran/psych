@@ -1,3 +1,8 @@
+"describeFast" <- function(x) {
+nvar <- NCOL(x)
+nobs <- NROW(x)
+
+}
 
 #added 1/11/14
 #modified 12/29/14 to handle cases with non-numeric data

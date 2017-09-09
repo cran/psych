@@ -1,7 +1,7 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
  cl <- match.call()
 # if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
@@ -24,8 +24,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
        cov = {rx <- cov(x,use=use) 
               covar <- TRUE},
        tet = {rx <- tetrachoric(x,correct=correct)$rho},
-       poly = {rx <- polychoric(x,correct=.5)$rho},
-       mixed = {rx <- mixed.cor(x,use=use)$rho},
+       poly = {rx <- polychoric(x,correct=correct)$rho},
+       mixed = {rx <- mixedCor(x,use=use,correct=correct)$rho},
        Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
        YuleQ = {rx <- YuleCor(x,1)$rho},
        YuleY = {rx <- YuleCor(x,.5)$rho } 
@@ -48,7 +48,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
               covar <- TRUE},
        tet = {rx <- tetrachoric(x,correct=correct)$rho},
        poly = {rx <- polychoric(x,correct=correct)$rho},
-       mixed = {rx <- mixed.cor(x,use=use)$rho},
+       mixed = {rx <- mixedCor(x,use=use,correct=correct)$rho},
        Yuleb = {rx <- YuleCor(x,,bonett=TRUE)$rho},
        YuleQ = {rx <- YuleCor(x,1)$rho},
        YuleY = {rx <- YuleCor(x,.5)$rho } 
@@ -65,23 +65,28 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
   temp <- list(samp =vector("list",n.iter),samp.fa = vector("list",n.iter),sim=vector("list",n.iter),sim.fa=vector("list",n.iter))
    
 #parallel processing starts here  - the more cores the better!
-   templist <- mclapply(1:n.iter,function(XX) {
+#however, mixedCor seems to break this
+  # templist <- lapply(1:n.iter,function(XX) {  
+    
+   templist <- mclapply(1:n.iter,function(XX) { #at least for now, the errors from mixedCor prevent mclapply 
+
     if(is.null(n.obs)) {
     #Sample the data, column wise (to keep the basic distributional properties, but making the correlations 0 (on average)
     bad <- TRUE
-    while(bad) {sampledata <- matrix(apply(x,2,function(y) sample(y,nsub,replace=TRUE)),ncol=nvariables) #do it column wise
-                    
+    while(bad) {sampledata <- matrix(apply(x,2,function(y)   sample(y,nsub,replace=TRUE)),ncol=nvariables) #do it column wise
+      colnames(sampledata) <- colnames(x)   #this allows mixedCor to work               
     switch(cor,          #we can do a number of different types of correlations
        cor = {C <- cor(sampledata,use=use)},
        cov = {C <- cov(sampledata,use=use) 
               covar <- TRUE},
-       tet = {C <- tetrachoric(sampledata)$rho},
-       poly = {C <- polychoric(sampledata)$rho},
-       mixed = {C <- mixed.cor(sampledata,use=use)$rho},
+       tet = {C <- tetrachoric(sampledata,correct=correct)$rho},
+       poly = {C <- polychoric(sampledata,correct=correct)$rho},
+       mixed = {C <- mixedCor(sampledata,use=use,correct=correct)$rho},
        Yuleb = {C <- YuleCor(sampledata,,bonett=TRUE)$rho},
        YuleQ = {C <- YuleCor(sampledata,1)$rho},
        YuleY = {C <- YuleCor(sampledata,.5)$rho } 
        )  
+
                     bad <- any(is.na(C))   #some (not frequently) correlations will be improper, particularly if sampling from sparse matrices                 
            }  #Try resampling until we get a correlation matrix that works                    
    					values.samp <- eigen(C)$values
@@ -333,7 +338,7 @@ return(invisible(results))
 
 #a cut down plotting function
 "plot.fa.parallel" <- 
-function(x,n.obs,fa,show.legend,error.bars,main="Parallel Analysis Scree Plots",...) {
+function(x,n.obs,fa,show.legend,error.bars=FALSE,main="Parallel Analysis Scree Plots",...) {
 if(missing(n.obs)) n.obs <- NULL
 if(missing(fa)) fa <- "both"
 if(missing(show.legend)) show.legend <- TRUE
@@ -344,13 +349,16 @@ fa.valuesx <- x$fa.values
 fa.values.sim <- x$fa.sim
 valuesx <- x$pc.values
 values.sim <- x$pc.sim
-ymax <- max(valuesx,values.sim$mean)
-ymin <- min(valuesx,values.sim$mean)
+if(!is.null(x$fa.simr)) {resample=TRUE } else {resample <- FALSE}
+#ymax <- max(valuesx,values.sim$mean)
+#ymin <- min(valuesx,values.sim$mean)
+ymax <- max(valuesx,values.sim)
+ymin <- min(valuesx,values.sim,fa.valuesx,fa.values.sim)
 ylabel <-  "eigen values of principal factors"
 if (!is.null(valuesx)) {
             plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Factor Number",pch=4,col="blue") }
            
-        	points(values.sim$mean,type ="l",lty="dotted",pch=2,col="red")
+        	points(values.sim,type ="l",lty="dotted",pch=2,col="red")
         if(error.bars) {
          for (i in 1:dim(values.sim)[1])  
     	{
@@ -360,25 +368,32 @@ if (!is.null(valuesx)) {
     	
         	  
 	
-		points(fa.values.sim$mean,type ="l",lty="dashed",pch=2,col="red")
+		points(fa.values.sim,type ="l",lty="dashed",pch=2,col="red")
 						 if(error.bars) {
          for (i in 1:dim(values.sim)[1])  
     	{
-    	 ycen <- fa.values.sim$mean[i]
-         yse <-  fa.values.sim$se[i]
+    	 ycen <- fa.values.sim[i]
+         yse <-  fa.values.sim[i]
     	 arrows(i,ycen-ci*yse,i,ycen+ci* yse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} }
     	
     	
 					if (fa !="fa") 	points(fa.valuesx,type ="b",lty="solid",pch=2,col="blue")
 	points(fa.values.sim,type ="l",lty="dotted",pch=2,col="red")
-	if(is.null(n.obs)) {points(fa.values.sim$mean,type ="l",lty="dashed",pch=2,col="red")}
+	if(is.null(n.obs)) {points(fa.values.sim,type ="l",lty="dashed",pch=2,col="red")}
            
+if(resample) {  points(x$pc.simr,type ="l",lty="dashed",pch=4,col="red")
+        points(x$fa.simr,type ="l",lty="dashed",pch=4,col="red")}
 
-if(show.legend) {
 
+if(show.legend) {if(resample) {   legend("topright", c("  PC  Actual Data", "  PC  Simulated Data", " PC  Resampled Data","  FA  Actual Data", "  FA  Simulated Data", " FA  Resampled Data"),
+       col = c("blue","red","red","blue","red","red"),pch=c(4,NA,NA,2,NA,NA),
+       text.col = "green4", lty = c("solid","dotted", "dashed","solid","dotted", "dashed"),
+      merge = TRUE, bg = 'gray90')
+} else {
        legend("topright", c("PC  Actual Data", " PC  Simulated Data","FA  Actual Data", " FA  Simulated Data"), col = c("blue","red","blue","red"),pch=c(4,NA,2,NA),
        text.col = "green4", lty = c("solid","dotted","solid","dotted"),
-       merge = TRUE, bg = 'gray90')
+       merge = TRUE, bg = 'gray90') 
+       }
    }
 abline(h=1)
 if (fa!="pc") {abline(h=0) }

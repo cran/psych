@@ -409,12 +409,17 @@ if (length(class(stats)) > 1) {
                          }   
     )
        #we should have a null case
-    } else {#input is a keys matrix
+    } else {#input is probably a keys matrix but not in the case of a single item being scored
+        #the normal case
          tau <- irt.tau(items)  #this is the case of a using a scoring matrix to be applied to irt
          if(is.matrix(keys)) {nf <- dim(keys)[2]} else {nf <-1}
          diffi <- list() 
           for (i in 1:nf) {diffi[[i]]  <- tau }
-         if(!is.null(keys)) {discrim <- keys} else {stop("I am sorry, you specified  tau  but not  keys.")}
+         if(!is.null(keys)) {discrim <- keys} else {
+        # stop("I am sorry, you specified  tau  but not  keys.")  #or you are scoring a single item
+           diffi[[1]] <- stats$irt$difficulty
+           discrim <- matrix(1,1,1)  #as strange as this seems, this needs to be a 1 x 1 matrix
+         }
    class(diffi) <- NULL
    class(discrim) <- NULL
    new.stats <- list(difficulty=diffi,discrimination=discrim)
@@ -507,12 +512,14 @@ plot(theta,stats.m[,i],ylim=c(0,1),typ="l",xlab="theta",ylab="P(response)",main=
 #gets around the problem of tau differences for 0/1 and 1/6 scales.
 #Requires finding the correlation matrix for each scale, rather than taking advantage of a prior correlation matrix
 #modifed Jan 3, 2017 to reverse key scales where the keys and the factor solution are backwards (e.g., stability vs. neuroticism)
+#modified August, 2017 to handle the case of single item scales
+
 scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),mod="logistic") {
    nvar <- length(itemLists)
 
    select <- sub("-","",unlist(itemLists)) #select just the items that will be scored
     select <- select[!duplicated(select)]
-   items <- items[select]  #this should reduce memory load
+   items <- items[,select]  #this should reduce memory load
    #we turn off the sorting option in irt.fa so that the item discriminations match the scoring order
    #small function is called using parallel processing
    smallFunction <- function(i,selection,correct,cut=cut,bounds=bounds,mod=mod) {
@@ -520,18 +527,24 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
         neg <- grep("-", selection[[i]])
        direction[neg] <- -1 
       select <- sub("-","",selection[[i]])
-      selectedItems <- as.matrix(items[select])
+      selectedItems <- as.matrix(items[,select,drop=FALSE])
+      if(NCOL(selectedItems) > 1 ) { #The normal case is to have at least 2 items in a scale
       if(!messages) {suppressMessages(stats <- irt.fa(selectedItems,correct=correct,plot=FALSE,sort=FALSE))} else {
                               stats <- irt.fa(selectedItems,correct=correct,plot=FALSE,sort=FALSE)}
                               flip <- sum(sign(stats$irt$discrimination * direction))
                               if(flip < 0 )  stats$irt$discrimination <-  -stats$irt$discrimination 
-                             
-      scores <- scoreIrt(stats,selectedItems,cut=cut,bounds=bounds,mod=mod)
+                               scores <- scoreIrt(stats,selectedItems,cut=cut,bounds=bounds,mod=mod)
+            } else {stats <- list()   #the case of a single item to score  
+                   stats$irt$difficulty <- irt.tau(selectedItems)
+                   stats$irt$discrimination <-  1
+                    scores <- scoreIrt(stats,selectedItems,keys=NULL,cut=cut,bounds=bounds,mod=mod)
+               }               
+     
       scores <- scores$theta
   }
    #use mapply for debugging, mcmapply for parallel processing
    #items is global and not passed to save memory
-   scoresList <-mapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
+   scoresList <- mcmapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))
    colnames(scoresList) <- names(itemLists)
    return(scoresList)
    }
@@ -541,11 +554,11 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
  #the alternative is use scoreIrt for all of them at once with a keys function.
    
 scoreIrt.1pl <- function(keys.list,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),mod="logistic") {
-   select <- sub("-","",unlist(keys.list))
-      select <- select[!duplicated(select)]
-   items <- items[select] 
+	select <- sub("-","",unlist(keys.list))
+	select <- select[!duplicated(select)]
+   items <- items[,select] 
   nf <- length(keys.list)
-  fix <-  is.numeric(keys.list[[1]])
+  fix <-  is.numeric(keys.list[[1]])   #what does this do?
   
    smallFunction <- function(i,keys.list,correct,cut=cut,bounds=bounds,mod=mod) {
           list.i <- keys.list[[i]]
@@ -554,7 +567,7 @@ scoreIrt.1pl <- function(keys.list,items,correct=.5,messages=FALSE,cut=.3,bounds
             keys[neg] <- -1
             select <- sub("-", "", list.i)
            # select <- colnames(items)[select]
-      selectedItems <- as.matrix(items[select])
+      selectedItems <- as.matrix(items[,select])  #if items is a matrix, we need to specify all rows
       stats <- irt.tau(selectedItems)
       scores <- scoreIrt(stats,selectedItems,keys,cut=cut,bounds=bounds,mod=mod)
      # stats <- irt.tau(items[select])

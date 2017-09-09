@@ -3,6 +3,9 @@
 \alias{structure.graph}
 \alias{structure.sem}
 \alias{lavaan.diagram}
+\alias{sem.diagram}
+\alias{sem.graph}
+
 
 
 \title{Draw a structural equation model specified by two measurement models and a structural model}
@@ -33,6 +36,8 @@ structure.graph(fx,  Phi = NULL,fy = NULL, out.file = NULL, labels = NULL, cut =
 structure.sem(fx,  Phi = NULL, fy = NULL,out.file = NULL, labels = NULL,
      cut = 0.3, errors=TRUE, simple=TRUE,regression=FALSE)
 lavaan.diagram(fit,title,...) 
+sem.diagram(fit,main="A SEM from the sem package",...)
+sem.graph(fit,out.file=NULL,main= "A SEM from the sem package",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +50,7 @@ lavaan.diagram(fit,title,...)
   \item{labels}{variable labels if not specified as colnames for the matrices}
   \item{cut}{Draw paths for values > cut }
   \item{fit}{The output from a lavaan cfa or sem}
+  
   \item{errors}{draw an error term for observerd variables }
   \item{simple}{Just draw one path per x or y variable }
   \item{regression}{Draw a regression diagram (observed variables cause Y)}
@@ -63,10 +69,12 @@ lavaan.diagram(fit,title,...)
 
 The recommended function is structure.diagram which does not use Rgraphviz but which does not produce dot code either.  
 
-All three function return a matrix of commands suitable for using in the sem package.  (Specify errors=TRUE to get code that will run directly in the sem package.)
+All three structure function return a matrix of commands suitable for using in the sem or lavaan packages.  (Specify errors=TRUE to get code that will run directly in the sem package.)
 
 The structure.graph output can be directed to an output file for post processing using the dot graphic language but requires that Rgraphviz is installed. 
 
+sem.diagram and sem.graph convert the output from a simple CFA done with the sem package and draw them using structure.diagram or structure.graph.
+lavaan.diagram converts the output (fit) from a simple CFA done with the lavaan package and draws them using structure.diagram.
 The figure is organized to show the appropriate paths between:
 
 The correlations between the X variables (if Rx is specified) \cr
@@ -83,6 +91,7 @@ Other diagram functions include \code{\link{fa.diagram}}, \code{\link{omega.diag
 }
 \value{
  \item{sem}{(invisible) a model matrix (partially) ready for input to John Fox's sem package.  It is of class ``mod" for prettier output.  }
+ \item{lavaan}{(invisible) A model specification for the lavaan package.}
  \item{dotfile}{If out.file is specified, a dot language file suitable for using in a dot graphics program such as graphviz or Omnigraffle.}
  
  A graphic structural diagram in the graphics window

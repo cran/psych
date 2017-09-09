@@ -89,5 +89,8 @@ function (x, top=4,bottom=4,from=1,to=NULL, digits=2, hlength = 4, tlength = 4)
 #added April 20, 2017
 "quickView" <- function(x,top=8,bottom=8,from=1,to=NULL) {
   if(is.null(to)) to <- NCOL(x)
-   View(x[c(1:top,(NROW(x)+1  - bottom):NROW(x)),from:to])
+  if(NROW(x) < (top + bottom)) {bottom <- NROW(x) - top}
+  if(NCOL(x) > 1) {
+   View(x[c(1:top,(NROW(x)+1  - bottom):NROW(x)),from:to])} else {
+   View(x[c(1:top,(NROW(x)+1  - bottom):NROW(x))])     }   #the case of a vector
    }

@@ -1,6 +1,7 @@
 \name{fa}
 \alias{fa}
 \alias{fac}
+\alias{fa.sapa}
 
 
 
@@ -11,12 +12,20 @@
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
- alpha=.1,p=.05,oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
+ alpha=.1,p=.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
+ correct=.5,weight=NULL,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
+oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, weight=NULL,...)
+
+fa.sapa(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
+residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,
+max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, 
+oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,
+frac=.1,...) 
+
 
 }
 
@@ -37,16 +46,17 @@ oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
-  \item{fm}{Factoring method  fm="minres" will do a minimum residual as will fm="uls".  Both of these use a first derivative.  fm="ols" differs very slightly from "minres" in that it minimizes the entire residual matrix using an OLS procedure but uses the empirical first derivative.  This will be slower.  fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair. fm ="minrank" will do a minimum rank factor analysis. "old.min" will do minimal residual the way it was done prior to April, 2017 (see discussion below).}
+  \item{fm}{Factoring method  fm="minres" will do a minimum residual as will fm="uls".  Both of these use a first derivative.  fm="ols" differs very slightly from "minres" in that it minimizes the entire residual matrix using an OLS procedure but uses the empirical first derivative.  This will be slower.  fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair. fm ="minrank" will do a minimum rank factor analysis. "old.min" will do minimal residual the way it was done prior to April, 2017 (see discussion below).  fm="alpha" will do alpha factor analysis as described in Kaiser and Coffey (1965)}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
-  \item{oblique.scores}{When factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (oblique.scores=TRUE).  } 
+  \item{oblique.scores}{When factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (oblique.scores=TRUE).  Now it is always false.  If you want oblique factor scores, use tenBerge.  } 
   \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
-  \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
+\item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
-
-  \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
+\item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
+\item{frac}{The fraction of data to sample n.iter times if showing stability across sample sizes}
+\item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
  
@@ -54,7 +64,7 @@ oblique.scores=FALSE,np.obs,use="pairwise",cor="cor",weight=NULL,...)
 
 Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller)  that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.  
 
-The fa function will do factor analyses using one of five different algorithms: minimum residual (minres, aka ols, uls), principal axes, weighted least squares, minimum rank, or maximum likelihood.
+The fa function will do factor analyses using one of six different algorithms: minimum residual (minres, aka ols, uls), principal axes,  alpha factoring, weighted least squares, minimum rank, or maximum likelihood.
 
 Principal axes factor analysis has a long history in exploratory analysis and is a straightforward procedure.  Successive eigen value decompositions are done on a correlation matrix with the diagonal replaced with  diag (FF') until \eqn{\sum(diag(FF'))} does not change (very much).  The current limit of max.iter =50 seems to work for most problems, but the Holzinger-Harmon 24 variable problem needs about 203 iterations to converge for a 5 factor solution.  
 
@@ -66,6 +76,8 @@ However, simulations of multiple problem sets suggest that fm="pa" tends to prod
 
 Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
 
+Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link{Schutz}} produces Heywood and super Heywood cases,   \code{\link{blant}} leads to very different solutions.  
+
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller RMSEA) solutions.
 
 The fm="minchi" option is a variation on the "minres" (ols) solution and minimizes the sample size weighted residuals rather than just the residuals. This was developed to handle the problem of data that Massively Missing Completely at Random (MMCAR) which a condition that happens in the SAPA project.
@@ -73,7 +85,7 @@ The fm="minchi" option is a variation on the "minres" (ols) solution and minimiz
 
 A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
 
-The iterated principal axes algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be worse than that found using maximum likelihood procedures.
+The iterated principal axes algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be (slightly) worse than that found using maximum likelihood procedures.
 
 The minimum residual (minres) solution is an unweighted least squares solution that takes a slightly different approach.  It uses the \code{\link{optim}} function and adjusts the diagonal elements of the correlation matrix to mimimize the squared residual when the factor model is the eigen value decomposition of the reduced matrix.  MINRES and PA will both work when ML will not, for they can be used when the matrix is singular. Although before the change in the derivative,  the MINRES solution was slightly more similar to the ML solution than is the PA solution. With the change in the derivative of the minres fit, the minres, pa and uls solutions are practically identical. To a great extent, the minres and wls solutions follow ideas in the \code{\link{factanal}} function with the change in the derivative. 
 
@@ -81,13 +93,17 @@ The weighted least squares (wls) solution weights the residual matrix by 1/ diag
 
 The generalized least squares (gls) solution weights the residual matrix by the inverse of the correlation matrix.  This has the effect of weighting those variables with low communalities even more than those with high communalities.
 
-The maximum likelihood solution takes yet another approach and finds those communality values that minimize the chi square goodness of fit test.  The fm="ml" option provides a maximum likelihood solution following the procedures used in \code{\link{factanal}} but does not provide all the extra features of that function.
+The maximum likelihood solution takes yet another approach and finds those communality values that minimize the chi square goodness of fit test.  The fm="ml" option provides a maximum likelihood solution following the procedures used in \code{\link{factanal}} but does not provide all the extra features of that function.  It does, however, produce more expansive output.
 
 The minimum rank factor model (MRFA) roughly follows ideas by Shapiro and Ten Berge (2002) and Ten Berge and Kiers (1991).  It makes use of the glb.algebraic procedure contributed by Andreas Moltner.  MRFA attempts to extract factors such that the residual matrix is still positive semi-definite.  This version is still being tested and feedback is most welcome.
 
-Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. The wls and gls solutions have slightly larger eigen values, but slightly worse fits of the off diagonal residuals than do the minres or maximum likelihood solutions.  Comparing the results to the examples in Harman (76), the PA solution with no iterations matches what Harman calls Principal Axes (as does SAS), while the iterated PA solution matches his minres solution.  The minres solution found in psych tends to have slightly smaller off diagonal residuals (as it should) than does the iterated PA solution.   
+Alpha factor analysis finds solutions based upon a correlation matrix corrected for communalities and then rescales these to the original correlation matrix.  This procedure is described by Kaiser and Coffey, 1965.  
 
-Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{scoreItems}}) factor scores can be estimated by regression as well as several other means. There are multiple approaches that are possible (see Grice, 2001) and the one taken here was developed by tenBerge et al.  (see \code{\link{factor.scores}}. The alternative, which will match factanal is to find the scores using regression --  Thurstone's least squares regression where the weights are found by   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
+Test cases comparing the output to SPSS suggest that the PA algorithm matches what SPSS calls uls, and that the wls solutions are equivalent in their fits. The wls and gls solutions have slightly larger eigen values, but slightly worse fits of the off diagonal residuals than do the minres or maximum likelihood solutions.  Comparing the results to the examples in Harman (1976), the PA solution with no iterations matches what Harman calls Principal Axes (as does SAS), while the iterated PA solution matches his minres solution.  The minres solution found in psych tends to have slightly smaller off diagonal residuals (as it should) than does the iterated PA solution.   
+
+Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{scoreItems}}) factor scores can be estimated by regression as well as several other means. There are multiple approaches that are possible (see Grice, 2001) and  one taken here was developed by tenBerge et al.
+(see \code{\link{factor.scores}}). The alternative, which will match factanal is to find the scores using regression --  Thurstone's least squares regression where the weights are found by
+   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
 
 In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix while \code{\link{factanal}} seems to do it from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = TRUE  will produce factor score estimate that match those of \code{\link{factanal}}.
 
@@ -117,9 +133,11 @@ When factor analyzing items with dichotomous or polytomous responses, the \code{
 
 The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstrapped sample of the data (if they exist) or of a simulated data set based upon the observed correlation matrix.  The mean estimate and standard deviation of the estimate are returned and will print the original factor analysis as well as the alpha level confidence intervals for the estimated coefficients.  The bootstrapped solutions are rotated towards the original solution using target.rot. The factor loadings are z-transformed, averaged and then back transformed. This leads to an error in the case of Heywood cases.  The probably better alternative is to just find the mean bootstrapped value and find the confidence intervals based upon the observed range of values. The default is to have n.iter =1 and thus not do bootstrapping.
 
-If using polytomous or dichotomous items, it is perhaps more useful is to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
+If using polytomous or dichotomous items, it is perhaps more useful  to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
 Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
+
+One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
 
 For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
@@ -127,7 +145,10 @@ For those who want to have an object of the variances accounted for, this is ret
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 
+\code{\link{fa.sapa}} will do iterative solutions for successive random samples of  fractions (frac) of the data set. This allows us to find the stability of solutions for various sample sizes. 
+
 }
+
 \value{
   \item{values }{Eigen values of the common factor solution}
   \item{e.values}{Eigen values of the original matrix}
@@ -200,6 +221,8 @@ Harman, Harry and Jones, Wayne (1966) Factor analysis by minimizing residuals (m
 
 Hofmann, R. J. ( 1978 ) . Complexity and simplicity as objective indices descriptive of factor solutions. Multivariate Behavioral Research, 13, 247-250.
 
+Kaiser, Henry F. and Caffrey, John.  Alpha factor analysis, Psychometrika, (30) 1-14.
+
 Pettersson E, Turkheimer E. (2010) Item selection, evaluation, and simple structure in personality data. Journal of research in personality, 44(4), 407-420.
 
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
@@ -230,9 +253,11 @@ If the raw data are factored, factors scores are found.  By default this will be
 
 The minimum residual solution is done by finding those communalities that will minimize the off diagonal residual. The uls solution finds those communalities that minimize the total residuals.   
 
-The minres solution has been modified (April, 2107) following suggestions by Hao Wu. Although the fitting function was the minimal residual, the first derivative of the fitting function was incorrect. This has now been modified so that the results match those of SPSS and CEFA.  The prior solutions are still available using fm="old.min".    
+The minres solution has been modified (April, 2107) following suggestions by Hao Wu. Although the fitting function was the minimal residual, the first derivative of the fitting function was incorrect. This has now been modified so that the results match those of SPSS and CEFA.  The prior solutions are still available using fm="old.min". 
 
- 
+Alpha factoring was added in August, 2017 to add to the numerous alternative models of factoring.    
+
+A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output. 
 
 
 }

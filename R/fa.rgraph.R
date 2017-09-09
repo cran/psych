@@ -101,9 +101,11 @@ function(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")),list(graph=cluster.vars,cluster=FALSE ,attrs=c(rank = "source"))) #this crashes for correlated factors solution
 
  observed <- list(list(graph=obs.var,cluster=TRUE,attrs=c(rank="sink")))   #this does not lead to a crash
-plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=main)  
+  if(!is.null(out.file) ){toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+ 
+ plot(clust.graph, nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs,subGList=observed,main=main)  
 
- if(!is.null(out.file) ){toDotty(clust.graph,out.file,nodeAttrs = nAttrs, edgeAttrs = eAttrs, attrs = attrs) }
+
 
 
 return(clust.graph)

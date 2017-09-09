@@ -15,3 +15,27 @@ structure.diagram(fx=fx,Phi=Phi,Rx=Rx,labels=v.labels,main=title,...)}
 else {structure.diagram(fx=fx,Phi=t(fit@Model@GLIST$beta),Rx=Rx,labels=v.labels,main=title,...) }
 }
 #modified 11/6/14 to draw the regression paths
+
+
+#created August 17, 2017 to allow sem.diagrams and graphs from sem output 
+"sem.diagram" <- function(fit,main="A SEM from the sem package",...) {
+  nvar <- ncol(fit$S)
+  var.names <- fit$var.names
+  tot.var <- ncol(fit$A)
+  num.factors <- length(var.names) - nvar
+  fx <- fit$A[1:nvar,(nvar+1):ncol(fit$A)]
+  Phi <- fit$P[(nvar+1):tot.var,(nvar+1):tot.var]
+ structure.diagram(fx,Phi,main=main,...)
+ }
+ 
+
+"sem.graph" <- function(fit,out.file=NULL,main="A SEM from the sem package",...) {
+  nvar <- ncol(fit$S)
+  var.names <- fit$var.names
+  tot.var <- ncol(fit$A)
+  num.factors <- length(var.names) - nvar
+  fx <- fit$A[1:nvar,(nvar+1):ncol(fit$A)]
+  Phi <- fit$P[(nvar+1):tot.var,(nvar+1):tot.var]
+ structure.graph(fx,Phi,out.file=out.file,title=main,...)
+ }
+  

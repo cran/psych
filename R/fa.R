@@ -17,13 +17,13 @@
 #19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
 
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,...) {
  cl <- match.call()
   if(isCorrelation(r)) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                                #  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, weight=weight,...=...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, correct=.5,weight=weight,...=...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
 
 # if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
@@ -36,7 +36,7 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
  rep.rots <- list()
  
 replicateslist <- parallel::mclapply(1:n.iter,function(x) {
-# replicateslist <- lapply(1:n.iter,function(x) {
+ #replicateslist <- lapply(1:n.iter,function(x) {
  if(isCorrelation(r)) {#create data sampled from multivariate normal with observed correlation
                                       mu <- rep(0, nvar)
                                       #X <- mvrnorm(n = n.obs, mu, Sigma = r, tol = 1e-06, empirical = FALSE)
@@ -45,7 +45,7 @@ replicateslist <- parallel::mclapply(1:n.iter,function(x) {
                                       X <- matrix(rnorm(nvar * n.obs),n.obs)
                                       X <-  t(eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(X))
                             } else {X <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,...=...) #call fa with the appropriate parameters
+  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,...=...) #call fa with the appropriate parameters
   if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)
                 
@@ -109,7 +109,7 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",weight=NULL,...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -161,7 +161,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
  #Modified December 11, 2009 to use first derivatives from formula rather than empirical.  This seriously improves the speed.
  #but does not seem to improve the accuracy of the minres/ols solution (note added April, 2017)
      "fit" <- function(S,nf,fm,covar) {
-          S.smc <- smc(S,covar)
+          if(is.logical(SMC)) {S.smc <- smc(S,covar)} else{ S.smc <-SMC }  #added this option, August 31, 2017
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
            if(!covar &&(sum(S.smc) == nf) && (nf > 1)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
                     #initial communality estimates are variance - smc  unless smc = 1 
@@ -173,7 +173,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                  			nf = nf, S = S)
                  } else { 
                    if(fm=="ols" ) { #don't use a gradient 
-                   start <- diag(S)- smc(S)
+                   if(is.logical(SMC)) {start <- diag(S)- smc(S)} else {start <- SMC}
   	                      res <- optim(start, FA.OLS, method = "L-BFGS-B", lower = .005, 
                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S )
@@ -181,7 +181,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
                      } else {
                     if((fm=="minres")| (fm=="uls")) {  #which is actually the same as OLS but we use the gradient 
                     start <- diag(S)- smc(S)     
-                            #does not use first derivatives
+
                 		 	res <- optim(start, fit.residuals,gr=FAgr.minres, method = "L-BFGS-B", lower = .005, 
                   			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S,fm=fm)
@@ -278,7 +278,8 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
    FAout.wls <-  function(Psi, S, q) {
         diag(S) <- 1- Psi
         E <- eigen(S,symmetric = TRUE)
-        L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
+    #    L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
+     L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(pmax(E$values[1L:q,drop=FALSE],0)),q)  #added the > 0 test August 30, 2017
         return(L)
     }
     
@@ -369,7 +370,7 @@ FA.OLS <- function(Psi,S,nf) {
      ## now start the main function
     #np.obs <- NULL   #only returned with a value in case of fm="minchi" 
  if (fm == "mle" || fm =="MLE" || fm == "ML" ) fm <- "ml"  #to correct any confusion
- if (!any(fm %in%(c("pa","minrank","wls","gls","minres","minchi", "uls","ml","mle","ols" ,"old.min") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
+ if (!any(fm %in%(c("pa","alpha", "minrank","wls","gls","minres","minchi", "uls","ml","mle","ols" ,"old.min") ))) {message("factor method not specified correctly, minimum residual (unweighted least squares  used")
    fm <- "minres" }
  
      x.matrix <- r
@@ -397,11 +398,11 @@ FA.OLS <- function(Psi,S,nf) {
        cov = {r <- cov(r,use=use) 
               covar <- TRUE},
        wtd = { r <- cor.wt(r,w=weight)$r},
-       tet = {r <- tetrachoric(r)$rho},
-       poly = {r <- polychoric(r)$rho},
-        tetrachoric = {r <- tetrachoric(r)$rho},
-       polyvchoric = {r <- polychoric(r)$rho},
-       mixed = {r <- mixed.cor(r,use=use)$rho},
+       tet = {r <- tetrachoric(r,correct=correct)$rho},
+       poly = {r <- polychoric(r,correct=correct)$rho},
+        tetrachoric = {r <- tetrachoric(r,correct=correct)$rho},
+       polyvchoric = {r <- polychoric(r,correct=correct)$rho},
+       mixed = {r <- mixed.cor(r,use=use,correct=correct)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 
@@ -462,11 +463,40 @@ FA.OLS <- function(Psi,S,nf) {
     comm.list <- list()
     
     #principal axis is an iterative eigen value fitting
+    
+	if(fm =="alpha") { #alpha factor analysis iteratively replaces the diagonal with revised communalities, and then rescales the matrix
+	   i <- 1   #count the iterations
+	    e.values <- eigen(r,symmetric=symmetric)$values   #store the original solution
+    	H2 <- diag(r.mat)  #the original communality estimate
+    	while(err > min.err) {    #iteratively replace the diagonal with our revised communality estimate
+     	 r.mat <- cov2cor(r.mat)  #this has rescaled the correlations based upon the communalities
+     	 eigens <- eigen(r.mat,symmetric=symmetric)
+     	  loadings <- eigens$vectors[,1:nfactors,drop=FALSE] %*% diag(sqrt(eigens$values[1:nfactors,drop=FALSE])) 
+         
+         
+         model <- loadings %*% t(loadings)
+         newH2 <- H2 * diag(model)
+        
+          err <- sum(abs(H2 - newH2))
+           r.mat <- r
+         diag(r.mat) <- newH2
+          H2 <- newH2
+          	i <- i + 1
+         	if(i > max.iter) { 
+         	         if(warnings)  {message("maximum iteration exceeded")}
+                     err <-0 }
+     	 } #end of while loop
+     	 loadings <- sqrt(H2) * loadings 
+	    eigens <- sqrt(H2) *  eigens$vaues
+	    comm1 <- sum(H2)
+	    }  #end alpha factor analysis
+	     
     if(fm=="pa") {
    	 	e.values <- eigen(r,symmetric=symmetric)$values   #store the original solution
     	while(err > min.err)    #iteratively replace the diagonal with our revised communality estimate
      	 {
        	 eigens <- eigen(r.mat,symmetric=symmetric)
+       	 
        	  if(nfactors >1 ) {loadings <- eigens$vectors[,1:nfactors] %*% diag(sqrt(eigens$values[1:nfactors])) } else {loadings <- eigens$vectors[,1] * sqrt(eigens$values[1] ) }
         	 model <- loadings %*% t(loadings)
         	 new <- diag(model)       
@@ -520,11 +550,12 @@ FA.OLS <- function(Psi,S,nf) {
                  sign.tot <- sign(colSums(loadings))
                  sign.tot[sign.tot==0] <- 1
                  loadings <- loadings %*% diag(sign.tot)
-     } else { if (sum(loadings) <0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
+     } else { if (sum(loadings) < 0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
              colnames(loadings) <- "MR1" }
      
     
-	switch(fm, 
+	switch(fm,
+	    alpha = {colnames(loadings) <- paste("alpha",1:nfactors,sep='')}, 
     	wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
 		pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
     	gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
@@ -650,13 +681,15 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     if(!is.null(Phi)) {Phi <- diag(signed) %*% Phi %*% diag(signed) }  #added October 20, 2009 to correct bug found by Erich Studerus
   
     switch(fm, 
+    alpha = {colnames(loadings) <- paste("alpha",1:nfactors,sep='')}, 
     wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
     pa= {colnames(loadings) <- paste("PA",1:nfactors,sep='')} ,
     gls = {colnames(loadings) <- paste("GLS",1:nfactors,sep='')},
     ml = {colnames(loadings) <- paste("ML",1:nfactors,sep='')}, 
     minres = {colnames(loadings) <- paste("MR",1:nfactors,sep='')},
-     minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
+    minrank = {colnames(loadings) <- paste("MRFA",1:nfactors,sep='')},
     uls =  {colnames(loadings) <- paste("ULS",1:nfactors,sep='')},
+    old.min = {colnames(loadings) <- paste0("oldmin",1:nfactors)},
     minchi = {colnames(loadings) <- paste("MC",1:nfactors,sep='')})
         #just in case the rotation changes the order of the factors, sort them
         #added October 30, 2008
@@ -674,7 +707,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result$rotation <- rotate
     result$communality <- diag(model)
     if(max(result$communality > 1.0) && !covar) warning("An ultra-Heywood case was detected.  Examine the results carefully")
-    if(fm == "minrank") {result$communalities <- mrfa$communality} else {if(fm=="pa") {result$communalities <- comm1} else {result$communalities <- 1- result.res$par}}
+    if(fm == "minrank") {result$communalities <- mrfa$communality} else {if(fm=="pa" | fm == "alpha") {result$communalities <- comm1} else {result$communalities <- 1- result.res$par}}
    
     
     result$uniquenesses <- diag(r-model)
@@ -692,10 +725,13 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
                        result$Structure <- Structure #added December 12, 2011   
                       
     if(fm == "pa") result$communality.iterations <- unlist(comm.list)
+   #Some of the Grice equations use the pattern matrix, but some use the structure matrix
+  #we are now dropping this oblique score option  (9/2/17)
+   result$method=scores  #this is the chosen method for factor scores
+    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores) } else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores)}
    
-    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores) } else {result$scores <- factor.scores(x.matrix,f=Structure,method=scores)}
-
-    result$weights <- result$scores$weights
+   result$R2.scores <- result$scores$R2
+    result$weights <- result$scores$weights    #these are the weights found in factor scores and will be different from the ones reported by factor.stats 
     result$scores <- result$scores$scores
         if(!is.null(result$scores)) colnames(result$scores) <- colnames(loadings) #added Sept 27, 2013
     result$factors <- nfactors 
@@ -703,6 +739,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     result$np.obs <- np.obs
     result$fn <- "fa"
     result$fm <- fm
+  
     
      #Find the summary statistics of Variance accounted for
      #normally just found in the print function  (added 4/22/17)

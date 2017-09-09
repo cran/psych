@@ -81,6 +81,7 @@ You have installed \Rpkg{psych}  (section  \ref{sect:starting}) and you want to 
 \begin{enumerate}
 \item Activate the  \Rpkg{psych} package:
 
+@
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
@@ -385,9 +386,9 @@ Several of the functions in \Rpkg{psych} address the problem of data reduction.
 
 \begin{description}
 
-\item[\pfun{fa}] incorporates five alternative algorithms: \iemph{minres factor analysis}, \iemph{principal axis factor analysis}, \iemph{weighted least squares factor analysis}, \iemph{generalized least squares factor analysis} and \iemph{maximum likelihood factor analysis}. That is, it includes the functionality of three other functions that will be eventually phased out.
+\item[\pfun{fa}] incorporates six alternative algorithms: \iemph{minres factor analysis}, \iemph{principal axis factor analysis}, \iemph{alpha factor analysis},  \iemph{weighted least squares factor analysis}, \iemph{generalized least squares factor analysis} and \iemph{maximum likelihood factor analysis}. That is, it includes the functionality of three other functions that will be eventually phased out.
 
-\item[\pfun{fa.poly}] is useful when finding the factor structure of categorical items.  \pfun{fa.poly} first finds the tetrachoric or polychoric correlations between the categorical variables and then proceeds to do a normal factor analysis.  By setting the n.iter option to be greater than 1, it will also find confidence intervals for the factor solution.  Warning.  Finding polychoric correlations is very slow, so think carefully before doing so.
+\item[\pfun{fa.poly} (deprecated) ] is useful when finding the factor structure of categorical items.  \pfun{fa.poly} first finds the tetrachoric or polychoric correlations between the categorical variables and then proceeds to do a normal factor analysis.  By setting the n.iter option to be greater than 1, it will also find confidence intervals for the factor solution.  Warning.  Finding polychoric correlations is very slow, so think carefully before doing so.  These options are now part of the \iemph{fa} function and can be controlled by setting the cor parameter to `tet' or `poly'.
 
 \item [\pfun{factor.minres} (deprecated)] Minimum residual factor analysis is a least squares, iterative solution to the factor problem.  minres attempts to minimize the residual (off-diagonal) correlation matrix.  It produces solutions similar to maximum likelihood solutions, but will work even if the matrix is singular. 
 
@@ -418,7 +419,7 @@ The factor model is an approximation of a correlation matrix by a matrix of lowe
 R = FF' + U^2
 \end{equation}
 
-The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Five alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=`wls", fm=``gls" and fm=``ml"). In the discussion of the other algorithms, the calls shown are to the \pfun{fa} function specifying the appropriate method.
+The maximum likelihood solution to this equation is found by \fun{factanal} in the \Rpkg{stats} package. Six alternatives are provided in \Rpkg{psych}, all of them are included in the \pfun{fa} function and are called by specifying the factor method (e.g., fm=``minres", fm=``pa", fm=11alpha" fm=`wls", fm=``gls" and fm=``ml"). In the discussion of the other algorithms, the calls shown are to the \pfun{fa} function specifying the appropriate method.
 
 
 \pfun{factor.minres} attempts to minimize the off diagonal residual correlation matrix by adjusting the eigen values of the original correlation matrix.  This is similar to what is done in \fun{factanal}, but uses an ordinary least squares instead of a maximum likelihood fit function.  The solutions tend to be more similar to the MLE solutions than are the \pfun{factor.pa} solutions. \iemph{min.res} is the default for the \pfun{fa} function.
@@ -472,7 +473,10 @@ f3o}
 \end{table}
 
 
+\subsubsection{Alpha Factor Analysis}
 
+Introduced by \cite{kaiser:65} and discussed by \cite{loehlin:17
+}, \emph{alpha factor analysis} factors the correlation matrix of correlations or covariances corrected for their communalities. This has the effect of making all correlations corrected for reliabiity to reflect their true, latent correlations.   \emph{alpha factor analysis} was added in August, 2017 to increase the range of EFA options available.  This is added more completeness rather than an endorsement of the procedure. It is worth comparing solutions from minres, alpha, and MLE, for they are not the same.
 
 
 
@@ -494,6 +498,7 @@ print(f3w,cut=0,digits=3)
 \end{table}
 
 
+subsection{Displaying factor solutions}
 The unweighted least squares solution may be shown graphically using the \pfun{fa.plot} function which is called by the generic \fun{plot} function (Figure~\ref{fig:thurstone}). Factors were transformed obliquely using a oblimin.   These solutions may be shown as item by factor plots  (Figure~\ref{fig:thurstone}) or by a structure diagram (Figure~\ref{fig:thurstone.diagram}).
 
 \begin{figure}[htbp]
@@ -693,8 +698,12 @@ print(ic,cut=.3)
 
 A comparison of these four cluster solutions suggests both a problem and an advantage of clustering techniques.  The problem is that the solutions differ.  The advantage is that the structure of the items may be seen more clearly when examining the clusters rather than a simple factor solution.
 
+\subsection{Estimates of fit}
+Exploratory factoring techniques are sometimes criticized because of the lack of statistical information on the solutions.  There are perhaps as many fit statistics as there are psychometricians.  When using Maximum Likelihood extraction, many of these  various fit statistics are based upon the $\chi^{2}$ which is minimized using ML.  If not using ML, these same statistics can be found, but they are no longer maximum likelihood estimates. They are, however, still useful. Overall estimates of goodness of fit including $\chi^{2}$ and RMSEA are found in the \pfun{fa} and \pfun{omega} functions.
+  
+
 \subsection{Confidence intervals using bootstrapping techniques}
-Exploratory factoring techniques are sometimes criticized because of the lack of statistical information on the solutions.  Overall estimates of goodness of fit including $\chi^{2}$ and RMSEA are found in the \pfun{fa} and \pfun{omega} functions.  Confidence intervals for the factor loadings may be found by doing multiple bootstrapped iterations  of the original analysis.  This is done by setting the n.iter parameter to the desired number of iterations.  This can be done for factoring of Pearson correlation matrices as well as polychoric/tetrachoric matrices  (See Table~\ref{tab:bootstrap}). Although the example value for the number of iterations is set to 20, more conventional analyses might use 1000 bootstraps.  This will take much longer. 
+  Confidence intervals for the factor loadings may be found by doing multiple bootstrapped iterations  of the original analysis.  This is done by setting the n.iter parameter to the desired number of iterations.  This can be done for factoring of Pearson correlation matrices as well as polychoric/tetrachoric matrices  (See Table~\ref{tab:bootstrap}). Although the example value for the number of iterations is set to 20, more conventional analyses might use 1000 bootstraps.  This will take much longer. 
 
 Bootstrapped confidence intervals can also be found for the loadings of a factoring of a polychoric matrix.  \pfun{fa.poly} will find the polychoric correlation matrix and if the n.iter option is greater than 1, will then randomly resample the data (case wise) to give bootstrapped  samples.  This will take a long time for large number of items or interations.
 
@@ -803,6 +812,8 @@ fa.parallel(bfi[1:25],main="Parallel Analysis of a Big 5 inventory")
 \end{scriptsize}
 \end{figure}
 
+Experience with problems of various sizes suggests that parallel analysis is useful for less than about 1,000 subjects, and that using the number of components greater than a random solution is more robust than using the number of factors greater than random factors.   
+
 A more tedious problem in terms of computation is to do parallel analysis of \iemph{polychoric} correlation matrices.  This is done by \pfun{fa.parallel.poly}.  By default the number of replications is 20.  This is appropriate when choosing the number of factors from dicthotomous  or polytomous data matrices.
 
 \subsection{Factor extension}
@@ -825,7 +836,7 @@ fa.diagram(f2,fe=fe)
 \end{center}
 \end{figure}
 
-Another way to examine the overlap between two sets is the use of \iemph{set correlation} found by \pfun{set.cor} (discussed later). 
+Another way to examine the overlap between two sets is the use of \iemph{set correlation} found by \pfun{setCor} (discussed later). 
 
 \subsection{Exploratory Structural Equation Modeling (ESEM)}
 
@@ -866,7 +877,7 @@ esem.example
 \section{Classical Test Theory and  Reliability}
 
 
-Surprisingly, 110 years after \cite{spearman:rho} introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's  $\alpha$  \citep{cronbach:51} underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
+Surprisingly, 113 years after \cite{spearman:rho} introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's  $\alpha$  \citep{cronbach:51} underestimates the reliability of a test and over estimates the first factor saturation \citep{rz:09}.
 
 $\alpha$ \citep{cronbach:51} is the same as Guttman's $\lambda3$ \citep{guttman:45} and may be found by
 $$
@@ -899,6 +910,7 @@ Functions for examining the reliability of a single scale or a set of scales inc
 \item [cluster.cor] Given a n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, find the correlations of the composite clusters.
 \item [scoreItems] Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale. If the input is a square matrix, then it is assumed that correlations or covariances were used, and the raw scores are not available. In addition, report Cronbach's alpha, coefficient G6*, the average r, the scale intercorrelations, and the item by scale correlations (both raw and corrected for item overlap and scale reliability). Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.
 \item [score.multiple.choice] Ability tests are typically multiple choice with one right answer. score.multiple.choice takes a scoring key and a data matrix (or data.frame) and finds total or average number right for each participant. Basic test statistics (alpha, average r, item means, item-whole correlations) are also reported.
+\item [splitHalf] Given a set of items, consider all (if n.items < 17) or 10,000 random splits of the item into two sets.  The correlation between these two split halfs is then adjusted by the Spearman-Brown prophecy formula to show the range of split half reliablities.  
 \end{description}
 
 \subsection{Reliability of a single scale}
@@ -1135,7 +1147,7 @@ Once the items have been scored as true or false (assigned scores of 1 or 0), th
 
 \subsection{Item analysis}
 
-Basic item analysis starts with describing the data (\pfun{describe}, finding the number of dimensions using factor analysis (\pfun{fa}) and cluster analysis \pfun{iclust}  perhaps using the Very Simple Structure criterion  (\pfun{vss}), or perhaps parallel analysis \pfun{fa.parallel}.  Item whole correlations may then be found for scales scored on one dimension (\pfun{alpha} or many scales simultaneously (\pfun{scoreItems}).  Scales can be modified by changing the keys matrix (i.e., dropping particular items, changing the scale on which an item is to be scored).   This analysis can be done on the normal Pearson correlation matrix or by using polychoric correlations.  Validities of the scales can be found using multiple correlation of the raw data or based upon correlation matrices using the \pfun{set.cor} function.  However, more powerful item analysis tools are now available by using Item Response Theory approaches.
+Basic item analysis starts with describing the data (\pfun{describe}, finding the number of dimensions using factor analysis (\pfun{fa}) and cluster analysis \pfun{iclust}  perhaps using the Very Simple Structure criterion  (\pfun{vss}), or perhaps parallel analysis \pfun{fa.parallel}.  Item whole correlations may then be found for scales scored on one dimension (\pfun{alpha} or many scales simultaneously (\pfun{scoreItems}).  Scales can be modified by changing the keys matrix (i.e., dropping particular items, changing the scale on which an item is to be scored).   This analysis can be done on the normal Pearson correlation matrix or by using polychoric correlations.  Validities of the scales can be found using multiple correlation of the raw data or based upon correlation matrices using the \pfun{setCor} function.  However, more powerful item analysis tools are now available by using Item Response Theory approaches.
 
 
 Although the \pfun{response.frequencies} output from  \pfun{score.multiple.choice} is useful to examine in terms of the probability of various alternatives being endorsed, it is even better to examine the pattern of these responses as a function of the underlying latent trait or just the total score.  This may be done by using  \pfun{irt.responses}  (Figure~\ref{fig:irt.response}).
@@ -1437,7 +1449,7 @@ faBy(sb,nfactors=5)  #find the 5 factor solution for each education level
 
 \subsection{Multilevel reliability}
 
-
+The \pfun{mlr} and \pfun{multilevelReliablity} functions follow the advice of \cite{shrout:12a} for estimating multievel reliablilty.  A detailed discussion of this procedure is given in \cite{rw:paid:17} which is available at \url{https://personality-project.org/revelle/publications/rw.paid.17.final.pdf}.
 
 
 \section{Set Correlation and Multiple Regression from the correlation matrix}
@@ -1629,7 +1641,7 @@ A number of functions have been developed for some very specific problems that d
 \item [\pfun{topBottom}] Same as headtail.  Combines the \fun{head} and \fun{tail} functions to show the first and last lines of a data set or output, but does not add ellipsis between. 
 \item [\pfun{mardia}] calculates univariate or multivariate (Mardia's test) skew and kurtosis for a vector, matrix, or data.frame
 \item [\pfun{p.rep}] finds the probability of replication for an F, t, or r and estimate effect size.
-\item [\pfun{partial.r}] partials a y set of variables out of an x set and finds the resulting partial correlations.  (See also \pfun{set.cor}.)
+\item [\pfun{partial.r}] partials a y set of variables out of an x set and finds the resulting partial correlations.  (See also \pfun{setCor}.)
 \item [\pfun{rangeCorrection}] will correct correlations for restriction of range.
 \item [\pfun{reverse.code}] will reverse code specified items.  Done more conveniently in most \Rpkg{psych} functions, but supplied here as a helper function when using other packages.
 \item [\pfun{superMatrix}] Takes two or more matrices, e.g., A and B,  and combines them into a ``Super matrix'' with A on the top left, B on the lower right, and 0s for the other  two quadrants. A useful trick when forming complex keys, or when forming example problems.
@@ -1913,6 +1925,12 @@ Revelle, W., Wilt, J., and Rosenthal, A. (2010).
   of Individual Differences in Cognition: Attention, Memory and Executive
   Control}, chapter~2, pages 27--49. Springer.
 
+\bibitem[\protect\astroncite{Revelle and Wilt}{2017}]{rw:paid:17}
+Revelle, W. and Wilt, J.  (2017).
+\newblock Analyzing dynamic data: a tutoria.l
+\newblock {\em Personality and Individual Differences}, in press.
+
+
 \bibitem[\protect\astroncite{Revelle and Zinbarg}{2009}]{rz:09}
 Revelle, W. and Zinbarg, R.~E. (2009).
 \newblock Coefficients alpha, beta, omega and the glb: comments on {Sijtsma}.
@@ -1928,6 +1946,10 @@ Shrout, P.~E. and Fleiss, J.~L. (1979).
 \newblock Intraclass correlations: Uses in assessing rater reliability.
 \newblock {\em Psychological Bulletin}, 86(2):420--428.
 
+\bibitem[{Shrout and Lane(2012)}]{shrout:12a}
+Shrout, P., Lane, S.~P., 2012. Psychometrics. In: Handbook of research methods
+  for studying daily life. Guilford Press.
+  
 \bibitem[\protect\astroncite{Smillie et~al.}{2012}]{smillie:jpsp}
 Smillie, L.~D., Cooper, A., Wilt, J., and Revelle, W. (2012).
 \newblock Do extraverts get more bang for the buck? refining the

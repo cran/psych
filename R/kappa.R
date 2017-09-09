@@ -1,3 +1,5 @@
+
+
 "wkappa" <- 
 function(x,w=NULL) {
 p <- dim(x)[2]
@@ -101,7 +103,9 @@ prob <- rs %*% t(cs)
 
 po <- tr(x) 
 pc <- tr(prob)
-kappa <- (po-pc)/(1-pc)  #(model - data)/(1-model)
+if(prod(dim(x))==1) {message("Your data seem to have no variance and in complete agreement across raters.  Check your data.")
+    kappa <- NA}  else {
+kappa <- (po-pc)/(1-pc)}  #(model - data)/(1-model) 
  
 if(is.null(w)) { w <- matrix(0,ncol=len,nrow=len) 
                  w[] <- abs((col(w) - row(w)))^2 #squared weights
@@ -112,7 +116,8 @@ weighted.obser <- w * x
 wpo <- sum(weighted.obser)
 wpc <- sum(weighted.prob)
 colw <- colSums(w*cs)
-roww <- colSums(w*rs)
+#roww <- colSums(w*rs)
+roww <- rowSums(w*rs)   #corrected following a report by Lisa Avery
 if((!is.null(n.obs)) & (tot==1))  tot <- n.obs
 I <- diag(1,len,len)
 Vark <-  (1/(tot*(1-pc)^4))*    (tr(x * (I * (1-pc)   - (rs %+% t(cs ))*(1-po))^2 )  + (1-po)^2 * (sum(x * (cs %+% t(rs ))^2) - tr(x * (cs %+% t(rs ))^2))  -(po*pc - 2*pc +po)^2    )  
@@ -132,7 +137,9 @@ bounds[1,1] <- kappa + qnorm(alpha/2) * sqrt(Vark)
 bounds[1,3] <- kappa - qnorm(alpha/2) * sqrt(Vark)
 bounds[2,1] <- wkappa + qnorm(alpha/2) * sqrt(Varkw) 
 bounds[2,3] <- wkappa - qnorm(alpha/2) * sqrt(Varkw)
-if(any(abs(bounds) > 1)) {bounds[bounds > 1] <- 1
+
+
+if(!is.na(any(abs(bounds))) & (any(abs(bounds) > 1))) {bounds[bounds > 1] <- 1
                           bounds[bounds < -1] <- -1
                           warning("upper or lower confidence interval exceed  abs(1)  and set to +/- 1. ")
                           }

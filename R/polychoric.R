@@ -113,7 +113,7 @@ return(tab)
   #modified 3/6/14 to create missing values when the data are hopeless
 
  "polyc" <-     #uses the tableFast function instead of tableF
-function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=.5,gminx,gmaxx,gminy,gmaxy) {
+function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,gminy,gmaxy) {
   if(is.null(weight )) {tab <- tableFast(x,y,gminx,gmaxx,gminy,gmaxy)
    }   else {tab <- wtd.table(x,y,weight)}  #need to specify minx and maxx somehow
    fixed <- 0 
@@ -188,7 +188,7 @@ mat[upper.tri(mat)] <- as.numeric(poly[1,]) #first row of poly is correlation, 2
  fixed <- as.numeric(poly[3,])
 diag(mat) <- 1 
 fixed <- sum(fixed) 
-if(fixed >0) message(fixed ," cells were adjusted for 0 values using the correction for continuity. Examine your data carefully.")
+if((fixed > 0) && ( correct > 0)) { warning(fixed ," cells were adjusted for 0 values using the correction for continuity. Examine your data carefully.")}
 
 return(mat)} else {
 warning("Something is wrong in polycor ")
@@ -239,7 +239,7 @@ x <- t(t(x) - xmin +1)  #all numbers now go from 1 to nvalues
  gmaxx <- gmaxy <- xmax #check for different maxima
  
 if (min(xmax) != max(xmax)) {global <- FALSE
-                      message("The items do not have an equal number of response alternatives, global set to FALSE.")}
+                      warning("The items do not have an equal number of response alternatives, global set to FALSE.")}
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
@@ -301,7 +301,7 @@ function(tab,correct=TRUE) {
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
 
-myfun <- function(x,i,j,correct,taup,taud,gminx,gmaxx,gminy,gmaxy,np) {polyc(x[,i],x[,j],taup[,i],taud[j-np],global=TRUE,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } #global changed to true 16/6/19
+myfun <- function(x,i,j,correct,taup,taud,gminx,gmaxx,gminy,gmaxy,np) {polyc(x[,i],x[,j],taup[,i],taud[1,(j-np)],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } #global changed to true 16/6/19  and set back again to global=global on 09/07/17
 
 matpLower <- function(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy) {
 k <- 1
@@ -310,8 +310,9 @@ jl <- vector()
 for(i in 1:np) {for (j in 1:nd) {
    il[k] <- i
    jl [k] <- j
-   k<- k+1}
+   k <- k+1}
    }
+
 poly <- mcmapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl+np)  #the multicore version
 #poly <- mapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl +np)   #the normal version for debugging
 #now make it a matrix
@@ -362,7 +363,7 @@ gminx <- gminy <- 1    #set the global minima to 1
 pmax <- apply(p,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
 gmaxx <- max(pmax)
 if (min(pmax) != max(pmax)) {#global <- FALSE
-                      message("The items do not have an equal number of response alternatives, I am using the largest number of categories in the polytomous set")}
+                      warning("The items do not have an equal number of response alternatives, I am using the largest number of categories in the polytomous set")}
 gmaxy <- max(apply(d,2,function(x) max(x,na.rm=TRUE)))                      
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 pfreq <- apply(p,2,tabulate,nbins=nvalues)

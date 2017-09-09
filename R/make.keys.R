@@ -36,5 +36,9 @@ return(keys)}
       names(keys.list) <- colnames(keys)
       keys.list}
       
-
-
+#Added July 9, 2017
+"selectFromKeys" <- function(keys.list) {
+    select <- sub("-","",unlist(keys.list))
+      select <- select[!duplicated(select)]
+      return(select) 
+      }

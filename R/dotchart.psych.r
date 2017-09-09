@@ -29,9 +29,14 @@ function (x,var=NULL, se=NULL, head = 12, tail = 12, sort=TRUE,decreasing=FALSE,
         			labels <- rownames(x)
                     x <- x$mean
                     names(x) <- labels
-                    } 
+                    }, 
+                    
+      fa.ci ={se = x$cis$sds
+              if(missing(labels)) labels <-rownames(x$cis$means) 
+              x <-x$cis$means }
         )
       }  #end switch
+      }
       
      n.var <- length(x)
     if(!is.null(se)) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
@@ -59,9 +64,9 @@ function (x,var=NULL, se=NULL, head = 12, tail = 12, sort=TRUE,decreasing=FALSE,
    	 
    	  
    	 
-   	 labels <- names(x)
+   	 if(missing(labels)) labels <- names(x)
    	 if(!is.null(se)) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
-   	  if(!is.null(ci)) xlim <- c(min(x - ci),max(x + ci)) 
+   	  if(!is.null(ci)&& is.null(xlim)) xlim <- c(min(x - ci),max(x + ci)) 
            
    	 labels <- substr(labels,1,max.labels)
    	 
@@ -158,7 +163,7 @@ function (x,var=NULL, se=NULL, head = 12, tail = 12, sort=TRUE,decreasing=FALSE,
     box()
     title(main = main, xlab = xlab, ylab = ylab, ...)
     invisible()
-}
+
 }
 
 

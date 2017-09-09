@@ -64,8 +64,8 @@ bestScales ={
      df <- data.frame(correlation=x$r,n.items = x$n.items)
     cat("The items most correlated with the criteria yield r's of \n")
     print(round(df,digits=digits)) 
-    if(length(x$value)> 0) {cat("\nThe best items, their correlations and content  are \n")
-    print(x$value) } else {cat("\nThe best items and their correlations are \n")
+    if(length(x$value) > 0) {cat("\nThe best items, their correlations and content  are \n")
+     print(x$value) } else {cat("\nThe best items and their correlations are \n")
      for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
      } 
       },
@@ -155,9 +155,32 @@ cluster.loadings =  {
 	# print(x$pattern,digits) 	
   },
 
+cohen.d = {cat("Call: ")
+            print(x$Call)
+            cat("Cohen d statistic of difference between two means\n")
+            print(x$cohen.d,digits=digits)
+            cat("\nMultivariate (Mahalanobis) distance between groups\n")
+            print(x$M.dist,digits=digits) 
+            cat("r equivalent of difference between two means\n")
+            print(x$r,digits=digits)
+            },
+
+cohen.d.by = {cat("Call: ")
+            print(x$Call)
+            ncases <- length(x)
+            for (i in (1:ncases)) {cat("\n Group levels = ",names(x[i]),"\n")
+               cat("Cohen d statistic of difference between two means\n")
+            print(x[[i]]$cohen.d,digits=digits)
+            cat("\nMultivariate (Mahalanobis) distance between groups\n")
+            print(x[[i]]$M.dist,digits=digits) 
+            cat("r equivalent of difference between two means\n")
+            print(x[[i]]$r,digits=digits)
+             }
+             cat("\nUse summary for more compact output")
+            },
 
 comorbid = {cat("Call: ")
-              print(x$Call)
+            print(x$Call)
             cat("Comorbidity table \n")
             print(x$twobytwo,digits=digits)
             cat("\nimplies phi = ",round(x$phi,digits), " with Yule = ", round(x$Yule,digits), " and tetrachoric correlation of ", round(x$tetra$rho,digits))
@@ -198,7 +221,9 @@ corr.test = {cat("Call:")
              print(round(x$p,digits))
              cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
              if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
-             print(round(x$ci,digits)) }
+             if(is.null(x$ci.adj)) { ci.df <- data.frame(raw=x$ci) } else {
+             ci.df <- data.frame(raw=x$ci,lower.adj = x$ci.adj$lower.adj,upper.adj=x$ci.adj$upper.adj)}
+             print(round(ci.df,digits)) }
          },     
 
 corr.p = {cat("Call:")
@@ -735,6 +760,17 @@ KMO = {cat("Kaiser-Meyer-Olkin factor adequacy")
    cat("Overall MSA = ",round(x$MSA,digits))
    cat("\nMSA for each item = \n")
    print(round(x$MSAi,digits))
+   },
+   
+unidim = {cat("\nA measure of unidimensionality \n Call: ")
+  print(x$Call)
+  
+  cat("\nUnidimensionality index = \n" )
+  print(round(x$uni,digits=digits))
+  
+ cat("\nunidim adjusted index reverses negatively scored items.")
+  cat("\nalpha ","  Based upon reverse scoring some items.")
+  cat ("\naverage correlations are based upon reversed scored items") 
    },
    
 yule = {cat("Yule and Generalized Yule coefficients")

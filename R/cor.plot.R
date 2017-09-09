@@ -11,7 +11,7 @@
 #modified April 15, 2017 to allow more plotting control on the x and y rotation options
 
 "cor.plot" <- "corPlot" <- 
-function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,...){
+function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {
@@ -68,7 +68,7 @@ if(is.null(colnames(r))) colnames(r) <- paste("V",1:nf)
 #max.len <- max( strwidth(rownames(r)))
 if(is.null(zlim)) {zlim <- range(r)}
 if(colors) { 
-    gr <- colorRampPalette(c("red","white","blue")) #added June 20
+   if(missing(gr))  {gr <- colorRampPalette(c("red","white","blue"))}  #added June 20
     colramp  <- gr(n)
       } else {
     colramp <- grey((n:0)/n)}

@@ -10,14 +10,14 @@
 \alias{panel.smoother}
 
 \title{SPLOM, histograms and correlations for a data matrix}
-\description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.
+\description{Adapted from the  help page for pairs, pairs.panels shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal. Useful for descriptive statistics of small data sets.  If lm=TRUE, linear regression fits are shown for both y by x and x by y.  Correlation ellipses are also shown. Points may be given different colors depending upon some grouping variable.  Robust fitting is done using lowess or loess regression. Confidence intervals of either the lm or loess are drawn if requested.
 }
 \usage{
 \method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
      digits = 2,method="pearson", pch = 20, lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2, 
      hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL,
-     smoother=FALSE,stars=FALSE, ...)
-%- maybe also 'usage' for other objects documented here.
+     smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05, ...)
+
 }
 \arguments{
   \item{x}{a data.frame or matrix}
@@ -40,6 +40,8 @@
   \item{wt}{If specified, then weight the correlations by a weights matrix (see note for some comments)}
   \item{smoother}{If TRUE, then smooth.scatter the data points  -- slow but pretty with lots of subjects }
   \item{stars}{For those people who like to show the significance of correlations by using magic astricks, set stars=TRUE}
+  \item{ci}{Draw confidence intervals for the linear model or for the loess fit, defaults to ci=FALSE. If confidence intervals are not drawn, the fitting function is lowess.}
+  \item{alpha}{The alpha level for the confidence regions, defaults to .05}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 
@@ -52,7 +54,7 @@ When plotting more than about 10 variables, it is useful to set the gap paramete
 
 In addition, when plotting more than about 100-200 cases, it is useful to set the plotting character to be a point. (pch=".")
 
-Sometimes it useful to draw the correlation ellipses and best fitting lowess without the points. (points.false=TRUE).
+Sometimes it useful to draw the correlation ellipses and best fitting loess without the points. (points.false=TRUE).
 }
 \value{A scatter plot matrix (SPLOM) is drawn in the graphic window. The lower off diagonal draws scatter plots, the diagonal histograms, the upper off diagonal reports the Pearson correlation (with pairwise deletion).
 
@@ -99,8 +101,6 @@ sb <- statsBy(sat.act,"education")
 pairs.panels(sb$mean,wt=sb$n)  #report the weighted correlations
 #compare with 
 pairs.panels(sb$mean) #unweighed correlations
-
-
 }
-\keyword{multivariate }% at least one, from doc/KEYWORDS
-\keyword{ hplot }% __ONLY ONE__ keyword per line
+\keyword{multivariate} 
+\keyword{ hplot }

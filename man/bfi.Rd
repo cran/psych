@@ -53,14 +53,16 @@ The item data were collected using a 6 point response scale:
 5 Moderately Accurate
 6 Very Accurate
 
-as part of the Synthetic Apeture Personality Assessment (SAPA \url{http://sapa-project.org}) project.  To see an example of the data collection technique, visit \url{http://SAPA-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
+as part of the Synthetic Apeture Personality Assessment (SAPA \url{http://sapa-project.org}) project.  To see an example of the data collection technique, visit \url{http://SAPA-project.org} or the International Cognitive Ability Resource at \url{http://icar-project.com}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
 
 }
 \source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010 ( \url{http://sapa-project.org}).
 }
 \references{Goldberg, L.R. (1999) A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In Mervielde, I. and Deary, I. and De Fruyt, F. and Ostendorf, F. (eds) Personality psychology in Europe. 7. Tilburg University Press. Tilburg, The Netherlands.
 
-Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cognition: New Methods for examining the Personality-Cognition Link In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. }
+Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cognition: New Methods for examining the Personality-Cognition Link In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer.
+
+ Revelle, W,  Condon, D.M.,  Wilt, J.,  French, J.A., Brown, A.,  and  Elleman, L.G. (2016) Web and phone based data collection using planned missing designs. In  Fielding, N.G.,  Lee, R.M. and  Blank, G. (Eds). SAGE Handbook of Online Research Methods (2nd Ed), Sage Publcations. }
 
 \seealso{\code{\link{bi.bars}} to show the data by age and gender, \code{\link{irt.fa}} for item factor analysis applying the irt model.} 
 

@@ -130,6 +130,8 @@ function(filename,header=TRUE) {
          message('Data from the .csv file ', f ,' has been loaded.')},
    txt = {result <- read.table(f,header=header,...)
           message('Data from the .txt file ', f , ' has been loaded.') },
+  TXT = {result <- read.table(f,header=header,...)
+          message('Data from the .TXT file ', f , ' has been loaded.') },
   text = {result <- read.table(f,header=header,...)
           message('Data from the .text file ', f , ' has been loaded.')},
    data =  {result <- read.table(f,header=header,...) 
@@ -192,7 +194,7 @@ return(result)
 	 if(missing(f))  f <- file.choose(TRUE)
  	 suffix <- file_ext(f)
 	 switch(suffix, 
- 		 txt = {write.table(x,f, row.names=row.names, ...)},
+ 		txt = {write.table(x,f, row.names=row.names, ...)},
  		text =   {write.table(x,f,row.names=row.names,...)},
  		csv =  {write.table(x,f,sep=",", row.names=row.names,...) },
  		R =  {dput(x,f,...) },
@@ -207,6 +209,4 @@ return(result)
  if(missing(f))  f <- file.choose(TRUE)
  write.table(x,f,sep=",",row.names=row.names,...) }
  
-
-
-
+ 

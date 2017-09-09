@@ -7,9 +7,12 @@
    raw.data <- TRUE
    if(impute == FALSE)  impute <- "none"
    if(is.list(keys)) {select <- sub("-","",unlist(keys))
-      select <- select[!duplicated(select)]
-      items <- items[select]
-      keys <- make.keys(items,keys)}   #added 9/9/16 
+      select <- select[!duplicated(select)] } else {
+      keys <- keys2list(keys)
+        select <- selectFromKeyslist(colnames(items),keys)
+      select <- select[!duplicated(select)]}
+      items <- items[,select]
+      keys <- make.keys(items,keys)   #added 9/9/16 
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
@@ -58,14 +61,14 @@
          # cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
         }  else { #handle the case of missing data without imputation
            scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
-           totals <- FALSE  #just in case it was not already false
+         #  totals <- FALSE  #just in case it was not already false
            #we could try to parallelize this next loop
            for (scale in 1:n.keys) {
            	pos.item <- items[,which(keys[,scale] > 0)]
           	neg.item <- items[,which(keys[,scale] < 0)]
           	neg.item <- max + min - neg.item
            	sub.item <- cbind(pos.item,neg.item)
-            scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
+           if(totals) { scores[,scale] <- rowSums(sub.item,na.rm=TRUE)} else {scores[,scale] <- rowMeans(sub.item,na.rm=TRUE) }  #fixed August 17  reported by Joel Schneider
           	 rs <- rowSums(!is.na(sub.item))
           	 num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
           # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
@@ -78,7 +81,7 @@
          }  #end of treating missing without imputation
 
 
-                   
+             
     slabels <- colnames(keys)
     if (is.null(slabels)) {
     	if (totals) {slabels<- paste("S",1:n.keys,sep="")} else {

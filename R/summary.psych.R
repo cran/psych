@@ -259,6 +259,20 @@ irt.fa = {
        print(round(object$fa$Phi,digits))}
 },
 
+cohen.d.by = {cat("Extract effect sizes by groups from cohen.d.by\n")
+   ncases <- length(object)
+   effects <- list()
+   Md <- rep(NA,ncases)
+   for (i in (1:ncases)) {
+     effects[i] <- list(object[[i]]$cohen.d[,2])}
+effect.df <- data.frame(matrix(unlist(effects),nrow=ncases,byrow=TRUE))
+for(i in(1:ncases)){Md[i] <- object[[i]]$M.dist}
+colnames(effect.df) <- rownames(object[[1]]$cohen.d)
+effect.df <- cbind(effect.df,Md)
+rownames(effect.df) <- names(object)
+print(effect.df,digits=digits)
+    }, 
+
 describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.cases," are complete cases. Number of variables = ",object$nvar," of which all are numeric is ",object$all.numeric,"\n")
                  
         } 

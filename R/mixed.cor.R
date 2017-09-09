@@ -99,7 +99,7 @@ return(Rho)
 #revised October 12, 2011 to get around the sd of vectors problem
 #revised Sept 10, 2013 to allow for dichotomies with different minima
 "mixed.cor1" <-
-function(x=NULL,p=NULL,d=NULL,smooth=TRUE,global=TRUE,correct=.5,use=use,method=method,weight=NULL) {
+function(x=NULL,p=NULL,d=NULL,smooth=TRUE,global=TRUE,correct=correct,use=use,method=method,weight=NULL) {
  cl <- match.call() 
 if(!is.null(x)) {nx <- dim(x)[2]} else {nx <- 0}
 if(!is.null(p)) {np <- dim(p)[2]} else {np <- 0}
@@ -108,6 +108,7 @@ if(is.null(nx)) nx <- 1
 if(is.null(np)) np <- 1
 if(is.null(nd)) nd <- 1
 npd  <- nx +np + nd
+rpd <- NULL #in case we don't have any
 #check to make sure all the data are ok for doing the appropriate analyses
 #first check for polychorics
 if(np > 0) { ptable <- table(as.matrix(p))
@@ -126,7 +127,7 @@ if(nx > 0) {rx <- cor(x,use=use,method=method)} else {rx <- NULL
    rho <- NULL}
 if(np > 1) {
 #cat("\n Starting to find the polychoric correlations")
- rp <- polychoric(p,smooth=smooth,global=global,weight=weight)}    else {if (np == 1) {
+ rp <- polychoric(p,smooth=smooth,global=global,weight=weight,correct=correct)}    else {if (np == 1) {
 	rho <- 1
 	names(rho) <- colnames(p)
 	rp <- list(rho=rho,tau=NULL)}  else {rp <- list(rho= NULL,tau=NULL)}}
@@ -140,7 +141,7 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all thr
 		rho <- rbind(tmixed,lmixed)} else {rho <- rx}  #we now have x and p
 		
 		if(nd > 0) { rxd <- biserial(x,d)
-		    if(np > 0) {rpd <- polydi(p,d,correct=correct)$rho  
+		    if(np > 0) {rpd <- polydi(p,d,global=global,correct=correct)$rho   #passing the global value (July 10, 2017)
 			            topright <- t(cbind(rxd,t(rpd))) 
 			            } else {
 			        topright <- t(rxd)}
@@ -150,7 +151,7 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all thr
 
 		} else {  #the case of nx =0
 		   if( np > 0) { 
-		      if (nd >0 ) {rpd <- polydi(p,d,correct=correct)$rho
+		      if (nd > 0 ) {rpd <- polydi(p,d,global=global,correct=correct)$rho  #added global  (July 10, 2017)
 		     
 		       tmixed <- cbind(rp$rho,rpd)
 		       lmixed <- cbind(t(rpd),rd$rho)
@@ -161,7 +162,7 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(x,p)   #the normal case is for all thr
 colnames(rho) <- rownames(rho)
 class(rho) <- c("psych","mixed")
 if(!is.null(rx)) class(rx) <- c("psych","mixed")
-mixed <- list(rho=rho,rx=rx,poly=rp,tetra=rd,Call=cl)
+mixed <- list(rho=rho,rx=rx,poly=rp,tetra=rd,rpd=rpd,Call=cl)
 class(mixed) <- c("psych","mixed")
 return(mixed)
 }

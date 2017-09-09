@@ -9,12 +9,15 @@
    cl <- match.call()
    raw.data <- TRUE
   # if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
-   
-   if(is.list(keys) & (!is.data.frame(keys))) { if (select) {
-  #  select <- sub("-","",unlist(keys))  #then, replaced with select option, Apri 8, 2017
-  select <- selectFromKeyslist(colnames(items),keys)
-      select <- select[!duplicated(select)]
-      }  else {select <- 1:ncol(items) }   
+    if(is.null(colnames(items))  ) select <- FALSE  #can not select items if they don't have colnames or if the keys don't have rownames
+    if (select) {if(is.list(keys) & (!is.data.frame(keys))) {
+#  select <- sub("-","",unlist(keys))  #then, replaced with select option, Apri 8, 2017
+  		select <- selectFromKeyslist(colnames(items),keys)
+     	 select <- select[!duplicated(select)]
+      }  else {keys <- keys2list(keys)
+        select <- selectFromKeyslist(colnames(items),keys)
+      	select <- select[!duplicated(select)]
+         }   
 # if (!isCorrelation(r)) {r <- cor(r[select],use="pairwise")} else {r <- r[select,select]}
 
  keys <- make.keys(items[,select],keys)} else {select <- 1:ncol(items) }

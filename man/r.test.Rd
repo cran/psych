@@ -63,8 +63,11 @@ Williams, E.J.  (1959) Regression analysis. Wiley, New York, 1959.
 \author{William Revelle }
 \note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations. Instead, he recommends Williams' test. (See also Dunn and Clark, 1971). These tests follow Steiger's advice.
 The test of two independent correlations is just a z test of the difference of the  Fisher's z transformed correlations divided by the standard error of the difference.  (See Cohen et al, p 49).
+
+By default, the probabilities are reported to 2 decimal places.  This will, of course, sometimes lead to statements such as p < .1  when in fact p < .1001 or even more precisely p < .1000759.  To achieve the higher precision, use a print statement with the preferred number of digits.  See the last set of examples (courtesy of Julia Rohrer).
 }
-\seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
+\seealso{ See also  \
+code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
 \examples{
 
 n <- 30 
@@ -80,6 +83,16 @@ r.test(103,.4,.5,.1)   #Steiger case A of dependent correlations
 r.test(n=103, r12=.4, r13=.5,r23=.1)  
 #for complicated tests, it is probably better to specify correlations by name
 r.test(n=103,r12=.5,r34=.6,r13=.7,r23=.5,r14=.5,r24=.8)   #steiger Case B 
+
+
+##By default, the precision of p values is 2 decimals
+#Consider three different precisions shown by varying the requested number of digits
+r12 =  0.693458895410494 
+r23 =  0.988475791500198 
+r13 =  0.695966022434845 
+print(r.test(n =  5105 ,  r12 =  r12 ,  r23 = r23 , r13 =  r13 )) #probability < 0.1
+print(r.test(n =  5105 ,  r12 =  r12, r23 = r23 , r13 =  r13 ),digits=4) #p < 0.1001
+print(r.test(n =  5105 , r12 =  r12, r23 = r23 , r13 =  r13 ),digits=8) #p< <0.1000759 
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -3,6 +3,7 @@
 \alias{cor.plot}
 \alias{corPlot}
 \alias{cor.plot.upperLowerCi}
+\alias{corPlotUpperLowerCi}
 \title{Create an image plot for a correlation or factor matrix}
 
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
@@ -11,15 +12,20 @@
 corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, symmetric=TRUE,stars=FALSE,
-   adjust="holm",xaxis=1, xlas=0,ylas=2,...)
-cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
+   adjust="holm",xaxis=1, xlas=0,ylas=2,gr=NULL,...)
+
+corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
+      main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
+ 
+ cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
-  symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,...)
-   
-          
+  symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,gr=NULL,...)
+  #deprecated
+           
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
-      main="Upper and lower confidence intervals of correlations",...)
+      main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
+      #deprecated
 }
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{fa}}, \code{\link{principal}} or \code{\link{omega}}.  }
@@ -43,10 +49,12 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{diag}{Should we show the diagonal?}
   \item{symmetric}{By default, if given a non-symmetric matrix, we find the correlations using pair.wise complete and then show them.  If wanting to display a non-symmetric matrix, then specify that symmetric is FALSE}
   \item{stars}{For those people who like to show the 'significance' of correlations by using magic astricks, set stars=TRUE}
-  \item{adjust}{If showing significance, should we adjust for multiple tests?  The default is to show zero order probabilities below the diagonal and adjust these using the 'holm' correction above the diagonal. Use adjust = "none" if no adjustment is desired.}
+  \item{adjust}{If showing significance, should we adjust for multiple tests?  The default is to show zero order probabilities below the diagonal and adjust these using the 'holm' correction above the diagonal. Use adjust = "none" if no adjustment is desired.
+  adjust is also used in corPlotUpperLowerCI to show the nominal alpha confidence intervals (adjust =FALSE) or the Bonferonni adjusted confidence intervals (adjust=TRUE).}
   \item{xlas}{Orientation of the x axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
   \item{ylas}{Orientation of the y axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
   \item{xaxis}{By default, draw this below the figure.  If xaxis=3, then it wil be drawn above the figure}
+  \item{gr}{A color gradient: e.g.,  gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))  will produce slightly more pleasing (to some) colors. See next to last example.}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
@@ -58,19 +66,21 @@ The default shows a legend for the color coding on the right hand side of the fi
 
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
 
-Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1).  Further modified to include the numerical value of the correlation.  (Inspired by the corrplot package).  These values may be scaled according the the probability values found in \code{\link{cor.ci}} or \code{\link{corr.test}}.
+Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1). Further modified to allow for color choices using the gr option (suggested by Lorien Elleman). Further modified to include the numerical value of the correlation.  (Inspired by the corrplot package).  These values may be scaled according the the probability values found in \code{\link{cor.ci}} or \code{\link{corr.test}}.
 
 Unless specified, the font size is dynamically scaled to have a cex =  10/max(nrow(r),ncol(r).  This can produce fairly small fonts for large problems.  
 The font size of the labels may be adjusted using cex.axis which defaults to one.  
 
-By default \code{\link{cor.ci}} calls cor.plot.upperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call corPlot directly.
+By default \code{\link{cor.ci}} calls corPlotUpperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call corPlot directly.
 
 If using the output of \code{\link{corr.test}}, the upper off diagonal will be scaled by the corrected probability, the lower off diagonal the scaling is the uncorrected probabilities.
 
-If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{cor.plot.upperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals. 
+If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{corPlotUpperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals.  If adjust=TRUE, these will use the Holm or Bonferroni adjusted values (depending upon corr.test). 
 
 
 To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  See the last examples.  
+
+Care should be takend when selecting rows and columns from a non-symmetric matrix (e.g., the corrected correlations from \code{\link{scoreItems}} or \code{\link{scoreOverlap}}).  
 
 }
 \author{William Revelle
@@ -83,12 +93,12 @@ Dray, Stephane (2008) On the number of principal components: A test of dimension
 \seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}}. 
 }
 \examples{
-cor.plot(Thurstone,main="9 cognitive variables from Thurstone") 
+corPlot(Thurstone,main="9 cognitive variables from Thurstone") 
 #just blue implies positive manifold
 #select just some variables to plot
-cor.plot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone",select=c(1:3,7:9))
+corPlot(Thurstone, zlim=c(0,1),main="9 cognitive variables from Thurstone",select=c(1:3,7:9))
 #now show a non-symmetric plot
-cor.plot(Thurstone[4:9,1:3], zlim=c(0,1),main="9 cognitive variables
+corPlot(Thurstone[4:9,1:3], zlim=c(0,1),main="9 cognitive variables
  from Thurstone",numbers=TRUE,symmetric=FALSE)
 
 #Two ways of including stars to show significance
@@ -113,6 +123,11 @@ corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability v
  #Show the upper and lower confidence intervals
 cor.plot.upperLowerCi(R=rs,numbers=TRUE) 
 
+#now do this again, but with lighter colors
+gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))
+corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values",gr=gr) 
+cor.plot.upperLowerCi(R=rs,numbers=TRUE,gr=gr) 
+
 #do multiple plots 
 #Also show the xaxis option
 op <- par(mfrow=c(2,2))
@@ -124,10 +139,9 @@ corPlot(om,show.legend=FALSE,keep.par=FALSE,numbers=TRUE,xaxis=3)
 par(op)
 
 
+corPlotUpperLowerCi(rs,adjust=TRUE,main="Holm adjusted confidence intervals",gr=gr)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line
 

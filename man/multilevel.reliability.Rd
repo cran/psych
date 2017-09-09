@@ -117,6 +117,8 @@ Thus, if we have N subjects over t time points for k items, in wide format for N
 \references{
 Bolger, Niall and Laurenceau, Jean-Phillippe, (2013) Intensive longitudinal models.  New York.  Guilford Press. 
 
+Revelle, W. and Wilt, J. (2017) Analyzing dynamic data: a tutorial. Personality and Individual Differences. (in press)
+
 Shrout, Patrick and Lane, Sean P (2012), Psychometrics.  In M.R. Mehl and T.S. Conner (eds)  Handbook of research methods for studying daily life, (p 302-320) New York. Guilford Press
 
 

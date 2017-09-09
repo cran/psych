@@ -9,7 +9,7 @@
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
      simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
-    main,cex=NULL,marg=c(.5,.5,1,.5),adj=1, ...) 
+    main,cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) 
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
         main="Heterarchy diagram",l.cex,gap.size,...) 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
@@ -32,6 +32,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
   \item{simple}{Only the biggest loading per item is shown}
   \item{g}{Does the factor matrix reflect a g (first) factor.  If so, then draw this to the left of the variables, with the remaining factors to the right of the variables.  It is useful to turn off the simple parameter in this case.}
+  \item{ic}{If drawing a cluster analysis result, should we treat it as latent variable model (ic=FALSE) or as an observed variable model (ic=TRUE) }
   \item{r}{A correlation matrix for the het.diagram function}
   \item{levels}{A list of the elements in each level}
   \item{both}{Should arrows have double heads (in het.diagram)}
@@ -46,6 +47,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{gap.size}{The gap in the arrow for the label.  Can be adjusted to compensate for variations in cex or l.cex}
   \item{marg}{sets the margins to be wider than normal, returns them to the normal size upon exit}
   \item{adj}{how many different positions (1-3) should be used for the numeric labels. Useful if they overlap each other.}
+  
   \item{node.font}{what font should be used for nodes in fa.graph  }
   \item{edge.font}{what font should be used for edges in fa.graph  }
   \item{rank.direction}{ parameter passed to Rgraphviz-- which way to draw the graph }
@@ -55,6 +57,8 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{\dots}{ other parameters }
 }
 \details{Path diagram representations have become standard in confirmatory factor analysis, but are not yet common in exploratory factor analysis.  Representing factor structures graphically helps some people understand the structure. 
+
+By default the arrows come from the latent variables to the observed variables.  This is, of course, the factor model.  However, if the class of the object to be drawn is 'principal', then  reverse the direction of the arrows, and the 'latent' variables are no longer latent, and are shown as boxes. For cluster models, the default is to treat them as factors, but if ic =TRUE, then we treat it as a components model.
 
 fa.diagram does not use Rgraphviz and is the preferred function.  fa.graph generates dot code to be used by an external graphics program. It does not have all the bells and whistles of fa.diagram, but these may be done in the external editor. 
 

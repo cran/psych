@@ -100,8 +100,9 @@
          for (i in 1:nvar) {
          drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
                             } 
-         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA)}
-        by.item <- data.frame(matrix(unlist(drop.item),ncol=8,byrow=TRUE))
+         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA,NA,NA)  #added the extra 2 NA June 18, 2017
+       }
+        by.item <- data.frame(matrix(unlist(drop.item),ncol=8,byrow=TRUE)) 
         
                   #allows us to specify the number of subjects for correlation matrices
         if(max(nsub,n.obs) > nvar) {by.item[6] <- sqrt(by.item[6]/(max(nsub,n.obs)) )

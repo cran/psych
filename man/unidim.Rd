@@ -18,10 +18,13 @@ unidim(x, keys.list = NULL, flip = FALSE)
 }
 \details{
 This is an exploratory index that is still under development.  A number of test cases suggest that it provides high values when the data are in fact unidimensional, low values when they are not.
+
+The logic is deceptively simple:  Unidimensionality implies that a one factor model of the data fits the covariances of the data.  If this is the case, then factor model implies R = FF' + U2 will have residuals of 0.  Similarly, this also implies that the observed correlations will equal the model.  Thus, the sum of the observed corelations (with the diagonal replaced by the communalities) should match the factor model.  Compare these two models:  R - U2  versus FF'.   
 }
 \value{
   \item{uni.orig }{The raw value of the unidimensional criterion}
-%%  \item{uni.adj }{The unidimensional criterion when items are keyed in positive direction.}
+ \item{uni.adj }{The unidimensional criterion when items are keyed in positive direction.}
+\item{fit1}{The off diagonal fit from  \code{\link{fa}}  }
 \item{alpha}{Standardized alpha of the keyed items (after appropriate reversals)}
 \item{av.r}{The average interitem correlation of the keyed items.}
 \item{raw.model}{The ratio of the FF' model to the sum(R)}
@@ -33,7 +36,7 @@ item{adj.total}{Same ratio with flipped items}
 
 \author{William Revelle}
 
-\note{Still an exploratory statistic. Treat with appropriate caution. 
+\note{A perhaps interesting idea but still an exploratory statistic. Treat with appropriate caution. 
 }
 
 
@@ -46,7 +49,9 @@ item{adj.total}{Same ratio with flipped items}
 keys.list <-
   list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
-openness = c("O1","-O2","O3","O4","-O5")) 
+openness = c("O1","-O2","O3","O4","-O5"), all = 
+c("-A1","A2","A3","A4","A5","C1","C2","C3","-C4","-C5","-E1","-E2","E3","E4","E5","N1" 
+,"N2","N3","N4","N5","O1","-O2","O3","O4","-O5") )
 unidim(bfi,keys.list) 
 
 #Try a known 3 factor structure

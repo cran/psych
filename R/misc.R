@@ -72,16 +72,16 @@ if(!is.null(f$scores)) f$scores <- f$scores %*% flip
 if(!is.null(f$Phi)) f$Phi <- flip %*% f$Phi %*% t(flip)
 return(f)
 }
-
+#and futher patched May 10, 2017 to get the right denominator (I was dividing by n-1 - lag instead of n-lag
 #patched March 1, 2017 to get the df right for lags 
 #developed January 10, 2012 to find the mean square of successive differences
 #see Von Neuman et al. 1941
 "mssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
 if(is.null(group)) {
-if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)} else {
+if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-lag)} else {
 x <- as.matrix(x)
 if(NCOL(x) == 1) {
-  result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)
+  result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-lag)
   } else {
 n <- colSums(!is.na(x)) -1 -lag
 result <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/n}
@@ -108,24 +108,26 @@ return(sqrt(mssd(x,group=group,lag=lag,na.rm=na.rm))) }
 
 
 ##### Added March 1, 2017
-"autoR" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
+"autoR" <- function(x,group=NULL,lag=1,na.rm=TRUE,use="pairwise") {
 
 if(is.null(group)) {
 n.obs <- NROW(x)
 if(is.vector(x)) {
-
- mssd <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-1-lag)
+x <- as.vector(scale(x,scale=FALSE))
+ mssd <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-lag)
  v1 <- sd(x[1:(n.obs-lag)],na.rm=na.rm)^2
  v2 <- sd(x[(lag+1):n.obs],na.rm=na.rm)^2
- r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
- result <- list(autorR = r,rssd=sqrt(mssd))
+# r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
+r <- cor(x[1:(n.obs-lag)],x[(lag+1):n.obs],use=use)
+ result <- list(autoR = r,rssd=sqrt(mssd))  #fixed May 10 ,2017 to correct autorR-
  } else {
 x <- as.matrix(x)
 n <- colSums(!is.na(x))
-mssd <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(n-1)
+mssd <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(n-lag)
 v1 <- apply(x[1:(n.obs-lag),],2,sd, na.rm=na.rm)^2
 v2 <- apply(x[(lag+1):n.obs,],2, sd,na.rm=na.rm)^2
- r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
+# r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
+r <- diag(cor(x[1:(n.obs-lag),],x[(lag+1):n.obs,],use=use))
  result <- list(autoR = r,rssd=sqrt(mssd))
 }
 } else {
@@ -206,149 +208,55 @@ test.all <- function(p) {
 
 
 
-  "bestItems" <- 
-function(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) {
-if((nrow(x) !=ncol(x)) && cor) {x <- cor(x,use="pairwise")} #convert to correlation if necessary
-if(abs) {ord <- order(abs(x[,criteria]),decreasing=TRUE)
-  value <- x[ord,criteria,drop=FALSE]
-  count <- sum(abs(value) > cut,na.rm=TRUE)
-  value <- value[1:count,,drop=FALSE]
-  } else {ord <- order(x[,criteria],decreasing=TRUE)
-  value <- x[ord,criteria]
-  value <- value[value,criteria > cut] }
-value <- round(data.frame(value),digits)
-if((!is.null(dictionary)) && !is.factor(dictionary)) {temp <- lookup(rownames(value),dictionary)
-   value <- merge(value,temp,by="row.names",all.x=TRUE,sort=FALSE)
-   rownames(value) <- value[,"Row.names"]
-   value <- value[-1]
-  if(abs) {ord <- order(abs(value[,criteria]),decreasing=TRUE) } else {ord <- order(value[,criteria],decreasing=TRUE)}
-   value <- value[ord,] 
-   }
-return(value)
-}
   
   
   #lookup which x's are found in y[c1],return matches for y[]
- "lookup" <- 
+"lookup" <- 
 function(x,y,criteria=NULL) {
 if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
      temp <- match(x,y[,criteria])}
  y <- (y[temp[!is.na(temp)],,drop=FALSE])
-  return(y)}
+return(y)}
  
  #use lookup to take fa/ic output and show the results 
+ #modified July 4, 2017 to allow for omega output as well
 "fa.lookup"  <-
    function(f,dictionary,digits=2) {
+    f <- fa.sort(f)
+   if(length(class(f)) > 1){ value <- class(f)[2] } else {value <- "none"}
    
-   f <- fa.sort(f)
-  
-   if(!(is.matrix(f) || is.data.frame(f))) {h2 <- f$communality
-    com <- f$complexity
-     ord <- rownames(f$loadings) #keep this order
-    f <- f$loadings} else {h2<- NULL
-       com <- NULL
-       ord <- rownames(f)}
+   switch(value,
     
+    omega = {f <- f$schmid$sl
+            h2 <- NULL},
+    fa    = {
+             h2 <- f$communality
+              com <- f$complexity
+              f <- f$loading        },
+    principal= {
+                h2 <- f$communality
+              com <- f$complexity
+              f <- f$loading},
+    iclust = {f <- f$loadings
+              h2 <- NULL},
+    none = {f <- f
+            h2 <- NULL})
+    
+    
+
+   ord <- rownames(f)
+     
    contents <- lookup(rownames(f),dictionary)
    if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits))} else {
    results <- data.frame(round(unclass(f),digits=digits))}
    results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
    rownames(results) <- results[,"Row.names"]
    results <- results[ord,-1]  #now put it back into the correct order
-   return(results)}
+return(results)}
   
 
 
- #created 20/2/14
- #find the scales based upon the items that most correlate with a criteria
- #pure dust bowl empiricism
- #modified 13/3/15 to handle the problem of missing item labels
-"bestScales" <- 
- function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,digits=2) {
 
-#first, declare a function to identify the bad items and drop them from the keys
- findBad <- function(key,r) { 
-ss <- abs(key) > 0 
-rss <- r[ss,ss]
-if(any(is.na(rss))){ #some of these are bad
-n.bad <-  apply(rss,1,function(x) sum(is.na(x)))
-key[names(which.max(n.bad))] <- 0
-findBad(key,r)}
-return(key)
-}
-
-short <- function(key,r) { 
- kn <- names(key[abs(key[,1]) >0,1])
- if(is.null(kn)) kn <- names(which(abs(key[,1]) >0))
- cn <- colnames(key)
- ord <- order(abs(r[kn,cn]),decreasing=TRUE)
- kn <- kn[ord]
- result <- r[kn,cn,drop=FALSE]
- return(result)
-}
-#begin the main function
- nvar <- ncol(x)
- if(nrow(x) != nvar) {r <- cor(x,use="pairwise")} else {r <- x}  #convert data to a correlation matrix  #don't actually need to have  a square matrix
- ny <- length(criteria)
- nc <- length(cut)
- ni <- length(n.item)
- ord.name <- NULL
-if(length(cut) == 1)  cut <- rep(cut,ny)
-if(length(n.item) == 1) n.item <- rep(n.item,ny)
- if(ny > 1 ) {ord <- apply(abs(r[,criteria]),2,order,decreasing=TRUE) 
-     for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[criteria[i],ord[n.item[i]+1,i]])) 
-     ord.name <- c(ord.name, rownames(r)[ord[1:n.item[i],i]] )
-    }
-     } else {
-         ord <- order(abs(r[criteria,]),decreasing=TRUE)
-         for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[ord[n.item[i]+1],criteria])) }
-        }
-
- key <- matrix(0,ncol=ny,nrow=nvar)
- key[t(r[criteria,] >= cut)] <- 1
- key[t(r[criteria,] <= -cut)] <- -1
- rownames(key)  <- colnames(r)
- colnames(key)  <- criteria
- c <- key  #this just gets it to be a matrix of the right size and names
- if(!overlap)  {key[criteria,criteria] <- 0} else {for(i in 1:ny) key[criteria[i],criteria[i]] <- 0}
- #colnames(key) <- paste(criteria,"S",sep=".")
- colnames(key) <- criteria
- 
-if(any(is.na(r))) {#Are there any bad values
-  for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
-  c[,i] <- colSums(key[,i] * r,na.rm=TRUE)}    #replace matrix addition with a colSums
-  c <- t(c)
-} else {#otherwise, don't bother
-
-
- c<- t(key) %*% r    #we can do the matrix multiply because there are no bad data         
- }
-
- C <- c %*% key
- if(ny < 2) {re <- c[,criteria]/sqrt(C) } else {
- re <- diag(c[,criteria])/sqrt(diag(C))}
-ni <- colSums(abs(key))
-R <- cov2cor(C)
-
-short.key <- list()
-value <- list()
-
-
-for(i in 1:ny) {short.key[[criteria[i]]] <- short(key[,i,drop=FALSE],r) 
-
-if(!is.null(dictionary)) {if(!is.factor(dictionary)) {temp <- lookup(rownames(short.key[[criteria[i]]]),dictionary)
-
-  value[[criteria[[i]]]] <- merge(short.key[[i]],temp,by="row.names",all.x=TRUE,sort=FALSE)
- ord <- order(abs(value[[criteria[[i]]]][[criteria[[i]]]]),decreasing=TRUE)
-  value[[criteria[[i]]]] <- value[[criteria[[i]]]][ord,]
- } 
- }}
-results <- list(r=re,n.items=ni,R=R,cut=cut,short.key=short.key,value=value,key=key,ordered=ord.name)
-class(results) <- c("psych","bestScales")
-return(results)
-}
- 
- 
  
   "fa.organize" <- 
 function(fa.results,o=NULL,i=NULL,cn=NULL) {

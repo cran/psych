@@ -58,6 +58,8 @@ The additional helper function \code{\link{describeData}} just scans the data ar
 
 The fast=TRUE option will lead to a speed up of about 50\% for larger problems by not finding all of the statistics (see NOTE)
 
+To describe the data for different groups, see \code{\link{describeBy}}.
+
 }
 \value{
  A data.frame of the relevant statistics: \cr
@@ -98,7 +100,7 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 
 \references{Joanes, D.N. and Gill, C.A (1998).  Comparing measures of sample skewness and kurtosis.  The Statistician, 47, 183-189.}
 
-\seealso{ \code{\link{describe.by}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{read.clipboard}}.  Then, for graphic output, see \code{\link{error.crosses}}, \code{\link{pairs.panels}}, \code{\link{error.bars}}, \code{\link{error.bars.by}} and \code{\link{densityBy}}, or \code{\link{violinBy}}}
+\seealso{ \code{\link{describeBy}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{read.clipboard}}.  Then, for graphic output, see \code{\link{error.crosses}}, \code{\link{pairs.panels}}, \code{\link{error.bars}}, \code{\link{error.bars.by}} and \code{\link{densityBy}}, or \code{\link{violinBy}}}
 
 \examples{
 data(sat.act)

@@ -4,38 +4,38 @@
 \alias{score.items}
 \alias{response.frequencies}
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
-\description{Given a list of items and the direction to score them (a keys.list) or a matrix or data.frame of k keys for n items (-1, 0, 1), and a matrix or data.frame of items scores for m items and N people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Will adjust scores for reverse scored items.  Although prior versions used a keys matrix, it is now possible to just use a list of scoring keys. See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
+\description{Given a data.frame or matrix of n items and N observations and a list of the direction to score them (a keys.list with k keys)  find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Items may be keyed 1 (score it), -1 ) (reverse score it), or 0 (do not score it). Negatively keyed items will be reverse scored.  Although prior versions used a keys matrix, it is now recommended to just use a list of scoring keys. See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items.  
 }
 \usage{
 scoreItems(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
- delete=TRUE, min = NULL, max = NULL, digits = 2,n.obs=NULL,select=TRUE)
- score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
- delete=TRUE, min = NULL, max = NULL, digits = 2,select=TRUE) 
- scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none",
- delete=TRUE, min = NULL, max = NULL, digits = 2)
-  response.frequencies(items,max=10,uniqueitems=NULL)
+      delete=TRUE, min = NULL, max = NULL, digits = 2,n.obs=NULL,select=TRUE)
+score.items(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="median",
+      delete=TRUE, min = NULL, max = NULL, digits = 2,select=TRUE) 
+scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none",
+       delete=TRUE, min = NULL, max = NULL, digits = 2)
+response.frequencies(items,max=10,uniqueitems=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{keys}{A list of scoring keys or a matrix or dataframe of -1, 0, or 1 weights for each item on each scale which may be created by hand, or by using \code{\link{make.keys}}. Just using a list of scoring keys (see example) is probably more convenient.}
   \item{items}{ Matrix or dataframe of raw item scores}
   \item{totals}{ if TRUE  find total scores, if FALSE (default), find average scores }
   \item{ilabels}{ a vector of item labels. }
   \item{missing}{missing = TRUE is the normal case and data are imputed according to the impute option.  missing=FALSE, only complete cases are scored.}
-  \item{impute}{impute="median" replaces missing values with the item median, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores. impute = "none" is probably more appropriate for a large number of missing cases (e.g., SAPA data). }
+  \item{impute}{impute="median" replaces missing values with the item medians, impute = "mean" replaces values with the mean response. impute="none" the subject's scores are based upon the average of the keyed, but non missing scores. impute = "none" is probably more appropriate for a large number of missing cases (e.g., SAPA data).  }
   \item{delete}{if delete=TRUE, automatically delete items with no variance (and issue a warning)}
   \item{min}{May be specified as minimum item score allowed, else will be calculated from data.  min and max should be specified if items differ in their possible minima or maxima.  See notes for details.}
   \item{max}{May be specified as maximum item score allowed, else will be calculated from data.  Alternatively, in response frequencies, it is maximum number  of alternative responses to count. }
   \item{uniqueitems}{If specified, the set of possible unique response categories}
-  \item{digits}{ Number of digits to report }
+  \item{digits}{ Number of digits to report for mean scores }
   \item{n.obs}{If scoring from a correlation matrix, specify the number of subjects allows for the calculation of the confidence intervals for alpha.}
-  \item{select}{By default, just find the statistics of those items that are included in scoring keys.  This allows scoring of data sets that have bad data for some items that are not included in the scoring keys.}
+  \item{select}{By default, just find the statistics of those items that are included in scoring keys.  This allows scoring of data sets that have bad data for some items that are not included in the scoring keys. This also speeds up the scoring of small subsets of item from larger data sets.}
 
   
 }
 \details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for scoreItems is the average as it would seem to make more sense to report scale scores in the metric of the item.  
 
-When scoring more than one scale, it is convenient to have list of the items on each scale and the direction to score the items.  This may be converted to a keys.matrix using \code{\link{make.keys}} or may be entered as a keys.list directly.  
+When scoring more than one scale, it is convenient to have a list of the items on each scale and the direction to score the items.  This may be converted to a keys.matrix using \code{\link{make.keys}} or may be entered as a keys.list directly.  
 
 Various estimates of scale reliability include ``Cronbach's alpha", Guttman's Lambda 6, and the average interitem correlation.  For k = number of items in a scale, and av.r = average correlation between items in the scale, alpha = k * av.r/(1+ (k-1)*av.r).  Thus, alpha is an increasing function of test length as well as the test homeogeneity.  
 
@@ -68,19 +68,25 @@ More complete reliability analyses of a single scale can be done using the \code
 
 Alpha is a poor estimate of the general factor saturation of a test (see Revelle and Zinbarg, 2009; Zinbarg et al., 2005) for it can seriously overestimate the size of a general factor, and a better but not perfect estimate of total test reliability because it underestimates total reliability. None the less, it is a common statistic to report. In general, the use of alpha should be discouraged and the use of more appropriate estimates (\eqn{\omega_h}{omega_hierchical} and \eqn{\omega_t}{omega_total}) should be encouraged. 
 
-Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  
+Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  This is done in the scale intercorrelation matrix with raw correlations below the diagonal and unattenuated correlation above the diagonal.
 
 
-There are several alternative ways to treat missing values.  By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items.  The number of missing responses for each person for each scale is reported in the missing object.  One possibility is to drop scores just for those scales with missing responses.  This may be done adding the code:
+There are several alternative ways to treat missing values.  By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items. 
+
+Using the impute="none" option as well as asking for totals (totals="TRUE") will be done, although a warning will be issued because scores will now reflect the number of items responded to much more than the actual pattern of responses.
+
+The number of missing responses for each person for each scale is reported in the missing object.  One possibility is to drop scores just for those scales with missing responses.  This may be done adding the code:
 
 scores$scores[scores$missing >0] <- NA 
 
 This is shown in the last example.
 
+Note that the default for scoreItems is to impute missing items with their median, but the default for scoreFAst is to not impute but must return the scale scores based upon the mean or total value for the items scored.
 
 
 
-\code{\link{scoreItems}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is square and none of the values in the matrix are less than -1 or greater than 1.  
+
+\code{\link{scoreItems}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is symmetric.  
 
 \code{\link{scoreFast}} just finds the scores (with or without imputation) and does not report other statistics.  It is much faster!
 }
@@ -100,16 +106,17 @@ This is shown in the last example.
  \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) or the International Cognitive Ability Resources (\url{https://icar-project.com})) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
 More importantly in this case of massively missing data, there is a difference between the correlations of the composite scales based upon the correlations of the items and the correlations of the scored scales based upon the observed data.  That is, the cor object will have correlations as if all items had been given, while the correlation of the scores object will reflect the actual correlation of the scores.  For SAPA data, it is recommended to use the cor object.  Confidence of these correlations may be found using the \code{\link{cor.ci}} function.
 
 Further note that the inter-scale correlations are based upon the correlations of scales formed from the covariance matrix of the items.  This will differ from the correlation  of scales based upon the correlation of the items.  Thus, although  \code{\link{scoreItems}} will produce reliabilities and intercorrelations from either the raw data or from a correlation matrix, these values will differ slightly.  In addition, with a great deal of missing data, the scale intercorrelations will differ from the correlations of the scores produced, for the latter will be attenuated. 
 
-An alternative to classical test theory scoring is to use \code{\link{score.irt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
+An alternative to classical test theory scoring is to use \code{\link{scoreIrt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
 
 When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items. Compare two examples of scoring the \code{\link{bfi}} data set.
 
+If scales are formed with overlapping items, then the correlations of the scales will be seriously inflated.  \code{link{scoreOverlap}} will adjust the correlations for this overlap.
 } 
 \references{
 
@@ -139,9 +146,9 @@ Zinbarg, R. E., Revelle, W., Yovel, I. and Li, W. (2005) Cronbach's alpha, Revel
 
 If scales are formed from overlapping sets of items, their correlations will be inflated.  This is corrected for when using the \code{\link{scoreOverlap}} function which, although it will not produce scores, will report scale intercorrelations corrected for item overlap. 
 
-In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{score.irt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.
+In addition, the \code{\link{irt.fa}} function provides an alternative way of examining the structure of a test and emphasizes item response theory approaches to the information returned by each item and the total test. Associated with these IRT parameters is the \code{\link{scoreIrt}} function for finding IRT based scores as well as \code{\link{irt.responses}} to show response curves for the alternatives in a multiple choice test.
 
-\code{\link{score.irt}} will find both  IRT based estimates as well as average item response scores.  These latter correlate perfectly with those found by scoreItems.  If using a keys matrix, the score.irt results are based upon the item difficulties with the assumption that all items are equally discriminating (effectively a Rasch model).  These scores are probably most useful  in the case of massively missing data because they can take into account the item difficulties. 
+\code{\link{scoreIrt}} will find both  IRT based estimates as well as average item response scores.  These latter correlate perfectly with those found by scoreItems.  If using a keys matrix, the score.irt results are based upon the item difficulties with the assumption that all items are equally discriminating (effectively a Rasch model).  These scores are probably most useful  in the case of massively missing data because they can take into account the item difficulties. 
 }
 \examples{
 
@@ -179,9 +186,8 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   scores$scores[scores$missing > 0] <- NA  #get rid of cases with missing data
   describe(scores$scores)
 
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{ multivariate }
 \keyword{models}
 

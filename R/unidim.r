@@ -45,12 +45,14 @@
   flipperped.loadings <- flipper * f1$loadings
   g.flipperped <- sum(flipperped.loadings%*% t(flipperped.loadings))
   uni.flipper <- g.flipperped/(Vt - sum(f1$uniqueness))
+  
 
-  stats <- list(uni=uni.orig,uni.flipper = uni.flipper,alpha=alpha.std,av.r = av.r,om.g=om.g, omega.pos = omega.flip,om.t=om.t,om.total.flip= omega.total.flip)
+
+  stats <- list(uni=uni.orig,uni.flipper = uni.flipper,fit.off= f1$fit.off,alpha=alpha.std,av.r = av.r,om.g=om.g, omega.pos = omega.flip,om.t=om.t,om.total.flip= omega.total.flip)
   if(!is.null(keys.list)) {results[[names(keys.list[keys])]]<- stats } else {results <- stats}
   }
-  temp <- matrix(unlist(results),ncol=8,byrow=TRUE)
-  colnames(temp) <- c("Raw Unidim","Adjusted","alpha","av.r","original model","adjusted model", "raw.total", "adjusted total")
+  temp <- matrix(unlist(results),ncol=9,byrow=TRUE)
+  colnames(temp) <- c("Raw Unidim","Adjusted","Fit1","alpha","av.r","original model","adjusted model", "raw.total", "adjusted total")
   rownames(temp) <- names(keys.list)
   results <- list(uni=temp)
   results$Call <- cl

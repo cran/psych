@@ -168,7 +168,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 if ((!is.null(x$fn)) && (x$fn != "principal")) {
 if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 
- rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
+ rownames(stats.df) <- c("Correlation of (regression) scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
          colnames(stats.df) <- colnames(x$loadings)
  } else {stats.df <- NULL}
  badFlag <- FALSE
@@ -184,12 +184,17 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 	 if(!is.null(stats.df)) { cat("\nMeasures of factor score adequacy             \n")
       print(round(stats.df,digits))}
 
-	if(!is.null(x$stats$R2) && !badFlag) {cat("\nMeasures of factor score adequacy             ",colnames(x$loadings)  )
-	cat("\nCorrelation of scores with factors           ",round(sqrt(x$R2),digits))
-	cat("\nMultiple R square of scores with factors      " ,round(x$R2,digits))
-	  cat("\nMinimum correlation of factor score estimates ", round(2*x$R2 -1,digits)) }
+	 if(is.null(x$method)) x$method <- ""
+    if(any(x$R2 != x$R2.scores))  {stats.df <- t(data.frame(sqrt(x$R2.scores),x$R2.scores,2* x$R2.scores -1))
+    cat("\n Factor scores estimated using the ", x$method, " method  have correlations of \n")
+     rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
+    colnames(stats.df) <- colnames(x$loadings)
+     print(round(stats.df,digits))
+    }
+   
 	  }
  }
+
  result <- list(Vaccounted=varex)
  invisible(result) 
 } 

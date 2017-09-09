@@ -137,12 +137,16 @@ return(results)
  #written Sept 20, 2013 
  #adapted from fa.poly
  #modified May 1, 2014 to scale by pvals
- "cor.plot.upperLowerCi" <- 
-function(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,main="Upper and lower confidence intervals of correlations",...) {
+ #modified August 24, 2017 to include Bonferoni corrections from cor.test
+ 
+ "cor.plot.upperLowerCi" <- "corPlotUpperLowerCi" <-
+function(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,main="Upper and lower confidence intervals of correlations",adjust=FALSE,...) {
 
-lower <- R$ci$lower
-upper <- R$ci$upper
-temp <- lower
+if(adjust) {lower <- R$ci.adj$lower.adj
+   upper <- R$ci.adj$upper.adj} else {
+   lower <- R$ci$lower
+upper <- R$ci$upper}
+temp <- lower 
 if(is.null(R$r)) {cn = colnames(R$rho)
          rl <- R$rho[lower.tri(R$rho)]} else {
          cn = colnames(R$r)

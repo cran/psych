@@ -10,9 +10,9 @@
 \description{When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items) , or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading or criteria correlations and display the item content. 
 }
 \usage{
-bestScales(x, criteria, cut = 0.1, n.item = 10, overlap = FALSE,
-          dictionary = NULL, digits = 2)
-bestItems(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,cor=TRUE,digits=2) 
+bestScales(x,criteria,cut=.1,n.item =10,overlap=FALSE,dictionary=NULL,impute="none", 
+n.iter =1,frac=.9,digits=2)
+bestItems(x,criteria=1,cut=.3, abs=TRUE, dictionary=NULL,digits=2) 
 lookup(x,y,criteria=NULL)
 fa.lookup(f,dictionary,digits=2)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
@@ -28,9 +28,11 @@ keys.lookup(keys.list,dictionary)
 \item{abs}{if TRUE, sort by absolute value in bestItems}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}
 \item{m}{A data frame of item means}
-\item{cor}{if x is not a square matrix, should correlations be found?}
 \item{n.item}{How many items make up an empirical scale}
 \item{overlap}{Are the correlations with other criteria fair game for bestScales}
+\item{impute}{When finding the best scales, and thus the correlations with the criteria,  how should we handle missing data?  The default is drop missing items.}
+\item{n.iter}{Replicate the best item function n.iter times, sampling frac of the cases each time, and validating on 1 - frac of the cases.}
+\item{frac}{What fraction of the subjects should be used for the derivation sample.  frac is set to one if n.iter = 1}
 \item{digits}{round to digits}
   
 }
@@ -44,7 +46,9 @@ Suppose that you have a "dictionary" of the many variables in a study but you wa
 
 Similarly, given a correlation matrix, r, of the x variables, if you want to find the items that most correlate with another item or scale, and then show the contents of that item from the dictionary, bestItems(r,c1=column number or name of x, contents = y)
 
-\code{\link{bestScales}} will find up to n.items that have absolute correlations with a criterion greater than cut.  If the overlap option is FALSE (default) the other criteria are not used.
+\code{\link{bestScales}} will find up to n.items that have absolute correlations with a criterion greater than cut.  If the overlap option is FALSE (default) the other criteria are not used.  This is an example of ``dust bowl empiricism" in that there is not latent construct being measured, just those items that most correlate with a set of criteria. The empirically identified items are then formed into scales (ignoring concepts of internal consistency) which are then correlated with the criteria.  
+
+Clearly, \code{\link{bestScales}} is capitalizing on chance associations.  Thus, we can validate the empirical scales by deriving them on a fraction of the total number of subjects, and cross validating on the remaining subjects.  This is done n.iter times to show the variability of these empirically derived scale validities.  For very large data sets (e.g., those from SAPA) these scales seem very stable. 
 
 \code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements.  
 }

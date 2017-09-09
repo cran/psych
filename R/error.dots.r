@@ -42,7 +42,10 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
                    }
          names(x) <- names(des)
           if(is.null(xlab)) xlab <- var 
-        }
+        }, 
+         fa.ci ={se = x$cis$sds
+              if(missing(labels)) labels <-rownames(x$cis$means) 
+              x <-x$cis$means }
         )
       } #end switch
       } else {

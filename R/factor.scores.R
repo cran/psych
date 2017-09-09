@@ -1,7 +1,12 @@
 "factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,impute="none") {
+#the normal case is f is the structure matrix and Phi is not specified
+#Note that the Grice formulas distinguish between Pattern and Structure matrices
+#I need to confirm that I am doing this
+
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
-    if(length(class(f)) >1) { if(class(f)[2] =="irt.fa" ) f <- f$fa  }
+    if(method=="tenberge") method <- "tenBerge"
+    if(length(class(f)) > 1) { if(class(f)[2] =="irt.fa" ) f <- f$fa  }
     
      if(!is.matrix(f)) {Phi <- f$Phi
      f <- loadings(f)
@@ -15,18 +20,18 @@
          if(!is.null(rho)) {r <- rho } else {
           r <- cor(x,use="pairwise") #find the correlation matrix from the data
       }}
-       
+      
+      S <- f %*% Phi   #the Structure matrix 
    switch(method,   
-    "Thurstone" = { w <- try(solve(r,f),silent=TRUE )  #these are the factor weights
+    "Thurstone" = { w <- try(solve(r,S),silent=TRUE )  #these are the factor weights (see Grice eq. 5)
      	if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
                r <- cor.smooth(r)}
         
-      w <- try(solve(r,f),silent=TRUE)
+      w <- try(solve(r,S),silent=TRUE)
       if(class(w)=="try-error") {message("I was unable to calculate the factor score weights, factor loadings used instead")
                w <- f}
       colnames(w) <- colnames(f)
-       rownames(w) <- rownames(f)
-
+      rownames(w) <- rownames(f)
        }, 
       
   "tenBerge" = { #Following Grice equation 8 to estimate scores for oblique solutions (with a correction to the second line where r should r.inv
@@ -48,14 +53,19 @@
         },
 
  
-
-    "Harman" = { #Grice equation 10 -- 
-       m <- t(f)  %*% f  #factor intercorrelations
-       inv.m <- solve(m)
-       w <- f %*%inv.m  
-       },
        
-    "Anderson" =  { #scores for orthogonal factor solution will be orthogonal
+       "Harman" = { #Grice equation 10 -- 
+     #   m <- t(f)  %*% f  #factor intercorrelations 
+     m <- f %*% t(S)  #should be this  (the model matrix)  Revised August 31, 2017
+     diag(m) <- 1  #Grice does not say this, but it is necessary to make it work!
+       inv.m <- solve(m)
+     #  w <- f %*%inv.m  
+     w <- inv.m %*% f
+       }, 
+       
+       
+        
+    "Anderson" =  { #scores for orthogonal factor solution will be orthogonal  Grice Eq 7 and 8
     I <- diag(1,nf,nf)
     h2 <-  diag( f %*% Phi %*% t(f))
     U2 <- 1 - h2
@@ -65,7 +75,7 @@
     rownames(w) <- rownames(f)
     },
     
-   "Bartlett" = {
+   "Bartlett" = {    #Grice eq 9  # f should be the pattern, not the structure 
     I <- diag(1,nf,nf)
     h2 <-  diag( f %*% Phi %*% t(f))
     U2 <- 1 - h2
@@ -81,19 +91,18 @@
     )
     
     
-    
     #now find a few fit statistics
     if(is.null(w)) {results <- list(scores=NULL,weights=NULL)} else {
-     R2 <- diag(t(w) %*% f)
-     if(any(R2>1) || (prod(!is.nan(R2)) <1) || (prod(R2) < 0) ) {#message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
+     R2 <- diag(t(w) %*% S)  #this had been   R2 <- diag(t(w) %*% f)   Corrected Sept 1, 2017
+     if(any(R2 > 1) || (prod(!is.nan(R2)) <1) || (prod(R2) < 0) ) {#message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }
      #if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
-      r.scores <- cov2cor(t(w) %*% r %*% w) 
+      r.scores <- cov2cor(t(w) %*% r %*% w) #what actually is this?
      
     
-  if(square) {
+  if(square) {  #that is, if given the correlation matrix
      class(w) <- NULL
      results <- list(scores=NULL,weights=w)
       results$r.scores <- r.scores 

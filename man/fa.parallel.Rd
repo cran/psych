@@ -7,7 +7,7 @@
 }
 \usage{
 fa.parallel(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",
-n.iter=20,error.bars=FALSE,se.bars=TRUE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
+n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
 sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE)   #deprecated
@@ -27,11 +27,11 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
  \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See tetrachoric)  If set to 0, then no correction is applied, otherwise, the default is to add .5 observations to the cell.}
  \item{sim}{For continuous data, the default is to resample as well as to generate random normal data.  If sim=FALSE, then just show the resampled results. These two results are very similar. This does not make sense in the case of  correlation matrix, in which case resampling is impossible. In the case of polychoric or tetrachoric data, in addition to randomizing the real data, should we compare the solution to random simulated data.  This will double the processing time, but will yiedl basically show the same result.}
  \item{error.bars}{Should error.bars be plotted (default = FALSE)}
- \item{se.bars}{Should the error bars be standard errors (the default) or 1 standard deviation (se.bars=FALSE).  With many iterations, the standard errors are very small and some prefer to see the broader range.}
+ \item{se.bars}{Should the error bars be standard errors (se.bars=TRUE) or 1 standard deviation (se.bars=FALSE, the default).  With many iterations, the standard errors are very small and some prefer to see the broader range.  The default has been changed in 1.7.8 to be se.bars=FALSE to more properly show the range.}
  \item{SMC}{SMC=TRUE finds eigen values after estimating communalities by using SMCs.  smc = FALSE finds eigen values after estimating communalities with the first factor.}
  \item{ylabel}{Label for the y axis -- defaults to ``eigen values of factors and components", can be made empty to show many graphs}
  \item{show.legend}{the default is to have a legend.  For multiple panel graphs, it is better to not show the legend}
- \item{quant}{if nothing is specified, the empirical eigen values are compared to the mean of the resampled or simulated eigen values.  If a value (e.g., quant=.95) is specified, then the eigen values are compared against the matching quantile of the simulated data.  Clearly the larger the value of quant, the few factors/components will be identified.}
+ \item{quant}{if nothing is specified, the empirical eigen values are compared to the mean of the resampled or simulated eigen values.  If a value (e.g., quant=.95) is specified, then the eigen values are compared against the matching quantile of the simulated data.  Clearly the larger the value of quant, the few factors/components that will be identified.}
  \item{global}{If doing polychoric analyses (fa.parallel.poly) and the number of alternatives differ across items, it is necessary to turn off the global option}
  \item{...}{additional plotting parameters, for plot.poly.parallel}
  \item{plot}{By default, fa.parallel draws the eigen value plots.  If FALSE, suppresses the graphic output}

@@ -26,7 +26,7 @@
 \usepackage{amssymb}    
 \usepackage{amsmath}
 
-\usepackage{siunitx}
+%\usepackage{siunitx}
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \usepackage{Sweave}  
@@ -95,7 +95,7 @@ library(psych)
 
 \begin{itemize}
 
-\item Find and read standard files using \pfun{read.file}.  This will open a search window for your operating system which you can use to find the file.  If the file has a suffix of .text, .txt, .csv,  .data, .sav, .r, .R, .rds, .Rds, .rda,  .Rda, .rdata,  or .RData, then the file will be opened and the data will be read in.  
+\item Find and read standard files using \pfun{read.file}.  This will open a search window for your operating system which you can use to find the file.  If the file has a suffix of .text, .txt, .TXT, .csv, ,dat,  .data, .sav,  .xpt, .XPT,  .r, .R, .rds, .Rds, .rda,  .Rda, .rdata, Rdata,  or .RData, then the file will be opened and the data will be read in (or loaded in the case of Rda files)  
 
 \begin{scriptsize}
 \begin{Schunk}
@@ -125,7 +125,7 @@ Note that there are number of options for \pfun{read.clipboard} for reading in E
 \begin{Sinput}
 dim(myData)    #What are the dimensions of the data?
 describe(myData)  # or
-descrbeBy(myData,groups="mygroups")   #for descriptive statistics by groups
+describeBy(myData,groups="mygroups")   #for descriptive statistics by groups
 headTail(myData)  #show the first and last n lines of a file
 \end{Sinput}
 \end{Schunk}
@@ -240,7 +240,7 @@ mediate(y = c( "y1", "y2"), x = c("x1","x2"), m= "med1", mod = "mod1",  data = m
 \subsection{Psychometric functions are summarized in the second vignette}
 
 Many additional functions, particularly designed for basic and advanced psychometrics are discussed more fully 
- in the Overview Vignette. A brief review of the functions available is included here.  In addition, there are helpful tutorials for \emph{Finding omega}, \emph{How to score scales and find reliability}, and for \emph{Using psych for factor analysis} at \url{http://personality-project.org/r}.
+ in the \emph{Overview Vignette}, which may be downloaded from  \url{http://personality-project.org/r/psych/vignettes/overview.pdf} . A brief review of the functions available is included here.  In addition, there are helpful tutorials for \emph{Finding omega}, \emph{How to score scales and find reliability}, and for \emph{Using psych for factor analysis} at \url{http://personality-project.org/r}.
 
 \begin{itemize}
 
@@ -254,7 +254,7 @@ vss(myData)
 \end{Schunk}
 \end{scriptsize}
 
-\item Factor analyze (see section \ref{sect:fa})  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities  (see sections \ref{sect:minres}-\ref{sect:wls}). Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section \ref{sect:iclust}).  Also consider a hierarchical factor solution to find coefficient $\omega$ (see \ref{sect:omega}).
+\item Factor analyze (see section 4.1)  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities such as minres (section 4.1.1), alpha factoring, and wls. Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section 4.1.6).  Also consider a hierarchical factor solution to find coefficient $\omega$ (see \ref{sect:omega}).
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
@@ -298,7 +298,7 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.file},  \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes five methods  of \iemph{factor analysis} (\iemph{minimum residual}, \iemph{principal axis},   \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
 
  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}.  Higher order models can also be found using \pfun{fa.multi}. 
  
@@ -311,7 +311,7 @@ Psychometric applications emphasize techniques for dimension reduction including
 Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{corPlot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
 
-This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/book/psych_for_sem.pdf}}).
+This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{http://personalty-project.org/r/psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/psych/vignettes/psych_for_sem.pdf}}).
 
 For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  guide for using \R{} for personality research at \url{http://personalitytheory.org/r/r.short.html}.  For an \iemph{introduction to psychometric theory with applications in \R{}}, see the draft chapters at \url{http://personality-project.org/r/book}).
 
@@ -321,7 +321,15 @@ For a step by step tutorial in the use of the psych package and the base functio
 \label{sect:starting}
 Some of the functions described in the Overview Vignette require other packages. This is not the case for the functions listed in this Introduction.  Particularly useful for rotating the results of factor analyses (from e.g.,  \pfun{fa}, \pfun{factor.minres}, \pfun{factor.pa}, \pfun{factor.wls}, or  \pfun {principal}) or hierarchical factor models using \pfun{omega} or \pfun{schmid}, is the \Rpkg{GPArotation} package.   These and other useful packages may be installed by first installing and then using the task views (\Rpkg{ctv}) package to install the ``Psychometrics" task view, but doing it this way is not necessary.  
 
+The ``Psychometrics'' task view will install a large number of useful packages.  To install the bare minimum for the examples in this vignette, it is necessary to install just 3 packages:
 
+\begin{Schunk}
+\begin{Sinput}
+install.packages(list(c("GPArotation","mnormt")
+\end{Sinput}
+\end{Schunk} 
+
+Alternatively, many packages for psychometric can be downloaded at once using the ``Psychometrics" task view:
 \begin{Schunk}
 \begin{Sinput}
 install.packages("ctv")
@@ -330,13 +338,7 @@ task.views("Psychometrics")
 \end{Sinput}
 \end{Schunk} 
 
-The ``Psychometrics'' task view will install a large number of useful packages.  To install the bare minimum for the examples in this vignette, it is necessary to install just 3 packages:
 
-\begin{Schunk}
-\begin{Sinput}
-install.packages(list(c("GPArotation","mnormt")
-\end{Sinput}
-\end{Schunk} 
 
 
 Because of the difficulty of installing the  package \Rpkg{Rgraphviz}, alternative graphics have been developed and are available as \iemph{diagram} functions.   If \Rpkg{Rgraphviz} is available, some functions will take advantage of it.   An alternative is to use ``dot'' output of commands for any external graphics package that uses the dot language.
@@ -367,7 +369,7 @@ It is possible to automatically load  \Rpkg{psych} and other functions by creati
 
 \subsection{Getting the data by using read.file}
 \label{sect:read}
-Although many find copying the data to the clipboard and then using the \pfun{read.clipboard} functions (see below), a helpful alternative is to read the data in directly.  This can be done using the \pfun{read.file} function which calls \fun{file.choose} to find the file and then based upon the suffix of the file, chooses the appropriate way to read it.  For files with suffixes of .txt, .text, .r, .rds, .rda, .csv, .xpt, or  .sav,  the file will be read correctly. 
+Although many find copying the data to the clipboard and then using the \pfun{read.clipboard} functions (see below), a helpful alternative is to read the data in directly.  This can be done using the \pfun{read.file} function which calls \fun{file.choose} to find the file and then based upon the suffix of the file, chooses the appropriate way to read it.  For files with suffixes of .text, .txt, .TXT, .csv, ,dat,  .data, .sav,  .xpt, .XPT,  .r, .R, .rds, .Rds, .rda,  .Rda, .rdata, Rdata,  or .RData,  the file will be read correctly.  
 
 \begin{Schunk}
 \begin{Sinput}
@@ -379,7 +381,8 @@ Although many find copying the data to the clipboard and then using the \pfun{re
  
  \begin{Schunk}
 \begin{Sinput}
- my.data <- read.file(widths = c(4,rep(1,35))  #will read in a file without a header row and 36 fields, the first of which is 4 colums, the rest of which are 1 column each.
+ my.data <- read.file(widths = c(4,rep(1,35))  #will read in a file without a header row 
+ # and 36 fields, the first of which is 4 colums, the rest of which are 1 column each.
 \end{Sinput}
 \end{Schunk} 
 
@@ -389,7 +392,8 @@ To read SPSS files and to keep the value labels, specify  use.value.labels=TRUE.
 
 \begin{Schunk}
 \begin{Sinput}
- my.spss  <- read.file(use.value.labels=TRUE)  #this will keep the value labels for .sav files
+#this will keep the value labels for .sav files
+ my.spss  <- read.file(use.value.labels=TRUE)  
 \end{Sinput}
 \end{Schunk} 
 
@@ -556,8 +560,8 @@ dev.off()
 
 Yet another demonstration of  \pfun{pairs.panels}  is useful when you have many subjects and want to show the density of the distributions.  To do this we will use the  \pfun{make.keys} and  \pfun{scoreItems} functions (discussed in the second vignette) to create scales measuring Energetic Arousal, Tense Arousal, Positive Affect, and Negative Affect (see the \pfun{msq} help file).  We then show a \pfun{pairs.panels} scatter plot matrix where we smooth the data points and show the density of the distribution by color.
 
-\begin{figure}[htbp]
-\begin{center}
+%\begin{figure}[htbp]
+%\begin{center}
 \begin{scriptsize}
 <<affect>>=
 keys <- make.keys(msq[1:75],list(
@@ -570,18 +574,19 @@ PA =c("active", "excited", "strong", "inspired", "determined", "attentive",
 NAf =c("jittery", "nervous", "scared", "afraid", "guilty", "ashamed", "distressed",  
          "upset", "hostile", "irritable" )) )
 scores <- scoreItems(keys,msq[,1:75])
-png('msq.png')
- pairs.panels(scores$scores,smoother=TRUE,
-  main ="Density distributions of four measures of affect" )
+#png('msq.png')
+# pairs.panels(scores$scores,smoother=TRUE,
+#  main ="Density distributions of four measures of affect" )
 
-dev.off()
+#dev.off()
 @
 \end{scriptsize}
-\includegraphics{msq}
-\caption{Using the \pfun{pairs.panels} function to graphically show relationships. The x axis in each scatter plot represents the column variable, the y axis the row variable. The variables are four measures of motivational state for 3896   participants. Each scale is the average score of 10 items measuring motivational state.  Compare this a plot with smoother set to FALSE.}
-\label{fig:pairs.panels3}
-\end{center}
-\end{figure}
+
+%\includegraphics{msq}
+Using the \pfun{pairs.panels} function to graphically show relationships. (Not shown in the interests of space.) The x axis in each scatter plot represents the column variable, the y axis the row variable. The variables are four measures of motivational state for 3896   participants. Each scale is the average score of 10 items measuring motivational state.  Compare this a plot with smoother set to FALSE.
+%\label{fig:pairs.panels3}
+%\end{center}
+%\end{figure}
 
 
 
@@ -592,11 +597,14 @@ Graphical presentation of data may be shown using box plots to show the median a
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<violin>>=
+png('violin.png')
 data(sat.act)
 violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by gender for SAT V and Q")
+dev.off()
 @
 \end{scriptsize}
+\includegraphics{violin}
 \caption{Using the \pfun{violinBy} function to show the distribution of SAT V and Q for males and females. The plot shows the medians, and 25th and 75th percentiles, as well as the entire range and the density distribution.  }
 \label{fig:violin}
 \end{center}
@@ -859,7 +867,10 @@ cortest(sat.act)
 
 \subsection{Polychoric, tetrachoric, polyserial, and biserial correlations}
 
-The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  This is also shown in terms of dichotomizing the bivariate normal density function using the \pfun{draw.cor} function (Figure~\ref{fig:draw.cor}). A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.  
+The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  This is also shown in terms of dichotomizing the bivariate normal density function using the \pfun{draw.cor} function (Figure~\ref{fig:draw.cor}). A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.   
+
+
+ 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -873,17 +884,9 @@ draw.tetra()
 \end{center}
 \end{figure}
 
-\begin{figure}[htbp]
-\begin{center}
-\begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-draw.cor(expand=20,cuts=c(0,0))
-@
-\end{scriptsize}
-\caption{The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values. It is found (laboriously) by optimizing the fit of the bivariate normal for various values of the correlation to the observed cell frequencies.}
-\label{fig:draw.cor}
-\end{center}
-\end{figure}
+The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values. It is found (laboriously) by optimizing the fit of the bivariate normal for various values of the correlation to the observed cell frequencies. In the interests of space, we do not show the next  figure but it can be created by
+
+draw.cor(expand=20,cuts=c(0,0)
 
 
 Other estimated correlations based upon the assumption of bivariate normality with cut points include the \pfun{biserial} and \pfun{polyserial} correlation.  
@@ -1173,7 +1176,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version > "1.7.0",package="psych")
+> news(Version >= "1.7.8",package="psych")
 \end{Sinput}
 \end{Schunk}
 

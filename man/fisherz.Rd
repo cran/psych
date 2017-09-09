@@ -3,31 +3,29 @@
 \alias{fisherz2r}
 \alias{r.con}\alias{r2c}
 \alias{r2t}
-\alias{r2d}
-\alias{d2r}
 \alias{t2r}
 \alias{g2r}
 \alias{chi2r}
 \alias{r2chi}
 \alias{cor2cov}
 
-\title{Transformations of r including Fisher r to z and z to r and confidence intervals}
+\title{Transformations of r, d, and t  including Fisher r to z and z to r and confidence intervals}
 \description{Convert a correlation to a z or t, or d, or chi or covariance matrix
-  or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r. g2r converts Hedge's g to a correlation.   t2r converts a t test to r, r2t converts a correlation to a t-test value. chi2r converts a chi square to r, r2chi converts it back.  r2c and cor2cov convert a correlation matrix to a covariance matrix.
+  or z to r using the Fisher transformation or find the confidence intervals for a specified correlation.  r2d converts a correlation to an effect size (Cohen's d) and d2r converts a d into an r. g2r converts Hedge's g to a correlation.   t2r converts a t test to r, r2t converts a correlation to a t-test value. chi2r converts a chi square to r, r2chi converts it back.  r2c and cor2cov convert a correlation matrix to a covariance matrix. d2t and t2d convert cohen's d into a t and a t into a cohen d.  See \code{\link{cohen.d}} for other conversions.
 }
 \usage{
 fisherz(rho)
 fisherz2r(z)
 r.con(rho,n,p=.95,twotailed=TRUE)
 r2t(rho,n)
-r2d(rho)
-d2r(d)
 t2r(t,df)
 g2r(g,df,n)
 chi2r(chi2,n)
 r2chi(rho,n)
 r2c(rho,sigma)
 cor2cov(rho,sigma)
+
+
 
 
 }
@@ -39,7 +37,6 @@ cor2cov(rho,sigma)
   \item{df}{degrees of freedom for t, or g}
   \item{p}{Confidence interval}
   \item{twotailed}{Treat p as twotailed p}
-  \item{d}{an effect size (Cohen's d)}
   \item{g}{An effect size (Hedge's g)}
   \item{t}{A student's t value}
   \item{chi2}{A chi square}

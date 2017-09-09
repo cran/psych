@@ -11,13 +11,14 @@
 \alias{write.file.csv}
 \alias{read.https}
 \title{Shortcuts for reading from the clipboard or a file}
-\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .dat, .data, .csv, .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Fixed Width Files saved in .txt mode may be read if widths is specified. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
+\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .TXT, .dat, .data, .csv, .rds, rda, .xpt, or  .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Fixed Width Files saved in .txt mode may be read if widths is specified. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
 Input from the clipboard is easy but a bit obscure, particularly for Mac users. This is just an easier way to do so.  Data may be copied to the clipboard from Excel spreadsheets, csv files, or fixed width formatted files and then into a data.frame. Data may also be read from lower  (or upper) triangular matrices and filled out to square matrices.
 }
 \usage{
 read.file(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",
 widths=NULL, ...)
- #for .txt, .text, .csv, .sav, .xpt, .rds, or .rda files
+ #for .txt, .text, TXT, .csv, .sav, .xpt, XPT,  R, r, Rds, .rds, or .rda, 
+# Rda, RData, Rdata, files
 
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
@@ -64,6 +65,7 @@ Currently supported input formats are
 .sav       \tab      SPSS.sav files\cr
 .csv       \tab      A comma separated file (e.g. from Excel or Qualtrics)\cr
 .txt       \tab      A typical text file \cr
+.TXT        \tab      A typical text file \cr
 .text      \tab     A typical text file \cr
 .data     \tab       A data file \cr
 .dat      \tab       A data file \cr

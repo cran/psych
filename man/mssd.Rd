@@ -10,7 +10,7 @@ Von Neuman et al. (1941) discussed the Mean Square of Successive Differences as 
 \usage{
 mssd(x,group=NULL, lag = 1,na.rm=TRUE)
 rmssd(x,group=NULL, lag=1, na.rm=TRUE)
-autoR(x,group=NULL,lag=1,na.rm=TRUE)
+autoR(x,group=NULL,lag=1,na.rm=TRUE,use="pairwise")
 }
 
 \arguments{
@@ -18,6 +18,7 @@ autoR(x,group=NULL,lag=1,na.rm=TRUE)
   \item{lag}{the lag to use when finding \code{\link{diff}}     }
   \item{group}{A column of the x data.frame to be used for grouping}
   \item{na.rm}{Should missing data be removed?}
+  \item{use}{How to handle missing data in autoR}.
 }
 \details{When examining multiple measures within subjects, it is sometimes useful to consider the variability of trial by trial observations in addition to the over all between trial variation.  The Mean Square of Successive Differences (mssd) and root mean square of successive differences (rmssd) find the variance or standard deviation of the trial to trial differences. 
 
@@ -28,7 +29,7 @@ In the case of multiple subjects  (groups) with multiple observations per subjec
 
 Similar functions are available in the matrixStats package. This is just the variance and standard deviation applied to the result from the \code{\link{diff}} function.
 
-Perhaps useful when studying mood, the \code{\link{autoR}} function finds the autocorrelation for each item for the specified lag.  It also returns the rmssd (root means square successive difference).  
+Perhaps useful when studying mood, the \code{\link{autoR}} function finds the autocorrelation for each item for the specified lag.  It also returns the rmssd (root means square successive difference). This is done by finding the correlation of the lag data. 
 
 
 }

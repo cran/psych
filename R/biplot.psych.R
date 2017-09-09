@@ -43,10 +43,10 @@ if(missing(col)) {col <-  c("black","red","blue","#FF0000FF", "#00FF00FF", "#00F
 if (n.dims == 2) { #just do a one panel graph
 
   op <- par(pty = "s")
-  if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
-  
+  #if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
+  if (!is.null(main)) par("mar" = MAR + c(0, 0, 1, 0))  #give room for the title  -
   #plotone does the work
- plotone(x$scores,x$loading,labels=labels,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )
+ plotone(x$scores,x$loading,labels=labels,main=main,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )
  
   } else {  #the case of 3 or more factors -- we do the equivalent of a pairs plot
 	op1 <- par(mfrow=c(n.dims,n.dims), mar=c(2,3,3,2))
@@ -92,7 +92,7 @@ switch(choice,   #we plot the scores here for scores > abs(cut) on x and y
 
    par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
     dev.hold()
-    #on.exit(dev.flush(), add = TRUE)
+   
     on.exit(dev.flush(), add = FALSE)
     plot(loadings, axes = FALSE, type = "n", xlim = xlim.f, ylim = ylim.f,
       xlab = "", ylab = "", col = col[1L], ...)

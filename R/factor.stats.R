@@ -247,6 +247,8 @@ conf.level <- alpha
    
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
+   	#this repeats what was done in factor.scores and does not take into account the options in factor.scores
+   	
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
    	 r <- cor.smooth(r)
       w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
@@ -263,7 +265,7 @@ conf.level <- alpha
      w <- diag(1,dim(r)[1])
      }   #these are the beta weights 
     }}
-      R2 <- diag(t(w) %*% f)
+      R2 <- diag(t(w) %*% f)   #but, we actually already found this in factor scores -- these are the Thurstone values
       if(is.null(fm)) {
      if(prod(R2) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor extraction method\n")
                       R2[abs(R2) > 1] <- NA

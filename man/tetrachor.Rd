@@ -81,7 +81,7 @@ For finding one polychoric correlation from a table, see the Olsson example (bel
 biserial and polyserial correlations are the inferred latent correlations equivalent to the observed point-biserial and point-polyserial correlations (which are themselves just Pearson correlations).
 
 
-The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{http://sapa-project.org}) with large amounts of missing data and no complete cases.
+The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{http://sapa-project.org}) (Revelle et al. 2010, 2016)  with large amounts of missing data and no complete cases. See also the International Cognitive Ability Resource (\url{http://icar-project.com}) for simiilar data.
 
 Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation. However, if either alpha or omega is used to find the reliability, this will be an overestimate of the squared correlation of a latent variable the observed variable.
 
@@ -121,6 +121,10 @@ U. Olsson, Maximum Likelihood Estimation of the Polychoric Correlation Coefficie
 
 U.Olsson, F.Drasgow, and N.Dorans (1982). The polyserial correlation coefficient. Psychometrika, 47:337-347. 
 
+Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cognition: New Methods for examining the Personality-Cognition Link In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer.
+
+ Revelle, W,  Condon, D.M.,  Wilt, J.,  French, J.A., Brown, A.,  and  Elleman, L.G. (2016) Web and phone based data collection using planned missing designs. In  Fielding, N.G.,  Lee, R.M. and  Blank, G. (Eds). SAGE Handbook of Online Research Methods (2nd Ed), Sage Publcations
+
 }
 \author{
 William Revelle
@@ -129,7 +133,6 @@ William Revelle
 This correction is, by default, on.  It can be adjusted by specifying a smaller value.  See the examples.
 
 For correct=FALSE, the results agree perfectly with John Fox's polycor function.  
-
 
 
 Switched to using sadmvn from the mnormt package to speed up by 50\%. 

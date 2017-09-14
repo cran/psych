@@ -82,7 +82,11 @@ if (adjust !="none") {
       rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")
       k<- k +1 }}
     }
-} else {ci <- NULL}
+} else {
+  ci <- NULL
+  sef <- NULL
+  ci.adj <- NULL
+}
 result <- list(r = r,n=n,t=t,p=p,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,ci.adj=ci.adj, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)

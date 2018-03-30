@@ -352,8 +352,8 @@ values.sim <- x$pc.sim
 if(!is.null(x$fa.simr)) {resample=TRUE } else {resample <- FALSE}
 #ymax <- max(valuesx,values.sim$mean)
 #ymin <- min(valuesx,values.sim$mean)
-ymax <- max(valuesx,values.sim)
-ymin <- min(valuesx,values.sim,fa.valuesx,fa.values.sim)
+ymax <- max(valuesx,values.sim,na.rm=TRUE)
+ymin <- min(valuesx,values.sim,fa.valuesx,fa.values.sim,na.rm=TRUE)
 ylabel <-  "eigen values of principal factors"
 if (!is.null(valuesx)) {
             plot(valuesx,type="b", main = main,ylab=ylabel ,ylim=c(ymin,ymax),xlab="Factor Number",pch=4,col="blue") }

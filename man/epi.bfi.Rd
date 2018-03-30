@@ -27,7 +27,7 @@
 }
 \source{Data were collected at the Personality, Motivation, and Cognition Lab (PMCLab) at Northwestern by William Revelle)
 }
-\references{\url{http://personality-project.org/pmc.html}
+\references{\url{https://personality-project.org/pmc.html}
 }
 \examples{
 data(epi.bfi)

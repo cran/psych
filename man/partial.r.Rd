@@ -22,7 +22,7 @@ The second usage is to partial a set of variables(y) out of another set (x). It 
 To find the confidence intervals and "significance" of the correlations, use the \code{\link{corr.p}} function with n = n - s where s is the numer of covariates. 
 }
 \value{The matrix of partial correlations.}
-\references{ Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} 
+\references{ Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{https://personality-project.org/r/book/} 
 }
 \author{ William Revelle }
 

@@ -12,7 +12,7 @@
 corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, symmetric=TRUE,stars=FALSE,
-   adjust="holm",xaxis=1, xlas=0,ylas=2,gr=NULL,...)
+   adjust="holm",xaxis=1, xlas=0,ylas=2,gr=NULL,alpha=.75,min.length=NULL,...)
 
 corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
@@ -20,7 +20,8 @@ corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
  cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
-  symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,gr=NULL,...)
+symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,gr=NULL,alpha=.75, 
+min.length=NULL,...)
   #deprecated
            
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
@@ -55,7 +56,11 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{ylas}{Orientation of the y axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
   \item{xaxis}{By default, draw this below the figure.  If xaxis=3, then it wil be drawn above the figure}
   \item{gr}{A color gradient: e.g.,  gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))  will produce slightly more pleasing (to some) colors. See next to last example.}
-  \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
+  \item{alpha}{The degree of transparency (0 = completely, 1= not). Default value of .75 makes somewhat moreor pleasing plots when using numbers.}
+  \item{min.length}{If not NULL, then the maximum number of characters to use in 
+    row/column labels}
+  \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to   
+  rotate the numbers in the plot)}
 }
 \details{When summarizing the correlations of large data bases or when teaching about factor analysis or cluster analysis, it is useful to graphically display the structure of correlation matrices.  This is a simple graphical display using the image function. 
 
@@ -77,6 +82,7 @@ If using the output of \code{\link{corr.test}}, the upper off diagonal will be s
 
 If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{corPlotUpperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals.  If adjust=TRUE, these will use the Holm or Bonferroni adjusted values (depending upon corr.test). 
 
+To compare the elements of two correlation matrices, \code{\link{corPlot}} the results from \code{\link{lowerUpper}}.  
 
 To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  See the last examples.  
 
@@ -90,7 +96,7 @@ Care should be takend when selecting rows and columns from a non-symmetric matri
 Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics \& Data Analysis. 52, 4, 2228-2237.
 }
 
-\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}}. 
+\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}} \code{\link{lowerUpper}}.. 
 }
 \examples{
 corPlot(Thurstone,main="9 cognitive variables from Thurstone") 
@@ -127,6 +133,8 @@ cor.plot.upperLowerCi(R=rs,numbers=TRUE)
 gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))
 corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values",gr=gr) 
 cor.plot.upperLowerCi(R=rs,numbers=TRUE,gr=gr) 
+
+
 
 #do multiple plots 
 #Also show the xaxis option

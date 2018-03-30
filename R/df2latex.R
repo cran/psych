@@ -2,6 +2,9 @@
 #November 22, 2013  Modified with help from Davide Morselli to allow for "stars"
 #also allows for printing straight text (char=TRUE)
 #cor2latex was modified following Davide Morselli's suggestion to allow direct calculation of the correlations
+#added { and } before and after each variable name to allow siunitx to work with stars
+#added the absolute value in the big comparison for cor2latex and df2latex
+
 #
 "df2latex" <- 
 function(x,digits=2,rowlabels=TRUE,apa=TRUE,short.names=TRUE,
@@ -50,18 +53,19 @@ if(!char) {if(!is.null(digits)) {if(is.numeric(x) ) {x <- round(x,digits=digits)
  cname <- colnames(x)
  if (short.names) cname <- abbreviate(cname,minlength=digits+3)  #cname <- 1:nvar
 
- names1 <- paste(cname[1:(nvar-1)], " & ")
- lastname <- paste(cname[nvar],"\\cr \n")
+ names1 <- paste0("{",cname[1:(nvar-1)], "} & ")
+ lastname <- paste0("{",cname[nvar],"}\\cr \n")
  
 if(apa)  {allnames <- c("Variable  &  ",names1,lastname," \\hline \n")} else {if(rowlabels) {allnames <- c("  &  ",names1,lastname,"\\cr \n")} else {
              allnames <- c(names1,lastname,"\\cr \n")}}
 if(!char) {if(is.null(big.mark)) { x <- format(x,drop0trailing=FALSE)
-     if(big > 0) {x[tempx > big] <- paste0("\\bf{",x[tempx > big],"}") }
+     if(big > 0) {x[abs(tempx ) > big] <- paste0("\\bf{",x[abs(tempx) > big],"}") }
      
      
      } else   #to keep the digits the same
                       {x <- prettyNum(x,big.mark=",",drop0trailing=FALSE)} 
-   }   
+   }  else {if(big > 0) { x[!is.na(abs(as.numeric(x))>big) & abs(as.numeric(x))>big ] <-    paste0("\\bf{", x[!is.na(abs(as.numeric(x))>big) & abs(as.numeric(x))>big ],"}")  } }
+   # x[!is.na(abs(as.numeric(x)) > big)]<-  paste0("\\bf{", x[!is.na(abs(as.numeric(x)) > big)],"}")  }}
  value <- apply(x,1,paste,collapse="  &  ") #insert & between columns
 
  if(rowlabels) {value <- paste(sanitize.latex(rname),"  & ",value)} else {value <- paste("  & ",value)}
@@ -108,7 +112,7 @@ if (!is.na(class(x)[2]) & class(x)[2]=="corr.test") {  #we already did the analy
       r[lower.tri(r)] <- "~"
     }
   
-    if(stars && is.null(p))  stop("To print significance levels, x must be be either a data frame of observations or a correlation matrix created with the corr.test function of the package psych. If you are not interested in displaying signicance level set stars = FALSE")
+    if(isTRUE(stars && is.null(p)))  stop("To print significance levels, x must be be either a data frame of observations or a correlation matrix created with the corr.test function of the package psych. If you are not interested in displaying signicance level set stars = FALSE")
      
           #p[upper.tri(p,diag=FALSE)]  #the adjusted probability values
        

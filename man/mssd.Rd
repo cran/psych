@@ -20,14 +20,16 @@ autoR(x,group=NULL,lag=1,na.rm=TRUE,use="pairwise")
   \item{na.rm}{Should missing data be removed?}
   \item{use}{How to handle missing data in autoR}.
 }
-\details{When examining multiple measures within subjects, it is sometimes useful to consider the variability of trial by trial observations in addition to the over all between trial variation.  The Mean Square of Successive Differences (mssd) and root mean square of successive differences (rmssd) find the variance or standard deviation of the trial to trial differences. 
+\details{When examining multiple measures within subjects, it is sometimes useful to consider the variability of trial by trial observations in addition to the over all between trial variation.  The Mean Square of Successive Differences (mssd) and root mean square of successive differences (rmssd) is just 
 
-\eqn{\sigma^2 = \Sigma(x_i - x_{i+1})^2 /(n-1) } 
+\eqn{\sigma^2 = \Sigma(x_i - x_{i+1})^2 /(n-lag) } 
+
+Where n-lag is used because there are only n-lag cases.
 
 In the case of multiple subjects  (groups) with multiple observations per subject (group), specify the grouping variable will produce output for each group.   
 
 
-Similar functions are available in the matrixStats package. This is just the variance and standard deviation applied to the result from the \code{\link{diff}} function.
+Similar functions are available in the matrixStats package. However, the varDiff function in that package is variance of the difference rather than the MeanSquare. This is just the variance and standard deviation applied to the result from the \code{\link{diff}} function.
 
 Perhaps useful when studying mood, the \code{\link{autoR}} function finds the autocorrelation for each item for the specified lag.  It also returns the rmssd (root means square successive difference). This is done by finding the correlation of the lag data. 
 

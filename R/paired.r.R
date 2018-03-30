@@ -7,7 +7,7 @@ if (!is.null(yz)) {
        av=(xy+xz)/2
        cube= (1-yz)*(1-yz)*(1-yz)
        t2 = diff * sqrt((n-1)*(1+yz)/(((2*(n-1)/(n-3))*determin+av*av*cube)))
-       p <- pt(abs(t2),n-2,lower.tail=FALSE)
+       p <- pt(abs(t2),n-3,lower.tail=FALSE)    #changed to n-3 12/15/18
         if(twotailed) p <- 2*p
        value <- list(test="test of difference between two correlated  correlations",t=t2,p=p,Call=cl)
        } else {

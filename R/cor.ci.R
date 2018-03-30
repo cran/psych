@@ -1,11 +1,11 @@
  #Pearson or polychoric correlations with confidence intervals
 
  "cor.ci" <- 
-function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,...) {
-corCi(x=x, keys = keys, n.iter = n.iter, p = p, overlap=overlap, poly = poly, method = method,plot=plot,...) }
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,...) {
+corCi(x=x, keys = keys, n.iter = n.iter, p = p, overlap=overlap, poly = poly, method = method,plot=plot,minlength=minlength,...) }
 
  "corCi" <- 
-function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,...) {
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,...) {
 
  cl <- match.call()
  n.obs <- dim(x)[1]
@@ -117,7 +117,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
       tci <- abs(means.rot)/sds.rot
       ptci <- pnorm(tci)
       ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e,p =2*(1-ptci))
-      cnR <- abbreviate(colnames(rho),minlength=5) 
+      cnR <- abbreviate(colnames(rho),minlength=minlength) 
       k <- 1
      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
       rownames(ci.rot)[k] <- paste(cnR[i],cnR[j],sep="-")

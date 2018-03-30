@@ -139,7 +139,8 @@ bounds[2,1] <- wkappa + qnorm(alpha/2) * sqrt(Varkw)
 bounds[2,3] <- wkappa - qnorm(alpha/2) * sqrt(Varkw)
 
 
-if(!is.na(any(abs(bounds))) & (any(abs(bounds) > 1))) {bounds[bounds > 1] <- 1
+#if(!is.na(any(abs(bounds))) & (any(abs(bounds) > 1))) {bounds[bounds > 1] <- 1
+if(any(!is.na(abs(bounds))) & (any(abs(bounds) > 1))) {bounds[bounds > 1] <- 1
                           bounds[bounds < -1] <- -1
                           warning("upper or lower confidence interval exceed  abs(1)  and set to +/- 1. ")
                           }
@@ -147,3 +148,21 @@ result <- list(kappa=kappa,weighted.kappa = wkappa,n.obs=tot,agree=x,weight=w,va
 class(result) <- c("psych","kappa")
 return(result)
 }
+
+
+"krip" <- "krippendorf" <- function(x) {
+x <- as.matrix(x)
+tot <- sum(x)
+n <- tot * NCOL(x)
+x <- x/tot  #convert to probabilities just in case they are not already
+ rs <- rowSums(x)
+ cs <- colSums(x)
+  p <- (rs + cs)/2 #these are the average marginals
+  obs <- sum(x) - tr(x)  #this is the observed misses
+  exp <- p %*% t(p)
+  exp <- sum(exp) -tr(exp)  #this the expected misses
+  pi <- 1 - obs/exp
+  krip <- pi * (n)/(n-1)  #this is unclear what this should be
+ return(list(krippendorf=krip,scott=pi))
+ }
+ 

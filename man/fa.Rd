@@ -145,7 +145,7 @@ For those who want to have an object of the variances accounted for, this is ret
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 
-\code{\link{fa.sapa}} will do iterative solutions for successive random samples of  fractions (frac) of the data set. This allows us to find the stability of solutions for various sample sizes. 
+\code{\link{fa.sapa}} simulates the process of doing SAPA (Synthetic Aperture Personality Assessment).  It will do iterative solutions for successive random samples of  fractions (frac) of the data set. This allows us to find the stability of solutions for various sample sizes and various sample rates. Need to specify the number of iterations (n.iter) as well as the percent of data sampled (frac).  
 
 }
 
@@ -225,7 +225,7 @@ Kaiser, Henry F. and Caffrey, John.  Alpha factor analysis, Psychometrika, (30) 
 
 Pettersson E, Turkheimer E. (2010) Item selection, evaluation, and simple structure in personality data. Journal of research in personality, 44(4), 407-420.
 
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
 Shapiro, A. and ten Berge, Jos M. F, (2002) Statistical inference of minimum rank factor analysis.  Psychometika, (67) 79-84.
 

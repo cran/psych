@@ -112,11 +112,11 @@ More importantly in this case of massively missing data, there is a difference b
 
 Further note that the inter-scale correlations are based upon the correlations of scales formed from the covariance matrix of the items.  This will differ from the correlation  of scales based upon the correlation of the items.  Thus, although  \code{\link{scoreItems}} will produce reliabilities and intercorrelations from either the raw data or from a correlation matrix, these values will differ slightly.  In addition, with a great deal of missing data, the scale intercorrelations will differ from the correlations of the scores produced, for the latter will be attenuated. 
 
-An alternative to classical test theory scoring is to use \code{\link{scoreIrt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).
+An alternative to classical test theory scoring is to use \code{\link{scoreIrt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).  However, remember that  this only makes sense if the items are unidimensional. That is to say, if forming item composites from (e.g., \code{\link{bestScales}}), that are empirically derived, they will necessarily have a clear factor structure and the IRT based scoring does not make sense.
 
 When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items. Compare two examples of scoring the \code{\link{bfi}} data set.
 
-If scales are formed with overlapping items, then the correlations of the scales will be seriously inflated.  \code{link{scoreOverlap}} will adjust the correlations for this overlap.
+If scales are formed with overlapping items, then the correlations of the scales will be seriously inflated.  \code{\link{scoreOverlap}} will adjust the correlations for this overlap.
 } 
 \references{
 
@@ -128,7 +128,7 @@ Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate
 
 McDonald, R. P. (1999). Test theory: A unified treatment. L. Erlbaum Associates, Mahwah, N.J.
 
-Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{http://personality-project.org/r/book}
+Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{https://personality-project.org/r/book}
 
 Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (in press).
 

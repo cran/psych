@@ -29,7 +29,7 @@ city.location is a dataframe of longitude and latitude for those cities.
 
 Note that the 2 dimensional MDS solution does not perfectly capture the data from these city distances.   Boston, New York and Washington, D.C. are located slightly too far west, and Seattle and LA are slightly too far south.
 }
-\source{ \url{http://www.timeanddate.com/worldclock/distance.html}
+\source{ \url{https://www.timeanddate.com/worldclock/distance.html}
 }
 
 \examples{

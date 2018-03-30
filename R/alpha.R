@@ -1,14 +1,17 @@
 "alpha" <- 
     function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL) {  #find coefficient alpha given a data frame or a matrix
     
-    alpha.1 <- function(C,R) {
+ alpha.1 <- function(C,R) {
     n <- dim(C)[2]
     alpha.raw <- (1- tr(C)/sum(C))*(n/(n-1))
     sumR <- sum(R)
-    alpha.std <-  (1- n/sumR)*(n/(n-1))
+    alpha.std <-  (1- n/sumR)*(n/(n-1))  
     smc.R <- smc(R)
     G6 <- (1- (n-sum(smc.R))/sumR)
     av.r <- (sumR-n)/(n*(n-1))
+    R.adj <- R
+    diag(R.adj) <- NA
+    var.r  <- var(as.vector(R.adj),na.rm=TRUE)
     mod1 <- matrix(av.r,n,n)
     Res1 <- R - mod1
     GF1 =  1- sum(Res1^2)/sum(R^2)
@@ -18,7 +21,7 @@
     sn <- n*av.r/(1-av.r)
    # Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2))) #corrected 1/15/16 
     Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
-    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,sn=sn,Q=Q,GF1,GF1.off)
+    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,sn=sn,Q=Q,GF1,GF1.off,var.r = var.r)
     return(result)
     }
     
@@ -102,7 +105,7 @@
                             } 
          } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA,NA,NA)  #added the extra 2 NA June 18, 2017
        }
-        by.item <- data.frame(matrix(unlist(drop.item),ncol=8,byrow=TRUE)) 
+        by.item <- data.frame(matrix(unlist(drop.item),ncol=9,byrow=TRUE)) 
         
                   #allows us to specify the number of subjects for correlation matrices
         if(max(nsub,n.obs) > nvar) {by.item[6] <- sqrt(by.item[6]/(max(nsub,n.obs)) )
@@ -135,6 +138,7 @@
         item.sd <-  apply(x,2,sd,na.rm=na.rm)
         if(nsub > nvar) {
          Unidim <- alpha.total[7]
+         var.r <- alpha.total[[9]]
         	 Fit.off <- alpha.total[8]
             ase = sqrt(alpha.total$Q/nsub)
         	alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
@@ -149,6 +153,7 @@
         	if(is.null(n.obs)) {
         	       Unidim <- alpha.total[7]
         	       Fit.off <- alpha.total[8]
+        	       var.r <- alpha.total[9] 
         	      alpha.total <- data.frame(alpha.total[1:5])  #fixed 27/7/14 
         	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N") } else {
         	        Unidim <- alpha.total[7]
@@ -192,7 +197,7 @@
        	         boot.ci <- NULL}
        	names(Unidim) <- "Unidim"
        	names(Fit.off) <- "Fit.off" 
-        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,Unidim=Unidim,Fit=Fit.off,call=cl,title=title)
+        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,Unidim=Unidim,var.r=var.r,Fit=Fit.off,call=cl,title=title)
         class(result) <- c("psych","alpha")
         return(result) 
     }
@@ -224,3 +229,16 @@ class(object) <- cn
       } 
 invisible(object) 
 }
+
+#apply the Duhacheck and Iacobucci estimates
+#compare with Feldt's estimate
+"alpha.ci" <- function(alpha,n.obs,n.var=NULL,p.val=.05,digits=2) {
+#  Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
+ CI.high <- 1- (1-alpha)* qf(p.val/2,n.obs-1,Inf)
+ CI.low <- 1-  (1-alpha)* qf(1-p.val/2,n.obs-1,Inf)
+if(!is.null(n.var)) {r.bar <- alpha/(n.var - alpha*(n.var-1)) } else {r.bar=NA}
+result <- list(lower.ci =CI.low,alpha=alpha,upper.ci=CI.high,r.bar=r.bar)
+print(result,digits=digits)
+invisible(result)
+}
+

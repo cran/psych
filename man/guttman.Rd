@@ -11,7 +11,7 @@
 }
 \usage{
 splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,
-           key=NULL,use="pairwise")
+           key=NULL,ci=.05,use="pairwise")
 guttman(r,key=NULL) 
 tenberge(r)
 glb(r,key=NULL)
@@ -27,6 +27,7 @@ glb.fa(r,key=NULL)
   \item{check.keys}{If TRUE, any item with a negative loading on the first factor will be flipped in sign}
  \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See if the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
  \item{use}{Should we find the correlations using "pairwise" or "complete" (see ?cor)}
+ \item{ci}{The alpha level to use for the confidence intervals of the split half estimates}
 }
 \details{Surprisingly, more than a century after Spearman (1904) introduced the concept of reliability to psychologists, there are still multiple approaches for measuring it. Although very popular, Cronbach's \eqn{\alpha}  (1951) underestimates the reliability of a test and over estimates the first factor saturation. Using \code{\link{splitHalf}} for tests with 16 or fewer items, all possible splits may be found fairly easily.  For tests with 17 or more items, n.sample splits are randomly found. Thus, for 16 or fewer items, the upper and lower bounds are precise.  For 17 or more items, they are close but will probably slightly underestimate the highest and overestimate the lowest reliabilities.  
 
@@ -102,7 +103,7 @@ These three procedures will produce keys vectors for assigning items to the two 
 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
-Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.
+Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items.  
 
 There are three greatest lower bound functions.  One, glb finds the greatest split half reliability, \eqn{\lambda_4}. This considers the test as set of items and examines how best to partition the items into splits. The other two, \code{\link{glb.fa}} and \code{\link{glb.algebraic}}, are alternative ways of weighting the diagonal of the matrix. 
 
@@ -118,10 +119,13 @@ Compared to \code{\link{glb.algebraic}}, \code{\link{glb.fa}} seems to have less
 
 \value{
 \item{beta}{The worst split half reliability. This is an estimate of the general factor saturation.}
+\item{maxrb}{The maximimum split half reliability.  This is Guttman's lambda 4}
+\item{alpha}{Also known as Guttman's Lambda 3}
+\item{ci}{The 2.5\%, 50\%, and 97.5\%  values of the raw or sampled split half}
 \item{tenberge$mu1}{tenBerge mu 1 is functionally alpha}
  \item{tenberge$mu2}{one of the sequence of estimates mu1 ... mu3}
 \item{glb}{glb found from factor analysis}
-\item{keys}{scoring keys from each of the alternative methods of forming best splits}
+
 }
 \references{
 Cronbach, L.J. (1951) Coefficient alpha and the internal strucuture of tests.  Psychometrika, 16, 297-334.

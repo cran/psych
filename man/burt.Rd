@@ -29,7 +29,7 @@ The Burt data set is interesting for several reasons.  It seems to be an early e
 Alternatively, using \code{\link{cor.smooth}}, the matrix can be made positive definite as well, although cor.smooth makes more (but smaller) changes.
 }
 \source{
-(retrieved from the web at http://www.biodiversitylibrary.org/item/95822#790)
+(retrieved from the web at https://www.biodiversitylibrary.org/item/95822#790)
 Following a suggestion by Jan DeLeeuw.
 
 }
@@ -37,7 +37,7 @@ Following a suggestion by Jan DeLeeuw.
 Burt, C.General and Specific Factors underlying the Primary Emotions. Reports of the British Association for the Advancement of Science, 85th meeting, 
 held in Manchester,  September 7-11, 1915. 
 London, John Murray, 1916, p. 694-696 
-(retrieved from the web at http://www.biodiversitylibrary.org/item/95822#790) 
+(retrieved from the web at https://www.biodiversitylibrary.org/item/95822#790) 
 
 }
 

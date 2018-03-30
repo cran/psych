@@ -24,12 +24,12 @@ Given a two x two table of counts \cr
 \tab c \tab d  \tab c+d (R2)\cr
 \tab a+c(C1) \tab b+d (C2) \tab a+b+c+d (N)
 }
-convert all counts to fractions of the total and then \\
-Phi = [a- (a+b)*(a+c)]/sqrt((a+b)(c+d)(a+c)(b+d) ) =\\
+convert all counts to fractions of the total and then  \cr
+Phi = [a- (a+b)*(a+c)]/sqrt((a+b)(c+d)(a+c)(b+d) ) =  \cr
 (a - R1 * C1)/sqrt(R1 * R2 * C1 * C2)
 
-This is in contrast to the Yule coefficient, Q, where \\
-Q = (ad - bc)/(ad+bc) which is the same as \\
+This is in contrast to the Yule coefficient, Q, where \cr
+Q = (ad - bc)/(ad+bc) which is the same as \cr
  [a- (a+b)*(a+c)]/(ad+bc)
 
 Since the phi coefficient is just a Pearson correlation applied to dichotomous data, to find a matrix of phis from a data set involves just finding the correlations using cor  or \code{\link{lowerCor}} or \code{\link{corr.test}}.  
@@ -43,7 +43,7 @@ Since the phi coefficient is just a Pearson correlation applied to dichotomous d
 
 Yule, G.U. (1912). On the methods of measuring the association between two attributes. Journal of the Royal Statistical Society, 75, 579-652.}
 
-\seealso{ \code{\link{phi2tetra}} ,\code{\link{Yule}}, \code{\link{Yule.inv}} \code{\link{Yule2phi}}, \code{\link{tetrachoric}} and \code{\link{polychoric}}}
+\seealso{ \code{\link{phi2tetra}}, \code{\link{AUC}}, \code{\link{Yule}}, \code{\link{Yule.inv}} \code{\link{Yule2phi}}, \code{\link{comorbidity}}, \code{\link{tetrachoric}} and \code{\link{polychoric}}}
 \examples{
 phi(c(30,20,20,30))
 phi(c(40,10,10,40))

@@ -7,7 +7,7 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Two vignettes are included as part of the package.  The overview vignette provides examples of using psych in many applications.  
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  
 
 Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}} is also available.  Rotations  may be done using Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
 
@@ -26,10 +26,10 @@ Additional functions make for more convenient descriptions of item characteristi
  A dynamic model of personality and motivation (the Cues-Tendency-Actions model) is include as (\code{\link{cta}}.
 
  
- The most recent development version of the package is always available for download as a \emph{source} file from the repository at  \url{http://personality-project.org/r/src/contrib/}.  
+ The most recent development version of the package is always available for download as a \emph{source} file from the repository at  \url{https://personality-project.org/r/src/contrib/}.  
  
 }
-\details{Two vignettes (overview.pdf and psych_for_sem.pdf) are useful introductions to the package. They may be found as vignettes in R or may be downloaded from \url{http://personality-project.org/r/book/overview.pdf} and \url{http://personality-project.org/r/book/psych_for_sem.pdf}. 
+\details{Two vignettes (overview.pdf and psych_for_sem.pdf) are useful introductions to the package. They may be found as vignettes in R or may be downloaded from \url{https://personality-project.org/r/book/overview.pdf} and \url{https://personality-project.org/r/book/psych_for_sem.pdf}. 
 
 The more important functions in the package are for the analysis of multivariate data, with an emphasis upon those functions useful in scale construction of item composites. However, there are a number of very useful functions for basic data manipulation including  
 \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) which are useful for basic data entry and descriptive analyses.
@@ -311,7 +311,7 @@ sets.  Primarily for development purposes.\cr
 }
 
 }
-\note{Development versions (source code) of this package are maintained at the  repository \url{http://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
+\note{Development versions (source code) of this package are maintained at the  repository \url{https://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
 \cr
 Some functions require other packages. Specifically, omega and schmid require the GPArotation package,  ICLUST.rgraph and fa.graph require Rgraphviz but have alternatives using the diagram functions.  i.e.:
 \cr
@@ -335,16 +335,16 @@ function  \tab     requires\cr
         Department of Psychology \cr
         Northwestern University \cr
         Evanston, Illiniois \cr
-        \url{http://personality-project.org/revelle.html}\cr
+        \url{https://personality-project.org/revelle.html}\cr
 
 
 Maintainer: William Revelle <revelle@northwestern.edu>
 
 }
-\references{A general guide to personality theory and research may be found at the personality-project \url{http://personality-project.org}. See also the short guide to R at \url{http://personality-project.org/r}.
+\references{A general guide to personality theory and research may be found at the personality-project \url{https://personality-project.org}. See also the short guide to R at \url{https://personality-project.org/r}.
 In addition, see 
 
-Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/}    }
+Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}    }
 
 \keyword{package}% __ONLY ONE__ keyword per line
 \keyword{multivariate}% at least one, from doc/KEYWORDS

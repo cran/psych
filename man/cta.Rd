@@ -65,11 +65,11 @@ The dynamics of action (Atkinson and Birch, 1970)  was a model of how instigatin
 \references{
 Atkinson, John W. and Birch, David (1970) The dynamics of action. John Wiley, New York, N.Y.
 
-Revelle, William (1986)  Motivation and efficiency of cognitive performance  in Brown, Donald R. and Veroff, Joe (ed). Frontiers of Motivational Psychology: Essays in honor of J. W. Atkinson. Springer.  (Available as a pdf at \url{http://personality-project.org/revelle/publications/dynamicsofmotivation.pdf}.)
+Revelle, William (1986)  Motivation and efficiency of cognitive performance  in Brown, Donald R. and Veroff, Joe (ed). Frontiers of Motivational Psychology: Essays in honor of J. W. Atkinson. Springer.  (Available as a pdf at \url{https://personality-project.org/revelle/publications/dynamicsofmotivation.pdf}.)
 
-Revelle, W. (2008)  Cues, Tendencies and Actions. The Dynamics of Action revisted. \url{http://personality-project.org/revelle/publications/cta.pdf} 
+Revelle, W. (2008)  Cues, Tendencies and Actions. The Dynamics of Action revisted. \url{https://personality-project.org/revelle/publications/cta.pdf} 
 
-Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality \url{http://www.sciencedirect.com/science/article/pii/S0092656615000318} 
+Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality \url{https://www.sciencedirect.com/science/article/pii/S0092656615000318} 
 
 }
 \author{ William Revelle }

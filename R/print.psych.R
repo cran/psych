@@ -30,10 +30,11 @@ esem  = {print.psych.esem(x,digits=digits,short=short,cut=cut,...)},
   cta = {print.psych.cta(x,digits=digits,all=all,...)},
   mediate = {print.psych.mediate(x,digits=digits,short=short,...)},
   multilevel = {print.psych.multilevel(x,digits=digits,short=short,...)},
+  testRetest = {print.psych.testRetest(x,digits=digits,short=short,...)},
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
-         print(x) },    #find out which function created the data and then print accordingly
+         print(x,digits=digits) },    #find out which function created the data and then print accordingly
          
 alpha = {
 	cat("\nReliability analysis ",x$title," \n")
@@ -59,15 +60,44 @@ autoR = {cat("\nAutocorrelations \n")
        print(round(x$autoR,digits=digits))
        
  },
+ 
+ auc = {cat('Decision Theory and Area under the Curve\n')
+cat('\nThe original data implied the following 2 x 2 table\n')
+print(x$probabilities,digits=digits)
+cat('\nConditional probabilities of \n') 
+print(x$conditional,digits=digits)
+cat('\nAccuracy = ',round(x$Accuracy,digits=digits),' Sensitivity = ',round(x$Sensitivity,digits=digits), '  Specificity = ',round(x$Specificity,digits=digits),  '\nwith Area Under the Curve = ', round(x$AUC,digits=digits) )
+cat('\nd.prime = ',round(x$d.prime,digits=digits), ' Criterion = ',round(x$criterion,digits=digits), ' Beta = ', round(x$beta,digits=digits))
+cat('\nObserved Phi correlation = ',round(x$phi,digits=digits), '\nInferred latent (tetrachoric) correlation  = ',round(x$tetrachoric,digits=digits)) 
+},
 
-bestScales ={ 
+bestScales = {if(!is.null(x$first.result)) {
+   cat("\nCall = ")
+   print(x$Call)
+   # print(x$first.result)
+   #  print(round(x$means,2))
+    print(x$summary,digits=digits)
+      x$replicated.items
+      
+    items <- x$items
+     size <- NCOL(items[[1]])
+     nvar <- length(items)
+     for(i in 1:nvar) {
+     if(length(items[[i]]) > 3) items[[i]]  <- items[[i]][-1]
+     items[[i]][1:3] <- round(items[[i]][1:3],digits)
+      }
+
+     cat("\n Best items on each scale with counts of replications\n")
+     print(items)} else {
      df <- data.frame(correlation=x$r,n.items = x$n.items)
     cat("The items most correlated with the criteria yield r's of \n")
     print(round(df,digits=digits)) 
     if(length(x$value) > 0) {cat("\nThe best items, their correlations and content  are \n")
      print(x$value) } else {cat("\nThe best items and their correlations are \n")
      for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
+     }  
      } 
+
       },
       
 
@@ -282,6 +312,10 @@ describeData = {if  (length(dim(x))==1) {class(x) <- "list"
                  
             print(x$variables) }
          },
+         
+describeFast = {  cat("\n Number of observations = " , x$n.obs, "of which ", x$complete.cases,"  are complete cases.   Number of variables = ",x$nvar," of which ",x$numeric," are numeric and ",x$factors," are factors \n")
+                if(!short) {print(x$result.df) } else {cat("\n To list the items and their counts, print with short = FALSE") }
+                },
  
 faBy = { cat("Call: ")
         print(x$Call)
@@ -371,7 +405,7 @@ kappa = {if(is.null(x$cohen.kappa)) {
             print(x$confid,digits=digits)
             cat("\n Number of subjects =", x$n.obs,"\n")} else {
             cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
-            print(x$cohen.kappa,digits) 
+            print(x$cohen.kappa,digits=digits) 
             }
    },
    
@@ -565,8 +599,8 @@ r.test =  {cat("Correlation tests \n")
               if(!is.null(x$ci)) {cat("\n and confidence interval ",round(x$ci,digits) ) }
          },   
          
-residuals = { 
-   if (lower) {lowerMat (x,digits=digits)} else {print(x,digits)}
+residuals = { if(NCOL(x) == NROW(x)) {
+   if (lower) {lowerMat (x,digits=digits)}} else {print(round(unclass(x),digits))}  #tweaked 1/30/18
 	},   
 	
 	
@@ -615,40 +649,26 @@ scores =  {
   },
   
 setCor= { cat("Call: ")
-              print(x$Call)
+             print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
-           cat("\nBeta weights \n")
-           print(round(x$beta,digits))
-           cat("\nMultiple R \n") 
-           print(round(x$R,digits))
-            cat("multiple R2 \n") 
-            print(x$R2,digits)
-            cat("\nMultiple Inflation Factor (VIF) = 1/(1-SMC) = \n")
-            print(round(x$VIF,digits=digits))
-             cat("\n Unweighted multiple R \n") 
-           print(round(x$ruw,digits))
-             cat(" Unweighted multiple R2 \n") 
-           print(round(x$ruw^2,digits))
-              if(!is.null(x$se)) {
-               cat("\n SE of Beta weights \n")
-           print(round(x$se,digits))
-           cat("\n t of Beta Weights \n") 
-           print(round(x$t,digits))
-            cat("\nProbability of t < \n") 
-            print(signif(x$Probability,digits))
-            cat("\n Shrunken R2 \n")
-           print(x$shrunkenR2,digits)
-           cat("\nStandard Error of R2  \n") 
-           print(x$seR2,digits)
-            cat("\nF \n") 
-            print(round(x$F,digits))
-             cat("\nProbability of F < \n") 
-           print(signif(x$probF,digits+1))
-            cat("\n degrees of freedom of regression \n") 
-            print(x$df)
-           
-           }
+          for(i in 1:NCOL(x$beta)) {cat("\n DV = ",colnames(x$beta)[i], "\n")
+           if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$VIF,digits))
+              colnames(result.df) <- c("slope","se", "t", "p", "VIF")        
+              print(result.df)      
+              result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
+              colnames(result.df) <- c("R","R2", "Ruw", "R2uw","Shrunken R2", "SE of R2", "overall F","df1","df2","p")
+              cat("\n Multiple Regression\n")
+             print(result.df) } else {
+              result.df <- data.frame( round(x$beta[,i],digits),round(x$VIF,digits))
+              colnames(result.df) <- c("slope", "VIF")        
+              print(result.df)      
+              result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits))
+              colnames(result.df) <- c("R","R2", "Ruw", "R2uw")
+              cat("\n Multiple Regression\n")
+             print(result.df)
+              } 
+              }
             
             if(!is.null(x$cancor)) {
             cat("\nVarious estimates of between set correlations\n")
@@ -666,8 +686,6 @@ setCor= { cat("Call: ")
              cat("\nUnweighted correlation between the two sets = ",round(x$Ruw,digits)) 
            
            }
-
-
    },
    
    
@@ -698,6 +716,8 @@ sim =  { if(is.matrix(x)) {x <-unclass(x)
    cat("\nAverage split half reliability            = ",round(x$meanr,digits=digits))
    cat("\nGuttman lambda 3 (alpha)                  = ",round(x$alpha,digits=digits))
    cat("\nMinimum split half reliability  (beta)    = ",round(x$minrb,digits=digits))
+   cat("\n                                            ",names(x$ci))
+   cat("\n Quantiles of split half reliability      = ",round(x$ci,digits=digits))
       
  },
  

@@ -5,8 +5,9 @@
 \description{Although the cor function finds the correlations for a matrix,  it does not report probability values.  cor.test does, but for only one pair of variables at a time.  corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests. Both corr.test and corr.p return raw and adjusted confidence intervals for each correlation. 
 }
 \usage{
-corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", alpha=.05,ci=TRUE)
-corr.p(r,n,adjust="holm",alpha=.05)
+corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
+alpha=.05,ci=TRUE)
+corr.p(r,n,adjust="holm",alpha=.05,minlength=5)
 }
 
 \arguments{
@@ -19,6 +20,8 @@ corr.p(r,n,adjust="holm",alpha=.05)
   \item{r}{A correlation matrix}
   \item{n}{Number of observations if using corr.p. May be either a matrix (as returned from corr.test, or a scaler. Set to n - np if finding the significance of partial correlations. (See below). }
   \item{ci}{By default, confidence intervals are found.  However, this leads to a slight slowdown of speed.  So, for just the rs, ts and ps, set ci=FALSE}
+  \item{minlength}{What is the minimum length for abbreviations.  Defaults to 5.}
+  
   }
 \details{corr.test uses the \code{\link{cor}} function to find the correlations, and then applies a t-test to the individual correlations using the formula
 \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}

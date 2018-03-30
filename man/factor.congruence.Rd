@@ -52,11 +52,11 @@ Lorenzo-Seva, U. and ten Berge, J. M. F. (2006). Tucker's congruence coefficient
 Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates.
 
 
-Revelle, W. (In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/})
+Revelle, W. (In preparation) An Introduction to Psychometric Theory with applications in R (\url{https://personality-project.org/r/book/})
 }
 \author{
  \email{revelle@northwestern.edu} \cr
- \url{http://personality-project.org/revelle.html}}
+ \url{https://personality-project.org/revelle.html}}
 
 \seealso{ \code{\link{principal}}, \code{\link{fa}}}
  

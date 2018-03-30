@@ -26,13 +26,13 @@
     \item{\code{rotate.8}}{Spatial Rotation of type 2.3}
   }
 }
-\details{16 items were sampled from 80 items given as part of the SAPA (\url{http://sapa-project.org}) project  (Revelle, Wilt and Rosenthal, 2009; Condon and Revelle, 2014) to develop online measures of ability. These 16 items reflect four lower order factors (verbal reasoning, letter series, matrix reasoning, and spatial rotations.  These lower level factors all share a higher level factor ('g'). Similar data are available from the International Cognitive Abiity Resource at \url{http://icar-project.com} .
+\details{16 items were sampled from 80 items given as part of the SAPA (\url{https://sapa-project.org}) project  (Revelle, Wilt and Rosenthal, 2009; Condon and Revelle, 2014) to develop online measures of ability. These 16 items reflect four lower order factors (verbal reasoning, letter series, matrix reasoning, and spatial rotations.  These lower level factors all share a higher level factor ('g'). Similar data are available from the International Cognitive Abiity Resource at \url{https://icar-project.com} .
 
 This data set and the associated data set (\code{\link{ability}} based upon scoring these multiple choice items and converting them to correct/incorrect may be used to demonstrate item response functions, \code{\link{tetrachoric}} correlations, or \code{\link{irt.fa}} as well as \code{\link{omega}} estimates of of reliability and hierarchical structure.
 
 In addition, the data set is a good example of doing item analysis to examine the empirical response probabilities of each item alternative as a function of the underlying latent trait.  When doing this, it appears that two of the matrix reasoning problems do not have monotonically increasing trace lines for the probability correct.  At moderately high ability (theta = 1) there is a decrease in the probability correct from theta = 0 and theta = 2.
 }
-\source{ The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{http://sapa-project.org}.  The data were collected with David Condon from 8/08/12 to 8/31/12.
+\source{ The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{https://sapa-project.org}.  The data were collected with David Condon from 8/08/12 to 8/31/12.
 } 
 
 \references{

@@ -93,18 +93,18 @@ function (nvar = 5 , n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
 	
 	
 "sim.irt" <- 
-function (nvar = 5 ,n = 500,low=-3,high=3,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,mod="logistic") 
+function (nvar = 5 ,n = 500,low=-3,high=3,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,mod="logistic",theta=NULL) 
 	{ 
-	if(mod=="logistic") {result <- sim.npl(nvar,n,low,high,a,c,z,d,mu,sd)} else {result <- sim.npn(nvar,n,low,high,a,c,z,d,mu,sd)}
+	if(mod=="logistic") {result <- sim.npl(nvar,n,low,high,a,c,z,d,mu,sd,theta)} else {result <- sim.npn(nvar,n,low,high,a,c,z,d,mu,sd,theta)}
 	return (result) 
 	}  
 
 "sim.npn" <- 
-function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1) 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL) 
 	{ 
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n,mu,sd) # the latent variable
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)} # the latent variable
 	
 	item <- matrix(t(c+(z-c)*pnorm(a*t(theta %+% t(- d)))),n,nvar)  #need to transpose and retranpose to get it right
 	#now convert these probabilities to outcomes
@@ -117,11 +117,11 @@ function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 	
 	
 "sim.npl" <- 
-function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1) 
+function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL) 
 	{ 
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n,mu,sd)
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)} 
 	item <- matrix(t(c+(z-c)/(1+exp(a*t((-theta %+% t( d)))))),n,nvar)
     item[] <- rbinom(n*nvar, 1, item) #now convert these probabilities to outcomes	  
     colnames(item) <- paste("V",1:nvar,sep="")
@@ -131,18 +131,18 @@ function (nvar = 5 ,n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
 
 
 "sim.poly" <- 
-function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic") 
+function (nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5,mod="logistic",theta=NULL) 
 	{ 
-	if(mod=="normal") {result <- sim.poly.npn(nvar,n,low,high,a,c,z,d,mu,sd,cat)} else {result <- sim.poly.npl(nvar,n,low,high,a,c,z,d,mu,sd,cat)}
+	if(mod=="normal") {result <- sim.poly.npn(nvar,n,low,high,a,c,z,d,mu,sd,cat,theta)} else {result <- sim.poly.npl(nvar,n,low,high,a,c,z,d,mu,sd,cat,theta)}
 	return (result) 
 	}  	
 	
 "sim.poly.npn" <- 
-function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5,theta=NULL) 
 	{ cat <- cat - 1
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n,mu,sd) # the latent variable
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)} # the latent variable
 	
 	item <- matrix(t(c+(z-c)*pnorm(a*t(theta %+% t(- d)))),n,nvar)  #need to transpose and retranpose to get it right
 	#now convert these probabilities to outcomes
@@ -154,11 +154,11 @@ function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5
 	}  	
 	
 "sim.poly.npl" <- 
-function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5) 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5,theta=NULL) 
 	{ cat <- cat - 1
 	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
 	if(is.null(a)) {a <- rep(1,nvar)}
-	theta <- rnorm(n,mu,sd)
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)}
 	item <- matrix(t(c+(z-c)/(1+exp(a*t((-theta %+% t( d)))))),n,nvar)
 	item[] <- rbinom(n*nvar, cat, item)
 

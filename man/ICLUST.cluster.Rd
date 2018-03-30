@@ -24,9 +24,9 @@ ICLUST.cluster(r.mat, ICLUST.options,smc.items)
   ...
 }
 \references{Revelle, W. 1979, Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 14, 57-74. 
-\url{http://personality-project.org/revelle/publications/iclust.pdf} \cr
+\url{https://personality-project.org/revelle/publications/iclust.pdf} \cr
 See also  more extensive documentation at 
-\url{http://personality-project.org/r/r.ICLUST.html} }
+\url{https://personality-project.org/r/r.ICLUST.html} }
 \author{William Revelle  }
 \note{ Although the main code for ICLUST is here in ICLUST.cluster, the more extensive documentation is for \code{\link{ICLUST}}.
 }

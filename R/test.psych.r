@@ -45,6 +45,7 @@ for (i in first:last) {
 	keys <- matrix(rep(0,dim(test.data)[2]*2),ncol=2)
 	keys[,1] <- 1
 	keys[1:3,2] <- 1
+	rownames(keys) <- colnames(test.data)
 	if( dim(test.data)[1] != dim(test.data)[2]) {test.score <- scoreItems(keys,test.data)} else {test.score <- cluster.cor(keys,test.data)}
 	
 	out <- list(out,paste("test",i),pc,pc2,fa2,fp,ic,om,fc,vss2,vsspc,d,test.score)

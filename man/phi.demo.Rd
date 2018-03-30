@@ -13,14 +13,14 @@ phi.demo(n=1000,r=.6, cuts=c(-2,-1,0,1,2))
  
 %- maybe also 'usage' for other objects documented here.
 \details{A demonstration of the problem of different base rates on the phi correlation, and how these are partially solved by using the polychoric correlation. Not one of my more interesting demonstrations.  See 
-\url{http://personality-project.org/r/simulating-personality.html} and 
-\url{http://personality-project.org/r/r.datageneration.html} for better demonstrations of data generation.
+\url{https://personality-project.org/r/simulating-personality.html} and 
+\url{https://personality-project.org/r/r.datageneration.html} for better demonstrations of data generation.
 }
 \value{a matrix of correlations and a graphic plot.   The items above the diagonal are the tetrachoric correlations, below the diagonal are raw correlations.
   
 }
-\references{\url{http://personality-project.org/r/simulating-personality.html} and 
-\url{http://personality-project.org/r/r.datageneration.html} for better demonstrations of data generation. }
+\references{\url{https://personality-project.org/r/simulating-personality.html} and 
+\url{https://personality-project.org/r/r.datageneration.html} for better demonstrations of data generation. }
 \author{ William Revelle}
 
 \seealso{\code{\link{VSS.simulate}},\code{\link{item.sim}}}

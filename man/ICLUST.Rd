@@ -54,9 +54,9 @@ weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
   \item{diagonal}{Should the diagonal be included in the fit statistics.  The default is not to include it.  Prior to 1.2.8, the diagonal was included.} 
   
 }
-\details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{http://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{http://personality-project.org/r/r.ICLUST.html} 
+\details{ Extensive documentation and justification of the algorithm is available in the original MBR 1979 \url{https://personality-project.org/revelle/publications/iclust.pdf} paper.  Further discussion of the algorithm and sample output is available on the personality-project.org web page: \url{https://personality-project.org/r/r.ICLUST.html} 
 
-The results are best visualized using  \code{\link{ICLUST.graph}}, the results of which can be saved as a dot file for the Graphviz program.  http://www.graphviz.org/. The \code{\link{iclust.diagram}} is called automatically to produce cluster diagrams.  The resulting diagram is not quite as pretty as what can be achieved in dot code but is quite adequate if you don't want to use an external graphics program. With the installation of Rgraphviz, ICLUST can also provide cluster graphs.
+The results are best visualized using  \code{\link{ICLUST.graph}}, the results of which can be saved as a dot file for the Graphviz program.  https://www.graphviz.org/. The \code{\link{iclust.diagram}} is called automatically to produce cluster diagrams.  The resulting diagram is not quite as pretty as what can be achieved in dot code but is quite adequate if you don't want to use an external graphics program. With the installation of Rgraphviz, ICLUST can also provide cluster graphs.
 
  A common problem in the social sciences is to construct scales or composites of items to measure constructs of theoretical interest and practical importance. This process frequently involves administering a battery of items from which those that meet certain criteria are selected. These criteria might be rational, empirical,or factorial. A similar problem is to analyze the adequacy of scales that already have been formed and to decide whether the putative constructs are measured properly. Both of these problems have been discussed in numerous texts,  as well as in myriad articles. Proponents of various methods have argued for the importance of face validity, discriminant validity, construct validity, factorial homogeneity, and theoretical importance. 
  
@@ -124,13 +124,13 @@ In September, 2012, the fit statistics (pattern fit and cluster fit) were slight
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
 
-\url{http://personality-project.org/revelle/publications/iclust.pdf} \cr
+\url{https://personality-project.org/revelle/publications/iclust.pdf} \cr
 See also  more extensive documentation at 
-\url{http://personality-project.org/r/r.ICLUST.html} and \cr
-Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
+\url{https://personality-project.org/r/r.ICLUST.html} and \cr
+Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{https://personality-project.org/r/book/} }
 \author{William Revelle   }
         
-\note{iclust draws graphical displays with or without using Rgraphiviz. Because of difficulties installing Rgraphviz on many systems, the default it not even try using it.  With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty as using Rgraphviz, but more stable. However, Rgraphviz can be used by using \code{\link{ICLUST.rgraph}} to  produces slightly better graphics. It is also possible to export dot code in the dot language for further massaging of the graphic. This may be done using \code{\link{ICLUST.graph}}.  This last option is probably preferred for nice graphics which can be massaged in any dot code program (e.g., graphviz (http://graphviz.org)  or a commercial program such as OmniGraffle. 
+\note{iclust draws graphical displays with or without using Rgraphiviz. Because of difficulties installing Rgraphviz on many systems, the default it not even try using it.  With the introduction of the \code{\link{diagram}} functions, iclust now draws using iclust.diagram which is not as pretty as using Rgraphviz, but more stable. However, Rgraphviz can be used by using \code{\link{ICLUST.rgraph}} to  produces slightly better graphics. It is also possible to export dot code in the dot language for further massaging of the graphic. This may be done using \code{\link{ICLUST.graph}}.  This last option is probably preferred for nice graphics which can be massaged in any dot code program (e.g., graphviz (https://graphviz.org)  or a commercial program such as OmniGraffle. 
 
 
 To view the cluster structure more closely, it is possible to save the graphic output as a pdf and then magnify this using a pdf viewer.  This is useful when clustering a large number of variables.

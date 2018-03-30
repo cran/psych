@@ -19,9 +19,9 @@ factor2cluster(loads, cut = 0)
 }
 \value{a matrix of -1,0,1 cluster definitions for each item.
 }
-\references{ \url{http://personality-project.org/r/r.vss.html}  }
+\references{ \url{https://personality-project.org/r/r.vss.html}  }
 \author{ 
- \url{http://personality-project.org/revelle.html} \cr
+ \url{https://personality-project.org/revelle.html} \cr
 
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           }
 }

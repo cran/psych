@@ -32,7 +32,7 @@ This vegetable data set is used by Guilford and by Nunnally to demonstrate Thurs
 \references{
 Nunnally, J. C. (1967). Psychometric theory., McGraw-Hill, New York.\cr
 
-Revelle, W. An introduction to psychometric theory with applications in R. (in preparation), Springer. \url{http://personality-project.org/r/book} 
+Revelle, W. An introduction to psychometric theory with applications in R. (in preparation), Springer. \url{https://personality-project.org/r/book} 
 }
 \seealso{  \code{\link{thurstone}}}
 \examples{

@@ -30,7 +30,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     ylim=c(min.x - 2*max.se,max.x+2*max.se)}} }
     
     
-    if(is.null(main)) {if(sd) {main <- paste("Means + Standard Deviations") } else {main <- paste(1-alpha,"% confidence limits",sep="")} }
+    if(is.null(main)) {if(sd) {main <- paste("Means + Standard Deviations") } else {main <- paste((1-alpha)*100,"% confidence limits",sep="")} }
     
  if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
     group.stats <- describeBy(x,group,mat=TRUE)   

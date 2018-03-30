@@ -6,7 +6,7 @@ importFrom(lattice,xyplot,strip.custom)
 importFrom(nlme,lme,VarCorr)
 importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,image,layout,legend, lines,mtext,par,persp,plot.new,plot.window, polygon,rect,segments,strheight,strwidth,text,axTicks,title,smoothScatter)
 
-importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,loess,predict,predict.lm,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,symnum,weighted.mean,promax,varimax,uniroot)
+importFrom(stats,aov,cov,cor,var,sd,median,mad,cov2cor,biplot,loess,predict,predict.lm,rnorm,dnorm,rbinom,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,symnum,terms,weighted.mean,promax,varimax,uniroot)
 
 #importFrom(datasets,USArrests,attitude,Harman23.cor,Harman74.cov,ability.cov,iris)
 importFrom(utils,head,tail,read.table,write.table,read.fwf,stack,example,download.file,getFromNamespace,View)
@@ -17,7 +17,7 @@ importFrom(methods,new)
 
 importFrom(tools,file_ext)
 
-importFrom(foreign,read.spss,read.xport)
+importFrom(foreign,read.spss,read.xport,read.systat)
 
 S3method(print,psych)
 S3method(biplot,psych)
@@ -32,7 +32,9 @@ S3method(residuals,psych)
 S3method(summary,psych)
 S3method(anova,psych)
 export(alpha,
+alpha.ci,
 anova.psych,
+AUC,
 autoR,
 bestItems,
 bestScales,
@@ -108,6 +110,7 @@ describe,
 describeBy,
 describe.by,
 describeData,
+describeFast,
 diagram,
 dia.shape,
 dia.rect,
@@ -168,6 +171,10 @@ factor.rotate,
 factor.scores,
 factor.stats,
 factor2cluster,
+fileCreate,
+filesInfo,
+filesList,
+fileScan,
 fisherz,
 fisherz2r,
 g2r,
@@ -398,6 +405,7 @@ TargetQ,
 test.psych,
 test.all,
 test.irt,
+testRetest,
 tenberge,
 tetrachoric,
 thurstone,

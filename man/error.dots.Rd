@@ -6,24 +6,23 @@
 A dot.chart with error bars for different groups or variables is found using from \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}}.
 }
 \usage{
-error.dots(x, var = NULL, se = NULL, group = NULL, sd = FALSE, head = 12, tail = 12,
- sort = TRUE, decreasing = TRUE, main = NULL, alpha = 0.05, eyes = FALSE, min.n = NULL,
- max.labels = 40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"),
-  pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), color = par("fg"),
-   gcolor = par("fg"), lcolor = "gray", xlab = NULL, ylab = NULL, xlim = NULL, ...)
+error.dots(x, var = NULL, se = NULL, group = NULL, sd = FALSE, effect=NULL, head = 12, 
+tail = 12, sort = TRUE, decreasing = TRUE, main = NULL, alpha = 0.05, eyes = FALSE,
+ min.n = NULL, max.labels = 40, labels = NULL, groups = NULL, gdata = NULL,
+  cex =  par("cex"),  pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), 
+  color = par("fg"), gcolor = par("fg"), lcolor = "gray", xlab = NULL,
+   ylab = NULL, xlim = NULL, ...)
 }
 
 \arguments{
   \item{x}{A data frame or matrix of raw data, or the resulting object from \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} 
 
 }
-  \item{var}{The variable to show}
-
+  \item{var}{The variable to show (particularly if doing describeBy or StatsBy plots).}
   \item{se}{Source of a standard error}
-
-
-  \item{group}{A grouping variable, if desired. Not implemented.}
+  \item{group}{A grouping variable, if desired. Will group the data on group for one variable (var) }
   \item{sd}{if FALSE, confidence intervals in terms of standard errors, otherwise draw one standard deviation}
+  \item{effect}{Should the data be compared to a specified group (with mean set to 0) in effect size units?} 
   \item{head}{The number of largest values to report}
   \item{tail}{The number of smallest values to report}     
   \item{sort}{Sort the groups/variables by value}
@@ -57,7 +56,7 @@ To speed up multiple plots, the function can work from the output of a previous 
 \value{
 Returns (invisibily) either a describeBy or describe object
 }
-\references{Used in particular for showing http:\\sapa-project.org output.}
+\references{Used in particular for showing https://sapa-project.org output.}
 \author{William Revelle}
 
 
@@ -65,7 +64,9 @@ Returns (invisibily) either a describeBy or describe object
  \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} as well as  \code{\link{error.bars}},  \code{\link{error.bars.by}}, or  \code{\link{statsBy}} 
 }
 \examples{
-error.dots(bfi[1:25])
+error.dots(bfi[1:25], xlab="Mean score for the item")
+
+error.dots(ability,eyes=TRUE, xlab="Mean score for the item")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

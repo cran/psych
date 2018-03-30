@@ -20,7 +20,7 @@ Examples of the output of this function are seen in \code{\link{cluster.loadings
 }
 \value{Raw correlations below the diagonal, reliabilities on the diagonal, disattenuated above the diagonal.
 }
-\references{ Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/} }
+\references{ Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/} }
 \author{
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 }

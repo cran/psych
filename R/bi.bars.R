@@ -1,6 +1,16 @@
-bi.bars <- function(x,grp,horiz,color,label=NULL,zero=FALSE,xlab,ylab,...) {
+bi.bars <- function(x,var=NULL, grp=NULL,horiz,color,label=NULL,zero=FALSE,xlab,ylab,...) {
 if(missing(horiz)) horiz <- TRUE
 if(missing(color)) color <- c("blue","red")
+
+#new way is cleaner
+ if(!is.null(var) & (length(var)==1)) {if(missing(ylab) & (length(var) ==1)) {ylab <- var}
+          x <- x[,c(var,grp) , drop = FALSE]
+          if(is.null(grp)) {stop("I am stopping. The grouping variable was not specified")}
+          grp <- x[,grp,drop=FALSE]
+          
+          x <- as.numeric( x[,var])
+          } else {grp <- var}  #the old way
+
 if(horiz) {
 
   if(missing(xlab)) xlab <- "Frequency"
@@ -53,3 +63,4 @@ if(is.null(label)) {axis(1,at=xloc,labels=min.val:max.val,...)} else {
                     axis(1,at=at,labels=at+min.val*zero,...)
                     }}
 }
+#modified December 2, 2017 to be compatible with densityBy and violinBy syntax

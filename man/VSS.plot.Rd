@@ -18,12 +18,12 @@ Different complexities can suggest different number of optimal number of factors
 
 The Very Simple Structure criterion will tend to peak at the number of factors that are most interpretable for a given level of complexity.  Note that some problems, the most interpretable number of factors will differ as a function of complexity.  For instance, when doing the Harman 24 psychological variable problems, an unrotated solution of complexity one suggests one factor (g), while a complexity two solution suggests that a four factor solution is most appropriate.  This latter probably reflects a bi-factor structure.  
 
-For examples of VSS.plot output, see \url{http://personality-project.org/r/r.vss.html}
+For examples of VSS.plot output, see \url{https://personality-project.org/r/r.vss.html}
 
 }
 \value{A plot window showing the VSS criterion varying as the number of factors and the complexity of the items.
 }
-\references{ \url{http://personality-project.org/r/r.vss.html}}
+\references{ \url{https://personality-project.org/r/r.vss.html}}
 \author{
 Maintainer: William Revelle \email{revelle@northwestern.edu}
 

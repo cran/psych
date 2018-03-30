@@ -9,7 +9,7 @@ mixedCor(data=NULL,c=NULL,p=NULL,d=NULL,smooth=TRUE,correct=.5,global=TRUE,ncat=
              use="pairwise",method="pearson",weight=NULL)
              
 mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=.5,global=TRUE, 
-        ncat=8,use="pairwise",method="pearson",weight=NULL)
+        ncat=8,use="pairwise",method="pearson",weight=NULL)  #deprecated
 }
 \arguments{
   \item{data}{The data set to be analyzed (either a matrix or dataframe)}
@@ -26,15 +26,17 @@ mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=.5,global=TRUE,
   \item{weight}{If specified, this is a vector of weights (one per participant) to differentially weight participants. The NULL case is equivalent of weights of 1 for all cases. }
 }
 \details{
-This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) (\url{http://sapa-project.org}) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
+This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) (\url{https://sapa-project.org}) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
 
-This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
+This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package. (See the note for timing comparisons.) This adjusts the  number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
 Item response analyses using \code{\link{irt.fa}} may be done separately on the polytomous and dichotomous items  in order to develop internally consistent scales. These scale may, in turn, be correlated with each other using the complete correlation matrix found by mixed.cor and using the \code{\link{score.items}} function.
 
 This function is not quite as flexible as the hetcor function in John Fox's polychor package. 
 
-Note that the variables may be organized by type of data:  continuous, polytomous, and dichotomous. This is done by simply specifying c, (or x in mixed.cor), p, and d. This is advantageous in the case of some continuous variables having a limited number of categories because of subsetting.  
+Note that the variables may be organized by type of data:  continuous, polytomous, and dichotomous. This is done by simply specifying c, p, and d. This is advantageous in the case of some continuous variables having a limited number of categories because of subsetting.  
+
+\code{\link{mixedCor}} is essentially a wrapper for \code{\link{cor}}, \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{polydi}} and \code{\link{polyserial}}. It first identifies the types of variables, organizes them by type (continuous, polytomous, dichotomous), calls the appropriate correlation function, and then binds the resulting matrices together.   
 }
 \value{
  \item{rho}{The complete matrix}
@@ -44,13 +46,19 @@ Note that the variables may be organized by type of data:  continuous, polytomou
 }
 
 \author{William Revelle}
-\note{mixed.cor was designed for the SAPA project (\url{http://sapa-project.org}) with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
+\note{mixedCor was designed for the SAPA project (\url{https://sapa-project.org}) with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
 
-\code{\link{mixedCor}} was added in April, 2017 to be slightly more user friendly.
+\code{\link{mixedCor}} was added in April, 2017 to be slightly more user friendly. \code{\link{mixed.cor}} was deprecated in February, 2018.
 
 When finding correlations between dummy coded SAPA data (e.g., of occupations), the real correlations are all slightly less than zero because of the ipsatized nature of the data.  This leads to a non-positive definite correlation matrix because the matrix is no longer of full rank. Smoothing will correct this, even though this might not be desired.  Turn off smoothing in this case.
 
- Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  However, this automatic detection will lead to problems if the variables such as age are limited to less than 8 categories but those category values differ from the polytomous items.  The fall back is to specify x, p, and d. }
+ Note that the variables no longer need to be organized by type of data: first continuous, then polytomous, then dichotomous.  However, this automatic detection will lead to problems if the variables such as age are limited to less than 8 categories but those category values differ from the polytomous items.  The fall back is to specify x, p, and d. 
+ 
+ If the number of alternatives in the polychoric data differ and there are some dicthotomous data, it is advisable to set correct=0.
+ 
+Timing:  For large data sets, \code{\link{mixedCor}} takes a while.  Progress messages \code{\link{progressBar}}  report what is happening but do not actually report the rate of progress. ( The steps are initializing, Pearson r, polychorics, tetrachoric, polydi).  It is recommended to use the multicore option although the benefit between 2, 4 and 8 cores seems fairly small: For large data sets (e.g., 255K subjects, 950 variables), with 4 cores running  in parallel  (options("mc.cores=4") on a MacBook Pro with 2.8 Ghz Intel Core I7, it took 2,873/2,887 seconds elapsed time, 8,152/7,718 secs of user time, and 1,762/1,489 of system time (with and without smoothing). This is noticeabably better than the 4,842 elapsed time (7,313 user, 1,459 system) for 2 cores but not much worse than running 8 virtual cores, with an elapsed time of 2,629, user time of 13,460, and system time of 2,679. On a Macbook Pro with 2 physical cores and a 3.3 GHz Intel Cor I7, running 4 multicores took 4,423 seconds elapsed time, 12,781 seconds of user time, and 2,605 system time.  Running with 2 multicores, took slightly longer: 6,193 seconds elapsed time, 10,099 user time and 2,413 system time.  
+ 
+ }
 
 \references{
 W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-cognition link. In A.Gruszka, G. Matthews, and B. Szymura, editors,  Handbook of Individual Differences in Cognition: Attention, Memory and Executive

@@ -7,6 +7,7 @@
 \alias{Reise}
 \alias{Thurstone}
 \alias{Thurstone.33}
+\alias{Thurstone.9}
 \docType{data}
 \title{Seven data sets showing a bifactor solution.}
 \description{Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger data sets are   original 14 * 14 matrix from their paper as well as a 9 *9 matrix used as an example by Joreskog. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items.  The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.  
@@ -14,6 +15,7 @@
 \usage{
 data(Thurstone)
 data(Thurstone.33)
+data(Thurstone.9)
 data(Holzinger)
 data(Holzinger.9)
 data(Bechtoldt)
@@ -35,6 +37,8 @@ Another data set from Holzinger (Holzinger.9) represents 9 cognitive abilities (
 Another classic data set is the 9 variable Thurstone problem which is discussed in detail by R. P. McDonald (1985, 1999) and and is used as example in the sem package as well as in the PROC CALIS manual for SAS.  These nine tests were grouped by Thurstone and Thurstone, 1941 (based on other data) into three factors: Verbal Comprehension, Word Fluency, and Reasoning. The original data came from Thurstone and Thurstone (1941) but were reanalyzed by Bechthold (1961) who broke the data set into two. McDonald, in turn, selected these nine variables from the larger set of 17 found in Bechtoldt.2. The sample size is 213.
 
 Another set of 9 cognitive variables attributed to Thurstone (1933) is the data set of 4,175 students reported by Professor Brigham of Princeton to the College Entrance Examination Board.  This set does not show a clear bifactor solution but is included as a demonstration of the differences between a maximimum likelihood factor analysis solution versus a principal axis factor solution.
+
+Tucker (1958) uses 9 variables from Thurstone and Thburstone (1941) for his example of \code{\link{interbattery}} factor analysis.  
 
 More recent applications of the bifactor model are to the measurement of psychological status. The Reise data set is a correlation matrix based upon >35,000 observations to the Consumer Assessment of Health Care Provideers and Systems survey instrument. Reise, Morizot, and Hays (2007) describe a bifactor solution based upon 1,000 cases.    
 
@@ -63,6 +67,8 @@ Two more data sets with  similar structures are found in the \code{\link{Harman}
 
 \item Thurstone.33: Another 9 x 9 correlation matrix of ability items, N=4175
 
+\item Thurstone:9: And yet another 9 x 9 correlation matrix of ability items,  N =710
+
 }
 }
 
@@ -87,6 +93,7 @@ Thurstone, Louis Leon (1933) The theory of multiple factors. Edwards Brothers, I
 
 Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of intelligence. The University of Chicago Press. Chicago, Il.
 
+Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika, 23, 111-136.
 
 }
 \examples{

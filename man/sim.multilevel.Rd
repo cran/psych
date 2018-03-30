@@ -75,7 +75,7 @@ P. D. Bliese. Multilevel modeling in R (2.3) a brief introduction to R, the mult
 
 Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation and prediction.  Harcourt Brace.
 
-Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{https://personality-project.org/r/book/}
 
 }
 \author{William Revelle}

@@ -25,7 +25,8 @@ comorbidity(d1, d2, com, labels = NULL)
 
 
  
-\seealso{  \code{\link{phi}},  \code{\link{Yule}} }
+\seealso{ \code{\link{phi}}, \code{\link{phi2tetra}} ,\code{\link{Yule}}, \code{\link{Yule.inv}} \code{\link{Yule2phi}}, \code{\link{tetrachoric}} and \code{\link{polychoric}}, as well as \code{\link{AUC}} for graphical displays}
+
 \examples{
 comorbidity(.2,.15,.1,c("Anxiety","Depression")) 
 }

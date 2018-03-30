@@ -10,6 +10,9 @@
    raw.data <- TRUE
   # if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
     if(is.null(colnames(items))  ) select <- FALSE  #can not select items if they don't have colnames or if the keys don't have rownames
+    if(is.null(dim(keys)) &(is.null(names(keys)))) {keys <- as.matrix(keys)   #the case of unnamed keys returned from alpha
+      rownames(keys) <-colnames(items)
+      colnames(keys) <- "Scale1"} #
     if (select) {if(is.list(keys) & (!is.data.frame(keys))) {
 #  select <- sub("-","",unlist(keys))  #then, replaced with select option, Apri 8, 2017
   		select <- selectFromKeyslist(colnames(items),keys)

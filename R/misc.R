@@ -41,8 +41,7 @@ function(x,digits=2,use="pairwise",method="pearson") {
 #modified August 10, 2012 to print just 100 times. 
 "progressBar" <- 
 function(value,max,label=NULL) {
-if(class(stdout())[1]=="terminal")  #only print to the screen, not to a file
- { pc <- round(100 * value/max)
+if(class(stdout())[1]=="terminal") { pc <- round(100 * value/max)  #only print to the screen, not to a file
 if(ceiling(100 * value/max)==floor(100 * value/max)) {
 width <- 100
 char="."
@@ -76,14 +75,16 @@ return(f)
 #patched March 1, 2017 to get the df right for lags 
 #developed January 10, 2012 to find the mean square of successive differences
 #see Von Neuman et al. 1941
+#added the minus 1 to the case of a single vector.  Sept 21, 2017
+#the matrix version was correct, just not the single case version
 "mssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
 if(is.null(group)) {
-if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-lag)} else {
+if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x)) -lag )} else {
 x <- as.matrix(x)
 if(NCOL(x) == 1) {
   result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x))-lag)
   } else {
-n <- colSums(!is.na(x)) -1 -lag
+n <- colSums(!is.na(x))  -lag
 result <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/n}
 } } else {
 x <- as.matrix(x) #added 26/5/14
@@ -464,7 +465,7 @@ pretty}
 
 #October 25, 2016
 "char2numeric" <- function(x) {
- nvar <- ncol(x)
+ nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
@@ -479,45 +480,6 @@ pretty}
 return(value)}
 
 
-#will only work for data.frames (not matrices)
-dfOrder <- function(object,columns=NULL) {if(is.null(columns)) columns <- 1:ncol(object)
- nc <- length(columns)
- cn <-colnames(object)
-  temp <- rep(1,nc)
-  if(is.character(columns)) {  #treat character strings 
-    temp [strtrim(columns,1)=="-"] <- -1
-    if(any(temp < 0) )  {columns <- sub("-","",columns) }
-    columns <- which(colnames(object) %in% columns)
-   } else {temp <- sign(columns)
-      columns <- abs(columns)
-    }
-    
-  if(any(temp < 0)) {object [temp <0] <- -object[temp < 0 ]
-   }
-  bad <- FALSE
-  if(!is.data.frame(object)) stop("I am sorry, I can only sort data.frames.")
-   #temp <- colnames(object)
-   templist <- list()
-   increase <- sign(temp)
-   for (i in 1:nc) {if(!is.numeric(object[[(columns[i])]])) bad<- TRUE}
-    if(bad) {if(any(increase < 0)) {stop("I am sorry, I can not sort data.frames with characters in decreasing order") } else {
-     for(i in 1:nc) { templist[[i]] <- columns[[i]]   }
-     ord <- with(object,do.call(order,templist))
-     object <- object[ord,]
-          }
-          } else { 
-  
-    for (i in 1:nc) {
-   		 templist[[i]] <- as.name(cn[columns[i]])
-    		 object[,(columns[i])] <- increase[i] *object[,(columns[i])]
-                    }
-
-   ord <- with(object,do.call(order,templist))
-   object <- object[ord,]
-   for(i in 1:nc) {object[,(columns[i])] <- increase[i] *object[,(columns[i])]}
-   }
-    return(object)
-    }
     
     
  

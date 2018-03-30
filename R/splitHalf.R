@@ -1,7 +1,7 @@
 #November 30, 2013
 #parts adapted from combn
 "splitHalf"<- 
-function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,use="pairwise") {
+function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,ci=.05,use="pairwise") {
 cl <- match.call()
 split <- function(o,n) {
 A <- B <-  rep(0,n)
@@ -13,7 +13,7 @@ Rab <- R[1,2]/sqrt(R[1,1]*R[2,2])
 #rab <- 2*Rab/(1+Rab)
 rab <- 4*R[1,2]/sum(R)
 result <- list(rab=rab,AB=AB)}
-
+v.names <- colnames(r)
 keys <- key   
 maxrb <- -9999
 minrb <- 2
@@ -49,7 +49,7 @@ sumr <- sum(r)
 alpha <- ((sumr - tr(r))/sumr) * n/(n-1)
 tsmc <- sum(smc(r))
 lambda6 <- (sumr - tr(r) + tsmc)/sumr
-
+result <- NULL
 
 sumr <- 0 
 x <- seq_len(n)
@@ -107,18 +107,20 @@ for (i in 1:n.sample) {
                               minAB <- sp$AB}
                         
     }
-    #)    #if using mclapply
+  #  )    #if using mclapply
  }
  #now 
 if(brute) {meanr <- sumr/count } else {meanr <- sumr/n.sample }
-meansp <- 2 * meanr/(1+meanr)
 
 kd <- diag(key.d)    #reverse them so we can use the keys
 maxAB = maxAB * kd
 minAB = minAB * kd
-
-if(raw) {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,raw = result,Call = cl)
-} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,Call=cl)}
+rownames(maxAB) <- rownames(minAB) <- v.names
+if(!anyNA(result))  {
+ci <- quantile(result,c(ci/2,.5, 1 - ci/2))} else {ci <- rep(NA,3) }
+if(raw) {
+results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,raw = result,ci=ci,Call = cl)
+} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,ci=ci, Call=cl)}
 class(results) <- c("psych","split")
 return(results)
 }

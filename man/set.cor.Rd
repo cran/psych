@@ -6,23 +6,24 @@
 \alias{matReg} 
 \title{Set Correlation and Multiple Regression from matrix or raw input}
 \description{
- Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.
+ Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.  Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) may be specified in the formula mode.
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE)
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE)    #an alias to setCor
-mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE)
-matReg(x,y,C,n.obs=0)
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)    #an alias to setCor
+mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) 
+matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{y}{ either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition")}
-  \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard") }
+  \item{y}{Three options: 'formula' form (similar to lm) or either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition"). See notes and examples for each.}
+  \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard").  x and y may also be set by use of the formula style of lm.}
   \item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
   \item{C}{A variance/covariance matrix, or a correlation matrix}
+  \item{m}{The column name or numbers of the set of mediating variables}
   \item{z}{the column names or numbers of the set of covariates}
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
 
@@ -33,12 +34,15 @@ matReg(x,y,C,n.obs=0)
   \item{sc}{The output of setCor may be used for drawing diagrams}
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
   \item{show}{Show the unweighted matrix correlation between the x and y sets?}
+  \item{zero}{zero center the data before finding the interaction terms.}
   \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
   \item{...}{Additional graphical parameters for setCor.diagram}
   
 }
 \details{
  Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a matrix of correlations or covariances.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The function will find the correlations if given raw data.
+ 
+ Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the data are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{link{lm}} or the results discussed in Hayes (2013).  
   
   The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
   
@@ -69,8 +73,8 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  The Variance Inflation Factor is reported but should be taken with the normal cautions of interpretation discussed by Guide and Ketokivm.  That is to say, VIF > 10 is not a magic cuttoff to define colinearity.  It is merely 1/(1-smc(R(x)).
  
- \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x, and y variables. Its output includes betas, se, t, p and R2.
- It does not work on data matrices, nor does it take formula input. 
+ \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x,  y and z variables. Its output includes betas, se, t, p and R2.  The call includes m for mediation variables, but these are only used to adjust the degrees of freedom.
+ \code{\link{matReg}} does not work on data matrices, nor does it take formula input.  It is really just a helper function for  \code{\link{mediate}}
 }
 \value{
   
@@ -84,7 +88,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
   \item{shrunkenR2}{Estimated shrunken R2 (if n.obs is specified)}
   \item{setR2}{The multiple R2 of the set correlation between the x and y sets}
   item{residual}{The residual correlation matrix of Y with x and z removed}
-  \item{ruw}{The unit weighted multiple correlation}
+  \item{ruw}{The unit weighted multiple correlation for each dependent variable}
   \item{Ruw}{The unit weighted set correlation} 
 
 }
@@ -109,38 +113,59 @@ V. D. R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefining so
 
 \note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to setCor from mat.regress to reflect the estimation of the set correlation. 
 
+In October, 2017 I added the ability to specify the input in formula mode and allow for higher level and multiple interactions. 
+
 The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621 but does match the formula on page 615, except for the typo in the estimation of F (see Cohen 1982).   The difference seems to be that they are adding in a correction factor of df 2 = df2 + df1.  
 
 
 
 }
 
-\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package.  }
+\seealso{\code{\link{mediate}} for an alternative regression model with 'mediation'  
+\code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package. 
+\code{\link{GSBE}} for further demonstrations of mediation and moderation. }
 \examples{
 
-#the Kelly data from Hoteling
-kelly <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0.4248, 
+#The first Kelley data set from Hotelling
+kelley1 <- structure(c(1, 0.6328, 0.2412, 0.0586, 0.6328, 1, -0.0553, 0.0655, 
+0.2412, -0.0553, 1, 0.4248, 0.0586, 0.0655, 0.4248, 1), .Dim = c(4L, 
+4L), .Dimnames = list(c("reading.speed", "reading.power", "math.speed", 
+"math.power"), c("reading.speed", "reading.power", "math.speed", 
+"math.power")))
+lowerMat(kelley1)
+mod1 <- setCor(y = math.speed + math.power ~ reading.speed + reading.power, 
+    data = kelley1, n.obs=140)
+mod1$cancor
+#Hotelling reports .3945 and .0688  we get  0.39450592 0.06884787
+
+#the second Kelley data from Hotelling
+kelley <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0.4248, 
 1, 0.1487, 0.2489, 0.2843), words = c(0.042, 0.1487, 1, 0.6693, 
 0.4662), symbols = c(0.0215, 0.2489, 0.6693, 1, 0.6915), meaningless = c(0.0573, 
 0.2843, 0.4662, 0.6915, 1)), .Names = c("speed", "power", "words", 
 "symbols", "meaningless"), class = "data.frame", row.names = c("speed", 
 "power", "words", "symbols", "meaningless"))
 
+lowerMat(kelley)
 
-kelly
+setCor(power + speed ~ words + symbols + meaningless,data=kelley)  #formula mode
+#setCor(y= 1:2,x = 3:5,data = kelley) #order of variables input
 
-setCor(1:2,3:5,kelly)
 #Hotelling reports canonical correlations of .3073 and .0583  or squared correlations of
-# 0.09443329 and 0.00339889 vs. our values of  0.0946 0.0035,
+# 0.09443329 and 0.00339889 vs. our values of cancor = 0.3076 0.0593  with squared values
+#of  0.0946 0.0035,
 
-
-setCor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)
+setCor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)  #easier to just list variable  
+                                              #locations if we have long names
 #now try partialling out some variables
 set.cor(y=c(7:9),x=c(1:3),z=c(4:6),data=Thurstone) #compare with the previous
 #compare complete print out with summary printing 
-sc <- setCor(x=c("gender","education"),y=c("SATV","SATQ"),data=sat.act) # regression from raw data
+sc <- setCor(SATV + SATQ ~ gender + education,data=sat.act) # regression from raw data
 sc
 summary(sc)
+
+setCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
+data=Thurstone)  #showing formula input with two covariates
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{multivariate }% __ONLY ONE__ keyword per line

@@ -12,7 +12,8 @@ function(keys,items,mini=NULL,maxi=NULL) {
  keys <- rep(1,nvar)
  keys[temp] <- -1
  }
-
+if(is.list(keys) | is.character(keys)){ keys <- make.keys(items,keys)
+   keys <- diag(keys)}
  keys.d <- diag(keys,nvar,nvar)
  items[is.na(items)] <- -9999  #a way of using matrix operations even for missing data
  reversed <- items %*% keys.d 

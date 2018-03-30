@@ -3,10 +3,11 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Draw pairs of bargraphs based on two groups}
 \description{When showing e.g., age or education distributions for two groups, it is convenient to plot them back to back.  bi.bars will do so.}
-\usage{bi.bars(x,grp,horiz,color,label=NULL,zero=FALSE,xlab,ylab,...) }
+\usage{bi.bars(x,var=NULL,grp=NULL,horiz,color,label=NULL,zero=FALSE,xlab,ylab,...) }
 
 \arguments{
-  \item{x}{The data to be drawn}
+  \item{x}{The data frame or matrix from which we specify the data}
+  \item{var}{The variable to plot}
   \item{grp}{a grouping variable.}
   \item{horiz}{horizontal (default) or vertical bars}
   \item{color}{colors for the two groups -- defaults to blue and red}
@@ -18,13 +19,13 @@
 }
 \details{A trivial, if useful, function to draw back to back histograms/barplots. One for each group.}
 \value{a graphic}
-
+\seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}} \code{\link{error.bars.by}} and  \code{\link{densityBy}}  \code{\link{violinBy}} for graphic displays }
 \author{William Revelle}
 
 \examples{
 data(bfi)
-with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")
-       bi.bars(education,gender,xlab="Education",main="Education by gender",horiz=FALSE)})
+bi.bars(bfi,"age","gender" ,ylab="Age",main="Age by males and females")
+ bi.bars(bfi,"education","gender",xlab="Education",main="Education by gender",horiz=FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

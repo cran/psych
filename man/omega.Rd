@@ -54,7 +54,7 @@ The second internal structural property pertains to the proportion of variance i
 observed scale score. At the same time, this variance ratio also bears on the construct validity of the scale given that construct validity encompasses the internal structure of a scale." (Zinbarg, Yovel, Revelle, and McDonald, 2006).
 
 McDonald has proposed coefficient omega_hierarchical (\eqn{\omega_h}) as an estimate of the general factor saturation of a test.  Zinbarg, Revelle, Yovel and Li (2005) 
-\url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's \eqn{\omega_h} to Cronbach's \eqn{\alpha} and Revelle's \eqn{\beta}.  They conclude that \eqn{\omega_h} is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009)).   
+\url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf} compare McDonald's \eqn{\omega_h} to Cronbach's \eqn{\alpha} and Revelle's \eqn{\beta}.  They conclude that \eqn{\omega_h} is the best estimate. (See also Zinbarg et al., 2006 and Revelle and Zinbarg (2009)).   
 
 One way to find \eqn{\omega_h}{omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}{omega_h}.  Here we present code to do that.  
 
@@ -143,22 +143,22 @@ The various objects returned from omega include:
 }
 
 
-\references{ \url{http://personality-project.org/r/r.omega.html} \cr
+\references{ \url{https://personality-project.org/r/r.omega.html} \cr
 
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
-Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
+Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 
-Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{http://personality-project.org/revelle/publications/rz09.pdf}
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{https://personality-project.org/revelle/publications/rz09.pdf}
 
- Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
+ Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
 
 Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures containing two group factors:  Perils and prospects.  Applied Psychological Measurement. 31 (2), 135-157.
  
- Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{http://apm.sagepub.com/cgi/reprint/30/2/121}
+ Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{https://journals.sagepub.com/doi/10.1177/0146621605278814}
 }
 \author{ 
- \url{http://personality-project.org/revelle.html} \cr
+ \url{https://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu  } 
 }
 \note{Requires the GPArotation package.

@@ -9,9 +9,11 @@
 #modified Feb 4, 2017 to label plots and to find correlations by default
 #modified April 15, 2017 to allow for non-symmetric matrices
 #modified April 15, 2017 to allow more plotting control on the x and y rotation options
+#modified November 29th, 2017 to allow for semi-transparency by adjusting alpha
+
 
 "cor.plot" <- "corPlot" <- 
-function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,...){
+function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,alpha =.75,min.length=NULL,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {
@@ -64,6 +66,10 @@ if(is.null(labels)) {
 if(is.null(rownames(r))) rownames(r) <- paste("V",1:nvar)
 if(is.null(colnames(r))) colnames(r) <- paste("V",1:nf)
 } else {rownames(r) <-  colnames(r) <- labels}
+if(!is.null(min.length)) {
+    rownames(r) <- abbreviate(rownames(r),minlength = min.length)
+    colnames(r) <- abbreviate(colnames(r),minlength = min.length)
+    }
  max.len <- max(nchar(rownames(r)))/6
 #max.len <- max( strwidth(rownames(r)))
 if(is.null(zlim)) {zlim <- range(r)}
@@ -72,7 +78,7 @@ if(colors) {
     colramp  <- gr(n)
       } else {
     colramp <- grey((n:0)/n)}
-
+ colramp <- adjustcolor(colramp,alpha.f =alpha)   
 if(nvar != nf) {  r <- t(r) }
 #if(!is.null(select)) {r <- r[select,select]
 #                      pval <- pval[select,select]

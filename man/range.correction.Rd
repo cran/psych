@@ -36,7 +36,7 @@ Can be used to find correlations in a restricted sample as well as the unrestric
 }
 \references{
 
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
 Stauffer, Joseph and Mendoza, Jorge. (2001) The proper sequence for correcting correlation coefficients for range restriction and unreliability.
 Psychometrika, 66, 63-68.

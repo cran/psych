@@ -45,7 +45,7 @@ A diagnostic tool for testing the appropriateness of a hierarchical model is p2 
    \item{gload }{loadings of the lower order factors on g}
   ...
 }
-\references{\url{http://personality-project.org/r/r.omega.html} gives an example taken from Jensen and Weng, 1994 of a S-L transformation.}
+\references{\url{https://personality-project.org/r/r.omega.html} gives an example taken from Jensen and Weng, 1994 of a S-L transformation.}
 \author{ William Revelle}
 
 \seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}

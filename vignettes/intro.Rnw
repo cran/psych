@@ -198,39 +198,41 @@ corr.test(myData)
 
 \item Apply various regression models.  
 
-Several functions are meant to do multiple regressions, either from the raw data or from a variance/covariance matrix, or a correlation matrix.
+Several functions are meant to do multiple regressions, either from the raw data or from a variance/covariance matrix, or a correlation matrix.  This is discussed in more detail in the ``How To use  \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
+
 
 \begin{itemize}
-\item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.
+\item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.  If we have the raw data, we can also find the interaction term (x1 * x2).  Although we can find the regressions from just a correlation matrix, we can not find the interaction (moderation effect) unless given raw data.
 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
 myData <- sat.act
 colnames(myData) <- c("mod1","med1","x1","x2","y1","y2")
-setCor(y = c( "y1", "y2"), x = c("x1","x2"), data = myData)
+setCor(y1 + y2 ~  x1 + x2 + x1*x2, data = myData)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
 
 
-\item \pfun{mediate}  will take raw data or a correlation matrix and find  (and graph the path diagram) for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.
+\item \pfun{mediate}  will take raw data or a correlation matrix and find  (and graph the path diagram) for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  We specify the mediation variable by enclosing it in parentheses, and show the moderation by the standard multiplication. For the purpose of this demonstration, we do the boot strap with just 50 iterations.  The default is 5,000.  We use the data from \cite{talor} which was downloaded from  the supplementary material for Hayes (2013) \href{"https://www.afhayes.com/public/hayes2013data.zip"}{https://www.afhayes.com/public/hayes2013data.zip}.
 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
-mediate(y = c( "y1", "y2"), x = c("x1","x2"), m= "med1", data = myData)
+mediate(reaction ~ cond + (import) + (pmi), data =Tal_Or,n.iter=50)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
 
-
- \item \pfun{mediate}  will take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.
+We can also find the moderation effect by adding in a product term. 
+ \item \pfun{mediate}  will take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  By default, we find the raw regressions and mean center. If we specify zero=FALSE, we do not mean center the data. If we specify std=TRUE, we find the standardized regressions.
 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
-mediate(y = c( "y1", "y2"), x = c("x1","x2"), m= "med1", mod = "mod1",  data = myData)
+mediate(respappr ~ prot * sexism +(sexism),data=Garcia,zero=FALSE, n.iter=50,   
+    main="Moderated  mediation (not mean centered)")
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
@@ -240,11 +242,11 @@ mediate(y = c( "y1", "y2"), x = c("x1","x2"), m= "med1", mod = "mod1",  data = m
 \subsection{Psychometric functions are summarized in the second vignette}
 
 Many additional functions, particularly designed for basic and advanced psychometrics are discussed more fully 
- in the \emph{Overview Vignette}, which may be downloaded from  \url{http://personality-project.org/r/psych/vignettes/overview.pdf} . A brief review of the functions available is included here.  In addition, there are helpful tutorials for \emph{Finding omega}, \emph{How to score scales and find reliability}, and for \emph{Using psych for factor analysis} at \url{http://personality-project.org/r}.
+ in the \emph{Overview Vignette}, which may be downloaded from  \url{https://personality-project.org/r/psych/vignettes/overview.pdf} . A brief review of the functions available is included here.  In addition, there are helpful tutorials for \emph{Finding omega}, \emph{How to score scales and find reliability}, and for \emph{Using psych for factor analysis} at \url{https://personality-project.org/r}.
 
 \begin{itemize}
 
-\item Test for the number of factors in your data using parallel analysis (\pfun{fa.parallel}, section \ref{sect:fa.parallel}) or Very Simple Structure (\pfun{vss}, \ref{sect:vss}) .
+\item Test for the number of factors in your data using parallel analysis (\pfun{fa.parallel}) or Very Simple Structure (\pfun{vss}) .
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
@@ -254,7 +256,7 @@ vss(myData)
 \end{Schunk}
 \end{scriptsize}
 
-\item Factor analyze (see section 4.1)  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities such as minres (section 4.1.1), alpha factoring, and wls. Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section 4.1.6).  Also consider a hierarchical factor solution to find coefficient $\omega$ (see \ref{sect:omega}).
+\item Factor analyze (see section 4.1)  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities such as minres (section 4.1.1), alpha factoring, and wls. Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section 4.1.6).  Also consider a hierarchical factor solution to find coefficient $\omega$).
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
@@ -274,7 +276,7 @@ principal(myData)
 \end{Schunk}
 \end{scriptsize}
 
-\item Some people like to find coefficient $\alpha$ as an estimate of reliability.  This may be done for a single scale using the \pfun{alpha} function (see \ref{sect:alpha}).  Perhaps more useful is the ability to create several scales as unweighted averages of specified items using the \pfun{scoreItems} function (see \ref{sect:score}) and to find various estimates of internal consistency for these scales, find their intercorrelations, and find scores for all the subjects.
+\item Some people like to find coefficient $\alpha$ as an estimate of reliability.  This may be done for a single scale using the \pfun{alpha} function.  Perhaps more useful is the ability to create several scales as unweighted averages of specified items using the \pfun{scoreItems} function  and to find various estimates of internal consistency for these scales, find their intercorrelations, and find scores for all the subjects.
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
@@ -294,7 +296,7 @@ At this point you have had a chance to see the highlights of the \Rpkg{psych} pa
 \newpage
 \section{Overview of this and related documents}
 
-The \Rpkg{psych} package \citep{psych} has been developed at Northwestern University since 2005 to include functions most useful for personality, psychometric,  and psychological research.  The package is also meant to supplement a text on psychometric theory \citep{revelle:intro}, a draft of which is available at \url{http://personality-project.org/r/book/}.  
+The \Rpkg{psych} package \citep{psych} has been developed at Northwestern University since 2005 to include functions most useful for personality, psychometric,  and psychological research.  The package is also meant to supplement a text on psychometric theory \citep{revelle:intro}, a draft of which is available at \url{https://personality-project.org/r/book/}.  
 
 Some of the functions (e.g., \pfun{read.file},  \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
@@ -311,9 +313,24 @@ Psychometric applications emphasize techniques for dimension reduction including
 Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{corPlot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
 
-This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{http://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{http://personalty-project.org/r/psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"http://personality-project.org/r/book/psych_for_sem.pdf"}{\url{http://personality-project.org/r/psych/vignettes/psych_for_sem.pdf}}).
+This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{https://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{https://personalty-project.org/r/psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"https://personality-project.org/r/book/psych_for_sem.pdf"}{\url{https://personality-project.org/r/psych/vignettes/psych_for_sem.pdf}}).
 
-For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  guide for using \R{} for personality research at \url{http://personalitytheory.org/r/r.short.html}.  For an \iemph{introduction to psychometric theory with applications in \R{}}, see the draft chapters at \url{http://personality-project.org/r/book}).
+In addition, there are a growing number of ``HowTo"s at the personality project.  Currently these include:
+
+\begin{enumerate}
+\item An \href{https://personality-project.org/r/psych/intro.pdf}{introduction} (vignette) of the \Rpkg{psych} package 
+\item An \href{https://personality-project.org/r/psych/overview.pdf}{overview} (vignette) of the \Rpkg{psych} package 
+\item \href{https://personality-project.org/r/psych/HowTo/getting_started.pdf}{Installing} \R{}  and some useful packages
+\item Using \R{} and the \Rpkg{psych} package to find \href{https://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
+\item Using  \R{} and the \Rpkg{psych} for \href{https://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
+\item Using the \pfun{scoreItems} function to find \href{https://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}.
+\item Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
+
+
+\end{enumerate}
+
+
+For a step by step tutorial in the use of the psych package and the base functions in R for basic personality research, see the  guide for using \R{} for personality research at \url{https://personalitytheory.org/r/r.short.html}.  For an \iemph{introduction to psychometric theory with applications in \R{}}, see the draft chapters at \url{https://personality-project.org/r/book}).
 
 
 
@@ -443,6 +460,11 @@ Once the data are read in, then \pfun{describe} or \pfun{describeBy} will provid
 \item[\pfun{describeBy}] reports descriptive statistics broken down by some categorizing variable (e.g., gender, age, etc.)
 \end{description}
 
+
+<<echo=false>>=
+    options(width=100)
+@
+  
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 library(psych)
@@ -591,7 +613,9 @@ Using the \pfun{pairs.panels} function to graphically show relationships. (Not s
 
 
 \subsubsection{Density or violin plots}
-Graphical presentation of data may be shown using box plots to show the median and 25th and 75th percentiles.  A powerful alternative is to show the density distribution using the  \pfun{violinBy} function (Figure~\ref{fig:violin}).
+Graphical presentation of data may be shown using box plots to show the median and 25th and 75th percentiles.  A powerful alternative is to show the density distribution using the  \pfun{violinBy} function (Figure~\ref{fig:violin}) or the more conventional density plot for multiple groups (Figure~\ref{fig:histo} .
+
+
 
 
 \begin{figure}[htbp]
@@ -600,7 +624,7 @@ Graphical presentation of data may be shown using box plots to show the median a
 <<violin>>=
 png('violin.png')
 data(sat.act)
-violinBy(sat.act[5:6],sat.act$gender,grp.name=c("M", "F"),main="Density Plot by gender for SAT V and Q")
+violinBy(sat.act,5:6,"gender",grp.name=c("M", "F"),main="Density Plot by gender for SAT V and Q")
 dev.off()
 @
 \end{scriptsize}
@@ -609,6 +633,8 @@ dev.off()
 \label{fig:violin}
 \end{center}
 \end{figure}
+
+
 
 
 \clearpage
@@ -638,7 +664,7 @@ error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 \end{center}
 \end{figure}
 
-Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of \iemph{dynamite plot} (Figure~\ref{fig:dynamite}) can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{http://emdbolker.wikidot.com/blog:dynamite}.  In the example shown, note that the graph starts at 0, although is out of the range.  This is a function of using bars, which always are assumed to start at zero.  Consider other ways of showing your data.
+Although not recommended, it is possible to use the \pfun{error.bars} function to draw bar graphs with associated error bars.  (This kind of \iemph{dynamite plot} (Figure~\ref{fig:dynamite}) can be very misleading in that the scale is arbitrary.  Go to  a discussion of the problems in presenting data this way at \url{https://emdbolker.wikidot.com/blog:dynamite}.  In the example shown, note that the graph starts at 0, although is out of the range.  This is a function of using bars, which always are assumed to start at zero.  Consider other ways of showing your data.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -703,20 +729,36 @@ op <- par(mfrow=c(1,1))
 \clearpage
 \subsubsection{Back to back histograms}
 The \pfun{bi.bars} function summarize the characteristics of two groups (e.g., males and females) on a second variable (e.g., age) by drawing back to back histograms (see Figure~\ref{fig:bibars}). 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
 \begin{center}
 \begin{scriptsize}
    %  <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-data(bfi)
+data(bfi)  
 <<bibars>>=
 png( 'bibars.png' )
-with(bfi,{bi.bars(age,gender,ylab="Age",main="Age by males and females")})
+bi.bars(bfi,"age","gender",ylab="Age",main="Age by males and females")
 dev.off()
 @
 \end{scriptsize}
 \includegraphics{bibars.png}
-\caption{A bar plot of the age distribution for males and females shows the use of \pfun{bi.bars}.  The data are males and females from 2800 cases collected using the \iemph{SAPA} procedure and are available as part of the \pfun{bfi} data set. }
+\caption{A bar plot of the age distribution for males and females shows the use of \pfun{bi.bars}.  The data are males and females from 2800 cases collected using the \iemph{SAPA} procedure and are available as part of the \pfun{bfi} data set. An alternative way of displaying these data is in the \pfun{densityBy} in the next figure.}
 \label{fig:bibars}
+\end{center}
+\end{figure}
+
+\begin{figure}[!ht]
+\begin{center}
+\begin{scriptsize}
+<<histo>>=
+png('histo.png')
+data(sat.act)
+densityBy(bfi,"age",grp="gender")
+dev.off()
+@
+\end{scriptsize}
+\includegraphics{histo}
+\caption{Using the \pfun{densitynBy} function to show the age distribution  for males and females. The plot is a conventional density diagram for two two groups.  Compare this to the \pfun{bi.bars} plot in the previous figure.  By plotting densities, we can see that the males are slightly over represented in the younger ranges.}
+\label{fig:histo}
 \end{center}
 \end{figure}
 
@@ -867,7 +909,7 @@ cortest(sat.act)
 
 \subsection{Polychoric, tetrachoric, polyserial, and biserial correlations}
 
-The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  This is also shown in terms of dichotomizing the bivariate normal density function using the \pfun{draw.cor} function (Figure~\ref{fig:draw.cor}). A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.   
+The Pearson correlation of dichotomous data is also known as the $\phi$ coefficient.  If the data, e.g., ability items, are thought to represent an underlying continuous although latent variable, the $\phi$ will underestimate the value of the Pearson applied to these latent variables.  One solution to this problem is to use the \pfun{tetrachoric} correlation which is based upon the assumption of a bivariate normal distribution that has been cut at certain points.  The \pfun{draw.tetra} function demonstrates the process (Figure~\ref{fig:tetra}).  This is also shown in terms of dichotomizing the bivariate normal density function using the \pfun{draw.cor} function. A simple generalization of this to the case of the multiple cuts is the \pfun{polychoric} correlation.   
 
 
  
@@ -886,7 +928,7 @@ draw.tetra()
 
 The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values. It is found (laboriously) by optimizing the fit of the bivariate normal for various values of the correlation to the observed cell frequencies. In the interests of space, we do not show the next  figure but it can be created by
 
-draw.cor(expand=20,cuts=c(0,0)
+\texttt{draw.cor(expand=20,cuts=c(0,0))}
 
 
 Other estimated correlations based upon the assumption of bivariate normality with cut points include the \pfun{biserial} and \pfun{polyserial} correlation.  
@@ -904,7 +946,7 @@ Correlations between individuals who belong to different natural groups (based u
 
 
 \subsection{Decomposing data into within and between level correlations using \pfun{statsBy}}
-There are at least two very powerful packages (\Rpkg{nlme} and \Rpkg{multilevel}) which allow for complex analysis of hierarchical (multilevel) data structures. \pfun{statsBy} is a much simpler function to give some of the basic descriptive statistics for two level models.
+There are at least two very powerful packages (\Rpkg{nlme} and \Rpkg{multilevel}) which allow for complex analysis of hierarchical (multilevel) data structures. \pfun{statsBy} is a much simpler function to give some of the basic descriptive statistics for two level models.  (\Rpkg{nlme} and \Rpkg{multilevel} allow for statistical inference, but the descriptives of \pfun{statsBy} are useful.)
 
 This follows the decomposition of an observed correlation into the pooled correlation within groups (rwg) and the weighted correlation of the means between groups which is discussed by  \cite{pedhazur:97} and by  \cite{bliese:09}  in the multilevel package.  
 
@@ -963,7 +1005,8 @@ round(sc$residual,2)
 
 \subsection{Mediation and Moderation analysis}
 
-Although multiple regression is a straightforward method for determining the effect of multiple predictors ($x_{1, 2, ... i}$) on a criterion variable, y, some prefer to think of the effect of one predictor, x, as mediated by another variable, m \citep{preacher:04}.  Thus, we we may find  the indirect path  from x to m, and then from m to y as well as the direct path from x to y.  Call these paths a, b, and c, respectively.  Then the indirect effect of x on y through m is just ab and the direct effect is c. Statistical tests of the ab effect are best done by bootstrapping. 
+Although multiple regression is a straightforward method for determining the effect of multiple predictors ($x_{1, 2, ... i}$) on a criterion variable, y, some prefer to think of the effect of one predictor, x, as mediated by another variable, m \citep{preacher:04}.  Thus, we we may find  the indirect path  from x to m, and then from m to y as well as the direct path from x to y.  Call these paths a, b, and c, respectively.  Then the indirect effect of x on y through m is just ab and the direct effect is c. Statistical tests of the ab effect are best done by bootstrapping.  This is discussed in detail in the ``How To use  \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
+
 
 Consider the example from \cite{preacher:04} as analyzed using the \pfun{mediate} function and the subsequent graphic from \pfun{mediate.diagram}.  The data are found in the example for \pfun{mediate}.
 
@@ -986,7 +1029,7 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 "ATTRIB")))
 @
 <<print=TRUE,echo=FALSE>>=
-preacher <- mediate(y="SATIS",x="THERAPY",m="ATTRIB",data=sobel)  #The example in Preacher and Hayes
+preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Preacher and Hayes
 @
 \end{scriptsize}
 
@@ -1006,7 +1049,7 @@ mediate.diagram(preacher)
 \begin{center}
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-preacher <- setCor(1,c(2,3),sobel,std=FALSE)
+preacher <- setCor(SATIS ~ THERAPY + ATTRIB,data =sobel,std=FALSE)
 setCor.diagram(preacher)
 @
 \end{scriptsize}
@@ -1026,7 +1069,7 @@ setCor.diagram(preacher)
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
-setCor(y = c( "SATV" ,     "SATQ"), x = c("education" ,"age" ), data = sat.act, std=TRUE)
+setCor(SATV +      SATQ ~ education + age, data = sat.act, std=TRUE)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
@@ -1037,22 +1080,24 @@ setCor(y = c( "SATV" ,     "SATQ"), x = c("education" ,"age" ), data = sat.act, 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
-mediate(y = c( "SATV" ), x = c("education" ,"age" ), m= "ACT", data =sat.act,std=TRUE,n.iter=50)
+mediate( SATV ~ education+ age + (ACT), data =sat.act,std=TRUE,n.iter=50)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
 
 
- \item \pfun{mediate}  will take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  The particular example is for demonstration purposes only and shows neither moderation nor mediation.  The number of iterations for the boot strap was set to 50 for speed.  The default number of boot straps is 5000.
+ \item \pfun{mediate}  will also  take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It will form the product term either from the mean centered data or from the raw data. It then tests the mediation effect using a boot strap.   The data set is taken from \cite{garcia:10}.  The number of iterations for the boot strap was set to 50 for speed.  The default number of boot straps is 5000.  See the help page for the \pfun{mediate} function for more details.  For a much longer discussion of how to use the \pfun{mediate} function, see the ``HowTo" Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
+
 
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
 <<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
-mediate(y = c( "SATQ" ), x = c("ACT" ), m="education", mod="gender", data =sat.act,std=TRUE,n.iter=50)
+mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
+  ,main="Moderated mediation (mean centered)")
 @
 \end{scriptsize}
-\caption{Moderated multiple regression requires the raw data.}
+\caption{Moderated multiple regression requires the raw data. By default, the data are mean centered before find the product term.  }
 \label{default}
 \end{center}
 \end{figure}
@@ -1150,15 +1195,18 @@ A number of functions have been developed for some very specific problems that d
  \end{description}
 
 \section{Data sets}
-A number of data sets for demonstrating psychometric techniques are included in the \Rpkg{psych} package. These include six data sets showing a hierarchical factor structure (five cognitive examples, \pfun{Thurstone}, \pfun{Thurstone.33}, \pfun{Holzinger}, \pfun{Bechtoldt.1}, \pfun{Bechtoldt.2}, and  one from health psychology \pfun{Reise}). One of these (\pfun{Thurstone}) is used as an example in the \Rpkg{sem} package as well as \cite{mcdonald:tt}. The original data are from \cite{thurstone:41} and reanalyzed by \cite{bechtoldt:61}.  Personality item data representing five personality factors on 25 items (\pfun{bfi}) or 13 personality inventory scores (\pfun{epi.bfi}), and 14 multiple choice iq items (\pfun{iqitems}).  The \pfun{vegetables} example has paired comparison preferences for 9 vegetables. This is an example of Thurstonian scaling used by \cite{guilford:54} and \cite{nunnally:67}. Other data sets include \pfun{cubits}, \pfun{peas}, and \pfun{heights} from Galton.
+A number of data sets for demonstrating psychometric techniques are included in the \Rpkg{psych} package. These include six data sets showing a hierarchical factor structure (five cognitive examples, \pfun{Thurstone}, \pfun{Thurstone.33}, \pfun{Holzinger}, \pfun{Bechtoldt.1}, \pfun{Bechtoldt.2}, and  one from health psychology \pfun{Reise}). One of these (\pfun{Thurstone}) is used as an example in the \Rpkg{sem} package as well as \cite{mcdonald:tt}. The original data are from \cite{thurstone:41} and reanalyzed by \cite{bechtoldt:61}.  Personality item data representing five personality factors on 25 items (\pfun{bfi}), 135 items for 4,000 participants (\pfun{spi}) or 13 personality inventory scores (\pfun{epi.bfi}), and 16 multiple choice iq items (\pfun{iqitems}, \pfun{ability}).  The \pfun{vegetables} example has paired comparison preferences for 9 vegetables. This is an example of Thurstonian scaling used by \cite{guilford:54} and \cite{nunnally:67}. Other data sets include \pfun{cubits}, \pfun{peas}, and \pfun{heights} from Galton.
 
 \begin{description}
 \item[Thurstone] Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger correlation matrix is a 14 * 14 matrix from their paper. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items. The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.
 \item [bfi]  25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis and Item Response Theory analyses.
+\item [spi] 135 personality items and 10 demographic items for 4,000 subjects are taken from the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project \cite{sapa:16}. These 135 items form part of the SAPA Personality Inventory \cite{condon:spi}.
 \item [sat.act] Self reported scores on the SAT Verbal, SAT Quantitative and ACT were collected as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. Age, gender, and education are also reported. The data from 700 subjects are included here as a demonstration set for correlation and analysis.
 \item [epi.bfi] A small data set of 5 scales from the Eysenck Personality Inventory, 5 from a Big 5 inventory, a Beck Depression Inventory, and State and Trait Anxiety measures. Used for demonstrations of correlations, regressions, graphic displays.
-\item [iq] 14 multiple choice ability items were included as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. The data from 1000 subjects are included here as a demonstration set for scoring multiple choice inventories and doing basic item statistics.
-\item [galton] Two of the earliest examples of the correlation coefficient were Francis Galton's data sets on the relationship between mid parent and child height and the similarity of parent generation peas with child peas. \pfun{galton} is the data set for the Galton height. \pfun{peas} is the data set Francis Galton used to ntroduce the correlation coefficient with an analysis of the similarities of the parent and child generation of 700 sweet peas.
+
+\item [iqitems] 16 multiple choice ability items were included as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. The data from 1525 subjects are included here as a demonstration set for scoring multiple choice inventories and doing basic item statistics.
+\item [ability] The same 16 items, converted to 0,1 scores are used for examples of various IRT procedures.  These data are from the \emph{International Cognitive Ability Resource} (ICAR) \cite{condon:icar:14} and were collected as part of the SAPA web based assessment \href{ https://sapa-project.org}{ https://sapa-project.org} project \cite{sapa:16}.
+\item [galton] Two of the earliest examples of the correlation coefficient were Francis Galton's data sets on the relationship between mid parent and child height and the similarity of parent generation peas with child peas. \pfun{galton} is the data set for the Galton height. \pfun{peas} is the data set Francis Galton used to introduce the correlation coefficient with an analysis of the similarities of the parent and child generation of 700 sweet peas.
 \item[Dwyer] \cite{dwyer:37} introduced a method for \emph{factor extension} (see \pfun{fa.extension} that finds loadings on factors from an original data set for additional (extended) variables.  This data set includes his example.
 \item [miscellaneous] \pfun{cities} is a matrix of airline distances between 11 US cities and may be used for demonstrating multiple dimensional scaling.  \pfun{vegetables} is a classic data set for demonstrating Thurstonian scaling and is the preference matrix of 9 vegetables from \cite{guilford:54}. Used by \cite{guilford:54,nunnally:67,nunnally:bernstein:84}, this data set allows for examples of basic scaling techniques. 
 \end{description}
@@ -1166,27 +1214,35 @@ A number of data sets for demonstrating psychometric techniques are included in 
  
 \section{Development version and a users guide} 
 
-The most recent development version is available as a source file at the repository maintained at \href{ href="http://personality-project.org/r"}{\url{http://personality-project.org/r}}.  That version will have removed the most recently discovered bugs (but perhaps introduced other, yet to be discovered ones). To download that version, go to the repository %\href{"http://personality-project.org/r/src/contrib/}{
-\url{http://personality-project.org/r/src/contrib/} and wander around. For a Mac, this version can be installed directly using the ``other repository" option in the package installer.  For a PC, the zip file for the most recent release has been created using the win-builder facility at CRAN.  The development release for the Mac is usually several weeks ahead of the PC development version.
+The most recent development version is available as a source file at the repository maintained at \href{ href="https://personality-project.org/r"}{\url{https://personality-project.org/r}}.  That version will have removed the most recently discovered bugs (but perhaps introduced other, yet to be discovered ones). To download that version, go to the repository %\href{"http://personality-project.org/r/src/contrib/}{
+\url{http://personality-project.org/r/src/contrib/} and wander around. For both  Macs and PC, this version can be installed directly using the ``other repository" option in the package installer.  Make sure to specify type="source" 
 
-Although the individual help pages for the \Rpkg{psych} package are available as part of \R{} and may be accessed directly (e.g. ?psych) , the full manual for the \pfun{psych} package is also available as a pdf at  \url{http://personality-project.org/r/psych_manual.pdf}
+\begin{Schunk}
+\begin{Sinput}
+> install.packages("psych", repos="https://personality-project.org/r", type="source")
+\end{Sinput}
+\end{Schunk}
+
+  % For a PC, the zip file for the most recent release has been created using the win-builder facility at CRAN.  The development release for the Mac is usually several weeks ahead of the PC development version.
+
+Although the individual help pages for the \Rpkg{psych} package are available as part of \R{} and may be accessed directly (e.g. ?psych) , the full manual for the \pfun{psych} package is also available as a pdf at  \url{https://personality-project.org/r/psych_manual.pdf}
  %psych\_manual.pdf.
 
 News and a history of changes are available in the NEWS and CHANGES files in the source files. To view the most recent news, 
 
 \begin{Schunk}
 \begin{Sinput}
-> news(Version >= "1.7.8",package="psych")
+> news(Version >= "1.7.3",package="psych")
 \end{Sinput}
 \end{Schunk}
 
 
 
 \section{Psychometric Theory}
-The \Rpkg{psych} package has been developed to help psychologists do basic research.  Many of the functions were developed to supplement a book (\url{http://personality-project.org/r/book} An introduction to Psychometric Theory with Applications in \R{} \citep{revelle:intro}  More information about the use of some of the functions may be found in the book . 
+The \Rpkg{psych} package has been developed to help psychologists do basic research.  Many of the functions were developed to supplement a book (\url{https://personality-project.org/r/book} An introduction to Psychometric Theory with Applications in \R{} \citep{revelle:intro}  More information about the use of some of the functions may be found in the book . 
 
 
-For more extensive discussion of the use of \Rpkg{psych} in particular and \R{} in general, consult  \url{http://personality-project.org/r/r.guide.html} A short guide to R.
+For more extensive discussion of the use of \Rpkg{psych} in particular and \R{} in general, consult  \url{https://personality-project.org/r/r.guide.html} A short guide to R.
 
 
 \section{SessionInfo}
@@ -1245,6 +1301,13 @@ Cohen, J., Cohen, P., West, S.~G., and Aiken, L.~S. (2003).
   behavioral sciences}.
 \newblock L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
 
+\bibitem[\protect\citeauthoryear{Condon \& Revelle}{Condon \&
+  Revelle}{2014}]{condon:icar:14}
+Condon, D.~M. \& Revelle, W. (2014).
+\newblock The {International Cognitive Ability Resource}: Development and
+  initial validation of a public-domain measure.
+\newblock {\em Intelligence}, {\em 43}, 52--64.
+
 \bibitem[\protect\astroncite{Cooksey and Soutar}{2006}]{cooksey:06}
 Cooksey, R. and Soutar, G. (2006).
 \newblock Coefficient beta and hierarchical item clustering - an analytical
@@ -1272,6 +1335,13 @@ Everitt, B. (1974).
 Fox, J., Nie, Z., and Byrnes, J. (2012).
 \newblock {\em {sem: Structural Equation Models}}.
 
+\bibitem[\protect\astroncite{Garcia et~al.}{2010}]{garcia:10}
+Garcia, D.~M., Schmitt, M.~T., Branscombe, N.~R., and Ellemers, N. (2010).
+\newblock Women's reactions to ingroup members who protest discriminatory
+  treatment: The importance of beliefs about inequality and response
+  appropriateness.
+\newblock {\em European Journal of Social Psychology}, 40(5):733--745.
+
 \bibitem[\protect\astroncite{Grice}{2001}]{grice:01}
 Grice, J.~W. (2001).
 \newblock Computing and evaluating factor scores.
@@ -1291,6 +1361,13 @@ Guttman, L. (1945).
 Hartigan, J.~A. (1975).
 \newblock {\em Clustering Algorithms}.
 \newblock John Wiley \& Sons, Inc., New York, NY, USA.
+
+\bibitem[\protect\astroncite{Hayes}{2013}]{hayes:13}
+Hayes, A.~F. (2013).
+\newblock {\em Introduction to mediation, moderation, and conditional process
+  analysis: A regression-based approach}.
+\newblock Guilford Press, New York.
+
 
 \bibitem[\protect\astroncite{Henry et~al.}{2005}]{henry:05}
 Henry, D.~B., Tolan, P.~H., and Gorman-Smith, D. (2005).
@@ -1387,11 +1464,11 @@ Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
-\bibitem[\protect\astroncite{Revelle}{2015}]{psych}
-Revelle, W. (2015).
+\bibitem[\protect\astroncite{Revelle}{2017}]{psych}
+Revelle, W. (2017).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.5.8
+\newblock R package version 1.7.12
 
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).
@@ -1413,6 +1490,16 @@ Revelle, W., Condon, D., and Wilt, J. (2011).
 \newblock In Chamorro-Premuzic, T., Furnham, A., and von Stumm, S., editors,
   {\em Handbook of Individual Differences}, chapter~2, pages 39--73.
   Wiley-Blackwell.
+  
+  \bibitem[\protect\citeauthoryear{Revelle, Condon, Wilt, French, Brown \&
+  Elleman}{Revelle et~al.}{2016}]{sapa:16}
+Revelle, W., Condon, D.~M., Wilt, J., French, J.~A., Brown, A., \& Elleman,
+  L.~G. (2016).
+\newblock Web and phone based data collection using planned missing designs.
+\newblock In N.~G. Fielding, R.~M. Lee, \& G.~Blank (Eds.), {\em SAGE Handbook
+  of Online Research Methods\/} (2nd ed.).  chapter~37, (pp.\ 578--595). Sage
+  Publications, Inc.
+
 
 \bibitem[\protect\astroncite{Revelle and Rocklin}{1979}]{revelle:vss}
 Revelle, W. and Rocklin, T. (1979).
@@ -1468,6 +1555,13 @@ Spearman, C. (1904).
 Steiger, J.~H. (1980).
 \newblock Tests for comparing elements of a correlation matrix.
 \newblock {\em Psychological Bulletin}, 87(2):245--251.
+
+\bibitem[\protect\astroncite{Tal-Or et~al.}{2010}]{talor:10}
+Tal-Or, N., Cohen, J., Tsfati, Y., and Gunther, A.~C. (2010).
+\newblock Testing causal direction in the influence of presumed media
+  influence.
+\newblock {\em Communication Research}, 37(6):801--824.
+
 
 \bibitem[\protect\astroncite{Thorburn}{1918}]{thornburn:1918}
 Thorburn, W.~M. (1918).

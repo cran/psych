@@ -23,7 +23,7 @@
 The all.income set is interpolates intervening values for 100-150K, 150-200K and 200-250K}
 \source{US Census: Table HINC-06. Income Distribution to $250,000 or More for Households: 2008
 
-http://www.census.gov/hhes/www/cpstables/032009/hhinc/new06_000.htm
+https://www.census.gov/hhes/www/cpstables/032009/hhinc/new06_000.htm
 }
 
 \examples{

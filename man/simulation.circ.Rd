@@ -39,7 +39,7 @@ Included in this set of functions are simple procedure to generate circumplex st
 } 
 \value{A data.frame with simulation results for circumplex, ellipsoid, and simple structure data sets for each of the four tests.}
 
-\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 (formerly at http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf  and now at  \url{http://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf}. }
+\references{ Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure.  Methods of Psychological Research Online, Vol. 9, No. 1 (formerly at https://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf  and now at  \url{https://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf}. }
 \author{ William Revelle}
 \note{The simulations default values are for sample sizes of 100, 200, 400, and 800 cases, with 16, 32, 48 and 72 items.  }
 

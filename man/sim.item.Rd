@@ -63,9 +63,9 @@ Yet another structure that might be appealing is fully complex data in three dim
   A data matrix of (nsub) subjects by (nvar) variables.  
 }
 \references{ Variations of a routine used in Rafaeli and Revelle, 2006;
-Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadness truly opposite affects? Motivation and Emotion. \url{http://personality-project.org/revelle/publications/rafaeli.revelle.06.pdf}
+Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadness truly opposite affects? Motivation and Emotion. \url{https://personality-project.org/revelle/publications/rafaeli.revelle.06.pdf}
 
-Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure. Methods of Psychological Research Online, Vol. 9, No. 1 (formerly (http://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf)  also at  \url{http://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf} }
+Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure. Methods of Psychological Research Online, Vol. 9, No. 1 (formerly (https://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf)  also at  \url{https://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf} }
 \author{ William Revelle }
 
 \seealso{  See Also the implementation in this to generate numerous simulations.  \code{\link{simulation.circ}},  \code{\link{circ.tests}} as well as other simulations ( \code{\link{sim.structural}}  \code{\link{sim.hierarchical}})}

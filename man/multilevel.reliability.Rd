@@ -117,7 +117,11 @@ Thus, if we have N subjects over t time points for k items, in wide format for N
 \references{
 Bolger, Niall and Laurenceau, Jean-Phillippe, (2013) Intensive longitudinal models.  New York.  Guilford Press. 
 
-Revelle, W. and Wilt, J. (2017) Analyzing dynamic data: a tutorial. Personality and Individual Differences. (in press)
+Cranford, J. A., Shrout, P. E., Iida, M., Rafaeli, E., Yip, T., \& Bolger, N. (2006). A procedure for evaluating sensitivity to within-person change: Can mood measures in diary studies detect change reliably? Personality and Social Psychology Bulletin, 32(7), 917-929.
+
+Revelle, W. and Condon, D. M. (2018) Reliability. 
+
+Revelle, W. and Wilt, J. (2017) Analyzing dynamic data: a tutorial. Personality and Individual Differences. DOI: 10.1016/j.paid.2017.08.020
 
 Shrout, Patrick and Lane, Sean P (2012), Psychometrics.  In M.R. Mehl and T.S. Conner (eds)  Handbook of research methods for studying daily life, (p 302-320) New York. Guilford Press
 

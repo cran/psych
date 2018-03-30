@@ -36,7 +36,7 @@ n.obs <- nrow(rwname)
 n.time <- length(table(x[Time]))
 n.items <- ncol(wide)
 
-if(alpha) {
+if(alpha &(n.time > 2)) {
 alpha.by.person <- by(x,x[grp],function(x) alphaBy(x[items]))
 rnames <- paste0("ID",names(alpha.by.person))
 alpha.by.person <- matrix(unlist(alpha.by.person),ncol=4,byrow=TRUE)
@@ -254,7 +254,7 @@ cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	}
 	
 	
-	"alphaBy" <- function(x) {
+"alphaBy" <- function(x) {
     n <- dim(x)[2]
     C <- cov(x,use="pairwise")
     R <- cov2cor(C)

@@ -1,4 +1,3 @@
-
 test.all <- function(pl,package="psych",dependencies = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) {
  if (find) {
      pl <-tools::dependsOnPkgs(package,dependencies=dependencies) 
@@ -19,7 +18,7 @@ test.all <- function(pl,package="psych",dependencies = c("Depends", "Imports", "
   options("example.ask"=FALSE)
   for(i in 1:nf) {
     fn <- as.character(ol[[i]])
-    example(topic=fn,package=p,character.only=TRUE)
+    example(topic=fn,package=p,character.only=TRUE,ask=FALSE)
     }
  detach(ob,character.only=TRUE)
 } } else {cat("\nNo dependencies for package ", package) }
@@ -29,3 +28,6 @@ test.all <- function(pl,package="psych",dependencies = c("Depends", "Imports", "
 #tools::package_dependencies(reverse = TRUE)   #lists all the reverse dependencies
 #tools::check_packages_in_dir(dir,reverse = list())   #might check them,  unclear
 #rd <-reverse_dependencies_with_maintainers("psych")
+#library(devtools)  #does not seem to with development version
+#dep <- revdep("psych")
+#revdep_check("psych")

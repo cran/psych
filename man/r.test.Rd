@@ -64,10 +64,11 @@ Williams, E.J.  (1959) Regression analysis. Wiley, New York, 1959.
 \note{Steiger specifically rejects using the Hotelling T test to test the difference between correlated correlations. Instead, he recommends Williams' test. (See also Dunn and Clark, 1971). These tests follow Steiger's advice.
 The test of two independent correlations is just a z test of the difference of the  Fisher's z transformed correlations divided by the standard error of the difference.  (See Cohen et al, p 49).
 
-By default, the probabilities are reported to 2 decimal places.  This will, of course, sometimes lead to statements such as p < .1  when in fact p < .1001 or even more precisely p < .1000759.  To achieve the higher precision, use a print statement with the preferred number of digits.  See the last set of examples (courtesy of Julia Rohrer).
+One of the beautiful features of R is what works on single value works on vectors and matrices.  Thus, r.test can be used to test the pairwise diference of all the elements of a correlation matrix.  See the last example.
+
+By default, the probabilities are reported to 2 decimal places.  This will, of course, sometimes lead to statements such as p < .1  when in fact p < .1001 or even more precisely p < .1000759.  To achieve the higher precision, use a print statement with the preferred number of digits.  See the next to last set of examples (courtesy of Julia Rohrer).
 }
-\seealso{ See also  \
-code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
+\seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
 \examples{
 
 n <- 30 
@@ -93,6 +94,20 @@ r13 =  0.695966022434845
 print(r.test(n =  5105 ,  r12 =  r12 ,  r23 = r23 , r13 =  r13 )) #probability < 0.1
 print(r.test(n =  5105 ,  r12 =  r12, r23 = r23 , r13 =  r13 ),digits=4) #p < 0.1001
 print(r.test(n =  5105 , r12 =  r12, r23 = r23 , r13 =  r13 ),digits=8) #p< <0.1000759 
+
+
+
+#an example of how to compare the elements of two matrices 
+R1 <- lowerCor(bfi[1:200,1:5])  #find one set of Correlations
+R2 <- lowerCor(bfi[201:400,1:5]) #and now another set sampled from the same population
+test <- r.test(n=200, r12 = R1, r34 = R2)
+round(lowerUpper(R1,R2,diff=TRUE),digits=2)  #show the differences between correlations
+#lowerMat(test$p)  #show the p values of the difference between the two matrices
+adjusted <- p.adjust(test$p[upper.tri(test$p)])
+both <- test$p 
+both[upper.tri(both)] <- adjusted
+round(both,digits=2)  #The lower off diagonal are the raw ps, the upper the adjusted ps
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

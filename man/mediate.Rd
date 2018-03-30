@@ -7,19 +7,20 @@
 Find the direct and indirect effects of a predictor in path models of mediation and moderation. Bootstrap confidence intervals for the indirect effects.  Mediation models are just extended regression models making explicit the effect of particular covariates in the model. Moderation is done by multiplication of the predictor variables.   This function supplies basic mediation/moderation analyses for some of the classic problem types. 
 }
 \usage{
-mediate(y, x, m, data, mod = NULL, n.obs = NULL, use = "pairwise", n.iter = 5000, 
-       alpha = 0.05, std = FALSE,plot=TRUE)
+mediate(y, x, m=NULL, data, mod = NULL, z = NULL, n.obs = NULL, use = "pairwise",
+ n.iter = 5000,  alpha = 0.05, std = FALSE,plot=TRUE,zero=TRUE,main="Mediation")
 mediate.diagram(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE,
      main="Mediation model",...)
 moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
 }
 
 \arguments{
-  \item{y}{The dependent variable (or a formula suitable for a linear model)}
+  \item{y}{The dependent variable (or a formula suitable for a linear model),  If a formula, then this is of the form y ~ x +(m) -z (see details)}
   \item{x}{One or more predictor variables}
   \item{m}{One (or more) mediating variables}
   \item{data}{A data frame holding the data or a correlation or covariance  matrix. }
   \item{mod}{A moderating variable, if desired}
+  \item{z}{Variables to partial out, if desired}
   \item{n.obs}{If the data are from a correlation or covariance matrix, 
      how many observations were used. This will lead to simulated data for the bootstrap.}
   \item{use}{use="pairwise" is the default when finding correlations or covariances}
@@ -27,6 +28,7 @@ moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
   \item{alpha}{Set the width of the confidence interval to be 1 - alpha}
   \item{std}{standardize the covariances to find the standardized betas}
   \item{plot}{Plot the resulting paths}
+  \item{zero}{By default, will zero center the data before doing moderation}
   \item{digits}{The number of digits to report in the mediate.diagram.} 
   \item{medi}{The output from mediate may be imported into mediate.diagram}
   \item{ylim}{The limits for the y axis in the mediate and moderate diagram functions}
@@ -44,15 +46,27 @@ In the case of two predictor variables, X and M, and a criterion variable Y, the
 
 Testing the significance of the ab mediation effect is done through bootstrapping many random resamples (with replacement) of the data.  
 
-For moderation, the moderation effect of Z on the relationship between X -> Y is found by taking the (centered) product of X and Z and then adding this XZ term into the regression.
+For moderation, the moderation effect of Z on the relationship between X -> Y is found by taking the (centered) product of X and Z and then adding this XZ term into the regression. By default, the data are zero centered before doing moderation (product terms).  This is following the advice of Cohen, Cohen, West and Aiken (2003).  However, to agree with the analyses reported in Hayes (2013) we can set the zero=FALSE option to not zero center the data.   
 
-In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original covariance/correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.
+To partial out variables, either define them in the z term, or express as negative entries in the formula mode:
+
+y1 ~ x1 + x2 + (m1)+ (m2) -z    will look for the effect of x1 and x2 on y, mediated through m1 and m2 after z is partialled out.  
+
+
+Moderated mediation is done by specifying a product term.
+
+y1 ~ x1 + x2*x3 + (m1)+ (m2) -z    will look for the effect of x1, x2, x3 and the product of x2 and x3 on y, mediated through m1 and m2 after z is partialled out.  
+
+
+In the case of being provided just a correlation matrix, the bootstrapped values are based upon bootstrapping from data matching the original covariance/correlation matrix with the addition of normal errors.  This allows us to test the mediation/moderation effect even if not given raw data.  Moderation can not be done with just correlation matrix.
 
 The function has been tested against some of the basic cases and examples in Hayes (2013) and the associated data sets.
 
 Unless there is a temporal component that allows one to directly distinguish causal paths (time does not reverse direction), interpreting mediation models is problematic. Some people find it useful to compare the differences between mediation models where the causal paths (arrows) are reversed.  This is a mistake  and should not be done (Thoemmes, 2015). 
 
 For fine tuning the size of the graphic output, xlim and ylim can be specified in the mediate.diagram function. Otherwise, the graphics produced by mediate and moderate use the default xlim and ylim values.
+
+Interaction terms (moderation) or mediated moderation can be specified as product terms.
 }
 \value{
 \item{total}{The total direct effect of x on y  (c)}
@@ -65,8 +79,11 @@ For fine tuning the size of the graphic output, xlim and ylim can be specified i
 \item{a}{The effect of x on m}
 \item{b}{The effect of m on y}
 \item{b.int}{The interaction of x and mod (if specified)}
+\item{data}{The original data plus the product term (if specified)}
 }
 \references{
+
+J. Cohen, P. Cohen, S.G. West, and L.S. Aiken. (2003) Applied multiple regression/correlation analysis for the behavioral sciences. L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
 
 Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional process analysis: A regression-based approach.  Guilford Press. 
 
@@ -74,19 +91,28 @@ Preacher, Kristopher J and Hayes, Andrew F (2004) SPSS and SAS procedures for es
 
 Thoemmes, Felix (2015) Reversing arrows in mediation models does not distinguish plausible models.  Basic and applied social psychology, 27: 226-234. 
 
-Data from  Hayes (2013), Preacher and Hayes (2004), and from Kerchoff (1974)
+Data from  Hayes (2013), Preacher and Hayes (2004), and from Kerchoff (1974).  
+
+The Tal_Or data set  is from Nurit Tal-Or and Jonathan Cohen and Yariv Tsfati and Albert C. Gunther, (2010) ``Testing Causal Direction in the Influence of Presumed Media Influence", Communication Research, 37, 801-824 and is used with their kind permission.  It is adapted from the webpage of A.F. Hayes.  (www.afhayes.com/public/hayes2013data.zip).
+
+The Garcia data set is from Garcia, Donna M. and Schmitt, Michael T. and Branscombe, Nyla R. and Ellemers, Naomi (2010). Women's reactions to ingroup members who protest discriminatory treatment: The importance of beliefs about inequality and response appropriateness. European Journal of Social Psychology, (40) 733-745 and is used with their kind permission.  It was downloaded from the Hayes (2013) website.
+
+For an example of how to display  the sexism by protest interaction, see the examples in the \code{\link{GSBE}} (Garcia) data set.
+
+See the ``how to do mediation and moderation" at  personality-project.org/r/psych/HowTo/mediation.pdf as well as the introductory vignette.
 
 }
 \author{William Revelle
 }
-\note{ There are a number of other packages that do mediation analysis (e.g., sem and lavaan) and they are probably preferred.  This function is supplied for the more basic cases, with 1..k y variables, 1..n x variables, and 1 ..j mediators.  It will not do two step mediation.
+\note{ There are a number of other packages that do mediation analysis (e.g., sem and lavaan) and they are probably preferred.  This function is supplied for the more basic cases, with 1..k y variables, 1..n x variables,  1 ..j mediators and 1 ..z variables to partial. The number of moderated effects is not limited, but more than 3rd order interactions are not very meaningful.  It will not do two step mediation.
 }
 
 
-\seealso{\code{\link{setCor}} and \code{\link{setCor.diagram}}
-
+\seealso{\code{\link{setCor}} and \code{\link{setCor.diagram}} for regression and moderation, \code{\link{Garcia}} for further demonstrations of mediation and moderation.
 }
-\examples{
+
+
+\examples{ 
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
 -0.03, 1.75, -0.8, -1.2, -1.27, 0.7, -1.59, 0.68, -0.39, 1.33, 
@@ -102,27 +128,23 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 "Therapy", "Attributional Positivity"), .Names = c("SATIS", "THERAPY", 
 "ATTRIB")))
  #n.iter set to 50 (instead of default of 5000) for speed of example
-mediate(1,2,3,sobel,n.iter=50)  #The example in Preacher and Hayes
 
-#the pmi covariance matrix from Hayes. 2013.
-#data set from Hayes, 2013 has 123 cases instead of the covariance matrix used here 
+#There are several forms of input.  The original specified y, x , and the mediator 
+#mediate(1,2,3,sobel,n.iter=50)  #The example in Preacher and Hayes
 
-C.pmi <- structure(c(0.251232840197254, 0.119718779155005, 0.157470345195255, 
-0.124533519925363, 0.03052112488338, 0.0734039717446355, 0.119718779155005, 
-1.74573503931761, 0.647207783553245, 0.914575836332134, 0.0133613221378115, 
--0.0379181660669066, 0.157470345195255, 0.647207783553245, 3.01572704251633, 
-1.25128282020525, -0.0224576835932294, 0.73973743835799, 0.124533519925363, 
-0.914575836332134, 1.25128282020525, 2.40342196454751, -0.0106624017059843, 
--0.752990470478475, 0.03052112488338, 0.0133613221378115, -0.0224576835932294, 
--0.0106624017059843, 0.229241636678662, 0.884479541516727, 0.0734039717446355, 
--0.0379181660669066, 0.73973743835799, -0.752990470478475, 0.884479541516727, 
-33.6509729441557), .Dim = c(6L, 6L), .Dimnames = list(c("cond", 
-"pmi", "import", "reaction", "gender", "age"), c("cond", "pmi", 
-"import", "reaction", "gender", "age")))
+#As of October, 2017 we can specify this in a formula mode
+mediate (SATIS ~ THERAPY + (ATTRIB),data=sobel, n.iter=50) #specify the mediator by 
+# adding parentheses
+#The pmi data set from Hayes is available as the Tal_Or data set. 
+mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
 
- #n.iter set to 50 (instead of default of 5000) for speed of example
-mediate(y="reaction",x = "cond",m=c("pmi","import"),data=C.pmi,n.obs=123,n.iter=50)
+#Moderated mediation is done with the Garcia (Garcia, 2010) data set.
+# (see Hayes, 2013 for the protest data set
 
+#n.iter set to 50 (instead of default of 5000) for speed of example #old style
+data(GSBE)   #The Garcia et al data set (aka GSBE)
+mediate(liking ~  sexism * prot2 + (respappr), data=Garcia, n.iter = 50)
+#to see this interaction graphically, run the examples in ?Garcia
 
 
 #Data from sem package taken from Kerckhoff (and in turn, from Lisrel manual)
@@ -139,19 +161,27 @@ R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572,
 ))
 
  #n.iter set to 50 (instead of default of 5000) for speed of demo
-mod.k <- mediate("OccupAsp","Intelligence",m= c(2:5),data=R.kerch,n.obs=767,n.iter=50)
+#mod.k <- mediate("OccupAsp","Intelligence",m= c(2:5),data=R.kerch,n.obs=767,n.iter=50)
+#new style 
+mod.k <- mediate(OccupAsp ~ Intelligence + (Siblings) + (FatherEd) + (FatherOcc) + 
+(Grades), data = R.kerch, n.obs=767, n.iter=50)
+
 mediate.diagram(mod.k) 
 #print the path values 
 mod.k
 
 #Compare the following solution to the path coefficients found by the sem package
 
-mod.k2 <- mediate(y="OccupAsp",x=c("Intelligence","Siblings","FatherEd","FatherOcc"),
-     m= c(5:6),data=R.kerch,n.obs=767,n.iter=50)
+#mod.k2 <- mediate(y="OccupAsp",x=c("Intelligence","Siblings","FatherEd","FatherOcc"),
+#     m= c(5:6),data=R.kerch,n.obs=767,n.iter=50)
+#new format 
+mod.k2 <- mediate(OccupAsp ~ Intelligence + Siblings + FatherEd + FatherOcc + (Grades) + 
+(EducExp),data=R.kerch, n.obs=767, n.iter=50)
 mediate.diagram(mod.k2,show.c=FALSE) #simpler output 
-
 #print the path values
 mod.k2
+
+
 
 }
 

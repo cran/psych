@@ -30,7 +30,7 @@ Although written to create hierarchical structures, if the gload matrix is all 0
 }
 \value{ a matrix of correlations or a data matrix
 }
-\references{ \url{http://personality-project.org/r/r.omega.html }
+\references{ \url{https://personality-project.org/r/r.omega.html }
 \cr Jensen, A.R., Weng, L.J. (1994) What is a Good g? Intelligence, 18, 231-258.}
 \author{ William Revelle }
 

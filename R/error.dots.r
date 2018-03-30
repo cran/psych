@@ -5,7 +5,7 @@
 #August 12, added the ability to find (and save) the stats using describe or describeBy
 
 "error.dots" <- 
-function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
+function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
    min.n = NULL,max.labels =40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"), 
     pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), color = par("fg"), 
     gcolor = par("fg"), lcolor = "gray", 
@@ -16,11 +16,21 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
     par(cex = cex, yaxs = "i")
     #first, see if the data come from a psych object with sd and n or se 
     if(length(class(x)) > 1 ) {if (class(x)[1] == "psych") {obj <- class(x)[2]
+    des <- NULL
     switch(obj,
-        statsBy = {if(is.null(min.n)) {se <- x$sd[,var]/sqrt(x$n[,var]) 
-                   x <- x$mean[,var] } else {se <- x$sd[,var]
+        statsBy = {if(is.null(min.n))  {  if(!is.null(effect)) {   #convert means to effect sizes compared to a particular group
+                                   x$mean[,var]  <- ( x$mean[,var]  -x$mean[effect,var])/x$sd[effect,var]                         
+                     } 
+                     se <- x$sd[,var]/sqrt(x$n[,var]) 
+                   x <- x$mean[,var]
+                  
+                                              } else {se <- x$sd[,var]
                                              n.obs <- x$n[,var]
                                               x <- x$mean[,var]
+                                              if(!is.null(effect)) {   #convert means to effect sizes compared to a particular group
+                                              x <- ( x$mean[,var]  -x$mean[effect,var])/x$sd[effect,var]
+                                              browser()
+                                              }
                                               if(sd) {se <- x$sd[,var] } else {se <- se/sqrt(n.obs)}
                                               x <- subset(x,n.obs > min.n)
                                               se <- subset(se,n.obs > min.n)
@@ -28,7 +38,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
                                              
                                               }},
         describe = {if(sd) {se <- x$sd} else {se <- x$se}
-        			labels <- rownames(x)
+        			if(is.null(labels)) labels <- rownames(x)
                     x <- x$mean
                     names(x) <- labels
                     },
@@ -44,7 +54,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
           if(is.null(xlab)) xlab <- var 
         }, 
          fa.ci ={se = x$cis$sds
-              if(missing(labels)) labels <-rownames(x$cis$means) 
+              if(is.null(labels)) labels <-rownames(x$cis$means) 
               x <-x$cis$means }
         )
       } #end switch
@@ -60,7 +70,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
          names(x) <-names(des)
          var <- which(rownames(des[[1]]) == var)
         
-        
+       
         for(grp in 1:length(des)) {
           x[grp] <- des[[grp]][["mean"]][var]
          if(sd) { se[grp] <- des[[grp]][["sd"]][var]} else {se[grp] <- des[[grp]][["se"]][var]}
@@ -94,10 +104,10 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
    	 if(missing(main)) {if(sd) {main <- "means + standard deviation"} else {main="Confidence Intervals around the mean"}}
    	  
 
-   	 labels <- names(x)
+   	if(is.null(labels))  labels <- names(x)
    	 if(sd) {ci <- se} else {ci <- qnorm((1-alpha/2))*se}
    #	 if(!is.null(se)) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
-   	  if(!is.null(ci) && is.null(xlim)) xlim <- c(min(x - ci),max(x + ci)) 
+   	  if(!is.null(ci) && is.null(xlim)) xlim <- c(min(x - ci,na.rm=TRUE),max(x + ci,na.rm=TRUE)) 
            
    	 labels <- substr(labels,1,max.labels)
    	 
@@ -195,8 +205,11 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, head = 12, tail = 12, sort=T
     axis(1)
     box()
     title(main = main, xlab = xlab, ylab = ylab, ...)
-    invisible()
-    if(!is.null(group)) result <- des
+   
+    
+    if(!is.null(des)) { 
+     invisible(des)}
+    
 }
 
 

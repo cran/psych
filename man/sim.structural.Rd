@@ -54,7 +54,7 @@ A special case of a structural model are one factor models such as parallel test
   \item{r}{The sample correlation or covariance matrix} 
   \item{observed}{If raw=TRUE, a sample data matrix}
 }
-\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/}    }
+\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}    }
  
 \author{ William Revelle }
 

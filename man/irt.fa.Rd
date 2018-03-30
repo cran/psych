@@ -67,7 +67,7 @@ Structural Equation Modeling, 15 (1) 136-153.
 	
 McDonald, Roderick P. (1999) Test theory: A unified treatment. L. Erlbaum Associates.
 
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 }
 \author{William Revelle}
 \note{

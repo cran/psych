@@ -96,9 +96,11 @@ ans
 #revised 16/6/18 to cover the problem of 0 values in cells
 polyF <- function(rho,rc,cc,tab) {  #doesn't blow up in the case of 0 cell entries  added 16/6/18
       P <- polyBinBvn(rho, rc, cc) 
-      lP <- log(P)
+     P[P <=0] <- NA   #added 18/2/9
+     lP <- log(P)
       lP[lP == -Inf] <- NA
-       -sum(tab * lP,na.rm=TRUE) }  #the  criterion to be minimized
+       lP[lP == Inf] <- NA
+       -sum(tab * lP,na.rm=TRUE)  }  #the  criterion to be minimized
        
        
 "wtd.table" <- function(x,y,weight) {
@@ -109,15 +111,17 @@ return(tab)
 
     
  
-  #modified 10/8/14 to create missing values when there are no cell entries
-  #modified 3/6/14 to create missing values when the data are hopeless
-
+#modified 10/8/14 to create missing values when there are no cell entries
+#modified 3/6/14 to create missing values when the data are hopeless
+#modified 06/2/18 for the case of empty cells
  "polyc" <-     #uses the tableFast function instead of tableF
 function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,gminy,gmaxy) {
   if(is.null(weight )) {tab <- tableFast(x,y,gminx,gmaxx,gminy,gmaxy)
    }   else {tab <- wtd.table(x,y,weight)}  #need to specify minx and maxx somehow
    fixed <- 0 
   tot <- sum(tab)
+  if(tot ==0) {result <- list(rho=NA,objective=NA,fixed=1)
+               return(result)} #we have no data for this cell   05/02/18
   tab <- tab/tot
    if(correct > 0) {if(any(tab[]==0)) {fixed <- 1
                  tab[tab==0] <- correct/tot }} #moved from below 16.6.22
@@ -147,7 +151,7 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,
    
   return(result)
   }
-  
+##########
 
 #We have dropped option to use John Fox's polycor package, so we don't need the options
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
@@ -175,6 +179,7 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    k<- k+1}
    }
 poly <- mcmapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
+#poly <- mapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
 #debugging, we turn off the mcmapply function and do it by hand
 # browser()
 # ppl <- list()
@@ -193,7 +198,7 @@ if((fixed > 0) && ( correct > 0)) { warning(fixed ," cells were adjusted for 0 v
 return(mat)} else {
 warning("Something is wrong in polycor ")
 return(poly)
-
+#never actually gets here
 stop("we need to quit because something was seriously wrong.  Please look at the results")} 
 }
 
@@ -211,10 +216,13 @@ if((prod(dim(x)) == 4) | is.table(x))  {result <- polytab(x,correct=correct)
 x <- as.matrix(x)
 if(!is.numeric(x)) {x <- matrix(as.numeric(x),ncol=nvar)
     message("Converted non-numeric input to numeric")}
-#xt <- table(x)   #this is clearly not a good idea
-#nvalues <- length(xt)  #find the number of response alternatives 
-
-
+xt <- table(x)   #this is clearly not a good idea
+nvalues <- length(xt)  #find the number of response alternatives 
+maxx <- max(x,na.rm=TRUE) 
+if (maxx > nvalues)  {#now, if max(xt) > nvalues we need to recode this to range from 1 to nvalues  #added Jan 10, 2018
+   xtvalues <-as.numeric(names(xt))
+   for(i in 1:nvalues) {x[x==xtvalues[i]] <- i} 
+   }
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
  #first delete any bad cases
@@ -270,6 +278,8 @@ mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra 
  }
   return(result) 
   }
+  
+  #####
 
 
 
@@ -296,6 +306,7 @@ function(tab,correct=TRUE) {
 
 #9/6/14  to facilitate mixed cor  we find polytomous by dichotomous correlations
 #4/08/17  fixed to not do table(p) or table(d)  
+#has a problem if we are correcting 0 values 
 "polydi" <- function(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) {
 
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
@@ -312,7 +323,6 @@ for(i in 1:np) {for (j in 1:nd) {
    jl [k] <- j
    k <- k+1}
    }
-
 poly <- mcmapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl+np)  #the multicore version
 #poly <- mapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl +np)   #the normal version for debugging
 #now make it a matrix
@@ -337,8 +347,12 @@ d <- as.matrix(d)
 #nvalues <- length(xt)  #find the number of response alternatives 
 nvalues <- max(p,na.rm=TRUE) - min(p,na.rm=TRUE) + 1
 #dt <- table(d)
-dvalues <- max(d,na.rm=TRUE) - min(d,na.rm=TRUE) + 1
-if(dvalues !=2) stop("You did not supply a dichotomous variable")
+dmin <- apply(d,2,function(x) min(x,na.rm=TRUE))
+dmax <- apply(d,2,function(x) max(x,na.rm=TRUE))
+dvalues <- max(dmax-dmin) 
+
+
+if(dvalues !=1) stop("You did not supply a dichotomous variable")
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
  #first delete any bad cases
   item.var <- apply(p,2,sd,na.rm=na.rm)
@@ -353,17 +367,17 @@ pmin <- apply(p,2,function(x) min(x,na.rm=TRUE))  #allow for different minima
 minx <- min(pmin)
 p <- t(t(p) - pmin +1)  #all numbers now go from 1 to nvalues 
 #p <- t(t(p) - gminx +1)  #all numbers now go from 1 to nvalues    but we should use global minimima
-dmin <- apply(d,2,function(x) min(x,na.rm=TRUE))
+
 #gminy <- min(dmin)
 miny <- min(dmin)
 #d <-  t(t(d) - gminy +1)
-d <-  t(t(d) - dmin +1)
+d <-  t(t(d) - dmin +1)   #this allows a separate minimum for each d variable
 gminx <- gminy <- 1    #set the global minima to 1
 
 pmax <- apply(p,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
 gmaxx <- max(pmax)
-if (min(pmax) != max(pmax)) {#global <- FALSE
-                      warning("The items do not have an equal number of response alternatives, I am using the largest number of categories in the polytomous set")}
+if (min(pmax) != max(pmax)) {global <- FALSE
+          warning("The items do not have an equal number of response alternatives, I am setting global to FALSE")}
 gmaxy <- max(apply(d,2,function(x) max(x,na.rm=TRUE)))                      
 #xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
 pfreq <- apply(p,2,tabulate,nbins=nvalues)
@@ -386,6 +400,7 @@ rownames(mat) <- colnames(p)
 colnames(mat)  <- colnames(d)
 #x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
 x <- cbind(p,d)
+
 mat <- matpLower(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
 
  

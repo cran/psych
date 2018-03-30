@@ -45,13 +45,16 @@ sim.omega(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall =
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
 n = c(200,400)) 
 sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
-sim.irt(nvar = 5, n = 500, low=-3, high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,mod="logistic")
-sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
-sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1)
+sim.irt(nvar = 5, n = 500, low=-3, high=3, a=NULL,c=0, z=1,d=NULL, mu=0,sd=1,  
+  mod="logistic",theta=NULL)
+sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL)
+sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL)
 sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
-    mu=0,sd=1,cat=5,mod="logistic") 
-sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
-sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+    mu=0,sd=1,cat=5,mod="logistic",theta=NULL) 
+sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL,   mu=0, sd=1, 
+     cat=5,theta=NULL) 
+sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL,  mu=0, sd=1, 
+cat=5,theta=NULL) 
 sim.poly.ideal(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
    mu=0,sd=1,cat=5,mod="logistic") 
 sim.poly.ideal.npn(nvar = 5,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
@@ -125,6 +128,8 @@ The normal model (irt.npn calculates the probability using pnorm instead of the 
 
 In parallel to the dichotomous IRT simulations are the poly versions which simulate polytomous item models.  They have the additional parameter of how many categories to simulate.  In addition, the \code{\link{sim.poly.ideal}} functions will simulate an ideal point or unfolding model in which the response probability varies by the distance from each subject's ideal point.  Some have claimed that this is a more appropriate model of the responses to personality questionnaires.  It will lead to simplex like structures which may be fit by a two factor model.  The middle items form one factor, the extreme a bipolar factor.
 
+By default, the theta parameter is created in each function as normally distributed with mean mu=0  and sd=1.  In the case where you want to specify the theta to be equivalent from another simulation or fixed for a particular experimental condition, either take the theta object from the output of a previous simulation, or create it using whatever properties are desired. 
+
 The previous functions all assume one latent trait.  Alternatively, we can simulate dichotomous or polytomous items with a particular structure using the sim.poly.mat function.  This takes as input the population correlation matrix, the population marginals, and the sample size.  It returns categorical items with the specified structure.
 
 Other simulation functions in psych are:
@@ -165,7 +170,7 @@ sim.minor will generate such data sets with big factors with loadings of .6 to .
 
 
 }
-\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{http://personality-project.org/r/book/}  }
+\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}  }
 
 \author{William Revelle}
 
@@ -199,6 +204,9 @@ simp <- sim.simplex(alpha=.8,lambda=.4)
 #show the simplex structure using cor.plot
 cor.plot(simp,colors=TRUE,main="State Trait Auto Regressive Simplex" )
 
+dichot.sim <- sim.irt()  #simulate 5 dichotomous items
+poly.sim <- sim.poly(theta=dichot.sim$theta)  #simulate 5 polytomous items that correlate 
+  #with the dichotomous items
 
 }
 

@@ -104,7 +104,9 @@ if(is.list(om.results)) {
           }
           
 colnames(sem) <- c("Path","Parameter","Initial Value")
-lavaan <- unlist(lavaan)
+sem[,1] <- gsub("-","",sem[,1]) #get rid of the negative signs for variables
+sem[,1] <- gsub(">","->",sem[,1])  #but put back in the arrows
+lavaan <- gsub("-","",unlist(lavaan))
 lavaan <- noquote(lavaan)
 return(list(sem=sem[1:k,],lavaan=lavaan))
 #return(list(sem=sem[1:k,],)

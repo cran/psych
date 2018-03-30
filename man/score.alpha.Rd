@@ -31,7 +31,7 @@ Alpha is a poor estimate of the general factor saturation of a test (see Zinbarg
   \item{cor}{The intercorrelation of all the scales}
   \item{item.cor}{The correlation of each item with each scale.  Because this is not corrected for item overlap, it will overestimate the amount that an item correlates with the other items in a scale.}
 }
-\references{An introduction to psychometric theory with applications in R (in preparation).  \url{http://personality-project.org/r/book}}
+\references{An introduction to psychometric theory with applications in R (in preparation).  \url{https://personality-project.org/r/book}}
 \author{ William Revelle }
 
 \seealso{ \code{\link{score.items}}, \code{\link{alpha}}, \code{\link{correct.cor}},  \code{\link{cluster.loadings}}, \code{\link{omega}} }

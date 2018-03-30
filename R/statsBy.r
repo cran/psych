@@ -3,6 +3,7 @@
 #modified June 2, 2015 to include covariance, pearson, spearman, poly ,etc. in correlations
 #Fixed March 3, 2017 to not weight empty cells in finding ICCs
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
+#modifed November 3, 2019 to allow a single DV (in case cohen.d is just comparing two groups on one DV)
 "statsBy" <-
    function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE,alpha=.05) { #  
     cl <- match.call()
@@ -57,7 +58,8 @@ z1 <- data[,group]
   df11n <- nG - 1
   df11d <- nG* (npr-1) 
  
-  p11 <- 1-pf(F11,df11n,df11d)
+ # p11 <- 1-pf(F11,df11n,df11d)
+    p11 <-  -expm1(pf(F11,df11n,df11d,log.p=TRUE))  
   #F21 <- MSB/MSE
   df21n <- N - 1
   df21d <-  N * (npr-1) 
@@ -133,9 +135,11 @@ z1 <- data[,group]
              new.data <- as.matrix( merge(xvals$mean,data,by=group,suffixes =c(".bg",""))) #drop the grouping variable(s) 
              new.data <- new.data[,(length(group)+1):ncol(new.data)]
              
-             diffs <- new.data[,(nvar+1):ncol(new.data)] - new.data[,1:nvar]
+             diffs <- new.data[,(nvar+1):ncol(new.data),drop=FALSE] - new.data[,1:nvar]
+             
+
              colnames(diffs) <- paste(colnames(new.data)[(nvar + 1):ncol(new.data)], ".wg", sep = "")
-             xvals$rbg <- cor(new.data[,1:nvar],use="pairwise",method=method)  #the between group (means)
+             if(nvar > 1) {xvals$rbg <- cor(new.data[,1:nvar],use="pairwise",method=method)} else {xvals$rbg <- NA}  #the between group (means)
              #t <- rep(NA,(length(nG)-length(gr)))
              
              if(all(nG > 2)) {

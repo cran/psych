@@ -33,7 +33,7 @@ The implied covariance matrix is just pattern \%*\% t(pattern).
 
 
 }
-\references{Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{http://personality-project.org/r/book/} }
+\references{Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{https://personality-project.org/r/book/} }
 \author{ William Revelle }
 
 \seealso{  \code{\link{item.sim}} for other simulations, \code{\link{fa}} for an example of factor scores, \code{\link{irt.fa}} and \code{\link{polychoric}} for the treatment of item data with discrete values.}

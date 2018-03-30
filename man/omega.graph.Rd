@@ -60,21 +60,21 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{sem}{A matrix suitable to be run throughe the sem function in the sem package.}
  
  }
-\references{ \url{http://personality-project.org/r/r.omega.html} \cr
+\references{ \url{https://personality-project.org/r/r.omega.html} \cr
 
-Revelle, W. (in preparation) An Introduction to  Psychometric Theory with applications in R.  \url{http://personality-project.org/r/book}
+Revelle, W. (in preparation) An Introduction to  Psychometric Theory with applications in R.  \url{https://personality-project.org/r/book}
 
-Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{http://personality-project.org/revelle/publications/iclust.pdf})
+Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 
- Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{http://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
+ Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
 
  
- Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{http://apm.sagepub.com/cgi/reprint/30/2/121}
+ Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{https://journals.sagepub.com/doi/10.1177/0146621605278814}
  
  
 }
 \author{ 
- \url{http://personality-project.org/revelle.html} \cr
+ \url{https://personality-project.org/revelle.html} \cr
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           } 
 }
 \note{ omega.graph requires rgraphviz.   -- omega requires GPArotation

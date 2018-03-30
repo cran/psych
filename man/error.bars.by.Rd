@@ -43,7 +43,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
 
 This function was originally just a wrapper for \code{\link{error.bars}} but has been written to allow groups to be organized either as the x axis or as separate lines.
 
-If desired, a barplot with error bars can be shown. Many find this type of plot to be uninformative (e.g.,   http://biostat.mc.vanderbilt.edu/DynamitePlots ) and recommend the more standard dot plot. 
+If desired, a barplot with error bars can be shown. Many find this type of plot to be uninformative (e.g.,   https://biostat.mc.vanderbilt.edu/DynamitePlots ) and recommend the more standard dot plot. 
 
 Note in particular, if choosing to draw barplots, the starting value is 0.0 and setting the ylim parameter can lead to some awkward results if 0 is not included in the ylim range.  Did you really mean to draw a bar plot in this case?
 

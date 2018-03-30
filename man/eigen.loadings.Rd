@@ -17,7 +17,7 @@ eigen.loadings(x)
 
 \author{
  \email{  revelle@northwestern.edu           } \cr
- \url{http://personality-project.org/revelle.html}}
+ \url{https://personality-project.org/revelle.html}}
 \note{Useful for SAPA analyses}
 \examples{
 x <- eigen(Harman74.cor$cov)

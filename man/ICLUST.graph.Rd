@@ -2,7 +2,7 @@
 \alias{ICLUST.graph}
 \alias{iclust.graph}
 \title{ create control code for ICLUST graphical output}
-\description{Given a cluster structure determined by \code{\link{ICLUST}}, create dot code to describe the \code{\link{ICLUST}} output.  To use the dot code, use either http://www.graphviz.org/ Graphviz or a commercial viewer (e.g., OmniGraffle).  This function parallels \code{\link{ICLUST.rgraph}} which uses Rgraphviz.  
+\description{Given a cluster structure determined by \code{\link{ICLUST}}, create dot code to describe the \code{\link{ICLUST}} output.  To use the dot code, use either https://www.graphviz.org/ Graphviz or a commercial viewer (e.g., OmniGraffle).  This function parallels \code{\link{ICLUST.rgraph}} which uses Rgraphviz.  
 }
 \usage{
 ICLUST.graph(ic.results, out.file,min.size=1, short = FALSE,labels=NULL,
@@ -25,7 +25,7 @@ size = c(8, 6), node.font = c("Helvetica", 14), edge.font = c("Helvetica", 12),
   \item{\dots}{ other options to pass }
 }
 \details{
-  Will create (or overwrite) an output file and print out the dot code to show a cluster structure. This dot file may be imported directly into a dot viewer (e.g.,  http://www.graphviz.org/).  The "dot" language is a powerful graphic description language that is particulary appropriate for viewing cluster output.  Commercial graphics programs (e.g., OmniGraffle) can also read (and clean up) dot files.  
+  Will create (or overwrite) an output file and print out the dot code to show a cluster structure. This dot file may be imported directly into a dot viewer (e.g.,  https://www.graphviz.org/).  The "dot" language is a powerful graphic description language that is particulary appropriate for viewing cluster output.  Commercial graphics programs (e.g., OmniGraffle) can also read (and clean up) dot files.  
   
 ICLUST.graph takes the output from \code{\link{ICLUST}} results and processes it to provide a pretty picture of the results.  Original variables shown as rectangles and ordered on the left hand side (if rank direction is RL) of the graph.  Clusters are drawn as ellipses and include the alpha, beta, and size of the cluster.  Edges show the cluster intercorrelations.
 
@@ -37,10 +37,10 @@ Although it would be nice to process the dot code directly in R, the Rgraphviz p
 
 \value{ Output is a set of dot commands written either to console or to the output file.  These commands may then be used as input to any "dot" viewer, e.g., Graphviz.
 }
-\references{ ICLUST: \url{http://personality-project.org/r/r.ICLUST.html}}
+\references{ ICLUST: \url{https://personality-project.org/r/r.ICLUST.html}}
 \author{
  \email{revelle@northwestern.edu } \cr
- \url{http://personality-project.org/revelle.html}}
+ \url{https://personality-project.org/revelle.html}}
 
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}}
 \examples{
@@ -164,7 +164,7 @@ print(ic.out,digits=2)
 #V1;V2;V3;V4;V5;V6;V7;V8;V9;V10;V11;V12;V13;V14;V15;V16;V17;V18;V19;V20;V21;V22;V23;V24;}}
 #
 #copy the above output to Graphviz and draw it
-#see \url{http://personality-project.org/r/r.ICLUST.html} for an example.
+#see \url{https://personality-project.org/r/r.ICLUST.html} for an example.
 
 }
 

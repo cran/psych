@@ -2,7 +2,7 @@
 \alias{ICLUST.rgraph}
 
 \title{ Draw an ICLUST graph using the Rgraphviz package }
-\description{Given a cluster structure determined by \code{\link{ICLUST}}, create a rgraphic directly using Rgraphviz.  To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}.  As an option, dot code is also generated and saved in a file. To  use the dot code, use either http://www.graphviz.org/ Graphviz or a commercial viewer (e.g., OmniGraffle).
+\description{Given a cluster structure determined by \code{\link{ICLUST}}, create a rgraphic directly using Rgraphviz.  To create dot code to describe the \code{\link{ICLUST}} output with more precision, use \code{\link{ICLUST.graph}}.  As an option, dot code is also generated and saved in a file. To  use the dot code, use either https://www.graphviz.org/ Graphviz or a commercial viewer (e.g., OmniGraffle).
 }
 \usage{
 ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE, 
@@ -28,7 +28,7 @@ ICLUST.rgraph(ic.results, out.file = NULL, min.size = 1, short = FALSE,
   \item{\dots}{ other options to pass }
 }
 \details{
-  Will create (or overwrite) an output file and print out the dot code to show a cluster structure. This dot file may be imported directly into a dot viewer (e.g.,  http://www.graphviz.org/).  The "dot" language is a powerful graphic description language that is particulary appropriate for viewing cluster output.  Commercial graphics programs (e.g., OmniGraffle) can also read (and clean up) dot files.  
+  Will create (or overwrite) an output file and print out the dot code to show a cluster structure. This dot file may be imported directly into a dot viewer (e.g.,  https://www.graphviz.org/).  The "dot" language is a powerful graphic description language that is particulary appropriate for viewing cluster output.  Commercial graphics programs (e.g., OmniGraffle) can also read (and clean up) dot files.  
   
 ICLUST.rgraph takes the output from \code{\link{ICLUST}} results and processes it to provide a pretty picture of the results.  Original variables shown as rectangles and ordered on the left hand side (if rank direction is RL) of the graph.  Clusters are drawn as ellipses and include the alpha, beta, and size of the cluster.  Edges show the cluster intercorrelations.
 
@@ -39,10 +39,10 @@ It is possible to trim the output to not show all cluster information. Clusters 
 ICLUST.rgraph is a version of \code{\link{ICLUST.graph}} that uses Rgraphviz to draw on the screen as well.  
 
 Additional output is drawn to main graphics screen. }
-\references{ ICLUST: http://personality-project.org/r/r.ICLUST.html}
+\references{ ICLUST: https://personality-project.org/r/r.ICLUST.html}
 \author{
  \email{revelle@northwestern.edu } \cr
- \url{http://personality-project.org/revelle.html}}
+ \url{https://personality-project.org/revelle.html}}
 
 \seealso{  \code{\link{VSS.plot}},  \code{\link{ICLUST}}}
 \note{ Requires Rgraphviz}

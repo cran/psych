@@ -97,11 +97,11 @@ A variety of rotation options are available. These include varimax, promax, and 
  ...:  sum squared residual correlations for complexity 2 ..8\cr
  
 }
-\references{ \url{http://personality-project.org/r/vss.html},
-Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+\references{ \url{https://personality-project.org/r/vss.html},
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{https://personality-project.org/r/book/}
 
 Revelle, W. and Rocklin, T. 1979, Very Simple Structure: an Alternative Procedure for Estimating the Optimal Number of Interpretable Factors, Multivariate Behavioral Research, 14, 403-414. 
-\url{http://personality-project.org/revelle/publications/vss.pdf}
+\url{https://personality-project.org/revelle/publications/vss.pdf}
 
 Velicer, W. (1976) Determining the number of components from the matrix of partial correlations. Psychometrika, 41, 321-327.
 	

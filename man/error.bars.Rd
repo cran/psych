@@ -8,7 +8,7 @@
 error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable",
   main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05,sd=FALSE, labels = NULL, 
    pos = NULL,  arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE,
-   col="blue",...)
+   col="blue",density=-10,...)
 error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
@@ -32,6 +32,7 @@ error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
   \item{bars}{bars=TRUE will draw a bar graph if you really want to do that}
   \item{within}{should the error variance of a variable be corrected by 1-SMC?}
   \item{col}{color(s) of the catseyes.  Defaults to blue.} 
+  \item{density}{If negative, solid colors, if positive, how many lines to draw}
   \item{way}{Percentages are based upon the row totals (default) column totals, or grand total of the data Table}
   \item{raw}{If raw is FALSE, display the graphs in terms of probability, raw TRUE displays the data in terms of raw counts}
   \item{\dots}{other parameters to pass to the plot function, e.g., typ="b" to draw lines, lty="dashed" to draw dashed lines}
@@ -72,11 +73,12 @@ In addition, as pointed out by Jim Lemon on the R-help news group, error bars or
  plotCI \tab(plotrix) \cr
  }
 
-For advice why not to draw bar graphs  with error bars, see  \url{http://biostat.mc.vanderbilt.edu/wiki/Main/DynamitePlots}
+For advice why not to draw bar graphs  with error bars, see  the page at biostat.mc.vanderbilt.edu/wiki/Main/DynamitePlots.  
 
 }
 \examples{
-x <- replicate(20,rnorm(50))
+set.seed(42)
+x <- matrix(rnorm(1000),ncol=20)
 boxplot(x,notch=TRUE,main="Notched boxplot with error bars")
 error.bars(x,add=TRUE)
 abline(h=0)

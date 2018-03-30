@@ -16,10 +16,10 @@ factor.model(f,Phi=NULL,U2=TRUE)
 }
 \references{Gorsuch, Richard, (1983) Factor Analysis. Lawrence Erlebaum Associates. 
 \cr
-Revelle, W. In preparation) An Introduction to Psychometric Theory with applications in R (\url{http://personality-project.org/r/book/}) } 
+Revelle, W. In preparation) An Introduction to Psychometric Theory with applications in R (\url{https://personality-project.org/r/book/}) } 
 \author{ 
  \email{revelle@northwestern.edu } \cr
- \url{http://personality-project.org/revelle.html} \cr
+ \url{https://personality-project.org/revelle.html} \cr
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega} }}
 \examples{

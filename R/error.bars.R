@@ -1,5 +1,5 @@
 "error.bars" <-
-function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col="blue",...)  # x   data frame with 
+function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col="blue",density=-10,...)  # x   data frame with 
     {
     SCALE=.5   #scale the width of the cats eyes
     if(is.null(stats)) {
@@ -62,8 +62,8 @@ function (x,stats=NULL,ylab ="Dependent Variable",xlab="Independent Variable",ma
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)	   
     for (s in 1:z){ if(!is.null(x.stats$values[s] )) {
-            catseyes(x=x.stats$values[s],y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])} else {
-            catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=-10,col=col[s])}}
+            catseyes(x=x.stats$values[s],y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])} else {
+            catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])}}
     	  }
     	    }
    }

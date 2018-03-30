@@ -7,9 +7,9 @@
 }
 \usage{
 cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, 
- poly = FALSE, method = "pearson", plot=TRUE,...)
+ poly = FALSE, method = "pearson", plot=TRUE,minlength=5,...)
  corCi(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE, 
- poly = FALSE, method = "pearson", plot=TRUE,...)
+ poly = FALSE, method = "pearson", plot=TRUE,minlength=5,...)
 
 }
 
@@ -22,6 +22,7 @@ cor.ci(x, keys = NULL, n.iter = 100,  p = 0.05,overlap = FALSE,
   \item{poly}{if FALSE, then find the correlations using the method specified (defaults to Pearson).  If TRUE, the polychoric correlations will be found (slowly).  Because the polychoric function uses multicores (if available), and cor.ci does as well, the number of cores used is options("mc.cores")^2. }
   \item{method}{"pearson","spearman", "kendall"}
   \item{plot}{Show the correlation plot with correlations scaled by the probability values.  To show the matrix in terms of the confidence intervals, use \code{\link{cor.plot.upperLowerCi}}.}
+ \item{minlength}{What is the minlength to use in abbreviations of the cis? Defaults to 5}
   \item{...}{Other parameters for axis (e.g., cex.axis to change the font size, srt to rotate the numbers in the plot)}
   }
 \details{
@@ -29,7 +30,7 @@ The original data are and correlations are found.  If keys are specified (the no
 
 Then, n.iter times, the data are recreated by sampling subjects (rows) with replacement and the correlations (and composite scales) are found again (and again and again).  Mean and standard deviations of these values are calculated based upon the Fisher Z transform of the correlations.  Summary statistics include the original correlations and their confidence intervals.  For those who want the complete set of replications, those are available as an object in the resulting output.
 
-Although particularly useful for SAPA (\url{http://sapa-project.org}) type data, this will work for any normal data set as well. 
+Although particularly useful for SAPA (\url{https://sapa-project.org}) type data, this will work for any normal data set as well. 
 
 Although the correlations are shown automatically as a \code{\link{cor.plot}}, it is possible to show the upper and lower confidence intervals by using \code{\link{cor.plot.upperLowerCi}}. This will also return, invisibly, a matrix for printing with the lower and upper bounds of the correlations shown below and above the diagonal.
 }

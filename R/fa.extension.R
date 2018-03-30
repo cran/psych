@@ -34,7 +34,8 @@
      fe <- (fe * d)
  }
  colnames(fe) <- colnames(fl)
-if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- fl  %*% t(fe)}
+ rownames(fe) <- colnames(Roe)
+if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- Roe - fl  %*% t(fe)}   #fixed to actually give residual  (1/30/18)
  result <- list(loadings = fe,Phi=Phi,resid=resid,Call=cl)
  if(!omega)  {result <- list(loadings = fe,Phi=Phi,resid=resid,Call=cl)} else {result <- list(loadings = fe,oblique= feoblique,Phi=Phi,resid=resid,Call=cl)}
  class(result) <- c("psych","extension")
@@ -87,6 +88,7 @@ if(omega) result$schmid$sl <- foe
             }
    if(is.null(fo$Phi)) {result$Structure <- foe } else { result$Structure <- foe %*% fo$Phi}
     result$fe=fe
+    result$resid=fe$resid
     result$Phi=fo$Phi
     result$fn="fa"
     result$Call=cl

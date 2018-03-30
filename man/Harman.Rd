@@ -62,7 +62,7 @@ Factor analysis by minimizing residuals (minres).  Psychometrika, 31(3):351-368.
 P.Bentler. Covariance structure models for maximal reliability of unit-weighted
   composites. In Handbook of latent variable and related models, pages 1--17.  North Holland, 2007.
 
-Burt, C.General and Specific Factors underlying the Primary Emotions. Reports of the British Association for the Advancement of Science, 85th meeting, held in Manchester,  September 7-11, 1915. London, John Murray, 1916, p. 694-696 (retrieved from the web at http://www.biodiversitylibrary.org/item/95822#790
+Burt, C.General and Specific Factors underlying the Primary Emotions. Reports of the British Association for the Advancement of Science, 85th meeting, held in Manchester,  September 7-11, 1915. London, John Murray, 1916, p. 694-696 (retrieved from the web at https://www.biodiversitylibrary.org/item/95822#790
 
 }
 

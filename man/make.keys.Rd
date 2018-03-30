@@ -3,7 +3,7 @@
 \alias{keys2list}
 \alias{selectFromKeys}
 \title{ Create a keys matrix for use by score.items or cluster.cor}
-\description{ When scoring items by forming composite scales either from the raw data using \code{\link{score.items}} or from the correlation matrix using \code{\link{cluster.cor}}, it is necessary to create a keys matrix.  This is just a short cut for doing so.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale. Items can be specified by location or by name.
+\description{ When scoring items by forming composite scales either from the raw data using \code{\link{scoreItems}} or from the correlation matrix using \code{\link{cluster.cor}}, it is necessary to create a keys matrix.  This is just a short cut for doing so.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale. Items can be specified by location or by name.
 }
 \usage{
 make.keys(nvars, keys.list, item.labels = NULL, key.labels = NULL)
@@ -12,8 +12,8 @@ selectFromKeys(keys.list)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{nvars}{Number of variables items to be scored}
-  \item{keys.list}{ A list of the scoring keys,one element for each scale}
+  \item{nvars}{Number of variables items to be scored, or the name of the data.frame/matrix to be scored}
+  \item{keys.list}{ A list of the scoring keys, one element for each scale}
   \item{item.labels}{ Typically, just the colnames of the items data matrix. }
   \item{key.labels}{ Labels for the scales can be specified here, or in the key.list }
   \item{keys}{A keys matrix returned from make.keys}
@@ -21,7 +21,7 @@ selectFromKeys(keys.list)
 }
 \details{The easiest way to prepare keys for \code{\link{scoreItems}}, \code{\link{scoreOverlap}}, \code{\link{scoreIrt.1pl}}, or \code{\link{scoreIrt.2pl}}  is to specify a keys.list.  This is just a list specifying the name of the scales to be scores and the direction of the items to be used.
 
-In earlier versions (prior to 1.6.9) keys were formed as a matrix of -1, 0, and 1s for al the items using make.keys.  This is no longer necessary, but make.keys is kept for compatibility with earlier versions.
+In earlier versions (prior to 1.6.9) keys were formed as a matrix of -1, 0, and 1s for all the items using make.keys.  This is no longer necessary, but make.keys is kept for compatibility with earlier versions.
 
 
 There are three ways to create keys for the \code{\link{scoreItems}}, \code{\link{scoreOverlap}}, \code{\link{scoreIrt.1pl}}, or \code{\link{scoreIrt.2pl}} functions. One is to laboriously do it in a spreadsheet and then copy them into R.  The other is to just specify them by item number in a list. \code{\link{make.keys}} allows one to specify items by name or by location or a mixture of both.

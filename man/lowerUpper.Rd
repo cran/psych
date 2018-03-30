@@ -24,7 +24,7 @@ If diff is true, the upper off diagonal matrix reflects the differences between 
 \author{William Revelle}
 
 
-\seealso{\code{\link{read.clipboard.lower}}, \code{\link{cor.plot}}
+\seealso{\code{\link{read.clipboard.lower}}, \code{\link{corPlot}}
 }
 \examples{
  b1 <- Bechtoldt.1
@@ -33,8 +33,16 @@ If diff is true, the upper off diagonal matrix reflects the differences between 
  cor.plot(b12)
  diff12 <- lowerUpper(b1,b2,diff=TRUE)
 
- cor.plot(t(diff12),numbers=TRUE,main="Bechtoldt1 and the differences from Bechtoldt2")
-
+ corPlot(t(diff12),numbers=TRUE,main="Bechtoldt1 and the differences from Bechtoldt2")
+ 
+ #Compare r and partial r
+ lower <- lowerCor(sat.act)
+ upper <- partial.r(sat.act)
+ both = lowerUpper(lower,upper)
+ corPlot(both,numbers=TRUE,main="r and partial r for the sat.act data set")
+#now show the differences
+ both = lowerUpper(lower,upper,diff=TRUE)
+ corPlot(both,numbers=TRUE,main="Differences between r and partial r for the sat.act data set")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

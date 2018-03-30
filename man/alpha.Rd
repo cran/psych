@@ -1,6 +1,7 @@
 \name{alpha}
 \alias{alpha}
 \alias{alpha.scale}
+\alias{alpha.ci}
 
 \title{Find two estimates of reliability: Cronbach's alpha and Guttman's Lambda 6. }
 \description{
@@ -9,6 +10,7 @@
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
    check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL)
+alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2)
 }
 
 \arguments{
@@ -23,7 +25,11 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
   \item{delete}{Delete items with no variance and issue a warning}
   \item{use}{Options to pass to the cor function: "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs". The default is "pairwise"}
   \item{warnings}{By default print a warning and a message that items were reversed. Suppress the message if warnings = FALSE}
+  \item{alpha}{The value to use for confidence intervals}
   \item{n.obs}{If using correlation matrices as input, by specify the number of observations, we can find confidence intervals}
+  \item{n.var}{Number of items in the scale (to find r.bar)}
+  \item{p.val}{width of confidence interval (pval/2 to 1-p.val/2) }
+  \item{digits}{How many digits to use for alpha.ci}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
@@ -60,9 +66,11 @@ If some items are to be reversed keyed then they can be specified by either item
 
 Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items. 
 
-When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).  This is problematic because some simulations suggest these values are too small.  It is probably better to use bootstrapped value
+When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).  This is problematic because some simulations suggest these values are too small.  It is probably better to use bootstrapped values.
 
-Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot object.  They may be plotted or described. 
+\code{\link{alpha.ci}} finds confidence intervals using  the Feldt et al. (1987) procedure.  This procedure does not consider the internal structure of the test the way that the Duhhachek and Iacobucci (2004) procedure does.  That is, the latter considers the variance of the covariances, while the Feldt procedure is based upon just the mean covariance.
+
+Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot object.  They may be plotted or described.  The 2.5\% and 97.5\% values are returned in the boot.ci object.
 
 }
 \value{
@@ -71,7 +79,7 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{std.alpha}{The standarized alpha based upon the correlations}
   \item{G6(smc)}{Guttman's Lambda 6 reliability}
   \item{average_r}{The average interitem correlation}
-  \item{mean}{For data matrices, the mean of the scale formed by summing the items}
+  \item{mean}{For data matrices, the mean of the scale formed by averaging or summing the items (depending upon the cumulative option)}
   \item{sd}{For data matrices, the standard deviation of the total score}
   \item{alpha.drop }{A data frame with all of the above for the case of each item being removed one by one.}
   \item{item.stats}{A data frame including}
@@ -83,6 +91,8 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
   \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
+  \item{scores}{Scores are by default simply the average response for all items that a participant took. If cumulative=TRUE, then these are sum scores. Note, this is dangerous if there are lots of missing values.}  
+  item{boot.ci}{The lower, median, and upper ranges of the 95\% confidence interval based upon the bootstrap.}
   \item{boot}{a 6 column by n.iter matrix of boot strapped resampled values}
   \item{Unidim}{An index of unidimensionality}
   \item{Fit}{The fit of the off diagonal matrix}
@@ -97,9 +107,11 @@ Cronbach, L.J. and Gleser G.C.  (1964)The signal/noise ratio in the comparison o
 
 Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate and precise confidence interval estimate. Journal of Applied Psychology, 89(5):792-808.
 
+Feldt, L. S., Woodruff, D. J., & Salih, F. A. (1987). Statistical inference for coefficient alpha. Applied Psychological Measurement (11) 93-103.
+
 Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika, 10 (4), 255-282. 
 
-Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{http://personality-project.org/r/book}). 
+Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
 
 Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
 

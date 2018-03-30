@@ -28,7 +28,7 @@ Because of the similar pattern of results for IRT based or simple sum based item
 }
 \value{Graphic output}
 \references{
-Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{https://personality-project.org/r/book/}
 }
 \author{William Revelle
 }

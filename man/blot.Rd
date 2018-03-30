@@ -16,7 +16,7 @@ However, when using a two parameter model, one of the items (V12) behaves very d
 
 This data set is useful when comparing 1PL, 2PL and 2PN IRT models.  
 }
-\source{The data are taken (with kind permission from Trevor Bond) from the webpage http://www.winsteps.com/BF3/bondfox3.htm and read using read.fwf.  
+\source{The data are taken (with kind permission from Trevor Bond) from the webpage https://www.winsteps.com/BF3/bondfox3.htm and read using read.fwf.  
 }
 \references{
 T.G. Bond. BLOT:Bond's Logical Operations Test. Townsville, Australia: James Cook Univer- sity. (Original work

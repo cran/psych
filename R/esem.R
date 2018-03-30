@@ -2,6 +2,8 @@
 #and then linking the two sets
 
 "esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",plot=TRUE,cor="cor",use="pairwise",weight=NULL,...) {
+if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
+
 #vars <- order(c(vars1,vars2))
  cl <- match.call()
  if(is.numeric(varsX)) varsX <- colnames(r)[varsX]

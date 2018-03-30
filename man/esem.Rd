@@ -47,9 +47,9 @@ Factor analysis as implemented in \code{\link{fa}} attempts to  summarize the co
 
 Although the output seems very similar to that of a normal EFA using  \code{\link{fa}}, it is actually two independent factor analyses (of the X and the Y sets) that are then mutually extended into each other.  That is, the loadings and structure matrices from sets X and Y are merely combined, and the correlations between the two sets of factors are found.
 
-Interbattery factor analysis was developed by Tucker (1958) as a way of comparing the factors in common to two batteries of tests.   (Currently under development). Using some straight forward linear algebra It is straight forward to find the factors of the intercorrelations between the two sets of variables.  This does not require estimating communalities and is highly related to the procedures of canonical correlation.  
+Interbattery factor analysis was developed by Tucker (1958) as a way of comparing the factors in common to two batteries of tests.   (Currently under development and not yet complete). Using some straight forward linear algebra It is easy to find the factors of the intercorrelations between the two sets of variables.  This does not require estimating communalities and is highly related to the procedures of canonical correlation.  
 
-The difference between the esem and the interbattery approach is that the first factors the X set and then relates those factors to factors of the Y set.  Interbattery factor analysis, on the other hand, tries to find one set of factors that links both sets but is still distinct from factorinh both sets together.  
+The difference between the esem and the interbattery approach is that the first factors the X set and then relates those factors to factors of the Y set.  Interbattery factor analysis, on the other hand, tries to find one set of factors that links both sets but is still distinct from factoring both sets together.  
 }
 \value{
 \item{communality}{The amount of variance in each of the X and Y variables accounted for by the total model.}
@@ -83,7 +83,7 @@ The difference between the esem and the interbattery approach is that the first 
 \item{Call}{Echo back the original call to the function.}
 }
 \references{
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
 Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika, 23, 111-136.
 
@@ -142,6 +142,7 @@ summary(f2)
 summary(es2)
 fa.congruence(f2,es2)
 
+interbattery(Thurstone.9,1:4,5:9,2,2)  #compare to the solution of Tucker.  We are not there yet.
 
 }
 

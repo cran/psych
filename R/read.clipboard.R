@@ -118,9 +118,11 @@ function(filename,header=TRUE) {
 #two useful helper functions
 #August, 2016
 #modified Jan/April 2017 to include SAS xpt 
-"read.file" <- function(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",widths=NULL,...) {
- if(missing(f)) f <- file.choose()
+"read.file" <- function(file=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",widths=NULL,f=NULL,filetype=NULL,...) {
+ if(missing(f) && missing(file))  f <- file.choose()
+ if(missing(f) && !missing(file)) f <- file
  suffix <- file_ext(f)
+ if(!missing(filetype)) suffix <- filetype
  if(!missing(widths)) { result <- read.fwf(f,widths,...) 
         message("The fixed width file ", f, "has been loaded.") } else {
  switch(suffix, 
@@ -138,6 +140,8 @@ function(filename,header=TRUE) {
            message('Data from the .data file ', f , ' has been loaded.')},
     dat =  {result <- read.table(f,header=header,...) 
            message('Data from the .data file ', f , ' has been loaded.')},
+     DAT =  {result <- read.table(f,header=header,...) 
+           message('Data from the .data file ', f , ' has been loaded.')},
     rds = {result <- readRDS(f,...)
           message('File ',f ,' has been loaded.')},
       R = {result <- dget(f,...)
@@ -150,8 +154,9 @@ function(filename,header=TRUE) {
           message('File ',f ,' has been loaded.')},
     xpt = { result <- read.xport(f,...)
           message('File ',f ,' has been loaded.')},
-    #the next options use load rather than read 
-   Rda = {result <- f
+    #the next options use load rather than read
+    #if we return f and it has the same name as the file loaded, this wipes out the file
+   Rda = {result <- f   #not helpful if the  
            load(f, .GlobalEnv)
           message('The file(s) in ',f,' have been loaded into your environment.') },
    rda  = {result <- f
@@ -166,6 +171,13 @@ function(filename,header=TRUE) {
      rdata =   {result <- f
           load(f, .GlobalEnv)
           message('The file(s) in ',f,' have been loaded into your environment.') },
+        
+     SYD =   {result <-  read.systat(f,to.data.frame=to.data.frame )
+           message('Data from the systat SYD file ', f ,' has been loaded.')},
+     syd =   {result <- read.systat(f,to.data.frame=to.data.frame )
+           message('Data from the systat syd file ', f ,' has been loaded.')},
+     sys =   {result <-   read.systat(f,to.data.frame=to.data.frame )
+           message('Data from the systat sys file ', f ,' has been loaded.')},
     #this section handles (or complains) about jmp and SAS files.
   
     jmp  = {result <- f
@@ -180,18 +192,21 @@ function(filename,header=TRUE) {
    return (result)
    }
    
-"read.file.spss" <- function(f=NULL,use.value.labels=FALSE,to.data.frame=TRUE,...) {
-   if(missing(f)) f <- file.choose()
+"read.file.spss" <- function(file=NULL,use.value.labels=FALSE,to.data.frame=TRUE,...) {
+  if(missing(f) && missing(file))  f <- file.choose()
+if(missing(f) &&!missing(file)) f <- file
    result <- read.spss(f,use.value.labels=use.value.labels,to.data.frame=to.data.frame,...)
          message('Data from the SPSS sav file ', f ,' has been loaded.')
 return(result)
 } 
- "read.file.csv" <- function(f=NULL,header=TRUE,...) {
- if(missing(f)) f <- file.choose()
+ "read.file.csv" <- function(file=NULL,header=TRUE,f=NULL,...) {
+if(missing(f) && missing(file))  f <- file.choose()
+if(missing(f) &&!missing(file)) f <- file
  read.table(f,header=header,sep=",",...) }
  
- "write.file" <- function(x,f=NULL,row.names=FALSE,...) {
-	 if(missing(f))  f <- file.choose(TRUE)
+ "write.file" <- function(x,file=NULL,row.names=FALSE,f=NULL,...) {
+	 if(missing(f) && missing(file))  f <- file.choose(TRUE)
+	 if(missing(f) &&!missing(file)) f <- file
  	 suffix <- file_ext(f)
 	 switch(suffix, 
  		txt = {write.table(x,f, row.names=row.names, ...)},
@@ -202,11 +217,14 @@ return(result)
  		rda = {save(x,file=f,...)},
  		Rda ={save(x,file=f,...)},
  		Rds = {saveRDS(x,f)},
- 		rds = {saveRDS(x,f)})
+ 		rds = {saveRDS(x,f)},
+ 		write.table(x,f,row.names=row.names) #the default for unspecified types
+ 		)
    }
  
-  "write.file.csv" <- function(x,f=NULL,row.names=FALSE,...) {
- if(missing(f))  f <- file.choose(TRUE)
+  "write.file.csv" <- function(x,file=NULL,row.names=FALSE,f=NULL,...) {
+if(missing(f) && missing(file))  f <- file.choose(TRUE)
+	 if(missing(f) &&!missing(file)) f <- file
  write.table(x,f,sep=",",row.names=row.names,...) }
  
  

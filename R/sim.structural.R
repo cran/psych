@@ -242,3 +242,23 @@ function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
                                       x <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(x))
    return(x)} else {
   return(R)} }
+  
+  
+#not public
+#simulate the difference between  two groups  
+  sim.groups <- function(n=1000,r=.5,d=.5,nvar = 2,bg= -1) {
+model <- matrix(r,nvar,nvar)
+ diag(model) <- 1
+ eX <- eigen(model)
+ observed <- matrix(rnorm(nvar * n),n)
+ observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed))
+ n1 <- n/2
+if(bg < 1 ) {  mu1 <- c(0,d)} else {mu1 <- 0 }
+ group1 <- t(t( observed[1:n1,]) + mu1  )
+if(bg < 1) {mu2 <- c(d,0)} else {mu2 <- d}
+ group2 <- t( t(observed[(n1+1):n,]) + mu2)
+ data <- data.frame(grp=1,vars=group1)
+ data2 <- data.frame(grp=2,vars=group2)
+ data <- rbind(data,data2)
+ return(data)
+ }

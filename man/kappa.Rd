@@ -24,7 +24,7 @@ wkappa(x, w = NULL)    #deprectated
 
 Kappa considers the matches on the main diagonal.  A penalty function (weight) may be applied to the off diagonal matches.  If the weights increase by the square of the distance from the diagonal, weighted kappa is similar to an Intra Class Correlation (\code{\link{ICC}}).
 
-Derivations of weighted kappa are sometimes expressed in terms of similarities, and sometimes in terms of dissimilarities. In the latter case, the weights on the diagonal are 1 and the weights off the diagonal are less than one. In this, if the weights are 1 - squared distance from the diagonal / k, then the result is similar to the ICC (for any positive k).  
+Derivations of weighted kappa are sometimes expressed in terms of similarities, and sometimes in terms of dissimilarities. In the latter case, the weights on the diagonal are 1 and the weights off the diagonal are less than one. In this  case, if the weights are 1 - squared distance from the diagonal / k, then the result is similar to the ICC (for any positive k).  
 
 cohen.kappa may use either similarity weighting (diagonal = 0) or dissimilarity weighting (diagonal = 1) in order to match various published examples. 
 
@@ -66,6 +66,8 @@ To avoid confusion with Kappa (from vcd) or the kappa function from base, the fu
 Unfortunately, to make it more confusing, the weights described by Cohen are a function of the reciprocals of those discucssed by Fleiss and Cohen. The cohen.kappa function uses the appropriate formula for Cohen or Fleiss-Cohen weights. 
 
 There are some cases where the large sample size approximation of Fleiss et al. will produce confidence intervals exceeding +/- 1.  Clearly, for these cases, the upper (or lower for negative values) should be set to 1.  Boot strap resampling shows the problem is that the values are not symmetric.  See the last (unrun) example.
+
+It is also possible to have more than 2 raters.  In this case, cohen.kappa is reported for all pairs of raters (e.g. R1 and R2, R1 and R3,  ... R3 and R4).  To see the confidence intervals for these cohen.kappas, use the print command with the all=TRUE option. (See the exmaple of multiple raters.)
 
 }
 
@@ -152,8 +154,10 @@ cohen.kappa(numbers,levels=1:10)  #specify the number of levels
 ratings <- matrix(rep(1:5,4),ncol=4)
 ratings[1,2] <- ratings[2,3] <- ratings[3,4] <- NA
 ratings[2,1] <- ratings[3,2] <- ratings[4,3] <- 1
-cohen.kappa(ratings)
- 
+ck <- cohen.kappa(ratings)
+ck  #just show the raw and weighted kappas
+print(ck, all=TRUE)  #show the confidence intervals as well
+
  
  #In the case of confidence intervals being artificially truncated to +/- 1, it is 
  #helpful to compare the results of a boot strap resample

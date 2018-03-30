@@ -20,7 +20,7 @@ VSS.scree(rx, main = "scree plot")
  \item{add}{Should multiple plots be drawn?}
 }
 
-\references{ \url{http://personality-project.org/r/vss.html}}
+\references{ \url{https://personality-project.org/r/vss.html}}
 \author{William Revelle 
 }
 \seealso{  \code{\link{fa.parallel}} \code{\link{VSS.plot}},  \code{\link{ICLUST}}, \code{\link{omega}}}

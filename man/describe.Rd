@@ -1,6 +1,7 @@
 \name{describe}
 \alias{describe}
 \alias{describeData}
+\alias{describeFast}
 \title{  Basic descriptive statistics useful for psychometrics }
 \description{
 There are many summary statistics available in R; this function
@@ -9,8 +10,9 @@ There are many summary statistics available in R; this function
 }
 \usage{
 describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
-type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE)
-describeData(x,head=4,tail=4) 
+              type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE)
+describeData(x,head=4,tail=4)
+describeFast(x)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,12 +24,13 @@ describeData(x,head=4,tail=4)
   \item{trim}{trim=.1 -- trim means by dropping the top and bottom trim fraction}
   \item{type}{Which estimate of skew and kurtosis should be used?  (See details.) }
   \item{check}{Should we check for non-numeric variables?  Slower but helpful.}
-  \item{fast}{if TRUE, will do n, means, sds, ranges for an improvement in speed.  If 
+  \item{fast}{if TRUE, will do n, means, sds, min, max, ranges for an improvement in speed.  If 
   NULL, will switch to fast mode for large (ncol * nrow > 10^7) problems, otherwise 
   defaults to fast = FALSE}
   \item{quant}{if not NULL, will find the specified quantiles (e.g. quant=c(.25,.75) will 
   find the 25th and 75th percentiles)}
   \item{IQR}{If TRUE, show the interquartile range}
+  \item{omit}{Do not convert non-numerical variables to numeric, omit them instead}
   \item{head}{show the first 1:head cases for each variable in describeData}
   \item{tail}{Show the last nobs-tail cases for each variable in describeData}
 }
@@ -56,6 +59,8 @@ Type 3 is \eqn{b1 = [(n-1)/n]^{3/2} m_3/m_2^{3/2}} and \eqn{b2 =  [(n-1)/n]^{3/2
 
 The additional helper function \code{\link{describeData}} just scans the data array and reports on whether the data are all numerical, logical/factorial, or categorical.  This is a useful check to run if trying to get descriptive statistics on very large data sets where to improve the speed, the check option is FALSE.  
 
+An even faster overview of the data is \code{\link{describeFast}} which reports the number of total cases, number of complete cases, number of numeric variables and the number which are factors. 
+
 The fast=TRUE option will lead to a speed up of about 50\% for larger problems by not finding all of the statistics (see NOTE)
 
 To describe the data for different groups, see \code{\link{describeBy}}.
@@ -70,7 +75,7 @@ To describe the data for different groups, see \code{\link{describeBy}}.
    standard deviation\cr
    trimmed mean (with trim defaulting to .1) \cr
    median (standard or interpolated\cr
-   mad: median absolute deviation (from the median) \cr
+   mad: median absolute deviation (from the median). \cr
    minimum\cr
    maximum\cr
    skew\cr
@@ -78,23 +83,28 @@ To describe the data for different groups, see \code{\link{describeBy}}.
    standard error\cr
 }
 
-\note{For very large data sets that are data.frames, describe can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data set includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.
+\note{For very large data sets that are data.frames, \code{\link{describe}} can be rather slow. Converting the data to a matrix first is recommended.  However, if the data are of different types, (factors or logical), this is  not possible.  If the data set includes columns of character data, it is also not possible.  Thus, a quick pass with \code{\link{describeData}} is recommended.  Even faster is a quick pass with \code{\link{describeFast}} which just counts number of observations per variable and reports the type of data (numerical, factor, logical).
 
 For the greatest speed, at the cost of losing information, do not ask for ranges or for skew and turn off check.  This is done automatically if the fast option is TRUE or for large data sets. 
 
 Note that by default, fast=NULL.  But if the number of cases x number of variables exceeds (ncol * nrow > 10^7), fast will be set to TRUE.  This will provide just n, mean, sd, min, max, range, and standard errors. To get all of the statistics (but at a cost of greater time) set fast=FALSE. 
 
-The problem seems to be a memory limitation in that the time taken is an accelerating function of nvars * nobs.  Thus, for a largish problem (72,000 cases with 1680 variables) which might take 330 seconds, doing it as two sets of 840 variable cuts the time down to 80 seconds.   }
+The problem seems to be a memory limitation in that the time taken is an accelerating function of nvars * nobs.  Thus, for a largish problem (72,000 cases with 1680 variables) which might take 330 seconds, doing it as two sets of 840 variable cuts the time down to 80 seconds.   
+
+The object returned is a data frame with the normal precision of R.  However, to control the number of digits displayed, you can set digits in a print command, rather than losing precision at the descriptive stats level.  See the last two examples.  One just sets the number of digits, one gives uses signif  to make 'prettier'  output where all numbers are displayed to the same number of digits.
+
+The MAD (median absolute deviation from the median) is calculated using the mad function from the stats package in Core-R.  Note that by default, the MAD is adjusted by a scaling factor (1.4826) that will give the expectation of the MAD to be the same as the standard deviation for normal data.  
+
+An interesting problem with describe is that a function with the same name is in the Hmisc package.  HMisc is loaded by qqgraph which in turn is loaded by SemPlot.  So even if not directly loading HMisc, if you load  SemPlot after loading psych, describe will not work, but the reverse order for loading should work.
+}
 \author{ 
  
- \url{http://personality-project.org/revelle.html} \cr
+ \url{https://personality-project.org/revelle.html} \cr
 
 Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 }
 
-\note{The object returned is a data frame with the normal precision of R.  However, to control the number of digits displayed, you can set digits in a print command, rather than losing precision at the descriptive stats level.  See the last two examples.  One just sets the number of digits, one gives uses signif  to make 'prettier'  output where all numbers are displayed to the same number of digits.
 
-}
 
 
 
@@ -113,8 +123,10 @@ describe(sat.act,quant=c(.1,.25,.5,.75,.90) ) #find the 10th, 25th, 50th,
                    
                    
  
-describeData(sat.act) #the fast version 
-   
+describeData(sat.act) #the fast version just  gives counts and head and tail
+
+print(describeFast(sat.act),short=FALSE)  #even faster is just counts  (just less information)  
+
 #now show how to adjust the displayed number of digits
  des <- describe(sat.act)  #find the descriptive statistics.  Keep the original accuracy
  des  #show the normal output, which is rounded to 2 decimals

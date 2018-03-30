@@ -1,7 +1,27 @@
 "describeFast" <- function(x) {
 nvar <- NCOL(x)
 nobs <- NROW(x)
+ valid <- colSums(!is.na(x))
+temp <- matrix(NA,nrow=nvar,ncol=4)
+for(i in 1:nvar) {temp[i,1] <- is.numeric(x[1,i])
+                temp[i,2] <- is.factor(x[1,i])
+                temp[i,3] <- is.logical(x[1,i])
+                temp[i,4] <- is.character(x[1,i]) }
+ttt <- which(temp[,1:4] == TRUE,arr.ind=TRUE)
+ttt <- dfOrder(ttt,"row")
+temp <- cbind(temp,ttt["col"])
+colnames(temp) <- c("numeric","factor","logical","character","type")
 
+ cc <- try(complete.cases(x),silent=TRUE) 
+    if(class(cc) == "try-error") cc <- NA
+    cc <- sum(cc,na.rm=TRUE)
+all.numeric <- sum(temp[,1])
+all.factor <- sum(temp[,2])
+
+result.df <- data.frame(var=1:nvar,n.obs=valid,temp)
+result<- list(nvar=nvar,n.obs =nobs,complete.cases = cc,numeric=all.numeric,factors=all.factor,result.df=result.df)
+class(result) <- c("psych","describeFast")
+return(result)
 }
 
 #added 1/11/14
@@ -42,6 +62,7 @@ function (x, head = 4, tail = 4)
     else {
         all.numeric <- FALSE
     }
+
     H1 <- t(x[1:head,1:nvar])
     T1 <- t(x[(nobs-tail+1):nobs,1:nvar])
     temp <- data.frame(V=1:nvar,ans,H1,T1)
@@ -63,7 +84,7 @@ function (x, head = 4, tail = 4)
 #further modified June 21, 2016 to allow for character input as well as well reporting quantiles 
 #tried to improve the speed by using multicores, but this requires using s or lapply which don't do what I need.
 "describe" <-
-function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE)   #basic stats after dropping non-numeric data
+function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE)   #basic stats after dropping non-numeric data
                              #slightly faster if we don't do skews
 {                      
  cl <- match.call()
@@ -76,7 +97,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    	if(fast) {skew <- FALSE
    	         }
    	numstats <- 10 + length(quant)	+ IQR 
-    if ( is.null(dim(x)[2]))  {        #do it for vectors or 
+    if ( NCOL(x) < 2)  {        #do it for vectors or 
     	    len  <- 1
     	    nvar <- 1
     	    stats = matrix(rep(NA,numstats),ncol=numstats)    #create a temporary array
@@ -107,22 +128,30 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    stats[,1] <- apply(x,2,valid)
    vars <- c(1:nvar)
    ##adapted from the pairs function to convert logical or categorical to numeric 
+   select <- 1:nvar
 
     if(!is.matrix(x) && check) {  #does not work for matrices
     for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                  if(fast)  {x[[i]] <- NA} else {
+                                 if(omit) {select[i] <- NA}
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
+                                   rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")
                                   
-                                 # if(is.factor(unlist(x[[i]]))) { #fixed 5/21/15
-                                 #             x[[i]] <- as.numeric(x[[i]])} 
-        
-                          } else {x[[i]] <- NA} }
+                          } else {x[[i]] <- NA} 
                
-              rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")}
-              } }
-      
-    x <- as.matrix(x)
+             }
+              }
+              } 
+             } 
+             
+              
+    select <- select[!is.na(select)]
+    
+    x <- as.matrix(x[,select])
+    vars <- vars[select]
+   
+    stats <- stats[select,]
     if(!is.numeric(x)) {message("Converted non-numeric matrix input to numeric.  Are you sure you wanted to do this. Please check your data")
                 x <- matrix(as.numeric(x),ncol=nvar)
                rownames(stats) <- paste0(rownames(stats),"*")} 

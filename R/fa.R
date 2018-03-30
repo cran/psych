@@ -23,10 +23,9 @@ function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
                                #  if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, correct=.5,weight=weight,...=...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, correct=correct,weight=weight,...=...) #call fa with the appropriate parameters
  fl <- f$loadings  #this is the original
 
-# if(!require(parallel)) {message("Parallels is required to do confidence intervals")}
 
  nvar <- dim(fl)[1]
  
@@ -729,8 +728,9 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
   #we are now dropping this oblique score option  (9/2/17)
    result$method=scores  #this is the chosen method for factor scores
     if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores) } else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores)}
-   
+   if(is.null( result$scores$R2))  result$scores$R2 <- NA
    result$R2.scores <- result$scores$R2
+  
     result$weights <- result$scores$weights    #these are the weights found in factor scores and will be different from the ones reported by factor.stats 
     result$scores <- result$scores$scores
         if(!is.null(result$scores)) colnames(result$scores) <- colnames(loadings) #added Sept 27, 2013

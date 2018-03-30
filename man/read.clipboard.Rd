@@ -11,14 +11,14 @@
 \alias{write.file.csv}
 \alias{read.https}
 \title{Shortcuts for reading from the clipboard or a file}
-\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .TXT, .dat, .data, .csv, .rds, rda, .xpt, or  .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Fixed Width Files saved in .txt mode may be read if widths is specified. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
+\description{Input from a variety of sources may be read.  data.frames may be read from files with suffixes of .txt, .text, .TXT, .dat, .DATA,.data, .csv, .rds, rda, .xpt, or  .sav   (i.e., data from SPSS sav files may be easily read.) Data exported by JMP or EXCEL in the csv format are also able to be read. Fixed Width Files saved in .txt mode may be read if widths is specified. Files saved with writeRDS have suffixes of  .rds or  Rds,  and are read using readRDS.  Files associated with objects with suffixes .rda and .Rda are  loaded. The default values for read.spss are adjusted for more standard input from SPSS files.  
 Input from the clipboard is easy but a bit obscure, particularly for Mac users. This is just an easier way to do so.  Data may be copied to the clipboard from Excel spreadsheets, csv files, or fixed width formatted files and then into a data.frame. Data may also be read from lower  (or upper) triangular matrices and filled out to square matrices.
 }
 \usage{
-read.file(f=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",
-widths=NULL, ...)
+read.file(file=NULL,header=TRUE,use.value.labels=FALSE,to.data.frame=TRUE,sep=",",
+widths=NULL,f=NULL, filetype=NULL,...)
  #for .txt, .text, TXT, .csv, .sav, .xpt, XPT,  R, r, Rds, .rds, or .rda, 
-# Rda, RData, Rdata, files
+# .Rda, .RData, .Rdata, .dat and .DAT  files
 
 read.clipboard(header = TRUE, ...)   #assumes headers and tab or space delimited
 read.clipboard.csv(header=TRUE,sep=',',...)   #assumes headers and comma delimited
@@ -31,9 +31,9 @@ read.clipboard.tab(header=TRUE,sep='\t',...)   #assumes headers and tab delimite
 read.clipboard.fwf(header=FALSE,widths=rep(1,10),...)  
 read.https(filename,header=TRUE)
 
-read.file.csv(f=NULL,header=TRUE,...)
-write.file(x,f=NULL,row.names=FALSE,...)
-write.file.csv(x,f=NULL,row.names=FALSE,...)
+read.file.csv(file=NULL,header=TRUE,f=NULL,...)
+write.file(x,file=NULL,row.names=FALSE,f=NULL,...)
+write.file.csv(x,file=NULL,row.names=FALSE,f=NULL,...)
 
 
 }
@@ -47,9 +47,13 @@ write.file.csv(x,f=NULL,row.names=FALSE,...)
   \item{filename}{Name or address of remote https file to read.}
   \item{\dots}{ Other parameters to pass to read }
   \item{f}{A file name to read.  If omitted, \code{\link{file.choose}} is called to dynamically get the file name.}
+  \item{file}{A file name to read. (same as f, but perhaps more intuitive)  If omitted and if f is ommitted,then \code{\link{file.choose}} is called to dynamically get the file name.}
   \item{x}{The data frame or matrix to write to f}
   \item{row.names}{Should the output file include the rownames?} \item{to.data.frame}{Should the spss input be converted to a data frame?}
  \item{use.value.labels}{Should the SPSS input values be converted to numeric?}
+
+ \item{filetype}{If specified the reading will use this term rather than the suffix.}
+
 }
 \details{A typical session of R might involve data stored in text files, generated online, etc. Although it is easy to just read from a file (particularly if using \code{\link{file.choose}}, copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user). This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
 
@@ -57,7 +61,9 @@ The \code{\link{read.file}} function combines the \code{\link{file.choose}} and 
 
 Note that \code{\link{read.file}} assumes by default that the first row has column labels (header =TRUE).  If this is not true, then make sure to specify header = FALSE.  If the file is fixed width, the assumption is that it does not have a header field.  In the unlikely case that a fwf file does have a header, then you probably should try fn <- file.choose() and then my.data <- read.fwf(fn,header=TRUE,widths=   widths)
 
- 
+Further note:  If the file is a .Rda, .rda, etc. file, the read.file command will load this file and return the name of the file.  In this case, it is necessary to either assign the output (the file name) to an object that has a different name than any of the objects in the file, or to call read.file() without any specification. 
+
+If the file has no suffix the default action is to quit with a warning.  However, if the filetype is specified, it will use that type in the reading (e.g. filetype="txt" will read as text file, even if there is no suffix.)
 
 
 Currently supported input formats are 
@@ -86,7 +92,7 @@ The foreign function \code{\link{read.spss}} is used to read SPSS .sav files usi
 If you have a file written by JMP, you must first export to a csv or text file.
 
 
-The \code{\link{write.file}} function combines the \code{\link{file.choose}} and either \code{\link{write.table}} or \code{\link{saveRDS}}. By examining the file suffix, it chooses the appropriate way to write. For more complicated file structures, see the foreign package, or the save function in R Base.  
+The \code{\link{write.file}} function combines the \code{\link{file.choose}} and either \code{\link{write.table}} or \code{\link{saveRDS}}. By examining the file suffix, it chooses the appropriate way to write. For more complicated file structures, see the foreign package, or the save function in R Base.  If no suffix is added, it will write as a .txt file.
 
 Currently supported output formats are 
 \tabular{ll}{
@@ -101,7 +107,7 @@ Currently supported output formats are
 .r        \tab       A R data structure created using dput \cr
 }
 
-
+Note that new=TRUE option in write.file works only in R.app and not in RStudio.  To create a new file using RStudio (or on a PC) you can use the \code{link{fileCreate}} function. 
 
 \code{\link{read.clipboard}} was based upon a suggestion by Ken Knoblauch to the R-help listserve.
 
@@ -123,7 +129,13 @@ read.clipboard.fwf will read fixed format files from the clipboard.  It includes
 #Because these are dynamic functions, they need to be run interactively and 
 # can not be shown as examples.
 
-#my.data <- read.file()   #search the directory for a file and then read it.
+#my.data <- read.file()   #search the directory for a file and then read it. 
+#or, if the file is a rda, etc. file
+#read.file()  #without assigning a value.
+
+#filesList()  #search the system for a particular file and then list all the files in that directory
+#fileCreate() #search for a particular directory and create a file there.
+
 #the example data set from read.delim in the readr package to read a remote csv file
 #my.data  <-read.file("https://github.com/tidyverse/readr/raw/master/inst/extdata/mtcars.csv")
 #my.data <- read.clipboad()

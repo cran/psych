@@ -71,7 +71,7 @@ University of Heidelberg\cr
 
 William Revelle\cr 
 Department of Psychology \cr
-Northwestern University Evanston, Illiniois \cr http://personality-project.org/revelle.html
+Northwestern University Evanston, Illiniois \cr https://personality-project.org/revelle.html
 
 }
 

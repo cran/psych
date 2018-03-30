@@ -60,7 +60,7 @@ The output from the print.psych function displays the component loadings (from t
   \item{dof}{Degrees of Freedom for this model. This is the number of observed correlations minus the number of independent parameters (number of items * number of factors - nf*(nf-1)/2.   That is, dof = niI * (ni-1)/2 - ni * nf + nf*(nf-1)/2.}
   \item{objective}{value of the function that is minimized by maximum likelihood procedures.  This is reported for comparison purposes and as a way to estimate chi square goodness of fit.  The objective function is 
   \cr
-  \eqn{f = log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^{-1} R|) - n.items}{log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^-1 R|) - n.items}.   Because components do not minimize the off diagonal, this fit will be not as good as for factor analysis. }
+  \eqn{f = (trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^{-1} R|) - n.items}{log(trace ((FF'+U2)^{-1} R) -  log(|(FF'+U2)^-1 R|) - n.items}.   Because components do not minimize the off diagonal, this fit will be not as good as for factor analysis. It is included merely for comparison purposes.}
   
   \item{STATISTIC}{If the number of observations is specified or found, this is a chi square based upon the objective function, f.  Using the formula from \code{\link{factanal}}:
  \cr
@@ -88,7 +88,7 @@ Jolliffe, I. (2002)  Principal Component Analysis (2nd ed). Springer.
 
 Rencher, A. C. (1992) Interpretation of Canonical Discriminant Functions, Canonical Variates, and Principal Components, the American Statistician, (46) 217-225.
 
-Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{http://personality-project.org/r/book/}
+Revelle, W. An introduction to psychometric theory with applications in R (in prep) Springer. Draft chapters available at  \url{https://personality-project.org/r/book/}
 }
 
 \seealso{\code{\link{VSS}} (to test for the number of components or factors to extract), \code{\link{VSS.scree}} and \code{\link{fa.parallel}} to show a scree plot and compare it with random resamplings of the data), \code{\link{factor2cluster}} (for course coding keys), \code{\link{fa}} (for factor analysis), \code{\link{factor.congruence}} (to compare solutions), \code{\link{predict.psych}} to find factor/component scores for a new data set based upon the weights from an original data set. }

@@ -25,7 +25,7 @@ The fit statistic is a comparison of the original (squared) correlations to the 
   \item{factorfit }{How well does the complete loading matrix reproduce the correlation matrix?}
 
 }
-\references{ \url{http://personality-project.org/r/r.ICLUST.html} }
+\references{ \url{https://personality-project.org/r/r.ICLUST.html} }
 \author{
 
 Maintainer: William Revelle \email{revelle@northwestern.edu}

@@ -30,7 +30,7 @@ colors=NULL,col.arrows=NULL,col.text=NULL,...)
   \item{col.text}{What color(s) should be used for the text -- defaults to colors}
   \item{\dots}{ Other parameters for plot  }
 }
-\details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{http://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}
+\details{For an example of two way error bars describing the effects of mood manipulations upon positive and negative affect, see \url{https://personality-project.org/revelle/publications/happy-sad-appendix/FIG.A-6.pdf}
 
 The second example shows how error crosses can be done for multiple variables where the grouping variable is found dynamically. The \code{\link{errorCircles}} example shows how to do this in one step.
 }

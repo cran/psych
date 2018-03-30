@@ -41,8 +41,8 @@ function(x,...) {
 
 
 "panel.cor" <-
-function(x, y, digits=2, prefix="",...)
-     {
+function(x, y, prefix="",...)  {
+     
          usr <- par("usr"); on.exit(par(usr))
          par(usr = c(0, 1, 0, 1))
         if(is.null(wt)) { r  <- cor(x, y,use="pairwise",method=method)} else {
@@ -191,7 +191,8 @@ for(i in 1:ncol(x)) {  #treat character data as numeric
   
  if(!lm) { #the basic default is here
            if(cor) {
-            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor, lower.panel = panel.smoother, pch=pch, ...)} else {
+            pairs(x, diag.panel = panel.hist.density, upper.panel = panel.cor
+            , lower.panel = panel.smoother, pch=pch, ...)} else {
         	pairs(x, diag.panel = panel.hist.density, upper.panel = panel.smoother, lower.panel = panel.smoother, pch=pch, ...)} 
     
     } else { #lm is TRUE

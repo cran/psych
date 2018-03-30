@@ -57,7 +57,7 @@ Grice, James W.,2001, Computing and evaluating factor scores,  Psychological Met
 
  ten Berge, Jos M.F.,  Wim P. Krijnen, Tom Wansbeek and Alexander Shapiro (1999) Some new results on correlation-preserving factor scores prediction methods. Linear Algebra and its Applications, 289, 311-318.
 
-Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{http://personality-project.org/r/book/} 
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
 }
 \author{
@@ -73,8 +73,12 @@ William Revelle
 \examples{
 f3 <- fa(Thurstone)
 f3$weights  #just the scoring weights
-f5 <- fa(bfi,5)
-round(cor(f5$scores,use="pairwise"),2)
+f5 <- fa(bfi,5) #this does the factor analyis
+my.scores <- factor.scores(bfi,f5, method="tenBerge")
+#compare the tenBerge factor score correlation to the factor correlations
+cor(my.scores$scores,use="pairwise") - f5$Phi  #compare to the f5$Phi values
+#compare the default (regression) score correlations to the factor correlations
+cor(f5$scores,use="pairwise")  - f5$Phi
 #compare to the f5 solution
 
 }

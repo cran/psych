@@ -9,7 +9,8 @@ n <- t(!is.na(x)) %*% (!is.na(x))
 n <- t(!is.na(x)) %*% (!is.na(y))}
 if((use=="complete") | (min(n) == max(n))) n <- min(n)
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
-p <- 2*(1 - pt(abs(t),(n-2)))
+#p <- 2*(1 - pt(abs(t),(n-2)))
+p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  #suggested by Nicholas Clark 
 se <- sqrt((1-r*r)/(n-2))
 
 nvar <- ncol(r)
@@ -82,7 +83,8 @@ if (adjust !="none") {
       rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")
       k<- k +1 }}
     }
-} else {ci <- NULL}
+} else {ci <-  sef <- ci.adj <- NULL
+    }
 result <- list(r = r,n=n,t=t,p=p,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,ci.adj=ci.adj, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
@@ -96,12 +98,13 @@ return(result)
 
 
 "corr.p" <-
-function(r,n,adjust="holm",alpha=.05) {
+function(r,n,adjust="holm",alpha=.05,minlength=5) {
 cl <- match.call()
 if(missing(n)) stop("The number of subjects must be specified")
 sym <- FALSE
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
-p <- 2*(1 - pt(abs(t),(n-2)))
+#p <- 2*(1 - pt(abs(t),(n-2)))
+p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  
 p[p>1] <- 1
 if (adjust !="none") {
 if(isSymmetric(unclass(p))) {sym <- TRUE
@@ -137,8 +140,8 @@ if(sym) {    dif.corrected <- qnorm(1-alpha/(nvar*(nvar-1)))  } # 1- alpha/2  /n
           ci.adj <- data.frame(lower.adj = as.vector(lower.corrected),r=r[lower.tri(r)],upper.adj=as.vector(upper.corrected))} else {
    ci <- data.frame(lower=as.vector(lower),r=as.vector(r),upper=as.vector(upper),p=as.vector(p))
       ci.adj <- data.frame(lower.adj =as.vector( lower.corrected),r=as.vector(r),upper.adj= as.vector(upper.corrected))}
-      cnR <- abbreviate(colnames(r),minlength=5)  
-      rnR <- abbreviate(rownames(r),minlength=5) 
+      cnR <- abbreviate(colnames(r),minlength=minlength)  
+      rnR <- abbreviate(rownames(r),minlength=minlength) 
      if(sym) {k <- 1
       for(i in 2:nvar) {for (j in 1:(i-1)) {
       rownames(ci)[k] <- paste(cnR[j],cnR[i],sep="-")

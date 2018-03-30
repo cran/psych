@@ -51,7 +51,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
 	    	fx <- format(rloads,digits=digits)
 	    	nc <- nchar(fx[1,3], type = "c")
 	    	 fx.1 <- fx[,1,drop=FALSE]    #drop = FALSE  preserves the rownames for single factors
-	    	 fx.2 <- fx[,3:(2+ncol)]
+	    	 fx.2 <- fx[,3:(2+ncol),drop=FALSE]
 	    	 load.2 <- as.matrix(loads[,3:(ncol+2)])
          	fx.2[abs(load.2) < cut] <- paste(rep(" ", nc), collapse = "")
          if(sort) {	fx <- data.frame(V=fx.1,fx.2)
@@ -183,14 +183,15 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 	
 	 if(!is.null(stats.df)) { cat("\nMeasures of factor score adequacy             \n")
       print(round(stats.df,digits))}
-
-	 if(is.null(x$method)) x$method <- ""
-    if(any(x$R2 != x$R2.scores))  {stats.df <- t(data.frame(sqrt(x$R2.scores),x$R2.scores,2* x$R2.scores -1))
-    cat("\n Factor scores estimated using the ", x$method, " method  have correlations of \n")
-     rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
-    colnames(stats.df) <- colnames(x$loadings)
-     print(round(stats.df,digits))
-    }
+#why do we have this next part?  It seems redundant
+# 	 if(is.null(x$method)) x$method <- ""
+# 	 if(is.null(x$R2.scores))  x$R2.scores <- NA
+#     if(any(is.na(x$R2.scores)) | any(x$R2 != x$R2.scores))  {stats.df <- t(data.frame(sqrt(x$R2.scores),x$R2.scores,2* x$R2.scores -1))
+#     cat("\n Factor scores estimated using the ", x$method, " method  have correlations of \n")
+#      rownames(stats.df) <- c("Correlation of scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
+#   #  colnames(stats.df) <- colnames(x$loadings)
+#      print(round(stats.df,digits))
+#     }
    
 	  }
  }

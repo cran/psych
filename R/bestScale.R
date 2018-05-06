@@ -44,7 +44,7 @@ return(y)}
   
 
 "bestScales" <- 
- function(x,criteria,cut=.1,n.item =10,overlap=FALSE,dictionary=NULL,check=FALSE,impute="none", n.iter =1,frac=.9,digits=2) {
+ function(x,criteria,cut=.1,n.item =10,overlap=FALSE,dictionary=NULL,check=FALSE,impute="none", n.iter =1,frac=.9,p.keyed=.9,digits=2) {
  cl <- match.call()
   first <- TRUE
 if(check) {item.var <- apply(x,2,sd,na.rm=TRUE)
@@ -72,7 +72,7 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac) {
 	             n.item =n.item,overlap=overlap,dictionary=dictionary,impute=impute,digits=digits)
 	             }
 	
-	 key.list <- keys2list(scores$key)
+	 key.list <- keys2list(scores$key) #this converts the -1 and 1s to a list with the variable names
 	 if((n.iter > 1) & !first) {
   		cross <- scoreFast(key.list,x[-ss,],impute=impute,min=1,max=6) 
  	 validity <- diag(cor(cross,x[-ss,criteria],use="pairwise"))
@@ -122,8 +122,11 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
 
    replicated.items <- bestReplicatedItems(keys)
 
+   
    items <- list()
     item.mean <- list()
+    best.keys <- list()
+   
    for(j in 1:length(criteria)) {
      #first, find  the means and standard deviations for each selected item
       if(length(criteria) > 1 ) {for (i in 1:n.iter) { item.mean[[i]] <-  R.list[[i]][names(replicated.items[[j]]),criteria[j]] }
@@ -136,7 +139,21 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
      sds <- apply(item.m,2,sd,na.rm=TRUE)  
 	items [[criteria[j] ]] <-  cbind(replicated.items[[j]],mean.r=means,sd.r = sds,dictionary[names(replicated.items[[j]]),])
 	items[[criteria[j]]] <- dfOrder(items [[criteria[j] ]],"-mean.r",absolute=TRUE) #sort on the mean.r column
-
+	#now prepare the best.keys list
+	
+    direction <- as.matrix(sign(items[[criteria[[j]] ]][,"mean.r"]))
+    rownames(direction) <- rownames(items[[criteria[[j]] ]])
+    if(length(direction) > 1 ) {if(NCOL(items[[criteria[[j]]]]) >3 ) {count <- items[[criteria[[j]]]][,"Freq"]} else {count <- items[[criteria[[j]]]][,1]}
+    
+    count <- count >= n.iter*p.keyed
+   } else {
+    count <- 0}
+   if(sum(count,na.rm=TRUE)>0) {
+    best.keys[[j]] <- rownames(direction)[count]
+    direction <- direction[count]
+   best.keys[[j]][direction < 0] <- paste0("-", best.keys[[j]][direction < 0]) 
+   } else { best.keys[[j]] <- NULL
+}
     }
     				
 
@@ -151,6 +168,7 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
   result$summary <- data.frame(derivation.mean = result$means[1:ncriteria],derivation.sd = result$sd[1:ncriteria],validation.m=result$mean[(ncriteria+1):(2*ncriteria)],
             validation.sd =result$sd[(ncriteria+1):(2*ncriteria)] )
     rownames(result$summary) <- criteria
+    result$best.keys <- best.keys
   
    }
   
@@ -320,31 +338,32 @@ return(results)
          }     
     
  
- print.psych.bestScales <- function(x,digits=2) {
-    if(!is.null(x$first.result)) {
-   cat("\nCall = ")
-   print(x$Call)
-   # print(x$first.result)
-   #  print(round(x$means,2))
-    print(x$summary,digits=digits)
-      x$replicated.items
+#  print.psych.bestScales <- function(x,digits=2){
+#  if(!is.null(x$first.result)) {
+#    cat("\nCall = ")
+#    print(x$Call)
+#    # print(x$first.result)
+#    #  print(round(x$means,2))
+#     print(x$summary,digits=digits)
+#       x$replicated.items
+#       
+#     items <- x$items
+#      size <- NCOL(items[[1]])
+#      nvar <- length(items)
+#      for(i in 1:nvar) {
+#      if(length(items[[i]]) > 3) #items[[i]]  <- items[[i]][,-1]
+#      items[[i]][,1:3] <- round(items[[i]][,1:3],digits)
+#       }
+# 
+#      cat("\n Best items on each scale with counts of replications\n")
+#      print(items)} else {
+#      df <- data.frame(correlation=x$r,n.items = x$n.items)
+#     cat("The items most correlated with the criteria yield r's of \n")
+#     print(round(df,digits=digits)) 
+#     if(length(x$value) > 0) {cat("\nThe best items, their correlations and content  are \n")
+#      print(x$value) } else {cat("\nThe best items and their correlations are \n")
+#      for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
+#      }  
+#      } 
+# }
       
-    items <- x$items
-     size <- NCOL(items[[1]])
-     nvar <- length(items)
-     for(i in 1:nvar) {
-     if(length(items[[1]]) >3 ) items[[i]] <- items[[i]][-1]
-     items[[i]][1:3] <- round(items[[i]][1:3],digits)
-      }
-
-     cat("\n Best items on each scale with counts of replications\n")
-     print(items)} else {
-     df <- data.frame(correlation=x$r,n.items = x$n.items)
-    cat("The items most correlated with the criteria yield r's of \n")
-    print(round(df,digits=digits)) 
-    if(length(x$value) > 0) {cat("\nThe best items, their correlations and content  are \n")
-     print(x$value) } else {cat("\nThe best items and their correlations are \n")
-     for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
-     }  
-     } 
-  }

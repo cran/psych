@@ -77,15 +77,17 @@ bestScales = {if(!is.null(x$first.result)) {
    # print(x$first.result)
    #  print(round(x$means,2))
     print(x$summary,digits=digits)
-      x$replicated.items
+     # x$replicated.items
       
     items <- x$items
      size <- NCOL(items[[1]])
      nvar <- length(items)
      for(i in 1:nvar) {
-     if(length(items[[i]]) > 3) items[[i]]  <- items[[i]][-1]
-     items[[i]][1:3] <- round(items[[i]][1:3],digits)
-      }
+     if(NCOL(items[[i]]) > 3) {items[[i]]  <- items[[i]][,-1]}
+   #  items[[i]][,2:3] <- round(items[[i]][,2:3],digits)
+   if(length( items[[i]][1]) > 0 )  {
+   items[[i]][,c("mean.r","sd.r")] <- round(items[[i]][,c("mean.r","sd.r")],digits)
+      }}
 
      cat("\n Best items on each scale with counts of replications\n")
      print(items)} else {
@@ -97,7 +99,6 @@ bestScales = {if(!is.null(x$first.result)) {
      for(i in 1:length(x$short.key)) {print(round(x$short.key[[i]],digits=digits))} 
      }  
      } 
-
       },
       
 
@@ -249,7 +250,7 @@ corr.test = {cat("Call:")
               if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
                  if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
              print(round(x$p,digits))
-             cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
+            if(short)  cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
              if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
              if(is.null(x$ci.adj)) { ci.df <- data.frame(raw=x$ci) } else {
              ci.df <- data.frame(raw=x$ci,lower.adj = x$ci.adj$lower.adj,upper.adj=x$ci.adj$upper.adj)}
@@ -265,7 +266,7 @@ corr.p = {cat("Call:")
               if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
                  if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
              print(round(x$p,digits))
-             cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
+             if(short) cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
               if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
              print(round(x$ci,digits)) }
 
@@ -406,6 +407,9 @@ kappa = {if(is.null(x$cohen.kappa)) {
             cat("\n Number of subjects =", x$n.obs,"\n")} else {
             cat("\nCohen Kappa (below the diagonal) and Weighted Kappa (above the diagonal) \nFor confidence intervals and detail print with all=TRUE\n")
             print(x$cohen.kappa,digits=digits) 
+            if(!is.null(x$av.kappa))  cat("\nAverage Cohen kappa for all raters ", 	round(x$av.kappa,digits=digits))
+            if(!is.null(x$av.wt))  cat("\nAverage weighted kappa for all raters ",round(x$av.wt,digits=digits))
+              
             }
    },
    
@@ -573,6 +577,8 @@ overlap =  {
     print(x$G6,digits)
   	cat("\nAverage item correlation:\n")
 	print(x$av.r,digits)
+	cat("\nMedian item correlation:\n")
+	print(x$med.r,digits)
 	cat("\nNumber of items:\n")
 	print(x$size)
 	cat("\nSignal to Noise ratio based upon average r and n \n")
@@ -625,6 +631,8 @@ scores =  {
 	print(x$alpha.ob,digits=digits)}
   	cat("\nAverage item correlation:\n")
   	print(x$av.r,digits=digits)
+  	cat("\nMedian item correlation:\n")
+  	print(x$med.r,digits=digits)
 	cat("\n Guttman 6* reliability: \n")
 	print(x$G6,digits=digits)   
 	cat("\nSignal/Noise based upon av.r : \n")
@@ -716,8 +724,10 @@ sim =  { if(is.matrix(x)) {x <-unclass(x)
    cat("\nAverage split half reliability            = ",round(x$meanr,digits=digits))
    cat("\nGuttman lambda 3 (alpha)                  = ",round(x$alpha,digits=digits))
    cat("\nMinimum split half reliability  (beta)    = ",round(x$minrb,digits=digits))
-   cat("\n                                            ",names(x$ci))
-   cat("\n Quantiles of split half reliability      = ",round(x$ci,digits=digits))
+     cat("\nAverage interitem r = ",round(x$av.r,digits=digits)," with median = ", round(x$med.r,digits=digits))
+   if(!is.na(x$ci[1])) {cat("\n                                            ",names(x$ci))
+   cat("\n Quantiles of split half reliability      = ",round(x$ci,digits=digits))}
+ 
       
  },
  

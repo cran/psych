@@ -9,9 +9,11 @@
     smc.R <- smc(R)
     G6 <- (1- (n-sum(smc.R))/sumR)
     av.r <- (sumR-n)/(n*(n-1))
-    R.adj <- R
-    diag(R.adj) <- NA
-    var.r  <- var(as.vector(R.adj),na.rm=TRUE)
+    R.adj <- R[lower.tri(R)]
+   # diag(R.adj) <- NA
+   # var.r  <- var(as.vector(R.adj),na.rm=TRUE)
+   var.r <- var(R.adj,na.rm=TRUE)  #
+   med.r <- median(R.adj,na.rm=TRUE)  #added 4/22/18
     mod1 <- matrix(av.r,n,n)
     Res1 <- R - mod1
     GF1 =  1- sum(Res1^2)/sum(R^2)
@@ -21,7 +23,7 @@
     sn <- n*av.r/(1-av.r)
    # Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2))) #corrected 1/15/16 
     Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
-    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,sn=sn,Q=Q,GF1,GF1.off,var.r = var.r)
+    result <- list(raw=alpha.raw,std=alpha.std,G6=G6,av.r=av.r,sn=sn,Q=Q,GF1,GF1.off,var.r = var.r,med.r=med.r)
     return(result)
     }
     
@@ -38,8 +40,9 @@
     nsub <- dim(x)[1]
     scores <- NULL
     response.freq <- NULL
-   
+    raw <- FALSE
     if (!isCorrelation(x))  { #find the correlations if we are given  raw data
+      raw <- TRUE
        item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0) && delete) {
@@ -51,7 +54,7 @@
          C <- cov(x,use=use)} else {C <- x}
         
         if(is.null(colnames(x)))  colnames(x) <- paste0("V",1:nvar)
-       
+         #flip items if needed and wanted
          #if(check.keys && is.null(keys)) {
             p1 <- principal(x,scores=FALSE)
                if(any(p1$loadings < 0)) {if (check.keys) {if(warnings) warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
@@ -75,7 +78,7 @@
             		 signkey[signkey=="1"] <- ""
                      colnames(x) <- paste(colnames(x),signkey,sep="")
                      
-      if (nsub !=nvar)  {   #raw data      
+      if (raw)  {   #raw data      
          	if(any(keys < 0 )) { 
          	     min.item <- min(x,na.rm=na.rm)
                  max.item <- max(x,na.rm=na.rm)
@@ -105,15 +108,15 @@
                             } 
          } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA,NA,NA)  #added the extra 2 NA June 18, 2017
        }
-        by.item <- data.frame(matrix(unlist(drop.item),ncol=9,byrow=TRUE)) 
+        by.item <- data.frame(matrix(unlist(drop.item),ncol=10,byrow=TRUE)) 
         
                   #allows us to specify the number of subjects for correlation matrices
         if(max(nsub,n.obs) > nvar) {by.item[6] <- sqrt(by.item[6]/(max(nsub,n.obs)) )
          by.item <- by.item[-c(7:8)]
-         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","alpha se") } else {
+         colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","alpha se","var.r","med.r") } else {
          
              by.item <- by.item[-c(6:8)]
-             colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N") }
+             colnames(by.item) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","var.r","med.r") }
         rownames(by.item) <- colnames(x)
         
         Vt <- sum(R)
@@ -136,17 +139,17 @@
      #  
         item.means <- colMeans(x, na.rm=na.rm )
         item.sd <-  apply(x,2,sd,na.rm=na.rm)
-        if(nsub > nvar) {
+        if(raw) {
          Unidim <- alpha.total[7]
          var.r <- alpha.total[[9]]
         	 Fit.off <- alpha.total[8]
             ase = sqrt(alpha.total$Q/nsub)
-        	alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
-           colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd")
+        	#alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
+          # colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd")
         	
         	  
-        	 alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev)
-        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd")
+        	 alpha.total <- data.frame(alpha.total[1:5],ase=ase,mean=mean.t,sd=sdev,med.r =alpha.total[10])
+        	colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)","average_r","S/N","ase","mean","sd","median_r")
         	rownames(alpha.total) <- ""
         	stats <- data.frame(n=t.valid,raw.r=t(raw.r),std.r =item.r,r.cor = item.rc,r.drop = r.drop,mean=item.means,sd=item.sd)
         	} else {
@@ -154,12 +157,14 @@
         	       Unidim <- alpha.total[7]
         	       Fit.off <- alpha.total[8]
         	       var.r <- alpha.total[9] 
-        	      alpha.total <- data.frame(alpha.total[1:5])  #fixed 27/7/14 
-        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N") } else {
+        	       med.r <- alpha.total[10]
+        	      alpha.total <- data.frame(alpha.total[c(1:5,10)])  #fixed 27/7/14 
+        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N","median_r") } else {
         	        Unidim <- alpha.total[7]
         	 		Fit.off <- alpha.total[8] 
-        	        alpha.total <- data.frame(alpha.total[1:5],ase=sqrt(alpha.total$Q/n.obs))
-        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N","ase")}
+        	 		        	       var.r <- alpha.total[9] 
+        	        alpha.total <- data.frame(alpha.total[1:5],ase=sqrt(alpha.total$Q/n.obs),alpha.total[10])
+        	        colnames(alpha.total) <- c("raw_alpha","std.alpha","G6(smc)" ,"average_r","S/N","ase","median_r")}
         	        rownames(alpha.total) <- "" 
         	        
 
@@ -175,7 +180,7 @@
        	#end of unidimensionality statistics
        	if(n.iter > 1) {#do a bootstrap confidence interval for alpha
    #    	 if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
-        if(nsub == nvar) {message("bootstrapped confidence intervals require raw data") 
+        if(!raw) {message("bootstrapped confidence intervals require raw data") 
                           boot <- NULL
                           boot.ci <- NULL } else {
        	 boot <- vector("list",n.iter)
@@ -190,8 +195,8 @@
        	 alpha.1(C,R)
        	 })  #end of mclapply 
        
-       	  boot <- matrix(unlist(boot),ncol=8,byrow=TRUE)
-       	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","s/n","ase","Unidim","Goodfit")
+       	  boot <- matrix(unlist(boot),ncol=10,byrow=TRUE)
+       	  colnames(boot) <- c("raw_alpha","std.alpha","G6(smc)","average_r","s/n","ase","Unidim","Goodfit","var.r","median.r")
        	  boot.ci <- quantile(boot[,1],c(.025,.5,.975))
        	}} else {boot=NULL
        	         boot.ci <- NULL}

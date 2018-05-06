@@ -58,7 +58,7 @@
   return(new.path) } else {cat('\nFile already exists, try a different name')}
   }
   
-   #Completely rewritten 1/20/18 to follow  the help pages for order more closely
+ #Completely rewritten 1/20/18 to follow  the help pages for order more closely
 #sort a data frame according to one or multiple columns 
 #will only work for data.frames (not matrices)
 dfOrder <- function(object,columns=NULL,absolute=FALSE) {
@@ -83,7 +83,7 @@ dfOrder <- function(object,columns=NULL,absolute=FALSE) {
    	  temp.object <- data.frame(temp.object)
  
    	 ord <- do.call(order,temp.object)
-
-   	   return(object[ord,])
+     if(length(ord) > 1) {
+   	   return(object[ord,]) }else {return(object)} #added length test 4/26/18
        }
 

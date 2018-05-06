@@ -31,7 +31,7 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
    z <- ps$z  #are there any variables to partial
 }
    
-   
+   all.ab <- NULL  #preset this in case we are just doing regression 
 
     if(is.numeric(y )) y <- colnames(data)[y]
     if(is.numeric(x )) x <- colnames(data)[x]

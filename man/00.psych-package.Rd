@@ -7,11 +7,15 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r} webpages. 
 
-Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}} is also available.  Rotations  may be done using Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.graph}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
+Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}} is also available.  Rotations  may be done using Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). 
 
-The \code{\link{scoreItems}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.
+An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
+
+Multilevel analyses may be done by \code{\link{statsBy}} and  \code{\link{multilevel.reliability}}.
+
+The \code{\link{scoreItems}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.  \code{\link{scoreOverlap}} correct interscale correlations for overlapping items, so that it is possible to examine hierarchical or nested structures.
 
 Additional functions make for more convenient descriptions of item characteristics  include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning. \code{\link{scoreIrt}}, \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} do basic IRT based scoring.
 
@@ -21,15 +25,24 @@ Additional functions make for more convenient descriptions of item characteristi
 
  Functions to apply various standard statistical tests include \code{\link{p.rep}} and its variants for testing the probability of replication, \code{\link{r.con}} for the confidence intervals of a correlation, and \code{\link{r.test}} to test single, paired, or sets of correlations. 
  
+ Mediation and moderation analyses are done using \code{\link{mediate}} from either raw data or from a correlation matrix.
+ 
  In order to study diurnal or circadian variations in mood, it is helpful to use circular statistics.  Functions to find the circular mean (\code{\link{circadian.mean}}), circular (phasic) correlations (\code{\link{circadian.cor}}) and the correlation between linear variables and circular variables (\code{\link{circadian.linear.cor}}) supplement a function to find the best fitting phase angle (\code{\link{cosinor}}) for measures taken with a fixed period (e.g., 24 hours).
  
  A dynamic model of personality and motivation (the Cues-Tendency-Actions model) is include as (\code{\link{cta}}.
+ 
+ A number of useful helper functions allow for data input (\code{\link{read.file}}), and data manipulation \code{\link{cs}} and \code{\link{dfOrder}},
 
  
- The most recent development version of the package is always available for download as a \emph{source} file from the repository at  \url{https://personality-project.org/r/src/contrib/}.  
+ The most recent development version of the package is always available for download as a \emph{source} file from the repository at the PMC lab:
+ 
+   install.packages("psych", repos = "https://personality-project.org/r/", type="source").
+   
+    This will provide the most recent version for PCs and Macs. 
  
 }
-\details{Two vignettes (overview.pdf and psych_for_sem.pdf) are useful introductions to the package. They may be found as vignettes in R or may be downloaded from \url{https://personality-project.org/r/book/overview.pdf} and \url{https://personality-project.org/r/book/psych_for_sem.pdf}. 
+\details{Three vignettes (overview.pdf and psych_for_sem.pdf) are useful introductions to the package. They may be found as vignettes in R or may be downloaded from 
+\url{https://personality-project.org/r/psych/intro.pdf} \url{https://personality-project.org/r/psych/overview.pdf} and \url{https://personality-project.org/r/psych/psych_for_sem.pdf}.  In addition, there are a number of "HowTo"s available at \url{https://personality-project.org/r/} 
 
 The more important functions in the package are for the analysis of multivariate data, with an emphasis upon those functions useful in scale construction of item composites. However, there are a number of very useful functions for basic data manipulation including  
 \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) which are useful for basic data entry and descriptive analyses.
@@ -74,10 +87,10 @@ Many data sets are included: \code{\link{bfi}} represents 25 personality items t
 Package: \tab psych\cr
 Type: \tab Package\cr
 Version: \tab 1.7.2 \cr
-Date: \tab 2017--February--28\cr
+Date: \tab 2018--April--28\cr
 License: \tab GPL version 2 or newer\cr
 }
-Index:
+Partial Index:
 
 
 

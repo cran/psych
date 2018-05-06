@@ -4,6 +4,7 @@ cl <- match.call()
 if(is.null(y)) {r <- cor(x,use=use,method=method)
  sym <- TRUE
 n <- t(!is.na(x)) %*% (!is.na(x))
+
 } else {r <- cor(x,y,use=use,method=method)
   sym=FALSE
 n <- t(!is.na(x)) %*% (!is.na(y))}
@@ -14,6 +15,7 @@ p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  #suggested by Nicholas Clark
 se <- sqrt((1-r*r)/(n-2))
 
 nvar <- ncol(r)
+
 
 p[p>1] <- 1
 if (adjust !="none") {
@@ -30,8 +32,8 @@ if (adjust !="none") {
    if (min(n) < 4) {
       warning("Number of subjects must be greater than 3 to find confidence intervals.")
    }
-     
-   if(adjust!="holm") {dif.corrected <- qnorm(1-alpha/(nvar*(nvar-1))) } else {   # 1- alpha/2  /nvar *(nvar-1) /2)
+    if(sym) {ncors <- nvar * (nvar-1)/2} else ncors <- prod(dim(r)) 
+   if(adjust!="holm") {dif.corrected <- qnorm(1-alpha/(2* ncors)) } else {   # 1- alpha/2  /nvar *(nvar-1) /2)
       ord <- order(abs(z),decreasing=FALSE)  #to find the HOlm correction, we need to order the size of the correlations
       dif.corrected <- qnorm(1-alpha/(2*order(ord))) } #holm
 
@@ -79,7 +81,7 @@ if (adjust !="none") {
   cnR <- abbreviate(rownames(r),minlength=5) 
   cnC <- abbreviate(colnames(r),minlength=5)
   k <- 1
-      for(i in 1:ncol(y)) {for (j in 1:ncol(x)) {
+      for(i in 1:NCOL(y)) {for (j in 1:NCOL(x)) {
       rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")
       k<- k +1 }}
     }

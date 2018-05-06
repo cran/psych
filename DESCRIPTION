@@ -1,6 +1,6 @@
 Package: psych
-Version: 1.8.3.3
-Date: 2018-3-27
+Version: 1.8.4
+Date: 2018-4-30
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Authors@R: person("William", "Revelle", role =c("aut","cre"), email="revelle@northwestern.edu", comment=c(ORCID  = "0000-0003-4880-9610") )
@@ -14,9 +14,9 @@ ByteCompile: TRUE
 URL: https://personality-project.org/r/psych
         https://personality-project.org/r/psych-manual.pdf
 NeedsCompilation: no
-Packaged: 2018-03-28 15:04:41 UTC; WR
+Packaged: 2018-05-06 17:24:21 UTC; WR
 Author: William Revelle [aut, cre] (<https://orcid.org/0000-0003-4880-9610>)
 Maintainer: William Revelle <revelle@northwestern.edu>
 Depends: R (>= 2.10)
 Repository: CRAN
-Date/Publication: 2018-03-30 21:55:06 UTC
+Date/Publication: 2018-05-06 20:48:12 UTC

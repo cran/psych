@@ -79,6 +79,7 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{std.alpha}{The standarized alpha based upon the correlations}
   \item{G6(smc)}{Guttman's Lambda 6 reliability}
   \item{average_r}{The average interitem correlation}
+  \item{median_r}{The median interitem correlation}
   \item{mean}{For data matrices, the mean of the scale formed by averaging or summing the items (depending upon the cumulative option)}
   \item{sd}{For data matrices, the standard deviation of the total score}
   \item{alpha.drop }{A data frame with all of the above for the case of each item being removed one by one.}
@@ -123,6 +124,8 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 
 \note{By default, items that correlate negatively with the overall scale will be reverse coded.  This option may be turned off by setting check.keys = FALSE.  If items are reversed, then each item is subtracted from the  minimum item response + maximum item response where  min and max are taken over all items.  Thus, if the items intentionally differ in range, the scores will be off by a constant.  See \code{\link{scoreItems}} for a solution. 
 
+Two item level statistics are worth comparing: the mean interitem r and the median interitem r.  If these differ very much, that is a sign that the scale is not particularly homogeneous.  
+
 If the data have been preprocessed by the dplyr package, a strange error can occur.  alpha expects either data.frames or matrix input. data.frames returned by dplyr have had three extra classes added to them which causes alpha to break.  The solution is merely to change the class of the input to "data.frame".  
 
 Two experimental measures of Goodness of Fit are returned in the output: Unidim and Fit. They are not printed or displayed, but are available for analysis. The first is an index of how well the modeled average correlations actually reproduce the original correlation matrix.  The second is how well the modeled correlations reproduce the off diagonal elements of the matrix. Both are indices of squared residuals compared to the squared original correlations.  These two measures are under development and might well be modified or dropped in subsequent versions.}
@@ -139,13 +142,15 @@ alpha(r9)
 
 # examples of two independent factors that produce reasonable alphas
 #this is a case where alpha is a poor indicator of unidimensionality
+
 two.f <- sim.item(8)
 #specify which items to reverse key by name
- alpha(two.f,keys=c("V1","V2","V7","V8"))
+ alpha(two.f,keys=c("V3","V4","V5","V6"))
  #by location
- alpha(two.f,keys=c(1,2,7,8))
+ alpha(two.f,keys=c(3,4,5,6))
  #automatic reversal base upon first component
-alpha(two.f)  
+alpha(two.f,check.keys=TRUE)    #note that the median is much less than the average R
+#this suggests (correctly) that the 1 factor model is probably wrong 
 #an example with discrete item responses  -- show the frequencies
 items <- sim.congeneric(N=500,short=FALSE,low=-2,high=2,
         categorical=TRUE) #500 responses to 4 discrete items with 5 categories

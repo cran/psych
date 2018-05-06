@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.8.4 (2018-04-01)}{
+\section{Changes in psych version 1.8.5 (2018-05-15)}{
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.8.4 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.8.3.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.2 was the second attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 1.8.5 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.8.4.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="http://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
@@ -59,12 +59,40 @@
       \item Add Neil's Waller bifactor solution (see Psychometrika 2017)
       \item Add the ability to weight factor residuals to allow WLMS
       \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn)
+      \item Create a reliabilities  function to combine omega and alpha and splitHalf
+       \item Added a few more descriptives to alpha (min.r and max r)
+      
     
     
   }
   } 
   }
   
+    \section{Changes in psych version 1.8.4 (2018-04-30)}{
+    \subsection{Additions}{
+          \itemize{ 
+    \item When using multiple raters in cohen.kappa, report the average (Light's kappa) as well as the individual pairwise kappas.
+    \item Added fromTo  to allow choosing variable sequences by names of first and last
+    \item Added cs (taken from Hmisc:::CS function) to convert non-quoted strings into quoted vectors.
+    \item added acs to convert input into quoted strings.  
+    \item Added median r to alpha, scoreItems, scoreOverlap, splitHalf (this serves as a signal for poor scales if the median.r differs very much from the av.r)
+    \item Improved bestScales to allow easier bagging of results.
+    \item Improved the documentation of bestScales to emphasize the bagging nature of the function.  Separated the documentation from fa.lookup and lookup.
+        
+         }
+          }
+       \subsection{Bugs Fixed}{
+          \itemize{
+          \item Fixed a problem with describe when describing a single column data frame.  Reported by Vilmantas Gėgžna.  The problem is with the way sd handles data.frames.
+         \item Fixed mediate so it will do regressions without mediation ala setCor.
+         \item Fixed a bug in corr.test for the case of single x or y variables (reported by Alex Weiss)
+         \item Fixed a bug in alpha where it was not working from a correlation matrix with n.obs specified. (Reported by Nicholas Stefaniak).
+         \item Fixed some problems in bestScales reported by Elizabeth Knowlton.
+          }
+           }
+    
+     }
+     
     \section{Changes in psych version 1.8.3 (2018-03-21)}{
     \subsection{Additions}{
           \itemize{ 
@@ -152,8 +180,7 @@
            }
     
      }
-     
-     
+        
      
     \section{Changes in psych version 1.7.8 (2017-08-31)}{
     \subsection{Additions}{

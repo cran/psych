@@ -25,6 +25,9 @@ for (i in first:last) {
 			vss2 <- VSS(test.data)
 			vsspc <- VSS(test.data,fm="pc")
 		} else {
+	
+	cat("\n Testing fa and VSS  i =",i, "\n")	
+		
 			fa2 <- fa(test.data,2,n.obs=200)
 			cluster.plot(fa2)
 			fp <-    fa.parallel(test.data,n.obs=200)
@@ -86,7 +89,7 @@ p.iris <- principal(IRIS,5,scores=TRUE)
   
   }
 
-   
+ cat("\n Test of sim.circ\n")   
 cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
  pairs.panels(cong) 
  #this section tests various functions that use Rgraphviz (if it is installed) 
@@ -108,7 +111,9 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
 
  } else {warning("fa.graph, omega.graph, ICLUST.rgraph, structure.graph require Rgraphviz and were not tested") }
  
+ 
  fa.diagram(fa(item.sim(16),nfactors=2)) 
+ cat("\n Test of ICLUST\n") 
   	ic.out <- ICLUST(s4,title="ICLUST of 24 Mental abilities")
   	v9 <-  omega(sim.hierarchical(),title="Omega with Schmid Leihman")
   	omega.diagram(v9,sl=FALSE,main="Omega with hierarchical factors")
@@ -123,6 +128,7 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
 		colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 	 example.model <- structure.diagram(X6,phi21,Y3,main="Symbolic structural model")
 
+cat("\n Test of fa.extension \n") 
    R <- cor(sim.item(16))
     ss <- c(1,3,5,7,9,11,13,15)
    f <- fa(R[ss,ss],2)
@@ -132,6 +138,7 @@ cluster.plot(fa(sim.circ(nvar=24),nfactors=2),title="two circumplex factors")
    #now test the iteration options  and the rotation options in fa
 #not run by default for official testing
 if(fapc) {
+cat("\n Test of various factor solutions\n") 
    data1 <- psych::bfi
  
    f3 <- fa(data1[1:15],3,n.iter=5)
@@ -164,13 +171,15 @@ if(fapc) {
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="targetQ",Target=Target)
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="bentlerQ")
    
-     data2 <- psych::ability
+   cat("\n Test of factoring and principal components \n") 
+     data2 <- as.data.frame( psych::ability)
     f1 <- fa(data2)
+    
     fpoly <- fa(data2[1:10],2,n.iter=5,cor="poly")
     f1 <- fa(data2,n.iter=4)
     f1p <- fa(data2,n.iter=4,cor="tet")
-    
-   p3 <- principal(data1[1:15],3,n.iter=1)
+     cat("\n Test of principal components \n") 
+   p3 <- principal(data1[1:15],3)
    p3 <- principal(data1[1:15],3,rotate="Varimax")
    p3 <- principal(data1[1:15],3,rotate="varimax")
    p3 <- principal(data1[1:15],3,rotate="quartimax")
@@ -189,6 +198,9 @@ if(fapc) {
    p3  <- principal(data1[1:15],3,rotate="cluster")
    p3  <- principal(data1[1:15],3,rotate="biquartimin")
    p3  <- principal(data1[1:15],3,rotate="equamax")
+    
+       cat("\n Test of target rotation \n") 
+   
    Targ <- make.keys(15,list(f1=1:5,f2=6:10,f3=11:15)) 
  	Targ <- scrub(Targ,isvalue=1)  #fix the 0s, allow the NAs to be estimated
 	Targ <- list(Targ)  #input must be a list
@@ -201,12 +213,14 @@ if(fapc) {
    p3  <- principal(data1[1:15],3,rotate="targetQ",Target=Target)
       p3  <- principal(data1[1:15],3,rotate="bentlerQ")
    
+      cat("\n Test of principal components of polychorics \n") 
 	
-	
-    fpoly <- principal(data1[1:10],2,cor="poly")
+	R <- polychoric(data2[1:10])$rho
+    fpoly <- principal(R,2)  #cor is not an option in principal
     
     f1 <- principal(data2)
-    f1p <- principal(data2,cor="tet")
+    R <- tetrachoric(data2)$rho
+    f1p <- principal(R)
 }
  
 

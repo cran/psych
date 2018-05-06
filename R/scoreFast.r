@@ -11,7 +11,7 @@
       keys <- keys2list(keys)
         select <- selectFromKeyslist(colnames(items),keys)
       select <- select[!duplicated(select)]}
-      items <- items[,select]
+      items <- items[,select,drop=FALSE]
       keys <- make.keys(items,keys)   #added 9/9/16 
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]

@@ -12,6 +12,9 @@
 \alias{levels2numeric}
 \alias{char2numeric}
 \alias{isCorrelation}
+\alias{fromTo}
+\alias{cs}
+\alias{acs}
 
  
 \title{Miscellaneous helper functions for the psych package}
@@ -35,6 +38,10 @@ test.all(pl,package="psych",dependencies
  levels2numeric(x) 
  char2numeric(x) 
  isCorrelation(x) #test if an object is a symmetric matrix    
+ fromTo(data,from,to=NULL) #convert character names to locations as specified in colnames
+ #of data
+ cs(...) #convert a list of text words to  character vector
+ acs(...) #convert a list of text words to  a single string
 
 }
 \arguments{
@@ -56,6 +63,10 @@ test.all(pl,package="psych",dependencies
   \item{dependencies}{Which type of dependency to examine?}
   \item{find}{Look up the dependencies, and then test all of their examples}
   \item{skip}{Do not test these dependencies}
+  \item{data}{A dataframe or matrix to choose from}
+  \item{from}{select from column with name from to column with name to}
+  \item{to}{select from column from to column to}
+  \item{...}{Any string of legitimate objects}
   
 
 }
@@ -80,6 +91,8 @@ test.all(pl,package="psych",dependencies
 \code{\link{levels2numeric}}converts character data with levels to numeric data.  Used in the SAPA analyses where we code some variables, (e.g., gender, education) with character codes to help in the documentation of files, but want to do analyses of correlations with other categorical variables. 
 
 \code{\link{char2numeric}}converts character data with levels to numeric data.  Used for cases when data from questionnaires include the response categories rathere than numeric data.  Unless the levels of the data are in meaningful order, the numeric results are not useful.  Most useful if doing polychoric analyses.
+
+\code{\link{fromTo}} selects the columns in data from to 
 }
 
 \details{
@@ -90,6 +103,7 @@ test.all(pl,package="psych",dependencies
 
 It is important to remember to not call \code{\link{lowerCor}} when all you need is \code{\link{lowerMat}}!  
 
+\code{\link{cs}} is a direct copy of the Cs function in the Hmisc package by Frank Harrell.  Added to psych to avoid the overhead of the Hmisc package.
 
 }
 
@@ -119,10 +133,21 @@ sa3 <- sat.act[5:6]
 cor2(sa1,sa2)
 cor2(list(sa1,sa2))  #show within set and between set cors
 cor2(list(sa1,sa2,sa3))
+lowerCor(fromTo(sat.act,"ACT","SATQ")) #show some correlations
+vect <- cs(ACT,SATQ)  #skip the quotes
+vect   #they are in this vector
+#to combine longer terms
+vect <- cs("Here is a longish",vector, that, we ,"want to combine", into, several)
+vect
+temp <- acs("Here is a longish",vector, that, we ,"want to combine", into, one)
+temp
+lowerCor(fromTo(sat.act,cs(ACT,SATQ)))  
+
 
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{multivariate}
+
 

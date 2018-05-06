@@ -27,6 +27,7 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
   	 eX <- eigen(model)
                                       observed <- matrix(rnorm(nvar * n),n)
                                       observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + mu) 
+                                      theta <- observed
   	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
   	         observed[] <- rbinom(n*nvar, cat, observedp)}
   	  colnames(observed) <- colnames(model)
@@ -36,7 +37,7 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
   	reliability <- diag(f %*% t(f))
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
-             results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+             results <- list( model=model,reliability=reliability,r=r,observed= observed,theta=theta, N=n) } }
   results$Call <- cl
   class(results) <- c("psych", "sim")
  return(results)}

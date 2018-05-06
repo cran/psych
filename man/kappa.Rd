@@ -3,7 +3,7 @@
 \alias{cohen.kappa}
 
 \title{Find Cohen's kappa and weighted kappa coefficients for correlation of two raters}
-\description{Cohen's kappa (Cohen, 1960) and weighted kappa (Cohen, 1968) may be used to find the agreement of two raters when using nominal scores.  
+\description{Cohen's kappa (Cohen, 1960) and weighted kappa (Cohen, 1968) may be used to find the agreement of two raters when using nominal scores.  Light's kappa is just the average cohen.kappa if using more than 2 raters. 
 
 weighted.kappa is (probability of observed matches - probability of expected matches)/(1 - probability of expected matches).  Kappa just considers the matches on the main diagonal.  Weighted kappa considers off diagonal elements as well.
 }
@@ -33,6 +33,8 @@ The input may be a two column data.frame or matrix with columns representing the
 The confidence intervals are based upon the variance estimates discussed by Fleiss, Cohen, and Everitt who corrected the formulae of Cohen (1968) and Blashfield.
 
 Some data sets will include data with numeric categories with some category values missing completely.  In the sense that kappa is a measure of category relationship, this should not matter.  But when finding weighted kappa, the number of categories weighted will be less than the number of categories potentially in the data.  This can be remedied by specifying the levels parameter.
+
+If there are more than 2 raters, then the average of all raters is known as Light's kappa. (Conger, 1980).  
 }
 
 \value{
@@ -52,14 +54,18 @@ Cohen, J. (1960). A coefficient of agreement for nominal scales. Educational and
 
 Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. Psychological Bulletin, 70, 213-220.
 
+Conger, A. J. (1980) Integration and generalization of kappas for multiple raters, Psychological Bulletin,, 88, 322-328.
+
 Fleiss, J. L., Cohen, J.  and Everitt, B.S. (1969) Large sample standard errors of kappa and weighted kappa. Psychological Bulletin, 72, 332-327.
+
+Light, R. J. (12971) Measures of response agreement for qualitative data: Some generalizations and alternatives, Psychological Bulletin, 76, 365-377.
 
 Zwick, R.  (1988) Another look at interrater agreement. Psychological Bulletin, 103, 374 - 378.
 
  }
  
 \author{William Revelle }
-\note{As is true of many R functions, there are alternatives in other packages.  The Kappa function in the vcd package estimates unweighted and weighted kappa and reports the variance of the estimate. The input is a square matrix. The ckappa and wkappa functions in the psy package take raw data matrices.
+\note{As is true of many R functions, there are alternatives in other packages.  The Kappa function in the vcd package estimates unweighted and weighted kappa and reports the variance of the estimate. The input is a square matrix. The ckappa and wkappa functions in the psy package take raw data matrices. The kappam.light function from the irr package finds Light's average kappa.
 
 To avoid confusion with Kappa (from vcd) or the kappa function from base, the function was originally named wkappa. With additional features modified from psy::ckappa to allow input with a different number of categories, the function has been renamed cohen.kappa.  
 

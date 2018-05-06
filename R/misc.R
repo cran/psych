@@ -1,5 +1,6 @@
 #A number of useful helper functions
 #added January, 2012
+#most are public, some are local just for me
 
 #a dummy function to allow the help to find misc
 "psych.misc" <-
@@ -71,6 +72,10 @@ if(!is.null(f$scores)) f$scores <- f$scores %*% flip
 if(!is.null(f$Phi)) f$Phi <- flip %*% f$Phi %*% t(flip)
 return(f)
 }
+
+
+
+
 #and futher patched May 10, 2017 to get the right denominator (I was dividing by n-1 - lag instead of n-lag
 #patched March 1, 2017 to get the df right for lags 
 #developed January 10, 2012 to find the mean square of successive differences
@@ -171,13 +176,6 @@ x.df <- data.frame(x,rx,x2,rx2,xg)
 return(x.df)}
 
 
-"build.html.help" <- function(p="psych",fn = "/Volumes/Test/psych/man",out="/Volumes/Test/help/") {        
-    
-     db <- list.files(fn)
-     for (f in db) {tools::Rd2HTML(paste(fn,db[f]),out=paste(out,db[f]),package=p)
-     } 
-     }
-        
 
     
 #shannon complexity index
@@ -360,6 +358,13 @@ pf <- alpha * (sexy)
 vp <- power * (1-sexy)
 pf/(pf+vp)}
 
+"build.html.help" <- function(p="psych",fn = "/Volumes/Test/psych/man",out="/Volumes/Test/help/") {        
+    
+     db <- list.files(fn)
+     for (f in db) {tools::Rd2HTML(paste(fn,db[f]),out=paste(out,db[f]),package=p)
+     } 
+     }
+        
 
 
 "bullseye" <- function(x,y,n) {
@@ -478,6 +483,22 @@ pretty}
   if(NROW(x) == NCOL(x)) {
   if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
 return(value)}
+
+
+#cs is taken from Hmisc:::Cs
+cs <- function(...) {as.character(sys.call())[-1]}
+#acs is modified to produce a single string
+acs <- function(...) {gsub(",","",toString(sys.call()[-1]))}
+
+fromTo <- function(data,from,to=NULL) {cn <- colnames(data)
+    if(is.null(to)) {to <- from[2]
+       from <- from[1]}
+  from <- which(cn == as.character(from))
+ to =  which(cn == as.character(to))
+  select <- from:to
+  return(data[select])}
+  
+  
 
 
     

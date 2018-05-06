@@ -57,13 +57,15 @@ write.file.csv(x,file=NULL,row.names=FALSE,f=NULL,...)
 }
 \details{A typical session of R might involve data stored in text files, generated online, etc. Although it is easy to just read from a file (particularly if using \code{\link{file.choose}}, copying from the file to the clipboard and then reading from the clipboard is also very convenient (and somewhat more intuitive to the naive user). This is particularly convenient when copying from a text book or article and just moving a section of text into R.)
 
-The \code{\link{read.file}} function combines the \code{\link{file.choose}} and either \code{\link{read.table}}, \code{\link{read.fwf}}, \code{\link{read.spss}} or  \code{\link{read.xport}}(from foreign) or \code{\link{load}} or \code{\link{readRDS}} commands. By examining the file suffix, it chooses the appropriate way to read. For more complicated file structures, see the foreign package. For even more complicated file structures, see the rio package. 
+The \code{\link{read.file}} function combines the \code{\link{file.choose}} and either \code{\link{read.table}}, \code{\link{read.fwf}}, \code{\link{read.spss}} or  \code{\link{read.xport}}(from foreign) or \code{\link{load}} or \code{\link{readRDS}} commands. By examining the file suffix, it chooses the appropriate way to read. For more complicated file structures, see the foreign package. For even more complicated file structures, see the rio or haven packages. 
 
 Note that \code{\link{read.file}} assumes by default that the first row has column labels (header =TRUE).  If this is not true, then make sure to specify header = FALSE.  If the file is fixed width, the assumption is that it does not have a header field.  In the unlikely case that a fwf file does have a header, then you probably should try fn <- file.choose() and then my.data <- read.fwf(fn,header=TRUE,widths=   widths)
 
 Further note:  If the file is a .Rda, .rda, etc. file, the read.file command will load this file and return the name of the file.  In this case, it is necessary to either assign the output (the file name) to an object that has a different name than any of the objects in the file, or to call read.file() without any specification. 
 
 If the file has no suffix the default action is to quit with a warning.  However, if the filetype is specified, it will use that type in the reading (e.g. filetype="txt" will read as text file, even if there is no suffix.)
+
+If the file is specified and has a prefix of http:// https:// it will be downloaded and then read.
 
 
 Currently supported input formats are 

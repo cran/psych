@@ -50,7 +50,8 @@ alpha <- ((sumr - tr(r))/sumr) * n/(n-1)
 tsmc <- sum(smc(r))
 lambda6 <- (sumr - tr(r) + tsmc)/sumr
 result <- NULL
-
+med.r <- median(r[lower.tri(r)],na.rm=TRUE)  #find the median correlation
+av.r <- mean(r[lower.tri(r)],na.rm=TRUE) 
 sumr <- 0 
 x <- seq_len(n)
 a <- seq_len(m)
@@ -119,8 +120,8 @@ rownames(maxAB) <- rownames(minAB) <- v.names
 if(!anyNA(result))  {
 ci <- quantile(result,c(ci/2,.5, 1 - ci/2))} else {ci <- rep(NA,3) }
 if(raw) {
-results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,raw = result,ci=ci,Call = cl)
-} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,alpha=alpha,lambda6=lambda6,ci=ci, Call=cl)}
+results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r, alpha=alpha,lambda6=lambda6,raw = result,ci=ci,Call = cl)
+} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r,alpha=alpha,lambda6=lambda6,ci=ci, Call=cl)}
 class(results) <- c("psych","split")
 return(results)
 }

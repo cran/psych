@@ -58,6 +58,10 @@ for (i in 2:nvar ) {
    }
    }
     result[[1]] <- ck
+    av.kappa <- mean(ck[lower.tri(ck)],na.rm=TRUE) 
+ av.wt <- mean(ck[upper.tri(ck)],na.rm=TRUE)
+ result$av.kappa <- av.kappa
+ result$av.wt <- av.wt
    }
  if(bad) message("At least one item had no variance.  Try describe(your.data) to find the problem.")
  

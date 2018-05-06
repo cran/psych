@@ -204,7 +204,7 @@ cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	cat("\nThe data had ",x$n.obs, " observations taken over ", x$n.time ," time intervals for ", x$n.items, "items.\n")
 	
 	mat <- list(n.obs = x$n.obs,n.time = x$n.time,n.items = x$n.items)    #save these 
-	cat("\n Alternative estimates of reliabilty based upon Generalizability theory\n")
+	cat("\n Alternative estimates of reliability based upon Generalizability theory\n")
 	
 	if(!is.null(x$RkF)){ cat("\nRkF  = ",round(x$RkF,digits) , "Reliability of average of all ratings across all items and  times (Fixed time effects)")
 	 mat["RkF"] <- x$RkF}

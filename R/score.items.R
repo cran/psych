@@ -136,7 +136,18 @@
     cor.scales <- cov2cor(cov.scales)    
     sum.item.var <- item.var %*% abskeys 
     sum.item.var2 <- item.var^2 %*% abskeys 
+    item.r <- cov2cor(C)
+   #find the median correlation within every scale 
    
+   med.r <- rep(NA, n.keys)
+   for(k in 1:n.keys) {
+   temp  <- diag(keys[,k ][abs(keys[,k])>0] )
+   small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0]
+   small.r <- temp %*% small.r %*% temp
+    med.r[k]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
+   } 
+  names(med.r) <- slabels
+    #but we want to do this for each scale
     
    #av.r <- (var.scales - sum.item.var)/(num.item*(num.item-1))  #actually, this the average covar
    alpha.scale <- (var.scales - sum.item.var)*num.item/((num.item-1)*var.scales)
@@ -158,7 +169,7 @@
          item.cor <- C %*% keys %*% diag(1/sqrt(var.scales))/sqrt(item.var)} else {item.cor <- C %*% keys /sqrt(var.scales * item.var)}}
          colnames(item.cor) <- slabels
     c.smc <- smc(C,TRUE)
-   
+  
     diag(C) <- c.smc
     sum.smc <- c.smc %*% abskeys
     G6 <- (var.scales - sum.item.var + sum.smc)/var.scales
@@ -167,7 +178,7 @@
     item.rc <- (C %*% keys) %*% sqrt(diag(1/corrected.var))/sqrt(item.var)} else {
       item.rc <- C %*% keys /sqrt(corrected.var*item.var) }
     colnames(item.rc) <- slabels
-   
+    
   if(n.subjects > 0) {ase <- sqrt(Q/ n.subjects )} else {if(!is.null(n.obs)) {ase <- sqrt(Q/ n.obs )} else {ase=NULL}}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
@@ -185,6 +196,7 @@
     scale.cor <- correct.cor(cor.scales,t(alpha.scale))
   rownames(alpha.scale) <- "alpha"
   rownames(av.r) <- "average.r"
+ # rownames(med.r) <- "median.r"
   rownames(G6) <- "Lambda.6"
   sn <-  av.r * num.item/(1-av.r)
   rownames(sn) <- "Signal/Noise"
@@ -193,10 +205,10 @@
      if(impute =="none") {
        #rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
-       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,Call=cl)} else {
-                            results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,Call=cl)}  } else {
-   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} else{  
-                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,Call=cl)} }
+       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,med.r=med.r,Call=cl)} else {
+                            results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,med.r=med.r,Call=cl)}  } else {
+   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,Call=cl)} else{  
+                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
     return(results)
@@ -215,12 +227,14 @@
  #added missing score to count missing responses for each scale instead of just the overall.
  #Modified November 22, 2013 to add confidence intervals for alpha 
  #modified Sept 9, 2016 to add the keys.list option for the scoring keys
+ #modified April 22, 2018 to include median within scale correlation
  
  "selectFromKeyslist" <- function(itemname,keys) {nkey <- length(keys)
  select <- NULL
    for (key in 1:nkey) {
+   if(is.null(keys[[key]])) {select <- NULL} else {
       if(is.numeric(keys[[key]])) {select <- c(select,itemname[abs(unlist(keys[[key]]))]) } else {select <- c(select,sub("-", "", unlist(keys[[key]]))) }    
-    }
+    }}
     return(select)}
       
   

@@ -122,6 +122,7 @@ function(filename,header=TRUE) {
  if(missing(f) && missing(file))  f <- file.choose()
  if(missing(f) && !missing(file)) f <- file
  suffix <- file_ext(f)
+ 
  if(!missing(filetype)) suffix <- filetype
  if(!missing(widths)) { result <- read.fwf(f,widths,...) 
         message("The fixed width file ", f, "has been loaded.") } else {

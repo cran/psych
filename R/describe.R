@@ -8,7 +8,8 @@ for(i in 1:nvar) {temp[i,1] <- is.numeric(x[1,i])
                 temp[i,3] <- is.logical(x[1,i])
                 temp[i,4] <- is.character(x[1,i]) }
 ttt <- which(temp[,1:4] == TRUE,arr.ind=TRUE)
-ttt <- dfOrder(ttt,"row")
+if(nvar > 1) {
+ttt <- dfOrder(ttt,"row")}
 temp <- cbind(temp,ttt["col"])
 colnames(temp) <- c("numeric","factor","logical","character","type")
 
@@ -97,7 +98,13 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    	if(fast) {skew <- FALSE
    	         }
    	numstats <- 10 + length(quant)	+ IQR 
-    if ( NCOL(x) < 2)  {        #do it for vectors or 
+    if ( NCOL(x) < 2)  {if(is.data.frame(x)) {      #
+                if( !is.numeric(x[,1])) {warning ("You were trying to describe a non-numeric data.frame or vector which describe converted  to numeric.")
+                    x[,1] <- as.numeric(x[,])
+                    } 
+        
+               x <- x[,1] }   #getting around the problem of single column data frames       
+                #do it for vectors or 
     	    len  <- 1
     	    nvar <- 1
     	    stats = matrix(rep(NA,numstats),ncol=numstats)    #create a temporary array

@@ -58,8 +58,14 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
  
  #now adjust them
  
+  med.r <- rep(NA, n.keys)
  for (i in 1:(n.keys)) {
+  temp  <- diag(keys[,i ][abs(keys[,i])>0] )
+   small.r <- r[abs(keys[,i])>0,abs(keys[,i])>0]
+   small.r <- temp %*% small.r %*% temp
+    med.r[i]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
     for (j in 1:i) {
+   
  if(av.r) { adj.cov[i,j] <- adj.cov[j,i]<- raw.cov[i,j] - sum(keys[,i] * keys[,j] ) + sum(keys[,i] * keys[,j] *  sqrt(key.av.r[i] * key.av.r[j]))
   } else {
      adj.cov[i,j] <- adj.cov[j,i] <- raw.cov[i,j] - sum(keys[,i] * keys[,j] )+ sum( keys[,i] * keys[,j] * sqrt(item.smc[i]* abs(keys[,i])*item.smc[j]*abs(keys[,j]) ))
@@ -90,15 +96,17 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
       item.cor <- r %*% keys /sqrt(key.lambda6*scale.var) }
    colnames(item.cor) <- colnames(r)
    item.cor <- t(item.cor)
+   names(med.r) <- colnames(keys)
+
 
  
  
  
  if (correct) {cluster.corrected <- correct.cor(adj.r,t(key.alpha))
- result <- list(cor=adj.r,sd=sqrt(var),corrected= cluster.corrected,alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,Call=cl)
+ result <- list(cor=adj.r,sd=sqrt(var),corrected= cluster.corrected,alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,med.r=med.r,Call=cl)
  }  #correct for attenuation
  else {
-result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,Call=cl)}
+result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,med.r=med.r,Call=cl)}
  class(result) <- c ("psych", "overlap")
  return(result)}
  #modified 01/11/15 to find r if not a square matrix

@@ -5,6 +5,7 @@
 #Rgraphviz uses a NEL  (Node, Edge) represenation while diagram uses a complete linking matrix
 #thus, I am trying to combine these two approaches
 #modified 31/5/14 to allow for drawing factor extension derived omegas
+#and again 7/2/18 to include omegaDirect output
 
 "omega.diagram" <-
   function(om.results,sl=TRUE,sort=TRUE,labels=NULL,flabels=NULL,cut=.2,gcut=.2,simple=TRUE,errors=FALSE,
@@ -15,13 +16,25 @@
   if(is.null(cex)) cex <- 1
    old.par<- par(mar=marg)  #give the window some narrower margins
     on.exit(par(old.par))  #set them back
-  
-  if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "extend")) ) {extend <- TRUE
-        class(om.results)[2] <- "omega"} else {extend <- FALSE}
- if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "omegaSem")) ) {
+ 
+ #Figure out what type of input we are drawing   (done July 2, 2018)
+  extend<- FALSE
+  if(length(class(om.results)) > 1) {result <- class(om.results) [2]} else {result <- "extend"}
+    switch(result,
+      extend = {extend <- TRUE
+               #class(om.results)[2] <- "omega"
+               factors <- om.results
+               nvar <- num.var <- nrow(factors)
+               num.factors <- ncol(factors) -1
+                if(sort) {temp  <- fa.sort(factors[,-1])
+                   temp2 <- factors[,1]
+          factors <- cbind(g=temp2[rownames(temp)],temp)}
+            }, 
+      omegaSem = {
     #did we do an omegaSem or just an omegaFromSem?
     if(is.null(om.results$omega.efa$cfa.loads)) {cfa.loads <- om.results$cfa.loads} else {cfa.loads <- om.results$omega.efa$cfa.loads}
       #  factors <- as.matrix(om.results$omega.efa$cfa.loads[,2:ncol(om.results$omega.efa$cfa.loads)])
+      class(cfa.loads) <- c("psych","omegaSem")
       if(sort) cfa.loads <- fa.sort(cfa.loads)
       factors <- as.matrix(cfa.loads)
         gloading <- cfa.loads[,1,drop=FALSE]
@@ -29,8 +42,15 @@
         num.factors <- ncol(factors) -1
         sl=TRUE
         main <- "Omega from SEM" 
+    },
+    omegaDirect = {factors <- om.results$loadings
+     nvar <- num.var <- nrow(factors)
+     num.factors <- ncol(factors) -1
+                  if(sort) {temp  <- fa.sort(factors[,-1])
+                   temp2 <- factors[,1]
+          factors <- cbind(g=temp2[rownames(temp)],temp)} },
     
-        } else {
+    omega ={
         if(extend) class(om.results)[2] <- "omega"
  if(sort) om.results <- fa.sort(om.results)   #usually sort, but sometimes it is better not to do so
           
@@ -45,7 +65,43 @@
    if (sl ) {num.factors <- dim(factors)[2] - 1 - (!extend) *3 } else {num.factors <- dim(factors)[2]
        }
  }
+      
+    )
+ 
+ #removed July 2, 2018 when we added the switch option 
+#   if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "extend")) ) {extend <- TRUE
+#         class(om.results)[2] <- "omega"} else {extend <- FALSE}
+# #  if((length(class(om.results)) > 1)  && ( (class(om.results)[2] == "omegaSem")) ) {
+# #     #did we do an omegaSem or just an omegaFromSem?
+# #     if(is.null(om.results$omega.efa$cfa.loads)) {cfa.loads <- om.results$cfa.loads} else {cfa.loads <- om.results$omega.efa$cfa.loads}
+# #       #  factors <- as.matrix(om.results$omega.efa$cfa.loads[,2:ncol(om.results$omega.efa$cfa.loads)])
+# #       class(cfa.loads) <- c("psych","omegaSem")
+# #       if(sort) cfa.loads <- fa.sort(cfa.loads)
+# #       factors <- as.matrix(cfa.loads)
+# #         gloading <- cfa.loads[,1,drop=FALSE]
+# #         nvar <- num.var <- nrow(gloading)
+# #         num.factors <- ncol(factors) -1
+# #         sl=TRUE
+# #         main <- "Omega from SEM" 
+#            } else {
+#         if(extend) class(om.results)[2] <- "omega"
+#  if(sort) om.results <- fa.sort(om.results)   #usually sort, but sometimes it is better not to do so
+#           
+#  if (sl) {factors <- as.matrix(om.results$schmid$sl) 
+#          
+#          if(is.null(main)) {main <- "Omega with Schmid Leiman Transformation" }
+#          } else {factors <- as.matrix(om.results$schmid$oblique)
+#           if(is.null(main)) {main <- "Hierarchical (multilevel) Structure" }
+#          }
+#        gloading <- om.results$schmid$gloading
+#         nvar <- num.var <- dim(factors)[1]   #how many variables?
+#    if (sl ) {num.factors <- dim(factors)[2] - 1 - (!extend) *3 } else {num.factors <- dim(factors)[2]
+#        }
+#  }
 
+
+
+#now draw the figure
    
    e.size <- e.size * 10/ nvar   #this is an arbitrary setting that seems to work
 #first some basic setup parameters 

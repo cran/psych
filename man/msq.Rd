@@ -165,7 +165,7 @@ Watson,D., Clark,  L.A.  and Tellegen, A. (1988)  Development and validation of 
 
 }	
 
-\seealso{\code{\link{affect}} for an example of the use of some of these adjectives in a mood manipulation study.
+\seealso{\code{\link{msqR}} for a larger data set with repeated measures for 3032 participants measured at least once, 2753 measured twice, 446 three times and 181 four times.  \code{\link{affect}} for an example of the use of some of these adjectives in a mood manipulation study.
 
 \code{\link{make.keys}}, \code{\link{scoreItems}} and \code{\link{scoreOverlap}} for instructions on how to score multiple scales with and without item overlap. Also see  \code{\link{fa}} and \code{\link{fa.extension}} for instructions on how to do factor analyses or factor extension.
 }

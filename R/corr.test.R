@@ -1,5 +1,5 @@
 "corr.test" <-
-function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE){
+function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE,minlength=5){
 cl <- match.call()
 if(is.null(y)) {r <- cor(x,use=use,method=method)
  sym <- TRUE
@@ -78,8 +78,8 @@ if (adjust !="none") {
     
   ci <- data.frame(lower=lower,r=as.vector(r),upper=upper,p=as.vector(p))
   ci.adj <- data.frame(lower.adj=as.vector(lower.corrected),r=as.vector(r),upper.adj= as.vector(upper.corrected))
-  cnR <- abbreviate(rownames(r),minlength=5) 
-  cnC <- abbreviate(colnames(r),minlength=5)
+  cnR <- abbreviate(rownames(r),minlength=minlength)  #added minlength as a parameter than fixed to 5  5/28/18
+  cnC <- abbreviate(colnames(r),minlength=minlength)
   k <- 1
       for(i in 1:NCOL(y)) {for (j in 1:NCOL(x)) {
       rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")

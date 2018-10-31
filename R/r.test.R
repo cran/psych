@@ -3,13 +3,14 @@
   cl <- match.call()
   if(is.null(r34) & is.null(r13) & is.null(r23)) {  #test for significance of r
      
-  
      t <- r12*sqrt(n-2)/sqrt(1-r12^2) 
      p <- 1-pt(abs(t),n-2) 
      if(twotailed) p <- 2*p
      ci <- r.con(r12,n)
       result <-  list(Call=cl,Test="Test of significance of a  correlation",t=t,p=p,ci=ci)
   } else {if(is.null(r23)) { #compare two independent correlations
+      if(is.null(r34)) {stop("You seem to be testing two dependent correlations, but have not specified the other correlation(s)  correctly.")}
+       if(!is.null(r13)) {stop("You seem to be testing two dependent correlations, but have not specified the correlation(s)  correctly.")}
         xy.z <- 0.5*log((1+r12)/(1-r12))
         xz.z <- 0.5*log((1+r34)/(1-r34))
         if(is.null(n2)) n2 <- n
@@ -25,6 +26,7 @@
         #here we do two tests of dependent correlations
        #figure out whether correlations are being specified by name or order
         if(!is.null(r34)) {if(is.null(r13)) {r13 <- r34} }
+        if(is.null(r13)) {stop("You seem to be trying to test two dependent correlations, but have not specified the other correlation(s)")}
        diff <- r12-r13
        determin=1-r12*r12 - r23*r23 - r13*r13 + 2*r12*r23*r13
        av=(r12+r13)/2
@@ -56,3 +58,4 @@
     class(result) <- c("psych", "r.test")
     return(result)
    }
+   #Modified August 8, 2018 to flag improper input 

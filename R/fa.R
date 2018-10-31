@@ -160,37 +160,38 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
  #Modified December 11, 2009 to use first derivatives from formula rather than empirical.  This seriously improves the speed.
  #but does not seem to improve the accuracy of the minres/ols solution (note added April, 2017)
      "fit" <- function(S,nf,fm,covar) {
-          if(is.logical(SMC)) {S.smc <- smc(S,covar)} else{ S.smc <-SMC }  #added this option, August 31, 2017
+          if(is.logical(SMC)) {S.smc <- smc(S,covar)} else{ S.smc <- SMC }  #added this option, August 31, 2017
+           upper <-  max(S.smc,1)  #Added Sept 11,2018  to handle case of covar , adjusted October 24 by adding 1  
            if((fm=="wls") | (fm =="gls") ) {S.inv <- solve(S)} else {S.inv <- NULL}
            if(!covar &&(sum(S.smc) == nf) && (nf > 1)) {start <- rep(.5,nf)}  else {start <- diag(S)- S.smc}
                     #initial communality estimates are variance - smc  unless smc = 1 
                     
            if(fm=="ml" || fm=="mle" )  {res <- optim(start, FAfn, FAgr, method = "L-BFGS-B",
-                          	lower = .005, upper = 1,
+                          	lower = .005, upper = upper, 
                           	control = c(list(fnscale=1,
                  			parscale = rep(0.01, length(start))), control),
                  			nf = nf, S = S)
                  } else { 
                    if(fm=="ols" ) { #don't use a gradient 
-                   if(is.logical(SMC)) {start <- diag(S)- smc(S)} else {start <- SMC}
+                   if(is.logical(SMC)) {start <- diag(S)- smc(S,covar)} else {start <- SMC}   #added covar  9/11/18
   	                      res <- optim(start, FA.OLS, method = "L-BFGS-B", lower = .005, 
-                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  			upper = upper, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S )
    
                      } else {
                     if((fm=="minres")| (fm=="uls")) {  #which is actually the same as OLS but we use the gradient 
-                    start <- diag(S)- smc(S)     
+                start <- diag(S)- smc(S,covar)  #added 9/11/18    ## is this correct, or backward? 
 
                 		 	res <- optim(start, fit.residuals,gr=FAgr.minres, method = "L-BFGS-B", lower = .005, 
-                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  			upper = upper, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S,fm=fm)
                   	
                   	
                   		
                   		} else   {   #this is the case of old.min
-                  		   start <- diag(S)- smc(S)
-                		 	res <- optim(start, fit.residuals,gr=FAgr.minres2, method = "L-BFGS-B", lower = .005, 
-                  			upper = 1, control = c(list(fnscale = 1, parscale = rep(0.01, 
+                  		   start <- smc(S,covar)  #added 9/11/18 ##but why is this not diag(S)-smc(S,covar)
+                  		  res <- optim(start, fit.residuals,gr=FAgr.minres2, method = "L-BFGS-B", lower = .005, 
+                  			upper = upper, control = c(list(fnscale = 1, parscale = rep(0.01, 
                   			length(start)))), nf= nf, S=S, S.inv=S.inv,fm=fm )
                 				
                   			}
@@ -275,7 +276,7 @@ function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FA
     }
 #This is modified from factanal -- the difference in the loadings is that these produce orthogonal loadings, but slightly worse fit  
    FAout.wls <-  function(Psi, S, q) {
-        diag(S) <- 1- Psi
+        diag(S) <- diag(S)- Psi  # added diag(S) - Psi instead of 1- Psi to handle covar=TRUE  9/11/18
         E <- eigen(S,symmetric = TRUE)
     #    L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(E$values[1L:q,drop=FALSE]),q)
      L <- E$vectors[,1L:q,drop=FALSE] %*%  diag(sqrt(pmax(E$values[1L:q,drop=FALSE],0)),q)  #added the > 0 test August 30, 2017
@@ -387,26 +388,29 @@ FA.OLS <- function(Psi,S,nf) {
         x.matrix[miss]<- item.med[miss[,2]]}
         }
     		#if(fm=="minchi") 
-    		np.obs <- count.pairwise(r)    #used if we want to do sample size weighting
+    		np.obs <- pairwiseCount(r)    #used if we want to do sample size weighting
     		if(covar) {cor <- "cov"} 
-    		if(!is.null(weight) ) cor <-"wtd"
+    		
     # if given a rectangular matrix, then find the correlation or covariance 
     #multiple ways of find correlations or covariances
+    #added the weights option to tet, poly, tetrachoric, and polychoric  June 27, 2018
     switch(cor, 
-       cor = {r <- cor(r,use=use)},
+       cor = {if(!is.null(weight))  {r <- cor.wt(r,w=weight)$r} else  {
+                                     r <- cor(r,use=use)}
+                                     },
        cov = {r <- cov(r,use=use) 
               covar <- TRUE},
        wtd = { r <- cor.wt(r,w=weight)$r},
-       tet = {r <- tetrachoric(r,correct=correct)$rho},
-       poly = {r <- polychoric(r,correct=correct)$rho},
-        tetrachoric = {r <- tetrachoric(r,correct=correct)$rho},
-       polyvchoric = {r <- polychoric(r,correct=correct)$rho},
+       tet = {r <- tetrachoric(r,correct=correct,weight=weight)$rho},
+       poly = {r <- polychoric(r,correct=correct,weight=weight)$rho},
+       tetrachoric = {r <- tetrachoric(r,correct=correct,weight=weight)$rho},
+       polychoric = {r <- polychoric(r,correct=correct,weight=weight)$rho},
        mixed = {r <- mixed.cor(r,use=use,correct=correct)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 
        )
-      
+ 
 
     		
     

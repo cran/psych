@@ -55,7 +55,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
  if(omega) {fo <- omega(r[,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
        fo <- fa(r[,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)}
          n.obs <- nrow(r)
-         np.obs.r <- count.pairwise(r)[nv,nv]
+         np.obs.r <- pairwiseCount(r)[nv,nv]
          np.obs <- np.obs.r[ov,ov]
         r <- cor(r,use='pairwise')  
     } else {  #the case of a correlation matrix         

@@ -3,6 +3,7 @@
 "splitHalf"<- 
 function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,ci=.05,use="pairwise") {
 cl <- match.call()
+
 split <- function(o,n) {
 A <- B <-  rep(0,n)
 A [o] <- B[-o]  <- 1
@@ -13,6 +14,7 @@ Rab <- R[1,2]/sqrt(R[1,1]*R[2,2])
 #rab <- 2*Rab/(1+Rab)
 rab <- 4*R[1,2]/sum(R)
 result <- list(rab=rab,AB=AB)}
+
 v.names <- colnames(r)
 keys <- key   
 maxrb <- -9999
@@ -69,6 +71,7 @@ brute <- TRUE
         maxAB <- sp$AB
         minrb <- sp$rab
         minAB <- sp$AB
+        sumr <- sp$rab   #added to get the first one 10/6/18 in response to bug report by Wes Bonifay
 i <- 2 #now, do the rest
  while (i < (count+1)) { #adapted (taken) from combn
  if (e < n - h) {

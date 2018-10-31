@@ -141,7 +141,9 @@
    
    med.r <- rep(NA, n.keys)
    for(k in 1:n.keys) {
-   temp  <- diag(keys[,k ][abs(keys[,k])>0] )
+   temp <- keys[,k][abs(keys[,k]) > 0]
+   temp <- diag(temp,nrow=length(temp))
+  # temp  <- diag(keys[,k ][abs(keys[,k])>0] )
    small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0]
    small.r <- temp %*% small.r %*% temp
     med.r[k]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  

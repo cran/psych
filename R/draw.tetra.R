@@ -59,10 +59,12 @@ polygon(poly ,density=10,angle=90)
 text(0,0,paste("rho = ",r))
 
 
-HR <- 1 - pnorm(t1)
-SR <- 1 - pnorm(t2)
-P <- binBvn(r,HR,SR)
+SR <- 1 - pnorm(t1)
+BR <- 1 - pnorm(t2)
+#P <- binBvn(r,HR,SR) 
+P <- binBvn(r,t1,t2)
 ph <- phi(P)
+
 text(0,-.3,paste("phi = " ,round(ph,2)))
 
 text(xloc,yloc+.1,expression(X > tau))
@@ -104,6 +106,12 @@ if(shade) {
 
 
 par(def.par)  #reset to the original values
+P1 <- P
+P1[2,2] <- P[1,1]
+P1[1,1] <- P[2,2]
+colnames(P1) <- c("P.pos","P.neg")
+rownames(P1) <- c("True.pos","True.neg")
+return <-(list(P=P1,BR=BR,SR=SR))
 }
 
 

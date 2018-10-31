@@ -88,7 +88,7 @@ if(flip) {
 w <- solve(m,cfa.loads)
 rownames(cfa.loads)  <- rn
 rownames(w)  <- rn
-
+colnames(cfa.loads) <- c("gs",paste0("F",1:(n.fact-1),"s*"))
 gR2 <- diag(t(w) %*% cfa.loads)
 Vt <- sum(m)
 omh.sem <- sum(g)^2/Vt
@@ -121,7 +121,7 @@ omt.sem <- (Vt - uniq)/Vt
 class(cfa.loads) <- "loadings"
 results <- list(omega=omh.sem,omega.tot = omt.sem,cfa.loads=cfa.loads,gR2=gR2,omega.group=om.group,Fit=Fit,sem=sem)
 class(results) <- c("psych","omegaSem")
-if(plot) {if(n.fact > 1) { omega.diagram(results,sort=FALSE)} else {if(sem == 'lavaan') lavaan.diagram(fit,cut=0) } }
+if(plot) {if(n.fact > 1) { omega.diagram(results,sort=TRUE)} else {if(sem == 'lavaan') lavaan.diagram(fit,cut=0) } }
 return(results)
 }
 

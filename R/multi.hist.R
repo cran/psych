@@ -1,21 +1,27 @@
+#Added mar and changes main Sept 23, 2018
+
 "multi.hist" <-
-function(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),main="Histogram, Density, and Normal Fit",breaks=21,...) {
+function(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",dcol=c("black","black"),dlty=c("dashed","dotted"),main=NULL,mar=c(2,1,1,1), breaks=21,...) {
 if((!is.matrix(x)) & (!is.data.frame(x))) {nvar <- 1
     x <- as.matrix(x,ncol=1) } else {
     x <- as.data.frame(x) 
 nvar <- dim(x)[2] } #number of variables
+if((is.null(main)) & nvar==1) main <- "Histogram, Density, and Normal Fit"
 if (length(dcol)<2) dcol <- c(dcol,dcol) 
-     if(!density & (main == "Histogram, Density, and Normal Fit")) main = "Histogram" 
+     #if(!density & (main == "Histogram, Density, and Normal Fit")) main = "Histogram" 
+     
+     if(is.null(main)) {main <- c(colnames(x)) } else {main <- rep(main,nvar)}
      nsize=ceiling(sqrt(nvar))   #size of graphic
      if(is.null(nrow) ) {nrow <- nsize} else {ncol <- nvar/nrow}
      if(is.null(ncol)) {ncol  <- ceiling(nvar/nsize )} else {nrow <- nvar/ncol}
      
      old.par <- par(no.readonly = TRUE) # all par settings which can be changed
      par(mfrow=c(nrow,ncol))       #set new graphic parameters
+     par(mar=mar)
      for (i in 1:nvar) {
     	 xlab=names(x)[i]                #get the names for the variables
-    	if(density) {histo.density(x[,i],xlab=xlab,main=main,freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)} else {
-    				hist(x[,i],main=main,xlab=xlab,freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)}
+    	if(density) {histo.density(x[,i],xlab=xlab,main=main[i],freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)} else {
+    				hist(x[,i],main=main[i],xlab=xlab,freq=freq,bcol,dcol=dcol,dlty=dlty,breaks=breaks,...)}
     }  #draw the histograms for each variable
      on.exit(par(old.par))   #set the graphic parameters back to the original
      }

@@ -104,9 +104,11 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
      omt[1] <- om.tot 
      om.group <- data.frame(total=omt,general=omgo,group=omg)
      rownames(om.group) <- colnames(gf$sl)[1:(nfactors+1)]
+
+     }   #moved after tge bext line (6/21/18)
   #we should standardize the raw.data before doing the next step
      if(!is.null(raw.data)) {scores <- raw.data %*%  omega.stats$weights} else {scores<- NULL} 
-     }
+    # }
      omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group,scores=scores)
 
       class(omega) <- c("psych","omega")

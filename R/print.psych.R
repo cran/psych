@@ -317,6 +317,13 @@ describeData = {if  (length(dim(x))==1) {class(x) <- "list"
 describeFast = {  cat("\n Number of observations = " , x$n.obs, "of which ", x$complete.cases,"  are complete cases.   Number of variables = ",x$nvar," of which ",x$numeric," are numeric and ",x$factors," are factors \n")
                 if(!short) {print(x$result.df) } else {cat("\n To list the items and their counts, print with short = FALSE") }
                 },
+direct = { cat("Call: ")
+        print(x$Call)
+        cat("\nDirect Schmid Leiman = \n")
+        print(x$direct,cut=cut)
+        } ,    
+
+        
  
 faBy = { cat("Call: ")
         print(x$Call)
@@ -445,6 +452,29 @@ mixed= { cat("Call: ")
     if(lower) {if(length(x$rho)>1) { lowerMat (x$rho,digits=digits)} else {print(x$rho,digits)}}
    }},
    
+   
+omegaDirect ={ cat("Call: ")
+        print(x$Call)
+        cat("\nOmega from direct Schmid Leiman = ", round(x$omega.g,digits=digits),"\n")
+        print.psych.fa(x)
+        
+       eigenvalues <- diag(t(x$loadings) %*% x$loadings)
+       cat("\nWith eigenvalues of:\n")
+       print(eigenvalues,digits=2)
+         cat("The degrees of freedom for the model is",x$orth.f$dof," and the fit was ",round(x$orth.f$objective,digits),"\n")
+   	if(!is.na(x$orth.f$n.obs)) {cat("The number of observations was ",x$orth.f$n.obs, " with Chi Square = ",round(x$orth.f$STATISTIC,digits), " with prob < ", round(x$orth.f$PVAL,digits),"\n")}
+   	
+    if(!is.null(x$orth.f$rms)) {cat("\nThe root mean square of the residuals is ", round(x$orth.f$rms,digits),"\n") }
+     if(!is.null(x$orth.f$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$orth.f$crms,digits),"\n") }
+    if(!is.null(x$orth.f$RMSEA)) {cat("\nRMSEA and the ",x$orth.f$RMSEA[4]  ,"confidence intervals are ",round(x$orth.f$RMSEA[1:3],digits+1))  }
+   	if(!is.null(x$orth.f$BIC)) {cat("\nBIC = ",round(x$orth.f$BIC,digits))}	
+
+        
+cat("\n Total, General and Subset omega for each subset\n")
+   colnames(x$om.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   #rownames(x$om.group) <- tn
+   print(round(t(x$om.group),digits))},  
+
  
  paired.r = {cat("Call: ")
             print(x$Call)
@@ -454,8 +484,18 @@ mixed= { cat("Call: ")
          cat("  With probability = ",round(x$p,digits))
          },
 
-  
-
+pairwise = {cat("Call: ")
+              print(x$Call) 
+              cat("\nMean correlations within/between scales\n")
+              lowerMat(x$av.r)
+              cat("\nPercentage of complete correlations\n")
+              lowerMat(x$percent)
+               cat("\nNumber of complete correlations per scale\n")
+              lowerMat(x$count)
+             if(!is.null(x$size)) {cat("\nAverage number of pairwise observations per scale\n")
+              lowerMat(round(x$size))}
+              cat("\n Imputed correlations (if found) are in the imputed object")
+              },
          
 parallel= {
 cat("Call: ")
@@ -485,7 +525,7 @@ cat("Call: ")
             }  
     },
          
-  partial.r = {cat("partial correlations \n")
+partial.r = {cat("partial correlations \n")
             print(round(unclass(x),digits))
          }, 
          
@@ -657,12 +697,14 @@ scores =  {
   },
   
 setCor= { cat("Call: ")
-             print(x$Call)
+              print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
-          for(i in 1:NCOL(x$beta)) {cat("\n DV = ",colnames(x$beta)[i], "\n")
-           if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$VIF,digits))
-              colnames(result.df) <- c("slope","se", "t", "p", "VIF")        
+            ny <- NCOL(x$beta)
+          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i])
+          if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
+          if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
+              colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw","Shrunken R2", "SE of R2", "overall F","df1","df2","p")
@@ -677,6 +719,7 @@ setCor= { cat("Call: ")
              print(result.df)
               } 
               }
+ 
             
             if(!is.null(x$cancor)) {
             cat("\nVarious estimates of between set correlations\n")
@@ -694,6 +737,7 @@ setCor= { cat("Call: ")
              cat("\nUnweighted correlation between the two sets = ",round(x$Ruw,digits)) 
            
            }
+
    },
    
    

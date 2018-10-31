@@ -10,8 +10,8 @@ Find the direct and indirect effects of a predictor in path models of mediation 
 mediate(y, x, m=NULL, data, mod = NULL, z = NULL, n.obs = NULL, use = "pairwise",
  n.iter = 5000,  alpha = 0.05, std = FALSE,plot=TRUE,zero=TRUE,main="Mediation")
 mediate.diagram(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE,
-     main="Mediation model",...)
-moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
+     main="Mediation model",cex=1,l.cex=1,...)
+moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model", cex=1,l.cex=1,...)
 }
 
 \arguments{
@@ -35,6 +35,8 @@ moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model",...)
   \item{xlim}{The limits for the x axis.  Make the minimum more negative if the x by x correlations do not fit.}
   \item{show.c}{If FALSE, do not draw the c lines, just the partialed (c')  lines}
   \item{main}{The title for the mediate and moderate functions}
+  \item{cex}{Adjust the text size (defaults to 1)}
+  \item{l.cex}{Adjust the text size in arrows, defaults to cex which in turn defaults to 1}
   \item{...}{Additional graphical parameters to pass to mediate.diagram}
 }
 \details{
@@ -113,6 +115,19 @@ See the ``how to do mediation and moderation" at  personality-project.org/r/psyc
 
 
 \examples{ 
+# A simple mediation example is the Tal_Or data set (pmi for Hayes)
+#The pmi data set from Hayes is available as the Tal_Or data set. 
+mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
+
+#Moderated mediation is done with the Garcia (Garcia, 2010) data set.
+# (see Hayes, 2013 for the protest data set
+
+#n.iter set to 50 (instead of default of 5000) for speed of example #old style
+data(GSBE)   #The Garcia et al data set (aka GSBE)
+mediate(liking ~  sexism * prot2 + (respappr), data=Garcia, n.iter = 50)
+#to see this interaction graphically, run the examples in ?Garcia
+
+
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
 -0.03, 1.75, -0.8, -1.2, -1.27, 0.7, -1.59, 0.68, -0.39, 1.33, 
@@ -131,20 +146,9 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 
 #There are several forms of input.  The original specified y, x , and the mediator 
 #mediate(1,2,3,sobel,n.iter=50)  #The example in Preacher and Hayes
-
 #As of October, 2017 we can specify this in a formula mode
 mediate (SATIS ~ THERAPY + (ATTRIB),data=sobel, n.iter=50) #specify the mediator by 
 # adding parentheses
-#The pmi data set from Hayes is available as the Tal_Or data set. 
-mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
-
-#Moderated mediation is done with the Garcia (Garcia, 2010) data set.
-# (see Hayes, 2013 for the protest data set
-
-#n.iter set to 50 (instead of default of 5000) for speed of example #old style
-data(GSBE)   #The Garcia et al data set (aka GSBE)
-mediate(liking ~  sexism * prot2 + (respappr), data=Garcia, n.iter = 50)
-#to see this interaction graphically, run the examples in ?Garcia
 
 
 #Data from sem package taken from Kerckhoff (and in turn, from Lisrel manual)

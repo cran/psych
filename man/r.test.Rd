@@ -33,9 +33,30 @@ r.test(n, r12, r34 = NULL, r23 = NULL, r13 = NULL, r14 = NULL, r24 = NULL,
 
 4) For sample size n, test for the difference between two dependent correlations involving different variables.
 
-For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23. Consider the example  the example from Steiger: 
+Consider the correlations from Steiger (1980), Table 1:  Because these all from the same subjects, any tests must be of dependent correlations.  For dependent correlations, it is necessary to specify at least 3 correlations (e.g., r12, r13, r23) 
+
+\tabular{lrrrrrrr}{
+Variable \tab M1 \tab F1 \tab V1 \tab M2 \tab F2  \tab V2 \cr
+M1  1.00 \cr
+F1  \tab .10 \tab 1.00\cr
+V1 \tab .40 \tab .50 \tab 1.00 \cr
+M2 \tab .70 \tab .05 \tab .50 \tab 1.00 \cr
+F2 \tab .05 \tab .70 \tab .50 \tab .50 \tab 1.00  \cr
+V2 \tab .45 \tab .50 \tab .80 \tab .50 \tab .60 \tab 1.00 \cr
+}
+
+
+For clarity, correlations may be specified by value.  If specified by location and if doing the test of dependent correlations, if three correlations are specified, they are assumed to be in the order r12, r13, r23.
+
+ Consider the examples from Steiger: 
+ 
+ Case A: 
 where Masculinity at time 1 (M1) correlates with Verbal Ability .5 (r12), femininity at time 1 (F1) correlates with Verbal ability  r13 =.4, and M1 correlates with F1 (r23= .1).  Then, given the correlations: r12 = .4, r13 = .5, and r23 = .1, t = -.89 for n =103, i.e.,
 r.test(n=103, r12=.4, r13=.5,r23=.1)  
+
+Case B: Test whether correlation between two variables (e.g., F and V) is the same over time (e.g. F1V1 = F2V2) 
+
+r.test(n = 103, r12 = 0.5, r34 = 0.6, r23 = 0.5, r13 = 0.7, r14 = 0.5,  r24 = 0.8)
 
 
 

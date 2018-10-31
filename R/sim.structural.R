@@ -29,7 +29,8 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
                                       observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + mu) 
                                       theta <- observed
   	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
-  	         observed[] <- rbinom(n*nvar, cat, observedp)}
+  	      #   observed[] <- rbinom(n*nvar, cat, observedp)
+  	          observed[] <- round(observedp * cat) }  #changed 08/26/18  to not double the randomness
   	  colnames(observed) <- colnames(model)
   r <- cor(observed) 
   } 

@@ -192,7 +192,7 @@ switch(rotate,
     sm <-  sign(fload) * sqrt(uniq2)  #added June 1, 2010 to correctly identify sign of group factors
     
     
-    colnames(sm) <- paste("F",1:nfactors,"*",sep="")
+    colnames(sm) <- paste0("F",1:nfactors,"*")
     if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,Call=cl)} else{
     result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
@@ -200,3 +200,104 @@ switch(rotate,
     class(result) <- c("psych" ,"schmid")
     return(result)
 }
+
+
+#Added June 20, 2018 to try to do Neils Waller's direct Schmid Leiman
+
+Procrustes <-function(L, Target=NULL){#Adapted from Niels Waller (2017)
+if(is.null(Target)) Target <- factor2cluster(L) 
+tM1M2 <- t(Target) %*% L
+ svdtM1M2 <- svd(tM1M2) 
+ P <- svdtM1M2$u
+ Q <- svdtM1M2$v 
+T <- Q%*%t(P)
+## Orthogonally rotate L to Target
+ return(list(loadings = L %*%T,rotation = T))
+ }
+ 
+ #allowing to specify a number of rotations
+ oblique.rotations <- function(rotate="oblimin",loadings,...){
+   if (rotate =="oblimin"| rotate=="quartimin" | rotate== "simplimax" | rotate =="geominQ"  | rotate =="bentlerQ"  |rotate == "targetQ"  ) {
+     				if (!requireNamespace('GPArotation')) {warning("I am sorry, to do these rotations requires the GPArotation package to be installed")
+     				    Phi <- NULL} else { 
+     				      
+     				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
+     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               ob <- Promax(loadings)}
+     				                 
+     				loadings <- ob$loadings
+     				 Phi <- ob$Phi
+     				  rot.mat <- t(solve(ob$Th))}
+  		                             }
+ return(list(loadings=loadings,Phi=Phi))
+ }
+ 
+ 
+ #direct Schmid Leiman adapted from Waller (2017)
+ directSl <- function(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3){
+ cl <- match.call()
+ nvar <- ncol(m)
+ if(isCorrelation(m)) {C <- m} else { C <- cor(m,use="pairwise")}
+ f <- fa(C,nfactors=nfactors,fm=fm,rotate ='none')   #unrotated solution
+ #construct the target from the rotated solution
+ f.obl <- oblique.rotations(rotate=rotate,loadings = f$loadings)$loadings
+ targ <- factor2cluster(f.obl,cut=cut)
+ #Waller adjustments to target and factor model
+ targ <- cbind(g=rep(1,nvar),targ)
+ f0 <- cbind(rep(0,nvar),f$loadings)
+ direct <- Procrustes(f0,targ)$loadings   #The Waller Procrustes solution
+
+ colnames(direct) <- c("g",paste0("F",1:nfactors,"*"))  #put some labels in
+ class(direct) <- "loadings"
+ results <- list(direct=direct,C=C,f=f,targ=targ,Call=cl)
+ class(results) <- c("psych","direct")
+ return(results)
+ }
+ 
+ omegaDirect <- function(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3,plot=TRUE,main="Direct Schmid Leiman"){
+  cl <- match.call()
+ dsl  <- directSl(m=m,nfactors=nfactors,fm=fm,rotate=rotate,cut=cut)
+ direct <- dsl$direct
+ m <- dsl$C
+ f <- dsl$f
+ targ <- dsl$targ
+  if(isCorrelation(m)) {C <- m} else { C <- cor(m,use="pairwise")}
+ 
+ sum.g <- sum(direct[,1])
+ Vt <- sum(C)  #the total variance in the matrix
+ omega.g <-sum.g^2/Vt
+ h2 <- rowSums(direct^2) 
+ H2 <- sum(h2)
+ u2 <-1 - h2
+ U2 <- sum(u2)
+ 
+ om.tot <-1 - U2/Vt
+ #find subset omegas
+ 
+  omg <- omgo <- omt<-  rep(NA,nfactors+1)
+     sub <- apply(direct,1,function(x) which.max(abs(x[2:(nfactors+1)])))
+     grs <- 0
+     for(group in( 1:nfactors)) {
+     groupi <- which(sub==group)
+     if(length(groupi) > 0) {
+      Vgr <- sum(C[groupi,groupi])
+      gr <- sum(direct[groupi,(group+1)])
+      grs <- grs + gr^2
+      omg[group+1] <- gr^2/Vgr
+      omgo[group+1] <- sum(direct[groupi,1])^2/Vgr
+      omt[group+1] <- (gr^2+ sum(direct[groupi,1])^2)/Vgr
+     }}
+     omgo[1] <- sum(direct[,1])^2/sum(C)  #omega h
+     omg[1] <- grs/sum(C)  #omega of subscales
+     omt[1] <- om.tot 
+     om.group <- data.frame(total=omt,general=omgo,group=omg)
+     rownames(om.group) <- colnames(direct)[1:(nfactors+1)]
+ 
+ result <- list(loadings=direct,omega.g=omega.g,om.group=om.group,orth.f = f,Target=targ,Call=cl)
+ class(result) <-  c("psych" ,"omegaDirect")
+if(plot)  omega.diagram(result,sort=TRUE,simple=FALSE,cut=cut,main=main)
+ return(result)
+
+ }
+
+

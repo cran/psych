@@ -9,7 +9,7 @@
 }
 \usage{
 lookup(x,y,criteria=NULL)
-fa.lookup(f,dictionary,digits=2)
+fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 keys.lookup(keys.list,dictionary)
 }
@@ -20,9 +20,11 @@ keys.lookup(keys.list,dictionary)
 \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
 \item{keys.list}{A list of scoring keys suitable to use for make.keys}
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
+\item{n}{Return the n best items per factor (as long as they have their highest loading on that factor)}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}
 \item{m}{A data frame of item means}
 \item{digits}{round to digits}
+\item{sort}{Should the factors be sorted first?}
 
   
 }
@@ -47,22 +49,26 @@ Similarly, given a correlation matrix, r, of the x variables, if you want to fin
 \code{\link{fa.lookup}} takes a factor/cluster analysis object (or just a keys like matrix), sorts it using \code{\link{fa.sort}} and then matches by row.name to the corresponding dictionary entries.
 }
 
-\note{
-
-To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the \code{link{bfi.dictionary}} as an example.
-}
 \references{
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
 
 }
 \author{William Revelle}
-\note{Although empirical scale construction is appealing, it has the basic problem of capitalizing on chance.  Thus, be careful of over interpreting the results unless working with large samples.  Iteration and bootstrapping aggregation (bagging) gives information on the stability of the solutions.
+\note{Although empirical scale construction is appealing, it has the basic problem of capitalizing on chance.  Thus, be careful of over interpreting the results unless working with large samples.  Iteration and bootstrapping aggregation (bagging) gives information on the stability of the solutions. See \code{\link{bestScales}}
+
+To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the \code{link{bfi.dictionary}} as an example.  The bfi.dictionary was constructed from a spreadsheet with multiple columns, the first of which was the column names of the bfi. See the first (not run) example. 
+
 }
 
 \seealso{
 \code{\link{fa}}, \code{\link{iclust}},\code{\link{principal}}, \code{\link{bestScales}} and \code{\link{bestItems}}
 }
 \examples{
+#Tne following shows how to create a dictionary
+#first, copy the spreadsheet to the clipboard
+# bfi.dictionary <- read.clipboard.tab()  #read from the clipboard
+# rownames(bfi.dictionary) <- bfi.dictionary[1] #the first column had the names
+# bfi.dictionary <- bfi.dictionary[-1]  #these are redundant, drop them
 
 f5 <- fa(bfi,5)
 m <- colMeans(bfi,na.rm=TRUE)

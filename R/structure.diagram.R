@@ -3,6 +3,7 @@
 #based upon structure graph but not using Rgraphviz
 #creates a structural equation path diagram, draws it, and saves sem commands
 #modified again in December, 2009 to add Rx, Ry options
+#modified to produce correct sem and lavaan code  October 2018
 
 "structure.diagram" <-
 function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,
@@ -81,6 +82,7 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
                                        yvars <- colnames(Ry)}  #do we want to draw  the inter Y correlations?
    
     num.var <- num.xvar + num.y
+    if((num.xfactors >0 ) & (num.yfactors>0) & is.null(Phi)) {mimic <- TRUE} else {mimic <- FALSE}
     num.factors <- num.xfactors + num.yfactors
     
     sem <- matrix(rep(NA),6*(num.var*num.factors + num.factors),ncol=3)    #this creates an output model for sem analysis
@@ -125,6 +127,7 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
      }
   nvar <- num.xvar
   f.scale <- (num.xvar+ 1)/(num.xfactors+1)
+ # e.size <- e.size * f.scale   #try this for scaling of elippses   too big for lavaan diagram
   if (num.xfactors >0) { 
  for (f in 1:num.xfactors) {
    	if(!regression) {if(lr) {fact.rect[[f]] <- dia.ellipse(limx[2]/scale.xaxis,(num.xfactors+1-f)*f.scale,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)} else {fact.rect[[f]] <- dia.ellipse(f*f.scale,limy[2]/scale.xaxis,fact[f],ylim=c(0,nvar),xlim=c(0,nvar),e.size=e.size,...)
@@ -132,6 +135,10 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
    	} else {if(lr) {fact.rect[[f]] <- dia.rect(limx[2]/scale.xaxis,(num.xfactors+1-f)*f.scale,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),...)} else {
    	                fact.rect[[f]] <- dia.rect(f*f.scale,limy[2]/scale.xaxis,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),...)}
    	    }
+   	    
+   	    
+   	if(mimic) {} else {}     #do something here
+   	
    	
      		for (v in 1:num.xvar)  {
      		    if(is.numeric(factors[v,f])) {
@@ -157,7 +164,7 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
   
                    k <- 1
                     
-                 
+    
                    for (f in 1:num.xfactors) { #if (!is.numeric(factors[i,f]) ||  (abs(factors[i,f]) > cut))
                      lavaan[[f]] <- paste0(fact[f] ," =~ ")
                      for (i in 1:num.xvar) {
@@ -212,16 +219,19 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
                              } 
                        
   
-  	if (num.yfactors ==1) {     
+  	if (num.yfactors ==1) { lavaan[[num.xfactors +1 ]] <-   paste(fact[num.xfactors +1], "=~")  
     for (i in 1:num.y) { sem[k,1] <- paste(fact[1+num.xfactors],"->",yvars[i],sep="")
+                        lavaan[[num.xfactors +1]] <-  paste0(lavaan[[num.xfactors +1]], ' + ', yvars[i]) 
                            if(is.numeric(y.factors[i] ) ) {sem[k,2] <- paste("Fy",yvars[i],sep="")} else {sem[k,2] <- y.factors[i]}
                          k <- k +1
                         }                      
                          } else {   #end of if num.yfactors ==1 
         
-                   for (i in 1:num.y) {
-                   for (f in 1:num.yfactors) { 
+                 
+                   for (f in 1:num.yfactors) {  lavaan[[num.xfactors +f ]] <-   paste(fact[num.xfactors +f], "=~")  
+                     for (i in 1:num.y) {
                     if( (y.factors[i,f] !="0")  && (abs(y.factors[i,f]) > cut )) {
+                          lavaan[[num.xfactors +f]] <-  paste0(lavaan[[num.xfactors +f]], ' + ', yvars[i]) 
                            sem[k,1] <- paste(fact[f+num.xfactors],"->",vars[i+num.xvar],sep="")
                            if(is.numeric(y.factors[i,f])) { sem[k,2] <- paste("Fy",f,vars[i+num.xvar],sep="")} else {sem[k,2] <- y.factors[i,f]}
                          k <- k+1 }   #end of if 
@@ -266,14 +276,17 @@ if(!regression) {
   if(!is.null(Phi)) {if (!is.matrix(Phi)) { if(!is.null(fy)) {Phi <- matrix(c(1,0,Phi,1),ncol=2)} else {Phi <- matrix(c(1,Phi,Phi,1),ncol=2)}} 
  
  if(num.xfactors>1) {for (i in 2:num.xfactors) { #first do the correlations within the f set
+
       for (j in 1:(i-1)) {
                  {if((!is.numeric(Phi[i,j] ) && ((Phi[i,j] !="0")||(Phi[j,i] !="0")))||  ((is.numeric(Phi[i,j]) && abs(Phi[i,j]) > cut ))) {
                            
-                          if(Phi[i,j] == Phi[j,i] ) {
+                          if((Phi[i,j] == Phi[j,i] ) & (is.numeric(Phi[i,j]) && abs( Phi[i,j]) > 0)) {
+                         
                                 if(lr) {dia.curve(from=fact.rect[[i]]$right,to=fact.rect[[j]]$right, labels = Phi[i,j],scale=2*(i-j)/num.xfactors)} else {
                                         dia.curve(from=fact.rect[[i]]$top,to=fact.rect[[j]]$top, labels = Phi[i,j],scale=2*(i-j)/num.xfactors)}
                                                      	sem[k,1]  <- paste(fact[i],"<->",fact[j],sep="")
-                                                     	sem[k,2] <-  paste("rF",i,"F",j,sep="")} else {#directed arrows
+                                                     	sem[k,2] <-  paste("rF",i,"F",j,sep="")
+                                                     	 lavaan[[num.xfactors +num.yfactors +1]] <- paste(fact[i], "~~", fact[j])} else {#directed arrows
                                                      	
                                                      	if(Phi[i,j] !="0") { if(lr) {	if(abs(i-j) < 2) {dia.arrow(from=fact.rect[[j]],to=fact.rect[[i]], labels = Phi[i,j],scale=2*(i-j)/num.xfactors)} else {
                                                      	                                                 dia.curved.arrow(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right, labels = Phi[i,j],scale=2*(i-j)/num.xfactors)}
@@ -282,6 +295,7 @@ if(!regression) {
                                                                                                           dia.curved.arrow(from=fact.rect[[j]]$top,to=fact.rect[[i]]$top, labels = Phi[i,j],scale=2*(i-j)/num.xfactors)}
                                                                                        }	
                                                       		sem[k,1]  <- paste(fact[j]," ->",fact[i],sep="")
+                                                      		lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j], "~", fact[i])
                                                       		sem[k,2] <-  paste("rF",j,"F",i,sep="")} else {
                                                       		
                                                       		 if(lr) {	if(abs(i-j) < 2) {dia.arrow(from=fact.rect[[i]],to=fact.rect[[j]], labels = Phi[j,i],scale=2*(i-j)/num.xfactors)} else {
@@ -292,14 +306,17 @@ if(!regression) {
                                                                                        }	
                                                       		
                                                       
-                                                      sem[k,1]  <- paste(fact[i],"<-",fact[j],sep="")
-                                                      sem[k,2] <-  paste("rF",i,"F",j,sep="")} 
+                                                sem[k,1]  <- paste(fact[i],"<-",fact[j],sep="")
+                                                lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j], "~", fact[i])
+                                                sem[k,2] <-  paste("rF",i,"F",j,sep="")
+                                                       } 
                                                      	} } else { 
-                           
-                            sem[k,1]  <- paste(fact[i],"<->",fact[j],sep="")
+                             k <- k -1 #because we are skipping this one                        	
+                           # lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j], "~~", fact[i])
+                           # sem[k,1]  <- paste(fact[i],"<->",fact[j],sep="")
                             
-                             if (is.numeric(Phi[i,j])) {sem[k,2] <-  paste("rF",i,"F",j,sep="")} else {sem[k,2] <- Phi[i,j] } }
-                            
+                            # if (is.numeric(Phi[i,j])) {sem[k,2] <-  paste("rF",i,"F",j,sep="")} else {sem[k,2] <- Phi[i,j] } }
+                            }
                                    
                             k <- k + 1} }
                             
@@ -311,11 +328,14 @@ if(!regression) {
                       		if((!is.numeric(Phi[j+num.xfactors,i] ) && (Phi[j+num.xfactors,i] !="0"))||  ((is.numeric(Phi[j+num.xfactors,i]) && abs(Phi[j+num.xfactors,i]) > cut ))) {
                       
                        dia.arrow(from=fact.rect[[i]],to=fact.rect[[j+num.xfactors]],Phi[j+num.xfactors,i])
-                       sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="") } else {
-                      
-                       sem[k,1]  <- paste(fact[i],"<->",fact[j+num.xfactors],sep="")}
+                       sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="")
+                      lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[i], "~", fact[j+num.xfactors]) } else {
+                       k <- k-1
+                      # sem[k,1]  <- paste(fact[i],"<->",fact[j+num.xfactors],sep="")
+                       # lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j+num.xfactors], "~~", fact[i])}
                        
-                        if (is.numeric(Phi[j+num.xfactors,i])) {sem[k,2] <-  paste("rX",i,"Y",j,sep="")} else {sem[k,2] <- Phi[j+num.xfactors,i] } 
+                       # if (is.numeric(Phi[j+num.xfactors,i])) {sem[k,2] <-  paste("rX",i,"Y",j,sep="")} else {sem[k,2] <- Phi[j+num.xfactors,i] } 
+                       }
                        k <- k + 1 }
                         } }
                } }  

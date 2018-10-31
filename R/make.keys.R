@@ -23,18 +23,17 @@ return(keys)}
 
 
 
-#Basically, the opposite of make.keys
-#Takes a keys matrix and converts it to a list structure (with negative signs appropriately placed)   
-#9/10/16
-   "keys2list" <- function(keys,sign=TRUE) {
-      keys.list <- list()
-      nkeys <- ncol(keys)
-      for (i in 1:nkeys) {temp <- rownames(keys)[which(keys[,i] < 0)]
-     if(sign && (length(temp)  >0)) temp <- paste0("-",temp)
-      keys.list[[i]] <- c(rownames(keys)[which(keys[,i] > 0)],temp) 
-      } 
-      names(keys.list) <- colnames(keys)
-      keys.list}
+
+# 
+#    "keys2list" <- function(keys,sign=TRUE) {
+#       keys.list <- list()
+#       nkeys <- ncol(keys)
+#       for (i in 1:nkeys) {temp <- rownames(keys)[which(keys[,i] < 0)]
+#      if(sign && (length(temp)  >0)) temp <- paste0("-",temp)
+#       keys.list[[i]] <- c(rownames(keys)[which(keys[,i] > 0)],temp) 
+#       } 
+#       names(keys.list) <- colnames(keys)
+#       keys.list}
       
 #Added July 9, 2017
 "selectFromKeys" <- function(keys.list) {
@@ -42,3 +41,23 @@ return(keys)}
       select <- select[!duplicated(select)]
       return(select) 
       }
+
+#Basically, the opposite of make.keys
+#Takes a keys matrix and converts it to a list structure (with negative signs appropriately placed)   
+#9/10/16
+#revised 6/10/18 to not change the order of keys
+
+   "keys2list" <- function(keys,sign=TRUE) {
+      keys.list <- list()
+      nkeys <- ncol(keys)
+      for (i in 1:nkeys) {temp <- rownames(keys)[which(keys[,i] != 0)]
+      wk <- which(keys[,i] < 0)
+      temp[temp %in% names(wk)] <- paste0("-",temp[temp %in% names(wk)])
+      keys.list[[i]] <- temp
+      
+     #if(sign && (length(temp)  >0)) temp <- paste0("-",temp)
+     # keys.list[[i]] <- c(rownames(keys)[which(keys[,i] > 0)],temp) 
+      } 
+      names(keys.list) <- colnames(keys)
+      keys.list}
+      

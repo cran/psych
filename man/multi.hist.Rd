@@ -10,7 +10,7 @@ May be used for single variables.
 }
 \usage{multi.hist(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",
       dcol=c("black","black"),dlty=c("dashed","dotted"),
-      main="Histogram, Density, and Normal Fit",breaks=21,...)
+      main=NULL,mar=c(2,1,1,1),breaks=21,...)
 histBy(x,var,group,density=TRUE,alpha=.5,breaks=21,col,xlab,
             main="Histograms by group",...) 
 }
@@ -25,7 +25,8 @@ histBy(x,var,group,density=TRUE,alpha=.5,breaks=21,col,xlab,
   \item{bcol}{Color for the bars}
   \item{dcol}{The color(s) for the normal and the density fits. Defaults to black. }
   \item{dlty}{The line type (lty) of the normal and density fits.  (specify the optional graphic parameter lwd to change the line size)}
-  \item{main}{title for each panel}
+  \item{main}{title for each panel will be set to the column name unless specified}
+  \item{mar}{Specify the lower, left, upper and right hand side margin in lines -- set to be tighter than normal default of c(5,4,4,2) + .1 }
   \item{xlab}{Label for the x variable}
   \item{breaks}{The number of breaks in histBy (see hist)}
   \item{alpha}{The degree of transparency of the overlapping bars in histBy}

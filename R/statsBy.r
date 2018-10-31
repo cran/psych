@@ -103,7 +103,7 @@ z1 <- data[,group]
      	 rownames(xvals$within) <- paste0("z",names(xvals$r))
 
              
-             wt <- by(data,z,function(x) count.pairwise(x[-gr]))
+             wt <- by(data,z,function(x) pairwiseCount(x[-gr]))
              lower.wt <- t(matrix(unlist(lapply(wt,function(x) x[lower.tri(x)])    )  ,nrow=nvars*(nvars-1)/2))
              lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))
              pool  <- colSums( lower.wt * xvals$within,na.rm=TRUE)

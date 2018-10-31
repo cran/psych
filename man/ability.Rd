@@ -35,7 +35,7 @@ In addition, the data set is a good example of doing item analysis to examine th
 }
 \source{ The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{https://sapa-project.org}.  The data were collected with David Condon from 8/08/12 to 8/31/12.
 
-Similar data are available from the International Cognitive Ability Resource at \url{https://icar-project.com}.
+Similar data are available from the International Cognitive Ability Resource at \url{https://icar-project.org}.
 } 
 
 \references{Revelle, William, Wilt, Joshua,  and Rosenthal, Allen (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, Alexandra  and Matthews, Gerald   and Szymura, Blazej (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
@@ -44,6 +44,11 @@ Condon, David and Revelle, William, (2014) The International Cognitive Ability R
 }
 \examples{
 data(ability)
+keys <- list(ICAR16=colnames(ability),reasoning =  cs(reason.4,reason.16,reason.17,reason.19),
+  letters=cs(letter.7, letter.33,letter.34,letter.58, letter.7), 
+  matrix=cs(matrix.45,matrix.46,matrix.47,matrix.55), 
+  rotate=cs(rotate.3,rotate.4,rotate.6,rotate.8))
+scoreOverlap(keys,ability)
 #not run
 # ability.irt <- irt.fa(ability)
 # ability.scores <- score.irt(ability.irt,ability)

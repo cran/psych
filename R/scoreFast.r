@@ -1,9 +1,22 @@
 #created 7/12/16 
 #just score items without a lot of stats
-#basically scoreItems with all  the stats removed
+#basically scoreItems with all  the stats removed\
+#Parallelized July 28, 2018 and report the number of responses/scale
 "scoreFast"  <-
- function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="none",delete=TRUE,  min=NULL,max=NULL,digits=2) {
+ function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="none",delete=TRUE,  min=NULL,max=NULL,count.responses=FALSE,digits=2) {
+ 
+ smallFunction <- function(scale,keys) {
+          	pos.item <- items[,which(keys[,scale] > 0)]
+            neg.item <- items[,which(keys[,scale] < 0)]
+          	neg.item <- max + min - neg.item
+           	sub.item <- cbind(pos.item,neg.item)
+           	if(count.responses) rs <- rowSums(!is.na(sub.item))
+   if(totals) { scores <- rowSums(sub.item,na.rm=TRUE)} else {scores <- rowMeans(sub.item,na.rm=TRUE) } 
+    if(count.responses) {return(c(scores,rs))} else {return(scores) }
+  }
+  
    cl <- match.call()
+   if(is.data.frame(keys)) stop("I think you reversed keys and items.  I am stopping")
    raw.data <- TRUE
    if(impute == FALSE)  impute <- "none"
    if(is.list(keys)) {select <- sub("-","",unlist(keys))
@@ -12,6 +25,7 @@
         select <- selectFromKeyslist(colnames(items),keys)
       select <- select[!duplicated(select)]}
       items <- items[,select,drop=FALSE]
+      keynames <- colnames(keys)
       keys <- make.keys(items,keys)   #added 9/9/16 
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
@@ -56,41 +70,89 @@
        		item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
         	items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
         	 scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
-        	#C <- cov(items,use="pairwise")
-         # cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
-         # cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
+        
         }  else { #handle the case of missing data without imputation
            scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
-         #  totals <- FALSE  #just in case it was not already false
-           #we could try to parallelize this next loop
-           for (scale in 1:n.keys) {
-           	pos.item <- items[,which(keys[,scale] > 0)]
-          	neg.item <- items[,which(keys[,scale] < 0)]
-          	neg.item <- max + min - neg.item
-           	sub.item <- cbind(pos.item,neg.item)
-           if(totals) { scores[,scale] <- rowSums(sub.item,na.rm=TRUE)} else {scores[,scale] <- rowMeans(sub.item,na.rm=TRUE) }  #fixed August 17  reported by Joel Schneider
-          	 rs <- rowSums(!is.na(sub.item))
-          	 num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
-          # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
-           		} # end of scale loop
-           # we now need to treat the data as if we had done correlations at input
-           # C <- cov(items,use="pairwise")
-            #cov.scales <- t(keys) %*% C %*% keys
-           # cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)  # sum(C^2)  for finding ase
-          #  raw.data <- FALSE
-         }  #end of treating missing without imputation
 
-
-             
-    slabels <- colnames(keys)
-    if (is.null(slabels)) {
-    	if (totals) {slabels<- paste("S",1:n.keys,sep="")} else {
-    	             slabels <- paste("A",1:n.keys,sep="")} }
-   
-   colnames(scores) <- slabels
+   scoresList <- mcmapply(smallFunction,c(1:n.keys),MoreArgs=list(keys=keys))  #the parallelized function
     
+    }      
+    
+    if (is.null(ilabels)) {
+    	if (totals) {ilabels<- paste("S",1:n.keys,sep="")} else {
+    	             ilabels <- paste("A",1:n.keys,sep="")} }
+  
    
-  results <- scores
+ if(count.responses) { scores <- scoresList[1:n.subjects,]
+   responses <- scoresList[(n.subjects+1):nrow(scoresList),]
+   colnames(scores) <- ilabels
+   colnames(responses) <- ilabels
+    results <- list(scores=scores,responses = responses)} else {
+    scores <- scoresList
+     colnames(scores) <- ilabels
+     results <- scores}
    #class(results) <- c("psych", "score.items")
     return(results)
  }
+
+#created July 27, 2018
+"scoreVeryFast" <- function(keys,items,totals=FALSE, min=NULL,max=NULL,count.responses=FALSE) {  #just scores by addition, no imputation, nothing fancy
+if(is.data.frame(keys)) stop("I think you reversed keys and items.  I am stopping")
+#use this for parallelism 
+smallFunction <- function(scale,keys) {
+          	pos.item <- items[,which(keys[,scale] > 0)]
+            neg.item <- items[,which(keys[,scale] < 0)]
+          	neg.item <- max + min - neg.item
+           	sub.item <- cbind(pos.item,neg.item)
+           if(count.responses) rs <- rowSums(!is.na(sub.item))
+   if(totals) { scores <- rowSums(sub.item,na.rm=TRUE)} else {scores <- rowMeans(sub.item,na.rm=TRUE) } 
+    if(count.responses) {return(c(scores,rs))} else {return(scores) }
+  }
+  
+ if(is.list(keys)) {select <- sub("-","",unlist(keys))
+   select <- select[!duplicated(select)] } else {
+      keys <- keys2list(keys)
+     select <- selectFromKeyslist(colnames(items),keys)
+      select <- select[!duplicated(select)]}
+      items <- items[,select,drop=FALSE]
+      n.subjects <- NROW(items)
+      keys <- make.keys(items,keys)   #added 9/9/16 
+   keys <- as.matrix(keys)   #just in case they were not matrices to start with
+    n.keys <- dim(keys)[2]
+    n.items <- dim(keys)[1]
+     abskeys <- abs(keys)
+     keynames <- colnames(keys)
+    if(is.null(keynames)) {if (totals) {keynames<- paste("S",1:n.keys,sep="")} else {
+    	             keynames <- paste("A",1:n.keys,sep="")} }
+    	             
+   num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
+
+
+    n.subjects <- dim(items)[1]
+    
+   items <- as.matrix(items)
+   scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
+  
+    if (is.null(min)) {min <- min(items,na.rm=TRUE)}
+    if (is.null(max)) {max <- max(items,na.rm=TRUE)}
+
+     #use mapply for debugging, mcmapply for parallel processing
+   #items are global and not passed
+    scoresList <- mcmapply(smallFunction,c(1:n.keys),MoreArgs=list(keys=keys))  #the parallelized function
+   
+    if(count.responses) { scores <- scoresList[1:n.subjects,]
+    responses <- scoresList[(n.subjects+1):nrow(scoresList),]
+    
+   colnames(scores) <- keynames
+   colnames(responses) <- keynames
+    results <- list(scores=scores,responses = responses)} else {
+    
+     scores <- scoresList
+     colnames(scores) <- keynames
+     results <- scores}
+  
+    return(results)
+   }
+
+ 
+

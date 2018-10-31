@@ -3,10 +3,11 @@
 \alias{fa.parallel.poly}
 \alias{plot.poly.parallel}
 \title{Scree plots of data or correlation matrix compared to random ``parallel" matrices }
-\description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original. fa.parallel.poly does this for tetrachoric or polychoric analyses.
+\description{One way to determine the number of factors or components in a data matrix or a correlation matrix is to examine the ``scree" plot of the successive eigenvalues.  Sharp breaks in the plot suggest the appropriate number of components or factors to extract.  ``Parallel" analyis is an alternative technique that compares the scree of factors of the observed data with that of a random data matrix of the same size as the original. This may be done for continuous , dichotomous, or polytomous data using Pearson, tetrachoric or polychoric correlations.
 }
 \usage{
-fa.parallel(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",
+fa.parallel(x,n.obs=NULL,fm="minres",fa="both",nfactors=1, 
+main="Parallel Analysis Scree Plots",
 n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
 sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
@@ -19,6 +20,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
   \item{n.obs}{n.obs=0 implies a data matrix/data.frame.  Otherwise, how many cases were used to find the correlations. }
   \item{fm}{What factor method to use. (minres, ml, uls, wls, gls, pa) See  \code{\link{fa}} for details.}
  \item{fa}{show the eigen values for a principal components (fa="pc") or a principal axis factor analysis (fa="fa") or both principal components and principal factors (fa="both")}
+ \item{nfactors}{The number of factors to extract when estimating the eigen values. Defaults to 1, which was the prior value used.}
  \item{main}{ a title for the analysis }
  \item{n.iter}{Number of simulated analyses to perform}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
@@ -54,9 +56,13 @@ By default, fa.parallel estimates the communalities based upon a one factor minr
 
 For comparability with other algorithms (e.g, the paran function in the paran package), setting smc=TRUE will use smcs as estimates of communalities. This will tend towards identifying more factors than the default option.
 
+Yet another option (suggested by Florian Scharf) is to estimate the eigen values based upon a particular factor model (e.g., specify nfactors > 1).   
+
  Printing the results will show the eigen values of the original data that are greater than simulated values.
  
  A sad observation about parallel analysis is that it is sensitive to sample size.  That is, for large data sets, the eigen values of random data are very close to 1.  This will lead to different estimates of the number of factors as a function of sample size.  Consider factor structure of the bfi data set (the first 25 items are meant to represent a five factor model).  For samples of 200 or less, parallel analysis suggests 5 factors, but for 1000 or more, six factors and components are indicated.  This is not due to an instability of the eigen values of the real data, but rather the closer approximation to 1 of the random data as n increases.
+ 
+ Although with nfactors=1, 6 factors are suggested, when specifying nfactors =5, parallel analysis of the bfi suggests 12 factors should be extracted!
  
  When simulating dichotomous data in fa.parallel.poly, the simulated data have the same difficulties as the original data.  This functionally means that the simulated and the resampled results will be very similar.  Note that fa.parallel.poly has functionally been replaced with fa.parallel with the cor="poly" option.
  
@@ -82,6 +88,8 @@ For comparability with other algorithms (e.g, the paran function in the paran pa
 
 \note{Although by default the test is applied to the 95th percentile eigen values, this can be modified by setting the quant parameter to any particular quantile. The actual simulated data are also returned (invisibly) in the value object.  Thus, it is possible to do descriptive statistics on those to choose a preferred comparison.  See the last example (not run)
    The simulated and resampled data tend to be very similar, so for a slightly cleaner figure, set sim=FALSE.  
+   
+For relatively small samples with dichotomous data and  cor="tet" if some cells are empty, or if the resampled matrices are not positive semi-definite, warnings are issued. this leads to serious problems if using multi.cores (the default if using a Mac). The solution seems to be to not use multi.cores  (e.g., options(mc.cores =1)    )
 
   }
 \references{

@@ -286,7 +286,7 @@ conf.level <- alpha
  
    	  if((nfactors >1) && (dim(covar)[2] >1  )) {
      sd.inv <- diag(1/sqrt(diag(covar)))
-     cluster.correl <- sd.inv %*% covar  %*% sd.inv
+     cluster.correl <- sd.inv %*% covar  %*% sd.inv   #this is just cov2cor(covar)
    	 valid <- t(f) %*% keys %*% sd.inv
    	 result$valid <- diag(valid)
    	 result$score.cor <- cluster.correl} else {sd.inv <- 1/sqrt(covar)

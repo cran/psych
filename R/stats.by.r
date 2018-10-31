@@ -192,7 +192,7 @@ function (x,y,z,labels=NULL,main=NULL,xlim=NULL,ylim= NULL,xlab=NULL,ylab=NULL,p
 #               xvals$r <- r
 #               lower <- lapply(r,function(x) x[lower.tri(x)])
 #              xvals$within <- t(matrix(unlist(lower),nrow=nvars*(nvars-1)/2))
-#              wt <- by(data,z,function(x) count.pairwise(x[-1]))
+#              wt <- by(data,z,function(x) pairwiseCount(x[-1]))
 #              lower.wt <- t(matrix(unlist(lapply(wt,function(x) x[lower.tri(x)])    )  ,nrow=nvars*(nvars-1)/2))
 #              lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))
 #              pool  <- colSums( lower.wt * xvals$within,na.rm=TRUE)

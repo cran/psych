@@ -3,8 +3,10 @@
 \alias{omegaSem}
 \alias{omegaFromSem}
 \alias{omegah}
+\alias{omegaDirect}
+\alias{directSl}
 \title{  Calculate McDonald's  omega estimates of general and total factor saturation }
-\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory factor analysis using the sem or lavaan packages.  This is done by omegaSem and omegaFromSem. omegaFromSem will convert appropriate sem/lavaan objects to find omega
+\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory (bi-factor) analysis using the sem or lavaan packages.  This is done by omegaSem and omegaFromSem. omegaFromSem will convert appropriate sem/lavaan objects to find omega.  Yet another option is to do the direct Schmid-Leiman of Waller.ing
 }
 \usage{
 omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,
@@ -19,8 +21,12 @@ digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
    n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) 
 
 omegaFromSem(fit,m=NULL,flip=TRUE,plot=TRUE)
+omegaDirect(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3,
+   plot=TRUE,main="Direct Schmid Leiman")
+directSl(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3)
 }
-%- maybe also 'usage' for other objects documented here.
+
+
 \arguments{
   \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi) is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
@@ -33,6 +39,8 @@ omegaFromSem(fit,m=NULL,flip=TRUE,plot=TRUE)
   \item{p}{probability of two tailed conference boundaries}
   \item{digits}{if specified, round the output to digits}
   \item{title}{Title for this analysis}
+  \item{main}{main for this analysis  (directSl)}
+  \item{cut}{Loadings greater than cut are used in directSl}
   \item{sl}{If plotting the results, should the Schmid Leiman solution be shown or should the hierarchical solution be shown? (default sl=TRUE)}
   \item{labels}{If plotting, what labels should be applied to the variables? If not specified, will default to the column names.}
   \item{plot}{plot=TRUE (default) calls omega.diagram, plot =FALSE does not.  If Rgraphviz is available, then \code{\link{omega.graph}} may be used separately.}
@@ -58,19 +66,27 @@ McDonald has proposed coefficient omega_hierarchical (\eqn{\omega_h}) as an esti
 
 One way to find \eqn{\omega_h}{omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}{omega_h}.  Here we present code to do that.  
 
-\eqn{\omega_h}{omega_h} differs as a function of how the factors are estimated.  Four options are available, three use the \code{\link{fa}} function but with different factoring methods: the default does a minres factor solution, fm="pa"  does a principle axes factor analysis  fm="mle" does a maximum likelihood solution; fm="pc" does a principal components analysis using (\link{principal}).  
+\eqn{\omega_h}{omega_h} differs as a function of how the factors are estimated.  Four options are available, three use the \code{\link{fa}} function but with different factoring methods: the default does a minres factor solution, fm="pa"  does a principle axes factor analysis  fm="mle" does a maximum likelihood solution; fm="pc" does a principal components analysis using (\code{\link{principal}}).  
 
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{scoreItems}} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
 
 
-\eqn{\beta}{beta}, an alternative to \eqn{\omega_h}, is defined as the worst split half reliability (Revelle, 1979).  It can be estimated by using \link{ICLUST} (a hierarchical clustering algorithm originally developed for main frames and written in Fortran and that is now part of the psych package.  (For a very complimentary review of why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005). 
+\eqn{\beta}{beta}, an alternative to \eqn{\omega_h}, is defined as the worst split half 
+reliability (Revelle, 1979).  It can be estimated by using \code{\link{ICLUST}} (a 
+hierarchical clustering algorithm originally developed for main frames and written in 
+Fortran and that is now part of the psych package.  (For a very complimentary review of 
+why the ICLUST algorithm is useful in scale construction, see Cooksey and Soutar, 2005)). 
+
+
+
 
 The \code{\link{omega}} function uses exploratory factor analysis to estimate the \eqn{\omega_h} coefficient.  It is important to remember that  ``A recommendation that should be heeded, regardless of the method chosen to estimate \eqn{\omega_h}, is to always examine the pattern of the estimated general factor loadings prior to estimating \eqn{\omega_h}. Such an examination constitutes an informal test of the assumption that there is a latent variable common to all of the scale's indicators that can be conducted even in the context of EFA. If the loadings were salient for only a relatively small subset of the indicators, this would suggest that there is no true general factor underlying the covariance matrix. Just such an informal assumption test would have afforded a great deal of protection against the possibility of misinterpreting the misleading \eqn{\omega_h} estimates occasionally produced in the simulations reported here." (Zinbarg et al., 2006, p 137).
 
 A simple demonstration of the problem of an omega estimate reflecting just one of two group factors can be found in the last example.  
 
 Diagnostic statistics that reflect the quality of the omega solution include a comparison of the relative size of the g factor eigen value to the other eigen values, the percent of the common variance for each item that is general factor variance (p2), the mean of p2, and the standard deviation of p2.  Further diagnostics can be done by describing (\link{describe}) the $schmid$sl results.
+
 
 Although omega_h is uniquely defined only for cases where 3 or more subfactors are extracted, it is sometimes desired to have a two factor solution.  By default this is done by forcing the schmid extraction to treat the two subfactors as having equal loadings.  
 
@@ -79,6 +95,8 @@ There are three possible options for this condition: setting the general factor 
 Although obviously not meaningful for a 1 factor solution, it is of course possible to find the sum of the loadings on the first (and only) factor, square them, and compare them to the overall matrix variance.  This is done, with appropriate complaints.
 
 In addition to \eqn{\omega_h}, another of McDonald's coefficients is \eqn{\omega_t}.  This is an estimate of the total reliability of a test. 
+
+
 
 McDonald's \eqn{\omega_t}, which is similar to Guttman's \eqn{\lambda_6}, \code{\link{guttman}} but uses the estimates of uniqueness (\eqn{u^2}) from factor analysis to find \eqn{e_j^2}. This is based on a decomposition of the variance of a test score, \eqn{V_x}  into four parts: that due to a general factor, \eqn{\vec{g}}, that due to a set of group factors, \eqn{\vec{f}},  (factors common to some but not all of the items), specific factors, \eqn{\vec{s}} unique to each item, and \eqn{\vec{e}}, random error.  (Because specific variance can not be distinguished from random error unless the test is given at least twice,  some combine these both into error). 
 
@@ -103,9 +121,11 @@ Another estimate reported is the omega for an infinite length test with a struct
 
 Following suggestions by Steve Reise, the Explained Common Variance (ECV) is also reported.  This is the ratio of the general factor eigen value to the sum of all of the eigen values.  As such, it is a better indicator of unidimensionality than of the amount of test variance accounted for by a general factor.
 
+
 The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.  
 
 \code{\link{omega}} is an exploratory factor analysis function that uses a Schmid-Leiman transformation.  \code{\link{omegaSem}} first calls \code{\link{omega}} and then takes the Schmid-Leiman solution, converts this to a confirmatory sem model and then calls the sem package to conduct a confirmatory model.  \eqn{\omega_h} is then calculated from the CFA output. Although for well behaved problems, the efa and cfa solutions will be practically identical, the CFA solution will not always agree with the EFA solution. In particular, the estimated   \eqn{R^2} will sometimes exceed 1. (An example of this is the Harman 24 cognitive abilities problem.)
+
 
 In addition, not all EFA solutions will produce workable CFA solutions.  Model misspecifications will lead to very strange CFA estimates. 
 
@@ -116,11 +136,15 @@ It is also possible to give \code{\link{omega}} a factor pattern matrix and the 
  
 The notion of omega may be applied to the individual factors as well as the overall test. A typical use of omega is to identify subscales of a total inventory.  Some of that variability is due to the general factor of the inventory, some to the specific variance of each subscale.  Thus, we can find a number of different omega estimates:   what percentage of the variance of the items identified with each subfactor is actually due to the general factor.  What variance is common but unique to the subfactor, and what is the total reliable variance of each subfactor.   These results are reported in omega.group object and in the last few lines of the normal output.
 
-The summary of the omega object is a reduced set of the most useful output. 
+Finally, and still be tested, is \code{\link{omegaDirect}} adapted from Waller (2017).  This is a direct rotation to a Schmid-Leiman  like solution without doing the hierarchical factoring (\code{\link{directSl}}).  This rotation is then interpreted in terms of omega.  It is included here to allow for comparisons with the alternative procedures \code{\link{omega}} and \code{\link{omegaSem}}.  Preliminary analyses suggests that it produces inappropriate solutions for the case where there is no general factor.
 
+Moral: Finding omega_h is tricky and one should probably compare \code{\link{omega}}, \code{\link{omegaSem}},  \code{\link{omegaDirect}} and even \code{\link{iclust}} solutions to understand the differences.
+
+The summary of the omega object is a reduced set of the most useful output. 
 
 The various objects returned from omega include:
 }
+
 \value{
  
   \item{omega hierarchical}{The \eqn{\omega_h} coefficient}
@@ -137,11 +161,14 @@ The various objects returned from omega include:
   \item{model}{a list of two elements, one suitable to give  to the sem function for structure equation models, the other, to give to the lavaan package. }
   \item{sem}{The output from a sem analysis}
   \item{omega.group}{The summary statistics for the omega total, omega hierarchical (general) and omega within each group.}
-  \item{scores}{Factor score estimates are found for the Schmid-Leiman solution.  To get scores for the hierarchical model see the note.} 
+  \item{scores}{Factor score estimates are found for the Schmid-Leiman solution.  To get 
+  scores for the hierarchical model see the note.} 
   \item{various fit statistics}{various fit statistics, see output}
   \item{OmegaSem}{ is an object that contains the fits for the OmegaSem output.}
+  \item{loadings}{The direct SL rotated object (from omegaDirect)}
+  \item{orth.f}{The original, unrotated solution from omegaDirect}
+  \item{Target}{The cluster based target for rotation in directSl}
 }
-
 
 \references{ \url{https://personality-project.org/r/r.omega.html} \cr
 
@@ -150,6 +177,8 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{https://personality-project.org/revelle/publications/rz09.pdf}
+
+Waller, N. G. (2017) Direct {Schmid-Leiman} Transformations and Rank-Deficient Loadings Matrices.  Psychometrika.  DOI: 10.1007/s11336-017-9599-0
 
  Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
 
@@ -260,6 +289,9 @@ omega(ability.cov$cov)
 #              F3=~  + V7 + V8 + V9 '  
 #lav.jen <- cfa(lav.mod,sample.cov=jensen,sample.nobs=500,orthogonal=TRUE,std.lv=TRUE)
 # omegaFromSem(lav.jen,jensen)
+#the directSl solution
+#direct.jen <- directSl(jen)
+#direct.jen 
 
 #try a one factor solution -- this is not recommended, but sometimes done
 #it will just give omega_total

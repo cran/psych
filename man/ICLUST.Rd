@@ -30,7 +30,7 @@ weighted=TRUE,cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{r.mat}{ A correlation matrix or data matrix/data.frame. (If r.mat is not square i.e, a correlation matrix, the data are correlated using pairwise deletion. }
+  \item{r.mat}{ A correlation matrix or data matrix/data.frame. (If r.mat is not square i.e, a correlation matrix, the data are correlated using pairwise deletion for Pearson correlations. }
   \item{nclusters}{Extract clusters until nclusters remain (default will extract until the other criteria are met or 1 cluster, whichever happens first). See the discussion below for alternative techniques for specifying the number of clusters. }
   \item{alpha}{ Apply the increase in alpha criterion  (0) never or for (1) the smaller, 2) the average, or 3) the greater of the separate alphas. (default = 3) }
   \item{beta}{  Apply the increase in beta criterion (0) never or for (1) the smaller, 2) the average, or 3) the greater of the separate betas. (default =1) }
@@ -136,6 +136,8 @@ Revelle, W. (in prep) An introduction to psychometric theory with applications i
 To view the cluster structure more closely, it is possible to save the graphic output as a pdf and then magnify this using a pdf viewer.  This is useful when clustering a large number of variables.
 
 In order to sort the clusters by cluster loadings, use \code{\link{iclust.sort}}.
+
+By default, the correlations used for the similarity matrix  are Pearson correlations. It is of coure possible to \code{\link{tetrachoric}} or \code{\link{polychoric}} to form the correlation matrix for later analysis. 
 }
 \seealso{ \code{\link{iclust.sort}}, \code{\link{ICLUST.graph}}, \code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{omega}} }
 

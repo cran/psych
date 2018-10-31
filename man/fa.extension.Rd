@@ -110,7 +110,11 @@ fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9
  Ro <- cor(five.factor$observed[,ss])
  Re <- cor(five.factor$observed[,ss],five.factor$observed[,-ss])
  om5 <-omega(Ro,5)   #the omega analysis
- fa.extension(Re,om5) #the extension analysis
+ om.extend <- fa.extension(Re,om5) #the extension analysis
+ om.extend #show it
+ #now, include it in an omega diagram
+ combined.om <- rbind(om5$schmid$sl[,1:ncol(om.extend$loadings)],om.extend$loadings)
+ omega.diagram(combined.om,main="Extended Omega") 
  
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

@@ -2,7 +2,7 @@
 \alias{msqR}
 \docType{data}
 \title{75 mood items from the Motivational State Questionnaire for 3032 unique participants}
-\description{Emotions may be described either as discrete emotions or in dimensional terms.  The Motivational State Questionnaire (MSQ) was developed to study emotions in laboratory and field settings.  The data can be well described in terms of a two dimensional solution of energy vs tiredness and tension versus calmness.  Additional items include what time of day the data were collected and a few personality questionnaire scores. 3082 unique participants took the MSQ  at least once, 2753 at least twice, 446 three times, and 181 four times.  The 3032 also took the \code{\link{sai}} state anxiety inventory at the same time.  
+\description{Emotions may be described either as discrete emotions or in dimensional terms.  The Motivational State Questionnaire (MSQ) was developed to study emotions in laboratory and field settings.  The data can be well described in terms of a two dimensional solution of energy vs tiredness and tension versus calmness.  Additional items include what time of day the data were collected and a few personality questionnaire scores. 3032 unique participants took the MSQ  at least once, 2753 at least twice, 446 three times, and 181 four times.  The 3032 participants also took the \code{\link{sai}} state anxiety inventory at the same time.  
 }
 
 \usage{data("msqR")}
@@ -134,7 +134,7 @@ Activated NA: jittery, anxious, nervous, fearful, distressed.
 
 Keys for these separate scales are shown in the examples.  
 
-In addition to the MSQ, there are 5 scales from the Eysenck Personality Inventory (Extraversion, Impulsivity, Sociability, Neuroticism, Lie).  The Imp and Soc are subsets of the the total extraversion scale. 
+In addition to the MSQ, there are 5 scales from the Eysenck Personality Inventory (Extraversion, Impulsivity, Sociability, Neuroticism, Lie).  The Imp and Soc are subsets of the the total extraversion scale. This information is in the \code{\link{msq}} data set.
 
 }
 \source{Data collected at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
@@ -152,7 +152,7 @@ Watson,D., Clark,  L.A.  and Tellegen, A. (1988)  Development and validation of 
 
 }	
 
-\seealso{\code{\link{affect}} for an example of the use of some of these adjectives in a mood manipulation study.
+\seealso{\code{\link{msq}} for 3896 participants with scores on five scales of the EPI.  \code{\link{affect}} for an example of the use of some of these adjectives in a mood manipulation study.
 
 \code{\link{make.keys}}, \code{\link{scoreItems}} and \code{\link{scoreOverlap}} for instructions on how to score multiple scales with and without item overlap. Also see  \code{\link{fa}} and \code{\link{fa.extension}} for instructions on how to do factor analyses or factor extension.
 

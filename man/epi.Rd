@@ -78,6 +78,8 @@ data(epiR)}
 \details{
 The original data were collected in a group testing framework for screening participants for subsequent studies. The participants were enrolled in an introductory psychology class between Fall, 1991 and Spring, 1995. 
 
+The actual items may be found in the \code{\link{epi.dictionary}}.   
+
 The structure of the E scale has been shown by Rocklin and Revelle (1981) to have two subcomponents, Impulsivity and Sociability. These were subsequently used by Revelle, Humphreys, Simon and Gilliland to examine the relationship between personality, caffeine induced arousal, and cognitive performance. 
 
 The epiR data include the original group testing data and matched data for 474 participants collected several weeks later.  This is useful for showing that internal consistency estimates (e.g. \code{\link{alpha}} or \code{\link{omega}}) can be low even though the test is stable across time.  For more demonstrations of the distinction between immediate internal consistency and delayed test-retest reliability see the \code{\link{msqR}} and \code{\link{sai}} data sets and \code{\link{testRetest}}.

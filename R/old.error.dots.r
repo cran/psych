@@ -9,7 +9,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
    min.n = NULL,max.labels =40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"), 
     pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), color = par("fg"), 
     gcolor = par("fg"), lcolor = "gray", 
-    xlab = NULL, ylab = NULL,xlim=NULL,add=FALSE, ...) 
+    xlab = NULL, ylab = NULL,xlim=NULL,add=FALSE,order=NULL, ...) 
 {
     opar <- par("mai", "mar", "cex", "yaxs")
     on.exit(par(opar))
@@ -29,7 +29,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
                                               x <- x$mean[,var]
                                               if(!is.null(effect)) {   #convert means to effect sizes compared to a particular group
                                               x <- ( x$mean[,var]  -x$mean[effect,var])/x$sd[effect,var]
-                                            
+                                              browser()
                                               }
                                               if(sd) {se <- x$sd[,var] } else {se <- se/sqrt(n.obs)}
                                               x <- subset(x,n.obs > min.n)
@@ -84,7 +84,7 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
       
      n.var <- length(x)
    # if(!is.null(se) && !sd) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
-    if (sort) { ord <- order(x,decreasing=!decreasing) } else {ord <- n.var:1}   
+    if (sort) { if(is.null(order)) {ord <- order(x,decreasing=!decreasing)} else {ord <- order} } else {ord <- n.var:1}   
     		 x <- x[ord]
    		    se <- se[ord]
    		 
@@ -211,9 +211,8 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
     title(main = main, xlab = xlab, ylab = ylab, ...)
    
     
-    if(!is.null(des)) { 
-     invisible(des)}
-    #report the order if sort 
+ result <- list(des=des,order=ord) 
+     invisible(result)  
 }
 
 

@@ -118,7 +118,7 @@ X2 <- matrix(c("a",0,0,"b"),ncol=2)
 colnames(X2) <- c("X1","X2")
 phi2 <- diag(1,2,2)
 phi2[2,1] <- phi2[1,2] <- "r"
-f3 <- structure.diagram(X2,Phi=phi2,main="an alternative representation")
+f3 <- structure.diagram(X2,Phi=phi2,main="an alternative representation",e.size=.4)
 
 #and yet another one
 X6 <- matrix(c("a","b","c",rep(0,6),"d","e","f"),nrow=6)
@@ -135,12 +135,12 @@ f4 <- structure.diagram(X6,phi21,Y3)
 
 # and finally, a regression model
 X7 <- matrix(c("a","b","c","d","e","f"),nrow=6)
-f5 <- structure.diagram(X7,regression=TRUE)
+f5 <- structure.diagram(X7,regression=TRUE,main = "Regression model")
 
 #and a really messy regession model
 x8 <- c("b1","b2","b3")
 r8 <- matrix(c(1,"r12","r13","r12",1,"r23","r13","r23",1),ncol=3)
-f6<- structure.diagram(x8,Phi=r8,regression=TRUE)
+f6<- structure.diagram(x8,Phi=r8,regression=TRUE,main="Regression model")
 }
 \keyword{multivariate }
 \keyword{hplot }

@@ -64,10 +64,25 @@ return(result)
    rownames(ci) <- names(d)
     return(ci)
      }
+     
+"m2t" <- function(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL ) { 
+     if(!is.null(n) ) { 
+        t <- (m1-m2)/sqrt((s1^2 + s2^2)/(n/2))
+        d <- 2*t/sqrt(n)
+        df <- n-2} else {
+    vp <- ((n1-1) * s1^2 +  (n2-1)* s2^2)/(n1+n2 -2 )
+      t <- (m1-m2)/sqrt(vp*(1/n1 + 1/n2))
+      df=n1 +n2 -2
+        d <- t * sqrt(1/n1 + 1/n2)}
+      p <- 2* pt(t,df,lower.tail=FALSE)
+     return(list(t=t,df=df,p= p,d=d))
+     }
   
  
  "cohen.d.by" <- 
 function(x,group,group2,alpha=.05)  {
+
+
   group1 <- group
   group1name <- group
   group2name <- group2
@@ -108,6 +123,47 @@ function(x,group,group2,alpha=.05)  {
             print(x[[i]]$r,digits=digits)
              }
             }
+            
+
+#Following Algina 2015
+"d.robust" <- function(x,group,trim=.2) {
+
+ valid <- function(x) {
+        sum(!is.na(x))
+    }
+  nvar <- NCOL(x)
+
+  means <- list()
+  vars <- list()
+  Sw <- d.robust <-  rep(NA,nvar)
+  n.by.grp <- list()
+  if(nvar ==1) {
+     means[1] <- by(x,group,function(x) mean(x,trim = trim, na.rm=TRUE))
+     vars[1] <- by(x,group,function(x) winsor.var(x,trim=trim,na.rm=TRUE))
+     } else {  cn <- colnames(x)
+      for (i in 1:nvar) {
+      n.by.grp[[cn[i]]] <-  by(x[,i],x[group],valid)
+       means[[cn[i]]] <- by(x[,i],x[group],function(x) mean(x,trim = trim, na.rm=TRUE))
+       vars[[cn[i]]] <- by(x[,i],x[group],function(x) winsor.var(x,trim = trim, na.rm=TRUE))
+     }
+ }
+mean.by.grp <- matrix(unlist(means),ncol=2,byrow=TRUE)
+vars.by.grp <- matrix(unlist(vars),ncol=2,byrow=TRUE)
+n.by.grp  <- matrix(unlist(n.by.grp),ncol=2,byrow=TRUE)
+rownames(mean.by.grp) <- cn
+rownames(vars.by.grp) <- cn
+colnames(mean.by.grp) <-colnames(vars.by.grp) <- paste0("Grp",1:2)
+for(i in 1:nvar) {
+Sw[i] = sqrt((vars.by.grp[i,1] * (n.by.grp[i,1]-1) + vars.by.grp[i,2] * (n.by.grp[i,2]-1))/(n.by.grp[i,1] + n.by.grp[i,2]-2))
+d.robust[i] <- .642 * (mean.by.grp[i,2] - mean.by.grp[i,1])/Sw[i]
+names(d.robust) <- cn
+}
+
+ result <- list(means=mean.by.grp,vars=vars.by.grp,Sw,d.robust) 
+ return(result)   
+}
+
+    
  
 
   

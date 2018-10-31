@@ -2,11 +2,11 @@
 \alias{error.bars.by}
 
 \title{ Plot means and confidence intervals for multiple groups}
-\description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describe.by}}.
+\description{One of the many functions in R to plot means and confidence intervals.  Meant mainly for demonstration purposes for showing the probabilty of replication from multiple samples.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors for each group are calculated using \code{\link{describeBy}}.
 }
 \usage{
-error.bars.by(x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
-xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
+error.bars.by(x,group,data=NULL, by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL, main=NULL, 
+ylim= NULL, xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
 arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
  lty,lines=TRUE, legend=0,pch,density=-10,...)
 }
@@ -14,6 +14,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
 \arguments{
   \item{x}{ A data frame or matrix }
   \item{group}{A grouping variable}
+  \item{data}{If using formula input, the data file must be specified}
   \item{by.var}{A different line for each group (default) or each variable}
   \item{x.cat}{Is the grouping variable categorical (TRUE) or continuous (FALSE}
   \item{ylab}{y label}
@@ -39,7 +40,9 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
   \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
 
 }
-\details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors (adjusted for the t-distribution).  
+\details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors (adjusted for the t-distribution). 
+
+Improved/modified in August, 2018 to allow formula input (see examples) as well as to more properly handle multiple groups. 
 
 This function was originally just a wrapper for \code{\link{error.bars}} but has been written to allow groups to be organized either as the x axis or as separate lines.
 
@@ -55,30 +58,37 @@ To make colors semitransparent, set the density to a negative number.  See the l
 \value{Graphic output showing the means + x\% confidence intervals for each group.  For ci=1.96, and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region.
 
 These confidence regions are based upon normal theory and do not take into account any skew in the variables.  More accurate confidence intervals could be found by resampling.
+
+The results of describeBy are reported invisibly.
 }
 
-\seealso{ See Also as \code{\link{error.crosses}}, \code{\link{error.bars}} }
+\seealso{ See Also as \code{\link{error.crosses}}, \code{\link{error.bars}} and \code{\link{error.dots}} }
 \examples{
 
 data(sat.act)
 #The generic plot of variables by group
-error.bars.by(sat.act[1:4],sat.act$gender,legend=7)
+error.bars.by( SATV + SATQ ~ gender,data=sat.act)  #formula input 
+error.bars.by(SATV + SATQ ~ education + gender, data =sat.act)
+error.bars.by(sat.act[1:4],sat.act$gender,legend=7) #specification of variables
+
 #a bar plot
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"),
     main="SAT V and SAT Q by gender",ylim=c(0,800),colors=c("red","blue"),
     legend=5,v.labels=c("SATV","SATQ"))  #draw a barplot
 #a bar plot of SAT by age -- not recommended, see the next plot
-error.bars.by(sat.act[5:6],sat.act$education,bars=TRUE,xlab="Education",
+error.bars.by(SATV + SATQ ~ education,data=sat.act,bars=TRUE,xlab="Education",
    main="95 percent confidence limits of Sat V and Sat Q", ylim=c(0,800),
-   v.labels=c("SATV","SATQ"),legend=5,colors=c("red","blue") )
+   v.labels=c("SATV","SATQ"),colors=c("red","blue") )
 #a better graph uses points not bars
+#use formulat input
   #plot SAT V and SAT Q by education
-error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education",
+error.bars.by(SATV + SATQ ~ education,data=sat.act,TRUE, xlab="Education",
     legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),
      main="self reported SAT scores by education")
 #make the cats eyes semi-transparent by specifying a negative density
-error.bars.by(sat.act[5:6],sat.act$education,TRUE, xlab="Education",
-    legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),
+
+error.bars.by(SATV + SATQ ~ education,data=sat.act, xlab="Education",
+    legend=5,labels=c("SATV","SATQ"),ylim=c(525,700),
      main="self reported SAT scores by education",density=-10)
 
 #now for a more complicated examples using 25 big 5 items scored into 5 scales

@@ -5,17 +5,19 @@
 \description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
 }
 \usage{
-error.bars(x,stats=NULL, ylab = "Dependent Variable",xlab="Independent Variable",
-  main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05,sd=FALSE, labels = NULL, 
-   pos = NULL,  arrow.len = 0.05,arrow.col="black", add = FALSE,bars=FALSE,within=FALSE,
-   col="blue",density=-10,...)
+error.bars(x,stats=NULL,data=NULL,group=NULL, ylab = "Dependent Variable",
+xlab="Independent Variable", main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05, 
+sd=FALSE, labels = NULL, pos = NULL,  arrow.len = 0.05,arrow.col="black",
+ add = FALSE,bars=FALSE,within=FALSE, col="blue",density=-10,...)
 error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
 \arguments{
-  \item{x}{ A data frame or matrix of raw data }
+  \item{x}{ A data frame or matrix of raw data OR, a formula of the form DV ~ IV }
   \item{t}{A table of frequencies}
   \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe)}
+  \item{data}{If using formula input, specify the object where the data may found}
+  \item{group}{If not null, then do error.bars.by syntax}
   \item{ylab}{y label}
   \item{xlab}{x label}
   \item{main}{title for figure}
@@ -50,6 +52,8 @@ If sd is TRUE, then the error bars will represent one standard deviation from th
 See the last two examples for the  case of plotting data with statistics from another function. 
 
 Alternatively, \code{\link{error.bars.tab}} will take tabulated data and convert to either row, column or overall percentages, and then plot these as percentages with the equivalent standard error (based upon sqrt(pq/N)).
+
+In August, 2018, the functionality of \code{\link{error.bars}} and \code{\link{error.bars.by}} were  combined so that if groups are specified, then the error bars are done by group.  Furthermore, if the x variable is a formula of the form DV ~ IV, then \code{\link{error.bars.by}} is called to do the plotting.
   
 }
 \value{Graphic output showing the means + x% confidence intervals.  For ci=1.96  and normal data, this will be the 95\% confidence region.  For ci=1, the 68\% confidence region. 
@@ -61,7 +65,9 @@ The error.bars.tab function will return (invisibly) the cell means and standard 
 
 \author{William Revelle}
 
-\seealso{ \code{\link{error.crosses}} for two way error bars, \code{\link{error.bars.by}} for error bars for different groups as well as \code{\link{error.dots}} 
+\seealso{ \code{\link{error.crosses}} for two way error bars, \code{\link{error.bars.by}} for error bars for different groups as well as \code{\link{error.dots}}.
+
+The  \code{\link{error.bars.by}} is useful for showing the results of one or two way ANOVAs in that it will display means and CIs for one or more DVs for one or two IVs.
 
 In addition, as pointed out by Jim Lemon on the R-help news group, error bars or confidence intervals may be drawn using 
 \tabular{ll}{
@@ -139,6 +145,13 @@ main="Probability of Arrest varies by treatment")
 #Show the raw  rates 
 error.bars.tab(arrest,raw=TRUE,ylab="Number Arrested",xlab="Control vs Treatment",
 main="Count of Arrest varies by treatment")
+
+#Show  how to use grouping variables
+error.bars(SATV + SATQ ~ gender, data=sat.act) #one grouping variable, formula input
+error.bars(SATV + SATQ ~ education + gender,data=sat.act)#two  grouping variables
+
+
+
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

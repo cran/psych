@@ -219,9 +219,10 @@ return(y)}
  
  #use lookup to take fa/ic output and show the results 
  #modified July 4, 2017 to allow for omega output as well
+ #modified June 23, 2018 to limit to top n items per factor and abs(loading) > cut
 "fa.lookup"  <-
-   function(f,dictionary,digits=2) {
-    f <- fa.sort(f)
+   function(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE) {
+    if(sort) {f <- fa.sort(f)}
    if(length(class(f)) > 1){ value <- class(f)[2] } else {value <- "none"}
    
    switch(value,
@@ -241,24 +242,52 @@ return(y)}
     none = {f <- f
             h2 <- NULL})
     
-    
+    n.fact <- NCOL(f)
 
    ord <- rownames(f)
-     
-   contents <- lookup(rownames(f),dictionary)
+   if(!is.null(dictionary))  { 
+   contents <- lookup(rownames(f),dictionary)} else {message("fa.lookup requires a dictionary, otherwise just use fa.sort")}
    if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits))} else {
    results <- data.frame(round(unclass(f),digits=digits))}
    results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
    rownames(results) <- results[,"Row.names"]
    results <- results[ord,-1]  #now put it back into the correct order
+   if(!is.null(n)) {
+     rn <-rownames(results)
+     results <- cbind(results,rn)
+  	 f2c <- table(apply(abs(results[1:n.fact]),1,which.max))   #which column is the maximum value
+   	 k <- 1
+   	 j <- 1
+   	 for(i in 1:n.fact) {
+   		 results[k:(k+min(n,f2c[i])),] <-  results[j:(j+ min(n,f2c[i])),]
+   		 k <- (k+min(n,f2c[i]))  
+   		 j <- j + f2c[i]   }
+    	results <- results[1:(k-1),]
+    	rownames(results) <- results[,"rn"]
+    	results <- results[,-NCOL(results)]
+    }
+    
+if(cut > 0) {
+   r.max <- apply(abs(results[,1:n.fact]),1,max)
+   results <- results[abs(r.max) > cut,]
+   }
 return(results)}
   
 
 
 
- 
+ #revised 07/07/18 to add the cluster option
   "fa.organize" <- 
-function(fa.results,o=NULL,i=NULL,cn=NULL) {
+function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) {
+  if(echelon & is.null(o) ) {temp <- apply(abs(fa.results$loadings),1,which.max)
+     nf <- ncol(fa.results$loadings)
+     nvar <- nrow(fa.results$loadings)
+  o <- 1:nf
+  k <- 1
+  o[k] <- temp[k]
+  for (ki in 2:nvar) {if (!(temp[ki] %in% o[1:k])) {o[k+1] <- temp[ki]
+    k <- k + 1}  }
+    }
   if(!is.null(o)) {fa.results$loadings <- fa.results$loadings[,o]
        fa.results$Structure <- fa.results$Structure[,o]
        fa.results$weights <- fa.results$weights[,o]

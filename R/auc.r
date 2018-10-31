@@ -27,15 +27,15 @@ if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
     t <- t / sum(t)
    rs <- rowSums(t)
    cs <- colSums(t)
-  p <- (t)/rs
+  p <- (t)/rs    #this has converted everything to conditional probabilities
   
  
   Sensitivity <- p[1,1]   #Sensitivity  VP
   Specificity <- p[2,2]    #VN
-  FP <- 1 -  Specificity
+  FP <- 1 -  Specificity  #really? Yes, because we are talking conditional probabilities  
   PD <- rowSums(t)
   p1 <- p
-  FN <- 1- Specificity
+  FN <- 1- Specificity   #really? Yes because it is conditional
   Accuracy <- Sensitivity *PD[1] + Specificity * (1-PD[1])
   phi <- phi(t)
  

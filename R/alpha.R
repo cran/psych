@@ -57,16 +57,21 @@
          #flip items if needed and wanted
          #if(check.keys && is.null(keys)) {
             p1 <- principal(x,scores=FALSE)
+            keys <- rep(1,nvar)
                if(any(p1$loadings < 0)) {if (check.keys) {if(warnings) warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
-                    keys <- 1- 2* (p1$loadings < 0 ) } else {
+                    keys <- 1- 2* (p1$loadings < 0)
+                      } else {
                        if(is.null(keys) && warnings ) {warning("Some items were negatively correlated with the total scale and probably \nshould be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
                        if(warnings) cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the total scale and \nprobably should be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
                         }} 
             }  #keys is now a vector of 1s and -1s
+           names(keys) <- colnames(x)
            # }
             
-         if(is.null(keys)) {keys <- rep(1,nvar)} else {  
+         if(is.null(keys)) {keys <- rep(1,nvar)
+                 names(keys) <- colnames(x)} else {  
          			keys<- as.vector(keys) 
+         	        names(keys) <- colnames(x)
          			if(length(keys) < nvar) {temp <- keys  #this is the option of keying just the reversals
          			                         keys <- rep(1,nvar)
          			                         names(keys) <- colnames(x)

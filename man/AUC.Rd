@@ -37,7 +37,7 @@ diagnoses).(if t and Phi are not specified)}
   \item{conditional}{prob / rowSums(prob)}
   \item{Accuracy}{percentage of True Positives + True Negatives}
   \item{Sensitivity}{VP/(VP + FN)}
-  \item{Specificity}{1 - FP}
+  \item{Specificity}{VN/(FP + VN)}
   \item{d.prime}{difference of True Positives versus True Negatives}
   \item{beta}{ratio of ordinates at the decision point}
   
@@ -54,7 +54,7 @@ In college admissions, we accept some students and reject others.  Four-Five yea
 
 All of these decisions lead to four cells based upon a two x two categorization.  Given the true state of the world is Positive or Negative, and a rater assigns positive or negative ratings, then the resulting two by two table has True Positives and True Negatives on the diagonal and False Positives and False Negatives off the diagonal. 
 
-When expressed as percentages, then  Base Rates (BR) depend upon the state of the world, but Selection Ratios (SR) are  under the control of the person making the decision and affect the number of False Positives and the number of Valid Positives.
+When expressed as percentages of the total, then  Base Rates (BR) depend upon the state of the world, but Selection Ratios (SR) are  under the control of the person making the decision and affect the number of False Positives and the number of Valid Positives.
 
 Given a two x two table of counts or percentages \cr
 \tabular{lllll}{
@@ -64,7 +64,7 @@ Given a two x two table of counts or percentages \cr
 \tab \tab   SR \tab  1 - SR  \tab  (N)
 }
 
-Unfortunately, although this way of categorizing the data is typical in assessment (e.g., Wiggins 1973), in some decision papers, VP are expressed as the ratio of VP to total positive decisions (e.g., Wickens, 1984).  This requires dividing through by the column totals (and represented as VP* and FP* in the table below).
+Unfortunately, although this way of categorizing the data is typical in assessment (e.g., Wiggins 1973), and everything is expressed as percentages of the total, in some decision papers, VP are expressed as the ratio of VP to total positive decisions (e.g., Wickens, 1984).  This requires dividing through by the column totals (and represented as VP* and FP* in the table below).
 
 The relationships implied by these data can be summarized as a \code{\link{phi}} or \code{\link{tetrachoric}}  correlation between the raters and the world, or as a decision process with several alternative measures:
 
@@ -73,7 +73,7 @@ The relationships implied by these data can be summarized as a \code{\link{phi}}
  \tabular{llll}{
 \tab Measure    \tab Definition   \cr
 \tab Sensitivity \tab VP/(VP+ FN) \cr
-\tab Specificity\tab 1- FN  \cr
+\tab Specificity\tab VN/(FP + VN)  \cr
 \tab Accuracy \tab  VP + VN  \cr
 \tab VP* \tab VP/(VP + FP) \cr
 \tab FP* \tab (FP/(VP + FP \cr

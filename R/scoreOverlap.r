@@ -9,7 +9,7 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
  # select <- sub("-","",unlist(keys))   #added April 7, 2017
       select <- select[!duplicated(select)]
       }  else {select <- 1:ncol(r) }   
- if (!isCorrelation(r)) {r <- cor(r[select],use="pairwise")} else {r <- r[select,select]}
+ if (!isCorrelation(r)) {r <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
  keys <- make.keys(r,keys)}  #added 9/9/16    (and then modified March 4, 2017
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
@@ -60,7 +60,8 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
  
   med.r <- rep(NA, n.keys)
  for (i in 1:(n.keys)) {
-  temp  <- diag(keys[,i ][abs(keys[,i])>0] )
+    temp <- keys[,i][abs(keys[,i]) > 0]
+   temp <- diag(temp,nrow=length(temp))
    small.r <- r[abs(keys[,i])>0,abs(keys[,i])>0]
    small.r <- temp %*% small.r %*% temp
     med.r[i]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  

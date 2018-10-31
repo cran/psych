@@ -30,12 +30,12 @@ if(cor!="tet") {replicateslist <- parallel::mclapply(1:n.iter,function(x) {
                                       X <-  t(eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(X))
                             } else { X <- r[sample(n.obs,n.obs*frac,replace=FALSE),]}
   fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,...=...) #call fa with the appropriate parameters
-  if(nfactors == 1) {  npairs <- count.pairwise(X,diagonal=FALSE)
+  if(nfactors == 1) {  npairs <- pairwiseCount(X,diagonal=FALSE)
                  mean.npairs <- mean(npairs,na.rm=TRUE)
                  replicates <- list(loadings=fs$loadings,npairs=mean.npairs)
   } else  {
                     t.rot <- target.rot(fs$loadings,fl)
-                     npairs <- count.pairwise(X,diagonal=FALSE)
+                     npairs <- pairwiseCount(X,diagonal=FALSE)
                     mean.npairs <- mean(npairs,na.rm=TRUE)
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations?
                    #we should report the target rotated phis, not the untarget rotated phis 
@@ -56,7 +56,7 @@ if(cor!="tet") {replicateslist <- parallel::mclapply(1:n.iter,function(x) {
   if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)
                 
-                 npairs <- count.pairwise(X,diagonal=FALSE)
+                 npairs <- pairwiseCount(X,diagonal=FALSE)
                  mean.npairs <- mean(npairs,na.rm=TRUE)
                    if(!is.null(fs$Phi)) {  phis <- fs$Phi  # should we rotate the simulated factor  correlations?
                    #we should report the target rotated phis, not the untarget rotated phis 

@@ -10,8 +10,8 @@
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)
-setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,...)
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05)
+setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)    #an alias to setCor
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) 
@@ -35,7 +35,10 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
   \item{show}{Show the unweighted matrix correlation between the x and y sets?}
   \item{zero}{zero center the data before finding the interaction terms.}
+  \item{alpha}{p value of the confidence intervals for the beta coefficients}
   \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
+  \item{cex}{Text size of boxes}
+  \item{l.cex}{Text size of numbers in arrows, defaults to cex}
   \item{...}{Additional graphical parameters for setCor.diagram}
   
 }

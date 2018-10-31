@@ -1,5 +1,6 @@
 \name{Tal_Or}
 \alias{Tal_Or}
+\alias{Tal.Or}
 \alias{pmi}
 \alias{tctg}
 \docType{data}
@@ -8,7 +9,7 @@ Data set testing causal direction in presumed media influence}
 \description{
 Nurit Tal-Or, Jonanathan Cohen, Yariv Tasfati, and Albert Gunther (2010) examined the presumed effect of media on other people and change in attitudes.  This data set is from Study 2, and examined the effect of presumed influence of the media upon subsequent actions.  It is used as an example of mediation by Hayes (2013) and for the mediate function. 
 }
-\usage{data("Tal_Or")}
+\usage{data("Tal.Or")}
 \format{
   A data frame with 123 observations on the following 6 variables.
   \describe{
@@ -36,8 +37,8 @@ Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional 
 
 }
 \examples{
-data(Tal_Or)
-mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
+data(Tal.Or)
+mediate(reaction ~ cond + (pmi), data =Tal.Or,n.iter=50) 
 
 }
 \keyword{datasets}

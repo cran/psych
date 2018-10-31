@@ -19,7 +19,10 @@
    if(!is.matrix(fa.results) && !is.null(fa.results$fa) && is.list(fa.results$fa)) fa.results <- fa.results$fa
    if(is.null(cex)) cex <- 1
   #Phi <- NULL  #the default case
- if(sort) {fa.results <- fa.sort(fa.results) 
+ if(sort) { if(g) {temp  <- fa.sort(fa.results[,-1])
+                temp2 <- fa.results[,1]
+          fa.results <- cbind(g=temp2[rownames(temp)],temp)
+           } else {fa.results <- fa.sort(fa.results)}    #if we have g loadings, don't sort the entire array
           if(!is.null(fe.results)) { fe.results <- fa.sort(fe.results)} }
  if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {factors <- as.matrix(fa.results$loadings)
                 if(!is.null(fa.results$Phi)) {Phi <- fa.results$Phi} else {

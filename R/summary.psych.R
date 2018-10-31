@@ -21,6 +21,11 @@ if(length(class(object)) > 1)  { value <- class(object)[2] }
  
 switch(value, 
 
+bestScales = { cat("\nCall = ")
+    print(object$Call)
+    # print(object$first.result)
+    # print(round(object$means,2))
+     print(object$summary,digits=digits)},
 
  
 iclust = { cat("ICLUST (Item Cluster Analysis)") 
@@ -67,6 +72,55 @@ omega =  {
    colnames(object$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
    print(round(t(object$omega.group),digits)) 	
            }, 
+           
+omegaSem =  {
+object <- object$omegaSem
+ cat( object$title,"\n") 
+ 	cat("Alpha:                ",round(object$alpha,digits),"\n") 
+ 	cat("G.6:                  ",round(object$G6,digits),"\n")
+ 	cat("Omega Hierarchical:   " ,round(object$omega_h,digits),"\n")
+ 	cat("Omega H asymptotic:   " ,round(object$omega.lim,digits),"\n")
+ 	cat("Omega Total           " ,round(object$omega.tot,digits),"\n")
+ numfactors <- dim(object$schmid$sl)[2] -3
+  eigenvalues <- diag(t(object$schmid$sl[,1:numfactors]) %*% object$schmid$sl[,1:numfactors])
+       cat("\nWith eigenvalues of:\n")
+       print(eigenvalues,digits=2)
+   maxmin <- max(eigenvalues[2:numfactors])/min(eigenvalues[2:numfactors])
+   gmax <- eigenvalues[1]/max(eigenvalues[2:numfactors])
+  # cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits),"\n")
+   cat("The degrees of freedom for the model is",object$schmid$dof," and the fit was ",round(object$schmid$objective,digits),"\n")
+   	if(!is.na(object$schmid$n.obs)) {cat("The number of observations was ",object$schmid$n.obs, " with Chi Square = ",round(object$schmid$STATISTIC,digits), " with prob < ", round(object$schmid$PVAL,digits),"\n")}
+   	
+    if(!is.null(object$stats$rms)) {cat("\nThe root mean square of the residuals is ", round(object$stats$rms,digits),"\n") }
+     if(!is.null(object$stats$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$stats$crms,digits),"\n") }
+    if(!is.null(object$schmid$RMSEA)) {cat("\nRMSEA and the ",object$schmid$RMSEA[4]  ,"confidence intervals are ",round(object$schmid$RMSEA[1:3],digits+1))  }
+   	if(!is.null(object$schmid$BIC)) {cat("\nBIC = ",round(object$schmid$BIC,digits))}	
+   	  if(!is.null(object$ECV))  cat("Explained Common Variance of the general factor = ", round(object$ECV,digits),"\n")
+   	 cat("\n Total, General and Subset omega for each subset\n")
+   colnames(object$omega.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   print(round(t(object$omega.group),digits)) 	
+           }, 
+
+omegaDirect = {
+cat("Call: ")
+print(object$Call)
+cat("Omega H direct:   " ,round(object$omega.g,digits),"\n")
+ eigenvalues <- diag(t(object$loadings) %*% object$loadings)
+       cat("\nWith eigenvalues of:\n")
+       print(eigenvalues,digits=2)
+         cat("The degrees of freedom for the model is",object$orth.f$dof," and the fit was ",round(object$orth.f$objective,digits),"\n")
+   	if(!is.na(object$orth.f$n.obs)) {cat("The number of observations was ",object$orth.f$n.obs, " with Chi Square = ",round(object$orth.f$STATISTIC,digits), " with prob < ", round(object$orth.f$PVAL,digits),"\n")}
+   	
+    if(!is.null(object$orth.f$rms)) {cat("\nThe root mean square of the residuals is ", round(object$orth.f$rms,digits),"\n") }
+     if(!is.null(object$orth.f$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$orth.f$crms,digits),"\n") }
+    if(!is.null(object$orth.f$RMSEA)) {cat("\nRMSEA and the ",object$orth.f$RMSEA[4]  ,"confidence intervals are ",round(object$orth.f$RMSEA[1:3],digits+1))  }
+   	if(!is.null(object$orth.f$BIC)) {cat("\nBIC = ",round(object$orth.f$BIC,digits))}	
+   
+	 cat("\n Total, General and Subset omega for each subset\n")
+   colnames(object$om.group) <- c("Omega total for total scores and subscales","Omega general for total scores and subscales ", "Omega group for total scores and subscales")
+   print(round(t(object$om.group),digits)) 	
+    
+    }, 
 
 scores =  { #also score.items
 cat("Call: ")

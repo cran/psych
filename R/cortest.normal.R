@@ -32,7 +32,8 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
         R <-  R1 -R2   #direct difference 
         R <- R*R
         if(is.null(n2)) n2 <- n1
-        n <- (n1*n2)/(n1+n2)
+        n <- (n1*n2)/(n1+n2)    #why do I do this? should it be 2 * (n1*n2)/(n1+n2)   or 
+       #n <- harmonic.mean(c(n1,n2))  #no, actually this gives the right results
          E <- (sum(R*lower.tri(R)))
                  chisq <- E *(n-3)
                  df <- p*(p-1)/2
@@ -43,6 +44,7 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
    return(result)
     }
 #version of 2008
+#commented 2018
 
 
 #the following is done for non symmetric matrices with the same logic
@@ -65,7 +67,7 @@ c <- dim(R1)[2]
         R <-  R1 -R2   #direct difference 
         R <- R*R
         if(is.null(n2)) n2 <- n1
-        n <- (n1*n2)/(n1+n2)
+        n <- (n1*n2)/(n1+n2)   #equally problematic
          E <- sum(R)
                  chisq <- E *(n-3)
                  df <- r*c
@@ -75,6 +77,22 @@ c <- dim(R1)[2]
    class(result) <- c("psych", "cortest")
    return(result)
     }
+
+
+#see cortest for another version
+test.cortest.normal <- function(n.var=10,n1=100,n2=1000,n.iter=100) {
+R <- diag(1,n.var)
+summary <- list()
+for(i in 1:n.iter) {
+x <- sim.correlation(R,n1)
+if(n2 >3 ) {
+y <- sim.correlation(R,n2)
+summary[[i]] <- cortest(x,y,n1=n1,n2=n2)$prob
+} else {summary[[i]] <- cortest(x,n1=n1)$prob }
+}
+result <- unlist(summary)
+return(result)
+}
 
 
 

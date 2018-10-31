@@ -10,7 +10,7 @@
 }
 \usage{
 fa.sort(fa.results,polar=FALSE)
-fa.organize(fa.results,o=NULL,i=NULL,cn=NULL) 
+fa.organize(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) 
 }
 
 
@@ -20,6 +20,7 @@ fa.organize(fa.results,o=NULL,i=NULL,cn=NULL)
 \item{o}{The order in which to order the factors}
 \item{i}{The order in which to order the items}
 \item{cn}{new factor names}
+\item{echelon}{Organize the factors so that they are in echelon form (variable 1 .. n on factor 1, n+1 ...n=k on factor 2, etc.) }
 }
 \details{
 The fa.results$loadings are replaced with sorted loadings.

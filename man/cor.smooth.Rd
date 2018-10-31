@@ -36,7 +36,7 @@ D.L. Knol and JMF ten Berge (1989) Least squares approximation of an improper co
 
 \seealso{ \code{\link{tetrachoric}}, \code{\link{polychoric}}, \code{\link{fa}} and \code{\link{irt.fa}}, and the \code{\link{burt}} data set.
 
-See also nearcor and posdefify in the sfsmisc package and \code{\link{nearPD}} in the Matrix package.
+See also nearcor and posdefify in the sfsmisc package and nearPD in the Matrix package.
 
 }
 \examples{

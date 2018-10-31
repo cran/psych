@@ -1,7 +1,7 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
  cl <- match.call()
 # if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
@@ -60,7 +60,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    valuesx  <- eigen(rx)$values #these are the PC values
    if(SMC) {diag(rx) <- smc(rx)
    fa.valuesx <- eigen(rx)$values} else {
-   fa.valuesx  <- fa(rx,fm=fm,warnings=FALSE)$values}  #these are the FA values
+   fa.valuesx  <- fa(rx,nfactors=nfactors,rotate="none", fm=fm,warnings=FALSE)$values}  #these are the FA values
  
   temp <- list(samp =vector("list",n.iter),samp.fa = vector("list",n.iter),sim=vector("list",n.iter),sim.fa=vector("list",n.iter))
    
@@ -95,7 +95,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    					 if(SMC) {sampler <- C 
    					          diag(sampler) <- smc(sampler)
    					 temp[["samp.fa"]]<- eigen(sampler)$values} else {
-   					 temp[["samp.fa"]]  <- fa(C,fm=fm,SMC=FALSE,warnings=FALSE)$values
+   					 temp[["samp.fa"]]  <- fa(C,fm=fm,nfactors=nfactors, SMC=FALSE,warnings=FALSE)$values
           					}
           					}
                   } 
@@ -107,7 +107,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
     
    if (fa!="pc") {
         if(SMC) { diag(sim.cor) <- smc(sim.cor)
-   					 temp[["sim.fa"]]<- eigen(sim.cor)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,SMC=FALSE,warnings=FALSE)$values
+   					 temp[["sim.fa"]]<- eigen(sim.cor)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,nfactors=nfactors,SMC=FALSE,warnings=FALSE)$values
    		 temp[["sim.fa"]]    <- fa.values.sim
 }}}
    replicates <- list(samp=temp[["samp"]],samp.fa=temp[["samp.fa"]],sim=temp[["sim"]],sim.fa=temp[["sim.fa"]])
@@ -127,7 +127,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",main="Parallel Analysis Scree Plots"
    
   
    values.sim.mean=colMeans(values,na.rm=TRUE)
-    if(!missing(quant)) {values.ci = apply(values,2,function(x) quantile(x,quant))} else {values.ci <- values.sim.mean}
+   # if(!missing(quant)) {values.ci = apply(values,2,function(x) quantile(x,quant))} else {values.ci <- values.sim.mean} #fixed Sept 22, 2018
+   values.ci = apply(values,2,function(x) quantile(x,quant)) #always apply quant
    if(se.bars) {values.sim.se <- apply(values,2,sd,na.rm=TRUE)/sqrt(n.iter)} else {values.sim.se <- apply(values,2,sd,na.rm=TRUE)}
   
    ymin <- min(valuesx,values.sim.mean)

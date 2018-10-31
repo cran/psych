@@ -6,7 +6,7 @@
 }
 \usage{
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
-alpha=.05,ci=TRUE)
+alpha=.05,ci=TRUE,minlength=5)
 corr.p(r,n,adjust="holm",alpha=.05,minlength=5)
 }
 

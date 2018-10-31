@@ -8,8 +8,14 @@ function(fa.results,polar=FALSE) {
 
 switch(value, 
 omega =  { omega <- TRUE
+        omegaSem <- FALSE
         factors <- as.matrix(fa.results$schmid$oblique)
         sl <- fa.results$schmid$sl},
+omegaSem = {omega=TRUE
+         omegaSem <- TRUE
+         factors <- as.matrix(fa.results)
+         sl <- as.matrix(fa.results)
+         },
 
 fa.ci = {factors <- fa.results$loadings
            if(!is.null(fa.results$Phi))  {Phi <-fa.results$Phi }
@@ -86,11 +92,12 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
  
  }
          
- if(omega) {fa.results$schmid$oblique <- factors
+ if(omega) {if(!omegaSem) fa.results$schmid$oblique <- factors
  
          #if the input was from omega, then sort the schmid leiman solution as well
          loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
          nfactors <- dim(sl)[2]-4  #g, h2, u2, p2
+         if(omegaSem) nfactors <- NCOL(sl) -1
          if(nfactors > 1) {
          loads$cluster <- apply(abs(sl[,2:(nfactors+1)]),1,which.max) +1} else {loads$cluster <- rep(1,nitems) }
  		 ord <- sort(loads$cluster,index.return=TRUE)
@@ -109,8 +116,7 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
    		 		first <- first + items[i]  }
           		 }  
           		 
-          fa.results$schmid$sl <- sl
-              
+           if(omegaSem) {fa.results <- sl } else { fa.results$schmid$sl <- sl}  
          } else {
             if((!is.matrix(fa.results)) && (!is.data.frame(fa.results)))  {fa.results$loadings <- factors
              if(con.i) { rownames(ci) <- rownames(factors)

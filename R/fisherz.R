@@ -10,9 +10,10 @@ function(rho) {2*rho/sqrt(1-rho^2)}
 "d2r" <- 
 function(d) {d/sqrt(d^2+4)}
 
-"t2r" <- function(t,df) {sqrt(t^2/(t^2 + df))}  #fixed April 27, 2017
+#added sign correction October 8, 2018
+"t2r" <- function(t,df) {sign(t) * sqrt(t^2/(t^2 + df))}  #fixed April 27, 2017
 
-"g2r" <- function(g,df,n) {g/sqrt(g^2 + 4*df/n)}
+"g2r" <- function(g,df,n) {sign(g) * g/sqrt(g^2 + 4*df/n)}
 
 "chi2r" <- function(chi2,n) {sqrt(chi2/n)}
 

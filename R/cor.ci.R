@@ -68,7 +68,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
  	replicates <- list()
  	rep.rots <- list()
  	##now replicate it to get confidence intervals
-#	if(!require(parallel)) {warning("parallel package needed for mclapply")}
+
  		replicates <- mclapply(1:n.iter,function(XX) {
 		 xs <- x[sample(n.obs,n.obs,replace=TRUE),]
  		{if(poly) {

@@ -1,5 +1,6 @@
 \name{Promax}
 \alias{Promax}
+\alias{Procrustes}
 \alias{TargetQ}
 \alias{target.rot}
 \alias{bifactor}
@@ -10,7 +11,7 @@
 \alias{vgQ.varimin}
 
 \alias{equamax}
-\title{ Perform bifactor, promax or targeted rotations and return the inter factor angles.}
+\title{ Perform Procustes,bifactor, promax or targeted rotations and return the inter factor angles.}
 \description{The bifactor rotation implements the rotation introduced by Jennrich and Bentler (2011) by calling GPForth in the GPArotation package.  promax is an oblique rotation function introduced by Hendrickson and White (1964) and implemented in the promax function in the stats package.  Unfortunately, promax does not report the inter factor correlations.  Promax does.  TargetQ does a target rotation with elements that can be missing (NA), or numeric (e.g., 0, 1).  It uses the GPArotation package. target.rot does general target rotations to an arbitrary target matrix. The default target rotation is for an independent cluster solution. equamax facilitates the call to GPArotation to do an equamax rotation.  Equamax, although available as a specific option within GPArotation is easier to call by name if using equamax.  The varimin rotation suggested by Ertl (2013) is implemented by appropriate calls to GPArotation.
 }
 \usage{
@@ -18,6 +19,7 @@ bifactor(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 biquartimin(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 TargetQ(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
 Promax(x,m=4, normalize=FALSE, pro.m = 4) 
+Procrustes(L,Target) #adapted from Niels Waler
 target.rot(x,keys=NULL)
 varimin(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, maxit = 1000)
 vgQ.bimin(L)   #called by bifactor
@@ -28,10 +30,11 @@ equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{A loadings matrix}
+   \item{L}{A loadings matrix}
   \item{m}{the power to which to raise the varimax loadings (for Promax)}
   \item{pro.m}{the power to which to raise the various loadings in Promax.}
   \item{keys}{An arbitrary target matrix, can be composed of  any weights, but probably -1,0, 1 weights.  If missing, the target is the independent cluster structure determined by assigning every item to it's highest loaded factor.}
-  \item{L}{A loadings matrix}
+ 
   \item{Target}{A matrix of values (mainly 0s, some 1s, some NAs) to which the matrix is transformed.}  
   \item{Tmat}{An initial rotation matrix}
   \item{normalize}{parameter passed to optimization routine (GPForth in the GPArotation package and Promax)}

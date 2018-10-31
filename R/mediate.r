@@ -300,7 +300,7 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
     cat("\nDirect effect (c') of ",iv[i],  " on ", dv[i]," removing ", mv ," = ",round(x$indirect[i,j],digits), "  S.E. = ", round(x$cprime.reg$se[i,j],digits), " t  = ",round(x$cprime.reg$t[i,j],digits), " df= ", x$cprime.reg$df, "  with p = ", signif(x$cprime.reg$prob[i,j],digits))
      
    if(is.null(x$mod)) { cat("\nIndirect effect (ab) of ",iv[i], " on ", dv[j]," through " ,mv , "  = ", round(x$ab[i,j],digits),"\n")
-   cat("Mean bootstrapped indirect effect = ",round(x$boot$mean[j],digits), " with standard error = ",round(x$boot$sd[j],digits), " Lower CI = ",round(x$boot$ci[1,i],digits), "   Upper CI = ", round(x$boot$ci[2,i],digits))}
+   cat("Mean bootstrapped indirect effect = ",round(x$boot$mean[i],digits), " with standard error = ",round(x$boot$sd[i],digits), " Lower CI = ",round(x$boot$ci[1,i],digits), "   Upper CI = ", round(x$boot$ci[2,i],digits))}
      }
      
      F <-  x$cprime.reg$df * x$cprime.reg$R2[j]/((nrow(x$cprime.reg$beta) * (1-x$cprime.reg$R2[j])))
@@ -425,9 +425,8 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
 
    
    
-"mediate.diagram" <- function(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE, main="Mediation model",...) { 
-
-    
+"mediate.diagram" <- function(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE, main="Mediation model",cex=1,l.cex=1,...) { 
+    if(missing(l.cex)) l.cex <- cex
      dv <- medi$var.names[["DV"]]
    # iv <- medi$var.names[["IV"]]
      iv <- as.matrix(rownames(medi$direct))
@@ -465,14 +464,14 @@ viv <- 1:numx
 for(i in 1:numx)  {
 if((numx %% 2)== 0) {
 viv[i] <- switch(i,7,3,6,4,8,2,9,1,10)  } else { viv[i] <- switch(i,5,7,3,6,4,8,2,9)}
- x[[i]]  <- dia.rect(1,viv[i],iv[i])}
+ x[[i]]  <- dia.rect(1,viv[i],iv[i],cex=cex,...)}
  
  vdv <- 1:numy
  y <- list()
  for (i in 1:numy) {
  if((numy %% 2)== 0) {
 vdv[i] <- switch(i,6,4,7,3,8,2,9,1,10)  } else { vdv[i] <- switch(i,5,7,3,6,4,8,2,9)}
- y[[i]] <- dia.rect(9,vdv[i],dv[i]) 
+ y[[i]] <- dia.rect(9,vdv[i],dv[i],cex=cex,...) 
  }
 
 #y <- dia.rect(9,5,dv) 
@@ -497,30 +496,31 @@ for (mediate in 1:n.mediate) {
 v.loc <- sort(v.loc,decreasing=TRUE)
 if(n.mediate ==0) { for(j in 1:numy) {
 			for(i in 1: numx) {
-     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",direct[i,j]),pos=0,...)}
+     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",direct[i,j]),pos=0,cex=l.cex,...)}
 	}  
 } else {
 if(n.mediate==1) a <- t(a)
 for (mediate in 1:n.mediate) {
-	m[[mediate]] <- dia.rect(5,v.loc[mediate],mv[mediate] ) 
+	m[[mediate]] <- dia.rect(5,v.loc[mediate],mv[mediate],cex=cex,... ) 
 		for(j in 1:numy) {
-			for(i in 1: numx) {dia.arrow(x[[i]]$right,m[[mediate]]$left,labels=a[i,mediate],adj=adj,...) #a term
-     			if(show.c) {dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",c[i,j]),pos=3,...)}
-     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c' = ",cprime[i,j]),pos=1,...)}
-      			dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=b[mediate,j],...)  #     
+			for(i in 1: numx) {dia.arrow(x[[i]]$right,m[[mediate]]$left,labels=a[i,mediate],adj=adj,cex=l.cex,...) #a term
+     			if(show.c) {dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",c[i,j]),pos=3,cex=l.cex,...)}
+     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c' = ",cprime[i,j]),pos=1,cex=l.cex,...)}
+      			dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=b[mediate,j],cex=l.cex,...)  #     
 			}
 		} 
 		}
 	rviv <- max(viv)
 if(numx >1) {
   for (i in 2:numx) {
-  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,C[i,k],scale=-(numx-1)*(abs(viv[i]-viv[k])/rviv),both=TRUE,dir="u")} 
+  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,C[i,k],scale=-(numx-1)*(abs(viv[i]-viv[k])/rviv),both=TRUE,dir="u",cex=l.cex,...)} 
   } }
 	}
 
 
-"moderate.diagram" <- function(medi,digits=2,ylim=c(2,8),main="Moderation model",...) {
-  
+"moderate.diagram" <- function(medi,digits=2,ylim=c(2,8),main="Moderation model",cex=1,l.cex=1,...) {
+ 
+if(missing(l.cex)) l.cex <- cex  
 xlim=c(0,10)
 
 #plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
@@ -540,24 +540,24 @@ y <- list()
 x.scale <- top/(nx+1)
 y.scale <- top/(ny+1)
 
-plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
+plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="",...)
 
 
 
-for(i in 1:nx) {x[[i]] <- dia.rect(2,top-i*x.scale,x.names[i]) }
-for(j in 1: ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j]) }
-y[[1]] <- dia.rect(7,top-y.scale,y.names[1]) 
+for(i in 1:nx) {x[[i]] <- dia.rect(2,top-i*x.scale,x.names[i],cex=cex,...) }
+for(j in 1: ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,...) }
+y[[1]] <- dia.rect(7,top-y.scale,y.names[1],cex=cex,...) 
 # dia.arrow(x[[1]]$right,y[[j]]$left,labels=paste("c = ",c),pos=3,...)
 #dia.arrow(x[[1]]$right,y[[j]]$left,labels=paste("c' = ",cprime),pos=1,...)
 
 for(j in 1:ny){
 for(i in 1:nx) {
-   dia.arrow(x[[i]]$right,y[[j]]$left,labels = beta[i,1],adj=2)
+   dia.arrow(x[[i]]$right,y[[j]]$left,labels = beta[i,j],adj=2,cex=l.cex,...)
    }
    }
 if(nx >1) {
   for (i in 2:nx) {
-  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,round(medi$C[i+1,k+1],2),scale= -(abs(k-i)),both=TRUE,dir="u")} 
+  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,round(medi$C[i+1,k+1],2),scale= -(abs(k-i)),both=TRUE,dir="u",cex=l.cex,...)} 
   } }
 
 }  

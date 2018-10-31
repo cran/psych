@@ -93,25 +93,34 @@ if(lavaan) {lavaan.diagram(fit,...)}
      radius <- sqrt(len^2+vert^2)
     dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
      }
+     
+     
 "dia.arrow" <- 
 function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.size=NULL,...) {
     if(missing(gap.size)) gap.size <- .2
     if(missing(l.cex)) l.cex <- cex
     radius1 <- radius2 <- 0
+   if(!is.list(to)) {tocenter <- to} else {tocenter <- to$center}
  	if(is.list(from)) {if(!is.null(from$radius)) {radius1 <- from$radius
- 	        radius2 <- 0
-    		from <- from$center}}
+ 	        radius2 <- 0}
+ 	      #  if((tocenter[2] < from$center[2]) & ((tocenter[1] == from$center[1]))  ) {from <- from$bottom} else {
+ 	        from <- from$center}
+    		
+    		
        if(is.list(to)) {if(!is.null(to$radius)) {radius2 <- to$radius 
        			to <- to$center}}
        theta <- atan((from[2] - to[2])/(from[1] - to[1]))
-       
+       costheta <- cos(theta)
+       sintheta <- sin(theta) 
        dist <- sqrt((to[1] - from[1])^2 + (to[2] - from[2])^2)
         if((adj  > 3 ) || (adj < 1)) {
                    x <- (to[1] + from[1])/2
                    y <- (to[2] + from[2])/2
                    } else {
-       x <- from[1] - sign(from[1]-to[1]) *(4-adj) *  cos(theta) * dist/4
-       y <- from[2] -  sign(from[1]-to[1])* (4-adj) *  sin (theta)* dist/4}
+        
+       x <- from[1] - sign(from[1] -to[1]+.001) *(4-adj) * costheta * dist/4
+      
+       y <- from[2] -  sign(from[1]-to[1] +.001)* (4-adj)  *  sintheta * dist/4}  #this is the problem when line is vertical
       #x <- from[1] - sign(from[1]-to[1]) *adj *  cos(theta) * dist/6
       #y <- from[2] -  sign(from[1]-to[1])* adj *  sin (theta)* dist/6}
        
@@ -124,14 +133,16 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.
         if(from[1] <  to[1] ) {h.size <- -h.size
                                radius1 <- -radius1
                                radius2 <- -radius2}
-        x0 <- from[1] - cos(theta) * radius1
-        y0 <- from[2] - sin(theta) * radius1
-        xr <- x + h.size * cos(theta)* v.size
-        xl <- x - h.size * cos(theta)* v.size
-        yr <- y + v.size * sin(theta) * h.size 
-        yl <- y - v.size * sin(theta)  *h.size
-        xe <- to[1] + cos(theta) * radius2
-        ye <- to[2] + sin(theta) * radius2
+        x0 <- from[1] -costheta * radius1
+        xr <- x + h.size * costheta* v.size
+
+        y0 <- from[2] - sintheta * radius1  ##
+       
+        xl <- x - h.size * costheta* v.size
+        yr <- y + v.size * sintheta * h.size 
+        yl <- y - v.size * sintheta  *h.size
+        xe <- to[1] +costheta * radius2
+        ye <- to[2] + sintheta * radius2
        if(!is.null(labels))  text(x,y,labels,cex=l.cex,pos=pos,...)
         arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
         arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)

@@ -44,8 +44,9 @@ return(y)}
   
 
 "bestScales" <- 
- function(x,criteria,cut=.1,n.item =10,overlap=FALSE,dictionary=NULL,check=FALSE,impute="none", n.iter =1,frac=.9,p.keyed=.9,digits=2) {
+ function(x,criteria,cut=.1,n.item =10,overlap=FALSE,dictionary=NULL,check=FALSE,impute="none", n.iter =1,folds=1,p.keyed=.9,digits=2) {
  cl <- match.call()
+
   first <- TRUE
 if(check) {item.var <- apply(x,2,sd,na.rm=TRUE)
        bad <- which((item.var <= 0)|is.na(item.var))
@@ -54,21 +55,38 @@ if(check) {item.var <- apply(x,2,sd,na.rm=TRUE)
             x <- x[,-bad] 
              }
              }
-  #first, define function to be parallelized
-   #mcmapply for parallel, mapply for debugging 
-   ##
-short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac) {
+  
+#check various parameters
+#
+frac <- 1
+if(folds > 1) {frac = 1/folds
+if(n.iter !=folds) {n.iter <- folds
+ cat('Number of iterations set to the number of folds = ',n.iter) }
+ }
+ set.seed(NULL)
+ old.seed <- .Random.seed[42]   #we save this if we want to do k-fold cross validation
+ 
+####
+#first, define function to be parallelized
+#mcmapply for parallel, mapply for debugging 
+
+short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac) {#this is the function that is iterated
    
 	if(n.iter > 1) {
 	   if(!isCorrelation(x)) { ss <- (1:n.obs) 
-	    ss <- sample(ss,n.obs,FALSE) 
-	    ss <- ss[1:(n.obs*frac)] 
-	   scores   <-  bScales(x[ss,],criteria=criteria,cut=cut,
+	  if(frac==1) {ss <- sample(ss,n.obs,replace=TRUE)  #bootstrap resampling  ss is 'in the bag'
+	  }  else {
+	  	set.seed(old.seed) #this will take the same random sequence for this run so that we can do k fold
+		ss <- sample(ss,n.obs,FALSE)  # this is the 1:n.obs in the same random order for each of the k fold
+		ss <- ss[-(((i-1)*frac*n.obs +1):(i*frac*n.obs))]     #this drops frac cases out each trial  
+	    }
+	 
+	 	scores   <-  bScales(x[ss,],criteria=criteria,cut=cut,
 	             n.item =n.item,overlap=overlap,dictionary=dictionary,impute=impute,digits=digits)  
 	             } else {message("iterative solutions not possible for correlation matrices")
 	            n.iter <- 1 
 	            }} else { # a correlation matrix or n.iter = 1
-	scores   <-  bScales(x,criteria=criteria,cut=cut,
+		scores   <-  bScales(x,criteria=criteria,cut=cut,
 	             n.item =n.item,overlap=overlap,dictionary=dictionary,impute=impute,digits=digits)
 	             }
 	
@@ -81,6 +99,7 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac) {
           result$key.list <- key.list}
           class(result) <- cbind("psych","bestScales")
  return(result) }
+ ###
  ###
  
 #begin the main function 
@@ -99,11 +118,12 @@ if(!is.null(dim(criteria))| (length(criteria) == NROW(x)))  { x <- cbind(x,crite
    }
      #the case for n.iter > 1.  We want to parallelize this because we are working pretty hard
  if(n.iter > 1) { 
+ 
 result <- list()
 
 #make mcmapply when not debgging
 result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac))
-  
+
  #save the keys and the summary 
   validity <- list()
   #validity is a list of 3 elements repeated n.iter times
@@ -113,14 +133,14 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
 
   keys <- list()
   R.list <- list()
-  
+
   for(i in (1:n.iter)) { validity[[i]] <- result[[i*3 -2]]
     keys[[i]] <- result[[i*3-1]]
     R.list[[i]] <- result[[i*3]]
     }
      
 
-   replicated.items <- bestReplicatedItems(keys)
+   replicated.items <- bestReplicatedItems(keys)  #probably should pass cut and n.item to this function
 
    
    items <- list()
@@ -148,22 +168,22 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
     count <- count >= n.iter*p.keyed
    } else {
     count <- 0}
-   if(sum(count,na.rm=TRUE)>0) {
+   if(sum(count,na.rm=TRUE) > 0) {
     best.keys[[j]] <- rownames(direction)[count]
     direction <- direction[count]
    best.keys[[j]][direction < 0] <- paste0("-", best.keys[[j]][direction < 0]) 
    } else { best.keys[[j]] <- NULL
 }
     }
-    				
+   if(length(best.keys) == length(criteria)) names(best.keys) <- criteria 				
 
    result.df <- data.frame(matrix(unlist(validity),ncol=2*length(criteria),byrow=TRUE))
   colnames(result.df) <-c(paste("derivation",criteria),paste("validation",criteria)) 
   
   result <- list(validity = result.df,items=items,replicated.items =replicated.items,keys = keys,Call=cl)
   result$first.result  <- first.result
-  result$means = colMeans(result.df)
-  result$sd <- apply(result.df,2,sd)
+  result$means = colMeans(result.df,na.rm=TRUE)
+  result$sd <- apply(result.df,2,sd,na.rm=TRUE)
   ncriteria <- length(criteria)
   result$summary <- data.frame(derivation.mean = result$means[1:ncriteria],derivation.sd = result$sd[1:ncriteria],validation.m=result$mean[(ncriteria+1):(2*ncriteria)],
             validation.sd =result$sd[(ncriteria+1):(2*ncriteria)] )
@@ -175,7 +195,8 @@ result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criter
   class(result) <- c("psych","bestScales")
   return(result)
 }
-
+##
+ #This one actually does the work  -- but should not process n.item at this point
 "bScales" <- 
 function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,impute="median",digits=2) {
 
@@ -211,7 +232,7 @@ short <- function(key,r) {
 #begin the main function
  ##Basically two cases:
  #a correlation matrix is provided and we do basic matrix algebra
- #raw data is provided (getting ready to do bootstrapping) and we find just the necessary correlations
+ #or raw data are provided (getting ready to do bootstrapping) and we find just the necessary correlations
  
  nvar <- ncol(x)
  if(isCorrelation(x)) {r <- x      #  case 1
@@ -228,13 +249,12 @@ short <- function(key,r) {
  ni <- length(n.item)   #number of items per scale to find
  ord.name <- NULL
 if(length(cut) == 1)  cut <- rep(cut,ny)
-if(length(n.item) == 1) n.item <- rep(n.item,ny)
-
+if(length(n.item) == 1) n.item <- rep(n.item,ny) #
+#if(length(n.item) == 1) n.item <- rep(nvar,ny)
 #this next part just finds the cut values to use
  if(!overlap)  {r[criteria,criteria] <- 0} else {for(i in 1:ny) r[criteria[i],criteria[i]] <- 0}
  if(ny > 1 ) {ord <- apply(abs(r[,criteria]),2,order,decreasing=TRUE) 
      for (i in 1:ny) {cut[i] <- max(cut[i],abs(r[ord[n.item[i],i],criteria[i]])) 
-    # ord.name <- c(ord.name, rownames(r)[ord[1:n.item[i],i]] )     #this is wrong and not needed
     }
      } else {
          ord <- order(abs(r[,criteria]),decreasing=TRUE)
@@ -254,7 +274,7 @@ if(length(n.item) == 1) n.item <- rep(n.item,ny)
  colnames(key) <- criteria
  #now, drop those items from the keys that are not used
  used <- rowSums(abs(key))
- key <- key[used >0,,drop=FALSE]  
+ key <- key[used > 0,,drop=FALSE]  
  x <- x[,used >0,drop=FALSE]
  
 #now, if we have raw data, find the correlation of the composite scale with the criteria
@@ -321,6 +341,7 @@ class(results) <- c("psych","bestScales")
 return(results)
 }
 
+####
  
  
  "bestReplicatedItems" <- function( L) {

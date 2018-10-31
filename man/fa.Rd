@@ -76,14 +76,14 @@ However, simulations of multiple problem sets suggest that fm="pa" tends to prod
 
 Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
 
-Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link{Schutz}} produces Heywood and super Heywood cases,   \code{\link{blant}} leads to very different solutions.  
+Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link{Schutz}} produces Heywood and super Heywood cases,   \code{\link{blant}} leads to very different solutions.  In particular, the minres solution produces smaller residuals than does the mle solution, and the factor.congruence coefficients show very different solutions.
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller RMSEA) solutions.
 
 The fm="minchi" option is a variation on the "minres" (ols) solution and minimizes the sample size weighted residuals rather than just the residuals. This was developed to handle the problem of data that Massively Missing Completely at Random (MMCAR) which a condition that happens in the SAPA project.
 
 
-A problem in factor analysis is to find the best estimate of the original communalities.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
+A traditional problem in factor analysis was to find the best estimate of the original communalities in order to speed up convergence.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the original communalities, using 1s will over estimate.  By default, the SMC estimate is used.  In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
 
 The iterated principal axes algorithm does not attempt to find the best (as defined by a maximum likelihood criterion) solution, but rather one that converges rapidly using successive eigen value decompositions.  The maximum likelihood criterion of fit and the associated chi square value are reported, and will be (slightly) worse than that found using maximum likelihood procedures.
 
@@ -144,6 +144,8 @@ For those who like SPSS type output, the measure of factoring adequacy known as 
 For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted ).  This is now returned by the fa function as well (e.g. p <- fa(ability)$Vaccounted ).
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
+
+
 
 \code{\link{fa.sapa}} simulates the process of doing SAPA (Synthetic Aperture Personality Assessment).  It will do iterative solutions for successive random samples of  fractions (frac) of the data set. This allows us to find the stability of solutions for various sample sizes and various sample rates. Need to specify the number of iterations (n.iter) as well as the percent of data sampled (frac).  
 
@@ -265,6 +267,8 @@ A few more lines of output were added in August 2017 to show the measures of fac
 \seealso{ \code{\link{principal}} for principal components analysis (PCA).  PCA will give very similar solutions to factor analysis when there are many variables.  The differences become more salient as the number variables decrease.  The PCA and FA models are actually very different and should not be confused.  One is a model of the observed variables, the other is a model of latent variables.    Although some commercial packages (e.g., SPSS and SAS) refer to both as factor models, they are not.  It is incorrect to report doing a factor analysis using principal components.  
 
 \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, using the two parameter IRT equivalent of loadings and difficulties.
+
+\code{\link{fa.random}} applies a random intercepts model by removing the mean score for each subject prior to factoring.  
 
 \code{\link{VSS}} will produce the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{nfactors}} to compare many different factor criteria.
 

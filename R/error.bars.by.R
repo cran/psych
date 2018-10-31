@@ -1,5 +1,5 @@
 "error.bars.by" <-
-function (x,group,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
+function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
 xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
 arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
  lty,lines=TRUE, legend=0,pch,density=-10,...)  # x   data frame with 
@@ -7,8 +7,24 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
 
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
-    nvar <- ncol(x)
-    if(is.null(nvar)) nvar <- 1  #added May 21, 2016 to handle the case of a single variable
+    
+      #first, see if they are in formula mode   added August 18, 2018
+  formula <- FALSE
+   if(class(x) == "formula") {  ps <- parse(x)
+   formula <- TRUE
+   if(is.null(data)) stop("You must specify the data if you are using formula input") 
+     x <- data[ps$y]
+   group <- data[ps$x]
+   
+   if(is.null(ylab)) ylab <- colnames(x)
+   if(is.null(xlab)) xlab <- colnames(group)
+   if(missing(by.var)) by.var=TRUE
+   if(missing(lines)) lines <- FALSE
+   }
+   if(NCOL(group)==1) {n.grp1 <- length(table(group))} else {n.grp1 <- length(table(group[1]))}
+   
+    nvar <- NCOL(x)
+   # if(is.null(nvar)) nvar <- 1  #added May 21, 2016 to handle the case of a single variable
     if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)}
     if(!missing(density)) {col12 <- col2rgb(colors,TRUE)/255
     colors <- rgb(col12[1,],col12[2,],col12[3,],.5)
@@ -83,9 +99,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
        merge = TRUE, bg = 'gray90')}
                
   } else {   #the normal case is to not use bars
-           
     group.stats <- describeBy(x,group)
-    n.group <- length(group.stats)
+    n.group <- length(group.stats)   #this is total number of groups but it may  be 2 x 2 or n x m
     n.var <- ncol(x)
      if(is.null(n.var)) n.var <- 1 
     #first set up some defaults to allow the specification of colors, lty, and pch dynamically and with defaults
@@ -101,7 +116,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
         
       	if (is.null(xlab)) xlab <- "Independent Variable"
     	for (g in 1:n.group) {
-   	 	x.stats <- group.stats[[g]]
+   	 	x.stats <- group.stats[[g]]   
    	 	if (within) { x.smc <- group.smc[[g]]  
     	              if(sd) {x.stats.$se <- sqrt(x.stats$sd^2* (1- x.smc))} else { x.stats$se <- sqrt((x.stats$sd^2* (1- x.smc))/x.stats$n)}
     	               }
@@ -141,54 +156,78 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    }
     }    else  { # end of not by var loop
     
-    #alternatively, do it by variables rather than by groups
+    #alternatively, do it by variables rather than by groups, or if we have two grouping variables, treat them as two variables
      if (is.null(xlab)) xlab <- "Grouping Variable"
     
     n.vars <- dim(x)[2]
     if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
      var.means <- matrix(NaN,nrow=n.vars,ncol=n.group)
-     var.se <- matrix(NA,nrow=n.vars,ncol=n.group)
+     var.n <- var.se <- matrix(NA,nrow=n.vars,ncol=n.group)
      
 
+ #if there are two or more grouping variables,this strings them out
     for (g in 1:n.group) {
-   	 	var.means[,g] <- group.stats[[g]]$mean
+   	 	var.means[,g] <- group.stats[[g]]$mean    #problem with dimensionality -- if some grouping variables are empty
    	 	if(sd) {var.se[,g] <- group.stats[[g]]$sd}  else {var.se[,g] <- group.stats[[g]]$se }
+   	 	var.n [,g] <- group.stats[[g]]$n
    	 	}
    	 	
-   	 if(x.cat) {x.values <- 1:n.group}  else {
+   	 if(x.cat) {x.values <- 1:n.grp1}  else {
    	   x.values <- as.numeric(names(group.stats))  }  
    	 
     for (i in 1:n.vars) {	
-   
+ 
     	if(!add) {
-    	if(missing(xlim)) xlim <- c(.5,n.group + .5)
-    	 plot(x.values,var.means[1,],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[1],pch=pch[1],col = colors[(i-1) %% n.color +1],...)
-    		if(x.cat) {axis(1,1:n.group,unlist(dimnames(group.stats)),...) } else {axis(1)}
+    	if(missing(xlim)) xlim <- c(.5,n.grp1 + .5)
+    	 plot(x.values,var.means[1,1:n.grp1],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[1],pch=pch[1],col = colors[(i-1) %% n.color +1],...)
+    		if(x.cat) {axis(1,1:n.grp1,names(unlist(dimnames(group.stats)[1])),...) } else {axis(1)}
     		axis(2,...)
     		box() 
+    	 if(n.grp1 < n.group) {
+    
+    	 points(x.values,var.means[i,(n.grp1 +1):n.group],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) #the first grouping variable
+    	 }
     		add <- TRUE
-    		} else {points(x.values,var.means[i,],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i-1) %% n.color + 1], pch=pch[i],...) 
+    		} else {
+    		  points(x.values,var.means[i,1:(n.grp1)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) 
+    		 if(n.grp1 < n.group) { points(x.values,var.means[i,(n.grp1 +1):(n.group)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) }
     		        # points(x.values,var.means[i,],typ = typ,lty=lty,...)
     		}
-    	
+    
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:z,sep="")}
    
     	if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      	if (length(labels)==0) lab <- rep("",z) else lab <-labels
-       
-        for (g in 1:n.group)  {
-      
-    		xcen <- var.means[i,g]
-    	 	xse  <- var.se[i,g]
-    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,group.stats[[g]]$n-1)} 
-    	   if(x.cat)  {arrows(g,xcen-ci[i]*xse,g,xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	        if (eyes) { 
-    	        catseyes(g,xcen,xse,group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}}  else {
+
+       # for (g in 1:n.group)  {
+    		xcen <- var.means[i,]
+    	 	xse  <- var.se[i,]
+    	 	
+    	   if(sd) {ci <- rep(1,n.group)} else { ci <- qt(1-alpha/2,var.n-1)} 
+    	  # }
+    	   for (g in 1:n.grp1) {
+    	   x.stats <- group.stats[[g]]  
+    	   if(x.cat)  {arrows(g,xcen[g]-ci[g]*xse[g],g,xcen[g]+ci[g]* xse[g],length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	 if (eyes) { 
+    	        catseyes(g,xcen[g],xse[g],group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}}  else {
     	     
-    	            arrows(x.values[g],xcen-ci[i]*xse,x.values[g],xcen+ci[i]* xse,length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
-    	            if (eyes) {catseyes(x.values[g],xcen,xse,x.stats$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
+    	            arrows(x.values[g],xcen[g]-ci[g]*xse[g],x.values[g],xcen+ci[g]* xse[g],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	            if (eyes) {catseyes(x.values[g],xcen[g],xse[g],x.stats$n[g],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
-    		}
+   		}
+   		 if(n.grp1 < n.group) {
+   		  for (g in 1: n.grp1) {
+    	   if(x.cat)  {arrows(g,xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],g,xcen[g+n.grp1]+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3, col = colors[(i) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	 if (eyes) { 
+    	        catseyes(g,xcen[g+n.grp1],xse[g+n.grp1],group.stats[[g+n.grp1]]$n[i],alpha=alpha,density=density,col=colors[(i) %% n.color +1] )}}
+    	        }}  else {
+    	     
+    	            arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
+    	
+    	
+    	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
+ 
  
      #lty <- "dashed"
      }   #end of i loop 
@@ -201,7 +240,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     }  #end of by var is true loop
    
     } # end of if not bars condition
-   }
+  invisible(group.stats) }
    
    #corrected Feb 2, 2011 to plot alpha/2 rather than alpha 
    #modifed Feb 2, 2011 to not plot lines if they are not desired.

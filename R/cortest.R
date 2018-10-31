@@ -39,7 +39,7 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
         R <-  R1 -R2   #direct difference 
         R2 <- R*R
         if(is.null(n2)) n2 <- n1
-        n <- (n1*n2)/(n1+n2)
+        n <- (n1*n2)/(n1+n2)  #1/2 harmonic sample size 
         if(cor) { E <- (sum(R2*lower.tri(R2)))
                  chisq <- E *(n-3)
                  df <- p*(p-1)/2
@@ -58,3 +58,19 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
 
 #version of June 25, 2008
 #revised October 12, 2011 to allow non-square matrices
+
+
+test.cortest <- function(R=NULL,n.var=10,n1=100,n2=1000,n.iter=1000) {
+if(is.null(R)) R <- diag(1,n.var)
+summary <- list()
+for(i in 1:n.iter) {
+x <- sim.correlation(R,n1)
+if(n2 >3 ) {
+y <- sim.correlation(R,n2)
+summary[[i]] <- cortest(x,y,n1=n1,n2=n2)$prob
+} else {summary[[i]] <- cortest(x,n1=n1)$prob }
+}
+result <- unlist(summary)
+return(result)
+}
+

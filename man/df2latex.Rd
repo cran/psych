@@ -55,7 +55,7 @@ ICC2latex(icc,digits=2,rowlabels=TRUE,apa=TRUE,ci=TRUE,
   \item{method}{When finding correlations, which method should be used (pearson)}
   \item{use}{use="pairwise" is the default when finding correlations in cor2latex}
   \item{adjust}{If showing probabilities, which adjustment should be used (holm)}
-  \item{stars}{Should probability asterixs be displayed in cor2latex (FALSE)}
+  \item{stars}{Should probability 'magic astericks' be displayed in cor2latex (FALSE)}
   \item{char}{char=TRUE allows printing tables with character information, but does not allow for putting in commas into numbers}
   \item{cut}{In omega2latex, df2latex and fa2latex, do not print abs(values) < cut }
   \item{big}{In fa2latex and df2latex boldface those abs(values) > big}

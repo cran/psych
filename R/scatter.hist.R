@@ -1,7 +1,7 @@
 "scatter.hist" <- "scatterHist" <- 
 function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,density=TRUE,ellipse=TRUE,digits=2,method,cex.cor=1,title="Scatter plot + histograms",
    xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
-   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,...) {
+   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),...) {
 old.par <- par(no.readonly = TRUE) # save default 
 n.obs <- sum(!is.na(x))
 if(missing(xlab)) {
@@ -35,7 +35,7 @@ if(smooth) {
     if (any(ok)) 
        # lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), col = col.smooth, ...)
 lines(stats::lowess(x[ok],y[ok]),col="red")}
-if(ellipse) {ellipses(x,y,add=TRUE)}
+if(ellipse) {ellipses(x,y,add=TRUE,size=size)}
 
 par(mar=c(.75,4,2,1))  #the left and right here should match the left and right from above
 if(freq) { mp <- barplot(xhist$counts, axes=x.axes, space=x.space,xlab=xlab.hist)} else { mp <- barplot(xhist$density, axes=x.axes, space=x.space,xlab=xlab.hist)}

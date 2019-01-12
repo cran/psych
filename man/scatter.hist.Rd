@@ -9,13 +9,13 @@
   digits=2,method,cex.cor=1, title="Scatter plot + histograms", xlab=NULL,ylab=NULL,  
    smoother=FALSE,nrpoints=0, xlab.hist=NULL,ylab.hist=NULL,grid=FALSE, xlim=NULL, 
    ylim=NULL, x.breaks=11,y.breaks=11, x.space=0, y.space=0 ,freq=TRUE, x.axes=TRUE, 
-   y.axes=TRUE,...) 
+   y.axes=TRUE,size=c(1,2),...) 
  
  scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE, density=TRUE, ellipse=TRUE, 
  digits=2, method,cex.cor=1, title="Scatter plot + histograms", 
  xlab=NULL,ylab=NULL,smoother=FALSE, nrpoints=0, xlab.hist=NULL, ylab.hist=NULL, 
  grid=FALSE, xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
- x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,...)
+ x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),...)
 }
 \arguments{
   \item{x}{The X vector, or the first column of a  data.frame or matrix.  }
@@ -43,6 +43,7 @@
   \item{freq}{Show frequency counts, otherwise show density counts}
   \item{x.axes}{Show the x axis for the x histogram}
   \item{y.axes}{Show the y axis for the y histogram}
+  \item{size}{The sizes of the ellipses (in sd units).  Defaults to 1,2}
   \item{xlab.hist}{Not currently available}
   \item{ylab.hist}{Label for y axis histogram.  Not currently available.} 
   \item{title}{An optional title}

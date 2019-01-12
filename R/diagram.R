@@ -3,21 +3,20 @@
 #The diagram function is the generic function (actually empty) that allows a clearer help file
 #the entire set of functions for diagramming are all prefixed as dia. 
 "diagram" <- function(fit,...) {
-#first, figure out which psych function was called
- fa <- principal <- vss <- iclust <- omega <- lavaan <-  FALSE
-if(length(class(fit)) == 1) {if (class(fit)=="lavaan") lavaan <- TRUE } 
-if(length(class(fit)) > 1)  {
-   if(class(fit)[2] =='fa')  fa <- TRUE
-   if(class(fit)[2] =='vss')  vss <- TRUE
-   if(class(fit)[2] =='iclust')  iclust <- TRUE
-   if(class(fit)[2] =='omega')  omega <- TRUE
-   if(class(fit)[2] =='principal')  principal <- TRUE
-   }
-if(fa) {fa.diagram(fit,...) }
-if(principal) {fa.diagram(fit,...) }
-if(iclust) {iclust.diagram(fit,...)}
-if(omega) {omega.diagram(fit,...)}
-if(lavaan) {lavaan.diagram(fit,...)} 
+# figure out which psych function was called and then call the appropriate diagram
+fn <- NULL
+if(length(class(fit)) == 1) {if (class(fit)=="lavaan") fn <- "lavaan" } 
+if(length(class(fit)) > 1)  { fn <- class(fit)[2]}
+
+switch(fn,  #replaced a series of if statements to switch  12/23/18
+fa  = {fa.diagram(fit,...) },
+principal = {fa.diagram(fit,...) },
+iclust = {iclust.diagram(fit,...)},
+omega = {omega.diagram(fit,...)},
+lavaan =  {lavaan.diagram(fit,...)}, 
+bassAck = {bassAckward.diagram(fit,...)} ,
+extend = {extension.diagram(fit ,...)}
+)
 }
 
 #modified April 19, 2012 to handle long names more gracefully
@@ -144,6 +143,7 @@ function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.
         xe <- to[1] +costheta * radius2
         ye <- to[2] + sintheta * radius2
        if(!is.null(labels))  text(x,y,labels,cex=l.cex,pos=pos,...)
+      
         arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
         arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)
        }       

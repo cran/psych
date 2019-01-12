@@ -1,9 +1,9 @@
 "ellipses" <- 
-function(x,y=NULL,add=FALSE,smooth=TRUE, lm=FALSE,data=TRUE,n=2,span=2/3, iter=3,col="red", xlab =NULL,ylab= NULL,...) {
+function(x,y=NULL,add=FALSE,smooth=TRUE, lm=FALSE,data=TRUE,n=2,span=2/3, iter=3,col="red", xlab =NULL,ylab= NULL,size=c(1,2),...) {
 #based upon John Fox's ellipse functions
   done=FALSE   #this is a kludge!
   segments=51
- 
+  if(is.null(size)) size <-c(1,2)
   if((is.matrix(x)) | (is.data.frame(x))) { 
        if (dim(x)[2] >2 ) { pairs.panels(x) 
                            done=TRUE
@@ -32,8 +32,8 @@ function(x,y=NULL,add=FALSE,smooth=TRUE, lm=FALSE,data=TRUE,n=2,span=2/3, iter=3
   shape <- diag(c(sqrt(1+r),sqrt(1-r))) %*% matrix(c(theta,theta,-theta,theta),ncol=2,byrow=TRUE)
    ellipse <- unit.circle %*% shape 
 
-   ellipse[,1] <- ellipse[,1]*xs + xm
-   ellipse[,2] <- ellipse[,2]*ys + ym
+   ellipse[,1] <- ellipse[,1]*xs*size[1] + xm
+   ellipse[,2] <- ellipse[,2]*ys*size[1] + ym
    
 if (add) {
         lines(ellipse,col=col, ...)
@@ -55,8 +55,8 @@ if (add) {
     
  if(n>1) { ellipse <- unit.circle %*% shape  #draw another one
   
-   ellipse[,1] <- ellipse[,1]*2*xs + xm
-   ellipse[,2] <- ellipse[,2]*2*ys + ym
+   ellipse[,1] <- ellipse[,1]*size[2]*xs + xm
+   ellipse[,2] <- ellipse[,2]*size[2]*ys + ym
    lines(ellipse,col=col, ...)
      }}
   

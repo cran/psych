@@ -5,11 +5,11 @@
 #August 12, added the ability to find (and save) the stats using describe or describeBy
 
 "error.dots" <- 
-function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
+function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
    min.n = NULL,max.labels =40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"), 
     pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), color = par("fg"), 
     gcolor = par("fg"), lcolor = "gray", 
-    xlab = NULL, ylab = NULL,xlim=NULL,add=FALSE, ...) 
+    xlab = NULL, ylab = NULL,xlim=NULL,add=FALSE,order=NULL, ...) 
 {
     opar <- par("mai", "mar", "cex", "yaxs")
     on.exit(par(opar))
@@ -55,19 +55,31 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
         }, 
          fa.ci ={se = x$cis$sds
               if(is.null(labels)) labels <-rownames(x$cis$means) 
-              x <-x$cis$means }
+              x <-x$cis$means },
+        bestScales = {se <- x$stats$se
+         	          rn <- rownames(x$stats)
+                      x <- x$stats$mean
+                      names(x) <-rn
+                      des <- NULL} 
         )
       } #end switch
       } else {
       if(is.null(group)) {  #the case of just one observation per condition
-      if(is.null(dim(x))) {se <- rep(0,length(x))
+      	if(is.null(stats)) {
+     		 if(is.null(dim(x))) {se <- rep(0,length(x))
          des <- x
          labels=NULL } else {
        des <-   describe(x)
          x <-des$mean
         if(sd) { se <- des$sd} else {se <- des$se}
-        
-         names(x) <- rownames(des)}} else {
+         names(x) <- rownames(des)}
+          }  else { #the normal case is to find the means and se
+          x <- stats$mean
+          se <- stats$se 
+          names(x) <- rownames(stats)
+          des <- NULL
+        }
+          } else {
           if(is.null(xlab)) xlab <- var 
          des <- describeBy(x,group=group)
          x <- se <-  rep(NA,length(des))
@@ -84,7 +96,8 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
       
      n.var <- length(x)
    # if(!is.null(se) && !sd) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
-    if (sort) { ord <- order(x,decreasing=!decreasing) } else {ord <- n.var:1}   
+    if (sort) { if(is.null(order)) {ord <- order(x,decreasing=!decreasing) } else {ord<- order}
+    }  else {ord <- n.var:1}   
     		 x <- x[ord]
    		    se <- se[ord]
    		 
@@ -105,6 +118,8 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
    	 se <- temp.se
    	  }
    	 
+   	 
+ 
    	 if(missing(main)) {if(sd) {main <- "means + standard deviation"} else {main="Confidence Intervals around the mean"}}
    	  
 
@@ -211,8 +226,8 @@ function (x,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL, head = 12, tail
     title(main = main, xlab = xlab, ylab = ylab, ...)
    
     
-    if(!is.null(des)) { 
-     invisible(des)}
+   result <- list(des =des,order=ord)
+     invisible(result)
     #report the order if sort 
 }
 

@@ -50,7 +50,6 @@ if(type=="ICC") {
 	if(missing(main)) {main1 <- paste("Item parameters from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
 	} else {if(missing(main)) {main1 <- paste("Item parameters from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
 	
-	#	if(missing(main)) main <- "Item parameters from factor analysis"
 		if(missing(ylab)) ylab <- "Probability of Response"
 		if(length(lncol) < 2) lncol <- rep(lncol,nvar)
 		ii <- 1 
@@ -85,7 +84,9 @@ if(type=="ICC") {
 		if(missing(xlab)) xlab <- "Latent Trait (normal scale)"
 		if(length(lncol)< 2) lncol <- rep(lncol,nvar)
 		op <- par(mar=c(5,4,4,4))  #set the margins a bit wider
-		plot(x,testInfo,typ="l",ylim=c(0,max(testInfo)),ylab=ylab,xlab=xlab,main=main1,col=lncol[1],...)
+		if(missing(ylim) ) ylim <- c(0,max(testInfo))
+
+		plot(x,testInfo,typ="l",ylim=ylim,ylab=ylab,xlab=xlab,main=main1,col=lncol[1],...)
 		 ax4 <- seq(0,max(testInfo),max(testInfo)/4)
 	 rel4 <- round(1-1/ax4,2)
 	 rel4[1] <- NA
@@ -303,10 +304,11 @@ for(i in 1:nvar) {
 	if(missing(main)) {main1 <- paste("Item information from factor analysis for factor" ,f)} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- paste( main,' for factor ', f)}}
 	} else {if(missing(main)) {main1 <- paste("Item information from factor analysis")} else {if (length(main) > 1) {main1 <- main[f]} else {main1 <- main}}}
 	
-	if(dynamic.ylim) ylim <- c(0,1)
+	if(dynamic.ylim) ylim <- c(0,max(testInfo,na.rm=TRUE)+.03)
+	
 	ii <- 1 
 while((abs(discrimination[ii]) < cut) && (ii < nvar)) {ii <- ii + 1} 
-	plot(x,testInfo[,ii],ylim=c(0,max(testInfo,na.rm=TRUE)+.03),ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
+	plot(x,testInfo[,ii],ylim=ylim,ylab=ylab,xlab=xlab,type="l",main=main1,col=lncol[1],...)
 
 if(discrimination[ii] > 0 ) {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,labels[ii])} else {text(x[which.max(testInfo[,ii])],max(testInfo[,ii])+.03,paste("-",labels[ii],sep=""))}
 for(i in (ii+1):nvar) { if (abs(discrimination[i]) > cut) {

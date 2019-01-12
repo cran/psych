@@ -2,6 +2,7 @@
 \alias{fa.graph}
 \alias{fa.rgraph}
 \alias{fa.diagram}
+\alias{extension.diagram}
 \alias{het.diagram}
 \title{ Graph factor loading matrices}
 \description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph. \code{\link{het.diagram}} will draw "heterarchy" diagrams of factor/scale solutions at different levels.
@@ -12,6 +13,11 @@ fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
     main,cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) 
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
         main="Heterarchy diagram",l.cex,gap.size,...) 
+extension.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
+    e.cut=.1,simple=TRUE,e.simple=FALSE,errors=FALSE,g=FALSE,
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,
+    marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...)
+
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
    size=c(8,6), node.font=c("Helvetica", 14),
     edge.font=c("Helvetica", 10), rank.direction=c("RL","TB","LR","BT"),
@@ -30,7 +36,9 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{out.file}{ If it exists, a dot representation of the graph will be stored here (fa.graph)}
   \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
+  \item{e.cut}{extension loadings with abs(loading) > e.cut will be shown}
   \item{simple}{Only the biggest loading per item is shown}
+  \item{e.simple}{Only the biggest loading per extension item is shown }
   \item{g}{Does the factor matrix reflect a g (first) factor.  If so, then draw this to the left of the variables, with the remaining factors to the right of the variables.  It is useful to turn off the simple parameter in this case.}
   \item{ic}{If drawing a cluster analysis result, should we treat it as latent variable model (ic=FALSE) or as an observed variable model (ic=TRUE) }
   \item{r}{A correlation matrix for the het.diagram function}
@@ -66,7 +74,10 @@ Hierarchical (bifactor) models may be drawn by specifying the g parameter as TRU
 
 The \code{\link{het.diagram}} function will show the case of a hetarchical structure at multiple levels.  It can also be used to show the patterns of correlations between sets of scales (e.g., EPI, NEO, BFI).  The example is for showing the relationship between 3 sets of 4 variables from the Thurstone data set. The parameters l.cex and gap.size are used to adjust the font size of the labels and the gap in the lines.  
 
+\code{\link{extension.diagram}} will draw a \code{\link{fa.extend}} result with slightly more control than using \code{\link{fa.diagram}} or the more generic \code{\link{diagram}} function.
+
 In fa.rgraph although a nice graph is drawn for the orthogonal factor case, the oblique factor drawing is acceptable, but is better if cleaned up outside of R or done using fa.diagram. 
+
 
 The normal input is taken from the output of either \code{\link{fa}} or \code{\link{ICLUST}}. This latter case displays the ICLUST results in terms of the cluster loadings, not in terms of the cluster structure.  Actually an interesting option.
 
@@ -89,7 +100,7 @@ fa.graph: the graph instructions are saved in the dot language. }
 }
 
  
-\seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{structure.diagram}} to convert the factor diagram to sem modeling code.
+\seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{bassAckward.diagram}}.  \code{\link{structure.diagram}} will convert the factor diagram to sem modeling code.
 }
 \examples{
 

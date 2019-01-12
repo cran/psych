@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL,impute=NULL) {  #find coefficient alpha given a data frame or a matrix
     
  alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -31,10 +31,15 @@
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
     if(class(x)[1] != "data.frame") x <- fix.dplyr(x)    #to get around a problem created by dplyr
-    if(!is.null(keys)){#two 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
+    if(!is.null(keys)){# 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
     if( is.list(keys)) { select <- sub("-","",unlist(keys))   #added 9/26/16 to speed up scoring one scale from many
-      x <- x[select] 
-      keys <- make.keys(x,keys)}}
+      	x <- x[,select] 
+      	keys <- make.keys(x,keys)} else {
+      	temp <- rep(1,ncol(x))
+      	temp[(colnames(x) %in% keys)] <- -1
+      	keys <- temp
+      }
+      }
       
     nvar <- dim(x)[2]
     nsub <- dim(x)[1]
@@ -43,6 +48,12 @@
     raw <- FALSE
     if (!isCorrelation(x))  { #find the correlations if we are given  raw data
       raw <- TRUE
+       if(!is.null(impute) ) {
+       		if(impute=="median") {item.impute <- apply(x,2,median,na.rm=na.rm)} else {item.impute <- apply(x,2,mean,na.rm=na.rm) } #column values
+  #     		apply(x,1,function(x) { x[is.na(x)]  <- item.impute[]}) }  #replace row wise
+                 
+            for(i in 1:nsub) {for (j in 1:nvar) {x[i,is.na(x[i,j])] <- item.impute[j] }   }  
+            }
        item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
        if((length(bad) > 0) && delete) {
@@ -57,26 +68,34 @@
          #flip items if needed and wanted
          #if(check.keys && is.null(keys)) {
             p1 <- principal(x,scores=FALSE)
-            keys <- rep(1,nvar)
+
                if(any(p1$loadings < 0)) {if (check.keys) {if(warnings) warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
                     keys <- 1- 2* (p1$loadings < 0)
                       } else {
                        if(is.null(keys) && warnings ) {warning("Some items were negatively correlated with the total scale and probably \nshould be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
                        if(warnings) cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the total scale and \nprobably should be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
-                        }} 
+                        keys <- rep(1,nvar)
+                         } 
+                   
+                    }
             }  #keys is now a vector of 1s and -1s
-           names(keys) <- colnames(x)
+           #names(keys) <- colnames(x)
            # }
             
          if(is.null(keys)) {keys <- rep(1,nvar)
+              
                  names(keys) <- colnames(x)} else {  
          			keys<- as.vector(keys) 
          	        names(keys) <- colnames(x)
          			if(length(keys) < nvar) {temp <- keys  #this is the option of keying just the reversals
          			                         keys <- rep(1,nvar)
          			                         names(keys) <- colnames(x)
-         			                         keys[temp] <- -1}
+         			                         keys[temp] <- -1
+         			                      }
+         			                         
          			                   } 
+         			           
+         			           
         			 key.d <- diag(keys)
                      C <- key.d %*% C %*% key.d
                      signkey <- strtrim(keys,1)

@@ -22,7 +22,7 @@ Study flat had 170 participants, study maps had 160.
 
 These studies are described in more detail in various publications from the PMC lab.  In particular, Revelle and Anderson, 1997 and Rafaeli and Revelle (2006). An analysis of these data has also appeared in Smillie et al. (2012).
 
-
+For a much more complete data set involving film, caffeine, and time of day manipulations, see the \code{\link{msqR}} data set.
 }
 \source{Data collected at the Personality, Motivation, and Cognition Laboratory, Northwestern University. 
 }

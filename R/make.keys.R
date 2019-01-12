@@ -7,6 +7,7 @@ if(!is.numeric(nvars)) {item.labels <- nvars
 nkeys <- length(keys.list) 
 keys <- matrix(rep(0,nvars*nkeys),ncol=nkeys)
 for (i in 1:nkeys) {
+      if(!is.null(keys.list[[i]])) {
 		list.i <-  unlist(keys.list[[i]])
 		if((is.character(list.i)) && !is.null(item.labels)) {
 		neg <- grep("-",list.i)
@@ -15,12 +16,13 @@ for (i in 1:nkeys) {
 		if(!any(is.na(neg))) list.i[neg] <- -list.i[neg]}
 		keys[abs(list.i),i] <- sign(list.i ) 
 			}
+			}
 if(!is.null(key.labels)) {colnames(keys) <- key.labels} else {colnames(keys) <- names(keys.list)}
 if(!is.null(item.labels)) {rownames(keys) <- item.labels} 
 return(keys)}
 #written June 11, 2008
 #revised Sept 15, 2013 to allow for symbolic keys
-
+#revised November 21, 2018 to allow null keys
 
 
 

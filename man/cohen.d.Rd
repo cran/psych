@@ -16,7 +16,7 @@
 Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. 
 }
 \usage{
-cohen.d(x, group,alpha=.05,std=TRUE)
+cohen.d(x, group,alpha=.05,std=TRUE,dictionary=NULL)
 d.robust(x,group,trim=.2)
 cohen.d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
 d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
@@ -25,7 +25,7 @@ d2r(d)
 r2d(rho)
 d2t(d,n=NULL,n2=NULL,n1=NULL)
 t2d(t,n=NULL,n2=NULL,n1=NULL)
-m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL)
+m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -38,6 +38,7 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL)
  \item{n}{Total sample size (of groups 1 and 2)}
  \item{n1}{Sample size of group 1 (if only one group)}
  \item{n2}{Sample size of group 2 }
+ \item{pooled}{Pool the two variances.}
  \item{t}{Student's t statistic}
  \item{alpha}{1-alpha is the width of the confidence interval}
  \item{std}{Find the correlation rather covariance matrix}
@@ -46,6 +47,7 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL)
  \item{m2}{Mean of group 2}
  \item{s1}{Standard deviation of group 1}
  \item{s2}{Standard deviation of group 2}
+ \item{dictionary}{What are the items being described?}
 }
 \details{
 There are many ways of reporting how two groups differ.  Cohen's d statistic is just the differences of means expressed in terms of the pooled within group standard deviation.  This is insensitive to sample size.  r is the a universal measure of effect size that is a simple function of d, but is bounded -1 to 1.  The t statistic is merely d * sqrt(n)/2 and thus reflects sample size.   
@@ -58,7 +60,7 @@ In the case of finding the confidence interval for a comparison against 0 (the o
 
 \code{\link{d.robust}} follows Algina et al. 2005) to find trimmed means (trim =.2) and Winsorize variances (trim =.2).  Supposedly, this provides a more robust estimate of effect sizes.
 
-\code{\link{m2t}} reports Student's t.test for two groups given their means, standard deviations, and sample size.  This is convenient when checking statistics where those estimates are provided, but the raw data are not available.
+\code{\link{m2t}} reports Student's t.test for two groups given their means, standard deviations, and sample size.  This is convenient when checking statistics where those estimates are provided, but the raw data are not available.  By default,it gives the pooled estimate of variance, but if pooled is FALSE, it applies Welch's correction.
  
 }
 \value{

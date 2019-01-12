@@ -6,26 +6,29 @@
 
 \title{Sort factor analysis or principal components analysis loadings}
 
-\description{Although the print.psych function will sort factor analysis loadings, sometimes it is useful to do this outside of the print function. fa.sort takes the output from the fa or principal functions and sorts the loadings for each factor.  Items are located in terms of their greatest loading.  The new order is returned as an element in the fa list.
+\description{Although the print.psych function will sort factor analysis loadings, sometimes it is useful to do this outside of the print function. fa.sort takes the output from the fa or principal functions and sorts the loadings for each factor.  Items are located in terms of their greatest loading.  The new order is returned as an element in the fa list. fa.organize allows for the columns or rows to be reorganized.
 }
 \usage{
 fa.sort(fa.results,polar=FALSE)
-fa.organize(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) 
+fa.organize(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE,flip=TRUE) 
 }
 
 
 \arguments{
-  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}. }
-  \item{polar}{Sort by polar coordinates of first two factors (FALSE)}
+  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}.  Can also just be a matrix of loadings. }
+ \item{polar}{Sort by polar coordinates of first two factors (FALSE)}
 \item{o}{The order in which to order the factors}
 \item{i}{The order in which to order the items}
 \item{cn}{new factor names}
 \item{echelon}{Organize the factors so that they are in echelon form (variable 1 .. n on factor 1, n+1 ...n=k on factor 2, etc.) }
+\item{flip}{Flip factor loadings such that the colMean is positive.}
 }
 \details{
 The fa.results$loadings are replaced with sorted loadings.
 
 fa.organize takes a factor analysis or components output and reorganizes the factors in the o order. Items are organized in the i order.  This is useful when comparing alternative factor solutions.
+
+The flip option works only for the case of matrix input, not for full \code{\link{fa}} objects. Use the  \code{\link{reflect}} function.
 }
 \value{ A sorted factor analysis, principal components analysis, or omega loadings matrix. 
 

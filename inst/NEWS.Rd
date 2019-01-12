@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.8.11 (2018-11-01)}{ 
+\section{Changes in psych version 1.9.1 (2019-01-10)}{ 
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.8.11 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.8.10.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 1.9.1 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.8.12.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="http://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
@@ -67,8 +67,60 @@
        \item Change help file examples so they are cleaner for people who example(fn)
     \item Make the main functions more "tidy" in terms of their output
     \item Add testthat functionality
+    \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.
+    \item Consider creating a new package (psych.tools) to add some of the useful utilities.
+     \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
+     \item Need to add documentation to mediate/moderate/setCor for what dfs are used and why.
+    \item Examine the stats::anova, stats::summary.lm, stats::anova.lm for hints on how to do these anova comparisons
+   \item Add an n.iter option to pca (requested by Michael Wood)
   } 
   }
+  }
+  
+   \section{Changes in psych version 1.8.12 (2018-12-31)}{
+    \subsection{Additions}{
+    \itemize{
+    \item Added cohen.d.expected to find the expected value of the M.dist. It is sensitive to sample size and thus has a non-zero expected value.
+    \item Added dictionary option to cohen.d to include a list of items used.
+    \item Added the ability to do MIMIC diagrams from lavaan output in lavaan.diagram
+    \item Added the ability to specify the size in ellipses drawn by scatter.hist (requested by Jacques-Daniel Basic )
+    \item Modified dfOrder to allow a global direction (ascending, descending) option, and also to handle matrices
+    \item Added the ability to use stats in error.dots (comparable to error.bars)
+    \item Continued to improve bestScales
+    \item Minor changes to lookup and selectFromKeylist to make compatible with bestScale issues
+    \item Added the log.p option to bestScale
+    \item Invisibly return the correlation matrix (if found) from corPlot
+    \item Added matSort as an alias to mat.sort
+    \item Changed the documentation in cohen.kappa  following a suggestion by Kelly Reeve
+    \item Added the fparse (formula parse) function to the namespace to make it public
+    \item Modified setCor and mediate to handle quadratic terms if specified in the formula input.
+    \item Added manhattan to do Manhattan plots of correlations versus a criterion.
+    \item Added the ability to impute data in alpha
+    \item Minor changes in fa.organize to allow for matrix input
+    \item Minor improvements to esem and esem.diagram to allow for lavaan model output.
+    \item Added bassAckward to do the bass-ackward approach of Goldberg (see also Waller). This returns the correlations of factors across solutions and draws a diagram. 
+    \item Added faCor to find the correlation and congruences between two factor solutions of the same data.
+    \item Added extension.diagram to make cleaner fa.extension diagrams.  Can be called from diagram()
+    \item Improved the documentation for fa.extension to explain more applications.
+    \item Added EPI personality scales, as well as film and drug condition to msqR. Re-arranged the order of variables in msqR to be more user friendly. 
+    \item Changed the message in fa.stats about bad solutions from a message to a warning (which can be suppressed using suppressWarnings).   
+     }
+     }
+    \subsection{Bugs Fixed}{
+    	\itemize{
+    		\item Fixed omega.diagram when drawing from a loadings matrix
+    		\item Fix ylim parameter in plot.irt so that it actually works.
+    		\item Fixed setCor so that it can handle single x variable with raw data.
+    		\item Fixed corr.test so that it actually does use min.length 
+    		\item Fixed alpha so that it properly warns when it needs to reverse keys (incorrectly omitted this feature in the 1.8.8 release.  Reported by Mohammad Latifi)
+    		\item More importantly, fixed alpha so that it actually follows the help file.  That is to say, it now will score short subscales appropriately.
+    		\item Fixed bug in setCor when doing partial rs.
+    		\item Fixed a related problem in mediate/moderate/setCor in terms of df when doing partial r. 
+    		\item Fixed a problem in mediate  when doing just regressions with no mediation and just the correlation matrix.
+    		\item Fixed biplot.psych so that it keeps the correct frame of reference so that abline(h=0) will work.  (Reported by Fabio Daniel Trinco.)
+    		\item Minor tweak to setCor to properly print unweighted multiple R
+    		}
+  	}
   }
   
    \section{Changes in psych version 1.8.10 (2018-10-30)}{

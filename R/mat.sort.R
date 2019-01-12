@@ -1,4 +1,4 @@
-"mat.sort" <-
+"mat.sort" <- "matSort" <- 
 function(m,f=NULL) {
 if (is.null(f) ) {f <- fa(m) } 
 if(is.list(f) && (!is.null(loadings(f)))) {load <- loadings(f)}  else {load <- f}

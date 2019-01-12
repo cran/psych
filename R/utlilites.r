@@ -61,11 +61,13 @@
  #Completely rewritten 1/20/18 to follow  the help pages for order more closely
 #sort a data frame according to one or multiple columns 
 #will only work for data.frames (not matrices)
-dfOrder <- function(object,columns=NULL,absolute=FALSE) {
+dfOrder <- function(object,columns=NULL,absolute=FALSE,ascending=TRUE) {
+  if(is.matrix(object)) {mat<- TRUE
+             object <- as.data.frame(object)} else {mat<-FALSE}
    if(is.null(columns)) columns <- 1:ncol(object)
 	 nc <- length(columns)
 	 cn <- colnames(object)
- 	 temp <- rep(1,nc)    
+ 	 if(ascending) {temp <- rep(1,nc)} else {temp <- rep(-1,nc)}    
  	 if(is.character(columns)) {  #treat character strings 
    		 temp [strtrim(columns,1)=="-"] <- -1
     	 if(any(temp < 0  ) )  {columns <- sub("-","",columns) }
@@ -83,6 +85,7 @@ dfOrder <- function(object,columns=NULL,absolute=FALSE) {
    	  temp.object <- data.frame(temp.object)
  
    	 ord <- do.call(order,temp.object)
+   	 if(mat) object <- as.matrix(object)
      if(length(ord) > 1) {
    	   return(object[ord,]) }else {return(object)} #added length test 4/26/18
        }

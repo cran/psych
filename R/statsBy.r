@@ -3,7 +3,8 @@
 #modified June 2, 2015 to include covariance, pearson, spearman, poly ,etc. in correlations
 #Fixed March 3, 2017 to not weight empty cells in finding ICCs
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
-#modifed November 3, 2019 to allow a single DV (in case cohen.d is just comparing two groups on one DV)
+#modifed November 3, 2018 to allow a single DV (in case cohen.d is just comparing two groups on one DV)
+#corrected January 1, 2019 to allow for grouping variables that are characters
 "statsBy" <-
    function (data,group,cors=FALSE, cor="cor", method="pearson",use="pairwise", poly=FALSE,na.rm=TRUE,alpha=.05) { #  
     cl <- match.call()
@@ -14,8 +15,13 @@
   pairwise <- function(x) {n <- t(!is.na(x)) %*% (!is.na(x))
               n}
 #get the grouping information
-if(is.character(group)) {
-gr <- which(colnames(data) %in% group) } else {gr <- group}      
+
+if(length(group) < NROW(data) ){   #added 01/01/19 to handle the case of non-numeric grouping data
+if(is.character(group) ) {
+gr <- which(colnames(data) %in% group) } else {gr <- group} 
+}   else {data <- cbind(data,group)
+    group <- "group"
+    gr <- which(colnames(data) %in% group)}   
 z1 <- data[,group]
        z <- z1
        cnames <- colnames(data)

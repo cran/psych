@@ -6,6 +6,7 @@
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="none",delete=TRUE,  min=NULL,max=NULL,count.responses=FALSE,digits=2) {
  
  smallFunction <- function(scale,keys) {
+      if(is.null(keys)) return(NULL)
           	pos.item <- items[,which(keys[,scale] > 0)]
             neg.item <- items[,which(keys[,scale] < 0)]
           	neg.item <- max + min - neg.item
@@ -20,10 +21,12 @@
    raw.data <- TRUE
    if(impute == FALSE)  impute <- "none"
    if(is.list(keys)) {select <- sub("-","",unlist(keys))
-      select <- select[!duplicated(select)] } else {
+      select <- select[!duplicated(select)]
+      select <- select[!is.na(select)] } else {
       keys <- keys2list(keys)
         select <- selectFromKeyslist(colnames(items),keys)
-      select <- select[!duplicated(select)]}
+      select <- select[!duplicated(select)]
+      select <- select[!is.na(select)]}    #added 11/23/18
       items <- items[,select,drop=FALSE]
       keynames <- colnames(keys)
       keys <- make.keys(items,keys)   #added 9/9/16 

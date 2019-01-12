@@ -16,7 +16,9 @@ partial.r(data, x, y,use="pairwise",method="pearson")
   \item{method}{Which method of correlation should we use, the default is pearson.}
   
 }
-\details{There are two ways to use \code{\link{partial.r}}.  One is to find the complete partial correlation matrix (that is, partial all the other variables out of each variable).  This may be done by simply specify the raw data or correlation matrix.  (In the case of raw data, correlations will be found according to use and method.)  In this case, just specify the data matrix.  .
+\details{There are two ways to use \code{\link{partial.r}}.  One is to find the complete partial correlation matrix (that is, partial all the other variables out of each variable).  This may be done by simply specify the raw data or correlation matrix.  (In the case of raw data, correlations will be found according to use and method.)  In this case, just specify the data matrix. 
+
+This is useful in the case of multiple regression.  If we think of the data as an X matrix and a Y vector (D = X + Y) with correlations R.  Then the partial correlations of the X predictors are just the last column of R^(-1). See the \code{\link{Tal.Or}} example below.
 
 The second usage is to partial a set of variables(y) out of another set (x). It is sometimes convenient to partial the effect of a number of variables (e.g., sex, age, education) out of the correlations of another set of variables.  This could be done laboriously by finding the residuals of various multiple correlations, and then correlating these residuals.  The matrix algebra alternative is to do it directly. 
 To find the confidence intervals and "significance" of the correlations, use the \code{\link{corr.p}} function with n = n - s where s is the numer of covariates. 
@@ -36,6 +38,14 @@ cp <- corr.p(par.r,n=98)  #assumes the jen data based upon n =100.
 print(cp,short=FALSE)  #show the confidence intervals as well
  #partial all from all correlations.
 lowerMat(partial.r(jen)) 
+
+#Consider the Tal.Or data set.
+lowerCor(Tal.Or)
+#partial gender and age from these relations (they hardly change)
+partial.r(Tal.Or,1:4,5:6)
+#find the partial correlations between the first three variables and the DV (reaction)
+round(partial.r(Tal.Or[1:4])[4,1:3],2) #The partial correlations with the criterion
+
 }
 \keyword{multivariate}
 

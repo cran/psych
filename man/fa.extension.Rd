@@ -3,14 +3,13 @@
 \alias{fa.extend}
 \title{Apply Dwyer's factor extension to find factor loadings for extended variables}
 
-\description{Dwyer (1937) introduced a method for finding factor loadings for variables not included in the original analysis.  This is basically finding the unattenuated correlation of the extension variables with the factor scores.  An alternative, which does not correct for factor reliability was proposed by Gorsuch (1997). Both options are an application of exploratory factor analysis with extensions to new variables.  
+\description{Dwyer (1937) introduced a method for finding factor loadings for variables not included in the original analysis.  This is basically finding the unattenuated correlation of the extension variables with the factor scores.  An alternative, which does not correct for factor reliability was proposed by Gorsuch (1997). Both options are an application of exploratory factor analysis with extensions to new variables. Also useful for finding the validities of variables in the factor space.  
 }
 \usage{
 fa.extension(Roe,fo,correct=TRUE)
 fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, 
       fm="minres",alpha=.1,omega=FALSE,  ...) 
-
 }
 
 \arguments{
@@ -31,6 +30,7 @@ fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair.}
 \item{alpha}{alpha level for the confidence intervals for RMSEA}
 \item{omega}{Do the extension analysis for an omega type analysis}
+
  \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
 
 }

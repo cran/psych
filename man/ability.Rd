@@ -35,7 +35,7 @@ In addition, the data set is a good example of doing item analysis to examine th
 }
 \source{ The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{https://sapa-project.org}.  The data were collected with David Condon from 8/08/12 to 8/31/12.
 
-Similar data are available from the International Cognitive Ability Resource at \url{https://icar-project.org}.
+Similar data are available from the International Cognitive Ability Resource at \url{https://icar-project.com}.
 } 
 
 \references{Revelle, William, Wilt, Joshua,  and Rosenthal, Allen (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, Alexandra  and Matthews, Gerald   and Szymura, Blazej (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 

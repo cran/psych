@@ -61,6 +61,22 @@ autoR = {cat("\nAutocorrelations \n")
        
  },
  
+ bassAck = {
+   cat("\nCall: ")
+   print(x$Call)
+nf <- length(x$bass.ack)-1
+for (f in 1:nf) {
+cat("\n",f, 
+x$sumnames[[f]])}
+
+if(!short) {
+for (f in 1:nf) {
+cat("\nFactor correlations\n ")
+print(round(x$bass.ack[[f]],digits=digits))}
+} else {cat("\nUse print with the short = FALSE option to see the correlations, or use the summary command.")}
+ },
+ 
+ 
  auc = {cat('Decision Theory and Area under the Curve\n')
 cat('\nThe original data implied the following 2 x 2 table\n')
 print(x$probabilities,digits=digits)
@@ -345,6 +361,21 @@ faBy = { cat("Call: ")
         }}
                 
 },
+
+faCor = { cat("Call: ")
+        print(x$Call)
+       
+        if(!short) { cat("\n Factor Summary  for first solution\n")    
+        summary(x$f1)
+        cat("\n Factor Summary  for second solution\n") 
+                    summary(x$f2)  
+                    }
+      cat("\n Factor correlations between the two solutions\n")     
+       print(x$r,digits=digits)
+     
+     cat("\n Factor congruence between the two solutions\n")     
+       print(x$congruence,digits=digits)
+},
     
 guttman =  {
   cat("Call: ")
@@ -501,7 +532,7 @@ parallel= {
 cat("Call: ")
               print(x$Call) 
               if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
-                  parallel.df <- data.frame(fa=x$fa.values,fa.sim =x$fa.sim,pc= x$pc.values,pc.sim =x$pc.sim)
+                  parallel.df <- data.frame(fa=x$fa.values,fa.sam =x$fa.simr,fa.sim=x$fa.sim,pc= x$pc.values,pc.sam =x$pc.simr,pc.sim=x$pc.sim)
 		fa.test <- x$nfact
 		pc.test <- x$ncomp
 		
@@ -509,7 +540,10 @@ cat("Call: ")
 		cat("the number of factors = ",fa.test, " and the number of components = ",pc.test,"\n")
                   cat("\n Eigen Values of \n")
                   
-                  colnames(parallel.df) <- c("Original factors","Simulated data","Original components", "simulated data")}
+                  colnames(parallel.df) <- c("Original factors","Resampled data", "Simulated data","Original components", "Resampled components", "Simulated components")
+                if(any(is.na(x$fa.sim))) parallel.df <- parallel.df[-c(3,6)]
+        
+                }
               if(is.na(fa.test) ) fa.test <- 0
               if(is.na(pc.test)) pc.test <- 0
                if(!any(is.na(parallel.df)))  {print(round(parallel.df[1:max(fa.test,pc.test),],digits))}  else {
@@ -697,11 +731,11 @@ scores =  {
   },
   
 setCor= { cat("Call: ")
-              print(x$Call)
+                          print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
             ny <- NCOL(x$beta)
-          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i])
+          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i], "\n")
           if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
           if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
@@ -717,6 +751,7 @@ setCor= { cat("Call: ")
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw")
               cat("\n Multiple Regression\n")
              print(result.df)
+            
               } 
               }
  

@@ -60,6 +60,9 @@ nb <- round(width * value/max )
 
 "reflect" <- 
 function(f,flip=NULL) {
+if(is.null(names(f))) {temp <- f
+    f <-list()
+    f$loadings <- temp}
 rnames <- colnames(f$loadings)
 rnames[flip] <- paste(rnames[flip],'(R)',sep="")
 flipper <- rep(1,ncol(f$loadings))
@@ -214,7 +217,8 @@ test.all <- function(p) {
 function(x,y,criteria=NULL) {
 if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
      temp <- match(x,y[,criteria])}
- y <- (y[temp[!is.na(temp)],,drop=FALSE])
+     if(any(!is.na(temp))) {
+ y <- (y[temp[!is.na(temp)],,drop=FALSE]) } else {y <- NA}
 return(y)}
  
  #use lookup to take fa/ic output and show the results 
@@ -277,9 +281,21 @@ return(results)}
 
 
  #revised 07/07/18 to add the cluster option
+ #revised 12/07/18 to allow for simple matrix input
+ #read a matrix, return a matrix
+ #read a list, return a list
   "fa.organize" <- 
-function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) {
-  if(echelon & is.null(o) ) {temp <- apply(abs(fa.results$loadings),1,which.max)
+function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE,flip=TRUE) {
+if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form          
+                 if(flip) {
+                 total.load <-colSums(temp)
+                 flipper <- sign(total.load)
+                 flipper[flipper==0] <-1 
+                 temp <- t( t(temp) * flipper ) }
+                 if(!is.null(o)) {temp <- temp[,o]}
+                 if(!is.null(i)) {temp <-temp[i,]}
+                 fa.results <- temp } else { # the list form 
+     if(echelon & is.null(o) ) {temp <- apply(abs(  fa.results$loadings),1,which.max)
      nf <- ncol(fa.results$loadings)
      nvar <- nrow(fa.results$loadings)
   o <- 1:nf
@@ -288,10 +304,16 @@ function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) {
   for (ki in 2:nvar) {if (!(temp[ki] %in% o[1:k])) {o[k+1] <- temp[ki]
     k <- k + 1}  }
     }
+  if(flip) {
+        total.load <- colSums(fa.results$loadings)
+       flipper <- sign(total.load)
+        flipper[flipper==0] <-1 } else { flipper <- rep(1,NCOL(fa.results$loadings)) }
+   fa.results$loadings <- t(t(fa.results$loadings) * flipper)                      
+
   if(!is.null(o)) {fa.results$loadings <- fa.results$loadings[,o]
-       fa.results$Structure <- fa.results$Structure[,o]
-       fa.results$weights <- fa.results$weights[,o]
-       fa.results$valid <- fa.results$valid[o]
+      flipper <- flipper[o] 
+       fa.results$Structure <- t(t(fa.results$Structure[,o]) * flipper)
+       fa.results$valid <- t(t(fa.results$valid[o])*flipper)
        fa.results$score.cor <- fa.results$score.cor[o,o]
        fa.results$r.scores <- fa.results$r.scores[o,o]
        fa.results$R2 <- fa.results$R2[o]
@@ -301,7 +323,8 @@ function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE) {
    fa.results$Structure <- fa.results$Structure[i,]
        fa.results$weights <- fa.results$weights[i,]
        fa.results$complexity=fa.results$complexity[i]
-       fa.results$uniquenesses <- fa.results$uniquenesses[i]}
+       fa.results$uniquenesses <- fa.results$uniquenesses[i]} 
+       }
   return(fa.results)
   }
   

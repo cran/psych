@@ -5,13 +5,15 @@
 #Seriously modified June 25, 2016 to allow better control for labels, as well as just generally cleaner code
 
 "biplot.psych" <-
-function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,...) {
-if(is.null(x$scores)) stop("Biplot requires factor/component scores. \nYou need to r run fa/pca from the raw data")
+function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,...) {
+if(is.null(x$scores)) stop("Biplot requires factor/component scores. \nYou need to  run fa/pca from the raw data")
 op <- par()
 old.par <- par(no.readonly = TRUE)
 on.exit(par(old.par)) 
 MAR <- par("mar")
 MFROW <- par("mfrow")
+title <- main
+main <- NULL
 #fa.poly nests the fa and scores within a list
 if(is.list(x$scores)) x$scores <- x$scores$scores  #the case of fa.poly output
 if(is.list(x$fa)) x$loadings <- x$fa$loadings  #once again, the case of fa.poly
@@ -43,11 +45,16 @@ if(missing(col)) {col <-  c("black","red","blue","#FF0000FF", "#00FF00FF", "#00F
 if (n.dims == 2) { #just do a one panel graph
 
   op <- par(pty = "s")
+  
+  #we no longer resize the margins, but rather adjust where the title goes
   #if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
-  if (!is.null(main)) par("mar" = MAR + c(0, 0, 1, 0))  #give room for the title  -
+ # if (!is.null(main)) par("mar" = MAR + c(0, 0, 1, 0))  #give room for the title  -
   #plotone does the work
- plotone(x$scores,x$loading,labels=labels,main=main,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )
- 
+ plotone(x$scores,x$loading,labels=labels,main=main,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,... )
+  par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
+    dev.hold()
+   
+    on.exit(dev.flush(), add = FALSE)
   } else {  #the case of 3 or more factors -- we do the equivalent of a pairs plot
 	op1 <- par(mfrow=c(n.dims,n.dims), mar=c(2,3,3,2))
 	if(nrow(x$scores) > maxpoints) {labels <- rep(".",nrow(x$scores))} else {labels <- rep("o",nrow(x$scores))}
@@ -61,14 +68,17 @@ if (n.dims == 2) { #just do a one panel graph
   } else {
    
      #  biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim.s,ylim=ylim.s,pch=pch,...)}
-      plotone(x$scores[,c(j,i)],x$loadings[,c(j,i)],main=NULL,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,... )}  #work on this way of doing it
+      plotone(x$scores[,c(j,i)],x$loadings[,c(j,i)],main=NULL,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,... )}  #work on this way of doing it
            }  }
    }
-   par("mar"=MAR) #this puts the margins back to what they were when we started. Important for multiple biplots
-   par("mfrow"=MFROW) 
-}
+   #We do not want to reset the margins back to their prior values, because then we lose the ability to add lines to the figure
+  # par(old.par)
+  # par("mar"=MAR) #this puts the margins back to what they were when we started. Important for multiple biplots
+ #  par("mfrow"=MFROW) 
+title(title,line=2)
+}   #End of biplot.psych
 
- plotone <- function( scores,loadings,labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,ch.col=c("black","blue"),...)  { 
+ plotone <- function( scores,loadings,labels=NULL,cex=c(.75,1),main=main,hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,ch.col=c("black","blue"),smoother=FALSE,...)  { 
 #There are three different conditions
 #1 just show the (unlabeled) points
 #2 don't show the points, but put in labels at their locations
@@ -78,19 +88,23 @@ if (n.dims == 2) { #just do a one panel graph
  if(!is.null(labels)) {
      if(missing(pos))  {choice <- "two" } else {choice <- "three"}
      }
+if(smoother) choice="smoother"
 
 switch(choice,   #we plot the scores here for scores > abs(cut) on x and y
- "one" = {plot(scores, xlim = xlim.s, ylim = ylim.s, cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) } ,
- "two" = {plot(scores,typ='n',  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) 
+ "one" = {plot(scores, xlim = xlim.s, ylim = ylim.s, cex=cex[1],main=main,pch=pch[group],bg=ch.col[group],col=col[group],...) } ,
+ "two" = {plot(scores,typ='n',  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch[group],bg=ch.col[group],col=col[group],...) 
        labels[sqrt((abs(scores[,1])^2  +   abs(scores[,2])^2 ) ) <  cuts] <-   NA
        text(scores,labels=labels,col=ch.col[group],pos=NULL,cex=cex[1])
        },
- "three" = {plot(scores,  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch+group,bg=ch.col[group],col=col[group],...) 
+ "three" = {plot(scores,  xlim = xlim.s, ylim = ylim.s,cex=cex[1],main=main,pch=pch[group],bg=ch.col[group],col=col[group],...) 
         labels[sqrt((abs(scores[,1])^2 + abs(scores[,2])^2)) <  cuts] <-   NA  
-       text(scores,labels=labels,pos=pos,cex=cex[1],col=ch.col[group])
-       })
+       text(scores,labels=labels,pos=pos,cex=cex[1],col=ch.col[group])},
+  "smoother" = {smoothScatter(scores, nrpoints=0)
+    }
+  )
+       
 
-   par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
+     par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
     dev.hold()
    
     on.exit(dev.flush(), add = FALSE)

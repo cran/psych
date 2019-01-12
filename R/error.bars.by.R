@@ -10,7 +10,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     
       #first, see if they are in formula mode   added August 18, 2018
   formula <- FALSE
-   if(class(x) == "formula") {  ps <- parse(x)
+   if(class(x) == "formula") {  ps <- fparse(x)
    formula <- TRUE
    if(is.null(data)) stop("You must specify the data if you are using formula input") 
      x <- data[ps$y]

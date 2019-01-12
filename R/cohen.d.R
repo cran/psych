@@ -1,4 +1,4 @@
-"cohen.d" <- function(x,group,alpha=.05,std=TRUE) {
+"cohen.d" <- function(x,group,alpha=.05,std=TRUE,dictionary=NULL) {
 cl <- match.call()
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
   group.in <- TRUE}
@@ -32,7 +32,8 @@ D <- sqrt(t(d) %*% S.inv %*% d)
 
 D <- as.vector(D)
 cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
-result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g,M.dist = D, r=r,t=t,n=n,p=p, descriptive=stats,Call=cl)
+if(!is.null(dictionary)) {dict = dictionary[colnames(x),]} else {dict=NULL}
+result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g,M.dist = D, r=r,t=t,n=n,p=p, descriptive=stats,dict=dict,Call=cl)
 class(result) <- c("psych","cohen.d")
 return(result)
 }
@@ -65,18 +66,25 @@ return(result)
     return(ci)
      }
      
-"m2t" <- function(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL ) { 
+"m2t" <- function(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE ) { 
      if(!is.null(n) ) { 
         t <- (m1-m2)/sqrt((s1^2 + s2^2)/(n/2))
         d <- 2*t/sqrt(n)
         df <- n-2} else {
-    vp <- ((n1-1) * s1^2 +  (n2-1)* s2^2)/(n1+n2 -2 )
-      t <- (m1-m2)/sqrt(vp*(1/n1 + 1/n2))
+    if(pooled) {vp <- ((n1-1) * s1^2 +  (n2-1)* s2^2)/(n1+n2 -2 )
+            se = sqrt(vp*(1/n1 + 1/n2))} else {se = sqrt(s1^2/n1 + s2^2/n2)}
+      t <- (m1-m2)/se
       df=n1 +n2 -2
+      if(!pooled) {df = (s1^2/n1 + s2^2/n2)^2/(s1^4/(n1^2 *(n1-1)) + s2^4/(n2^2 * (n2-1)))}
         d <- t * sqrt(1/n1 + 1/n2)}
-      p <- 2* pt(t,df,lower.tail=FALSE)
-     return(list(t=t,df=df,p= p,d=d))
+      p <- 2* pt(abs(t),df,lower.tail=FALSE)
+      result <- list(t=t,df=df,p= p,d=d)
+     cat("\n t = ",t, "df =", df, " with probability = 
+",p,"\n")
+invisible(result) #return the values as well
      }
+     
+
   
  
  "cohen.d.by" <- 
@@ -163,7 +171,24 @@ names(d.robust) <- cn
  return(result)   
 }
 
-    
+#find the resampled M.dist November 3, 2018
+cohen.d.expected <- function(x,group,n.rep=10 ) {
+  summary <- list()
+  n.obs <- nrow(x)
+  observed <- cohen.d(x=x,group=group)$M.dist
+ ind <- 1:n.obs
+  for(i in 1:n.rep){
+  samp <- sample(ind,n.obs,replace=FALSE)  #this is a random permutation of the order variable
+  x[,group] <- x[samp,group]
+  summary[[i]] <- cohen.d(x,group)$M.dist
+
+  }
+  result <- unlist(summary)
+  mean.boot <- mean(result)
+  sd.boot <- sd(result)
+  result <-list(observed=observed,mean = mean.boot,sd=sd.boot,trials =result)
+  return(result)
+  }    
  
 
   

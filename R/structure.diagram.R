@@ -4,6 +4,7 @@
 #creates a structural equation path diagram, draws it, and saves sem commands
 #modified again in December, 2009 to add Rx, Ry options
 #modified to produce correct sem and lavaan code  October 2018
+#modified 11/14/18 to do mimic models
 
 "structure.diagram" <-
 function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,Rx=NULL,Ry=NULL,
@@ -15,7 +16,8 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
  num.y  <- num.x <- 0   #we assume there is nothing there
  
  if(!is.null(fx) ) {  #this is the normal case 
-     #check if input is from a factor analysis or omega analysis
+  e.size <- e.size*8/(NROW(fx))
+ #check if input is from a factor analysis or omega analysis
  if(!is.null(class(xmodel)) && (length(class(xmodel))>1)) {
    if(class(xmodel)[1] =="psych" && class(xmodel)[2] =="omega") {
     Phi <- xmodel$schmid$phi
@@ -43,14 +45,17 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
   
   if(is.null(vars) ) {vars <- xvars <- paste("x",1:num.xvar,sep="")  }
   fact <- colnames(xmodel)
-  if (is.null(fact)) { fact <- paste("X",1:num.xfactors,sep="") }
+  if (is.null(fact) ) { fact <- paste("X",1:num.xfactors,sep="") }
   if(is.numeric(factors)) {factors <- round(factors,digits)  }
   
   } else {#fx is NULL    This is for the case where we want to do some fancy graphics of sems
      num.xvar <- dim(Rx)[1]
+     if(is.null(num.xvar)) num.xvar <- 0
      num.xfactors <- 0
      num.yfactors <- 0
      num.factors <- 0
+     fact <- NULL
+
       if(is.null(labels)) {vars <- xvars <-  rownames(Rx)} else { xvars <-  vars <- labels}
    } 
    num.yfactors <- 0
@@ -82,9 +87,10 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
                                        yvars <- colnames(Ry)}  #do we want to draw  the inter Y correlations?
    
     num.var <- num.xvar + num.y
-    if((num.xfactors >0 ) & (num.yfactors>0) & is.null(Phi)) {mimic <- TRUE} else {mimic <- FALSE}
-    num.factors <- num.xfactors + num.yfactors
-    
+    if((num.xfactors > 0 ) & (num.yfactors > 0) & is.null(Phi)) {mimic <- TRUE
+    num.factors <- max(num.xfactors,num.yfactors)} else {mimic <- FALSE
+    num.factors <- num.xfactors + num.yfactors}
+
     sem <- matrix(rep(NA),6*(num.var*num.factors + num.factors),ncol=3)    #this creates an output model for sem analysis
     lavaan <- vector("list",num.xfactors + num.yfactors) #create a list for lavaan
     colnames(sem) <- c("Path","Parameter","Value")
@@ -98,9 +104,12 @@ function(fx=NULL,Phi=NULL,fy=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,re
          
  if(!is.null(Ry)) {y.curves <- 3
                   if(is.numeric(Ry) ) { Ry <- round(Ry,digits)}} else {y.curves <- 0}
- 
-###create the basic figure
 
+
+
+## now do the basic scaling of the figure 
+###create the basic figure
+###
 length.labels <-  0    # a filler for now
 #plot.new() is necessary if we have not plotted before
 #strwd <- try(strwidth(xvars),silent=TRUE)
@@ -109,47 +118,58 @@ strwd <- try(length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8,silent=TR
 if (class(strwd) == "try-error" ) {length.labels = max(nchar(xvars),3)/1.8 } 
 #length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8
 
-if(lr) {limx <- c(-(length.labels+ x.curves),max(num.xvar,num.yvar)+2 + y.curves)  
+if(lr) {limx <- c(-(length.labels + x.curves+ errors/4),max(num.xvar,num.yvar)+2 + y.curves) 
+    
         limy <-  c(0,max(num.xvar,num.yvar)+1) } else {
-        limy <- c(-(length.labels+x.curves),max(num.xvar,num.yvar) +2 + y.curves)  
-        limx <-  c(0,max(num.xvar,num.yvar)+1)
-       if( errors) limy <- c(-1,max(num.xvar,num.yvar)+2)}
+        limy <- c(-(length.labels +x.curves),max(num.xvar,num.yvar) +2 + y.curves+errors)  
+      limx <-  c(0,max(num.xvar,num.yvar)+1)    
+     # if( errors)   limy <- c(-1,max(num.xvar,num.yvar)+2)
+       }
 scale.xaxis <- 3
+#max(num.xvar +1,num.yvar+1)/(num.xfactors+1)
 
 if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)} else  {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main) }
     
-   #now draw the x part
-   
-   k <- num.factors  
-   
+#now draw the x part
+#we want to center the x factors on the left side
+#this requires adding an adjustment if there are more y variables than x  variables.
+#do not draw any x variable if fx is not specified
+ x.adj <- max(0,num.yvar - num.xvar)/2  
+ k <- num.factors  
+ x.scale <- max(num.xvar +1,num.yvar+1)/(num.xvar+1)
+
+if(num.xvar > 0)   { #the normal case 
     for (v in 1:num.xvar) {   
- 	if(lr) { var.rect[[v]] <- dia.rect(0,num.xvar-v+1,xvars[v],xlim=limx,ylim=limy,...) } else { var.rect[[v]] <- dia.rect(v,0,xvars[v],xlim=limy,ylim=limx,...) }
+ 	if(lr) { var.rect[[v]] <- dia.rect(0,(num.xvar-v+1)*x.scale ,xvars[v],xlim=limx,ylim=limy,...) } else { var.rect[[v]] <- dia.rect(v*x.scale,0,xvars[v],xlim=limy,ylim=limx,...) }
      }
   nvar <- num.xvar
-  f.scale <- (num.xvar+ 1)/(num.xfactors+1)
- # e.size <- e.size * f.scale   #try this for scaling of elippses   too big for lavaan diagram
+  if(mimic) { f.scale <- limy[2]/(num.xfactors+1)
+      x.adj <- 0} else { f.scale <- max(num.xvar +1,num.yvar+1)/(num.xfactors+1)}
+ 
+
+   
   if (num.xfactors >0) { 
  for (f in 1:num.xfactors) {
-   	if(!regression) {if(lr) {fact.rect[[f]] <- dia.ellipse(limx[2]/scale.xaxis,(num.xfactors+1-f)*f.scale,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)} else {fact.rect[[f]] <- dia.ellipse(f*f.scale,limy[2]/scale.xaxis,fact[f],ylim=c(0,nvar),xlim=c(0,nvar),e.size=e.size,...)
+
+   	if(!regression) {if(lr) {fact.rect[[f]] <- dia.ellipse(limx[2]/scale.xaxis,(num.xfactors+1-f)*f.scale,fact[f],xlim=limx,ylim=limy,e.size=e.size,...)} else {fact.rect[[f]] <- dia.ellipse(f * f.scale ,limy[2]/scale.xaxis,fact[f],ylim=limy,xlim=limx,e.size=e.size,...)
    	}
    	} else {if(lr) {fact.rect[[f]] <- dia.rect(limx[2]/scale.xaxis,(num.xfactors+1-f)*f.scale,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),...)} else {
    	                fact.rect[[f]] <- dia.rect(f*f.scale,limy[2]/scale.xaxis,fact[f],xlim=c(0,nvar),ylim=c(0,nvar),...)}
    	    }
    	    
    	    
-   	if(mimic) {} else {}     #do something here
-   	
+
    	
      		for (v in 1:num.xvar)  {
      		    if(is.numeric(factors[v,f])) {
-     		    if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { if (!regression) {if(lr){dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1)) 
-    			} else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1)) 
+     		    if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { if (!regression & !mimic) {if(lr){dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1),adj=(v %% 2)) 
+    			} else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1), adj = (v %% 2)) 
     			}
-    		} else {dia.arrow(to=fact.rect[[f]]$left,from=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1))} }
+    		} else {dia.arrow(to=fact.rect[[f]]$left,from=var.rect[[v]]$right,labels =factors[v,f], adj = (v %% 2), col=((sign(factors[v,f])<0) +1))} }
                                     }  else {
                 if (factors[v,f] !="0") {
-               if (!regression) { if(lr) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f]) } else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f])} 
-    			} else {if(lr) {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =factors[v,f])} else {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$top,labels =factors[v,f])}
+               if (!regression & !mimic) { if(lr) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],adj = (v %% 2)) } else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f],adj = (v %% 2))} 
+    			} else {if(lr) {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =factors[v,f],adj = (v %% 2))} else {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$top,labels =factors[v,f],adj = (v %% 2))}
     			   } }
                                     } }
                               } 
@@ -177,42 +197,47 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
                          }  
                         }      
    }  #end of if num.xfactors > 0     
-  if(errors) {  for (i in 1:num.xvar) {if(lr) { dia.self(var.rect[[i]],side=2) } else { dia.self(var.rect[[i]],side=1)}
+  if(errors & !mimic) {  for (i in 1:num.xvar) {if(lr) { dia.self(var.rect[[i]],side=2) } else { dia.self(var.rect[[i]],side=1)}
                                           sem[k,1] <- paste(vars[i],"<->",vars[i],sep="")
                                           sem[k,2] <- paste("x",i,"e",sep="")
                                     k <- k+1 }
                     }  
-     
+   }  else {nvar <- 0}
     
-       
+
  #now, if there is a ymodel, do it for y model 
   if(!is.null(ymodel)| !is.null(Ry)) { 
-  	if(lr) { y.adj <-  num.yvar/2 - num.xvar/2 
+  	if(lr) { y.adj <-  min(0,(num.yvar/2 - num.xvar/2)) 
   	        f.yscale <- limy[2]/(num.yfactors+1)
    	        y.fadj <- 0} else {
    	         y.adj <-  num.xvar/2 - num.yvar/2
    	         f.yscale <- limx[2]/(num.yfactors+1)
    	          y.fadj <- 0} 
+   	 y.scale <- max(num.xvar +1,num.yvar+1)/(num.yvar+1)
    	 
-        for (v in 1:num.yvar) { if(lr){   var.rect[[v+num.xvar]] <- dia.rect(limx[2]-y.curves,limy[2]-v + y.adj,yvars[v],xlim=limx,ylim=limy,...)} else {
-                                     var.rect[[v+num.xvar]] <- dia.rect(v + y.adj,limx[2],yvars[v],xlim=limy,ylim=limx,...)}
+        for (v in 1:num.yvar) { if(lr){   var.rect[[v+num.xvar]] <- dia.rect(limx[2]-y.curves-errors/2,limy[2]-v + y.adj,yvars[v],xlim=limx,ylim=limy,...)} else {
+                                     var.rect[[v+num.xvar]] <- dia.rect(v * y.scale,limx[2],yvars[v],xlim=limy,ylim=limx,...)}
                                   }
                           
                   }
    #we have drawn the y variables, now should we draw the Y factors
+   
+   
    if(!is.null(ymodel)){
-   	for (f in 1:num.yfactors) {if(lr) {
-   		fact.rect[[f+num.xfactors]] <- dia.ellipse(2*limx[2]/scale.xaxis,(num.yfactors+1-f)*f.yscale +y.fadj,yfact[f],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)} else {
-   		fact.rect[[f+num.xfactors]] <- dia.ellipse(f*f.yscale+ y.fadj,2*limx[2]/scale.xaxis,yfact[f],ylim=c(0,nvar),xlim=c(0,nvar),e.size=e.size,...)}
-   		  
+   	for (f in 1:num.yfactors) { if(!mimic) {if(lr) { 
+
+   		fact.rect[[f+num.xfactors]] <- dia.ellipse(2*limx[2]/scale.xaxis,(num.yfactors+1-f)*f.yscale +y.fadj,yfact[f],xlim=limx,ylim=limy,e.size=e.size,...)} else {
+   		fact.rect[[f+num.xfactors]] <- dia.ellipse(f*f.yscale+ y.fadj,2*limx[2]/scale.xaxis,yfact[f],ylim=limy,xlim=limx,e.size=e.size,...)}
+   		  } else {fact.rect[[f+num.xfactors]] <- fact.rect[[f]]
+   		 }
      		for (v in 1:num.yvar) {if(is.numeric(y.factors[v,f])) {
-     		{if(simple && (abs(y.factors[v,f]) == max(abs(y.factors[v,])) )  && (abs(y.factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) {
-     		     if(lr) { dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1))} else {
-     		               dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1))}
+     		{if(simple && (abs(y.factors[v,f]) == max(abs(y.factors[v,])) )  && (abs(y.factors[v,f]) > cut) | (!simple && (abs(y.factors[v,f]) > cut))) {
+     		     if(lr) { dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1),lty=((sign(y.factors[v,f])<0) +1),adj = (v %% 2))} else {
+     		               dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1),lty=((sign(y.factors[v,f])<0) +1),adj = (v %% 2) )}
      		     }
                                     }
-                   } else {if(factors[v,f] !="0")  {if(lr) {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f]) } else {
-                                                            dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f])
+                   } else {if(factors[v,f] !="0")  {if(lr) {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],adj = (v %% 2)) } else {
+                                                            dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],adj = (v %% 2))
                    }
                    }
              }}
@@ -241,7 +266,7 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
                   # }
        
      if(errors) {  for (i in 1:num.y) { 
-                      if(lr) {dia.self(var.rect[[i+num.xvar]],side=3) } else {dia.self(var.rect[[i+num.xvar]],side=3)}
+                      if(lr) {dia.self(var.rect[[i+num.xvar]],side=4) } else {dia.self(var.rect[[i+num.xvar]],side=3)}
                     sem[k,1] <- paste(vars[i+num.xvar],"<->",vars[i+num.xvar],sep="")
                     sem[k,2] <- paste("y",i,"e",sep="")
                     k <- k+1 }}
@@ -307,7 +332,7 @@ if(!regression) {
                                                       		
                                                       
                                                 sem[k,1]  <- paste(fact[i],"<-",fact[j],sep="")
-                                                lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j], "~", fact[i])
+                                                lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[i], "~", fact[j])
                                                 sem[k,2] <-  paste("rF",i,"F",j,sep="")
                                                        } 
                                                      	} } else { 
@@ -326,10 +351,12 @@ if(!regression) {
                   for (i in 1:num.xfactors) { 
                       for (j in 1:num.yfactors) {
                       		if((!is.numeric(Phi[j+num.xfactors,i] ) && (Phi[j+num.xfactors,i] !="0"))||  ((is.numeric(Phi[j+num.xfactors,i]) && abs(Phi[j+num.xfactors,i]) > cut ))) {
-                      
-                       dia.arrow(from=fact.rect[[i]],to=fact.rect[[j+num.xfactors]],Phi[j+num.xfactors,i])
+           #We want to draw an arrrow, but if it is numeric, we need to figure out the sign   
+           col <- 1
+           if((is.numeric(Phi[j+num.xfactors,i])  &   (Phi[j+num.xfactors,i] < 0))) col <- 2      
+                       dia.arrow(from=fact.rect[[i]],to=fact.rect[[j+num.xfactors]],Phi[j+num.xfactors,i], col=col, lty=col)
                        sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="")
-                      lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[i], "~", fact[j+num.xfactors]) } else {
+                      lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j+num.xfactors], "~", fact[i]) } else {
                        k <- k-1
                       # sem[k,1]  <- paste(fact[i],"<->",fact[j+num.xfactors],sep="")
                        # lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j+num.xfactors], "~~", fact[i])}

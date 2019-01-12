@@ -3,19 +3,19 @@
 
 \title{Show a  dot.chart with error bars for different groups or variables}
 \description{Yet one more of the graphical ways of showing data with error bars for different groups.
-A dot.chart with error bars for different groups or variables is found using from \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}}.
+A dot.chart with error bars for different groups or variables is found using from \code{\link{describe}},  \code{\link{describeBy}},  \code{\link{statsBy}} or data from \code{\link{bestScales}}.
 }
 \usage{
-error.dots(x, var = NULL, se = NULL, group = NULL, sd = FALSE, effect=NULL, head = 12, 
-tail = 12, sort = TRUE, decreasing = TRUE, main = NULL, alpha = 0.05, eyes = FALSE,
- min.n = NULL, max.labels = 40, labels = NULL, groups = NULL, gdata = NULL,
-  cex =  par("cex"),  pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), 
-  color = par("fg"), gcolor = par("fg"), lcolor = "gray", xlab = NULL,
-   ylab = NULL, xlim = NULL,add=FALSE,order=NULL, ...)
+error.dots(x=NULL, var = NULL, se = NULL, group = NULL, sd = FALSE, effect=NULL
+,stats=NULL, head = 12, tail = 12, sort = TRUE, decreasing = TRUE, main = NULL,
+ alpha = 0.05, eyes = FALSE, min.n = NULL, max.labels = 40, labels = NULL, groups = NULL,
+  gdata = NULL, cex =  par("cex"),  pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), 
+ color = par("fg"), gcolor = par("fg"), lcolor = "gray", xlab = NULL, ylab = NULL,
+  xlim = NULL,add=FALSE,order=NULL, ...)
 }
 
 \arguments{
-  \item{x}{A data frame or matrix of raw data, or the resulting object from \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} 
+  \item{x}{A data frame or matrix of raw data, or the resulting object from \code{\link{describe}},  \code{\link{describeBy}},  \code{\link{statsBy}} or \code{\link{bestScales}} 
 
 }
   \item{var}{The variable to show (particularly if doing describeBy or StatsBy plots).}
@@ -23,6 +23,7 @@ tail = 12, sort = TRUE, decreasing = TRUE, main = NULL, alpha = 0.05, eyes = FAL
   \item{group}{A grouping variable, if desired. Will group the data on group for one variable (var) }
   \item{sd}{if FALSE, confidence intervals in terms of standard errors, otherwise draw one standard deviation}
   \item{effect}{Should the data be compared to a specified group (with mean set to 0) in effect size units?} 
+  \item{stats}{A matrix of means and se to use instead of finding them from the data}
   \item{head}{The number of largest values to report}
   \item{tail}{The number of smallest values to report}     
   \item{sort}{Sort the groups/variables by value}
@@ -53,10 +54,10 @@ tail = 12, sort = TRUE, decreasing = TRUE, main = NULL, alpha = 0.05, eyes = FAL
   \item{\dots}{And any other graphic parameters we have forgotten}
 }
 \details{
-Adapted from the dot.chart function to include error bars and to use the output of\code{\link{describe}},  \code{\link{describeBy}}, and  \code{\link{statsBy}}   
+Adapted from the dot.chart function to include error bars and to use the output of\code{\link{describe}},  \code{\link{describeBy}},   \code{\link{statsBy}}, \code{\link{fa}} and \code{\link{bestScales}}.   
 To speed up multiple plots, the function can work from the output of a previous run.  Thus describeBy will be done and the results can be show for multiple variables.
 
-If using the add=TRUE option to add an error.dots plot to a dotplot, note that the order of variables in dot plots goes from last to first (highest y value is actually the last value in a vector.)}
+If using the add=TRUE option to add an error.dots plot to a dotplot, note that the order of variables in dot plots goes from last to first (highest y value is actually the last value in a vector.)  Also note that the xlim parameter should be set to make sure the plots line up correctly.}
 \value{
 Returns (invisibily) either a describeBy or describe object as well as the order if sorted
 }
@@ -65,7 +66,7 @@ Returns (invisibily) either a describeBy or describe object as well as the order
 
 
 \seealso{
- \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} as well as  \code{\link{error.bars}},  \code{\link{error.bars.by}}, or  \code{\link{statsBy}} 
+ \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} as well as  \code{\link{error.bars}},  \code{\link{error.bars.by}},  \code{\link{statsBy}} or \code{\link{bestScales}}.
 }
 \examples{
 temp <- error.dots(bfi[1:25],sort=TRUE, xlab="Mean score for the item, sorted by difficulty")

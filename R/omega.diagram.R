@@ -27,8 +27,8 @@
                nvar <- num.var <- nrow(factors)
                num.factors <- ncol(factors) -1
                 if(sort) {temp  <- fa.sort(factors[,-1])
-                   temp2 <- factors[,1]
-          factors <- cbind(g=temp2[rownames(temp)],temp)}
+                   temp2 <- factors[,1,drop=FALSE]     #added the drop option November 4, 2018
+          factors <- cbind(g=temp2[rownames(temp),1],temp)}  #added column 1
             }, 
       omegaSem = {
     #did we do an omegaSem or just an omegaFromSem?

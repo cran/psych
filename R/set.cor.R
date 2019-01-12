@@ -20,33 +20,44 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   
    cl <- match.call()
     #convert names to locations 
-    prod <- NULL   #in case we do not have formula input
+    prod <- ex <-  NULL   #in case we do not have formula input
    #first, see if they are in formula mode  
    if(class(y) == "formula") {
-   ps <- parse(y)
+   ps <- fparse(y)
    y <- ps$y
    x <- ps$x
    med <- ps$m #but, mediation is not done here, so we just add this to x
   # if(!is.null(med)) x <- c(x,med)   #not  necessary, because we automatically put this in
    prod <- ps$prod
    z <- ps$z   #do we have any variable to partial out
+   ex <- ps$ex
 }
-             data <- char2numeric(data)
+           #  data <- char2numeric(data)   #move to later (01/05/19)
         
     if(is.numeric(y )) y <- colnames(data)[y]
     if(is.numeric(x )) x <- colnames(data)[x]
     if(is.numeric(z )) z <- colnames(data)[z]
   
 
+#check for bad input
+if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
+ print(c(y, x, z, ex)[which(!(c(y, x, z, ex) %in% colnames(data)))])
+ stop("Variable names are incorrect")}
+ 
+ 
   if(!isCorrelation(data))  {
-                  if(!is.null(z))   {data <- data[,c(y,x,z)]} else {data <- data[,c(y,x)]}                
+
+ 
+                  data <- data[,c(y,x,z,ex)] 
+                   data <- char2numeric(data)              
                    if(!is.matrix(data)) data <- as.matrix(data)  
                    if(!is.numeric(data)) stop("The data must be numeric to proceed")
-                   if(!is.null(prod)) {#we want to find a product term
+                   if(!is.null(prod) | (!is.null(ex))) {#we want to find a product term
                   if(zero) data <- scale(data,scale=FALSE)
                   if(!is.null(prod)) {
                  
                      prods <- matrix(NA,ncol=length(prod),nrow=nrow(data))
+                     colnames(prods) <- prod
                      colnames(prods) <- paste0("V",1:length(prod))
                      for(i in 1:length(prod)) {
                        prods[,i] <- apply(data[,prod[[i]]],1,prod) 
@@ -55,6 +66,18 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
                       
                       data <- cbind(data,prods)
                       x <- c(x,colnames(prods))
+                    }
+                    
+                    if(!is.null(ex)) {
+                 
+                    quads <- matrix(NA,ncol=length(ex),nrow=nrow(data))  #find the quadratric terms
+                    colnames(quads) <- paste0(ex)
+                     for(i in 1:length(ex)) {
+                      quads[,i] <- data[,ex[i]] * data[,ex[i]]
+                      colnames(quads)[i] <- paste0(ex[i],"^2")
+                     }
+                     data <- cbind(data,quads)
+                     x <- c(x,colnames(quads))
                     }
 
                     }
@@ -70,6 +93,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
                     if(!is.matrix(data)) data <- as.matrix(data)  
                     C <- data
                     if(std) {m <- cov2cor(C)} else {m <- C}}
+    #We do all the calculations on the Covariance or correlation matrix (m)
    #convert names to locations                 
 
         nm <- dim(data)[1]
@@ -91,20 +115,23 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      	                zm <- m[z,z,drop=FALSE]
      	                za <- m[x,z,drop=FALSE]
      	                zb <- m[y,z,drop=FALSE]
-     	                 x.matrix <- x.matrix - za %*% solve(zm) %*% t(za)
-     	                 y.matrix <- y.matrix - zb %*% solve(zm) %*% t(zb)
-     	                xy.matrix <- xy.matrix - za  %*% solve(zm) %*% t(zb)
+     	                zmi <- solve(zm)
+     	                 x.matrix <- x.matrix - za %*% zmi %*% t(za)
+     	                 y.matrix <- y.matrix - zb %*% zmi %*% t(zb)
+     	                xy.matrix <- xy.matrix - za  %*% zmi %*% t(zb)
      	                m.matrix <- cbind(rbind(y.matrix,xy.matrix),rbind(t(xy.matrix),x.matrix))
-     	                
+     	               #m.matrix is now the matrix of partialled covariances -- make sure we use this one!
      	                 }
      	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)/x.matrix[1,1]
+     	                rownames(beta) <- rownames(xy.matrix)
+     	                colnames(beta) <- colnames(xy.matrix)
      	                } else   #this is the case of a single x 
       				 { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
        					 beta <- as.matrix(beta) 
        					 }
-       if(raw) {if(numy > 1) { intercept <- means[y] - colSums(means[x] * beta[x,y ])} else {intercept <- means[y] - sum(means[x] * beta[x,y ])} } else {intercept <- NA}
+       if(raw) {if(numx ==1) {intercept <- means[y] - sum(means[x] * beta[x,y ])} else {if(numy > 1) { intercept <- means[y] - colSums(means[x] * beta[x,y ])} else {intercept <- means[y] - sum(means[x] * beta[x,y ])}} } else {intercept <- NA}
 
-      #  } 
+
 
        	yhat <- t(xy.matrix) %*% solve(x.matrix) %*% (xy.matrix)
        	resid <- y.matrix - yhat
@@ -149,7 +176,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
         Vy <- (y.matrix)
         uCxy <- t(keys.x) %*% xy.matrix 
          ruw <- diag(uCxy)/sqrt(diag(Vx))  #these are the individual multiple Rs
-         Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))
+         Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))  #what are these?
+       
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
      	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
      	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
@@ -171,13 +199,16 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      	                     ci.lower <- list()
      	                     ci.upper <- list()
      	                     for (i in 1:length(y)) {
-     	                     df <- n.obs-k-1
+     	                     df <- n.obs-k-1   #this is the n.obs - length(x)
      	                     se.beta[[i]] <- (sqrt((1-R2[i])/(df))*sqrt(1/uniq))}    
      	                     se <- matrix(unlist(se.beta),ncol=length(y))
-     	                     colnames(se) <- colnames(beta)
+     	                       if(!is.null(z)) {colnames(beta) <- paste0(colnames(beta),"*")  }
+     	                       colnames(se) <- colnames(beta)
+     	                      if(!is.null(z)) {rownames(beta) <- paste0(rownames(beta),"*")}
      	                     rownames(se) <- rownames(beta)
-     	                    
-     	                     se <- t(t(se) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))
+     	                   
+     	                    # se <- t(t(se) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))  #need to use m.matrix
+     	                    se <- t(t(se) * sqrt(diag(m.matrix)[y]))/sqrt(diag(x.matrix)) #corrected 11/29/18
      	                     for(i in 1:length(y))  {ci.lower[[i]] <-  beta[,i] - qt(1-alpha/2,df)*se[,i]
      	                                             ci.upper[[i]] <- beta[,i] + qt(1-alpha/2,df)*se[,i]}
      	                     ci.lower <- matrix(unlist(ci.lower),ncol=length(y))
@@ -198,7 +229,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
      	                     
      	                     pF <-  -expm1(pf(F,k,df,log.p=TRUE))  
      	                     shrunkenR2 <- 1-(1-R2)*(n.obs-1)/df 
-     	                     
+     	                   
      	               #find the shrunken R2 for set cor  (taken from CCAW p 615)
      	                     u <- numx * numy
      	                     m1 <- n.obs - max(numy ,(numx+numz)) - (numx + numy +3)/2 
@@ -288,42 +319,18 @@ if(nx >1) {
 		 
 
       
- #This parses a formula like input and return the left hand side variables (y) and right hand side (x) as well as products (prod)  and partials   		 
- parse <- function(expr){
-      	 m <- prod <- NULL
-		 all.v <- all.vars(expr) 
-		 te <- terms(expr)   #this will expand the expr for products
-		 fac <- attributes(te)$factors
-		 x <- rownames(fac)[-1] #drop the y variables
-		 y <- all.v[!all.v %in% x]
-		 p <- rownames(fac)[rowSums(fac) < 1] 
-		 if(length(p) > 1)  {p <- p[-1]
-		      x <- x [! x%in%p]} else {p <- NULL}
-		 char.exp <- as.character(expr[3])
-		 m <- gsub("[\\(\\)]", "", regmatches(char.exp, gregexpr("\\(.*?\\)", char.exp))[[1]])
-		 if(length(m)<1) m <- NULL
-         prod.terms <- sum(attributes(te)$order > 1)
-         
-         if(prod.terms > 0 ) {
-          n1 <- sum(attributes(te)$order == 1)
-          prod <- list()
-          for(i in(1:prod.terms)) {
-          prod[[i]] <- names(which(fac[,n1+i] > 0)) } 
-          
-          }
-      return(list(y=y,x=x,m=m,prod=prod,z = p))}
-     	
-     	
+
      	
 print.psych.setCor <- function(x,digits=2) {
 
- cat("Call: ")
+cat("Call: ")
               print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
-          for(i in 1:NCOL(x$beta)) {cat("\n DV = ",colnames(x$beta)[i])
+            ny <- NCOL(x$beta)
+          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i],"\n")
           if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
-          if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i+2)],digits),round(x$VIF,digits))
+          if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
@@ -333,29 +340,10 @@ print.psych.setCor <- function(x,digits=2) {
               result.df <- data.frame( round(x$beta[,i],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope", "VIF")        
               print(result.df)      
-              result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits))
+              result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$Ruw[i],digits),R2uw =  round( x$Ruw[i]^2,digits))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw")
               cat("\n Multiple Regression\n")
              print(result.df)
               } 
-              }
- 
-            
-            if(!is.null(x$cancor)) {
-            cat("\nVarious estimates of between set correlations\n")
-            cat("Squared Canonical Correlations \n")
-            print(x$cancor2,digits=digits)
-            if(!is.null(x$Chisq)) {cat("Chisq of canonical correlations \n")
-            print(x$Chisq,digits=digits)}
-            cat("\n Average squared canonical correlation = ",round(x$T,digits=digits))
-          
-            cat("\n Cohen's Set Correlation R2 = ",round(x$Rset,digits=digits))
-            #print(x$Rset,digits=digits)
-           if(!is.null(x$Rset.shrunk)){ cat("\n Shrunken Set Correlation R2 = ",round(x$Rset.shrunk,digits=digits))
-          
-            cat("\n F and df of Cohen's Set Correlation ",round(c(x$Rset.F,x$Rsetu,x$Rsetv), digits=digits))}
-             cat("\nUnweighted correlation between the two sets = ",round(x$Ruw,digits)) 
-           
-           }
-
+}
 }

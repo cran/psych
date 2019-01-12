@@ -1,5 +1,6 @@
-#created Sept 4 to try to do exploratory sem by factoring sets 1 and 2
+#created Sept 4, 2017 to try to do exploratory sem by factoring sets 1 and 2
 #and then linking the two sets
+#slightly improved December 15, 2018 to label the factors better
 
 "esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",plot=TRUE,cor="cor",use="pairwise",weight=NULL,...) {
 if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
@@ -11,8 +12,9 @@ if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
 vars <- c(varsX,varsY)
 if(is.null(n.obs)) n.obs <- NA
 
-if(ncol(r)  < nrow(r)) {#find the correlations
+if(!isCorrelation(r)) {#find the correlations
 n.obs <- nrow(r) 
+r <- r[,vars]  #we organize the data to be just the ones we want, that is, ignore variables not included in the model
    switch(cor, 
        cor = {r <- cor(r,use=use)},
        cov = {r <- cov(r,use=use) 
@@ -55,6 +57,9 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
  Phi <- t(S12) %*% solve(R) %*% S12
  loadsX <- f1$loadings[varsX,,drop=FALSE]
  loadsY <- f2$loadings[varsY,,drop=FALSE]
+ colnames(loadsX) <- paste0("X",1:ncol(loadsX)) 
+ colnames(loadsY) <- paste0("Y",1:ncol(loadsY)) 
+
 # loadsX <- f1$loadings[colnames(R)[varsX],,drop=FALSE]
 # loadsY <- f2$loadings[colnames(R)[varsY],,drop=FALSE]
  diag(Phi) <- 1

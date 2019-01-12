@@ -7,11 +7,21 @@ Rindskopf and Rose (1988) use this data set to demonstrate confirmatory second o
 }
 \usage{data("cattell")}
 \format{
-  The format is:
- num [1:12, 1:12] 1 0.86 0.3 0.32 0.41 0.42 0.34 0.32 0.29 0.21 ...
- - attr(*, "dimnames")=List of 2
-  ..$ : chr [1:12] "Verbal" "Verbal2" "Space1" "Space2" ...
-  ..$ : chr [1:12] "Verbal" "Verbal2" "Space1" "Space2" ...
+  A correlation matrix of the following 12 variables from 277 7th and 8th graders
+  \describe{
+\item{Verbal}{A verbal ability test from Thurstone}
+\item{Verbal2}{A verbal ability test from Thurstone}
+\item{Space1}{A Spatial ability test from Thurstone}
+\item{Space2}{A Spatial ability test from Thurstone}
+\item{Reason1}{A reasoning test from Thurstone}
+\item{Reason2}{A reasoning  test from Thurstone}
+\item{Number1}{A Numerical ability test from Thurstone}
+\item{Number2}{A Numerical ability test from Thurstone}
+\item{IPATSer}{A "culture fair"  series from the IPAT}
+\item{IPATCLAS}{A "culture fair" classification test from the IPAT}
+\item{IPATMatr}{A "culture fair" matrix reasoning  test from the IPAT}
+\item{IPATTop}{A "culture fair" topology test from the IPAT}
+}
 }
 \details{
 Cattell (1963) reported on 8 cognitive variables from Thurstone and four from the Institute for Personality Assessment Test (IPAT).  Rindskopf and Rose (1988) use this data set as an example of second order factor analysis. It is thus a nice set for examining alternative solutions such as bifactor rotation, \code{\link{omega}} hierarchical, as well as \code{\link{esem}} and \code{\link{interbattery}} factor analysis.
@@ -27,6 +37,6 @@ David Rindskopf and Tedd Rose, (1988) Some Theory and Applications of Confirmato
 \examples{
 data(cattell)
 corPlot(cattell,numbers=TRUE,upper=FALSE,diag=FALSE,
-             main="12 cognitive variables from Cattell (1963)")
+             main="12 cognitive variables from Cattell (1963)",xlas=2)
 }
 \keyword{datasets}

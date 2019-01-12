@@ -39,7 +39,7 @@ switch(class(r)[2],
     pval <- cp$p
     if(is.null(main)) {main <- "Correlation plot" }}  
    }
-r <- as.matrix(r)
+R <- r <- as.matrix(r)
 if(!is.null(select)) r <- r[select,select]
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
 
@@ -148,6 +148,7 @@ if(show.legend) {
     axis(4,at=at2,labels =labels,las=2,...)
    }  
 if(keep.par) par(op)  #return the parameters to where we started 
+invisible(R)    #added 11/26/18
 }
 
  #used to find p values for corPlot

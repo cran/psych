@@ -58,7 +58,7 @@ Revelle, W. (In preparation) An Introduction to Psychometric Theory with applica
  \email{revelle@northwestern.edu} \cr
  \url{https://personality-project.org/revelle.html}}
 
-\seealso{ \code{\link{principal}}, \code{\link{fa}}}
+\seealso{ \code{\link{principal}}, \code{\link{fa}}. \code{\link{faCor}} will find factor correlations as well as congruences. }
  
 \examples{
 #factor congruence of factors and components, both rotated

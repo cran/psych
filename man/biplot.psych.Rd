@@ -7,7 +7,7 @@
 \method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",
 hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
 maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,
-cuts=1,cutl=.0,group=NULL,...)
+cuts=1,cutl=.0,group=NULL,smoother=FALSE,...)
 }
 
 \arguments{
@@ -40,6 +40,7 @@ cuts=1,cutl=.0,group=NULL,...)
   \item{cutl}{Do not label variables with communalities in the two space < cutl}
   \item{group}{A vector of a grouping variable for the scores.  Show a different color 
   and symbol for each group.}
+  \item{smoother}{If TRUE then do a smooth scatter plot (which shows the density rather than the data points). Only useful for large data sets.}
   \item{\dots}{more options for graphics}
  
 }

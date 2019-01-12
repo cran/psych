@@ -9,7 +9,9 @@
 }
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
-   check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL)
+   check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,
+   n.obs=NULL,impute=NULL
+   )
 alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2)
 }
 
@@ -27,6 +29,7 @@ alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2)
   \item{warnings}{By default print a warning and a message that items were reversed. Suppress the message if warnings = FALSE}
   \item{alpha}{The value to use for confidence intervals}
   \item{n.obs}{If using correlation matrices as input, by specify the number of observations, we can find confidence intervals}
+  \item{impute}{How should we impute missing data? Not at all, medians, or means}
   \item{n.var}{Number of items in the scale (to find r.bar)}
   \item{p.val}{width of confidence interval (pval/2 to 1-p.val/2) }
   \item{digits}{How many digits to use for alpha.ci}
@@ -64,7 +67,7 @@ Four alternative item-whole correlations are reported, three are conventional, o
 
 If some items are to be reversed keyed then they can be specified by either item name or by item location.  (Look at the 3rd and 4th examples.)  Automatic reversal can also be done, and this is based upon the sign of the loadings on the first principal component (Example 5).  This requires the check.keys option to be TRUE.  Previous versions defaulted to have check.keys=TRUE, but some users complained that this made it too easy to find alpha without realizing that some items had been reversed (even though a warning was issued!).  Thus, I have set the default to be check.keys=FALSE with a warning that some items need to be reversed (if this is the case).  To suppress these warnings, set warnings=FALSE.  
 
-Scores are based upon the simple averages (or totals) of the items scored. Reversed items are subtracted from the maximum + minimum item response for all the items. 
+Scores are based upon the simple averages (or totals) of the items scored. Thus, if some items are missing, the scores reflect just the items answered.  This is particularly problematic if using total scores (with the cumulative=TRUE option).  To impute missing data using either means or medians, use the \code{\link{scoreItems}} function.   Reversed items are subtracted from the maximum + minimum item response for all the items.
 
 When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).  This is problematic because some simulations suggest these values are too small.  It is probably better to use bootstrapped values.
 
@@ -146,8 +149,7 @@ alpha(r9)
 two.f <- sim.item(8)
 #specify which items to reverse key by name
  alpha(two.f,keys=c("V3","V4","V5","V6"))
- #by location
- alpha(two.f,keys=c(3,4,5,6))
+ 
  #automatic reversal base upon first component
 alpha(two.f,check.keys=TRUE)    #note that the median is much less than the average R
 #this suggests (correctly) that the 1 factor model is probably wrong 

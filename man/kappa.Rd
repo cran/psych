@@ -17,7 +17,7 @@ wkappa(x, w = NULL)    #deprectated
   \item{w}{A p x p matrix of weights.  If not specified, they are set to be 0 (on the diagonal) and (distance from diagonal) off the diagonal)^2. }
   \item{n.obs}{Number of observations (if input is a square matrix.}
   \item{alpha}{Probability level for confidence intervals}
-  \item{levels}{Specify the number of levels if some levels of x or y are completely missing}
+  \item{levels}{Specify the levels if some levels of x or y are completely missing.  See Examples}
   
 }
 \details{When cateogorical judgments are made with two cateories, a measure of relationship is the phi coefficient.  However, some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis) or to categorize the stages of a disease.  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
@@ -32,7 +32,7 @@ The input may be a two column data.frame or matrix with columns representing the
 
 The confidence intervals are based upon the variance estimates discussed by Fleiss, Cohen, and Everitt who corrected the formulae of Cohen (1968) and Blashfield.
 
-Some data sets will include data with numeric categories with some category values missing completely.  In the sense that kappa is a measure of category relationship, this should not matter.  But when finding weighted kappa, the number of categories weighted will be less than the number of categories potentially in the data.  This can be remedied by specifying the levels parameter.
+Some data sets will include data with numeric categories with some category values missing completely.  In the sense that kappa is a measure of category relationship, this should not matter.  But when finding weighted kappa, the number of categories weighted will be less than the number of categories potentially in the data.  This can be remedied by specifying the levels parameter.  This is a vector of the levels potentially in the data (even if some are missing).   See the examples.
 
 If there are more than 2 raters, then the average of all raters is known as Light's kappa. (Conger, 1980).  
 }
@@ -149,7 +149,9 @@ ck <- cohen.kappa(xy.df)
 ck
 ck$agree
 
+#Example for specifying levels
 #The problem of missing categories (from Amy Finnegan)
+#We need to specify all the categories possible using the levels option
 numbers <- data.frame(rater1=c(6,3,7,8,7),
                       rater2=c(6,1,8,5,10))
 cohen.kappa(numbers)  #compare with the next analysis

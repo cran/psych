@@ -4,9 +4,8 @@
 \alias{set.cor}
 \alias{mat.regress}
 \alias{matReg} 
-\title{Set Correlation and Multiple Regression from matrix or raw input}
-\description{
- Finds Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y).  Also finds multiple correlations between x variables and each of the y variables. Will work with either raw data or a correlation matrix.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.  Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) may be specified in the formula mode.
+\title{Multiple Regression and Set Correlation from matrix or raw input}
+\description{Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets.
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
@@ -17,18 +16,18 @@ set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) 
 matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{y}{Three options: 'formula' form (similar to lm) or either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition"). See notes and examples for each.}
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard").  x and y may also be set by use of the formula style of lm.}
-  \item{data}{a matrix or data.frame of correlations or, if not square, of raw data}
+  \item{data}{A matrix or data.frame of correlations or, if not square, of raw data}
   \item{C}{A variance/covariance matrix, or a correlation matrix}
-  \item{m}{The column name or numbers of the set of mediating variables}
-  \item{z}{the column names or numbers of the set of covariates}
-  \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given}
+  \item{m}{The column name or numbers of the set of mediating variables (see \code{\link{mediate}}).}
+  \item{z}{the column names or numbers of the set of covariates. }
+  \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given.}
 
-  \item{use}{find the correlations "pairwise" (default) or just use "complete" cases (to match the lm function)}
-  \item{std}{Report standardized betas (based upon the correlations) or raw (based upon covariances)}
+  \item{use}{find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
+  \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
   \item{main}{The title for setCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   \item{sc}{The output of setCor may be used for drawing diagrams}
@@ -37,7 +36,7 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
   \item{zero}{zero center the data before finding the interaction terms.}
   \item{alpha}{p value of the confidence intervals for the beta coefficients}
   \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
-  \item{cex}{Text size of boxes}
+  \item{cex}{Text size of boxes displaying the variables in the diagram}
   \item{l.cex}{Text size of numbers in arrows, defaults to cex}
   \item{...}{Additional graphical parameters for setCor.diagram}
   
@@ -45,7 +44,9 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
 \details{
  Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a matrix of correlations or covariances.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The function will find the correlations if given raw data.
  
- Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the data are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{link{lm}} or the results discussed in Hayes (2013).  
+ Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the data are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
+ 
+ Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the last example.)
   
   The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
   
@@ -64,7 +65,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  When finding the unweighted correlations, as is done in \code{\link{alpha}}, items are flipped so that they all are positively signed.  
  
  
-  A typical use in the SAPA project is to form item composites by clustering or factoring (see  \code{\link{fa}},\code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{set.cor}}.
+  A typical use in the SAPA project is to form item composites by clustering or factoring (see  \code{\link{fa}},\code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{setCor}}.
 
  Although the overall matrix can have missing correlations, the correlations in the subset of the matrix used for prediction must exist.
  
@@ -128,6 +129,23 @@ The denominator degrees of freedom for the set correlation does not match that r
 \code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package. 
 \code{\link{GSBE}} for further demonstrations of mediation and moderation. }
 \examples{
+#First compare to lm using data input
+summary(lm(rating ~ complaints + privileges, data = attitude))
+setCor(rating ~ complaints + privileges, data = attitude, std=FALSE) #do not standardize
+z.attitude <- data.frame(scale(attitude))  #standardize
+summary(lm(rating ~ complaints + privileges, data = z.attitude))  #regressions on z scores
+setCor(rating ~ complaints + privileges, data = z.attitude)  #by default we standardize
+
+R <- cor(attitude) #find the correlations
+#Do the regression on the correlations  
+#Note that these match the regressions on the standard scores of the data
+setCor(rating ~ complaints + privileges, data =R, n.obs=30)
+
+#now, partial out learning and critical
+setCor(rating ~ complaints + privileges - learning - critical, data =R, n.obs=30)
+#compare with the full regression:
+setCor(rating ~ complaints + privileges + learning + critical, data =R, n.obs=30)
+#Canonical correlations:
 
 #The first Kelley data set from Hotelling
 kelley1 <- structure(c(1, 0.6328, 0.2412, 0.0586, 0.6328, 1, -0.0553, 0.0655, 
@@ -169,6 +187,26 @@ summary(sc)
 
 setCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
 data=Thurstone)  #showing formula input with two covariates
+
+#Do some regressions with real data 
+setCor(reaction ~ cond + pmi + import, data = Tal.Or)
+#partial out importance
+setCor(reaction ~ cond + pmi - import, data = Tal.Or, main="Partial out importance")
+#compare with using lm by partialling
+mod1 <- lm(reaction ~ cond + pmi + import, data = Tal.Or)
+reaction.import <- lm(reaction~import,data=Tal.Or)$resid
+cond.import <-  lm(cond~import,data=Tal.Or)$resid
+pmi.import <-   lm(pmi~import,data=Tal.Or)$resid
+mod.partial <- lm(reaction.import ~ cond.import + pmi.import)
+summary(mod.partial)
+#lm uses raw scores, so set std = FALSE for setCor
+print(setCor(y = reaction ~ cond + pmi - import, data = Tal.Or,std = FALSE,
+ main = "Partial out importance"),digits=4)
+ 
+ #Show how to find quadratic terms
+sc <- setCor(reaction ~ cond + pmi + I(import^2), data = Tal.Or)
+sc
+#pairs.panels(sc$data) #show the SPLOM of the data
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{multivariate }% __ONLY ONE__ keyword per line

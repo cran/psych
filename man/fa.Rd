@@ -289,7 +289,7 @@ A few more lines of output were added in August 2017 to show the measures of fac
 
 \code{\link{anova.psych}} allows for testing the difference between two (presumably nested) factor models .
 
-
+\code{\link{bassAckward}} will perform repeated factorings and organize them in a top-down structure suggested by Goldberg (2006) and Waller (2007).
 
 
 }

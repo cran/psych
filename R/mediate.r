@@ -12,7 +12,8 @@
 #substantially revised May 6, 2016 by using matReg to make simpler to understand
 #and November,2017 improved to handle formula input and do more moderations 
 #added the zero option to match Hayes Process  
-#added the ability to partial out variables 
+#added the ability to partial out variables
+#12/1/18  Added the ability to do quadractic terms (similar to setCor) 
 "mediate" <-
 function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=5000,alpha=.05,std=FALSE,plot=TRUE,zero=TRUE,main= "Mediation")  {
  
@@ -20,31 +21,32 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
    cl <- match.call()
    #convert names to locations 
    #first, see if they are in formula mode  
-   if(class(y) == "formula") {  ps <- parse(y)
+   if(class(y) == "formula") {  ps <- fparse(y)
    y <- ps$y
    x <- ps$x
    m <- ps$m #but, mediation is not done here, so we just add this to x
   # if(!is.null(med)) x <- c(x,med)   #not  necessary, because we automatically put this in
    mod <- ps$prod
+   ex <- ps$ex  #the quadratic term
    #but, we want to drop the m variables from x
    x <- x[!ps$x %in% ps$m] 
    z <- ps$z  #are there any variables to partial
 }
    
    all.ab <- NULL  #preset this in case we are just doing regression 
-
+   
     if(is.numeric(y )) y <- colnames(data)[y]
     if(is.numeric(x )) x <- colnames(data)[x]
     if(!is.null(m))  if(is.numeric(m )) m <- colnames(data)[m]
     if(!is.null(mod) ) {if(is.numeric(mod)) {nmod <- length(mod)  #presumably 1 
                                          mod <- colnames(data)[mod] } }
     if(is.null(mod)) {nmod<- 0} else {nmod<- length(mod)}
-     var.names <- list(IV=x,DV=y,med=m,mod=mod,z=z)
-   #  v.names <- c(x,y,m,mod)
+     var.names <- list(IV=x,DV=y,med=m,mod=mod,z=z,ex=ex)
+  
   if(any(!(unlist(var.names) %in% colnames(data)))) {stop ("Variable names not specified correctly")}                                      
     if(ncol(data) == nrow(data)) {raw <- FALSE 
             if(nmod > 0) {stop("Moderation Analysis requires the raw data") } else {data <- data[c(y,x,m,z),c(y,x,m,z)]} 
-                 } else { data <- data[,c(y,x,m,z)] }
+                 } else { data <- data[,c(y,x,m,z,ex)] }
    # if(nmod > 0 ) {data <- data[,c(y,x,mod,m)] } else {data <- data[,c(y,x,m)]} #include the moderation variable
    if(nmod==1) {mod<- c(x,mod)
      nmod <- length(mod) 
@@ -56,25 +58,33 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
                     if(!is.null(mod)) if(zero) data <- scale(data,scale=FALSE)  #0 center 
                     C <- cov(data,use=use)
                     raw <- TRUE
+                    if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
                      }  else {
                     raw <- FALSE
                     C <- data
    nvar <- ncol(C)
+   
+   
    if(is.null(n.obs)) {n.obs <- 1000
-      message("The data matrix was a correlation matrix and the number of subjects was not specified. \n The replication data matrices were simulated based upon the observed correlation matrix and  n.obs set to 1000")
-   } else { message("The replication data matrices were simulated based upon the specified number of subjects and the observed correlation matrix.")}
-       eX <- eigen(C)   #we use this in the simulation in the case of a correlation matrix
-      data <- matrix(rnorm(nvar * n.obs),n.obs)
-     data <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(data) )
-     colnames(data) <- c(y,x,m)
-  }
-if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
+      message("The data matrix was a correlation matrix and the number of subjects was not specified. \n n.obs arbitrarily set to 1000")
+                       }
+   if(!is.null(m)) { # only if we are doing mediation (12/11/18)
+      message("The replication data matrices were simulated based upon the specified number of subjects and the observed correlation matrix.")
+       eX <- eigen(C)   #we use this in the bootstrap replications in the case of a correlation matrix
+       data <- matrix(rnorm(nvar * n.obs),n.obs)
+      data <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(data) )
+      colnames(data) <- c(y,x,m)}
+     }
+ 
+
   
 
-  if(nmod > 0 ) {if(!raw) {stop("Moderation analysis requires the raw data")
-   } else { if(zero) {cen.data <- scale(data,scale=FALSE)} else {cen.data <- data}
+  if ((nmod > 0 ) | (!is.null(ex))) {if(!raw) {stop("Moderation  analysis requires the raw data")
+   } else { if(zero) {data <- scale(data,scale=FALSE)}
+   }
+   }
    
-
+if (nmod > 0 ) {
               prods <- matrix(NA,ncol=length(ps$prod),nrow=nrow(data))
                      colnames(prods) <- paste0("V",1:length(ps$prod))
                      for(i in 1:length(ps$prod)) {
@@ -84,11 +94,24 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
                       
                       data <- cbind(data,prods)
                       x <- c(x,colnames(prods))
-
-              C <- cov(data,use=use)
-              if(std) {  C <- cov2cor(C)}
-              }
-              }
+                }
+             
+     if(!is.null(ex)) {
+                 
+                    quads <- matrix(NA,ncol=length(ex),nrow=nrow(data))  #find the quadratric terms
+                    colnames(quads) <- ex
+                     for(i in 1:length(ex)) {
+                      quads[,i] <- data[,ex[i]] * data[,ex[i]]
+                      colnames(quads)[i] <- paste0(ex[i],"^2")
+                     }
+                     data <- cbind(data,quads)
+                     x <- c(x,colnames(quads))
+                    }
+   #We have now added in products and quadratics, if desired
+                    
+             if(raw)  {C <- cov(data,use=use) } #else {C <- data}
+              if(std) {  C <- cov2cor(C)} 
+             
               
   ######### 
   #########
@@ -110,7 +133,8 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
  ##this is the zero order beta -- the total effect
    total.reg <- matReg(x,y,m=m,z=z,C=C,n.obs=n.obs)   #include m for correct df, add in the z here to do partial correlations
    direct <- total.reg$beta
-
+   if(!is.null(z)) {colnames(direct) <- paste0(colnames(direct),"*")
+                   rownames(direct) <- paste0(rownames(direct),"*") }
    #There are 3 broad cases that need to be handled somewhat differently in terms of the matrix operations
    # 1 IV, 1 or more mv 
    # multiple IV, 1 MV
@@ -167,7 +191,13 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
     #indirect is ab from the difference
     #ab is ab from the product  of a and b paths
 
-
+if(!is.null(z)) {var.names$IV <- paste0(var.names$IV,"*")
+                var.names$DV <- paste0(var.names$DV,"*")
+                var.names$med <- paste0(var.names$med,"*")
+                colnames(C) <- rownames(C) <- paste0(colnames(C),"*")
+               
+                
+}
      result <- list(var.names=var.names,a=a,b=b,ab=ab,all.ab = all.ab,c=c,direct=direct,indirect=indirect,cprime = cprime, total.reg=total.reg,a.reg=a.reg,b.reg=b.reg,cprime.reg=cprime.reg,boot=boots,boot.values = boot,sdnames=colnames(data),data=data,C=C,  Call=cl)
    
     class(result) <- c("psych","mediate")
@@ -181,10 +211,13 @@ if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
 
 #a helper function to find regressions from covariances
 #May 6, 2016
+#Fixed November 29, 2018 to handle se of partialed variables correctly
 matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0) {
-   numx <- length(x)
-   
-   df <- n.obs -1 - numx - length(z) - length(m)    #but this does not take into account the mediating variables
+ if(is.null(n.obs)) n.obs <- 0
+   numx <- length(x)   #this is the number of predictors (but we should adjust by the number of covariates)   
+   numz <- length(z)
+   #df <- n.obs -1 - numx - length(z) - length(m)    #but this does not take into account the mediating variables
+   df <- n.obs -1 - numx #We have partialed out z, should we use the df from it?
    Cr <- cov2cor(C)  
         	if(!is.null(z)){numz <- length(z)      #partial out the z variables
      	                zm <- C[z,z,drop=FALSE]
@@ -207,7 +240,10 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0) {
       if(is.character(y)) { colnames(beta) <- y} else { colnames(beta) <- colnames(C)[y]}
          R2 <- colSums(beta * C[x,y])/diag(C[y,y,drop=FALSE])
         uniq <- 1-(1-1/diag(solve(Cr[x,x,drop=FALSE])))  #1- smc
-        if(n.obs > 2) {  se <- (sqrt((1-R2)/(n.obs-1 - numx)) %*% t(sqrt(1/uniq)))  #these are the standardized se
+       
+
+        if(n.obs > 2) { # se <- (sqrt((1-R2)/(n.obs-1 - numx-numz)) %*% t(sqrt(1/uniq)))  #these are the standardized se
+                        se <- (sqrt((1-R2)/(n.obs-1 - numx)) %*% t(sqrt(1/uniq)))   #setCor uses df = n.obs - numx - 1
                          se <- t( se * sqrt(diag(C[y,y,drop=FALSE])) %*% t(sqrt(1/diag(C[x,x,drop=FALSE]))) )  #But does this work in the general case?
              
                     colnames(se) <- colnames(beta) } else {se <- NA}
@@ -274,156 +310,7 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
  return(result)  }
 
 
-
-"print.psych.mediate" <- function(x,digits=2,short=TRUE) {
- cat("\nMediation/Moderation Analysis \nCall: ")
-    print(x$Call)
-    dv <- x$var.names[["DV"]]
-   # iv <- x$var.names[["IV"]]
-    mv <- x$var.names[["med"]]
-    mod <- x$var.names[["mod"]]
-   # dv <- x$names[1]
-    iv <- rownames(x$direct)
-    niv <- length(iv)
-    nmed <- length(mv)
-    ndv <- length(dv)
-    nz <- length(x$var.names[["z"]])
-   
-   # if(dim(x$a)) {mv <- names(x$a)} else {mv <- colnames(x$a)
-    cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv,". The mediating variable(s) = ", mv,".")
-   if(!is.null(x$mod)) cat("  The moderating variable(s) = ",mod)
-   if(!is.null(x$var.names$z))  cat(" Variable(s)  partialled out were", x$var.names[["z"]])
-     
-  if(!is.null(mv)) {
-   for(j in 1:ndv) { 
-   for(i in 1:niv) { cat("\n\nTotal effect(c) of ",iv[i], " on ", dv[j]," = ",round(x$direct[i,j],digits), "  S.E. = ", round(x$total.reg$se[i,j],digits), " t  = ",round(x$total.reg$t[i,j],digits)," df= ",x$total.reg$df, "  with p = ", signif(x$total.reg$prob[i,j],digits))
-    cat("\nDirect effect (c') of ",iv[i],  " on ", dv[i]," removing ", mv ," = ",round(x$indirect[i,j],digits), "  S.E. = ", round(x$cprime.reg$se[i,j],digits), " t  = ",round(x$cprime.reg$t[i,j],digits), " df= ", x$cprime.reg$df, "  with p = ", signif(x$cprime.reg$prob[i,j],digits))
-     
-   if(is.null(x$mod)) { cat("\nIndirect effect (ab) of ",iv[i], " on ", dv[j]," through " ,mv , "  = ", round(x$ab[i,j],digits),"\n")
-   cat("Mean bootstrapped indirect effect = ",round(x$boot$mean[i],digits), " with standard error = ",round(x$boot$sd[i],digits), " Lower CI = ",round(x$boot$ci[1,i],digits), "   Upper CI = ", round(x$boot$ci[2,i],digits))}
-     }
-     
-     F <-  x$cprime.reg$df * x$cprime.reg$R2[j]/((nrow(x$cprime.reg$beta) * (1-x$cprime.reg$R2[j])))
-      pF <-  -expm1(pf(F,nrow(x$cprime.reg$beta),x$cprime.reg$df,log.p=TRUE)) 
-      cat("\nR =", round(sqrt(x$cprime.reg$R2[j]),digits),"R2 =", round(x$cprime.reg$R2[j],digits),  "  F =", round(F,digits), "on",nrow(x$cprime.reg$beta), "and", x$cprime.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
-    
-     
-     }
-     if(short) {cat("\n To see the longer output, specify short = FALSE in the print statement or ask for the summary")} else {
-   
- if(is.null(x$mod)) {
-
-
-    
-    cat("\n\n Full output  \n")
-     cat("\n Total effect estimates (c) \n")
-      
-        for(j in 1:ndv) {
-    dft <- round(data.frame(direct=x$total.reg$beta[,j],se = x$total.reg$se[,j],t=x$total.reg$t[,j],df=x$total.reg$df),digits)
-    dftp <- cbind(dft,p = signif(x$total.reg$prob[,j],digits=digits+1))
-    colnames(dftp) <- c(dv[j],"se","t","df","Prob")
-    rownames(dftp) <- rownames(x$total.reg$beta)
-     print(dftp)
-    }
-   
-
-    
-     cat("\nDirect effect estimates     (c') \n")
-     for(j in 1:ndv) {
-    if (niv==1) { dfd <- round(data.frame(direct=x$cprime.reg$beta[,j],se = x$cprime.reg$se[,j],t=x$cprime.reg$t[,j],df=x$cprime.reg$df),digits)
-     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[,j],digits=digits+1)) } else {
-     dfd <- round(data.frame(direct=x$cprime.reg$beta[1:niv,j],se = x$cprime.reg$se[1:niv,j],t=x$cprime.reg$t[1:niv,j],df=x$cprime.reg$df),digits)
-     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[1:niv,j],digits=digits+1))
-     }
-      colnames(dfdp) <- c(dv[j],"se","t","df","Prob")
-     
-   print(dfdp)
-   }
-    
-     
-    cat("\n 'a'  effect estimates \n")
-
-  if(niv==1) {
-    	dfa <- round(data.frame(a = x$a.reg$beta[1,1:nmed],se = x$a.reg$se[1,1:nmed],t = x$a.reg$t[1,1:nmed],df= x$a.reg$df),digits)
-    	dfa <- cbind(dfa,p=signif(x$a.reg$prob[1,1:nmed],digits=digits+1))
-    	if(NROW(dfa) ==1) {rownames(dfa) <- rownames(x$a.reg$beta)
-    	colnames(dfa) <-  c(colnames(x$a.reg$beta),"se","t","df", "Prob")} else {
-    	 rownames(dfa) <- colnames(x$a.reg$beta)
-    	colnames(dfa) <-  c(rownames(x$a.reg$beta),"se","t","df", "Prob")}
-    	
-    	print(dfa)}  else {
-    	
-     	for (i in 1:nmed) {
-     	dfa <- round(data.frame(a = x$a.reg$beta[,i],se = x$a.reg$se[,i],t = x$a.reg$t[,i],df= x$a.reg$df),digits)
-    	dfa <- cbind(dfa,p=signif(x$a.reg$prob[,i],digits=digits+1))
-     	rownames(dfa) <-rownames(x$a.reg$beta)
-     	colnames(dfa) <-  c(colnames(x$a.reg$beta)[i],"se","t","df","Prob") 
-     	print(dfa) }
-     	
-     	}
-     	        
-      cat("\n 'b'  effect estimates \n")
-      for (j in 1:ndv) {
-      if(niv==1) {
-     dfb <- round(data.frame(direct=x$b.reg$beta[-(1:niv),j],se = x$b.reg$se[-(1:niv),j],t=x$b.reg$t[-(1:niv),j], df=x$b.reg$df),digits)
-     dfb <- cbind(dfb,p=signif(x$b.reg$prob[-(1:niv),j],digits=digits+1))} else {
-      dfb <- round(data.frame(direct=x$b.reg$beta[-(1:niv),j],se = x$b.reg$se[-(1:niv),j],t=x$b.reg$t[-(1:niv),j],df=x$b.reg$df),digits)
-     dfb <- cbind(dfb,p=signif(x$b.reg$prob[-(1:niv),j],digits=digits+1))}
-     rownames(dfb) <- rownames(x$b.reg$beta)[-(1:niv)]
-     colnames(dfb) <-  c(dv[j],"se","t","df", "Prob")
-      print(dfb)
-      }
  
-      cat("\n 'ab'  effect estimates \n")
-     
- for (j in 1:ndv) {
-     
-      dfab  <-round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],sd=x$boot$sd[,j],
-                           lower=x$boot$ci[1,1:niv],
-                           upper=x$boot$ci[2,1:niv]),digits)
-      rownames(dfab) <- rownames(x$ab)
-      colnames(dfab)[1] <- dv[j]
-      print(round(dfab,digits))
-      }
-      
-        if(nmed > 1) {
-    cat("\n 'ab' effects estimates for each mediator \n")
-    for (j in 1:nmed) {
-        dfab  <-round(data.frame(indirect = x$all.ab[,j],boot = x$boot$mean[,j+ndv],sd=x$boot$sd[,j+ndv],
-                           lower=x$boot$ci[1,(j*niv +1):(j*niv +niv)],
-                           upper=x$boot$ci[2,(j*niv +1):(j*niv +niv)]),digits)
-      rownames(dfab) <- rownames(x$ab)
-      colnames(dfab)[1] <- mv[j]
-      print(round(dfab,digits))
-      }
-     
-    
-    }
-
-    }  else {
-    cat("\n\nEffect of interaction of ",iv[1], " with ", iv[2] , "  = ", round(x$direct[3],digits),"  S.E. = ", round(x$direct.reg$se[3,1],digits), " t  = ",round(x$direct.reg$t[3,1],digits), "  with p = ", signif(x$direct.reg$prob[3,1],digits))
-    cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$indirect,digits))
-    cat("\nMean bootstrapped indirect interaction effect = ",round(x$boot$mean[1],digits), " with standard error = ",round(x$boot$sd[1],digits), " Lower CI = ",round(x$boot$ci.ab[1],digits), "   Upper CI = ", round(x$boot$ci.ab[2,i],digits))
-    cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
-    } 
-    }
-    } else {#This is a pure moderation model, just show it
-    
-    for(i in 1:ndv) {cat("\n DV = ",colnames(x$total.reg$beta)[i], "\n")
-          result.df <- data.frame( round(x$total.reg$beta[,i],digits),round(x$total.reg$se[,i],digits),round(x$total.reg$t[,i],digits),signif(x$total.reg$prob[,i],digits))
-              colnames(result.df) <- c("slope","se", "t", "p")              
-             print(result.df)
-             cat("\nWith R2 = ", round(x$total.reg$R2[i], digits))
-              F <-  x$total.reg$df * x$total.reg$R2[i]/((nrow(x$total.reg$beta) * (1-x$total.reg$R2[i])))
-      pF <-  -expm1(pf(F,nrow(x$total.reg$beta),x$total.reg$df,log.p=TRUE)) 
-      cat("\nR =", round(sqrt(x$total.reg$R2[i]),digits),"R2 =", round(x$total.reg$R2[i],digits),  "  F =", round(F,digits), "on",nrow(x$total.reg$beta), "and", x$total.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
-    
-       }
-     
-      }
-}
-
-   
    
 "mediate.diagram" <- function(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE, main="Mediation model",cex=1,l.cex=1,...) { 
     if(missing(l.cex)) l.cex <- cex

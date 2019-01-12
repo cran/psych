@@ -54,7 +54,7 @@ if (adjust !="none") {
 
      
 
-      cnR <- abbreviate(colnames(r),minlength=5) 
+      cnR <- abbreviate(colnames(r),minlength=minlength) 
       
        k <- 1
      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {

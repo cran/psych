@@ -43,7 +43,7 @@ interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor",
    \item{regression}{Not yet implemented}
    }
 \details{
-Factor analysis as implemented in \code{\link{fa}} attempts to  summarize the covariance (correlational) structure of a set of variables with a small set of latent variables or ``factors".  This solution may be `extended' into a larger space with more variables without changing the original solution (see \code{\link{fa.extension}}.  Similarly,  the factors of a second set of variables  (the Y set) may be extended into the original (X ) set.  Doing so allows two independent measurement models, a measurement model for X and a measurement model for Y.  These two sets of latent variables may then be correlated too for an Exploratory Structural Equation Model.  (This is exploratory because it is based upon exploratory factor analysis (EFA) rather than a confirmatory factor model (CFA) using more traditional Structural Equation Modeling packages such as sem, lavaan, or Mx.)
+Factor analysis as implemented in \code{\link{fa}} attempts to  summarize the covariance (correlational) structure of a set of variables with a small set of latent variables or ``factors".  This solution may be `extended' into a larger space with more variables without changing the original solution (see \code{\link{fa.extension}}.  Similarly,  the factors of a second set of variables  (the Y set) may be extended into the original (X ) set.  Doing so allows two independent measurement models, a measurement model for X and a measurement model for Y.  These two sets of latent variables may then be correlated  for an Exploratory Structural Equation Model.  (This is exploratory because it is based upon exploratory factor analysis (EFA) rather than a confirmatory factor model (CFA) using more traditional Structural Equation Modeling packages such as sem, lavaan, or Mx.)
 
 Although the output seems very similar to that of a normal EFA using  \code{\link{fa}}, it is actually two independent factor analyses (of the X and the Y sets) that are then mutually extended into each other.  That is, the loadings and structure matrices from sets X and Y are merely combined, and the correlations between the two sets of factors are found.
 
@@ -81,6 +81,7 @@ The difference between the esem and the interbattery approach is that the first 
 \item{fy}{The complete factor analysis output for the Y set}
 \item{residual}{The residual correlation matrix (R - model).  May be examined by a call to residual().}    
 \item{Call}{Echo back the original call to the function.}
+\item{model}{model code for SEM and for lavaan to do subsequent confirmatory modeling}
 }
 \references{
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
@@ -91,7 +92,7 @@ Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika
 }
 \author{William Revelle}
 
-\note{As of September, 2016, this  is the first edition of the \code{\link{esem}} and \code{\link{esem.diagram}} functions. Suggestions or comments are most welcome. 
+\note{Developed September, 2016, revised December, 2018 to produce code for lavaan and sem.  the \code{\link{esem}} and \code{\link{esem.diagram}} functions. Suggestions or comments are most welcome. 
 }
 
 

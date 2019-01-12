@@ -21,6 +21,17 @@ if(length(class(object)) > 1)  { value <- class(object)[2] }
  
 switch(value, 
 
+bassAck = {
+cat("\nCall: ")
+   print(object$Call)
+nf <- length(object$bass.ack)-1
+for (f in 1:nf) {
+cat("\nFactor correlations\n ")
+print(round(object$bass.ack[[f]],digits=digits))
+}
+},
+
+
 bestScales = { cat("\nCall = ")
     print(object$Call)
     # print(object$first.result)

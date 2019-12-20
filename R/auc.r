@@ -1,7 +1,8 @@
 #Written December 7, 2017 to show various decision processes.
  
-"AUC" <- function(t=NULL,BR=NULL,SR=NULL,Phi=NULL,VP=NULL,labels=NULL,plot="b",zero=TRUE) {
-col <- c("blue","red")
+"AUC" <- function(t=NULL,BR=NULL,SR=NULL,Phi=NULL,VP=NULL,labels=NULL,plot="b",zero=TRUE,correct=.5,col=c("blue","red")) {
+
+PLOT <- TRUE
 alpha <- .5
  col <- adjustcolor(col,alpha.f =alpha)     
 if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
@@ -15,7 +16,9 @@ if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
   t <- matrix(c(VP,SR -VP, BR-VP, 1- SR - BR + VP),2,2)
   }
  
-
+ if((sum(t) > 1) && (min(t) == 0) && (correct > 0)) {
+    message("  A cell entry of 0 was replaced with correct =  ", correct, ".  Check your data!")
+    t[t==0] <- correct}  #correction for continuity
   phi <- phi(t)
   tetra <- tetrachoric(t)
   
@@ -51,18 +54,20 @@ if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
   d.prime <-  zVP - zFP
   beta <- pnorm(d.prime - criterion)*rs[1]/(pnorm(criterion)*rs[2])
   xmax <- max(4,d.prime+3)
- x <- seq(-3,xmax,.1)
+  if(is.infinite(xmax)) {PLOT <- FALSE
+  x <- seq(-3,4)
+ } else {x <- seq(-3,xmax,.1) }
  
  y2 <- dnorm(x , -(!zero)*d.prime) * rs[2]    #noise
  y <- dnorm(x, zero * d.prime ) * rs[1]  #signal + noise
  
-  if(plot == "b") {op <- par(mfrow=c(2,1))}
+  if(PLOT){if(plot == "b") {op <- par(mfrow=c(2,1))}
   if((plot =="b") | (plot =="a")) {
    plot(Sensitivity ~ FP,xlim=c(0,1),ylim=c(0,1),ylab="Valid Positives",xlab="False Positives",main="Valid Positives as function of False Positives")
   segments(0,0,FP,Sensitivity)
   segments(FP,Sensitivity,1,1)
   segments(0,0,1,1)}
- 
+ }
  fpx <-  pnorm(x-qnorm(Specificity))
  vpx <-  pnorm(x+ qnorm(Sensitivity))
  fpx.diff <- diff(fpx)
@@ -70,10 +75,11 @@ if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
  lower.sum <- sum(fpx.diff * vpx[-1])
  upper.sum <- sum(fpx.diff * vpx[-length(vpx)])
  auc <- (lower.sum + upper.sum)/2
-  if((plot =="b") | (plot =="a")) { points(vpx ~ fpx,typ="l",lty="dashed")
+ 
+  if((plot =="b") | (plot =="a") && PLOT) { points(vpx ~ fpx,typ="l",lty="dashed")
    }
  
-   if((plot =="b") | (plot =="d")) {
+   if((plot =="b") | (plot =="d") &&PLOT) {
   plot(y ~ x, ylim=c(0,.4),ylab="Probability of observation",main="Decision Theory",type="l")
   points(y2 ~ x,lty="dashed",typ="l")
   
@@ -88,7 +94,7 @@ if(!is.null(t) & is.null(BR)) {stopifnot(prod(dim(t)) ==4 || length(t) ==4)
   polygon(c(x1,x1r),c(y1,y1r),col= col[1])
   polygon(c(x1,x1r),c(y2c,y1r),col= col[2])
   }
- if(plot =="b")  par(op)
+ if(plot =="b" && PLOT)  par(op)
  
  result<- list(observed=observed,probabilities=t,conditional=p1,q=q,Accuracy = Accuracy,Sensitivity=Sensitivity,Specificity=Specificity,AUC = auc,d.prime = d.prime,beta = beta, criterion=criterion,phi=phi,tetrachoric=tetra$rho)
 class(result) <- c("psych","auc")

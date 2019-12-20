@@ -1,7 +1,7 @@
 "error.bars" <-
 function (x,stats=NULL,data=NULL,group=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col="blue",density=-10,...)  # x   data frame with 
     {
-     if(!missing(x) && (class(x) == "formula")) {if(!is.null(data))
+     if(!missing(x) && (inherits(x, "formula"))) {if(!is.null(data))
    # cat("\nFormula input detected, calling error.bars.by")
      error.bars.by(x,data=data,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
 arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 

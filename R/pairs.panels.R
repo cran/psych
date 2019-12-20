@@ -33,7 +33,7 @@ function(x,...) {
     rect(breaks[-nB], 0, breaks[-1], y,col=hist.col)
     }
  if(density) { tryd <- try( d <- density(x,na.rm=TRUE,bw="nrd",adjust=1.2),silent=TRUE)
-  if(class(tryd) != "try-error") {
+  if(!inherits(tryd,"try-error")) {
      d$y <- d$y/max(d$y)
    lines(d)}}
   if(rug) rug(x)

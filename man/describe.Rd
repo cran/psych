@@ -43,7 +43,7 @@ Although describe will work on data frames as well as matrices, it is important 
 
 If the check option is TRUE, variables that are categorical or logical are converted to numeric and then described.  These variables are marked with an * in the row name.  This is somewhat slower. Note that in the case of categories or factors, the numerical ordering is not necessarily the one expected.  For instance, if education is coded "high school", "some college" , "finished college", then the default coding will lead to these as values of 2, 3, 1. Thus, statistics for those variables marked with * should be interpreted cautiously (if at all).
 
-In a typical study, one might read the data in from the clipboard (\code{\link{read.clipboard}}), show the splom plot of the correlations (\code{\link{pairs.panels}}), and then describe the data. 
+In a typical study, one might read the data in from the clipboard (\code{\link[psychTools]{read.clipboard}}), show the splom plot of the correlations (\code{\link{pairs.panels}}), and then describe the data. 
 
 na.rm=FALSE is equivalent to describe(na.omit(x))  
 
@@ -110,7 +110,7 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 
 \references{Joanes, D.N. and Gill, C.A (1998).  Comparing measures of sample skewness and kurtosis.  The Statistician, 47, 183-189.}
 
-\seealso{ \code{\link{describeBy}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link{read.clipboard}}.  Then, for graphic output, see \code{\link{error.crosses}}, \code{\link{pairs.panels}}, \code{\link{error.bars}}, \code{\link{error.bars.by}} and \code{\link{densityBy}}, or \code{\link{violinBy}}}
+\seealso{ \code{\link{describeBy}}, \code{\link{skew}}, \code{\link{kurtosi}} \code{\link{interp.median}}, \code{\link[psychTools]{read.clipboard}}.  Then, for graphic output, see \code{\link{error.crosses}}, \code{\link{pairs.panels}}, \code{\link{error.bars}}, \code{\link{error.bars.by}} and \code{\link{densityBy}}, or \code{\link{violinBy}}}
 
 \examples{
 data(sat.act)

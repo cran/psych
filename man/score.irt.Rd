@@ -7,8 +7,10 @@
 \alias{score.irt.poly}
 \alias{score.irt.2}
 \alias{irt.stats.like}
+\alias{make.irt.stats}
 \alias{irt.tau}
 \alias{irt.se}
+\alias{make.irt.stats}
 \title{Find Item Response Theory (IRT) based scores for dichotomous or polytomous items}
 
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{scoreIrt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. \code{\link{scoreIrt.2pl}} will score lists of scales.
@@ -29,13 +31,14 @@ score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic")
 score.irt.poly(stats, items, keys=NULL, cut = 0.3,bounds=c(-4,4),mod="logistic")
     #to create irt like statistics for plotting
 irt.stats.like(items,stats,keys=NULL,cut=.3)
+make.irt.stats(difficulty,discrimination) 
    
 irt.tau(x)    #find the tau values for the x object
 irt.se(stats,scores=0,D=1.702)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{stats}{Output from irt.fa is used for parameter estimates of location and discrimination. Stats may also be the  output from a normal factor analysis (fa) }
+  \item{stats}{Output from irt.fa is used for parameter estimates of location and discrimination. Stats may also be the  output from a normal factor analysis (fa). If stats is a data.frame of discrimination and thresholds from some other data set, these values will be used.  See the last example. }
   \item{items}{The raw data, may be either dichotomous or polytomous.}
   \item{itemLists}{a list of items to be factored and scored for each scale, can be a keys.list as used in scoreItems or scoreIrt.1pl}
   \item{keys.list}{A list of items to be scored with keying direction  (see example)}
@@ -49,6 +52,8 @@ irt.se(stats,scores=0,D=1.702)
   \item{messages}{Should messages be suppressed when running multiple scales?}
   \item{scores}{A single score or a vector of scores to find standard errors}
   \item{D}{The scaling function for the test information statistic used in irt.se}
+  \item{difficulty}{The difficulties for each item in a polytomous scoring}
+  \item{discrimination}{The item discrimin}
 }
 \details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
@@ -59,6 +64,8 @@ As of 1.6.9, the procedure is very different.  We now assume that all items are 
 There are several more elegant packages in R that provide Full Information Maximum Likeliood IRT based estimates. In particular, the MIRT package seems especially good.  The ltm package give equivalent estimates to MIRT for dichotomous data but produces unstable estimates for polytomous data and should be avoided.   
 
 Although the scoreIrt estimates are are not FIML based they seem to correlated with  the MIRT estiamtes with values exceeding .99.  Indeed, based upon very limited simulations there are some small hints that the solutions match the true score estimates  slightly better than do the MIRT estimates.  \code{\link{scoreIrt}} seems to do a good job of recovering the basic structure.
+
+If trying to use item parameters from a different data set (e.g. some standardization sample), specify the stats as a data frame with the first column representing the item discriminations, and the next columns the item difficulties. See the last example.
 
 The two wrapper functions \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} are very fast and are meant for scoring one or many scales at a time with a one factor model (\code{\link{scoreIrt.2pl}}) or just Rasch like scoring.  Just specify the scoring direction for a number of scales  (\code{\link{scoreIrt.1pl}}) or just items to score  for a number of scales \code{\link{scoreIrt.2pl}}.  \code{\link{scoreIrt.2pl}} will then apply \code{\link{irt.fa}} to the items for each scale separately, and then find the 2pl scores. 
 
@@ -105,7 +112,7 @@ scoreIrt.2pl is a wrapper for irt.fa and scoreIrt.  It was originally developed 
 \code{\link{irt.fa}} for finding the parameters. For more conventional scoring algorithms see \code{\link{scoreItems}}. \code{\link{irt.responses}} will plot the empirical response patterns for the alternative response choices for  multiple choice items. For more conventional IRT estimations, see the ltm package.
 }
 \examples{
-if(FALSE) {  #not run in the interest of time, but worth doing
+\donttest{  #not run in the interest of time, but worth doing
 d9 <- sim.irt(9,1000,-2.5,2.5,mod="normal") #dichotomous items
 test <- irt.fa(d9$items)
 scores <- scoreIrt(test,d9$items)
@@ -162,15 +169,43 @@ pairs.panels(scores.df,pch=".",main="Comparing IRT and classical with missing da
  #of the generating theta than using the empirically derived factor loading weights
 
 #now show the ability to score multiple scales using keys
-ab.tau <- irt.tau(ability)  #first find the tau values
-ab.keys <- make.keys(ability,list(g=1:16,reason=1:4,letter=5:8,matrix=9:12,rotate=13:16))
-ab.scores <- scoreIrt(stats=ab.tau, items = ability, keys = ab.keys)
+ab.tau <- irt.tau(psychTools::ability)  #first find the tau values
+ab.keys <- make.keys(psychTools::ability,list(g=1:16,reason=1:4,
+letter=5:8,matrix=9:12,rotate=13:16))
+#ab.scores <- scoreIrt(stats=ab.tau, items = psychTools::ability, keys = ab.keys)
 
-#and now do it for polytomous items 
-bfi.tau <- irt.tau(bfi[1:25])
-bfi.keys <- make.keys(bfi[1:25],list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),
-extra=c(11:12,-13,-14,-15),neur = 16:20,open =c(21,-22,23,24,-25)))
-bfi.scores <- scoreIrt(bfi.tau,bfi[1:25],bfi.keys)
+#and now do it for polytomous items using 2pl
+bfi.scores <- scoreIrt.2pl(bfi.keys,bfi[1:25])
+#compare with classical unit weighting by using scoreItems
+#not run in the interests of time
+#bfi.unit <- scoreItems(psychTools::bfi.keys,psychTools::bfi[1:25])
+#bfi.df <- data.frame(bfi.scores,bfi.unit$scores)
+#pairs.panels(bfi.df,pch=".")
+
+
+bfi.irt <- scoreIrt(items=bfi[16:20])  #find irt based N scores
+
+#Specify item difficulties and discriminations from a different data set.
+stats <- structure(list(MR1 = c(1.4, 1.3, 1.3, 0.8, 0.7), difficulty.1 = c(-1.2, 
+-2, -1.5, -1.2, -0.9), difficulty.2 = c(-0.1, -0.8, -0.4, -0.3, 
+-0.1), difficulty.3 = c(0.6, -0.2, 0.2, 0.2, 0.3), difficulty.4 = c(1.5, 
+0.9, 1.1, 1, 1), difficulty.5 = c(2.5, 2.1, 2.2, 1.7, 1.6)), row.names = c("N1", 
+"N2", "N3", "N4", "N5"), class = "data.frame")
+
+
+stats #show them
+bfi.new <-scoreIrt(stats,bfi[16:20])
+bfi.irt <- scoreIrt(items=bfi[16:20]) 
+cor2(bfi.new,bfi.irt)
+newstats <- stats
+newstats[2:6] <-stats[2:6 ] + 1  #change the difficulties
+bfi.harder <- scoreIrt(newstats,bfi[16:20])
+pooled <- cbind(bfi.irt,bfi.new,bfi.harder)
+describe(pooled)  #note that the mean scores have changed
+lowerCor(pooled) #and although the unit weighted scale are identical,
+# the irt scales differ by changing the difficulties
+
+
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

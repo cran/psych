@@ -3,7 +3,7 @@
 \alias{keys2list}
 \alias{selectFromKeys}
 \title{ Create a keys matrix for use by score.items or cluster.cor}
-\description{ When scoring items by forming composite scales either from the raw data using \code{\link{scoreItems}} or from the correlation matrix using \code{\link{cluster.cor}}, it is necessary to create a keys matrix.  This is just a short cut for doing so.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale. Items can be specified by location or by name.
+\description{ When scoring items by forming composite scales either from the raw data using \code{\link{scoreItems}} or from the correlation matrix using \code{\link{cluster.cor}}, it used to be  necessary to create a keys matrix. This is no longer necessary as most of the scoring functions will directly use a keys list. \code{\link{make.keys}}  is just a short cut for creating a keys matrix.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale. Items can be specified by location or by name.
 }
 \usage{
 make.keys(nvars, keys.list, item.labels = NULL, key.labels = NULL)
@@ -67,26 +67,27 @@ select <- selectFromKeys(key.list)
  #scores <- score.items(keys,attitude)
  #scores
  
- data(bfi)
+# data(psychTools::bfi)
  #first create the keys by location (the conventional way)
  keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),
  extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))   
- keys <- make.keys(25,keys.list,item.labels=colnames(bfi)[1:25])
+ keys <- make.keys(25,keys.list,item.labels=colnames(psychTools::bfi)[1:25])
  new.keys.list <- keys2list(keys)  #these will be in the form of variable names
  
  #alternatively, create by a mixture of names and locations 
  keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
 conscientious=c("C1","C2","C2","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
 neuroticism=c(16:20),openness = c(21,-22,23,24,-25)) 
-keys <- make.keys(bfi,keys.list) #specify the data file to be scored (bfi)
+keys <- make.keys(psychTools::bfi, keys.list) #specify the data file to be scored (bfi)
 #or
-keys <- make.keys(colnames(bfi),keys.list) #specify the names of the variables to be used
+keys <- make.keys(colnames(psychTools::bfi),keys.list) #specify the names of the variables 
+#to be used
 #or
 #specify the number of variables to be scored and their names in all cases
-keys <- make.keys(28,keys.list,colnames(bfi)) 
+keys <- make.keys(28,keys.list,colnames(psychTools::bfi)) 
 
 
- scores <- scoreItems(keys,bfi)
+ scores <- scoreItems(keys,psychTools::bfi)
  summary(scores)
 
 }

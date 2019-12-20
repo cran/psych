@@ -1,10 +1,10 @@
 #developed April 24, 2009
-#
+#Functionally replaced by corPlot
 "mat.plot" <- 
 function(r,colors=FALSE, n=10,main=NULL,zlim=c(0,1)){
-
+{ .Deprecated("mat.plot",msg="mat.plot is deprecated.  Please use the corPlot function.")
 if(is.null(main)) {main <- "Correlation plot" }
-if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {if(class(r)[2] =="omega") {r <- r$schmid$sl
+if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (inherits(r, "psych")))  {if(inherits(r,"omega")) {r <- r$schmid$sl
 nff <- ncol(r)
 r <- r[,1:(nff-2)]}  else {r <- r$loadings}
 } }
@@ -31,5 +31,5 @@ at2 <- (0:(nvar-1)) /(nvar-1)
 
 axis(1,at=at1,labels=rownames(r))
 axis(2,at=at2,labels=colnames(r))
-
+}
 }

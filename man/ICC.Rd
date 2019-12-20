@@ -53,7 +53,8 @@ Revelle, W. (in prep) An introduction to psychometric theory with applications i
 \author{William Revelle }
 \note{The results for the Lower and Upper Bounds for ICC(2,k) do not match those of SPSS 9 or 10, but do match the definitions of Shrout and Fleiss.  SPSS  seems to have been using the  formula in McGraw and Wong, but not the errata on p 390.  They seem to have fixed it in more recent releases (15). 
 
-Starting with psych  1.4.2, the confidence intervals are based upon (1-alpha)\% at both tails of the confidence interval.  This is in agreement with Shrout and Fleiss.  Prior to 1.4.2 the confidence intervals were (1-alpha/2)\%.  }
+Starting with psych  1.4.2, the confidence intervals are based upon (1-alpha)\% at both tails of the confidence interval.  This is in agreement with Shrout and Fleiss.  Prior to 1.4.2 the confidence intervals were (1-alpha/2)\%. 
+However, at some point, this error slipped back again.  It has been fixed in version 1.9.5 (5/21/19). }
 
 \examples{
 sf <- matrix(c(
@@ -68,7 +69,8 @@ rownames(sf) <- paste("S",1:6,sep="")
 sf  #example from Shrout and Fleiss (1979)
 ICC(sf,lmer=FALSE)  #just use the aov procedure
    
-data(sai)
+#data(sai)
+sai <- psychTools::sai
 sai.xray <- subset(sai,(sai$study=="XRAY") & (sai$time==1))
 xray.icc <- ICC(sai.xray[-c(1:3)],lmer=TRUE,check.keys=TRUE)
 xray.icc

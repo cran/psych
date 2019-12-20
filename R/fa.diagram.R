@@ -10,7 +10,7 @@
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
     digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) {
-    if(length(class(fa.results)) > 1) {if(class(fa.results)[2] == 'principal') {pc <- TRUE} else {pc <- FALSE}} else { pc <- FALSE}
+    if(length(class(fa.results)) > 1) {if(inherits(fa.results, 'principal')) {pc <- TRUE} else {pc <- FALSE}} else { pc <- FALSE}
     if(ic) pc <- TRUE
     old.par<- par(mar=marg)  #give the window some narrower margins
     on.exit(par(old.par))  #set them back

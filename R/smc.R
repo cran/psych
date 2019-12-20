@@ -50,11 +50,11 @@ if(any(is.na(R))) {
 if(!covar) { R <- cor.smooth(R) }  
                             
  R.inv <- try(solve(R),TRUE)
- if(class(R.inv)== as.character("try-error")) {smc <- rep(1,p)
+ if(inherits(R.inv, as.character("try-error"))) {smc <- rep(1,p)
  message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)}
  names(smc) <- colnames(R)
 if(!is.null(tempR)) { R.na.inv <- try(solve(tempR),TRUE)
- if(class(R.na.inv) == as.character("try-error")) {smc.na <- rep(1,p)
+ if(inherits(R.na.inv, as.character("try-error"))) {smc.na <- rep(1,p)
    message("Oh bother, in smc, the correlation matrix of the adjusted part was not invertible, smc's returned as 1s")} else  {smc.na <- 1 -1/diag(R.na.inv)}
    } else {smc.na <- smc}
    

@@ -1,46 +1,139 @@
 #A function to report the difference between two factor models
 #adapted from John Fox's sem anova 
+#modified November 29, 2019 to include anovas for setCor and mediate models 
 
-anova.psych <- function(object,object2,...) {
+anova.psych <- function(object,...) {
+#if(length(class(object)) > 1)  { value <- class(object)[2] } else {value <- NA}
 
-name.1 <- deparse(substitute(object))
-name.2 <- deparse(substitute(object2))
-object1 <- object  #rather cluncky, but gets around the problem of generic anova
-#check if we have omega input
-if(class(object1)[2] =="omega") object1 <- object1$schmid
-if(class(object2)[2] =="omega") object2 <- object2$schmid
+ if(length(class(object)) > 1)  {
+    names <- cs(omega,fa, setCor,mediate)
+    value <- inherits(object,names,which=TRUE)   # value <- class(x)[2]
+    if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
+    
+     } else {value <- "other"}
 
-chi.1 <- object1$STATISTIC
-dof.1  <- object1$dof
-BIC.1  <- object1$BIC
-echi.1 <- object1$chi
+#this does the work for setCor and mediate or any model that returns SSR and dfs
+small.function <- function(models,dfs,SSR) {
+  #this next section is adapted  from anova.lm and anova.lmlist
 
-chi.2 <- object2$STATISTIC
-dof.2  <- object2$dof
-BIC.2  <- object2$BIC
-echi.2 <- object2$chi
+ n.mod <- length(models)
+ mods <- unlist(models)
+ for(i in 1:n.mod) {
+   temp <- unlist(mods[[i]])
+   cat("Model",i, "= ")
+   print(temp,rownames=FALSE)
+    }
 
-if(is.null(echi.1)) echi.1 <- NA
-if(is.null(echi.2)) echi.2 <- NA
-if( is.null(chi.1)) {stop("You do not seem to have chi square values for  ",name.1,"\nPerhaps you did not specify the sample size when you did the analysis?" )}
-if( is.null(chi.2)) {stop("You do not seem to have chi square values for  ",name.2,"\nPerhaps you did not specify the sample size when you did the analysis?" )}
-delta.df <- abs(dof.1 - dof.2)
-delta.chi <-abs( chi.1 - chi.2)
-delta.echi <- abs(echi.1 - echi.2)
-test.chi <- delta.chi/delta.df
+ table <- data.frame(df=unlist(dfs),SSR=unlist(SSR))
+ MSR <- table$SSR/table$df
+  df <- table$df
+  diffSS <- -diff(table$SSR)
+  diffdf <- -diff(table$df) 
+  
+  #find the model with the most df
+    biggest.df <- order(table$df)[1]
+    scale <- table[biggest.df,"SSR"]/table[biggest.df,"df"]
+   F <- (diffSS) /diffdf/scale
+   
+   prob <- pf(F,abs(diffdf),df[-1],lower.tail=FALSE)
+   table <- data.frame(table,diff.df=c(NA,diffdf),diff.SS= c(NA,diffSS),F= c(NA,F),c(NA,prob))
+   names(table) <- c("Res Df","Res SS", "Diff df","Diff SS","F","Pr(F > )")
+   return(table)}
+   
+#and this does the work for fa and omega
+another.function <- function(models,dfs,echis,chi,BICS) {
+   mods <- unlist(models)
+    n.mod <- length(models)
+ mods <- unlist(models)
+ for(i in 1:n.mod) {
+   temp <- unlist(mods[[i]])
+   cat("Model",i, "= ")
+   print(temp,rownames=FALSE)
+    }
+  delta.df <- -diff(unlist(dfs))
+  delta.chi <- -diff(unlist(chi))
+ if(!is.null(echis) ) {delta.echi <- -diff(unlist(echis))} else {delta.echi <- NA}
+  delta.bic <- diff(unlist(BICS))
+  test.chi <- delta.chi/delta.df
 test.echi <- delta.echi/delta.df
-delta.BIC <- (BIC.2 - BIC.1)
+ p.delta <- pchisq(delta.chi, delta.df, lower.tail=FALSE)
+ if(!is.null(echis) ){
+  table <- data.frame(df=unlist(dfs),d.df=c(NA,delta.df),chiSq=unlist(chi), d.chiSq=c(NA,delta.chi),
+  PR=c(NA,p.delta),test=c(NA,test.chi), empirical = unlist(echis),d.empirical=c(NA,delta.echi),test.echi=c(NA,test.echi),BIC=unlist(BICS),d.BIC = c(NA,delta.bic))} else {
+  table <- data.frame(df=unlist(dfs),d.df=c(NA,delta.df),chiSq=unlist(chi), d.chiSq=c(NA,delta.chi),
+  PR=c(NA,p.delta),test=c(NA,test.chi),BIC=unlist(BICS),d.BIC = c(NA,delta.bic))}
+
+ table <- round(table,2)
+return(table)
 
 
-
-
-table <- data.frame(c(dof.1,dof.2),c(chi.1,chi.2),c(NA,delta.df),c(NA,delta.chi),c(NA, pchisq(delta.chi, delta.df, lower.tail=FALSE)),c(echi.1,echi.2),c(NA,delta.echi),c(NA,pchisq(delta.echi, delta.df, lower.tail=FALSE)),c(BIC.1,BIC.2),c(NA,delta.BIC))
-names(table) <- c("Model Df", "ML Chisq", "Delta Df", "Delta Chisq", "Pr(> Delta Chisq)","Emp Chisq"," Delta Emp Chisq" ,"Pr(> Emp.Delta Chisq)","BIC","Delta BIC")
-if(is.na(delta.echi)) {
-table <- data.frame(c(dof.1,dof.2),c(chi.1,chi.2),c(NA,delta.df),c(NA,delta.chi),c(NA, pchisq(delta.chi, delta.df, lower.tail=FALSE)),c(BIC.1,BIC.2),c(NA,delta.BIC))
-names(table) <- c("Model Df", "ML Chisq", "Delta Df", "Delta Chisq", "Pr(> Delta Chisq)","BIC","Delta BIC")
 }
-rownames(table) <- c(name.1, name.2)
+ 
+
+switch(value,
+
+mediate ={
+ if (length(list(object, ...)) > 1L)  {
+ 	 objects <- list(object,...)	
+ 	 dfs <- lapply(objects, function(x) x$cprime.reg$df)
+  	SSR <- lapply(objects, function(x) x$cprime.reg$SE.resid^2 * x$cprime.reg$df)
+ 	 models <- lapply(objects, function(x) x$Call)
+ 	 table <- small.function(models=models,dfs=dfs,SSR=SSR)
+	 }
+},
+
+setCor ={
+ if (length(list(object, ...)) > 1L)  {
+ 	 objects <- list(object,...)	
+ 	 dfs <- lapply(objects, function(x) x$df[2])
+  	SSR <- lapply(objects, function(x) x$SE.resid^2 * x$df[2])
+ 	 models <- lapply(objects, function(x) x$Call)
+ 	 
+ 	 table <-  small.function(models=models,dfs=dfs,SSR=SSR)	  
+	 }
+   },
+
+
+fa = {
+ if (length(list(object, ...)) > 1L)  {
+ 	 objects <- list(object,...)
+ 	 n.models <- length(objects)
+ 	 
+ 	 echis <- lapply(objects,function(x) x$chi)	
+ 	 BICS <-  lapply(objects,function(x) x$BIC)	
+     dofs <-   lapply(objects,function(x) x$dof)
+     chi <-  lapply(objects,function(x) x$STATISTIC)
+     models <- lapply(objects, function(x) x$Call)
+     nechi <- length (echis)
+     nBics <- length(BICS)
+     nchi <- length(chi)
+     
+     if(nechi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
+      if(nchi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
+     table <- another.function(models,dfs=dofs,echis=echis,chi = chi,BICS = BICS)	
+}
+},
+
+omega = {   #should change this to include more than 2 models (see above )
+ if (length(list(object, ...)) > 1L)  {
+ 	 objects <- list(object,...)
+ 	 n.models <- length(objects)
+
+ 	# echis <- lapply(objects,function(x) x$schmid$chi)	
+ 	 BICS <-  lapply(objects,function(x) x$schmid$BIC)	
+     dofs <-   lapply(objects,function(x) x$schmid$dof)
+     chi <-  lapply(objects,function(x) x$schmid$STATISTIC)
+     models <- lapply(objects, function(x) x$Call)
+    # nechi <- length (echis)
+     nBics <- length(BICS)
+     nchi <- length(chi)
+   table <- another.function(models,dfs=dofs,echis=NULL,chi = chi,BICS = BICS)	
+   
+   }
+}
+)
+
+
 
 structure(table,heading = c("ANOVA Test for Difference Between Models",""),
              class = c("anova", "data.frame"))		

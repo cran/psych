@@ -34,4 +34,24 @@ cl <- match.call()
   
   }
 
+#An alternative model is to simulate independent factors with cross loadings
+#simulate the Thomson Bond'd model to produce a positive manifold without a g factor
+#Developed Sept 14, 2019
 
+"sim.bonds" <- function(nvar=9,loads=c(0,0,.5,.6),validity=.8) {
+nf <- length(loads)
+f <- matrix(0,nrow=(nvar+ nf),ncol=nf)
+for (i in 1:nvar) {
+   f[i,] <- sample(loads,nf)
+   }
+    k <- 1
+for(i in (nvar+1):NROW(f)) { 
+  f[i,k] <- validity
+  k <- k+1 }
+  colnames(f) <- paste0("F",1:nf)
+  rownames(f) <- paste0("V",1:NROW(f)) #fill them all in first
+  rownames(f)[(nvar+1) : (nvar+nf)] <- paste0("F",1:nf)
+ R <- f %*% t(f)
+ diag(R) <- 1
+ return(list(R=R,model=f) )
+}

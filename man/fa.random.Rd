@@ -43,9 +43,9 @@ fa.random(data, nfactors = 1, fix = TRUE, n.obs = NA, n.iter = 1, rotate = "obli
   
  } 
 
-\details{This function is inspired by the wprifm function in the profileR package and the citation there to a paper by Davison, Kim and Close (2009).  The basic logic is to extract a means vector from each subject and then to analyze the resulting ipsatized data matrix.  This can be seen as removing acquiecence in the case of personality items, or the general factor, in the case of ability items.  Factors composed of items that are all keyed the same way (e.g., Neuroticism in the \code{\link{bfi}} data set) will be most affected by this technique. 
+\details{This function is inspired by the wprifm function in the profileR package and the citation there to a paper by Davison, Kim and Close (2009).  The basic logic is to extract a means vector from each subject and then to analyze the resulting ipsatized data matrix.  This can be seen as removing acquiecence in the case of personality items, or the general factor, in the case of ability items.  Factors composed of items that are all keyed the same way (e.g., Neuroticism in the \code{\link[psychTools]{bfi}} data set) will be most affected by this technique. 
 
-The output is identical to the normal \code{link{fa}} output with the addition of two objects:  subject and within.r.  The subject object is just the vector of the mean score for each subject on all the items. within.r is just the correlation of each item with those scores.  
+The output is identical to the normal \code{\link{fa}} output with the addition of two objects:  subject and within.r.  The subject object is just the vector of the mean score for each subject on all the items. within.r is just the correlation of each item with those scores.  
 }
 \value{
 \item{subject}{A vector of the  mean score on all items for each subject}
@@ -125,8 +125,8 @@ To see what this does if there is a general factor, consider the unrotated solut
  \code{\link{fa}}
 }
 \examples{
-fa.ab <- fa(ability,4,rotate="none")  #normal factor analysis
-fa.ab.ip <- fa.random(ability,3,rotate="none") 
+fa.ab <- fa(psychTools::ability,4,rotate="none")  #normal factor analysis
+fa.ab.ip <- fa.random(psychTools::ability,3,rotate="none") 
 fa.congruence(list(fa.ab,fa.ab.ip,fa.ab.ip$within.r))
 
 

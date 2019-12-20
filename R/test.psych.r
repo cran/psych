@@ -140,7 +140,7 @@ cat("\n Test of fa.extension \n")
 #not run by default for official testing
 if(fapc) {
 cat("\n Test of various factor solutions\n") 
-   data1 <- psych::bfi
+   data1 <- psychTools::bfi
  
    f3 <- fa(data1[1:15],3,n.iter=5)
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="Varimax")
@@ -173,7 +173,7 @@ cat("\n Test of various factor solutions\n")
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="bentlerQ")
    
    cat("\n Test of factoring and principal components \n") 
-     data2 <- as.data.frame( psych::ability)
+     data2 <- as.data.frame(psychTools::ability)
     f1 <- fa(data2)
     
     fpoly <- fa(data2[1:10],2,n.iter=5,cor="poly")

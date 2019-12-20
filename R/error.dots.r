@@ -1,9 +1,9 @@
-#adpated (taken) from dotchart with some minor addition of confidence intervals and to interface with statsBy and describeBy.
-
+#adapted (taken) from dotchart with some minor addition of confidence intervals and to interface with statsBy, describeBy and cohen.d
+  
 #July 17, 2016
 #input is the mean + standard errors, and (optionally, alpha)
 #August 12, added the ability to find (and save) the stats using describe or describeBy
-
+#Modified Oct, 4, 2019 to include cohen.d values
 "error.dots" <- 
 function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
    min.n = NULL,max.labels =40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"), 
@@ -15,7 +15,15 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
     on.exit(par(opar))
     par(cex = cex, yaxs = "i")
     #first, see if the data come from a psych object with sd and n or se 
-    if(length(class(x)) > 1 ) {if (class(x)[1] == "psych") {obj <- class(x)[2]
+    
+     if(length(class(x)) > 1)  {
+     cohen.d <- fa.ci <- NULL  #strange fix to R compiler
+    names <- cs(statsBy,describe,describeBy, fa.ci,bestScales,cohen.d)
+    value <- inherits(x,names,which=TRUE)  # value <- class(x)[2]
+    if(any(value > 1) ) { obj <- names[which(value > 0)]} else {obj <- "other"}
+    
+    } else {obj <- "other"}
+  #  if(length(class(x)) > 1 ) {if (class(x)[1] == "psych") {obj <- class(x)[2]
     des <- NULL
     switch(obj,
         statsBy = {if(is.null(min.n))  {  if(!is.null(effect)) {   #convert means to effect sizes compared to a particular group
@@ -37,12 +45,12 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
                                               n.obs <- subset(n.obs, n.obs > min.n)
                                              
                                               }},
-        describe = {if(sd) {se <- x$sd} else {se <- x$se}
+     describe = {if(sd) {se <- x$sd} else {se <- x$se}
         			if(is.null(labels)) labels <- rownames(x)
                     x <- x$mean
                     names(x) <- labels
                     },
-        describeBy = {des <- x
+     describeBy = {des <- x
          if(is.null(xlab)) xlab <- var 
          var <- which(rownames(des[[1]]) == var) 
          x <- se <-  rep(NA,length(des))
@@ -53,17 +61,24 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
          names(x) <- names(des)
           if(is.null(xlab)) xlab <- var 
         }, 
-         fa.ci ={se = x$cis$sds
+     fa.ci ={se = x$cis$sds
               if(is.null(labels)) labels <-rownames(x$cis$means) 
               x <-x$cis$means },
-        bestScales = {se <- x$stats$se
+     bestScales = {se <- x$stats$se
          	          rn <- rownames(x$stats)
                       x <- x$stats$mean
                       names(x) <-rn
-                      des <- NULL} 
-        )
-      } #end switch
-      } else {
+                      des <- NULL},
+    cohen.d = {des <- x$cohen.d[,"effect"]
+             se <- x$se
+             if(!is.null(x$dict)) {names <- x$dict[,]} else {names <- rownames(x$cohen.d)}
+                x <- des
+                names(x) <- names
+                sd <- TRUE #use these values for the confidence intervals
+         },
+  other = {}   #an empty operator 
+        )#end switch
+      if (obj=="other"){
       if(is.null(group)) {  #the case of just one observation per condition
       	if(is.null(stats)) {
      		 if(is.null(dim(x))) {se <- rep(0,length(x))
@@ -83,7 +98,7 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
           if(is.null(xlab)) xlab <- var 
          des <- describeBy(x,group=group)
          x <- se <-  rep(NA,length(des))
-         names(x) <-names(des)
+         names(x) <- names(des)
          var <- which(rownames(des[[1]]) == var)
         
        
@@ -93,7 +108,6 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
           
           }}
        } 
-      
      n.var <- length(x)
    # if(!is.null(se) && !sd) {ci <- qnorm((1-alpha/2))*se} else {ci <- NULL}
     if (sort) { if(is.null(order)) {ord <- order(x,decreasing=!decreasing) } else {ord<- order}
@@ -192,7 +206,7 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
         ylim <- range(0, y + 2)
     }
     plot.window(xlim = xlim, ylim = ylim, log = "")
-    lheight <- par("csi")
+    lheight <- par("csi") 
     if (!is.null(labels)) {
         linch <- max(strwidth(labels, "inch"), na.rm = TRUE)
         loffset <- (linch + 0.1)/lheight

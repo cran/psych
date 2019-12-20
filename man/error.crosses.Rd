@@ -51,9 +51,10 @@ y <- desc[2,]
 error.crosses(x,y,xlab=rownames(x),ylab=rownames(y))   
 
 #now for a bit more complicated plotting 
-data(bfi)
-desc <- describeBy(bfi[1:25],bfi$gender) #select a high and low group
-error.crosses(desc$'1',desc$'2',ylab="female scores",xlab="male scores",main="BFI scores by gender")
+data(psychTools::bfi)
+desc <- describeBy(psychTools::bfi[1:25],psychTools::bfi$gender) #select a high and low group
+error.crosses(desc$'1',desc$'2',ylab="female scores",
+   xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
  
 #do it from summary statistics  (using standard errors) 
@@ -69,10 +70,10 @@ error.crosses(g1.stats,g2.stats,sd=TRUE)
 #and seem even fancy plotting: This is taken from a study of mood
 #four films were given (sad, horror, neutral, happy)
 #with a pre and post test
-data(affect)
+data(psychTools::affect)
 colors <- c("black","red","green","blue")
 films <- c("Sad","Horror","Neutral","Happy")
-affect.mat <- describeBy(affect[10:17],affect$Film,mat=TRUE)
+affect.mat <- describeBy(psychTools::affect[10:17],psychTools::affect$Film,mat=TRUE)
  error.crosses(affect.mat[c(1:4,17:20),],affect.mat[c(5:8,21:24),],
     labels=films[affect.mat$group1],xlab="Energetic Arousal",
      ylab="Tense Arousal",colors = 

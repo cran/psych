@@ -8,7 +8,7 @@
 }
 \usage{
 statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
-poly=FALSE, na.rm=TRUE,alpha=.05)
+poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
@@ -23,7 +23,8 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{use}{How to treat missing data.  use="pairwise" is the default}
 \item{poly}{Find polychoric.tetrachoric correlations within groups if requested.}
 \item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
-\item{alpha}{The alpha level for the confidence intervals for the ICC1 and ICC2}
+\item{alpha}{The alpha level for the confidence intervals for the ICC1 and ICC2, and rwg, rbg}
+\item{minlength}{The minimum length to use when abbreviating the labels for confidence intervals}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
@@ -83,7 +84,9 @@ Consider the case of the relationship between various tests of ability when the 
 \item{ci2}{The confidence intervals for the ICC2}
 \item{F}{The F from a one-way anova of group means.}
 \item{rwg}{The pooled within group correlations.}
+\item{ci.wg}{The confidence intervals of the pooled within group correlations.}
 \item{rbg}{The sample size weighted between group correlations. }
+\item{c.bg}{The confidence intervals of the rbg values}
 \item{etawg}{The correlation of the data with the within group values.}
 \item{etabg}{The correlation of the data with the group means.}
 \item{pbg}{The probability of the between group correlation}
@@ -102,6 +105,7 @@ Consider the case of the relationship between various tests of ability when the 
 }
 \note{If finding polychoric correlations, the two estimates of the pooled within group correlations will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
 
+The value of rbg (the between group correlation) is the group size weighted correlation.  This is not the same as just finding the correlation of the group means (i.e. cor(means)).
 
 The statsBy.boot function will sometimes fail if sampling with replacement because if the group sizes differ drastically, some groups will be empty.  In this case, sample without replacement.  
 
@@ -124,7 +128,7 @@ ped.stats
 
 
 #Now do this for the sat.act data set
-sat.stats <- statsBy(sat.act,c("education","gender"),cor=TRUE)   #group by two grouping variables
+sat.stats <- statsBy(sat.act,c("education","gender"),cors=TRUE)   #group by two grouping variables
 print(sat.stats,short=FALSE)
 lowerMat(sat.stats$pbg)  #get the probability values
 

@@ -1,6 +1,6 @@
 "faBy" <- function(stats,nfactors=1,rotate="oblimin",fm="minres",free=TRUE,all=FALSE,min.n=12,quant=.1,...) {
 
- if(class(stats)[2] != "statsBy") stop("Please run statsBy first")
+ if(!inherits(stats[2], "statsBy")) stop("Please run statsBy first")
  cl <- match.call() 
   fo.orth <- fa(stats$pooled,nfactors=nfactors,rotate="none",fm=fm) #get the overall pooled structure
   fo.rotated <-  fa(stats$pooled,nfactors=nfactors,rotate=rotate,fm=fm,...)  

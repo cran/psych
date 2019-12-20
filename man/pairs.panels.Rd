@@ -93,7 +93,7 @@ pairs.panels(sat.act,show.points=FALSE)
 pairs.panels(sat.act,pch=".")
 #show many variables with 0 gap between scatterplots
 # data(bfi)
-# pairs.panels(bfi,show.points=FALSE,gap=0)
+# pairs.panels(psychTools::bfi,show.points=FALSE,gap=0)
 
 #plot raw data points and then the weighted correlations.
 #output from statsBy

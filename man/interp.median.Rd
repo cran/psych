@@ -67,7 +67,8 @@ points(c(length(x)/4,length(x)/2,3*length(x)/4),interp.quartiles(x))
 barplot(y,space=0,xlab="ordinal position",ylab="value")
 lines(1:length(y)-.5,yv)
 points(c(length(y)/4,length(y)/2,3*length(y)/4),interp.quartiles(y))
-data(galton)
+data(psychTools::galton)
+galton <- psychTools::galton
 interp.median(galton)
 interp.qplot.by(galton$child,galton$parent,ylab="child height"
 ,xlab="Mid parent height") 

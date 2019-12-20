@@ -10,13 +10,13 @@
 #modified April 15, 2017 to allow for non-symmetric matrices
 #modified April 15, 2017 to allow more plotting control on the x and y rotation options
 #modified November 29th, 2017 to allow for semi-transparency by adjusting alpha
-
+#Finally changed the default to be numbers=TRUE (9/17/19)
 
 "cor.plot" <- "corPlot" <- 
-function(r,numbers=FALSE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,alpha =.75,min.length=NULL,...){
+function(r,numbers=TRUE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,alpha =.75,min.length=NULL,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
-if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (class(r)[1] =="psych"))  {
+if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (inherits(r, "psych")))  {
 switch(class(r)[2],
    omega  = {r <- r$schmid$sl
              nff <- ncol(r)
@@ -74,8 +74,17 @@ if(!is.null(min.length)) {
 #max.len <- max( strwidth(rownames(r)))
 if(is.null(zlim)) {zlim <- range(r)}
 if(colors) { 
-   if(missing(gr))  {gr <- colorRampPalette(c("red","white","blue"))}  #added June 20
-    colramp  <- gr(n)
+   if(missing(gr))  {gr <- colorRampPalette(c("red","white","blue"))}  #added June 20, 2018? 
+   if(max(r,na.rm=TRUE) > 1) {#add a fudge to make all the big ones the same
+   maxr <- max(r)
+   n1 <- n*(zlim[2]- zlim[1])/(maxr- zlim[1]) 
+   colramp <- rep(NA,n)
+   n1 <- ceiling(n1)
+   colramp[1:(n1+1)] <- gr(n1+1)
+   colramp[(n1+1):n] <- colramp[n1+1] 
+ zlim[2] <- maxr 
+   } else {
+    colramp  <- gr(n)}
       } else {
     colramp <- grey((n:0)/n)}
  colramp <- adjustcolor(colramp,alpha.f =alpha)   

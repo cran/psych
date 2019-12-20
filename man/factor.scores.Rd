@@ -73,8 +73,8 @@ William Revelle
 \examples{
 f3 <- fa(Thurstone)
 f3$weights  #just the scoring weights
-f5 <- fa(bfi,5) #this does the factor analyis
-my.scores <- factor.scores(bfi,f5, method="tenBerge")
+f5 <- fa(psychTools::bfi,5) #this does the factor analyis
+my.scores <- factor.scores(psychTools::bfi,f5, method="tenBerge")
 #compare the tenBerge factor score correlation to the factor correlations
 cor(my.scores$scores,use="pairwise") - f5$Phi  #compare to the f5$Phi values
 #compare the default (regression) score correlations to the factor correlations

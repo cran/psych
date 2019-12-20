@@ -1,7 +1,9 @@
 \name{Promax}
 \alias{Promax}
+\alias{faRotate}
 \alias{Procrustes}
 \alias{TargetQ}
+\alias{TargetT}
 \alias{target.rot}
 \alias{bifactor}
 \alias{biquartimin}
@@ -15,9 +17,11 @@
 \description{The bifactor rotation implements the rotation introduced by Jennrich and Bentler (2011) by calling GPForth in the GPArotation package.  promax is an oblique rotation function introduced by Hendrickson and White (1964) and implemented in the promax function in the stats package.  Unfortunately, promax does not report the inter factor correlations.  Promax does.  TargetQ does a target rotation with elements that can be missing (NA), or numeric (e.g., 0, 1).  It uses the GPArotation package. target.rot does general target rotations to an arbitrary target matrix. The default target rotation is for an independent cluster solution. equamax facilitates the call to GPArotation to do an equamax rotation.  Equamax, although available as a specific option within GPArotation is easier to call by name if using equamax.  The varimin rotation suggested by Ertl (2013) is implemented by appropriate calls to GPArotation.
 }
 \usage{
+faRotate(loadings,rotate="oblimin",...)
 bifactor(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 biquartimin(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 TargetQ(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
+TargetT(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
 Promax(x,m=4, normalize=FALSE, pro.m = 4) 
 Procrustes(L,Target) #adapted from Niels Waler
 target.rot(x,keys=NULL)
@@ -31,6 +35,8 @@ equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000)
 \arguments{
   \item{x}{A loadings matrix}
    \item{L}{A loadings matrix}
+   \item{loadings}{A loadings matrix}
+   \item{rotate}{Which rotation should be used?}
   \item{m}{the power to which to raise the varimax loadings (for Promax)}
   \item{pro.m}{the power to which to raise the various loadings in Promax.}
   \item{keys}{An arbitrary target matrix, can be composed of  any weights, but probably -1,0, 1 weights.  If missing, the target is the independent cluster structure determined by assigning every item to it's highest loaded factor.}
@@ -40,8 +46,13 @@ equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000)
   \item{normalize}{parameter passed to optimization routine (GPForth in the GPArotation package and Promax)}
   \item{eps}{parameter passed to optimization routine (GPForth in the GPArotation package) }
   \item{maxit}{parameter passed to optimization routine (GPForth in the GPArotation package)}
+  \item{...}{Other parameters to pass (e.g. to faRotate) include a Target list or matrix}
 }
-\details{The two most useful of these six functions is probably biquartimin which implements the oblique bifactor rotation introduced by Jennrich and Bentler (2011). The second is TargetQ which allows for missing NA values in the target. Next best is the orthogonal case, bifactor.  None of these seem to be implemented in GPArotation (yet).  
+\details{The two most useful of these  functions is probably biquartimin which implements the oblique bifactor rotation introduced by Jennrich and Bentler (2011). The second is TargetQ which allows for missing NA values in the target. Next best is the orthogonal case, bifactor.  None of these seem to be implemented in GPArotation (yet). 
+
+TargetT is an orthogonal target rotation function which allows for missing NA values in the target. 
+
+faRotate is merely a convenient way to call the various GPArotation functions as well as the additional ones added here.
 
 The difference between biquartimin and bifactor is just that the latter is the orthogonal case which is documented in Jennrich and Bentler (2011).  It seems as if these two functions are sensitive to the starting values and random  restarts (modifying T) might be called for.
 
@@ -78,24 +89,24 @@ Jennrich, Robert and Bentler, Peter (2011) Exploratory Bi-Factor Analysis. Psych
 
 }
 \author{William Revelle }
-\note{A direct adaptation of the stats:promax function following suggestions to the R-help list by Ulrich Keller and John Fox. Further  modified to do  targeted rotation similar to a function of Michael Browne.
+\note{Promax is direct adaptation of the stats:promax function following suggestions to the R-help list by Ulrich Keller and John Fox. Further  modified to do  targeted rotation similar to a function of Michael Browne.
 
-varimin is a direct application of the GPArotation GPForth function modified to do varimin.
+varimin is a direct application of the GPArotation GPForth function modified to do varimin. 
+}
 
- 
+\note{The Target for TargetT can be a matrix, but for TartetQ must be a list.  This seems to be a feature of GPArotation.
+
 }
 \seealso{ \code{\link{promax}}, \code{\link{fa}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data. \code{\link{factor.rotate}} for 'hand rotation'.  }
 \examples{
 jen <- sim.hierarchical()
 f3 <- fa(jen,3,rotate="varimax")
 f3   #not a very clean solution
-Promax(f3)
-target.rot(f3)
-m3 <- fa(jen,nfactors=3)
-Promax(m3)  #example of taking the output from factanal
+Promax(f3)  #this obliquely rotates, but from the varimax target
+target.rot(f3)  #this obliquely rotates to wards a simple structure target
+
 #compare this rotation with the solution from a targeted rotation aimed for 
 #an independent cluster solution
-target.rot(m3)
 #now try a bifactor solution
 fb <-fa(jen,3,rotate="bifactor")
 fq <- fa(jen,3,rotate="biquartimin")
@@ -111,9 +122,12 @@ factor.congruence(list(f3,fb,fq,fm,fn))
  Targ <- list(Targ)  #input must be a list
 #show the target
  Targ
- fa(Thurstone,3,rotate="TargetQ",Target=Targ)  #targeted rotation
+ fa(Thurstone,3,rotate="TargetQ",Target=Targ)  #targeted oblique rotation
 #compare with oblimin
-fa(Thurstone,3)
+f3 <- fa(Thurstone,3)
+#now try a targeted orthogonal rotation
+Targ <- make.keys(9,list(f1=1:3,f2=7:9,f3=4:6)) 
+faRotate(f3$loadings,rotate="TargetT",Target=list(Targ)) #orthogonal
 
 
 }

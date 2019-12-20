@@ -84,18 +84,12 @@ conf.level <- alpha
     r <- cor.smooth(r)  #this makes sure that the correlation is positive semi-definite
     #although it would seem that the model should always be positive semidefinite so this is probably not necessary
     #cor.smooth approach  added August 25,2011
-   #  model.inv <- try(solve(model),silent=TRUE)
-   #  if(class(model.inv)=="try-error") {warning("The correlation matrix is singular, an approximation is used")
-   #    ev.mod <- eigen(model)
-   #   ev.mod$values[ev.mod$values < .Machine$double.eps] <- 100 * .Machine$double.eps
-   #   model <- ev.mod$vectors %*% diag(ev.mod$values) %*% t(ev.mod$vectors)
-   #    diag(model)  <- 1
-   #    #model.inv <- solve(model)
+  
    #    }
    
     m.inv.r <- try(solve(model,r),silent=TRUE) #modified Oct 30, 2009 to perhaps increase precision -- #modified 2015/1/2 to use try
       
-     if(class(m.inv.r)=="try-error") {warning("the model inverse times the r matrix is singular, replaced with Identity matrix which means fits are wrong")
+     if(inherits(m.inv.r,"try-error")) {warning("the model inverse times the r matrix is singular, replaced with Identity matrix which means fits are wrong")
             m.inv.r <- diag(1,n,n)}
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
@@ -131,7 +125,9 @@ conf.level <- alpha
     
      #The estimatation of RMSEA and the upper and lower bounds are taken from John Fox's summary.sem with minor modifications
       if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
-      RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #put back 4/21/17
+     # RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #put back 4/21/17
+      #however, this is not quite right and should be
+      RMSEA <- sqrt(max(chisq/(result$dof* n.obs) - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #fixed 4/5/19
      #note that the result$objective is not actually the chi square unless we adjust it ala Tucker 
      #thus, the RMSEA was slightly off.  This was fixed October 29, 2016 to be  
      # RMSEA <- sqrt(max( (chisq/(result$dof * (n.obs))-1/(n.obs)),0))   #changed to this from above October 29, 2016 and then changed to N February 28, 2017
@@ -170,7 +166,7 @@ conf.level <- alpha
       RMSEA.U <- 0  #in case we can not find it
       if(pchisq(df=result$dof,q=result$STATISTIC) > tail){ RMSEA.U <-    try( sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)- tail},c(0,max))$root/(n.obs-1)/result$dof),silent=TRUE)
     
-        if(class( RMSEA.U)=="try-error") {if(RMSEA <= 0 ) {RMSEA.U <- 0} else {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
+        if(inherits( RMSEA.U,"try-error")) {if(RMSEA <= 0 ) {RMSEA.U <- 0} else {message("In factor.stats, I could not find the RMSEA upper bound . Sorry about that")
        #if the fit is super good, then the chisq is too small to get an upper bound.  Report it as 0.
                                          RMSEA.U <- NA}}
          
@@ -186,7 +182,7 @@ conf.level <- alpha
 
    RMSEA.L <- 0  #in case we can not find it
    if(pchisq(df=result$dof,q=result$STATISTIC) > (1-tail)) {    RMSEA.L   <-     try( sqrt(uniroot(function(x) {pchisq(df=result$dof,ncp=x,q=result$STATISTIC)-1 + tail},c(0,max))$root/(n.obs-1)/result$dof) ,silent=TRUE)
-        if(class(RMSEA.L)=="try-error") {#message("In factor.stats, I could not find the RMSEA lower bound . Sorry about that")
+        if(inherits(RMSEA.L,"try-error")) {#message("In factor.stats, I could not find the RMSEA lower bound . Sorry about that")
                                          RMSEA.L <- NA}
         } else {RMSEA.L <- 0}
 #                                           lam.L <- 0} else {lam.L <- res}
@@ -252,7 +248,7 @@ conf.level <- alpha
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
    	 r <- cor.smooth(r)
       w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
-     if(class(w)=="try-error") {message("In factor.stats, the correlation matrix is singular, an approximation is used")
+     if(inherits(w,"try-error")) {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
      if(is.complex(ev$values)) {warning("complex eigen values detected by factor stats, results are suspect")
                 
@@ -261,7 +257,7 @@ conf.level <- alpha
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
        diag(r)  <- 1
      w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
-     if(class(w)=="try-error") {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
+     if(inherits(w,"try-error")) {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
      w <- diag(1,dim(r)[1])
      }   #these are the beta weights 
     }}

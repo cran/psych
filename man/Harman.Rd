@@ -43,7 +43,7 @@ For those interested in teaching examples using various body measurements, see t
 
 The Burt data set probably has a typo in the original correlation matrix.  Changing the Sorrow- Tenderness correlation from .87 to .81 makes the correlation positive definite. 
 
-As pointed out by Jan DeLeeuw, the Burt data set is a subset of 8 variables from the original 11 reported by Burt in 1915.  That matrix has the same problem. See \code{\link{burt}}.
+As pointed out by Jan DeLeeuw, the Burt data set is a subset of 8 variables from the original 11 reported by Burt in 1915.  That matrix has the same problem. See \code{\link[psychTools]{burt}}.
 
 Other example data sets that are useful demonstrations of factor analysis are the seven bifactor examples  in \code{\link{Bechtoldt}} and the 24 ability measures in \code{\link{Harman74.cor}}
 
@@ -66,7 +66,7 @@ Burt, C.General and Specific Factors underlying the Primary Emotions. Reports of
 
 }
 
-\seealso{ See also the original \code{\link{burt}} data set, the \link{Harman.5} and \link{Harman.political} data sets.}
+\seealso{ See also the original \code{\link[psychTools]{burt}} data set, the \link{Harman.5} and \link{Harman.political} data sets.}
 \examples{
 data(Harman)
 cor.plot(Harman.Holzinger)

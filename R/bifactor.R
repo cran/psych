@@ -45,6 +45,7 @@ return(list(f=v,Gq=G))
     list(Gq = Gq, f = sum((L - Target)^2,na.rm=TRUE), Method = "Target rotation")
 }
 
+#these next two take advantage of the revised vgQ.targetQ to do oblique or orthogonal rotations
 "TargetQ" <- function(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL) {
     if(requireNamespace('GPArotation')) {GPArotation::GPFoblq(L, Tmat=Tmat,normalize=normalize, eps=eps, maxit=maxit,
            method="targetQ",Target)} else {stop("TargetQ requires GPArotation")}}

@@ -42,7 +42,7 @@ function(x,digits=2,use="pairwise",method="pearson") {
 #modified August 10, 2012 to print just 100 times. 
 "progressBar" <- 
 function(value,max,label=NULL) {
-if(class(stdout())[1]=="terminal") { pc <- round(100 * value/max)  #only print to the screen, not to a file
+if(inherits(stdout()[1],"terminal")) { pc <- round(100 * value/max)  #only print to the screen, not to a file
 if(ceiling(100 * value/max)==floor(100 * value/max)) {
 width <- 100
 char="."
@@ -227,8 +227,11 @@ return(y)}
 "fa.lookup"  <-
    function(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE) {
     if(sort) {f <- fa.sort(f)}
-   if(length(class(f)) > 1){ value <- class(f)[2] } else {value <- "none"}
-   
+    none <- NA 
+   if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust, none)
+     value <- inherits(f, obnames, which=TRUE)
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}}
+  
    switch(value,
     
     omega = {f <- f$schmid$sl
@@ -534,7 +537,17 @@ pretty}
 "isCorrelation" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
   if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
-return(value)}
+  value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
+  return(value)}
+  
+  #this just shows if it is a matrix
+"isCovariance" <-  function(x) {value <- FALSE
+  if(NROW(x) == NCOL(x)) {
+  if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
+ # value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )  #don't check for diagonal of 1
+  return(value)}
+  
+  
 
 
 #cs is taken from Hmisc:::Cs

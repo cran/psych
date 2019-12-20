@@ -1,12 +1,13 @@
 \name{bfi}
 \alias{bfi}
-\alias{bfi.dictionary}
+\alias{bfi.keys}
 \docType{data}
 \title{25 Personality items representing 5 factors}
-\description{25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project.  The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis, and Item Response Theory analysis.  Three additional demographic variables (sex, education, and age) are also included.
+\description{25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (SAPA) web based personality assessment project.  The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis, and Item Response Theory analysis.  Three additional demographic variables (sex, education, and age) are also included. This data set is deprecated and users are encouraged to use \code{\link[psychTools]{bfi}}.
 }
 \usage{data(bfi)
-data(bfi.dictionary)
+
+
 }
 \format{
   A data frame with 2800 observations on the following 28 variables. (The q numbers are the SAPA item numbers).
@@ -41,7 +42,10 @@ data(bfi.dictionary)
    \item{\code{age}}{age in years}
 }
 }
-\details{The first 25 items are organized by five putative factors: Agreeableness, Conscientiousness, Extraversion, Neuroticism, and Opennness.  The scoring key is created using  \code{\link{make.keys}}, the scores are found using  \code{\link{score.items}}.
+\details{
+This data set is deprecated and users are encouraged to use \code{\link[psychTools]{bfi}}.It is kept here backward compatability for one more release.
+
+The first 25 items are organized by five putative factors: Agreeableness, Conscientiousness, Extraversion, Neuroticism, and Opennness.  The scoring key is created using  \code{\link{make.keys}}, the scores are found using  \code{\link{score.items}}.
 
 These five factors are a useful example of using \code{\link{irt.fa}} to do Item Response Theory based latent factor analysis of the \code{\link{polychoric}} correlation matrix.  The endorsement plots for each item, as well as the item information functions reveal that the items differ in their quality.
 
@@ -53,7 +57,7 @@ The item data were collected using a 6 point response scale:
 5 Moderately Accurate
 6 Very Accurate
 
-as part of the Synthetic Apeture Personality Assessment (SAPA \url{https://sapa-project.org}) project.  To see an example of the data collection technique, visit \url{https://SAPA-project.org} or the International Cognitive Ability Resource at \url{https://icar-project.com}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
+as part of the Synthetic Apeture Personality Assessment (SAPA \url{https://sapa-project.org}) project.  To see an example of the data collection technique, visit \url{https://SAPA-project.org} or the International Cognitive Ability Resource at \url{https://icar-project.org}.  The items given were sampled from the International Personality Item Pool of Lewis Goldberg using the sampling technique of SAPA.  This is a sample data set taken from the much larger SAPA data bank.
 
 }
 \source{The items are from the ipip (Goldberg, 1999).  The data are from the SAPA project (Revelle, Wilt and Rosenthal, 2010) , collected Spring, 2010 ( \url{https://sapa-project.org}).
@@ -66,20 +70,25 @@ Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cogn
 
 \seealso{\code{\link{bi.bars}} to show the data by age and gender, \code{\link{irt.fa}} for item factor analysis applying the irt model.} 
 
-\note{The bfi data set and items should not be confused with the BFI (Big Five Inventory) of Oliver John and colleagues (John, O. P., Donahue, E. M., & Kentle, R. L. (1991). The Big Five Inventory--Versions 4a and 54. Berkeley, CA: University of California,Berkeley, Institute of Personality and Social Research.)
+\note{
+
+This data set is deprecated and users are encouraged to use \code{\link[psychTools]{bfi}}.It is kept here backward compatability for one more release.
+
+The bfi data set and items should not be confused with the BFI (Big Five Inventory) of Oliver John and colleagues (John, O. P., Donahue, E. M., & Kentle, R. L. (1991). The Big Five Inventory--Versions 4a and 54. Berkeley, CA: University of California,Berkeley, Institute of Personality and Social Research.)
 }
 \examples{
 data(bfi)
-describe(bfi)
- 
- keys.list <-
+psych::describe(bfi)
+# create the bfi.keys (actually already saved in the data file)
+keys <-
   list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
- scores <- scoreItems(keys.list,bfi,min=1,max=6) #specify the minimum and maximum values
+
+ scores <- psych::scoreItems(keys,bfi,min=1,max=6) #specify the minimum and maximum values
  scores
  #show the use of the fa.lookup with a dictionary
- keys.lookup(keys.list,bfi.dictionary[,1:4])
+ #psych::keys.lookup(bfi.keys,bfi.dictionary[,1:4])   #deprecated  -- use psychTools
  
 }
 \keyword{datasets}

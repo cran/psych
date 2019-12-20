@@ -159,7 +159,7 @@ if(is.matrix(discrim)) discrim.F.vect <- drop(discrim.F.vect)
 #actually, making this mcmapply and the call to bigFunction mapply seems to be the solution
 #especially when we are doing scoreIrt.1pl or scoreIrt.2pl which is already doing the parallelsim there
 
-subjecttheta <-mcmapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
+subjecttheta <- mcmapply(bySubject,c(1:n.obs),MoreArgs = list(count,total,items.f,discrim.f,diffi.f))  #returns a list of theta and fit
 
 subjecttheta <- matrix(unlist(subjecttheta),ncol=3,byrow=TRUE)
 theta <- subjecttheta[,1]
@@ -283,6 +283,8 @@ discrim.F.vect <- rep(discrim.f,each=cat)
  for (subj in 1:n.obs) {	
  	if (count[subj]> 0)  { #just do cases where we actually have data
  	       newscore <-  NULL
+ 	      
+
  	       score <- item.f[subj,] #just the items to be scored
  	       for (i in 1:ncol(item.f)) {  #Treat the items as a series of 1 or 0 responses  - but note that cat = max - min
                  if(is.na(score[i])) {newscore <- c(newscore,rep(NA,cat)) } else {
@@ -348,7 +350,8 @@ discrim.F.vect <- rep(discrim.f,each=cat)
  nvar <- dim(items)[2]
 
 #mcmapply for parallel, mapply for debugging
-scores   <-  mcmapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod))
+#scores   <-  mapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod))
+scores   <- mcmapply(big.poly,1:nf,MoreArgs=list(n.obs=n.obs,stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod))
  
 
 scores <- matrix(unlist(scores),ncol=nf*3)
@@ -382,19 +385,26 @@ if(!is.null(keys) && is.list(keys)){   select <- sub("-","",unlist(keys))
 if(!is.null(keys) && (is.vector(keys)))  keys <- matrix(keys)
 if (length(class(stats)) > 1) {
     if(!is.null(keys) && is.vector(keys)) keys <- as.matrix(keys)
-    switch(class(stats)[2],
+    none <- irt.poly <- NA  #just to get around a compiler warning
+     obnames <- cs(irt.poly, irt.fa, fa, tau, none)
+     value <- inherits(stats, obnames, which=TRUE)
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
+  
+ switch(value,
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds,mod=mod) },
+    
     irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds,mod=mod)},
+    
     fa = {tau <- irt.tau(items)  #this is the case of a factor analysis to be applied to irt
           nf <- dim(stats$loadings)[2]
           diffi <- list() 
           for (i in 1:nf) {diffi[[i]]  <- tau/sqrt(1-stats$loadings[,i]^2) }
      
          discrim <- stats$loadings/sqrt(1-stats$loadings^2)
-   	class(diffi) <- NULL
-   	class(discrim) <- NULL
-   	new.stats <- list(difficulty=diffi,discrimination=discrim)
-    scores <- score.irt.poly(new.stats,items,keys,cut,bounds=bounds)},
+   		class(diffi) <- NULL
+   		class(discrim) <- NULL
+   		new.stats <- list(difficulty=diffi,discrimination=discrim)
+    	scores <- score.irt.poly(new.stats,items,keys,cut,bounds=bounds)},
     
     tau = {tau <- stats   #get the tau stats from a prior run
          if(is.matrix(keys)) {nf <- dim(keys)[2]} else {nf <-1}
@@ -404,28 +414,59 @@ if (length(class(stats)) > 1) {
   		 class(diffi) <- NULL
    		class(discrim) <- NULL
    		new.stats <- list(difficulty=diffi,discrimination=discrim)
-   if(dim(tau)[2] ==1)  {scores <- score.irt.2(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)} else {
+  		 if(dim(tau)[2] ==1)  {scores <- score.irt.2(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)} else {
                          scores <- score.irt.poly(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)}
-                         }   
-    )
+                         },
+    none = {#this is the case of giving it a discrimination vector and a difficulty matrix
+            #this allows us to score meeting scoring keys from elsewhere (e.g. from PROMIS) 
+           #first make sure that there is something there
+          # stats <- as.matrix(stats)
+           if(!is.null(stats)) {
+            discrim <- stats[,1,drop=FALSE]
+            nlevels <-NCOL(stats)
+
+            diffi <- stats[,2:nlevels] 
+            diffi <- list(diffi)
+            new.stats <- list(difficulty=diffi,discrimination=discrim)
+           
+            scores <- score.irt.poly(stats=new.stats,items=items,keys=NULL,cut=cut,bounds=bounds)}  else {stop("I am confused.  You have an unclassed stats object.")}     
+    }    
+                           
+    )#end of switch
        #we should have a null case
-    } else {#input is probably a keys matrix but not in the case of a single item being scored
-        #the normal case
+    } else { #the stats input if it exists does not have a class
+             #input is probably a keys matrix but not in the case of a single item being scored
+            #the normal case where we find item dificulities and weight items equally
+        if(!is.null(stats)) {#an external set of diffs and discrims is provide -- e.g. from PROMIS
+			#diffi <- stats$difficulty
+		     #discrim <- as.matrix( stats$discrim,ncol=1)
+		    # stats$discrimination <- discrim
+			new.stats <- list()
+			new.stats$discrimination <- as.matrix(stats[1])
+			nlevels <- NCOL(stats)	
+				diffi <- stats[2:nlevels]
+				colnames(diffi) <- c(1:(nlevels-1))
+				new.stats$difficulty <- list(diffi)
+			
+			 scores <- score.irt.poly(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)
+          } else {#the normal case
          tau <- irt.tau(items)  #this is the case of a using a scoring matrix to be applied to irt
          if(is.matrix(keys)) {nf <- dim(keys)[2]} else {nf <-1}
          diffi <- list() 
           for (i in 1:nf) {diffi[[i]]  <- tau }
          if(!is.null(keys)) {discrim <- keys} else {
         # stop("I am sorry, you specified  tau  but not  keys.")  #or you are scoring a single item
-           diffi[[1]] <- stats$irt$difficulty
-           discrim <- matrix(1,1,1)  #as strange as this seems, this needs to be a 1 x 1 matrix
+           #diffi[[1]] <- stats$irt$difficulty
+           discrim <- matrix(1,nrow=NCOL(items),ncol = 1)  #as strange as this seems, this needs to be a 1 x 1 matrix
          }
+         
    class(diffi) <- NULL
    class(discrim) <- NULL
    new.stats <- list(difficulty=diffi,discrimination=discrim)
    if(dim(tau)[2] ==1)  {scores <- score.irt.2(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)} else {
                          scores <- score.irt.poly(stats=new.stats,items=items,keys=keys,cut=cut,bounds=bounds)}
                          }
+}
 scores <- data.frame(scores)
 if(!is.null(keys)) {colnames(scores) <-c( paste(colnames(keys),"theta",sep="-"),paste(colnames(keys),"total",sep="-"),paste(colnames(keys),"fit",sep="-"))}
 return(scores)
@@ -516,7 +557,10 @@ plot(theta,stats.m[,i],ylim=c(0,1),typ="l",xlab="theta",ylab="P(response)",main=
 
 scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),mod="logistic") {
    nvar <- length(itemLists)
-
+   #check to make sure we didn't screw up the itemsLists and the items 
+   if(NCOL(itemLists) > 1) {stop("You seem to have misspecified the ItemLists. I am stopping")}
+    if(NCOL(items)==1) {stop("You seem to have misspecified the items. I am stopping")}
+   
    select <- sub("-","",unlist(itemLists)) #select just the items that will be scored
     select <- select[!duplicated(select)]
    items <- items[,select]  #this should reduce memory load
@@ -554,6 +598,9 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
  #the alternative is use scoreIrt for all of them at once with a keys function.
    
 scoreIrt.1pl <- function(keys.list,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),mod="logistic") {
+    if(NCOL(keys.list)> 1) {stop("You seem to have misspecified the keys.list. I am stopping")}
+    if(NCOL(items)==1) {stop("You seem to have misspecified the items. I am stopping")}
+   
 	select <- sub("-","",unlist(keys.list))
 	select <- select[!duplicated(select)]
    items <- items[,select] 
@@ -647,11 +694,11 @@ x.irt <- irt.fa(x.sim$items[,1:nvar],sort=FALSE,plot=FALSE)
 #	ltm.responses <- table2df(x.ltm.sc$score.dat,x.ltm.sc$score.dat[,nvar+1])
 #	ltm.responses <- data.frame(ltm.responses[,c(1:nvar,nvar+3)])
 #	colnames(ltm.responses) <- c(colnames(x.sim$items),"ltm")
-#	ltm.responses  <- dfOrder(ltm.responses,c(1:nvar)) 
+#	ltm.responses  <- psychTools::dfOrder(ltm.responses,c(1:nvar)) 
 
 
 xnvart <- data.frame(x.sim$items,theta = x.sim$theta)
-xnvart <- dfOrder(xnvart,c(1:nvar))
+xnvart <- psychTools::dfOrder(xnvart,c(1:nvar))
 
 x.fsall <- psych::factor.scores(xnvart[1:nvar],x.irt$fa,method="regression")$scores
 x.df <- data.frame(xnvart, fs=x.fsall)

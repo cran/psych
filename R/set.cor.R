@@ -17,12 +17,14 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #modified April, 2015 to handle data with non-numeric values in the data, which are not part of the analysis
   #Modified November, 2107 to handle "lm" style input using my parse function.
   #modified July 4, 2018 to add intercepts and confidence intervals (requested by Franz Strich)
+  #Modified September 25, 2019 to add the confidence intervals of the intercepts 
+  #This was a substantial rewrite of the code to include the moments matrix
   
    cl <- match.call()
     #convert names to locations 
     prod <- ex <-  NULL   #in case we do not have formula input
    #first, see if they are in formula mode  
-   if(class(y) == "formula") {
+   if(inherits(y,"formula")) {
    ps <- fparse(y)
    y <- ps$y
    x <- ps$x
@@ -39,10 +41,10 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
     if(is.numeric(z )) z <- colnames(data)[z]
   
 
-#check for bad input
+#check for bad input  
 if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
- print(c(y, x, z, ex)[which(!(c(y, x, z, ex) %in% colnames(data)))])
- stop("Variable names are incorrect")}
+  cat("\nOops! Variable names are incorrect. Offending items are ", c(y, x, z, ex)[which(!(c(y, x, z, ex) %in% colnames(data)))],"\n")
+ stop("I am stopping because the variable names are incorrect.  See above.")}
  
  
   if(!isCorrelation(data))  {
@@ -51,6 +53,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                   data <- data[,c(y,x,z,ex)] 
                    data <- char2numeric(data)              
                    if(!is.matrix(data)) data <- as.matrix(data)  
+                    data <- cbind(Intercept=1,data) 
+                    colnames(data)[1] <- "(Intercept)"
+                    x <- c("(Intercept)",x) #this adds a ones column to the data to find intercept terms 
                    if(!is.numeric(data)) stop("The data must be numeric to proceed")
                    if(!is.null(prod) | (!is.null(ex))) {#we want to find a product term
                   if(zero) data <- scale(data,scale=FALSE)
@@ -81,17 +86,35 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                     }
 
                     }
+                   n.obs <- max(pairwiseCount(data),na.rm=TRUE)
+                   df <- n.obs - length(x) -length(z)  #we have the intercept as one degree of freedom, partialed variables count as well
                     means <- colMeans(data,na.rm=TRUE)   #use these later to find the intercept
-                    C <- cov(data,use=use)
-                    if(std) {m <- cov2cor(C)
-                             C <- m} else {m <- C}
+                    sds <- apply(data,2,sd, na.rm=TRUE)
+                 	C <- cov(data,use=use)
+                         	
+                    if(std) {
+                       C["(Intercept)","(Intercept)"] <- 1
+                       m <- cov2cor(C)
+                             C <- m
+                        } else {#   do it on the moments matrix to get intercepts
+                             m <- C
+                           if(length(z) < 1) { m <- C * (n.obs-1) + means %*% t(means) * n.obs} else { #this creates the moments matrix unless we are partialling
+                           
+                            means []<- 0
+                             m <- C * (n.obs-1)# + means %*% t(means) * n.obs
+                           m[1,1] <- n.obs
+                         
+                           }
+                           }
                     raw <- TRUE
                    # n.obs=dim(data)[1]   #this does not take into account missing data
-                    n.obs <- max(pairwiseCount(data),na.rm=TRUE )  #this does
+                   # n.obs <- max(pairwiseCount(data),na.rm=TRUE )  #this does
                     }  else {
+                    if(!is.null(prod)) {warning("I am sorry, but product terms from a correlation  matrix don't make sense and were ignored.")}
                     raw <- FALSE
                     if(!is.matrix(data)) data <- as.matrix(data)  
                     C <- data
+                    if(!is.null(n.obs)){ df <- n.obs - length(x) - length(z) } else {df <- NULL}
                     if(std) {m <- cov2cor(C)} else {m <- C}}
     #We do all the calculations on the Covariance or correlation matrix (m)
    #convert names to locations                 
@@ -121,7 +144,14 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	                xy.matrix <- xy.matrix - za  %*% zmi %*% t(zb)
      	                m.matrix <- cbind(rbind(y.matrix,xy.matrix),rbind(t(xy.matrix),x.matrix))
      	               #m.matrix is now the matrix of partialled covariances -- make sure we use this one!
-     	                 }
+     	                m <- m.matrix }
+##########################################################  	                 
+###  The actual regression calculations start here
+### 
+### some modifications made 12/1/19 to adjust the dfs when returning SSRs    
+
+                
+	                 
      	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)/x.matrix[1,1]
      	                rownames(beta) <- rownames(xy.matrix)
      	                colnames(beta) <- colnames(xy.matrix)
@@ -129,23 +159,75 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
       				 { beta <- solve(x.matrix,xy.matrix)       #solve the equation bY~aX
        					 beta <- as.matrix(beta) 
        					 }
-       if(raw) {if(numx ==1) {intercept <- means[y] - sum(means[x] * beta[x,y ])} else {if(numy > 1) { intercept <- means[y] - colSums(means[x] * beta[x,y ])} else {intercept <- means[y] - sum(means[x] * beta[x,y ])}} } else {intercept <- NA}
+       if(raw) {if(numx ==1) { intercept <- beta[1,y]
+                             #intercept <- means[y] - sum(means[x] * beta[x,y ])
+                           } else {if(numy > 1) { intercept <- means[y] - colSums(means[x] * beta[x,y ])   #fix this to treat multple y
+                             } else {intercept <- means[y] - sum(means[x] * beta[x,y ])}} 
+                  } else {intercept <- NA
+                          Residual.se <- NA
+                          }
 
 
+        x.inv <- solve(x.matrix)
 
-       	yhat <- t(xy.matrix) %*% solve(x.matrix) %*% (xy.matrix)
-       	resid <- y.matrix - yhat
+       	yhat <- t(xy.matrix) %*% x.inv %*% (xy.matrix)
+       	resid <- y.matrix - yhat   #this is in moments  units
+        
+         se.beta <- list()
+       if(raw) {
+            if(std) { R2 <- colSums(beta * xy.matrix)/diag(y.matrix) 
+              SST <- 1 
+              MSE <- diag(resid/df) 
+              df.fudge <- (n.obs-1)   #this is used to find the SSR
+             Residual.se <- sqrt(MSE*df.fudge )   #to put in the SSR units, we need to use the number of observations -1
+                        for (i in 1:length(y)) {
+     	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
+                 }
+              #se.beta <- sqrt(as.vector(MSE) * diag(x.inv))
+             } else {
+
+       		Residual.se <- sqrt(diag(resid /df))  #this is the df  n.obs - length(x))
+              MSE <- diag(resid )/(df) 
+               if(length(y) > 1) {SST <- diag( m [y,y] - means[y]^2 * n.obs)} else {SST <- ( m [y,y] - means[y]^2 * n.obs)}
+     	       R2 <- (SST - diag(resid)) /SST 
+     	       
+     	        for (i in 1:length(y)) {
+     	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
+                 }
+              }
+          
+                }    else {#from correlations
+  
+                R2  <- colSums(beta * xy.matrix)/diag(y.matrix) 
+              SST <- 1 
+              MSE <- diag( resid/(df-1 ))  #because df is inflated in normal regression because of the intercept term should this be df or df -1
+              df.fudge <- n.obs-1
+             Residual.se <- sqrt(MSE*df.fudge ) 
+            # Residual.se <- sqrt(diag(resid)) #*df/(n.obs-1))  #don't use df 
+           # Residual.se <- sqrt(diag(resid))
+              for (i in 1:length(y)) {
+     	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
+                 }
+                }
+                
     	if (numy > 1 ) { 
     	               if(is.null(rownames(beta))) {rownames(beta) <- x}
     	                if(is.null(colnames(beta))) {colnames(beta) <- y}
      	 
-     	 R2 <- colSums(beta * xy.matrix)/diag(y.matrix) } else {  
-     	 colnames(beta) <- y
-     		
-     		 R2 <- sum(beta * xy.matrix)/y.matrix
-     		 R2 <- matrix(R2)
-    		      	 	 rownames(beta) <- x
-    		 rownames(R2) <- colnames(R2) <- y
+     	# R2 <- colSums(beta * xy.matrix)/diag(y.matrix)
+     
+     	#  if(raw) { SST <- diag( m [y,y] - means[y]^2 * n.obs)   #this seems redundant 
+#      	         # R2 <- (SST - resid) /SST
+#      	           R2 <- (SST - diag(resid)) /SST 
+#      	          } else {R2 <- colSums(beta * xy.matrix)/diag(y.matrix)}
+#      
+#      	} else {       
+#      	 colnames(beta) <- y
+#      		
+#      		# R2 <- sum(beta * xy.matrix)/y.matrix
+#      		 R2 <- matrix(R2)
+    		 rownames(beta) <- x
+    		# rownames(R2) <- colnames(R2) <- y
      		 }
      	 VIF <- 1/(1-smc(x.matrix))
 
@@ -169,14 +251,18 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 #      	Ruw <- sum(diag(keys.x) %*% xy.matrix %*% t(keys.y))/sqrt(Vx * Vy)
      	#end of old way of doing it
      	#new way  (2/17/18)
-     	
+     	if(!std) C[1,1]<- 1
+     	Cu <- cov2cor(C)
      	keys.x <- sign(xy.matrix)  #this converts zero order correlations into -1, 0, 1 weights for each y
-        Vx <-  t(keys.x) %*% x.matrix %*% (keys.x) #diag are scale variances
-        #Vy <- t(keys.x) %*% y.matrix %*% keys.x #diag are y variances ?
-        Vy <- (y.matrix)
-        uCxy <- t(keys.x) %*% xy.matrix 
+        Vx <-  t(keys.x) %*% Cu[x,x,drop=FALSE] %*% (keys.x) #diag are scale variances
+        #Vy <- t(keys.x) %*% Cu[y,x,drop=FALSE] %*% keys.x #diag are y variances ?
+        Vy <-  Cu[y,y,drop=FALSE ] #(y.matrix)
+        uCxy <- t(keys.x) %*% Cu[x,y,drop=FALSE]  #xy.matrix 
          ruw <- diag(uCxy)/sqrt(diag(Vx))  #these are the individual multiple Rs
          Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))  #what are these?
+
+ #Now do the Set correlation from Cohen 
+  
        
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
      	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
@@ -190,25 +276,32 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	            cc <- sqrt(cc2)
      	            T <- sum(cc2)/length(cc2)             
      	            }
-     	       
-     	if(!is.null(n.obs)) {k<- length(x)
-     	                     
-     	                    # uniq <- (1-smc(x.matrix,covar=!std))
-     	                     uniq <- (1-smc(x.matrix))
-     	                     se.beta <- list() 
+	     k <- NA 
+     	if(!is.null(n.obs)) {k<- length(x)-raw  #because we include the intercept in x
+     	   
+  ## Find the confidence intervals of the regressions   	   
+                    
+    
      	                     ci.lower <- list()
-     	                     ci.upper <- list()
-     	                     for (i in 1:length(y)) {
-     	                     df <- n.obs-k-1   #this is the n.obs - length(x)
-     	                     se.beta[[i]] <- (sqrt((1-R2[i])/(df))*sqrt(1/uniq))}    
-     	                     se <- matrix(unlist(se.beta),ncol=length(y))
+     	                     ci.upper <- list() 
+     	                      df <- n.obs-k-1 # -length(z)    #this is the n.obs - length(x)
+     		   	                    	 
+     	  #                   if(raw) { 
+#      	                     uniq <- (1-smc(x.matrix)
+#      	                     )  #this returns values based upon correlations
+#      	                    
+    	                    	 
+ 
+ 	                    	               	 
+     	                     #these are the standardized beta standard errors   
+     	                      se <- matrix(unlist(se.beta),ncol=length(y))
      	                       if(!is.null(z)) {colnames(beta) <- paste0(colnames(beta),"*")  }
      	                       colnames(se) <- colnames(beta)
      	                      if(!is.null(z)) {rownames(beta) <- paste0(rownames(beta),"*")}
-     	                     rownames(se) <- rownames(beta)
+     	                     rownames(se) <- rownames(beta)                  
      	                   
      	                    # se <- t(t(se) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))  #need to use m.matrix
-     	                    se <- t(t(se) * sqrt(diag(m.matrix)[y]))/sqrt(diag(x.matrix)) #corrected 11/29/18
+     	                   if(!raw) se <- t(t(se) * sqrt(diag(m.matrix)[y]))/sqrt(diag(x.matrix)) #corrected 11/29/18
      	                     for(i in 1:length(y))  {ci.lower[[i]] <-  beta[,i] - qt(1-alpha/2,df)*se[,i]
      	                                             ci.upper[[i]] <- beta[,i] + qt(1-alpha/2,df)*se[,i]}
      	                     ci.lower <- matrix(unlist(ci.lower),ncol=length(y))
@@ -252,14 +345,21 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	                    Chisq <- -(n.obs - 1 -(numx + numy +1)/2)*log((1-cc2))
      	                   
      	                              }
+     	                              
+     	   
      	
      #	if(numx == 1) {beta <-  beta * sqrt(diag(C)[y])
      #	   } else {beta <-  t(t(beta) * sqrt(diag(C)[y]))/sqrt(diag(xc.matrix))} #this puts the betas into the raw units
         
        # coeff <- data.frame(beta=beta,se = se,t=tvalue, Probabilty=prob)
        # colnames(coeff) <- c("Estimate", "Std. Error" ,"t value", "Pr(>|t|)")
-     	if(is.null(n.obs)) {set.cor <- list(beta=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,intercept=intercept,cancor = cc, cancor2=cc2,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,VIF=VIF,Call = cl)} else {
-     	              set.cor <- list(beta=beta,se=se,t=tvalue,Probability = prob,intercept=intercept,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=x.matrix,y.matrix=y.matrix,VIF=VIF,data=data,Call = cl)}
+      x.inv <- solve(C[x,x])
+
+       	yhat <- t(C[x,y,drop=FALSE]) %*% x.inv %*% (C[x,y])
+       	resid <- C[y,y] - yhat   #this is now in covariance units
+
+     	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,std=std,Call = cl)} else {
+     	              set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Call = cl)}
      	class(set.cor) <- c("psych","setCor")
      	if(plot) setCor.diagram(set.cor,main=main,show=show)
      	return(set.cor)
@@ -279,14 +379,20 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 #mdified November, 2017 to allow an override of which way to draw the arrows  
 setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...) { 
 if(missing(l.cex)) l.cex <- cex  
-beta <- round(sc$beta,digits)
+beta <- round(sc$coefficients,digits)
+
+if(rownames(beta)[1] %in% c("(Intercept)", "intercept*")) {intercept <- TRUE} else {intercept <- FALSE}
 x.matrix <- round(sc$x.matrix,digits)
+
 y.matrix <- round(sc$y.matrix,digits)
 y.resid <- round(sc$resid,digits)
-x.names <- rownames(sc$beta)
-y.names <- colnames(sc$beta)
+x.names <- rownames(beta)
+if(intercept){ x.matrix <- x.matrix[-intercept,-intercept]
+ x.names <- x.names[-intercept] 
+beta <- beta[-intercept,,drop=FALSE]}
+y.names <- colnames(beta)
 nx <- length(x.names)
-ny <- length(y.names)
+ny <- length(y.names) 
 top <- max(nx,ny)
 xlim=c(-nx/3,10)
 ylim=c(0,top)
@@ -327,10 +433,10 @@ cat("Call: ")
               print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
-            ny <- NCOL(x$beta)
-          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i],"\n")
-          if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
-          if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
+            ny <- NCOL(x$coefficients)
+          for(i in 1:ny) {cat("\n DV = ",colnames(x$coefficients)[i],"\n")
+         # if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
+          if(!is.null(x$se)) {result.df <- data.frame( round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))

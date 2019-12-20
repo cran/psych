@@ -7,7 +7,7 @@ Given two factor analysis or pca solutions to a data matrix or correlation, what
 \usage{
 faCor(r, nfactors = c(1, 1), fm = c("minres", "minres"), rotate =
  c("oblimin", "oblimin"), scores = c("tenBerge", "tenBerge"), adjust=c(TRUE,TRUE),
-     use = "pairwise", cor = "cor", weight = NULL, correct = 0.5)
+     use = "pairwise", cor = "cor", weight = NULL, correct = 0.5,Target=list(NULL,NULL))
 }
 \arguments{
   \item{r}{A correlation matrix or a data matrix suitable for factoring}
@@ -25,6 +25,7 @@ faCor(r, nfactors = c(1, 1), fm = c("minres", "minres"), rotate =
 }
   \item{weight}{Should cases be weighted?  Default, no.}
   \item{correct}{If finding tetrachoric or polychoric correlations, what correction should be applied to empty cells (defaults to .5)}
+\item{Target}{If doing target rotations (e.g., TargetQ or TargetT), then the Target must be specified.  If TargetT, this may be a matrix, if TargetQ, this must be a list.  (Strange property of GPARotation.)}
  
 }
 
@@ -69,12 +70,13 @@ William Revelle
 }
 \examples{
 faCor(Thurstone,nfactors=c(2,3)) #compare two solutions to the Thurstone problem
-faCor(bfi[1:25],nfactors=c(5,5),fm=c("minres","pca")) #compare pca and fa solutions
+faCor(psychTools::bfi[1:25],nfactors=c(5,5),fm=c("minres","pca")) #compare pca and fa solutions
 #compare two levels of factor extraction, and then find the correlations of the scores
-faCor(bfi[1:25],nfactors=c(3,5)) #based upon linear algebra 
-f3 <- fa(bfi[1:25],3,scores="tenBerge")
-f5 <- fa(bfi[1:25],5 ,scores="tenBerge")
+faCor(psychTools::bfi[1:25],nfactors=c(3,5)) #based upon linear algebra 
+f3 <- fa(psychTools::bfi[1:25],3,scores="tenBerge")
+f5 <- fa(psychTools::bfi[1:25],5 ,scores="tenBerge")
 cor2(f3$scores,f5$scores) #the correlation between the factor score estimates
+  
 }
 \keyword{multivariate }
 \keyword{ models}

@@ -26,9 +26,9 @@
    cat("Mean bootstrapped indirect effect = ",round(x$boot$mean[i],digits), " with standard error = ",round(x$boot$sd[i],digits), " Lower CI = ",round(x$boot$ci[1,i],digits), "   Upper CI = ", round(x$boot$ci[2,i],digits))}
      }
      
-     F <-  x$cprime.reg$df * x$cprime.reg$R2[j]/((nrow(x$cprime.reg$beta) * (1-x$cprime.reg$R2[j])))
+     F <-  x$cprime.reg$df * x$cprime.reg$R2[j]/(((nrow(x$cprime.reg$beta)-1) * (1-x$cprime.reg$R2[j])))
       pF <-  -expm1(pf(F,nrow(x$cprime.reg$beta),x$cprime.reg$df,log.p=TRUE)) 
-      cat("\nR =", round(sqrt(x$cprime.reg$R2[j]),digits),"R2 =", round(x$cprime.reg$R2[j],digits),  "  F =", round(F,digits), "on",nrow(x$cprime.reg$beta), "and", x$cprime.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
+      cat("\nR =", round(sqrt(x$cprime.reg$R2[j]),digits),"R2 =", round(x$cprime.reg$R2[j],digits),  "  F =", round(F,digits), "on",nrow(x$cprime.reg$beta)-1, "and", x$cprime.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
     
      
      }
@@ -39,29 +39,36 @@
 
     
     cat("\n\n Full output  \n")
+    
+    cat("\nDirect effect estimates (traditional regression)    (c') \n")
+     for(j in 1:ndv) {
+     
+    if (niv==1) { dfd <- round(data.frame(direct=x$cprime.reg$beta[,j],se = x$cprime.reg$se[,j],t=x$cprime.reg$t[,j],df=x$cprime.reg$df),digits)
+     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[,j],digits=digits+1)) } else {
+     dfd <- round(data.frame(direct=x$cprime.reg$beta[1:(niv+1+nmed),j],se = x$cprime.reg$se[1:(niv+1+nmed),j],t=x$cprime.reg$t[1:(niv+1+nmed),j],df=x$cprime.reg$df),digits)
+     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[1:(niv+1+nmed),j],digits=digits+1))
+     }
+      colnames(dfdp) <- c(dv[j],"se","t","df","Prob")
+     
+   print(dfdp)
+     F <-  x$cprime.reg$df * x$cprime.reg$R2[j]/(((nrow(x$cprime.reg$beta)-1) * (1-x$cprime.reg$R2[j])))
+      pF <-  -expm1(pf(F,nrow(x$cprime.reg$beta)-1,x$cprime.reg$df,log.p=TRUE)) 
+      cat("\nR =", round(sqrt(x$cprime.reg$R2[j]),digits),"R2 =", round(x$cprime.reg$R2[j],digits),  "  F =", round(F,digits), "on",nrow(x$cprime.reg$beta)-1, "and", x$cprime.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
+    
+   
+   }
+ 
      cat("\n Total effect estimates (c) \n")
       
         for(j in 1:ndv) {
+
     dft <- round(data.frame(direct=x$total.reg$beta[,j],se = x$total.reg$se[,j],t=x$total.reg$t[,j],df=x$total.reg$df),digits)
     dftp <- cbind(dft,p = signif(x$total.reg$prob[,j],digits=digits+1))
     colnames(dftp) <- c(dv[j],"se","t","df","Prob")
     rownames(dftp) <- rownames(x$total.reg$beta)
      print(dftp)
     }
-   
 
-    
-     cat("\nDirect effect estimates     (c') \n")
-     for(j in 1:ndv) {
-    if (niv==1) { dfd <- round(data.frame(direct=x$cprime.reg$beta[,j],se = x$cprime.reg$se[,j],t=x$cprime.reg$t[,j],df=x$cprime.reg$df),digits)
-     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[,j],digits=digits+1)) } else {
-     dfd <- round(data.frame(direct=x$cprime.reg$beta[1:niv,j],se = x$cprime.reg$se[1:niv,j],t=x$cprime.reg$t[1:niv,j],df=x$cprime.reg$df),digits)
-     dfdp <- cbind(dfd,p=signif(x$cprime.reg$prob[1:niv,j],digits=digits+1))
-     }
-      colnames(dfdp) <- c(dv[j],"se","t","df","Prob")
-     
-   print(dfdp)
-   }
     
      
     cat("\n 'a'  effect estimates \n")

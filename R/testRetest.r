@@ -36,7 +36,10 @@
    } else {temp <- sign(items)
       items <- colnames(x)[abs(items)] 
     }
-    
+ #check for bad input   -- the Mollycoddle option 
+if(any( !(items %in% colnames(x)) )) {
+ cat("\nVariable names in keys are incorrectly specified. Offending items are ", items[which(!(items %in% colnames(x)))],"\n")
+ stop("I am stopping because of improper input in the scoring keys.  See the list above for the bad item(s). ")}   
  x <- x[,items,drop=FALSE]
  y <- y[,items,drop=FALSE]
 #these are the means of the unreversed items

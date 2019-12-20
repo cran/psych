@@ -9,12 +9,12 @@ for(i in 1:nvar) {temp[i,1] <- is.numeric(x[1,i])
                 temp[i,4] <- is.character(x[1,i]) }
 ttt <- which(temp[,1:4] == TRUE,arr.ind=TRUE)
 if(nvar > 1) {
-ttt <- dfOrder(ttt,"row")}
+ttt <- psychTools::dfOrder(ttt,"row")}
 temp <- cbind(temp,ttt["col"])
 colnames(temp) <- c("numeric","factor","logical","character","type")
 
  cc <- try(complete.cases(x),silent=TRUE) 
-    if(class(cc) == "try-error") cc <- NA
+    if(inherits(cc,"try-error"))  cc <- NA
     cc <- sum(cc,na.rm=TRUE)
 all.numeric <- sum(temp[,1])
 all.factor <- sum(temp[,2])
@@ -40,7 +40,7 @@ function (x, head = 4, tail = 4)
     nobs <- nrow(x)
     cc <- 0
     cc <- try(complete.cases(x),silent=TRUE) 
-    if(class(cc) == "try-error") cc <- NA
+    if(inherits(cc, "try-error")) cc <- NA
     cc <- sum(cc,na.rm=TRUE)
    for (i in 1:nvar) {
         

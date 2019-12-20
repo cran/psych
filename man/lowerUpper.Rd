@@ -24,7 +24,7 @@ If diff is true, the upper off diagonal matrix reflects the differences between 
 \author{William Revelle}
 
 
-\seealso{\code{\link{read.clipboard.lower}}, \code{\link{corPlot}}
+\seealso{\code{\link[psychTools]{read.clipboard.lower}}, \code{\link{corPlot}}
 }
 \examples{
  b1 <- Bechtoldt.1

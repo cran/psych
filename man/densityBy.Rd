@@ -49,8 +49,8 @@ The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin
 \note{Nothing yet}
 \seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}} \code{\link{error.bars.by}} and  \code{\link{bi.bars}} for graphic displays }
 \examples{
-violinBy(bfi[1:5])
-violinBy(bfi,var=1:5,grp ="gender",grp.name=c("M","F"))
+violinBy(psychTools::bfi[1:5])
+violinBy(psychTools::bfi,var=1:5,grp ="gender",grp.name=c("M","F"))
 densityBy(sat.act,"SATV","gender")
   
 }

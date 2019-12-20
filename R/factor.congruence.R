@@ -3,18 +3,23 @@
 #January 27, 2014  added fa.congruence to clean up calls
 
 #modified March 12 to allow for a list of factor solutions
-
+#Modified December 11, 2019 to use inherits rather than class 
 "factor.congruence" <-
 function (x,y=NULL,digits=2,use=NULL,structure=FALSE) {
    fa.congruence(x=x,y=y,digits=digits,use=use,structure=structure) }
 
 "fa.congruence" <-
  function (x,y=NULL,digits=2,use=NULL,structure=FALSE) {
+ direct <- extend <-  esem <- factanal <- other  <- NA
+  obnames <- cs(fa, omega, omegaSem, directSl, direct, omegaDirect, principal, iclust,extend,esem, factanal)
+
 if(is.null(y) && is.list(x)) {
 	n <- length(x)
 		for (i in 1:n) {
 			xi <- x[[i]]
-			if(length(class(xi)) > 1)  {cln <- class(xi)[2] } else {cln <- "other"}
+			if(length(class(xi)) > 1)  {
+			   cln <- inherits(xi, obnames, which=TRUE)
+			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}} else {cln <- "other"}
 			    switch(cln,
 			      fa = {if(structure) {xi <- xi$Structure} else {xi <- xi$loadings}},
 			      omega = {xi <- xi$schmid$sl
@@ -27,7 +32,7 @@ if(is.null(y) && is.list(x)) {
    				 iclust = {xi <- xi$loadings},
    				  extend = {xi <- xi$loadings},
    				  esem = {xi <- xi$loadings},
-   				 other = {if(class(xi) == "factanal") {xi <- xi$loadings} else {xi <- as.matrix(xi)}}
+   				 other = {if(inherits(xi, "factanal")) {xi <- xi$loadings} else {xi <- as.matrix(xi)}}
    				 )
    				 if(i==1) {xg <- xi} else {xg <- cbind(xg,xi)} 
    				}		  
@@ -35,7 +40,10 @@ if(is.null(y) && is.list(x)) {
 		
 if(is.null(y)) y <- xg
 }  else {
-if(length(class(x)) > 1) {cln <- class(x)[2]} else {cln <- "other"}
+if(length(class(x)) > 1) {#cln <- class(x)[2]} else {cln <- "other"}
+               cln <- inherits(x, obnames, which=TRUE)
+			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}
+			   }
 			    switch(cln,
 			     fa = {if(structure) {x <- x$Structure} else {x <- x$loadings}},
 			      omega = {x <- x$schmid$sl
@@ -48,11 +56,14 @@ if(length(class(x)) > 1) {cln <- class(x)[2]} else {cln <- "other"}
    				 iclust = {x <- x$loadings},
    				  extend = {x <- x$loadings},
    				  esem = {x <- x$loadings},
-   				  other = {if(class(x) == "factanal") {x <- x$loadings} else {x <- as.matrix(x)}}
+   				  other = {if(inherits(x,  "factanal")) {x <- x$loadings} else {x <- as.matrix(x)}}
    				 )
    				}		  
   		 
-if(length(class(y)) > 1)  { cln <- class(y)[2] } else {cln <- "other"}
+if(length(class(y)) > 1) {   #{ cln <- class(y)[2] } else {cln <- "other"}
+              cln <- inherits(y, obnames, which=TRUE)
+			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}
+			   } else {cln <- "other"}
 			    switch(cln,
 			       fa = {if(structure) {y <- y$Structure} else {y <- y$loadings}},
 			      omega = {y <- y$schmid$sl
@@ -65,7 +76,7 @@ if(length(class(y)) > 1)  { cln <- class(y)[2] } else {cln <- "other"}
    				  esem = {y <- y$loadings},
    				    extend = {y <- y$loadings},
    				 iclust = {y <- y$loadings},
-   				   other = {if(class(y) == "factanal") {y <- y$loadings} else {y <- as.matrix(y)}}
+   				   other = {if(inherits(y, "factanal")) {y <- y$loadings} else {y <- as.matrix(y)}}
    				 )
 
    

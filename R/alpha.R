@@ -30,15 +30,15 @@
     #begin main function
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
-    if(class(x)[1] != "data.frame") x <- fix.dplyr(x)    #to get around a problem created by dplyr
+    if(!inherits(x[1], "data.frame")) x <- fix.dplyr(x)    #to get around a problem created by dplyr
     if(!is.null(keys)){# 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
     if( is.list(keys)) { select <- sub("-","",unlist(keys))   #added 9/26/16 to speed up scoring one scale from many
       	x <- x[,select] 
-      	keys <- make.keys(x,keys)} else {
+      	keys <- make.keys(x,keys)} else {if(!is.numeric(keys)){
       	temp <- rep(1,ncol(x))
-      	temp[(colnames(x) %in% keys)] <- -1
+      	temp[(colnames(x) %in% keys)] <- -1  #note that if the keys vect has negatives, they will not be reversed, but rather the positive ones will, net result is the same, but item correlations are backward
       	keys <- temp
-      }
+      }}
       }
       
     nvar <- dim(x)[2]
@@ -248,7 +248,8 @@
   
 #a kludge to get around a problem introduced by dplyr which changes the class structure of data frames.
 #created in response to a problem raised by Adam Liter   (February, 2017) 
-  "fix.dplyr" <- function (object) {
+#probably not necessary anymore if we use inherits(x,"data.frame")
+"fix.dplyr" <- function (object) {
    if(is.data.frame(object)) {   
    cn <- class(object)
 df <- which(cn=="data.frame")

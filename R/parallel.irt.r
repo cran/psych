@@ -295,7 +295,10 @@ return(scores)
 if(!is.null(keys) && (is.vector(keys)))  keys <- matrix(keys)
 if (length(class(stats)) > 1) {
     if(!is.null(keys) && is.vector(keys)) keys <- as.matrix(keys)
-    switch(class(stats)[2],
+    obnames <- cs(irt.poly, irt.fa, fa,tau)
+    value <- inherits(stats, obnames, which=TRUE)
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
+    switch(value,
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds,mod=mod) },
     irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds,mod=mod)},
     fa = {tau <- irt.tau(items)  #this is the case of a factor analysis to be applied to irt

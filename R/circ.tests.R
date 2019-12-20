@@ -19,7 +19,7 @@ circ.fisher <- function(loads,loading=TRUE) {
 if (loading) {l <- loads$loadings} else { 
        l <- loads}
        l<- l[,1:2]
-   radius <- rowSums(l * l)
+   radius <- sqrt(rowSums(l^2)) #added sqrt 6/15/19
    test <- sd(radius)/mean(radius)
   return (test)
   }

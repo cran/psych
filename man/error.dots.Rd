@@ -69,10 +69,12 @@ Returns (invisibily) either a describeBy or describe object as well as the order
  \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} as well as  \code{\link{error.bars}},  \code{\link{error.bars.by}},  \code{\link{statsBy}} or \code{\link{bestScales}}.
 }
 \examples{
-temp <- error.dots(bfi[1:25],sort=TRUE, xlab="Mean score for the item, sorted by difficulty")
-error.dots(bfi[1:25],sort=TRUE, order=temp$order, add=TRUE, eyes=TRUE) #over plot with eyes
+temp <- error.dots(psychTools::bfi[1:25],sort=TRUE, 
+xlab="Mean score for the item, sorted by difficulty")
+error.dots(psychTools::bfi[1:25],sort=TRUE, order=temp$order,
+ add=TRUE, eyes=TRUE) #over plot with eyes
 
-error.dots(ability,eyes=TRUE, xlab="Mean score for the item")
+error.dots(psychTools::ability,eyes=TRUE, xlab="Mean score for the item")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

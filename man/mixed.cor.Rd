@@ -72,14 +72,14 @@ W Revelle, D. M. Condon,  J. Wilt,  J.A. French,  A. Brown, and L G. Elleman(201
 }
 \examples{
 data(bfi) 
-r <- mixedCor(data=bfi[,c(1:5,26,28)])
+r <- mixedCor(data=psychTools::bfi[,c(1:5,26,28)])
 r
 #this is the same as
-r <- mixedCor(data=bfi,p=1:5,c=28,d=26)
+r <- mixedCor(data=psychTools::bfi,p=1:5,c=28,d=26)
 r #note how the variable order reflects the original order in the data
 #compare to raw Pearson
 #note that the biserials and polychorics are not attenuated
-rp <- cor(bfi[c(1:5,26,28)],use="pairwise")
+rp <- cor(psychTools::bfi[c(1:5,26,28)],use="pairwise")
 lowerMat(rp)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

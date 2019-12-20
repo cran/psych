@@ -110,22 +110,22 @@ It is important to remember to not call \code{\link{lowerCor}} when all you need
 \seealso{\code{\link{corr.test}} to find correlations, count the pairwise occurrences, and to give significance tests for each correlation.  \code{\link{r.test}} for a number of tests of correlations, including tests of the difference between correlations.  \code{\link{lowerUpper}} will display the differences between two matrices.}
 \examples{
 lowerMat(Thurstone)
-lb <- lowerCor(bfi[1:10])  #finds and prints the lower correlation matrix, 
+lb <- lowerCor(psychTools::bfi[1:10])  #finds and prints the lower correlation matrix, 
   # returns the square matrix.
-#fiml <- corFiml(bfi[1:10])     #FIML correlations require lavaan package
+#fiml <- corFiml(psychTools::bfi[1:10])     #FIML correlations require lavaan package
 #lowerMat(fiml)  #to get pretty output
 f3 <- fa(Thurstone,3)
 f3r <- reflect(f3,2)  #reflect the second factor
 #find the complexity of the response patterns of the iqitems.
-round(shannon(iqitems),2) 
+round(shannon(psychTools::iqitems),2) 
 #test.all('BinNor')  #Does the BinNor package work when we are using other packages
-bestItems(lb,3,cut=.1)
+bestItems(lb,"A3",cut=.1,dictionary=psychTools::bfi.dictionary[1:2],raw=FALSE)
 #to make this a latex table 
 #df2latex(bestItems(lb,2,cut=.2))
 #
-data(bfi.dictionary)
-f2 <- fa(bfi[1:10],2)
-fa.lookup(f2,bfi.dictionary)
+data(psychTools::bfi.dictionary)
+f2 <- fa(psychTools::bfi[1:10],2)
+fa.lookup(f2,psychTools::bfi.dictionary)
 
 sa1 <-sat.act[1:2]
 sa2 <- sat.act[3:4]

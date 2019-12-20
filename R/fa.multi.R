@@ -4,8 +4,7 @@ function(r,nfactors=3,nfact2=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regr
  
 if(nfactors < 2) stop("number of lower level factors must be at least 2")
 f1 <- fa(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC,covar=covar,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor, ...=...) #call fa with the appropriate parameters
-
-f2 <- fa(f1$Phi,nfactors=nfact2,rotate=rotate)
+f2 <- fa(f1$Phi,nfactors=nfact2,rotate=rotate,fm=fm)
 
 result <- list(f1=f1,f2=f2)
 return(result)

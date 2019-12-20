@@ -6,7 +6,7 @@
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
     if(method=="tenberge") method <- "tenBerge"
-    if(length(class(f)) > 1) { if(class(f)[2] =="irt.fa" ) f <- f$fa  }
+    if(length(class(f)) > 1) { if(inherits(f[2] ,"irt.fa" )) f <- f$fa  }
     
      if(!is.matrix(f)) {Phi <- f$Phi
      f <- loadings(f)
@@ -24,11 +24,11 @@
       S <- f %*% Phi   #the Structure matrix 
    switch(method,   
     "Thurstone" = { w <- try(solve(r,S),silent=TRUE )  #these are the factor weights (see Grice eq. 5)
-     	if(class(w)=="try-error") {message("In factor.scores, the correlation matrix is singular, an approximation is used")
+     	if(inherits(w,"try-error")) {message("In factor.scores, the correlation matrix is singular, an approximation is used")
                r <- cor.smooth(r)}
         
       w <- try(solve(r,S),silent=TRUE)
-      if(class(w)=="try-error") {message("I was unable to calculate the factor score weights, factor loadings used instead")
+      if(inherits(w,"try-error")) {message("I was unable to calculate the factor score weights, factor loadings used instead")
                w <- f}
       colnames(w) <- colnames(f)
       rownames(w) <- rownames(f)
@@ -40,7 +40,7 @@
        
         r <- cor.smooth(r)
         inv.r <- try(solve(r),silent=TRUE)
-        if(class(inv.r)== as.character("try-error"))  {warning("The tenBerge based scoring could not invert the correlation matrix, regression scores found instead")
+        if(inherits(inv.r, as.character("try-error")))  {warning("The tenBerge based scoring could not invert the correlation matrix, regression scores found instead")
                                                       ev <- eigen(r)
       ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
         r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)

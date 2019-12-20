@@ -154,16 +154,16 @@ colnames(phi21) <- rownames(phi21) <-  c("L1","L2","Y")
 f4 <- structure.diagram(X6,phi21,Y3)
 
 ###the following example is not run but is included to show how to work with lavaan
-if(FALSE) {
+\donttest{
 library(lavaan)
 mod.1 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C =~ C1 + C2 + C3 + C4 + C5
          E =~ E1 +E2 + E3 + E4 +E5'
-fit.1 <- sem(mod.1,bfi[complete.cases(bfi),],std.lv=TRUE)
+fit.1 <- sem(mod.1,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
 lavaan.diagram(fit.1)
 
 #compare with
-f3 <- fa(bfi[complete.cases(bfi),1:15],3)
+f3 <- fa(psychTools::bfi[complete.cases(psychTools::bfi),1:15],3)
 fa.diagram(f3)
          
 mod.3 <- 'A =~ A1 + A2 + A3 + A4 + A5
@@ -173,7 +173,7 @@ mod.3 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C ~ age + gender
          E ~ age + gender'
 
-fit.3 <- sem(mod.3,bfi[complete.cases(bfi),],std.lv=TRUE)
+fit.3 <- sem(mod.3,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
 lavaan.diagram(fit.3, cut=0,simple=FALSE,main="mimic model")
 }
 # and finally, a regression model

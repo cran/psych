@@ -4,6 +4,7 @@
 
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,signif=NULL,...) { 
+#probably need to fix this with inherits but trying to avoid doing that now.
 
 if(length(class(x)) > 1)  { value <- class(x)[2] } else {
 #these next test for non-psych functions that may be printed using print.psych.fa
@@ -31,6 +32,7 @@ esem  = {print.psych.esem(x,digits=digits,short=short,cut=cut,...)},
   mediate = {print.psych.mediate(x,digits=digits,short=short,...)},
   multilevel = {print.psych.multilevel(x,digits=digits,short=short,...)},
   testRetest = {print.psych.testRetest(x,digits=digits,short=short,...)},
+  bestScales = {print.psych.bestScales(x,digits=digits,short=short,...)},
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
@@ -203,13 +205,14 @@ cluster.loadings =  {
   },
 
 cohen.d = {cat("Call: ")
-            print(x$Call)
+           print(x$Call)
             cat("Cohen d statistic of difference between two means\n")
-            print(x$cohen.d,digits=digits)
+            if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),x$cohen.d[4:NCOL(x$cohen.d)]))}
+          
             cat("\nMultivariate (Mahalanobis) distance between groups\n")
             print(x$M.dist,digits=digits) 
             cat("r equivalent of difference between two means\n")
-            print(x$r,digits=digits)
+            print(round(x$r,digits=digits))
             },
 
 cohen.d.by = {cat("Call: ")
@@ -236,7 +239,11 @@ comorbid = {cat("Call: ")
    },
 
 
-
+corCi = {#cat("Call:")
+        # print(x$Call)
+                cat("\n Correlations and normal theory confidence intervals \n")
+                print(round(x$r.ci,digits=digits))
+},
      
 cor.ci = {cat("Call:")
               print(x$Call) 
@@ -527,6 +534,18 @@ pairwise = {cat("Call: ")
               lowerMat(round(x$size))}
               cat("\n Imputed correlations (if found) are in the imputed object")
               },
+pairwiseCounts = {cat("Call: ")
+              print(x$Call) 
+              cat("\nOverall descriptive statistics\n")
+              if(!is.null(x$description)) print(x$description)
+              cat("\nNumber of item pairs <=", x$cut," = ", dim(x$df)[1])
+              cat("\nItem numbers with pairs <= ",x$cut, " (row wise)", length(x$rows))
+              cat("\nItem numbers with pairs <= ",x$cut,"(col wise)", length(x$cols))
+              cat("\nFor names of the offending items, print with short=FALSE")
+              if(!short) {cat("\n Items names with pairs < ", x$cut," (row wise)\n", names(x$rows))
+                         cat("\n Items names with pairs <=",x$cut," (col wise)\n", names(x$cols))}
+              cat("\nFor even more details examine the rows, cols and df report" )
+    },
          
 parallel= {
 cat("Call: ")
@@ -734,23 +753,28 @@ setCor= { cat("Call: ")
                           print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
-            ny <- NCOL(x$beta)
-          for(i in 1:ny) {cat("\n DV = ",colnames(x$beta)[i], "\n")
-          if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
-          if(!is.null(x$se)) {result.df <- data.frame( round(x$beta[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
+            if(!is.null(x$z)) cat("The following variables were partialed out:", x$z, "\n and are included in the calculation of df1 and df2\n")
+            ny <- NCOL(x$coefficients)
+          for(i in 1:ny) {cat("\n DV = ",colnames(x$coefficients)[i], "\n")
+       #   if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
+          if(!is.null(x$se)) {result.df <- data.frame( round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
-              print(result.df)      
+              print(result.df) 
+               cat("\nResidual Standard Error = ",round(x$SE.resid[i],digits), " with ",x$df[2], " degrees of freedom\n")     
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw","Shrunken R2", "SE of R2", "overall F","df1","df2","p")
               cat("\n Multiple Regression\n")
-             print(result.df) } else {
-              result.df <- data.frame( round(x$beta[,i],digits),round(x$VIF,digits))
+             print(result.df)
+              } else {
+              result.df <- data.frame( round(x$coefficients[,i],digits),round(x$VIF,digits))
               colnames(result.df) <- c("slope", "VIF")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw")
               cat("\n Multiple Regression\n")
              print(result.df)
+            
+             
             
               } 
               }
@@ -802,8 +826,9 @@ sim =  { if(is.matrix(x)) {x <-unclass(x)
    cat("\nGuttman lambda 6                          = ",round(x$lambda6,digits=digits))
    cat("\nAverage split half reliability            = ",round(x$meanr,digits=digits))
    cat("\nGuttman lambda 3 (alpha)                  = ",round(x$alpha,digits=digits))
+   cat("\nGuttman lambda 2                          = ", round(x$lambda2,digits=digits))
    cat("\nMinimum split half reliability  (beta)    = ",round(x$minrb,digits=digits))
-     cat("\nAverage interitem r = ",round(x$av.r,digits=digits)," with median = ", round(x$med.r,digits=digits))
+   if(x$covar) { cat("\nAverage interitem covariance = ",round(x$av.r,digits=digits)," with median = ", round(x$med.r,digits=digits))} else { cat("\nAverage interitem r = ",round(x$av.r,digits=digits)," with median = ", round(x$med.r,digits=digits))}
    if(!is.na(x$ci[1])) {cat("\n                                            ",names(x$ci))
    cat("\n Quantiles of split half reliability      = ",round(x$ci,digits=digits))}
  

@@ -61,11 +61,11 @@ William Revelle
 }
 \note{
 lmer=TRUE is the default and will do the variance decomposition using lmer.  This will take some time.  For 3032 cases with 10 items from the msqR and sai data set, this takes 92 seconds, but just .63 seconds if lmer = FALSE.
-For the 1895 subjects with repeated measures on the \code{\link{sai}}, it takes 85 seconds with lmer and .38 without out lmer.
+For the 1895 subjects with repeated measures on the \code{\link[psychTools]{sai}}, it takes 85 seconds with lmer and .38 without out lmer.
 
 In the case of just two tests (no items specified), the item based statistics (alpha, rqq, item.stats, scores, xy.df) are not reported. 
 
-Two examples are given.  The first takes 200 cases from the \code{link{sai}} data set.  Subjects were given the \code{link{sai}} twice with an intervening mood manipulation (four types of short film clips, with or without placebo/caffeine).  The test retest stability of the sai are based upon the 20 sai items.  The second example compares the scores of the 10 sai items that overlap with 10 items from the \code{\link{msqR}} data set from the same study.  \code{link{sai}} and  \code{\link{msqR}} were given immediately after each other and although the format differs slightly, can be seen as measures of dependability.  
+Two examples are given.  The first takes 200 cases from the \code{\link[psychTools]{sai}} data set.  Subjects were given the \code{link[psychTools]{sai}} twice with an intervening mood manipulation (four types of short film clips, with or without placebo/caffeine).  The test retest stability of the sai are based upon the 20 sai items.  The second example compares the scores of the 10 sai items that overlap with 10 items from the \code{\link[psychTools]{msqR}} data set from the same study.  \code{link[psychTools]{sai}} and  \code{\link[psychTools]{msqR}} were given immediately after each other and although the format differs slightly, can be seen as measures of dependability.  
 
 }
 
@@ -76,23 +76,30 @@ Two examples are given.  The first takes 200 cases from the \code{link{sai}} dat
 \examples{
 #lmer set to FALSE for speed.
 #set lmer to TRUE to get variance components
-sai.xray <- subset(sai,sai$study=="XRAY")
+sai.xray <- subset(psychTools::sai,psychTools::sai$study=="XRAY")
 #The case where the two measures are identified by time
 #automatically reverses items but throws a warning
 stability <- testRetest(sai.xray[-c(1,3)],lmer=FALSE) 
 stability  #show the results
 #get a second data set
 sai.xray1 <- subset(sai.xray,sai.xray$time==1)
-msq.xray <- subset(msqR,(msqR$study=="XRAY") & (msqR$time==1))
- 
-select <- colnames(sai.xray1)[colnames(sai.xray1 ) \%in\% colnames(msqR)]
+msq.xray <- subset(psychTools::msqR,
+ (psychTools::msqR$study=="XRAY") & (psychTools::msqR$time==1))
+select <- colnames(sai.xray1)[is.element(colnames(sai.xray1 ),colnames(psychTools::msqR))] 
+
 select <-select[-c(1:3)]  #get rid of the id information
 #The case where the two times are in the form x, y
 
-dependability <-  testRetest(sai.xray1,msq.xray,keys=select[-c(1:3)],lmer=FALSE)
+dependability <-  testRetest(sai.xray1,msq.xray,keys=select,lmer=FALSE)
 dependability  #show the results
 
-
+#now examine the Impulsivity subscale of the EPI
+#use the epiR data set which includes epi.keys
+data("epiR",package="psychTools")
+#Imp <- selectFromKeys(epi.keys$Imp)   #fixed temporarily with 
+Imp <- c("V1", "V3", "V8", "V10","V13" ,"V22", "V39" , "V5" , "V41")
+imp.analysis <- testRetest(psychTools::epiR,select=Imp) #test-retest = .7, alpha=.51,.51 
+imp.analysis
 }
 \keyword{ multivariate }% use one of  RShowDoc("KEYWORDS")
 \keyword{ models }% __ONLY ONE__ keyword per line

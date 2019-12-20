@@ -89,7 +89,7 @@ Yule.inv(.81818,c(.41667,.5))
 Yule2phi(.81818,c(.41667,.5))
 Yule2tetra(.81818,c(.41667,.5))
 phi(Nach)  #much less
-YuleCor(ability[,1:4],,TRUE)
+YuleCor(psychTools::ability[,1:4],,TRUE)
 YuleBonett(Nach,1)  #Yule Q
 YuleBonett(Nach,.5)  #Yule Y
 YuleBonett(Nach,.75)  #Digby H

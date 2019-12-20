@@ -10,14 +10,22 @@ function(object,digits=2,items=FALSE,...) {
 	
 #figure out which psych function called us 
 
-if(length(class(object)) > 1)  { value <- class(object)[2] }
+if(length(class(object)) > 1)  { 
+mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- NA    #to let it compile 
+ obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, mat.reg, bassAck, bestScales,iclust,omega,omegaSem,omegaDirect,overlap,
+     scores,testRetest, vss,cluster.cor, esem,fa,faBy,extend,extension,items,alpha,setCor,irt.fa,cohen.d,cohen.d.by,mediate,describeData,none)
+     value <- inherits(object, obnames, which=TRUE)
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
 
+ if(value=="extend") value <- "extend"
+ if(value=="extension") value <- "extend"
  if(value=="principal") value <- "fa"
  if(value=="score.items") value <- "scores"
  if(value=="cluster.loadings") value <- "cluster.cor"
   if(value=="mat.regress") value <- "mat.reg"
    if(value=="set.cor") value <- "setCor"
     if(value=="mat.reg") value <- "setCor"
+ } else {value <- "none"}
  
 switch(value, 
 
@@ -36,7 +44,11 @@ bestScales = { cat("\nCall = ")
     print(object$Call)
     # print(object$first.result)
     # print(round(object$means,2))
-     print(object$summary,digits=digits)},
+     print(object$summary,digits=digits)
+     if(!is.null(object$optimal)) {
+     cat("\n Optimal number of items, derivation and cross validation\n")
+   print(object$optimal,digits=digits) }}
+     ,
 
  
 iclust = { cat("ICLUST (Item Cluster Analysis)") 
@@ -132,6 +144,16 @@ cat("Omega H direct:   " ,round(object$omega.g,digits),"\n")
    print(round(t(object$om.group),digits)) 	
     
     }, 
+ 
+overlap =  { 
+cat("Call: ")
+print(object$Call)
+cat("\nScale intercorrelations adjusted for item overlap")
+cat("\nScale intercorrelations corrected for attenuation \n raw correlations (corrected for overlap) below the diagonal, (standardized) alpha on the diagonal \n corrected (for overlap and reliability) correlations above the diagonal:\n") 
+	 print(object$corrected,digits) 
+	 result <- object$corrected
+	 },
+	 
 
 scores =  { #also score.items
 cat("Call: ")
@@ -143,16 +165,17 @@ cat("\nScale intercorrelations corrected for attenuation \n raw correlations bel
 	 print(object$corrected,digits) 
 	 result <- object$corrected
 	 },
- 
-overlap =  { 
+
+testRetest ={
 cat("Call: ")
 print(object$Call)
-cat("\nScale intercorrelations adjusted for item overlap")
-cat("\nScale intercorrelations corrected for attenuation \n raw correlations (corrected for overlap) below the diagonal, (standardized) alpha on the diagonal \n corrected (for overlap and reliability) correlations above the diagonal:\n") 
-	 print(object$corrected,digits) 
-	 result <- object$corrected
-	 },
-	 
+cat("Test-retest correlations and reliabilities\n")
+cat("Test retest correlation = " ,round(object$r12,digits))
+cat("\n Alpha reliabilities for both time points \n")
+print(round(object$alpha,digits=digits))
+cat("\n \n")
+
+             },	 
 vss = {
  if(object$title!="Very Simple Structure") {
  cat("\nVery Simple Structure of ", object$title,"\n") } else {cat("\nVery Simple Structure\n")} 
@@ -203,6 +226,14 @@ esem =  {
        print(round(object$Phi,digits))}
 },
 
+extend = {cat("\n Factor extensions analysis with Call: ")
+   print(object$Call)
+ 	nfactors <- dim(object$loadings)[2]
+ 	cat ("\n With factor correlations of \n" )
+       colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
+       print(round(object$Phi,digits))},
+ 	
+ 	
 fa =  {
   cat("\nFactor analysis with Call: ")
    print(object$Call)
@@ -324,6 +355,13 @@ irt.fa = {
        print(round(object$fa$Phi,digits))}
 },
 
+cohen.d = {cat("Extract effect sizes from cohen.d\n")
+     print(object$Call)
+   cat("\nMultivariate (Mahalanobis) distance between groups", round(object$M.dist,digits=digits))
+   cat("\n r equivalent for each variable\n")
+   print(round(object$r,digits=digits))
+    }, 
+
 cohen.d.by = {cat("Extract effect sizes by groups from cohen.d.by\n")
    ncases <- length(object)
    effects <- list()
@@ -341,10 +379,13 @@ print(effect.df,digits=digits)
 mediate = {summary.psych.mediate(object,digits=digits)
         },
 
-describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.cases," are complete cases. Number of variables = ",object$nvar," of which all are numeric is ",object$all.numeric,"\n")
+describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.cases," are complete cases. Number of variables = ",object$nvar," of which all are numeric is ",object$all.numeric,"\n")},
+
+none = {warning("I am sorry, I do not have a summary function for this object")}
+   )  #end of switch
                  
-        } 
-)  #end of switch
+      
+
 #invisible(result)
    }
   

@@ -9,7 +9,7 @@
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
-corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
+corPlot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, symmetric=TRUE,stars=FALSE,
    adjust="holm",xaxis=1, xlas=0,ylas=2,gr=NULL,alpha=.75,min.length=NULL,...)
@@ -17,7 +17,7 @@ corPlot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
 corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
  
- cor.plot(r,numbers=FALSE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
+ cor.plot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
   cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
 symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,gr=NULL,alpha=.75, 
@@ -31,11 +31,11 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
 \arguments{
   \item{r}{A correlation matrix or the output of  \code{\link{fa}}, \code{\link{principal}} or \code{\link{omega}}.  }
   \item{R}{The object returned from  \code{\link{cor.ci}}  }
-  \item{numbers}{Display the numeric value of the correlations.  Defaults to FALSE.}
+  \item{numbers}{Display the numeric value of the correlations. (As of September, 2019)  Defaults to TRUE.}
   \item{colors}{Defaults to TRUE and colors use colors from the colorRampPalette from red through white to blue, but colors=FALSE will use a grey scale}
   \item{n}{The number of levels of shading to use.  Defaults to 51}
   \item{main}{A title. Defaults to "correlation plot"}
-  \item{zlim}{The range of values to color -- defaults to -1 to 1}
+  \item{zlim}{The range of values to color -- defaults to -1 to 1.  If specified as NULL, then defaults to min and max observed correlation.}
   \item{show.legend}{A legend (key) to the colors is shown on the right hand side}
   \item{labels}{if NULL, use column and row names, otherwise use labels}
   \item{n.legend}{How many categories should be labelled in the legend?}
@@ -67,6 +67,8 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
 The difference between mat.plot with a regular image plot is that the primary diagonal goes from the top left to the lower right. 
 zlim defines how to treat the range of possible values. -1 to 1 and the color choice is more reasonable.  Setting it as c(0,1) will lead to negative correlations  treated as zero.  This is advantageous when showing general factor structures, because it makes the 0 white.  
 
+There is an interesting case when plotting correlations corrected for attenuation.  Some of these might exceed 1.  In this case, either set zlim = NULL (to use the observed maximum and minimum values) or all values above 1 will be given a slightly darker shade than 1, but do not differ.
+
 The default shows a legend for the color coding on the right hand side of the figure.
 
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
@@ -86,8 +88,9 @@ To compare the elements of two correlation matrices, \code{\link{corPlot}} the r
 
 To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=FALSE and keep.par=FALSE.  See the last examples.  
 
-Care should be takend when selecting rows and columns from a non-symmetric matrix (e.g., the corrected correlations from \code{\link{scoreItems}} or \code{\link{scoreOverlap}}).  
+Care should be taken when selecting rows and columns from a non-symmetric matrix (e.g., the corrected correlations from \code{\link{scoreItems}} or \code{\link{scoreOverlap}}).  
 
+To show a factor loading matrix (or any non-symmetric matrix), set symmetric=FALSE.  Otherwise the correlations will be found.
 }
 \author{William Revelle
 }
@@ -96,7 +99,7 @@ Care should be takend when selecting rows and columns from a non-symmetric matri
 Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics \& Data Analysis. 52, 4, 2228-2237.
 }
 
-\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}} \code{\link{lowerUpper}}.. 
+\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}} \code{\link{lowerUpper}}. 
 }
 \examples{
 corPlot(Thurstone,main="9 cognitive variables from Thurstone") 
@@ -139,10 +142,10 @@ cor.plot.upperLowerCi(R=rs,numbers=TRUE,gr=gr)
 #do multiple plots 
 #Also show the xaxis option
 op <- par(mfrow=c(2,2))
-corPlot(ability,show.legend=FALSE,keep.par=FALSE,upper=FALSE)
-f4 <- fa(ability,4)
+corPlot(psychTools::ability,show.legend=FALSE,keep.par=FALSE,upper=FALSE)
+f4 <- fa(psychTools::ability,4)
 corPlot(f4,show.legend=FALSE,keep.par=FALSE,numbers=TRUE,xlas=3)
-om <- omega(ability,4)
+om <- omega(psychTools::ability,4)
 corPlot(om,show.legend=FALSE,keep.par=FALSE,numbers=TRUE,xaxis=3)
 par(op)
 

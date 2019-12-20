@@ -34,7 +34,7 @@ nf <- dim(t$loadings)[2]
 
  diffi <- list() 
      #flag <- which(abs(t$loadings) > 1,arr.ind=TRUE)
-     #this throws an error if a Heywood case
+     #this throws an error if a Heywood case  - but actually don't do this
      for (i in 1:nf) {diffi[[i]]  <- tau/sqrt(1-t$loadings[,i]^2)
      }
      
@@ -91,7 +91,7 @@ diffi <- list()
      }
 discrim <- f$loadings/sqrt(1-f$loadings^2)
 if(any(is.nan(discrim))) {bad <- which(is.nan(discrim),arr.ind=TRUE)
-      if(length(bad) > 0) { warning("An discrimination  with a NaN value was replaced with the maximum discrimination for item(s)  ",bad, "\nexamine the factor analysis object (fa)  to identify the Heywood case") }
+      if(length(bad) > 0) { warning("An discrimination  with a NaN value was replaced with the maximum discrimination for item(s)  ",bad, "\nexamine the factor analysis object (fa)  to identify the problem") }
           for (i in 1:nf) {
           discrimin[is.nan(discrim[,i])] <- max(discrimin[,i],na.rm=TRUE) 
         }}
@@ -99,7 +99,7 @@ if(any(is.nan(discrim))) {bad <- which(is.nan(discrim),arr.ind=TRUE)
 irt <- list(difficulty=diffi,discrimination=discrim)
 result <- list(irt=irt,fa = f,rho=r,tau=tau,n.obs=n.obs,Call=cl)
 
-if(class(rho)[2] == "poly" ) {class(result) <-  c("psych","irt.poly") } else {class(result) <- c("psych","irt.fa")}
+if(inherits(rho[2],"poly" )) {class(result) <-  c("psych","irt.poly") } else {class(result) <- c("psych","irt.fa")}
 if(plot) {pr <- plot(result) 
 result$plot <- pr}
 return(result)

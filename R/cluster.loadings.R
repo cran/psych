@@ -51,7 +51,7 @@ function (keys, r.mat, correct = TRUE,SMC=TRUE)
    
     c.correl <- ident.sd %*% covar %*% ident.sd
     p.loading <- try(c.item.cor %*% solve(c.correl))
-    if(class(p.loading)=="try-error") {message('the correlation matrix was singular, pattern loadings not found, proceed with caution')
+    if(inherits(p.loading,"try-error")) {message('the correlation matrix was singular, pattern loadings not found, proceed with caution')
                          p.loading  <- c.item.cor}
     
      c.item.cor[abs(c.item.cor)  > 99999] <- NA

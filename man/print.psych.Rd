@@ -1,7 +1,7 @@
 \name{print.psych}
 \alias{print.psych}
 \alias{summary.psych}
-\alias{anova.psych}
+
 
 \title{ Print and summary functions for the psych class }
 \description{Give limited output (print) or somewhat more detailed (summary) for most of the functions in psych. 
@@ -10,7 +10,7 @@
 \method{print}{psych}(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,signif=NULL,...)
 
 \method{summary}{psych}(object,digits=2,items=FALSE,...)
-\method{anova}{psych}(object,object2,...)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,7 +23,6 @@
   \item{sort}{Cluster loadings are in sorted order}
   \item{short}{Controls how much to print}
   \item{lower}{For square matrices, just print the lower half of the matrix} 
-  \item{object2}{Another object from fa or omega})
   \item{signif}{If not NULL,  a numeric value, show just signif number of leading digits for describe output}
   \item{...}{More options to pass to summary and print}
 }
@@ -48,8 +47,8 @@ The signf option is available for the output from  \code{\link{describe}} to adj
 data(bfi)
  keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),
  extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))
- keys <- make.keys(25,keys.list,item.labels=colnames(bfi[1:25]))
- scores <- score.items(keys,bfi[1:25])
+ keys <- make.keys(25,keys.list,item.labels=colnames(psychTools::bfi[1:25]))
+ scores <- score.items(keys,psychTools::bfi[1:25])
  scores
  summary(scores)
 }

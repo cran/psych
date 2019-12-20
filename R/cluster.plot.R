@@ -3,7 +3,7 @@
  "cluster.plot" <- 
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot",pch=18,pos,show.points=TRUE,choose=NULL,...) {
  if (!is.matrix(ic.results) ) {if (!is.null(class(ic.results)) )   {
-  if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
+  if(inherits(ic.results[1],"kmeans")) { load <- t(ic.results$centers) }  else {
       load <-ic.results$loadings} }} else {load <- ic.results}
       if(!is.null(choose)) load <- load[,choose,drop=FALSE]
 nc <- dim(load)[2]
@@ -56,13 +56,13 @@ fa.plot(ic.results,cluster=cluster,cut=cut,labels=labels,title=title,jiggle=jigg
  "fa.plot" <- 
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,...) {
 if(missing(title) ) { title="Plot"
-              if (length(class(ic.results)) >1 )  {if (class(ic.results)[2] == "fa") {title = "Factor Analysis"} else {
-                     if (class(ic.results)[2] == "principal") {title = "Principal Component Analysis"} 
+              if (length(class(ic.results)) >1 )  {if (inherits(ic.results, "fa")) {title = "Factor Analysis"} else {
+                     if (inherits(ic.results,"principal")) {title = "Principal Component Analysis"} 
                      } }
                      }
  if (!is.matrix(ic.results)) {
         if (!is.null(class(ic.results))) {
-       if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
+       if(inherits(ic.results, "kmeans")) { load <- t(ic.results$centers) }  else {
       load <-ic.results$loadings} }} else {load <- ic.results}
       
       
@@ -108,7 +108,7 @@ if(show.points) { plot(load,pch = cluster+pch,col=ch.col[cluster],bg=ch.col[clus
  "plot.factor" <-  
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Factor plot",show.points=TRUE,...) { #deprecated
  if (!is.matrix(ic.results) ) {if (!is.null(class(ic.results)) )   {
-  if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
+  if(inherits(ic.results,"kmeans")) { load <- t(ic.results$centers) }  else {
       load <-ic.results$loadings} }} else {load <- ic.results}
    if(is.null(colnames(load))) colnames(load) <- paste("F",1:ncol(load),sep="")
 nc <- dim(load)[2]
@@ -133,7 +133,7 @@ if(show.points) { plot(load,pch = cluster+20,col=ch.col[cluster],bg=ch.col[clust
   "plot.cluster" <- 
 function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title="Cluster plot",show.points=TRUE,...) { #deprecated
  if (!is.matrix(ic.results) ) {if (!is.null(class(ic.results)) )   {
-  if(class(ic.results)[1] == "kmeans") { load <- t(ic.results$centers) }  else {
+  if(inherits(ic.results,  "kmeans")) { load <- t(ic.results$centers) }  else {
       load <-ic.results$loadings} }} else {load <- ic.results}
 nc <- dim(load)[2]
 nvar <- dim(load)[1]

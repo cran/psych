@@ -113,7 +113,7 @@ par(op)
 data(iqitems)
 iq.keys <- c(4,4,4, 6, 6,3,4,4,  5,2,2,4,  3,2,6,7)
 
-iq.tf <- score.multiple.choice(iq.keys,iqitems,score=FALSE)  #just the responses
+iq.tf <- score.multiple.choice(iq.keys,psychTools::iqitems,score=FALSE)  #just the responses
 iq.irt <- irt.fa(iq.tf)
 print(iq.irt,short=FALSE) #show the IRT as well as factor analysis output
 p.iq <- plot(iq.irt)  #save the invisible summary table

@@ -375,8 +375,8 @@ FA.OLS <- function(Psi,S,nf) {
  
      x.matrix <- r
     n <- dim(r)[2]
-    if (!isCorrelation(r)) {  matrix.input <- FALSE  #return the correlation matrix in this case
-                       n.obs <- dim(r)[1]
+    if (!isCorrelation(r)  & !isCovariance(r)) {  matrix.input <- FALSE  #return the correlation matrix in this case
+                       n.obs <- dim(r)[1]       #Added the test for nono-symmetric in case we have a covariance matrix 4/10/19
      
         if(missing) { #impute values 
         x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
@@ -667,7 +667,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
      				    Phi <- NULL} else { 
      				      
      				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
-     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               if(inherits(ob,as.character("try-error")))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
      				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings
@@ -705,7 +705,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     if(!is.null(Phi)) {Phi <- Phi[ev.order,ev.order] } #January 20, 2009 but, then, we also need to change the order of the rotation matrix!
     class(loadings) <- "loadings"
     if(nfactors < 1) nfactors <- n
-    if(max(abs(loadings) > 1.0) && !covar) warning(' A loading greater than abs(1) was detected.  Examine the loadings carefully.') 
+   # if(max(abs(loadings) > 1.0) && !covar) warning(' A loading greater than abs(1) was detected.  Examine the loadings carefully.') 
     result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     result$communality <- diag(model)

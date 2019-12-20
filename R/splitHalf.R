@@ -26,7 +26,7 @@ if(n.obs > n) { r <- cov(r,use=use)}
  if(!covar) r <- cov2cor(r) 
  
 if(check.keys && is.null(keys)) {
-            p1 <- principal(r)
+            p1 <- principal(r,covar=covar)
             if(any(p1$loadings < 0)) warning("Some items were negatively correlated with total scale and were automatically reversed.")
             keys <- 1- 2* (p1$loadings < 0 ) 
             }  #keys is now a vector of 1s and -1s
@@ -48,9 +48,15 @@ e <- 0
 m <- n2
 h <- m
 sumr <- sum(r)
-alpha <- ((sumr - tr(r))/sumr) * n/(n-1)
-tsmc <- sum(smc(r))
-lambda6 <- (sumr - tr(r) + tsmc)/sumr
+ off <- r
+diag(off) <- 0
+sum.off <- sum(off)
+sumsq.off <- sum(off^2)
+sum.off <- sumr - tr(r)
+alpha <- (sum.off/sumr) * n/(n-1)
+tsmc <- sum(smc(r,covar=covar))
+lambda6 <- (sum.off + tsmc)/sumr
+lambda2 <- (sum.off+ sqrt(sumsq.off*n/(n-1)))/sumr
 result <- NULL
 med.r <- median(r[lower.tri(r)],na.rm=TRUE)  #find the median correlation
 av.r <- mean(r[lower.tri(r)],na.rm=TRUE) 
@@ -123,8 +129,8 @@ rownames(maxAB) <- rownames(minAB) <- v.names
 if(!anyNA(result))  {
 ci <- quantile(result,c(ci/2,.5, 1 - ci/2))} else {ci <- rep(NA,3) }
 if(raw) {
-results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r, alpha=alpha,lambda6=lambda6,raw = result,ci=ci,Call = cl)
-} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r,alpha=alpha,lambda6=lambda6,ci=ci, Call=cl)}
+results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r, alpha=alpha,lambda2 = lambda2, lambda6=lambda6,raw = result,ci=ci,covar=covar,Call = cl)
+} else {results <- list(maxrb=maxrb,minrb=minrb,maxAB=maxAB,minAB=minAB,meanr=meanr,av.r=av.r,med.r=med.r,alpha=alpha,lambda2 = lambda2,lambda6=lambda6,ci=ci,covar=covar, Call=cl)}
 class(results) <- c("psych","split")
 return(results)
 }

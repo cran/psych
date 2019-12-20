@@ -5,7 +5,7 @@
 #Seriously modified June 25, 2016 to allow better control for labels, as well as just generally cleaner code
 
 "biplot.psych" <-
-function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,...) {
+function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...) {
 if(is.null(x$scores)) stop("Biplot requires factor/component scores. \nYou need to  run fa/pca from the raw data")
 op <- par()
 old.par <- par(no.readonly = TRUE)
@@ -14,6 +14,7 @@ MAR <- par("mar")
 MFROW <- par("mfrow")
 title <- main
 main <- NULL
+ 
 #fa.poly nests the fa and scores within a list
 if(is.list(x$scores)) x$scores <- x$scores$scores  #the case of fa.poly output
 if(is.list(x$fa)) x$loadings <- x$fa$loadings  #once again, the case of fa.poly
@@ -50,7 +51,8 @@ if (n.dims == 2) { #just do a one panel graph
   #if (!is.null(main)) op1 <- c(op, par("mar" = MAR + c(0, 0, 1, 0))) #give room for the title  -- 
  # if (!is.null(main)) par("mar" = MAR + c(0, 0, 1, 0))  #give room for the title  -
   #plotone does the work
- plotone(x$scores,x$loading,labels=labels,main=main,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,... )
+
+plotone(x$scores,x$loading,labels=labels,main=main,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,vars=vars,... )
   par(new = TRUE)  #this sets it up so that we can plot on top of a plot 
     dev.hold()
    
@@ -63,12 +65,13 @@ if (n.dims == 2) { #just do a one panel graph
   		   if(i==j) {h <- hist(x$scores[,i],freq=FALSE, main=colnames(x$loadings)[i],xlab="",ylab="",col=hist.col)
   		        breaks <- h$breaks; nB <- length(breaks)
    		 tryd <- try( d <- density(x$scores[,i],na.rm=TRUE,bw="nrd",adjust=adjust),silent=TRUE)
-     	if(class(tryd) != "try-error") {
+     	if(!inherits(tryd,"try-error")) {
     	 lines(d)}
   } else {
    
      #  biplot(x$scores[,c(j,i)],x$loadings[,c(j,i)],xlabs=labels,xlab="",ylab="",cex=cex,xlim=xlim.s,ylim=ylim.s,pch=pch,...)}
-      plotone(x$scores[,c(j,i)],x$loadings[,c(j,i)],main=NULL,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,... )}  #work on this way of doing it
+
+      plotone(x$scores[,c(j,i)],x$loadings[,c(j,i)],main=NULL,xlim.s=xlim.s,ylim.s=ylim.s,xlim.f=xlim.f,ylim.f=ylim.f,maxpoints=maxpoints,adjust=adjust,col=col,pos=pos, arrow.len = arrow.len,pch=pch,choose=choose,cuts=cuts,cutl=cutl,group=group,ch.col=ch.col,smoother=smoother,vars=vars,... )}  #work on this way of doing it
            }  }
    }
    #We do not want to reset the margins back to their prior values, because then we lose the ability to add lines to the figure
@@ -78,7 +81,7 @@ if (n.dims == 2) { #just do a one panel graph
 title(title,line=2)
 }   #End of biplot.psych
 
- plotone <- function( scores,loadings,labels=NULL,cex=c(.75,1),main=main,hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,ch.col=c("black","blue"),smoother=FALSE,...)  { 
+ plotone <- function( scores,loadings,labels=NULL,cex=c(.75,1),main=main,hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,ch.col=c("black","blue"),smoother=FALSE, vars=TRUE,...)  { 
 #There are three different conditions
 #1 just show the (unlabeled) points
 #2 don't show the points, but put in labels at their locations
@@ -113,12 +116,14 @@ switch(choice,   #we plot the scores here for scores > abs(cut) on x and y
     labels <- rownames(loadings)
     labels[sqrt(loadings[,1]^2  + loadings[,2]^2) <  cutl] <-   NA
     text(loadings, labels = labels, cex = cex[2L], col = col[2L], ...)
-     arrows(0, 0, loadings[, 1L] * 0.8, loadings[, 2L] * 0.8, col = col[2L], 
-            length = arrow.len)
+    if(vars) {arrows(0, 0, loadings[, 1L] * 0.8, loadings[, 2L] * 0.8, col = col[2L], 
+            length = arrow.len)} else {
+            arrows(0, 0, scores[, 1L] * xlim.f/xlim.s, scores[, 2L] * ylim.f/ylim.s, col = col[2L], 
+            length = arrow.len)}
     axis(3, col = col[2L], ...)
     axis(4, col = col[2L], ...)
     box(col = col[1L])
-   
+  
 }    
   
 

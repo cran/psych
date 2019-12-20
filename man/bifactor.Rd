@@ -49,6 +49,8 @@ The two Bechtoldt data sets are two samples from Thurstone and Thurstone (1941).
 
 Two more data sets with  similar structures are found in the \code{\link{Harman}} data set.  This includes the another 9 variables (with 696 subjects) from Holzinger used by Harman \code{link{Harman.Holzinger}} as well as 8 affective variables from \code{link{burt}}. 
 
+Another data set that is worth examining for tests of bifactor structure is the holzinger.swineford  data set which includes the original data from Holzinger and Swineford (1939) supplied by Keith Widaman.  This is in  psychTools.1.9.11 or later.
+
 
 
 \itemize{
@@ -96,6 +98,8 @@ Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of
 Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika, 23, 111-136.
 
 }
+
+
 \examples{
 
 if(!require(GPArotation)) {message("I am sorry, to run omega requires GPArotation") 

@@ -10,7 +10,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     
       #first, see if they are in formula mode   added August 18, 2018
   formula <- FALSE
-   if(class(x) == "formula") {  ps <- fparse(x)
+   if(inherits(x, "formula")) {  ps <- fparse(x)
    formula <- TRUE
    if(is.null(data)) stop("You must specify the data if you are using formula input") 
      x <- data[ps$y]
@@ -122,7 +122,6 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	               }
         if (missing(xlim)) xlim <- c(.5,n.var+.5)
     	if(!add) {plot(x.stats$mean,ylim=ylim,xlim=xlim, xlab=xlab,ylab=ylab,main=main,typ=typ,lty=(lty[((g-1) %% 8 +1)]),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=pch[g],...)
-    	
     	axis(1,1:z,colnames(x),...)
     	axis(2,...)
     	box()
@@ -179,8 +178,9 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
  
     	if(!add) {
     	if(missing(xlim)) xlim <- c(.5,n.grp1 + .5)
+    	if(is.null(v.labels)) v.labels <- names(unlist(dimnames(group.stats)[1]))
     	 plot(x.values,var.means[1,1:n.grp1],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[1],pch=pch[1],col = colors[(i-1) %% n.color +1],...)
-    		if(x.cat) {axis(1,1:n.grp1,names(unlist(dimnames(group.stats)[1])),...) } else {axis(1)}
+    		if(x.cat) {axis(1,1:n.grp1,v.labels,...) } else {axis(1)}
     		axis(2,...)
     		box() 
     	 if(n.grp1 < n.group) {
@@ -245,3 +245,4 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    #corrected Feb 2, 2011 to plot alpha/2 rather than alpha 
    #modifed Feb 2, 2011 to not plot lines if they are not desired.
    #modified May 21, 2016 to handle a case of a single vector having no columns
+   #modified April 9, 2019 to include v.labels for plots

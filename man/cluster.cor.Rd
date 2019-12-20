@@ -3,7 +3,7 @@
 \alias{scoreOverlap}
 \title{Find correlations of composite variables (corrected for overlap) from a larger matrix.}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link[psychTools]{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
 }
 \usage{
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
@@ -60,16 +60,17 @@ Maintainer: William Revelle \email{revelle@northwestern.edu}
 }
 \note{ See SAPA  Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer. 
 
-The second example uses the \code{\link{msq}} data set of 72 measures of motivational state to examine the overlap between four lower level scales and two higher level scales.
+The second example uses the \code{\link[psychTools]{msq}} data set of 72 measures of motivational state to examine the overlap between four lower level scales and two higher level scales.
 }
 \seealso{ \code{\link{factor2cluster}}, \code{\link{mat.regress}}, \code{\link{alpha}}, and most importantly, \code{\link{scoreItems}}, which will do all of what cluster.cor does for most users.  cluster.cor is an important helper function for \code{\link{iclust}}
 }
 
 \examples{
 #use the msq data set that shows the structure of energetic and tense arousal
-small.msq <- msq[ c("active", "energetic", "vigorous", "wakeful", "wide.awake", 
-"full.of.pep", "lively", "sleepy", "tired", "drowsy","intense", "jittery", "fearful",
- "tense", "clutched.up", "quiet", "still",    "placid", "calm", "at.rest") ]
+small.msq <- psychTools::msq[ c("active", "energetic", "vigorous", "wakeful", 
+"wide.awake", "full.of.pep", "lively", "sleepy", "tired", "drowsy","intense", 
+"jittery", "fearful", "tense", "clutched.up", "quiet", "still",    "placid",
+ "calm", "at.rest") ]
 small.R <- cor(small.msq,use="pairwise")
 keys.list <- list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",

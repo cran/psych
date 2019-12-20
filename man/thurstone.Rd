@@ -33,8 +33,8 @@ Revelle, W. An introduction to psychometric theory with applications in R. (in p
 \author{William Revelle}
 
 \examples{
-data(vegetables)
-thurstone(veg)
+data(psychTools::vegetables)
+thurstone(psychTools::veg)
 }
 
 \keyword{ models }

@@ -55,6 +55,8 @@ The function \code{\link{bassAckward.diagram}} may be called using the \code{\li
 
 The output from \code{\link{bassAckward.diagram}} is the sorted factor structure suitable for using \code{\link{fa.lookup}}.
 
+Although not particularly pretty, it is possible to do Schmid-Leiman rotations at each level.  Specify the rotation as rotate="schmid".
+
 }
 \value{
 \item{Call}{Echo the call}
@@ -66,7 +68,7 @@ item{fa}{A list of the factor loadings at each level}
 \item{labels}{Factor labels including items for each level}
 \item{r}{The correlation matrix analyzed}
 \item{Phi}{The factor correlations at each level}
-\item{fa}{The factor analysis loadings at each level}
+\item{fa}{The factor analysis loadings at each level, now includes Phi values }
 }
 \references{
 Goldberg, L.R. (2006) Doing it all Bass-Ackwards: The development of hierarchical factor structures from the top down. Journal of Research in Personality, 40, 4, 347-358.
@@ -88,11 +90,11 @@ Waller, N. (2007), A general method for computing hierarchical component structu
 }
 \examples{
 bassAckward(Thurstone,4,main="Thurstone data set")
-print(bassAckward(bfi[1:25],c(2,3,5),main="bfi data set"),short=FALSE)
+print(bassAckward(psychTools::bfi[1:25],c(2,3,5),main="bfi data set"),short=FALSE)
  #do pca instead of factors  just summarize, don't plot
-summary(bassAckward(bfi[1:25],c(1,3,5,7),fm="pca",main="Components",plot=FALSE))
+summary(bassAckward(psychTools::bfi[1:25],c(1,3,5,7),fm="pca",main="Components",plot=FALSE))
 ##not run, but useful example
-#sp5 <- bassAckward(spi[11:145], c(3,4,5,27))
+#sp5 <- bassAckward(psychTools::spi[11:145], c(3,4,5,27))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

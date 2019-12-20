@@ -1,6 +1,6 @@
 "plot.irt" <- 
 function(x,xlab,ylab,main,D,type=c("ICC","IIC","test"),cut=.3,labels=NULL,keys=NULL,xlim,ylim,y2lab,lncol="black",...) {
-if(class(x)[2] == "irt.poly") {
+if(inherits(x,"irt.poly")) {
 if(missing(type)) type = "IIC" 
 
 plot.poly(x=x,D=D,xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,main=main,type=type,cut=cut,labels=labels,keys=keys,y2lab=y2lab,lncol=lncol,...)} else {
@@ -371,23 +371,39 @@ return(result)
           diffi <- list() 
           for (i in 1:nf) {diffi[[i]]  <- tau/sqrt(1-stats$loadings[,i]^2) }
          discrim <- stats$loadings/sqrt(1-stats$loadings^2)
-        }
+        } else {diffi <- tau
+          nf <- NROW(tau)}
 if(!is.null(keys)) {
         if(is.null(dim(keys))) { nf <- 1 } else {nf <- dim(keys)[2]}
         
           diffi <- list() 
           for (i in 1:nf) {diffi[[i]]  <- tau }
          discrim <- keys
-        }
-        
+        } else {discrim <- as.matrix(rep(1,nf),ncol=1)
+          rownames(discrim) <- colnames(tau)
+          colnames(discrim) <-"d" }
+     
    class(diffi) <- NULL
    class(discrim) <- NULL
-   irt <- list(difficulty=diffi,discrimination=discrim)
-   results$irt <- irt
+   difficulty <- list(diffi)
+   results <- list(difficulty=difficulty,discrimination=discrim)
+  # results$irt <- irt
   
-class(results) <- c("psych","irt.poly")
+#class(results) <- c("psych","irt.poly")
 return(results)
 }
+  #allows the reading of data directly to score
+make.irt.stats <- function(difficulty,discrimination) {
+  discrimination <- as.matrix(discrimination,ncol=1)
+  rownames(discrimination) <- rownames(difficulty)
+  colnames(discrimination) <- "d"
+  difficulty <- list(difficulty)
+  
+  results <- list(difficulty=difficulty,discrimination = discrimination)
+   return(results)
+   
+   }
+   
    
 "irt.se" <- function( stats,scores=0, D=1.702) {  
     if(missing(D)) D <- 1.702

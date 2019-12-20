@@ -2,6 +2,7 @@
 #just score items without a lot of stats
 #basically scoreItems with all  the stats removed\
 #Parallelized July 28, 2018 and report the number of responses/scale
+#added the "mollycoddle" feature March 19, 2019 to help the clueless user
 "scoreFast"  <-
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="none",delete=TRUE,  min=NULL,max=NULL,count.responses=FALSE,digits=2) {
  
@@ -22,7 +23,12 @@
    if(impute == FALSE)  impute <- "none"
    if(is.list(keys)) {select <- sub("-","",unlist(keys))
       select <- select[!duplicated(select)]
-      select <- select[!is.na(select)] } else {
+      select <- select[!is.na(select)]
+      #check for bad input   -- the Mollycoddle option 
+if(any( !(select %in% colnames(items)) )) {
+ cat("\nVariable names are incorrect. Offending items are ", select[which(!(select %in% colnames(items)))],"\n")
+ stop("Improper input.  See above. ")}
+       } else {
       keys <- keys2list(keys)
         select <- selectFromKeyslist(colnames(items),keys)
       select <- select[!duplicated(select)]
@@ -82,10 +88,11 @@
     }      
     
     if (is.null(ilabels)) {
-    	if (totals) {ilabels<- paste("S",1:n.keys,sep="")} else {
-    	             ilabels <- paste("A",1:n.keys,sep="")} }
-  
-   
+    	if (totals) {#ilabels<- paste("S",1:n.keys,sep="")} else {
+    	             #ilabels <- paste("A",1:n.keys,sep="")} }
+  ilabels<- paste(keynames,"S",sep="-")} else {
+    	             ilabels <- paste(keynames,"A",sep="-")} }
+                    
  if(count.responses) { scores <- scoresList[1:n.subjects,]
    responses <- scoresList[(n.subjects+1):nrow(scoresList),]
    colnames(scores) <- ilabels
@@ -113,7 +120,11 @@ smallFunction <- function(scale,keys) {
   }
   
  if(is.list(keys)) {select <- sub("-","",unlist(keys))
-   select <- select[!duplicated(select)] } else {
+   select <- select[!duplicated(select)]
+   if(any( !(select %in% colnames(items)) )) {
+ cat("\nVariable names are incorrect. Offending items are ", select[which(!(select %in% colnames(items)))],"\n")
+ stop("Improper input.  See above. ")}
+ } else {
       keys <- keys2list(keys)
      select <- selectFromKeyslist(colnames(items),keys)
       select <- select[!duplicated(select)]}

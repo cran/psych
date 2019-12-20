@@ -418,7 +418,7 @@ function(x,y) {
 #this is more similar to cov2cor(nearPD$mat)
 "cor.smooth" <- function(x,eig.tol=10^-12) {
 eigens <- try(eigen(x),TRUE)
-if(class(eigens)== as.character("try-error")) {warning('I am sorry, there is something seriously wrong with the correlation matrix,\ncor.smooth failed to  smooth it because some of the eigen values are NA.  \nAre you sure you specified the data correctly?')
+if(inherits(eigens, as.character("try-error"))) {warning('I am sorry, there is something seriously wrong with the correlation matrix,\ncor.smooth failed to  smooth it because some of the eigen values are NA.  \nAre you sure you specified the data correctly?')
                                                      } else {
                                                         
 if(min(eigens$values) < .Machine$double.eps)  {warning("Matrix was not positive definite, smoothing was done")

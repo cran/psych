@@ -1,28 +1,23 @@
 "plot.psych" <-
 function(x,labels=NULL,...)
   {
-  
+
    result <- NULL
   
-   vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <- residuals <-   FALSE 
-   if(length(class(x)) > 1)  {
-   if(class(x)[2] =='irt.fa')  irt.fa <- TRUE
-    if(class(x)[2] =='irt.poly')  irt.poly <- TRUE
-   if(class(x)[2] =='vss')  vss <- TRUE
-   if(class(x)[2] =='iclust')  iclust <- TRUE 
-   if(class(x)[2] =='fa')  fa <- TRUE 
-   if(class(x)[2] =='principal')  principal <- TRUE 
-   if(class(x)[2] =='vss')  vss <- TRUE 
-    if(class(x)[2] =='omega')   omega <- TRUE 
-   if(class(x)[2] =='parallel')   parallel <- TRUE 
-    if(class(x)[2] =='set.cor')   set.cor <- TRUE 
-    if(class(x)[2] =='residuals')  residuals <- TRUE 
-    
- }
- 
-switch(class(x)[2],
-
+     vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <- residuals <-   FALSE 
   
+
+
+   if(length(class(x)) > 1)  {
+   #This next section was added December 7, 2019 to change from class(x)[2] to inherits(x, ...)
+   		names <- cs(irt.fa,irt.poly,vss,iclust,fa, principal,omega,parallel,set.cor,residuals)
+        value <- inherits(x,names,which=TRUE)   # value <- class(x)[2]
+         if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "None"}
+    
+     } else {stop ("I am sorry, this is not an object I know how to plot")}
+ 
+switch(value,
+
    vss = {
    	    
   		n=dim(x)
@@ -51,9 +46,11 @@ switch(class(x)[2],
 iclust = {
  op <- par(no.readonly = TRUE) # the whole list of settable par's.
   cut <- 0
- if(iclust) { load <- x$loadings
-          cat("Use ICLUST.diagram to see the  hierarchical structure\n") } else {load <- x$schmid$orthog 
-         cat("Use omega.diagram to see the  hierarchical structure\n") }
+# if(iclust) {
+  load <- x$loadings
+          cat("Use ICLUST.diagram to see the  hierarchical structure\n") 
+#          } else {load <- x$schmid$orthog 
+#         cat("Use omega.diagram to see the  hierarchical structure\n") }
   nc <- dim(load)[2]
   nvar <- dim(load)[1]
 ch.col=c("black","blue","red","gray","black","blue","red","gray")
@@ -108,7 +105,9 @@ principal = {fa.plot(x,labels=labels,...)},
 
 parallel = {plot.fa.parallel(x,...)},
 
-residuals = {plot.residuals(x,...)} )
+residuals = {plot.residuals(x,...)},
+
+none = {stop ("I am sorry, this is not an object I know how to plot")} )
 
 
 if(!is.null(result))  {class(result) <- c("psych","polyinfo")

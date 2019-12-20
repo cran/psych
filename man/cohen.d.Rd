@@ -16,7 +16,7 @@
 Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. 
 }
 \usage{
-cohen.d(x, group,alpha=.05,std=TRUE,dictionary=NULL)
+cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL)
 d.robust(x,group,trim=.2)
 cohen.d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
 d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
@@ -38,7 +38,7 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
  \item{n}{Total sample size (of groups 1 and 2)}
  \item{n1}{Sample size of group 1 (if only one group)}
  \item{n2}{Sample size of group 2 }
- \item{pooled}{Pool the two variances.}
+ \item{pooled}{Pool the two variances}
  \item{t}{Student's t statistic}
  \item{alpha}{1-alpha is the width of the confidence interval}
  \item{std}{Find the correlation rather covariance matrix}
@@ -47,12 +47,16 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
  \item{m2}{Mean of group 2}
  \item{s1}{Standard deviation of group 1}
  \item{s2}{Standard deviation of group 2}
+ \item{sort}{Should we sort (and if so, in which direction), the results of cohen.d? 
+ Directions are "decreasing" or  "increasing".}
  \item{dictionary}{What are the items being described?}
 }
 \details{
 There are many ways of reporting how two groups differ.  Cohen's d statistic is just the differences of means expressed in terms of the pooled within group standard deviation.  This is insensitive to sample size.  r is the a universal measure of effect size that is a simple function of d, but is bounded -1 to 1.  The t statistic is merely d * sqrt(n)/2 and thus reflects sample size.   
 
 Confidence intervals for Cohen's d may be found by converting the d to a t, finding the confidence intervals for t, and then converting those back to ds.  This take advantage of the uniroot function and the non-centrality parameter of the t distribution.
+
+The results of \code{\link{cohen.d}} may be displayed using the \code{\link{error.dots}} function.  This will include the labels provided in the dictionary.  
 
 In the case of finding the confidence interval for a comparison against 0 (the one sample case), specify n1.  This will yield a d = t/sqrt(n1)  whereas in the case of the differnece between two samples, d = 2*t/sqrt(n) (for equal sample sizes n = n1+ n2) or d = t/sqrt(1/n1 + 1/n2)  for the case of unequal sample sizes.
  

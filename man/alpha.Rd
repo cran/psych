@@ -56,7 +56,7 @@ G6 is also sensitive to lumpyness in the test and should not be taken as a measu
 
 Alpha and G6 are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  
 
-A useful index of the quality of the test that is linear with the number of items and the average correlation is the Signal/Noise ratio where \deqn{s/n = \frac{n \bar{r}}{1-n \bar{r}}}{s/n = n r/(1-nr)}  (Cronbach and Gleser, 1964; Revelle and Condon (in press)).
+A useful index of the quality of the test that is linear with the number of items and the average correlation is the Signal/Noise ratio where \deqn{s/n = \frac{n \bar{r}}{1-\bar{r}}}{s/n = n r/(1-r)}  (Cronbach and Gleser, 1964; Revelle and Condon (in press)).
 
 
 More complete reliability analyses of a single scale can be done using the \code{\link{omega}} function which finds \eqn{\omega_h}{omega_hierchical} and \eqn{\omega_t}{omega_total} based upon a hierarchical factor analysis.  

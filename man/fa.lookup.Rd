@@ -3,6 +3,7 @@
 \alias{fa.lookup}
 \alias{item.lookup}
 \alias{keys.lookup}
+\alias{lookupFromKeys}
 \title{A set of functions for factorial and empirical scale construction} 
 
 \description{ When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items) , or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading or criteria correlations and display the item content. 
@@ -12,6 +13,7 @@ lookup(x,y,criteria=NULL)
 fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 keys.lookup(keys.list,dictionary)
+lookupFromKeys(keys.list,dictionary,n=1,suppress.names=FALSE)
 }
 \arguments{
 \item{x}{A data matrix or data frame depending upon the function.}
@@ -25,17 +27,18 @@ keys.lookup(keys.list,dictionary)
 \item{m}{A data frame of item means}
 \item{digits}{round to digits}
 \item{sort}{Should the factors be sorted first?}
+\item{suppress.names}{In lookupFromKeys, should we suppress the column labels}
 
   
 }
 \details{
 
-\code{\link{fa.lookup}} and \code{\link{lookup}} are simple helper functions to summarize correlation matrices or factor loading matrices.  \code{\link{bestItems}} will sort the specified column (criteria) of x on the basis of the (absolute) value of the column.  The return as a default is just the rowname of the variable with those absolute values > cut.   If there is a dictionary of item content and item names, then include the contents as a two column matrix with rownames corresponding to the item name and then as many fields as desired for item content. (See the example dictionary \code{\link{bfi.dictionary}}).
+\code{\link{fa.lookup}} and \code{\link{lookup}} are simple helper functions to summarize correlation matrices or factor loading matrices.  \code{\link{bestItems}} will sort the specified column (criteria) of x on the basis of the (absolute) value of the column.  The return as a default is just the rowname of the variable with those absolute values > cut.   If there is a dictionary of item content and item names, then include the contents as a two column matrix with rownames corresponding to the item name and then as many fields as desired for item content. (See the example dictionary \code{\link[psychTools]{bfi.dictionary}}).
 
 \code{\link{lookup}} is used by \code{\link{bestItems}} and will find values in c1 of y that match those in x.  It returns those rows of y of that match x.
 Suppose that you have a "dictionary" of the many variables in a study but you want to consider a small subset of them in a data set x.  Then, you can find the entries in the dictionary corresponding to x by lookup(rownames(x),y)  If the column is not specified, then it will match by rownames(y). 
 
-\code{\link{fa.lookup}} is used when examining the output of a factor analysis and one wants the corresponding variable names and contents. The returned object may then be printed in LaTex by using the \code{\link{df2latex}} function with the char option set to TRUE.
+\code{\link{fa.lookup}} is used when examining the output of a factor analysis and one wants the corresponding variable names and contents. The returned object may then be printed in LaTex by using the \code{\link[psychTools]{df2latex}} function with the char option set to TRUE.
 
 Similarly, given a correlation matrix, r, of the x variables, if you want to find the items that most correlate with another item or scale, and then show the contents of that item from the dictionary, bestItems(r,c1=column number or name of x, contents = y)
 
@@ -70,10 +73,18 @@ To create a dictionary, create an object with row names as the item numbers, and
 # rownames(bfi.dictionary) <- bfi.dictionary[1] #the first column had the names
 # bfi.dictionary <- bfi.dictionary[-1]  #these are redundant, drop them
 
-f5 <- fa(bfi,5)
-m <- colMeans(bfi,na.rm=TRUE)
-item.lookup(f5,m,dictionary=bfi.dictionary[2])
-fa.lookup(f5,dictionary=bfi.dictionary[2])  #just show the item content, not the source of the items
+f5 <- fa(psychTools::bfi,5)
+m <- colMeans(psychTools::bfi,na.rm=TRUE)
+item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2])
+ #just show the item content, not the source of the items
+fa.lookup(f5,dictionary=psychTools::bfi.dictionary[2]) 
+
+bfi.keys <- 
+list(agree=c("-A1","A2","A3","A4","A5"),conscientiousness=c("C1","C2","C3","-C4","-C5"),
+extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
+openness = c("O1","-O2","O3","O4","-O5")) 
+lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5)
+ #show the keying information
 
 }
 

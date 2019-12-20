@@ -38,21 +38,30 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
  \item{...}{additional plotting parameters, for plot.poly.parallel}
  \item{plot}{By default, fa.parallel draws the eigen value plots.  If FALSE, suppresses the graphic output}
 }
-\details{Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}}) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}). Both the VSS and the MAP criteria are included in the \code{link{nfactors}} function which also reports the  mean item complexity and the BIC for each of multiple solutions.   fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 
-\code{\link{fa.parallel.poly}} will do parallel analysis for polychoric and tetrachoric factors.  If the data are dichotomous, \code{\link{fa.parallel.poly}} will find tetrachoric correlations for the real and simulated data, otherwise, if the number of categories is less than 10, it will find polychoric correlations.  Note that fa.parallel.poly is slower than fa.parallel because of the complexity of calculating the tetrachoric/polychoric correlations.  The functionality of \code{\link{fa.parallel.poly}} is now included in \code{\link{fa.parallel}} with cor=poly option (etc.) option.
+\details{
+Cattell's ``scree" test is one of most simple tests for the number of factors problem.  Horn's (1965) ``parallel" analysis is an equally compelling procedure.  Other procedures for determining the most optimal number of factors include finding the Very Simple Structure (VSS) criterion (\code{\link{VSS}} ) and Velicer's \code{\link{MAP}} procedure (included in \code{\link{VSS}}). Both the VSS and the MAP criteria are included in the \code{\link{nfactors}} function which also reports the  mean item complexity and the BIC for each of multiple solutions.   fa.parallel plots the eigen values for a principal components and the factor solution (minres by default) and does the same for random matrices of the same size as the original data matrix.  For raw data, the random matrices are 1) a matrix of univariate normal data and 2) random samples (randomized across rows) of the original data.
 
-\code{\link{fa.parallel}} now will do tetrachorics or polychorics directly if the cor option is set to "tet" or "poly".  As with \code{\link{fa.parallel.poly}} this will take longer.  
+\code{\link{fa.parallel}}
+ with the  cor=poly option will do what \code{\link{fa.parallel.poly}}
+  explicitly does: parallel analysis for polychoric and tetrachoric factors. 
+ If the data are dichotomous, \code{\link{fa.parallel.poly}}
+  will find tetrachoric correlations for the real and simulated data, otherwise, if the number of categories is less than 10, it will find polychoric correlations.  
+ Note that fa.parallel.poly is slower than fa.parallel because of the complexity of calculating the tetrachoric/polychoric correlations.  
+ The functionality of \code{\link{fa.parallel.poly}} is included in \code{\link{fa.parallel}} with cor=poly option (etc.) option but the older \code{\link{fa.parallel.poly}} is kept for those who call it directly.
+
+
+That is, \code{\link{fa.parallel}} now will do tetrachorics or polychorics directly if the cor option is set to "tet" or "poly".  As with \code{\link{fa.parallel.poly}} this will take longer.  
 
 The means of (ntrials) random solutions are shown.  Error bars are usually very small and are suppressed by default but can be shown if requested.  If the sim option is set to TRUE (default), then parallel analyses are done on resampled data as well as random normal data. In the interests of speed, the parallel analyses are done just on resampled data if sim=FALSE.    Both procedures tend to agree.  
 
-As of version 1.5.4, I added the ability to specify the quantile of the simulated/resampled data, and to plot standard deviations or standard errors.
+As of version 1.5.4, I added the ability to specify the quantile of the simulated/resampled data, and to plot standard deviations or standard errors.  By default, this is set to the 95th percentile.  
 
 Alternative ways to estimate the number of factors problem are discussed in the Very Simple Structure  (Revelle and Rocklin, 1979) documentation (\code{\link{VSS}}) and include Wayne Velicer's \code{\link{MAP}} algorithm (Veicer, 1976).  
 
 Parallel analysis for factors is actually harder than it seems, for the question is what are the appropriate communalities to use.  If communalities are estimated by the Squared Multiple Correlation (SMC) \code{\link{smc}}, then the eigen values of the original data will reflect major as well as minor factors (see \code{\link{sim.minor}} to simulate such data).  Random data will not, of course, have any structure and thus the number of factors will tend to be biased upwards by the presence of the minor factors.  
 
-By default, fa.parallel estimates the communalities based upon a one factor minres solution.  Although this will underestimate the communalities, it does seem to lead to better solutions on simulated or real (e.g., the \code{\link{bfi}} or Harman74) data sets.  
+By default, fa.parallel estimates the communalities based upon a one factor minres solution.  Although this will underestimate the communalities, it does seem to lead to better solutions on simulated or real (e.g., the \code{\link[psychTools]{bfi}} or Harman74) data sets.  
 
 For comparability with other algorithms (e.g, the paran function in the paran package), setting smc=TRUE will use smcs as estimates of communalities. This will tend towards identifying more factors than the default option.
 
@@ -67,7 +76,6 @@ Yet another option (suggested by Florian Scharf) is to estimate the eigen values
  When simulating dichotomous data in fa.parallel.poly, the simulated data have the same difficulties as the original data.  This functionally means that the simulated and the resampled results will be very similar.  Note that fa.parallel.poly has functionally been replaced with fa.parallel with the cor="poly" option.
  
  As with many psych functions, fa.parallel has been changed to allow for multicore processing.  For running a large number of iterations, it is obviously faster to increase the number of cores to the maximum possible (using the options("mc.cores=n) command where n is determined from detectCores(). 
-
 
 }
 \value{
@@ -110,6 +118,7 @@ Velicer, Wayne. (1976) Determining the number of components from the matrix of p
  }
 \author{ William Revelle }
 
+\note{Gagan Atreya reports a problem with the multi-core implementation of fa.parallel when running Microsoft Open R.  This can be resolved by setMKLthreads(1) to set the number of threads to 1.  }
 
 \seealso{  \code{\link{fa}}, \code{\link{nfactors}}, \code{\link{VSS}}, \code{\link{VSS.plot}},   \code{\link{VSS.parallel}}, \code{\link{sim.minor}}}
 \examples{
@@ -123,9 +132,9 @@ fa.parallel(Thurstone,n.obs=213)   #the 9 variable Thurstone problem
 #ffa.parallel(minor$observed) #shows 5 factors and 4 components -- compare with 
 #fa.parallel(minor$observed,SMC=FALSE) #which shows 6  and 4 components factors
 #a demonstration of parallel analysis of a dichotomous variable
-#fp <- fa.parallel(ability)    #use the default Pearson correlation
-#fpt <- fa.parallel(ability,cor="tet")  #do a tetrachoric correlation
-#fpt <- fa.parallel(ability,cor="tet",quant=.95)  #do a tetrachoric correlation and 
+#fp <- fa.parallel(psychTools::ability)    #use the default Pearson correlation
+#fpt <- fa.parallel(psychTools::ability,cor="tet")  #do a tetrachoric correlation
+#fpt <- fa.parallel(psychTools::ability,cor="tet",quant=.95)  #do a tetrachoric correlation and 
 #use the 95th percentile of the simulated results
 #apply(fp$values,2,function(x) quantile(x,.95))  #look at the 95th percentile of values
 #apply(fpt$values,2,function(x) quantile(x,.95))  #look at the 95th percentile of values

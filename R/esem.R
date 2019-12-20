@@ -64,7 +64,7 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
 # loadsY <- f2$loadings[colnames(R)[varsY],,drop=FALSE]
  diag(Phi) <- 1
  #now, a kludge to make it better -- but not actually, so dropped 
-if(FALSE) {if(!is.null(Phi1)) Phi[1:nfX,1:nfX] <- Phi1
+if(FALSE){if(!is.null(Phi1)) Phi[1:nfX,1:nfX] <- Phi1
 if(!is.null(Phi2))  Phi[(nfX+1):(nfX+nfY),(nfX+1):(nfX+nfY)] <- Phi2
 }
  
@@ -115,7 +115,7 @@ rstar.off <- sum(residual^2)
  #   
 #   m.inv.r <- try(solve(model,r),silent=TRUE) #modified Oct 30, 2009 to perhaps increase precision -- #modified 2015/1/2 to use try
 #       
-#      if(class(m.inv.r)=="try-error") {warning("the model inverse times the r matrix is singular, replaced with Identity matrix which means fits are wrong")
+#      if(inherits(m.inv.r,"try-error") {warning("the model inverse times the r matrix is singular, replaced with Identity matrix which means fits are wrong")
 #            sum}
 #     if(is.na(n.obs)) {result$n.obs=NA 
 #     			      result$PVAL=NA} else {result$n.obs=n.obs}

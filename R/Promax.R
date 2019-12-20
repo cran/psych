@@ -13,7 +13,7 @@ if(missing(m)) m  <- pro.m
     Q <- x * abs(x)^(m - 1)
     U <- lm.fit(x, Q)$coefficients
     d <- try(diag(solve(t(U) %*% U)),silent=TRUE)
-     if(class(d)=="try-error") {warning("Factors are exactly uncorrelated and the model produces a singular matrix. An approximation is used")
+     if(inherits(d,"try-error")) {warning("Factors are exactly uncorrelated and the model produces a singular matrix. An approximation is used")
         ev <- eigen(t(U) %*% U)
         ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
         UU <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
@@ -62,13 +62,15 @@ specialT <- specialQ <- function(L, Tmat = diag(ncol(L)), normalize = FALSE, eps
      list(NA)
      }
   
+
 #a general function to call a number of different rotation functions 
 #meant to simplify code in fa, principal, faBy, but perhaps not ready for prime time  
 #not yet included in the public package 
 "faRotate" <-
 function(loadings,rotate="oblimin",...)  {
+ if((class(loadings)[1] == "psych") & is.list(loadings)) loadings <- loadings$loadings
  if (rotate=="varimax" |rotate=="Varimax" | rotate=="quartimax" | rotate =="bentlerT" | rotate =="geominT" | rotate =="targetT" | rotate =="bifactor"   | rotate =="TargetT"|
-                       rotate =="equamax"| rotate =="varimin"|rotate =="specialT" | rotate =="Promax"  | rotate =="promax"| rotate =="cluster" |rotate == "biquartimin" |rotate == "TargetQ"  |rotate =="specialQ" ) {
+                       rotate =="equamax"| rotate =="varimin"|rotate =="specialT" | rotate =="Promax"  | rotate =="promax"| rotate =="cluster" |rotate == "biquartimin" |rotate == "TargetQ"    |rotate =="specialQ" ) {
 Phi <- NULL 
 switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psych
   varimax = {rotated <- stats::varimax(loadings)  #varimax is from stats, the others are from GPArotation 
@@ -131,14 +133,16 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
      				    Phi <- NULL} else { 
      				      
      				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
-     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               if(inherits(ob,as.character("try-error")))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
      				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings
      				 Phi <- ob$Phi}
      		                             } else {message("Specified rotation not found, rotate='none' used")}
      	 } 
-     return(list(loadings=loadings,Phi=Phi))
+     result <- list(loadings=loadings,Phi=Phi)
+     class(result) <- c("psych","fa")
+     return(result)
      }	 
      
 

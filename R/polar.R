@@ -1,6 +1,7 @@
 #polar   a function to convert a factor loadings matrix to polar coordinates
 #Version of Sept 9, 2007
 #Slightly revised July 25, 2009 
+#corrected June 16, 2019 to take square roots of communalities
 "polar" <- 
 function(f,sort=TRUE)  #return all pairwise polar coordinates
 	{ if (!is.matrix(f) && !is.data.frame(f) ) {fload <-f$loadings} else {fload <- f}
@@ -17,8 +18,8 @@ function(f,sort=TRUE)  #return all pairwise polar coordinates
 	kk <- nf*(nf-1)/2
 	for (i in 2:nf) {
 	   for (j in 1:(i-1)) {
-	  	 	vector.length <- fload[,i]^2 + fload[,j]^2
-			theta=sign(fload[,i])*180*acos(fload[,j]/sqrt(vector.length))/pi #vector angle (-180: 180) 
+	  	 	vector.length <- sqrt(fload[,i]^2 + fload[,j]^2)
+			theta=sign(fload[,i])*180*acos(fload[,j]/(vector.length))/pi #vector angle (-180: 180) 
 			polar[,k] <- theta %% 360
 			polar[,k+kk] <- vector.length
 			colnames(polar)[k] <- paste("theta",i,j,sep="")

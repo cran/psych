@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.9.1 (2019-01-10)}{ 
+\section{Changes in psych version 1.9.12.15 (2019-12-15)}{ 
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.9.1 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.8.12.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 1.9.12.xx is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.9.12.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="http://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
@@ -72,10 +72,132 @@
      \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
      \item Need to add documentation to mediate/moderate/setCor for what dfs are used and why.
     \item Examine the stats::anova, stats::summary.lm, stats::anova.lm for hints on how to do these anova comparisons
-   \item Add an n.iter option to pca (requested by Michael Wood)
-  } 
+   \item Add an n.iter option to pca (requested by Michael Wood) 
+   \item There is a bug in bestItems for the case of no iterations and dictionary = something
+   \item Fix bug in fa.lookup for omega g values that are negative
+   \item Fix bug in bestScales that does not report items if not iterating
+   \item Adjust stats in fa.extend to report the raw and then the extended values
+   \item Improve documentation for extension diagram to clarify that it works with fa.results
+   \item Add s.e. to intercept in set cor (requested by Eric Youngstrom)
+   \item Add just check variables specified for being numeric (instead of entire data.frame)  (suggested by Fransisco Wilheim)
+  
+   \item Pretty up the output from mediate (perhaps make a mediate2latex function
+   \item There is a bug in setCor for finding the intercepts
+   \item Add a anova.test for two setCor objects
+   \item Add formula input to densityBy
+   \item Improve the print function for bassAckwards
+   \item Cross reference fa.multi with other functions
+      } 
+  }
+  \subsection{To do}{
+  \itemize{
+  \item Problem with scoreIrt.1pl with keys of length 2
+  \item Change examples to dontrun rather than commented out 
+  \item Minor change in msqR help file 
+  \item Minor change to summary for testRetest
+  \item add formula input to densityBy and violinBy
+  \item Check the raw df in esem
+  \item Add RMSEA, TFI, etc. to esem (requested by Gabe Orona )
+  \item Add formula mode to violinBy and the errorbarsBy, etc.
+  \item Add formula mode to lowerCor and lowerMat (to be able to choose a few variables in a data set)
   }
   }
+  }
+  
+  \section{Changes in psych version 1.9.12 (2019-12-15)}{
+  
+    \subsection{Additions}{
+    \itemize{
+    \item Moved various larger data sets to psych tools
+    \item Added summary function for cohen.d
+    \item Added summary function for testRetest
+    \item Added col option to AUC to allow for black and grey AUC curves
+    \item Item improved irt.stats.like an added make.irt.stats to allow importing external item information (Requested by Zara Wright)
+    \item A considerable improvement in speed in pairwiseCount by using crossprod instead of normal matrix multiplication
+    \item Added the ability to find confidence intervals for the r.wg and r.bg in statsBy  (requested by Sandrine Muller)
+    \item Added the ability to find confidence intervals from a correlation matrix using the corCi function. 
+    \item Added a note to corPlot about the problem with correlations > 1 (pointed out by Ryne Sherman).  Then added the option to make all values > 1 the same color.
+    \item Added a new function (scoreWtd) to allow for weighted scoring. Also improved bestScales to find weighted as well as unit weighted scores.
+    \item Added a diagnostic message and error counts  in multilevel.reliabilty for the alphaBy function following a query by  Randy Lee.
+    \item Added sim.bonds to simulate the Thomson (1916) bonds model of independent factors with cross loadings.
+    \item Finally changed the default for corPlot to be numbers=TRUE.
+    \item Modified setCor and mediate to find the intercepts and standard errors of the intercept.
+    \item Modified scoreWtd to allow for input from lm or setCor
+    \item Modified error.dots and cohen.d to allow for error.dot plots of cohen.d results
+    \item Added a sort option for cohen.d 
+    \item Improved bestScales so that it can report scales (both weighted and unitweighted) for multiple values of n.items (from low to high).  Suggested by Lorien Elleman and Sarah McDougald. 
+     \item Added aslist as an option to factor2cluster 
+     \item Added the intercept term in mediate
+     \item Implemented a small change in fa2latex to format h2 as h^2 (requested by Alex Weisss) 
+     \item Added the ability to compare models using the anova function for setCor and mediate.
+     \item Added the ability to specify item difficulties and discriminations for scoreIrt (requested by David Condon and Zara Wright)
+    
+     }
+       }
+    \subsection{Bugs Fixed}{
+    	\itemize{
+    	\item Problem with scoreIrt.1pl with keys of length 2
+    	\item Confidence intervals in ICC were incorrectly based upon alpha/2 instead of alpha. (reported by Wei Chen). Fixed.
+    	\item added main to plot call in mlr
+    	\item added sqrt of communalities in fisher.test in circ.tests (reported by Lisa Barrett and Jiahe Zhang)
+    	\item Take the square root of communalities in polar
+    	\item Fixed scrub (introduced a bug in 1.9.4 that prevented it from working)
+    	\item Fixed bestScales to handle matrix input (detected by Anne Zola)
+    	\item Minor tweak to statsBy so it will not find r.bg correlations for two groups (since this is meaningless).
+    	\item Corrected the definition of S/N in the writeup for alpha.  (Error reported by Carla Leal Kaymalyz)
+    	\item Finally fixed mediate to handle 2 or more DVs
+    	\item Fixed a bug in factor.residuals to pass Phi to factor.model. (Reported by Asghar Minaei)
+    	\item Painfully changed from using  class(x)[2] to inherits(x,value) to respond to changes in R 4.0.0 in most functions.
+    	 \item Added the Phi to the fa object in the bassAckward output to allow for factor output with loadings, correlations, and SS loadings. (In response to a question by Niclas Kuper.)
+    	
+    		}
+    	}
+    	}
+    	
+    	
+   \section{Changes in psych version 1.9.4 (2019-04-11)}{
+    \subsection{Additions}{
+    \itemize{
+    \item Added dictionary capabilities to manhattan
+    \item Added top as an option to dummy code.  This will give just the dummy codes for the  top most  frequencies  
+    \item Added a check for keysList and items in scoreIrt.2PL and others for the case where we mistakenly reverse them 
+     \item Added the ability to take correlation input for manhattan
+     \item A serious improvement to bestItems so that it actually is useful
+     \item Added lookupFromKeys as a useful helper function
+     \item Added TargetT to do orthogonal target rotations.  (It was already there, just not visible.)
+     \item Added faRotate to allow many types of rotations (also already there, just not visible). In response to a suggestion by Alex Weiss.
+      \item Added Target as an option to faCor (so that we can compare target rotations)
+      \item Added correction = .5 to AUC in response to a problem with 0 cell entries reported by Jeff Crukley.
+      \item Added the 'mollycoddle' feature to scoreItems, scoreFast, scoreVeryFast and setCor to check for bad input. (Suggested by Tim Bates).
+      \item Added  guttman.lambda2 to splitHalf (requested by Muirne Paap)
+      \item Added Pinv to find pseudo inverses to allow calculations in schmid (however, this is not actually necessary). (Adapted from ginv from MASS.)
+      \item Add scores to the output of bestScales in units of criteria (actually done in the predict function) (requested by Lorien Elleman)
+      \item Added the ability to use "schmid" as a rotation option in bassAckward  (requested by Joanna Hartung )
+      \item Added v.lab option in error.bars.by (as requested by Maike Luhmann )
+      \item Modified scrub so that it will process categorical data.
+      \item Added a bestScales prediction to the predict.psych function following suggestions by Sarah McDougald.
+      \item Cleaned up bestScales so the code is a bit cleaner.  Improved the documentation for bestScales and predict.psych to show how prediction works with bestScales.
+      \item Added the vars option to biplot so that we can draw arrows to the data or to the variables.
+      }
+       }
+    \subsection{Bugs Fixed}{
+    	\itemize{
+  \item checked the BDI scores in affect  -- they seem strange, but are in fact correct. They are mean scores.
+   \item check the eigen values in iclust  - something is wrong
+   \item Fixed problem in Hedges g (reported by Chuck Powell)
+   \item Fixed a problem in isCorrelation for a square, symmetric matrix which is not a correlation matrix. However, we needed to fix this again by using all.equal.   
+   \item Fixed a problem with mlr/multilevel reliability for the lme decomposition.  Variances were indexed by location rather than by name.  This led to a problem for certain cases.  (Reported by Chelsea Dickens)
+   \item Fixed manhattan so that it will plot -log p values that are inf (by replacing with the largest non-infinite -log p
+   \item Fixed inconvenience (not really a bug, just poor documentation) in alpha with complete keys specified by location instead  of name (reported by Richard Pond)
+   \item Fixed a bug in corr.p where it was not labeling the confidence intervals correctly.  (Reported by Jeffrey Lees.)
+   \item Fixed bassAckwards for problem with orthogonal rotations (reported by Joanna Hartung))
+   \item Fixed bug in RMSEA calculation in factor.stats introduced in 2017 (reported by Michael Lee Crowe )
+   \item Fixed bug in statsBy for reporting correlations with multigroups.  It was not labelling the results correctly. (reported by Eva Skimma)
+   \item There seems to be a problem with fa.parallel when using multi-cores on Microsoft Open R. See the note for fa.parallel for a fix. 
+  ) 
+   	}
+    	}
+    	}
   
    \section{Changes in psych version 1.8.12 (2018-12-31)}{
     \subsection{Additions}{

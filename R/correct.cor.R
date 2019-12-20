@@ -29,7 +29,7 @@ function(r) {
 cl <- match.call()
 if(!isCorrelation(r)) r <- cor(r,use="pairwise")
   Q <- try(solve(r))
-  if(class(Q) == as.character("try-error")) {message("matrix is not invertible, image not found")
+  if(inherits(Q,  as.character("try-error")))  {message("matrix is not invertible, image not found")
         Q <- r}
  S2  <- diag(1/diag(Q))
  IC <- S2 %*% Q %*% S2

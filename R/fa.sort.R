@@ -3,14 +3,24 @@
 function(fa.results,polar=FALSE) {
   omega <- FALSE
   con.i <- FALSE
+  fa.ci <- extension <-extend <- NA  #put in to avoid being identified as not defined.  Seems nuts
   Structure <- NULL  #in case we are not doing fa
-  if(length(class(fa.results)) > 1)  { value <- class(fa.results)[2] } else {value="other"}
+#  if(length(class(fa.results)) > 1)  { value <- class(fa.results)[2] } else {value="other"}
+ #This next section was added December 7, 2019 to change from class(x)[2] to inherits(x, ...)
+ if(length(class(fa.results)) > 1)  {
+    names <- cs(omega,omegaSem, fa.ci, iclust, fa, principal, extension, extend)
+    value <- inherits(fa.results,names,which=TRUE)   # value <- class(x)[2]
+    if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
+    
+     } else {value <- "other"}
+ 
 
 switch(value, 
 omega =  { omega <- TRUE
-        omegaSem <- FALSE
-        factors <- as.matrix(fa.results$schmid$oblique)
-        sl <- fa.results$schmid$sl},
+          omegaSem <- FALSE
+         factors <- as.matrix(fa.results$schmid$oblique)
+          sl <- fa.results$schmid$sl},
+        
 omegaSem = {omega=TRUE
          omegaSem <- TRUE
          factors <- as.matrix(fa.results)
@@ -26,18 +36,24 @@ fa.ci = {factors <- fa.results$loadings
  
 iclust = {factors <- as.matrix(fa.results$loadings)
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+             
 fa = {factors <- as.matrix(fa.results$loadings)
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}
              Structure <- fa.results$Structure},
+             
 principal = {factors <- as.matrix(fa.results$loadings)
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+             
 extension = {factors <- as.matrix(fa.results$loadings)
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+             
 extend = {factors <- as.matrix(fa.results$loadings)
                if(!is.null(fa.results$Structure)) Structure <- fa.results$Structure
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+             
 other = {factors <- fa.results})
 
+#now we have found the factor loadings  from the various possibilities
 nitems <- dim(factors)[1]
 nfactors <- dim(factors)[2]
 total.ord <- rep(NA,nitems)

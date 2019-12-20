@@ -13,8 +13,10 @@ setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)    #an alias to setCor
-mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) 
-matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
+mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) #the old form
+
+matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE)  #does not handle 
+                    #formula input
 }
 
 \arguments{
@@ -28,6 +30,8 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0)  #does not handle formula input
 
   \item{use}{find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
+  \item{raw}{Are data from a correlation matrix or data matrix?}
+  \item{means}{A vector of means for the data in matReg if giving matrix input}
   \item{main}{The title for setCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   \item{sc}{The output of setCor may be used for drawing diagrams}
@@ -132,9 +136,11 @@ The denominator degrees of freedom for the set correlation does not match that r
 #First compare to lm using data input
 summary(lm(rating ~ complaints + privileges, data = attitude))
 setCor(rating ~ complaints + privileges, data = attitude, std=FALSE) #do not standardize
-z.attitude <- data.frame(scale(attitude))  #standardize
+z.attitude <- data.frame(scale(attitude))  #standardize the data before doing lm
 summary(lm(rating ~ complaints + privileges, data = z.attitude))  #regressions on z scores
-setCor(rating ~ complaints + privileges, data = z.attitude)  #by default we standardize
+setCor(rating ~ complaints + privileges, data = attitude)  #by default we standardize and 
+# the results are the same as the standardized lm
+
 
 R <- cor(attitude) #find the correlations
 #Do the regression on the correlations  
@@ -145,6 +151,9 @@ setCor(rating ~ complaints + privileges, data =R, n.obs=30)
 setCor(rating ~ complaints + privileges - learning - critical, data =R, n.obs=30)
 #compare with the full regression:
 setCor(rating ~ complaints + privileges + learning + critical, data =R, n.obs=30)
+
+
+
 #Canonical correlations:
 
 #The first Kelley data set from Hotelling

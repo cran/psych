@@ -137,8 +137,8 @@ esem.diagram(example,simple=FALSE)
 #compare two alternative solutions to the first 2 factors of the neo.
 #solution 1 is the normal 2 factor solution.
 #solution 2 is an esem with 1 factor for the first 6 variables, and 1 for the second 6.
-f2 <- fa(neo[1:12,1:12],2)
-es2 <- esem(neo,1:6,7:12,1,1)
+f2 <- fa(psychTools::neo[1:12,1:12],2)
+es2 <- esem(psychTools::neo,1:6,7:12,1,1)
 summary(f2)
 summary(es2)
 fa.congruence(f2,es2)

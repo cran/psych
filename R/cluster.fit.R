@@ -17,7 +17,7 @@ cluster.fit <- function(original,load,clusters,diagonal=FALSE) {
        
         phi <- cov2cor(covar)  
         phi.inv <- try(solve(phi),TRUE)
-        if(class(phi.inv) == as.character("try-error")) {Pattern <- FALSE
+        if(inherits(phi.inv,as.character("try-error"))) {Pattern <- FALSE
                     message("Could not invert cluster intercorrelation matrix, pattern matrix not found")
                     } #can not invert matrix
     

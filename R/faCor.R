@@ -1,6 +1,6 @@
 #find the correlation between two sets of factors extracted differently
 
-"faCor" <- function(r,nfactors=c(1,1),fm=c("minres","minres"),rotate=c("oblimin","oblimin"),scores=c("tenBerge","tenBerge"), adjust=c(TRUE,TRUE),use="pairwise", cor="cor",weight=NULL,correct=.5) {
+"faCor" <- function(r,nfactors=c(1,1),fm=c("minres","minres"),rotate=c("oblimin","oblimin"),scores=c("tenBerge","tenBerge"), adjust=c(TRUE,TRUE),use="pairwise", cor="cor",weight=NULL,correct=.5,Target=list(NULL,NULL)) {
  cl <- match.call()
 #find r if data matrix
     if (!isCorrelation(r)) {  matrix.input <- FALSE  #return the correlation matrix in this case
@@ -25,8 +25,12 @@
        
   }
  #do the factor 2 different ways 
- if(fm[1]!="pca") {f1 <- fa(r,nfactors=nfactors[1],fm=fm[1],rotate=rotate[1],scores=scores[1]) } else {f1 <- pca(r,nfactors=nfactors[1],rotate=rotate[1])}
- if(fm[2]!="pca") {f2 <- fa(r,nfactors=nfactors[2],fm=fm[2],rotate=rotate[2],scores=scores[2])} else {f2 <- pca(r,nfactors=nfactors[2],rotate=rotate[2])}
+ if(fm[1]!="pca") {if(is.null(Target[[1]])) {f1 <- fa(r,nfactors=nfactors[1],fm=fm[1],rotate=rotate[1],scores=scores[1])} else {f1 <- fa(r,nfactors=nfactors[1],fm=fm[1],rotate=rotate[1],scores=scores[1],Target=Target[[1]]) }
+ 
+ } else {f1 <- pca(r,nfactors=nfactors[1],rotate=rotate[1])}
+ 
+ if(fm[2]!="pca") {if(is.null(Target[[2]])) {f2 <- fa(r,nfactors=nfactors[2],fm=fm[2],rotate=rotate[2],scores=scores[2])} else {f2 <- fa(r,nfactors=nfactors[2],fm=fm[2],rotate=rotate[2],scores=scores[2],Target=Target[[2]]) }
+ } else {f2 <- pca(r,nfactors=nfactors[2],rotate=rotate[2])}
  
  #Find the interfactor correlations
 

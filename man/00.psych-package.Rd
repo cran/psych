@@ -7,31 +7,40 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r} webpages. 
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r} webpages. 
 
-Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}} is also available.  Rotations  may be done using Factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions. Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). 
+A companion package \code{\link[psychTools]{psychTools}} includes larger data set examples and one more vignette. 
 
-An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}).  Reliability coefficients alpha (\code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and McDonald's omega (\code{\link{omega}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
+Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}}) is also available.  Rotations  may be done using factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions (e.g., oblimin, quartimin, varimax, geomin, ...). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). 
+
+An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}). This function is particularly appropriate for exploratory scale construction.
+
+There are a number of functions for finding various eliability coefficients. These include the traditional  \code{\link{alpha}}  (found for multiple scales and with more useful output by \code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and  both of McDonald's omega coefficients (\code{\link{omega}}, \code{\link{omegaSem}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
 
 Multilevel analyses may be done by \code{\link{statsBy}} and  \code{\link{multilevel.reliability}}.
 
 The \code{\link{scoreItems}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.  \code{\link{scoreOverlap}} correct interscale correlations for overlapping items, so that it is possible to examine hierarchical or nested structures.
 
+Scales can be formed that best predict (after cross validation) particular criteria using \code{\link{bestScales}} using unit weighted or correlation weights. This procedure, also called  the \code{\link{BISCUIT}} algorithm (Best Items Scales that are Cross validated, Unit weighted, Informative, and Transparent) is a simple alternative to more complicated machine learning algorithms.
+
+
 Additional functions make for more convenient descriptions of item characteristics  include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning. \code{\link{scoreIrt}}, \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} do basic IRT based scoring.
 
- A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{setCor}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
+ A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA \url{https://sapa-project.org}) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{setCor}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
+ 
+\code{\link{setCor}} and \code{\link{mediate}} meet the desire to do regressions and mediation analysis from either raw data or from correlation matrices.  If raw data are provided, these functions can also do  moderation analyses.
  
  Functions to generate simulated data with particular structures include \code{\link{sim.circ}} (for circumplex structures), \code{\link{sim.item}} (for general structures) and \code{\link{sim.congeneric}} (for a specific demonstration of congeneric measurement).  The functions \code{\link{sim.congeneric}}  and \code{\link{sim.hierarchical}} can be used to create data sets with particular structural properties. A more general form for all of these is \code{\link{sim.structural}} for generating general structural models.  These are discussed in more detail in the vignette (psych_for_sem).
 
  Functions to apply various standard statistical tests include \code{\link{p.rep}} and its variants for testing the probability of replication, \code{\link{r.con}} for the confidence intervals of a correlation, and \code{\link{r.test}} to test single, paired, or sets of correlations. 
  
- Mediation and moderation analyses are done using \code{\link{mediate}} from either raw data or from a correlation matrix.
+
  
  In order to study diurnal or circadian variations in mood, it is helpful to use circular statistics.  Functions to find the circular mean (\code{\link{circadian.mean}}), circular (phasic) correlations (\code{\link{circadian.cor}}) and the correlation between linear variables and circular variables (\code{\link{circadian.linear.cor}}) supplement a function to find the best fitting phase angle (\code{\link{cosinor}}) for measures taken with a fixed period (e.g., 24 hours).
  
  A dynamic model of personality and motivation (the Cues-Tendency-Actions model) is include as (\code{\link{cta}}.
  
- A number of useful helper functions allow for data input (\code{\link{read.file}}), and data manipulation \code{\link{cs}} and \code{\link{dfOrder}},
+ A number of useful helper functions allow for data input (\code{\link[psychTools]{read.file}}), and data manipulation \code{\link{cs}} and \code{\link[psychTools]{dfOrder}},
 
  
  The most recent development version of the package is always available for download as a \emph{source} file from the repository at the PMC lab:
@@ -45,7 +54,7 @@ Additional functions make for more convenient descriptions of item characteristi
 \url{https://personality-project.org/r/psych/intro.pdf} \url{https://personality-project.org/r/psych/overview.pdf} and \url{https://personality-project.org/r/psych/psych_for_sem.pdf}.  In addition, there are a number of "HowTo"s available at \url{https://personality-project.org/r/} 
 
 The more important functions in the package are for the analysis of multivariate data, with an emphasis upon those functions useful in scale construction of item composites. However, there are a number of very useful functions for basic data manipulation including  
-\code{\link{read.file}}, \code{\link{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) which are useful for basic data entry and descriptive analyses.
+\code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) which are useful for basic data entry and descriptive analyses.
 
 
 
@@ -55,7 +64,7 @@ When given a set of items from a personality inventory, one goal is to combine t
 
  \code{\link{pairs.panels}} shows scatter plot matrices (SPLOMs) as well as histograms and the Pearson correlation for scales or items. \code{\link{error.bars}} will plot variable means with associated confidence intervals. \code{\link{errorCircles}} will plot confidence intervals for both the x and y coordinates.  \code{\link{corr.test}} will find the significance values for a matrix of correlations. \code{\link{error.dots}} creates a dot chart with confidence intervals.
 
-2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations,  the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}},  \code{\link{fa.parallel}}, and \code{\link{MAP}})  also address this question.  \code{\link{nfactors}} combine several of these approaches into one convenient function. 
+2) What is the most appropriate number of item composites to form? After finding  either standard Pearson correlations, or finding tetrachoric or polychoric correlations,  the dimensionality of the correlation matrix may be examined. The number of factors/components problem is a standard question of factor analysis, cluster analysis, or principal components analysis. Unfortunately, there is no agreed upon answer. The Very Simple Structure (\code{\link{VSS}}) set of procedures has been proposed as on answer to the question of the optimal number of factors.  Other procedures (\code{\link{VSS.scree}},  \code{\link{VSS.parallel}},  \code{\link{fa.parallel}}, and \code{\link{MAP}})  also address this question.  \code{\link{nfactors}} combine several of these approaches into one convenient function. Unfortunately, there is no best answer to the problem.
 
 3) What are the best composites to form?  Although this may be answered using principal components  (\code{\link{principal}}), principal axis (\code{\link{factor.pa}}) or minimum residual (\code{\link{factor.minres}})  factor analysis (all part of the \code{\link{fa}} function) and to show the results graphically (\code{\link{fa.diagram})}, it is sometimes more useful to address this question using cluster analytic techniques.  Previous versions of \code{\link{ICLUST}} (e.g., Revelle, 1979)  have been shown to be particularly successful at forming maximally consistent and independent item composites.  Graphical output from \code{\link{ICLUST.graph}} uses the Graphviz dot language and allows one to write files suitable for Graphviz.  If Rgraphviz is available, these graphs can be done in R.
 
@@ -80,14 +89,14 @@ When examining personality items, some people like to discuss them as representi
 
 Additional functions for testing the difference between two independent or dependent correlation \code{\link{r.test}}, to find the \code{\link{phi}} or \code{\link{Yule}} coefficients from a two by table, or to find the confidence interval of a correlation coefficient.    
 
-Many data sets are included: \code{\link{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link{ability}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link{galton} }  Galton's data set of the heights of parents and their children. \code{\link{peas}} recreates the original Galton data set of the genetics of sweet peas.  \code{\link{heights}} and
-\code{\link{cubits}} provide even more Galton data, \code{\link{vegetables}} provides the Guilford preference matrix of vegetables.  \code{\link{cities}} provides airline miles between 11 US cities (demo data for multidimensional scaling).
+Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link[psychTools]{ability}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link[psychTools]{galton} }  Galton's data set of the heights of parents and their children. \code{\link[psychTools]{peas}} recreates the original Galton data set of the genetics of sweet peas.  \code{\link[psychTools]{heights}} and
+\code{\link[psychTools]{cubits}} provide even more Galton data, \code{\link[psychTools]{vegetables}} provides the Guilford preference matrix of vegetables.  \code{\link[psychTools]{cities}} provides airline miles between 11 US cities (demo data for multidimensional scaling).
 
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.7.2 \cr
-Date: \tab 2018--April--28\cr
+Version: \tab 1.9.11 \cr
+Date: \tab 2019--November--28\cr
 License: \tab GPL version 2 or newer\cr
 }
 Partial Index:
@@ -99,11 +108,11 @@ Partial Index:
 
 Useful data entry and descriptive statistics\cr
 \tabular{ll}{
-\link{read.file}       \tab      search for, find, and read from file\cr
-\link{read.clipboard}       \tab      shortcut for reading from the clipboard\cr
-\link{read.clipboard.csv}   \tab      shortcut for reading comma delimited files from clipboard \cr
-\link{read.clipboard.lower}  \tab            shortcut for reading lower triangular matrices from the clipboard\cr
-\link{read.clipboard.upper}   \tab           shortcut for reading upper triangular matrices from the clipboard\cr
+\link[psychTools]{read.file}       \tab      search for, find, and read from file\cr
+\link[psychTools]{read.clipboard}       \tab      shortcut for reading from the clipboard\cr
+\link[psychTools]{read.clipboard.csv}   \tab      shortcut for reading comma delimited files from clipboard \cr
+\link[psychTools]{read.clipboard.lower}  \tab            shortcut for reading lower triangular matrices from the clipboard\cr
+\link[psychTools]{read.clipboard.upper}   \tab           shortcut for reading upper triangular matrices from the clipboard\cr
 \link{describe}        \tab           Basic descriptive statistics useful for psychometrics\cr
 \link{describe.by}    \tab            Find summary statistics by groups\cr
 \link{statsBy}       \tab            Find summary statistics by a grouping variable,  including within and between correlation matrices. \cr 
@@ -187,6 +196,7 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 
 \tabular{ll}{
 \link{alpha}      \tab         Find coefficient alpha and Guttman Lambda 6 for a scale (see also \link{score.items})\cr
+\link{bestScales} \tab A bootstrap aggregation function for choosing most predictive unit weighted items \cr
 \link{make.keys}        \tab         Create the keys file for score.items or cluster.cor            \cr
 \link{correct.cor}      \tab        Correct a correlation matrix for unreliability\cr 
 \link{count.pairwise}   \tab        Count the number of complete cases when doing pair wise correlations\cr
@@ -263,7 +273,7 @@ Miscellaneous functions\cr
 \cr
 \tabular{ll}{
 \link{comorbidity}   \tab             Convert base rate and comorbity to phi, Yule and tetrachoric\cr
-\link{df2latex}   \tab               Convert a data.frame or matrix to a LaTeX table \cr
+\link[psychTools]{df2latex}   \tab               Convert a data.frame or matrix to a LaTeX table \cr
 \link{dummy.code}     \tab          Convert categorical data to dummy codes \cr
 \link{fisherz}      \tab             Apply the Fisher r to z transform\cr
 \link{fisherz2r}    \tab             Apply the Fisher z to r transform\cr
@@ -299,21 +309,21 @@ Functions that are under development and not recommended for casual use \cr
 }
 
 
-Data sets included in the psych package \cr
+Data sets included in the psych or psychTools package \cr
 \tabular{ll}{
-\link{bfi}          \tab           represents 25 personality items thought to represent five factors of personality \cr
+\link[psychTools]{bfi}          \tab           represents 25 personality items thought to represent five factors of personality \cr
 \link{Thurstone}     \tab           8 different data sets with a bifactor structure  \cr
-\link{cities}        \tab          The airline distances between 11 cities (used to demonstrate MDS) \cr
-\link{epi.bfi}        \tab         13 personality scales \cr
-\link{iqitems}        \tab         14 multiple choice iq items \cr
-\link{msq}            \tab         75 mood items  \cr
+\link[psychTools]{cities}        \tab          The airline distances between 11 cities (used to demonstrate MDS) \cr
+\link[psychTools]{epi.bfi}        \tab         13 personality scales \cr
+\link[psychTools]{iqitems}        \tab         14 multiple choice iq items \cr
+\link[psychTools]{msq}            \tab         75 mood items  \cr
 \link{sat.act}        \tab          Self reported ACT and SAT Verbal and Quantitative scores by age and gender\cr
 \link{Tucker}         \tab          Correlation matrix from Tucker \cr
-\link{galton}        \tab            Galton's data set of the heights of parents and their children \cr
-\link{heights}       \tab            Galton's data set of the relationship between height and forearm (cubit) length \cr
-\link{cubits}        \tab             Galton's data table of height and forearm length \cr
-\link{peas}          \tab            Galton`s data set of the diameters of 700 parent and offspring sweet peas \cr
-\link{vegetables}     \tab           Guilford`s preference matrix of vegetables (used for thurstone) \cr
+\link[psychTools]{galton}        \tab            Galton's data set of the heights of parents and their children \cr
+\link[psychTools]{heights}       \tab            Galton's data set of the relationship between height and forearm (cubit) length \cr
+\link[psychTools]{cubits}        \tab             Galton's data table of height and forearm length \cr
+\link[psychTools]{peas}          \tab            Galton`s data set of the diameters of 700 parent and offspring sweet peas \cr
+\link[psychTools]{vegetables}     \tab           Guilford`s preference matrix of vegetables (used for thurstone) \cr
 }
 
 A debugging function that may also be used as a demonstration of psych.
@@ -333,9 +343,6 @@ Some functions require other packages. Specifically, omega and schmid require th
 function  \tab     requires\cr
 \link{omega}    \tab     GPArotation \cr
 \link{schmid}    \tab     GPArotation\cr
-\link{poly.mat}   \tab    polychor\cr
-\link{phi2poly}   \tab    polychor\cr
-\link{polychor.matrix}\tab polychor \cr
 \link{ICLUST.rgraph} \tab   Rgraphviz \cr
 \link{fa.graph}  \tab      Rgraphviz \cr
 \link{structure.graph} \tab Rgraphviz \cr

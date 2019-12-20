@@ -153,7 +153,7 @@ ic.out1 <- iclust(test.data,beta=3,beta.size=3)  #use more stringent criteria
 ic.out  #more complete output 
 plot(ic.out4)    #this shows the spatial representation
 #use a dot graphics viewer on the out.file
-dot.graph <- ICLUST.graph(ic.out,out.file="test.ICLUST.graph.dot")  
+#dot.graph <- ICLUST.graph(ic.out,out.file="test.ICLUST.graph.dot")  
  #show the equivalent of a factor solution 
 fa.diagram(ic.out4$pattern,Phi=ic.out4$Phi,main="Pattern taken from iclust") 
 

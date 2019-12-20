@@ -33,6 +33,7 @@ response.frequencies(items,max=10,uniqueitems=NULL)
   \item{n.obs}{If scoring from a correlation matrix, specify the number of subjects allows for the calculation of the confidence intervals for alpha.}
   \item{select}{By default, just find the statistics of those items that are included in scoring keys.  This allows scoring of data sets that have bad data for some items that are not included in the scoring keys. This also speeds up the scoring of small subsets of item from larger data sets.}
 \item{count.responses}{If TRUE, report the number of items/scale answered for each subject.}
+
   
 }
 \details{The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in applied psychometrics and in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find scores based upon the sum or the average item score.  For some strange reason, personality scale scores are typically given as totals, but attitude scores as averages.  The default for scoreItems is the average as it would seem to make more sense to report scale scores in the metric of the item.  
@@ -109,7 +110,7 @@ Note that the default for scoreItems is to impute missing items with their media
  \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) or the International Cognitive Ability Resources (\url{https://icar-project.com})) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) or the International Cognitive Ability Resources (\url{https://icar-project.org})) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
 More importantly in this case of massively missing data, there is a difference between the correlations of the composite scales based upon the correlations of the items and the correlations of the scored scales based upon the observed data.  That is, the cor object will have correlations as if all items had been given, while the correlation of the scores object will reflect the actual correlation of the scores.  For SAPA data, it is recommended to use the cor object.  Confidence of these correlations may be found using the \code{\link{cor.ci}} function.
 
@@ -117,12 +118,14 @@ Further note that the inter-scale correlations are based upon the correlations o
 
 An alternative to classical test theory scoring is to use \code{\link{scoreIrt}} to find score estimates based upon Item Response Theory. This is particularly useful in the case of SAPA data which tend to be massively missing.  It is also useful  to find scores based upon polytomous items following a factor analysis of the polychoric correlation matrix (see \code{\link{irt.fa}}).  However, remember that  this only makes sense if the items are unidimensional. That is to say, if forming item composites from (e.g., \code{\link{bestScales}}), that are empirically derived, they will necessarily have a clear factor structure and the IRT based scoring does not make sense.
 
-When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items. Compare two examples of scoring the \code{\link{bfi}} data set.
+When reverse scoring items from a set where items differ in their possible minima or maxima, it is important to specify the min and max values.  Items are reversed by subtracting them from max + min.  Thus, if items range from 1 to 6, items are reversed by subtracting them from 7.  But, if the data set includes other variables, (say an id field) that far exceeds the item min or max, then the max id will incorrectly be used to reverse key.  min and max can either be single values, or vectors for all items. Compare two examples of scoring the \code{\link[psychTools]{bfi}} data set.
 
 If scales are formed with overlapping items, then the correlations of the scales will be seriously inflated.  \code{\link{scoreOverlap}} will adjust the correlations for this overlap.
 
 Yet another possibility for scoring large data sets is to ignore all the reliability calculations and just find the scores.  This may be done using \code{\link{scoreFast}} or 
 \code{\link{scoreVeryFast}}.  These two functions just find mean scores (\code{\link{scoreVeryFast}} without imputation) or will do imputation if desired \code{\link{scoreFast}}. For 200K cases on 1000 variables with 11 scales, \code{\link{scoreVeryFast}} took 4.7 seconds on a Mac PowerBook with a 2.8GHZ Intel I7 and \code{\link{scoreFast}} took 23.2 seconds.  \code{\link{scoreIrt.1pl}} for the same problem took xxx with options("mc.cores"=1) (not parallel processing) and 1259 seconds with  options("mc.cores"=NULL) (implying 2 cores) and with four cores was very slow (probably too much parallel processing). 
+
+Yet one more possibility is to find scores based upon a matrix of weights (e.g. zero order correlations, beta weights, or factor weights.) In this case, scores are simply the product of the weights times the (standardized) items.   If using coefficients from a regression analysis (lm), a column of 1's is added to the data and labeled "(Intercept)" and this is used in the calculation. This is done by \code{\link{scoreWtd}}.
 } 
 \references{
 
@@ -162,17 +165,17 @@ In addition, the \code{\link{irt.fa}} function provides an alternative way of ex
 \examples{
 
 #see  the example including the bfi data set
-data(bfi)
+data(psychTools::bfi)
 keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   conscientious=c("C1","C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
-  keys <- make.keys(bfi,keys.list)  #no longer necessary
- scores <- scoreItems(keys,bfi,min=1,max=6)  #using a keys matrix 
- scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.list
+  keys <- make.keys(psychTools::bfi,keys.list)  #no longer necessary
+ scores <- scoreItems(keys,psychTools::bfi,min=1,max=6)  #using a keys matrix 
+ scores <- scoreItems(keys.list,psychTools::bfi,min=1,max=6)  # or just use the keys.list
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
- scores <- scoreItems(keys[1:25,],bfi[1:25]) #we do not need to specify min or max if
-           #there are no values (such as age) outside the normal item range.
+ scores <- scoreItems(keys[1:25,],psychTools::bfi[1:25]) #we do not need to specify min or 
+ #max if  there are no values (such as age) outside the normal item range.
  scores
  #The scores themselves are available in the scores$scores object.  I.e.,
  describe(scores$scores)
@@ -180,7 +183,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  
  #compare this output to that for the impute="none" option for SAPA type data
  #first make many of the items missing in a missing pattern way
- missing.bfi <- bfi
+ missing.bfi <- psychTools::bfi
  missing.bfi[1:1000,3:8] <- NA
  missing.bfi[1001:2000,c(1:2,9:10)] <- NA
  scores <- scoreItems(keys.list,missing.bfi,impute="none",min=1,max=6)

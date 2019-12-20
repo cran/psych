@@ -106,7 +106,7 @@ See the ``how to do mediation and moderation" at  personality-project.org/r/psyc
 }
 \author{William Revelle
 }
-\note{ There are a number of other packages that do mediation analysis (e.g., sem and lavaan) and they are probably preferred.  This function is supplied for the more basic cases, with 1..k y variables, 1..n x variables,  1 ..j mediators and 1 ..z variables to partial. The number of moderated effects is not limited, but more than 3rd order interactions are not very meaningful.  It will not do two step mediation.
+\note{ There are a number of other packages that do mediation analysis (e.g., sem and lavaan) and they are probably preferred for more complicated models.  This function is supplied for the more basic cases, with 1..k y variables, 1..n x variables,  1 ..j mediators and 1 ..z variables to partial. The number of moderated effects is not limited, but more than 3rd order interactions are not very meaningful.  It will not do two step mediation.
 }
 
 
@@ -117,14 +117,22 @@ See the ``how to do mediation and moderation" at  personality-project.org/r/psyc
 \examples{ 
 # A simple mediation example is the Tal_Or data set (pmi for Hayes)
 #The pmi data set from Hayes is available as the Tal_Or data set. 
-mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
+mod4 <- mediate(reaction ~ cond + (pmi), data =Tal_Or,n.iter=50) 
+summary(mod4)
+#Two mediators (from Hayes model 6 (chapter 5))
+mod6 <- mediate(reaction ~ cond + (pmi) + (import), data =Tal_Or,n.iter=50) 
+summary(mod6)
 
-#Moderated mediation is done with the Garcia (Garcia, 2010) data set.
+#Moderated mediation is done for the Garcia (Garcia, 2010) data set.
 # (see Hayes, 2013 for the protest data set
-
-#n.iter set to 50 (instead of default of 5000) for speed of example #old style
+#n.iter set to 50 (instead of default of 5000) for speed of example
+#no mediation, just an interaction
+mod7 <- mediate(liking ~  sexism * prot2 , data=Garcia, n.iter = 50)
+summary(mod7)
 data(GSBE)   #The Garcia et al data set (aka GSBE)
-mediate(liking ~  sexism * prot2 + (respappr), data=Garcia, n.iter = 50)
+mod11.4 <- mediate(liking ~  sexism * prot2 + (respappr), data=Garcia,
+        n.iter = 50,zero=FALSE)   #to match Hayes
+summary(mod11.4)
 #to see this interaction graphically, run the examples in ?Garcia
 
 
@@ -185,7 +193,19 @@ mediate.diagram(mod.k2,show.c=FALSE) #simpler output
 #print the path values
 mod.k2
 
-
+#Several interesting test cases are taken from analyses of the Spengler data set
+#This is temporarily added to psych from psychTools to help build for CRAN
+#Although the sample sizes are actually very large in the first wave,  I use the
+#sample sizes from the last wave 
+#We set the n.iter to be 50 instead of the default value of 5,000
+ mod1 <- mediate(Income.50 ~ IQ + Parental+ (Ed.11) ,data=Spengler,
+    n.obs = 1952, n.iter=50)
+ mod2 <- mediate(Income.50 ~ IQ + Parental+ (Ed.11)  + (Income.11)
+  ,data=Spengler,n.obs = 1952, n.iter=50)
+ mod22 <-  mediate(Income.50 + Educ.50 ~ IQ + Parental+ (Ed.11)  + (Income.11) 
+     ,data=Spengler,n.obs = 1952, n.iter=50)
+#Now, compare these models
+anova(mod1,mod2)
 
 }
 

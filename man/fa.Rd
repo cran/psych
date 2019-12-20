@@ -76,7 +76,7 @@ However, simulations of multiple problem sets suggest that fm="pa" tends to prod
 
 Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
 
-Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link{Schutz}} produces Heywood and super Heywood cases,   \code{\link{blant}} leads to very different solutions.  In particular, the minres solution produces smaller residuals than does the mle solution, and the factor.congruence coefficients show very different solutions.
+Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link[psychTools]{Schutz}} produces Heywood and super Heywood cases,   \code{\link[psychTools]{blant}} leads to very different solutions.  In particular, the minres solution produces smaller residuals than does the mle solution, and the factor.congruence coefficients show very different solutions.
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller RMSEA) solutions.
 
@@ -135,7 +135,7 @@ The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstr
 
 If using polytomous or dichotomous items, it is perhaps more useful  to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
-Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link{burt}} data set.
+Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link[psychTools]{burt}} data set.
 
 One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
 
@@ -331,7 +331,7 @@ mr2 <- fa(Thurstone.33,2,rotate="none")
 mr3 <- fa(Thurstone.33,3,rotate="none")
 factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
 
-#f5 <- fa(bfi[1:25],5)
+#f5 <- fa(psychTools::bfi[1:25],5)
 #f5  #names are not in ascending numerical order (see note)
 #colnames(f5$loadings) <- paste("F",1:5,sep="")
 #f5

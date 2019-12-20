@@ -1,14 +1,17 @@
  #Pearson or polychoric correlations with confidence intervals
 
  "cor.ci" <- 
-function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,...) {
-corCi(x=x, keys = keys, n.iter = n.iter, p = p, overlap=overlap, poly = poly, method = method,plot=plot,minlength=minlength,...) }
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,n=NULL,...) {
+corCi(x=x, keys = keys, n.iter = n.iter, p = p, overlap=overlap, poly = poly, method = method,plot=plot,minlength=minlength,n=n,...) }
 
  "corCi" <- 
-function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,...) {
+function(x, keys = NULL, n.iter = 100, p = 0.05, overlap=FALSE, poly = FALSE, method = "pearson",plot=TRUE,minlength=5,n = NULL,...) {
 
  cl <- match.call()
  n.obs <- dim(x)[1]
+ 
+ if(!isCorrelation(x)) {#the normal case is to have data and find the correlations and then bootstrap them
+ #added the direct from correlation matrix option, August 17, 2019 since I was finding them for statsBy
  
  if(is.null(keys) && overlap) overlap <- FALSE  #can not correct for overlap with just items
 if(poly) {  #find polychoric or tetrachoric correlations if desired
@@ -34,6 +37,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
          } 
   #now, if there are keys, find the correlations of the scales       
    if(!is.null(keys)) {bad <- FALSE
+   if(!is.matrix(keys)) keys <- make.keys(x,keys)  #handles the new normal way of just passing a keys list
          if(any(is.na(Rho))) {warning(sum(is.na(Rho)), " of the item correlations are NA and thus finding scales that include those items will not work.\n We will try to do it for those  scales which do not include those items.
          \n Proceed with caution. ") 
          bad <- TRUE
@@ -107,7 +111,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
      means.rot <- colMeans(z.rot,na.rm=TRUE)
       sds.rot <- apply(z.rot,2,sd, na.rm=TRUE)
       sds.rot <- fisherz2r(sds.rot)
-      ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot
+      ci.rot.lower <- means.rot + qnorm(p/2) * sds.rot  #This is the normal value of the observed distribution
       ci.rot.upper <- means.rot + qnorm(1-p/2) * sds.rot
       means.rot <- fisherz2r(means.rot)
       ci.rot.lower <- fisherz2r(ci.rot.lower)
@@ -131,7 +135,15 @@ results <- list(rho=rho, means=means.rot,sds=sds.rot,tci=tci,ptci=ptci,ci=ci.rot
 if(plot) {cor.plot(rho,numbers=TRUE,cuts=c(.001,.01,.05),pval =  2*(1-ptci),...) }
 class(results) <- c("psych","cor.ci")
     
+return(results)  } else {#we have been given correlations, just find the cis.
+if(is.null(n)) {warning("\nFinding confidence intervals from a correlation matrix, but  n is not specified, arbitrarily set to 1000")
+   n <- 1000}
+results <- cor.Ci(x,n=n, alpha=p, minlength=minlength)
+results$ci <- results$r.ci
+results$r <- x
+class(results) <- cs(psych, corCi)
 return(results)
+}
 
  }
  #written Sept 20, 2013 

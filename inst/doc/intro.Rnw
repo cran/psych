@@ -81,12 +81,13 @@
 You have installed \Rpkg{psych}  (section  \ref{sect:starting}) and you want to use it without reading much more.  What should you do?
 
 \begin{enumerate}
-\item Activate the  \Rpkg{psych} package:
+\item Activate the  \Rpkg{psych} package and the  \Rpkg{psychTools} package:
 
 \begin{scriptsize}
 \begin{Schunk}
 \begin{Sinput}
 library(psych)
+library(psychTools)
 \end{Sinput}
 \end{Schunk}
 \end{scriptsize}
@@ -369,6 +370,7 @@ Remember, to run any of the \Rpkg{psych} functions, it is necessary to make the 
 \begin{Schunk}
 \begin{Sinput}
  library(psych)
+ library(psychTools)
 \end{Sinput}
 \end{Schunk} 
 
@@ -380,7 +382,8 @@ It is possible to automatically load  \Rpkg{psych} and other functions by creati
 
 \begin{Schunk}
 \begin{Sinput}
-.First <-  function(x) {library(psych)}
+.First <-  function(x) {library(psych)
+    library(psychTools)}
 \end{Sinput}
 \end{Schunk} 
 
@@ -468,6 +471,7 @@ Once the data are read in, then \pfun{describe} or \pfun{describeBy} will provid
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>=
 library(psych)
+library(psychTools)
 data(sat.act) 
 describe(sat.act)  #basic descriptive statistics
 @

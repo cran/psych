@@ -47,8 +47,8 @@ Although it would be nice to process the dot code directly in R, the Rgraphviz p
 \dontrun{
 test.data <- Harman74.cor$cov
 ic.out <- ICLUST(test.data)
-out.file <- file.choose(new=TRUE)   #create a new file to write the plot commands to 
-ICLUST.graph(ic.out,out.file)   
+#out.file <- file.choose(new=TRUE)   #create a new file to write the plot commands to 
+#ICLUST.graph(ic.out,out.file)   
 now go to graphviz (outside of R) and open the out.file you created
 print(ic.out,digits=2)
 }

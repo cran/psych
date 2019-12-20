@@ -1,6 +1,6 @@
 Package: psych
-Version: 1.8.12
-Date: 2018-12-31
+Version: 1.9.12
+Date: 2019-12-14
 Title: Procedures for Psychological, Psychometric, and Personality
         Research
 Authors@R: person("William", "Revelle", role =c("aut","cre"), email="revelle@northwestern.edu", comment=c(ORCID  = "0000-0003-4880-9610") )
@@ -8,15 +8,15 @@ Description: A general purpose toolbox for personality, psychometric theory and 
 License: GPL (>= 2)
 Imports:
         mnormt,parallel,stats,graphics,grDevices,methods,foreign,lattice,nlme
-Suggests: GPArotation, lavaan, sem, lme4,Rcsdp, graph, Rgraphviz
-LazyData: true
+Suggests: GPArotation, lavaan, sem, lme4,Rcsdp, graph,
+        Rgraphviz,psychTools
+LazyData: yes
 ByteCompile: TRUE
 URL: https://personality-project.org/r/psych
         https://personality-project.org/r/psych-manual.pdf
 NeedsCompilation: no
-Packaged: 2019-01-12 15:49:51 UTC; WR
+Packaged: 2019-12-15 20:23:29 UTC; WR
 Author: William Revelle [aut, cre] (<https://orcid.org/0000-0003-4880-9610>)
 Maintainer: William Revelle <revelle@northwestern.edu>
-Depends: R (>= 2.10)
 Repository: CRAN
-Date/Publication: 2019-01-12 23:32:14 UTC
+Date/Publication: 2019-12-20 16:40:02 UTC

@@ -29,7 +29,7 @@ scaling.fits(model, data, test = "logit", digits = 2, rowwise = TRUE)
 
 
 }
-\seealso{ \code{\link{thurstone}}, \code{\link{vegetables}}}
+\seealso{ \code{\link{thurstone}}, \code{\link[psychTools]{vegetables}}}
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

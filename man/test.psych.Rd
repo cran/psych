@@ -60,8 +60,8 @@ When version 1.1.10 was released, it caused errors when compiling and testing on
 #    f3 <- fa(bfi[1:15],3,n.iter=5,rotate="Promax")
 #    
 #     fpoly <- fa(bfi[1:10],2,n.iter=5,cor="poly")
-#     f1 <- fa(ability,n.iter=4)
-#     f1p <- fa(ability,n.iter=4,cor="tet")
+#     f1 <- fa(psychTools::ability,n.iter=4)
+#     f1p <- fa(psychTools::ability,n.iter=4,cor="tet")
 
 
 }

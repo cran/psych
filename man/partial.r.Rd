@@ -22,6 +22,9 @@ This is useful in the case of multiple regression.  If we think of the data as a
 
 The second usage is to partial a set of variables(y) out of another set (x). It is sometimes convenient to partial the effect of a number of variables (e.g., sex, age, education) out of the correlations of another set of variables.  This could be done laboriously by finding the residuals of various multiple correlations, and then correlating these residuals.  The matrix algebra alternative is to do it directly. 
 To find the confidence intervals and "significance" of the correlations, use the \code{\link{corr.p}} function with n = n - s where s is the numer of covariates. 
+
+Following a thoughtful request from Fransisco Wilheim,  just find the correlations of the variables specified in the call (previously I  had found the entire correlation matrix, which is a waste of time and breaks if some variables are non-numeric).)
+   
 }
 \value{The matrix of partial correlations.}
 \references{ Revelle, W. (in prep) An introduction to psychometric theory with applications in R. To be published by Springer.  (working draft available at  \url{https://personality-project.org/r/book/} 
@@ -42,7 +45,7 @@ lowerMat(partial.r(jen))
 #Consider the Tal.Or data set.
 lowerCor(Tal.Or)
 #partial gender and age from these relations (they hardly change)
-partial.r(Tal.Or,1:4,5:6)
+partial.r(Tal.Or,1:4,cs(gender,age))
 #find the partial correlations between the first three variables and the DV (reaction)
 round(partial.r(Tal.Or[1:4])[4,1:3],2) #The partial correlations with the criterion
 

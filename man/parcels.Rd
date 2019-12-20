@@ -40,8 +40,8 @@ Cattell, R. B.	(1956).	Validation and intensification of the sixteen personality
 }
 \examples{
 parcels(Thurstone)
-keys <- parcels(bfi)
+keys <- parcels(psychTools::bfi)
 keys <- keysort(keys)
-score.items(keys,bfi)
+score.items(keys,psychTools::bfi)
 }
 \keyword{ multivariate }

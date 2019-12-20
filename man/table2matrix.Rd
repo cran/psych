@@ -23,10 +23,10 @@ This function may also be used to convert an item response pattern table into a 
 
 \author{William Revelle}
 
-\seealso{  \code{\link{cubits}} and  \code{\link{bock}} data sets}
+\seealso{  \code{\link[psychTools]{cubits}} and  \code{\link{bock}} data sets}
 \examples{
 data(cubits)
-cubit <- table2matrix(cubits,labs=c("height","cubit"))
+cubit <- table2matrix(psychTools::cubits,labs=c("height","cubit"))
 describe(cubit)
 ellipses(cubit,n=1)
 data(bock)

@@ -42,7 +42,7 @@ if(freq) { mp <- barplot(xhist$counts, axes=x.axes, space=x.space,xlab=xlab.hist
  #xhist <- hist(x,breaks=11,plot=TRUE,freq=FALSE,axes=FALSE,col="grey",main="",ylab="")
  tryd <- try( d <- density(x,na.rm=TRUE,bw="nrd",adjust=1.2),silent=TRUE)
  
-  if(class(tryd) != "try-error") {
+  if(!inherits(tryd ,"try-error")) {
  d$x <- (mp[length(mp)] - mp[1]+1) * (d$x - min(xhist$breaks))/(max(xhist$breaks)-min(xhist$breaks))
   if(freq) d$y <- d$y * max(xhist$counts/xhist$density,na.rm=TRUE)
   if(density)   lines(d)}
@@ -51,7 +51,7 @@ title(title)
 par(mar=c(5,0.5,1,2)) 
 if(freq) {mp <-   barplot(yhist$counts, axes=y.axes, space=y.space, horiz=TRUE,ylab=ylab.hist) } else {mp <-   barplot(yhist$density, axes=y.axes, space=y.space, horiz=TRUE,ylab=ylab.hist)}
  tryd <- try( d <- density(y,na.rm=TRUE,bw="nrd",adjust=1.2),silent=TRUE)
-  if(class(tryd) != "try-error") {
+  if(!inherits(tryd,"try-error")) {
   temp <- d$y
  d$y <- (mp[length(mp)] - mp[1]+1) * (d$x - min(yhist$breaks))/(max(yhist$breaks)-min(yhist$breaks))
   d$x <- temp

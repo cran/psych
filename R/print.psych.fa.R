@@ -45,7 +45,7 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
           		 }  
          }    #end of sort 		 
     #they are now sorted, don't print the small loadings if cut > 0 
-                if(max(abs(load) > 1.0) && !covar) cat('\n Warning: A Heywood case was detected. \n')
+               # if(max(abs(load) > 1.0) && !covar) cat('\n Warning: A Heywood case was detected. \n')
           	ncol <- dim(loads)[2]-2
           	rloads <- round(loads,digits)
 	    	fx <- format(rloads,digits=digits)

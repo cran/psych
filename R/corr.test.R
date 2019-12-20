@@ -53,12 +53,12 @@ if (adjust !="none") {
   
 
      
-
-      cnR <- abbreviate(colnames(r),minlength=minlength) 
+      cnR <- abbreviate(rownames(r),minlength=minlength) 
+      cnC <- abbreviate(colnames(r),minlength=minlength) 
       
        k <- 1
      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
-      rownames(ci)[k] <- paste(cnR[i],cnR[j],sep="-")
+      rownames(ci)[k] <- paste(cnC[i],cnR[j],sep="-")
       k<- k +1 }}
       
     } else { #non symmetric case 
@@ -82,7 +82,7 @@ if (adjust !="none") {
   cnC <- abbreviate(colnames(r),minlength=minlength)
   k <- 1
       for(i in 1:NCOL(y)) {for (j in 1:NCOL(x)) {
-      rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")
+      rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")  
       k<- k +1 }}
     }
 } else {ci <-  sef <- ci.adj <- NULL
@@ -100,7 +100,7 @@ return(result)
 
 
 "corr.p" <-
-function(r,n,adjust="holm",alpha=.05,minlength=5) {
+function(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE) {
 cl <- match.call()
 if(missing(n)) stop("The number of subjects must be specified")
 sym <- FALSE
@@ -118,6 +118,7 @@ if(isSymmetric(unclass(p))) {sym <- TRUE
   p[] <- p.adjust(p ,adjust)  #the case of an asymmetric matrix
   sym <- FALSE}
 } 
+if(ci) {
 nvar <- ncol(r)
 if(sym) {z <- fisherz(r[lower.tri(r)])} else {z <- fisherz(r)
  n.x <- NCOL(r)
@@ -145,24 +146,25 @@ if(sym) {    dif.corrected <- qnorm(1-alpha/(nvar*(nvar-1)))  } # 1- alpha/2  /n
       cnR <- abbreviate(colnames(r),minlength=minlength)  
       rnR <- abbreviate(rownames(r),minlength=minlength) 
      if(sym) {k <- 1
-      for(i in 2:nvar) {for (j in 1:(i-1)) {
-      rownames(ci)[k] <- paste(cnR[j],cnR[i],sep="-")
+      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
+      rownames(ci)[k] <- paste(cnR[i],rnR[j],sep="-")
       k<- k +1 } }
     
       
       
       } else {k <- 1
       for(i in 1:ncol(r)) {for (j in 1:nrow(r)) {
-      rownames(ci)[k] <- paste(rnR[j],cnR[i],sep="-")
+      rownames(ci)[k] <- paste(cnR[i],rnR[j],sep="-")
       k<- k +1 }}
       }
-result <- list(r = r,n=n,t=t,p=p,sym=sym,adjust=adjust,ci=ci,ci.adj = ci.adj,Call=cl)
+result <- list(r = r,n=n,t=t,p=p,sym=sym,adjust=adjust,ci=ci,ci.adj = ci.adj,Call=cl)} else {
+result <- list(r=r,n=n,p=p,Call=cl)}
 class(result) <- c("psych", "corr.p")
 return(result)
 }
 #revised March 28, 2014 to be compatible with corr.test
 #revised August 28, 2017 to include holm and bonferroini adjusted confidence intervals
-
+#revised February 17, 2019 to allow cis not to be found
 #could be replaced with the following
 corr.test1 <- function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05){
 cl <- match.call()

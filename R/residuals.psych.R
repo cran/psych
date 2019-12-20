@@ -1,7 +1,12 @@
 "residuals.psych" <- 
 function(object,diag=TRUE,...) {
 result <- NULL
-if(length(class(object)) > 1)  { value <- class(object)[2] } else {stop("No appropriate residual found")}
+if(length(class(object)) > 1)  {
+obnames <- cs( fa, principal, omega, irt.fa, esem, extension)
+extension <-  esem  <- NA
+ value <- inherits(object, obnames, which=TRUE)
+ if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"} 
+ } else {value <- "none"}
 switch(value,
 
 fa = {residual <- object$residual},
@@ -9,11 +14,15 @@ principal = {residual <- object$residual},
 omega = {residual <- object$stats$residual},
 irt.fa ={residual <- object$fa$residual},
 esem = {residual <- object$residual},
-extension = {residual <- object$resid})
+extension = {residual <- object$resid},
+none = {stop("No appropriate residual found")}
+    )
 if(!diag)  diag(residual) <- NA 
 class(residual) <- c("psych","residuals")
 return(residual)
 }
+
+
 #added January 30, 2012
 "resid.psych" <- 
 function(object,diag=TRUE,...) {

@@ -53,7 +53,7 @@ v9c <- ICLUST(v9)
 test.data <- Harman74.cor$cov
 ic.out <- ICLUST(test.data)
 #now show how to relabel clusters
-ic.bfi <- iclust(bfi[1:25],beta=3) #find the clusters
+ic.bfi <- iclust(psychTools::bfi[1:25],beta=3) #find the clusters
 cluster.names <- rownames(ic.bfi$results) #get the old names
 #change the names to the desired ones
 cluster.names[c(16,19,18,15,20)] <- c("Neuroticism","Extra-Open","Agreeableness",

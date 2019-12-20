@@ -18,7 +18,7 @@ cluster.loadings(keys, r.mat, correct = TRUE,SMC=TRUE)
 
 Although part of ICLUST, this may be used in any SAPA (\url{https://sapa-project.org}) application where we are interested in item-whole correlations of items and composite scales.
 
-For information about SAPA see Revelle et al, 2010, 2016.  For information about SAPA based measures of ability, see \url{https://icar-project.com}.
+For information about SAPA see Revelle et al, 2010, 2016.  For information about SAPA based measures of ability, see \url{https://icar-project.org}.
 
 These loadings are particularly interpretable when sorted by absolute magnitude for each cluster (see \code{\link{ICLUST.sort}}). 
 }

@@ -1,7 +1,7 @@
-"cohen.d" <- function(x,group,alpha=.05,std=TRUE,dictionary=NULL) {
+"cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL) {
 cl <- match.call()
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
-  group.in <- TRUE}
+  group.in <- TRUE} else {group.in <- FALSE}
  stats <- statsBy(x,group)
  S <- stats$rwg
 
@@ -12,10 +12,11 @@ sd.p <- sqrt((( (stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2
 sd.ph <- sqrt((((stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,]-2)) #if we subtract 2 from n, we get Hedges g
 n <- stats$n[1,]+ stats$n[2,]
 cohen.d <- d/sd.p
- d <- cohen.d    #basically use this in the Mahalanobis distance
+
 hedges.g <- d/sd.ph
+d <- cohen.d    #basically use this in the Mahalanobis distance
 names(cohen.d) <- colnames(x)
-if(group.in) {
+if(!group.in) {group <- which(colnames(stats$n)=="group")}
 n <- n[-group]
 d <- d[-group]
 n1 <- stats$n[1,-group]
@@ -25,15 +26,21 @@ p2 <- n2/n
 cohen.d <- cohen.d[-group]
 hedges.g <- hedges.g[-group]
 
-r <- cohen.d/sqrt(cohen.d^2 + 1/(  p1*p2)) } else {r <- cohen.d/sqrt(cohen.d^2 + 1/( p1*p2) )} #for unequal n otherwise this is just 4
+r <- cohen.d/sqrt(cohen.d^2 + 1/(  p1*p2)) #} else {r <- cohen.d/sqrt(cohen.d^2 + 1/( p1*p2) )} #for unequal n otherwise this is just 4
 t <- d2t(cohen.d,n)
 p <- ( 1-pt(abs(t),n-2)) * 2
 D <- sqrt(t(d) %*% S.inv %*% d)
-
+wt.d <- t(d) %*% S.inv *d 
 D <- as.vector(D)
 cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
-if(!is.null(dictionary)) {dict = dictionary[colnames(x),]} else {dict=NULL}
-result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g,M.dist = D, r=r,t=t,n=n,p=p, descriptive=stats,dict=dict,Call=cl)
+if(!is.null(dictionary)) {dict <- dictionary[match(rownames(cohen.d.conf),rownames(dictionary)),,drop=FALSE]
+   cohen.d.conf <- cbind(cohen.d.conf,dict)} else {dict=NULL}
+if(!is.null(sort)) {if(sort %in%( c("decreasing","descending","TRUE"))) {ord <- order(cohen.d.conf["effect"],decreasing=TRUE)} else {ord <- order(cohen.d.conf["effect"],decreasing=FALSE)}
+       cohen.d.conf <- cohen.d.conf[ord,]
+       dict <- dict[ord,,drop=FALSE]
+      }
+se <- (cohen.d.conf[,3] - cohen.d.conf[,1])/2  #average upper - lower 
+result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,Call=cl)
 class(result) <- c("psych","cohen.d")
 return(result)
 }
@@ -56,10 +63,10 @@ return(result)
 
  upper <- try(t2d( uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - alpha/2}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i])*10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
   
-     if(class( upper)=="try-error") {ci[i,3] <- NA} else {ci[i,3] <- upper}
+     if(inherits( upper, "try-error")) {ci[i,3] <- NA} else {ci[i,3] <- upper}
     ci[i,2] <- d[i]
   lower.ci  <- try(t2d(uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - tail}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i]) *10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
-    if(class( lower.ci)=="try-error") {ci[i,1] <- NA} else {ci[i,1] <- lower.ci}
+    if(inherits( lower.ci,"try-error")) {ci[i,1] <- NA} else {ci[i,1] <- lower.ci}
    }
    colnames(ci) <- c("lower","effect","upper")
    rownames(ci) <- names(d)
@@ -110,13 +117,14 @@ function(x,group,group2,alpha=.05)  {
     
     
     "print.cohen.d" <- function(x,digits=2) {cat("Call: ")
-            print(x$Call)
+           print(x$Call)
             cat("Cohen d statistic of difference between two means\n")
-            print(x$cohen.d,digits=digits)
+            if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),x$cohen.d[4:NCOL(x$cohen.d)]))}
+          
             cat("\nMultivariate (Mahalanobis) distance between groups\n")
             print(x$M.dist,digits=digits) 
-            cat("r equivalent lof difference between two means\n")
-            print(x$r,digits=digits)
+            cat("r equivalent of difference between two means\n")
+            print(round(x$r,digits=digits))
             }
  
     "print.cohen.d.by" <- function(x,digits=2) {cat("Call: ")

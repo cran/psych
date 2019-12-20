@@ -47,8 +47,8 @@ return(results)
 "omegaFromSem" <- 
 function(fit,m=NULL,flip=TRUE,plot=TRUE) {
 # m is the correlation matrix
-# s is the sem solution from either sem or from lavaan
-if(class(fit)[1] =="lavaan") { #get the lavaan parameters
+# s is the sem solution from either sem or from lavaan -- I think I want to drop the sem option
+if(inherits(fit,"lavaan")) { #get the lavaan parameters
   fx <- fit@Model@GLIST$lambda 
   m <- cov2cor(as.matrix(fit@SampleStats@cov[[1]]))
   Fit <- fit@Fit@test

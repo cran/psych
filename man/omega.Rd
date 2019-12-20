@@ -239,7 +239,7 @@ If using the lavaan=TRUE option in \code{\link{omegaSem}} please note that varia
 #}
  
 #create 9 variables with a hierarchical structure
-v9 <- sim.hierarchical()
+v9 <- sim.hierarchical()  
 #with correlations of
 round(v9,2)
 #find omega 
@@ -280,7 +280,8 @@ omega(ability.cov$cov)
 # hier.scores <- cbind(om$scores,f1$scores,f3$scores)
 # lowerCor(hier.scores)
 #
-#jensen <- sim.hierarchical()   #create a hierarchical structure
+#this next set of examples require lavaan
+#jensen <- sim.hierarchical()   #create a hierarchical structure (same as v9 above)
 #om.jen <- omegaSem(jensen,lavaan=TRUE)  #do the exploratory omega with confirmatory as well
 #lav.mod <- om.jen$omegaSem$model$lavaan #get the lavaan code or create it yourself
 # lav.mod <- 'g =~ +V1+V2+V3+V4+V5+V6+V7+V8+V9

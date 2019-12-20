@@ -22,7 +22,10 @@
       	select <- select[!duplicated(select)]
          }   
 # if (!isCorrelation(r)) {r <- cor(r[select],use="pairwise")} else {r <- r[select,select]}
-
+#check for bad input   -- the Mollycoddle option 
+if(any( !(select %in% colnames(items)) )) {
+ cat("\nVariable names in keys are incorrectly specified. Offending items are ", select[which(!(select %in% colnames(items)))],"\n")
+ stop("I am stopping because of improper input.   See above for a list of bad item(s). ")}
  keys <- make.keys(items[,select],keys)} else {select <- 1:ncol(items) }
    #modified once again April 6,2017 to allow for selecting items 
    

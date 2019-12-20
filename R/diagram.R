@@ -5,8 +5,16 @@
 "diagram" <- function(fit,...) {
 # figure out which psych function was called and then call the appropriate diagram
 fn <- NULL
-if(length(class(fit)) == 1) {if (class(fit)=="lavaan") fn <- "lavaan" } 
-if(length(class(fit)) > 1)  { fn <- class(fit)[2]}
+omega <- bassAck <- extend <- lavaan <- NULL    #weird requirement to avoid being global
+#if(length(class(fit)) == 1) {if (inherits(fit,"lavaan")) fn <- "lavaan" } 
+
+
+ #if(length(class(fit)) > 1)  {
+    names <- cs(lavaan,fa,principal,iclust,omega,lavaan,bassAck, extend)
+    value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
+    if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
+    
+#     } else {value <- "other"}
 
 switch(fn,  #replaced a series of if statements to switch  12/23/18
 fa  = {fa.diagram(fit,...) },

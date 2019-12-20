@@ -37,10 +37,10 @@ n.time <- length(table(x[Time]))
 n.items <- ncol(wide)
 
 if(alpha &(n.time > 2)) {
-alpha.by.person <- by(x,x[grp],function(x) alphaBy(x[items]))
+alpha.by.person <- by(x,x[grp],function(x) alphaBy(x[items],x[grp]))
 rnames <- paste0("ID",names(alpha.by.person))
-alpha.by.person <- matrix(unlist(alpha.by.person),ncol=4,byrow=TRUE)
-colnames(alpha.by.person) <- c("Raw alpha","Std. alpha","av.r","signal/noise")
+alpha.by.person <- matrix(unlist(alpha.by.person),ncol=5,byrow=TRUE)
+colnames(alpha.by.person) <- c("Raw alpha","Std. alpha","av.r","signal/noise","bad cases")
 rownames(alpha.by.person) <- rnames
 } else {alpha.by.person <- NA}
 
@@ -90,9 +90,12 @@ if (!requireNamespace('lme4')) {stop("I am sorry, to do a NREML  requires the lm
   MS_id <- vc$id[1,1]
   MS_time <- vc$time[1,1]
   MS_items <- vc$items[1,1]
-  MS_pxt <- vc[[1]][[1]]
-  MS_pxitem <- vc[[2]][[1]]
-  MS_txitem <- vc[[3]][[1]]
+#  MS_pxt <- vc[[1]][[1]]        #replaced with actual names rather than locations
+#  MS_pxitem <- vc[[2]][[1]]
+#  MS_txitem <- vc[[3]][[1]]
+ MS_pxt <- vc[["id:time"]][[1]]
+  MS_pxitem <- vc[["id:items"]][[1]]
+  MS_txitem <- vc[["items:time"]][[1]]
   error <- MS_resid <- (attributes(vc)$sc)^2
   s.lmer <- s.aov <- summary(mod.lmer)
  MS.df <- data.frame(variance= c(MS_id, MS_time ,MS_items, MS_pxt, MS_pxitem, MS_txitem, MS_resid,NA))
@@ -190,7 +193,7 @@ MS.df["total",2] <- MS.df["total",1]/MS.df["total",1]
 if(aov || lmer ||lme) {result <- list(n.obs = n.obs, n.time = n.time, n.items=n.items, components = MS.df,RkF =Rkf,R1R = R1r,RkR = Rkr,Rc=Rc,RkRn=Rkrn,Rcn = Rcn, ANOVA=s.aov,s.lmer =s.lmer,s.lme= s.lme,alpha=alpha.by.person, summary.by.person = icc.person.sum,summary.by.time=icc.time.sum, ICC.by.person = icc.by.person,ICC.by.time=icc.by.time,lmer=lmer,long = long,Call=cl)
 }  else  {result <- list(n.obs = n.obs, n.time = n.time, n.items=n.items,alpha=alpha.by.person,lmer=lmer,long=long,Call=cl) } 
   
-if(plot) { plot1<- xyplot(values ~ time | id, group=items, data=long, type = "b",as.table=TRUE,strip=strip.custom(strip.names=TRUE,strip.levels=TRUE),col=c("blue","red","black","grey"))
+if(plot) { plot1<- xyplot(values ~ time | id, group=items, data=long, type = "b",as.table=TRUE,strip=strip.custom(strip.names=TRUE,strip.levels=TRUE),col=c("blue","red","black","grey"),main=main)
 print(plot1)}
 class(result) <- c("psych","multilevel")
 return(result)
@@ -254,26 +257,20 @@ cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	}
 	
 	
-"alphaBy" <- function(x) {
+"alphaBy" <- function(x,subject) {
     n <- dim(x)[2]
     C <- cov(x,use="pairwise")
     R <- cov2cor(C)
     alpha.raw <- (1- tr(C)/sum(C))*(n/(n-1))
-    sumR <- sum(R)
-    alpha.std <-  (1- n/sum(R))*(n/(n-1))
-   # smc.R <- smc(R)
-   # G6 <- (1- (n-sum(smc.R))/sumR)
+    sumR <- sum(R,na.rm=TRUE)
+    alpha.std <-  (1- n/sumR)*(n/(n-1))
+  
     av.r <- (sumR-n)/(n*(n-1))
-   # mod1 <- matrix(av.r,n,n)
-   # Res1 <- R - mod1
-   # GF1 =  1- sum(Res1^2)/sum(R^2)
-   # Rd <- R - diag(R)
-   # diag(Res1) <- 0
-   # GF1.off <- 1 - sum(Res1^2)/sum(Rd^2)  
+  
     sn <- n*av.r/(1-av.r)
-   # Q = (2 * n^2/((n-1)^2*(sum(C)^3))) * (sum(C) * (tr(C^2) + (tr(C))^2) - 2*(tr(C) * sum(C^2))) #corrected 1/15/16 
-   # Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
-    result <- list(raw=alpha.raw,std=alpha.std,av.r=av.r,sn =sn)
+   if(is.na(sum(R))) {message("At least one item had no variance  when finding alpha for subject = ",subject[1,],". Proceed with caution")
+   bad <- 1} else {bad <- 0}
+    result <- list(raw=alpha.raw,std=alpha.std,av.r=av.r,sn =sn,bad=bad)
     return(result)
     }
 

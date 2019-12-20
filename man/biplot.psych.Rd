@@ -7,7 +7,7 @@
 \method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",
 hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
 maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,
-cuts=1,cutl=.0,group=NULL,smoother=FALSE,...)
+cuts=1,cutl=.0,group=NULL,smoother=FALSE,vars=TRUE,...)
 }
 
 \arguments{
@@ -41,6 +41,7 @@ cuts=1,cutl=.0,group=NULL,smoother=FALSE,...)
   \item{group}{A vector of a grouping variable for the scores.  Show a different color 
   and symbol for each group.}
   \item{smoother}{If TRUE then do a smooth scatter plot (which shows the density rather than the data points). Only useful for large data sets.}
+  \item{vars}{If TRUE, draw arrows for the variables, and plot the scores.  If FALSE, then draw arrows for the scores and plot the variables.}
   \item{\dots}{more options for graphics}
  
 }
@@ -67,24 +68,25 @@ fa2 <- fa(USArrests,2,scores=TRUE)
 biplot(fa2,labels=rownames(USArrests))
 
 # plot the 3 factor solution
-data(bfi)
-fa3 <- fa(bfi[1:200,1:15],3,scores=TRUE)
+#data(bfi)
+fa3 <- fa(psychTools::bfi[1:200,1:15],3,scores=TRUE)
 biplot(fa3)
 #just plot factors 1 and 3 from that solution
 biplot(fa3,choose=c(1,3))
 
 #
-fa2 <- fa(bfi[16:25],2)  #factor analysis
+fa2 <- fa(psychTools::bfi[16:25],2)  #factor analysis
 fa2$scores <- fa2$scores[1:100,]  #just take the first 100
 #now plot with different colors and shapes for males and females
-biplot(fa2,pch=c(24,21)[bfi[1:100,"gender"]],group =bfi[1:100,"gender"],
+biplot(fa2,pch=c(24,21)[psychTools::bfi[1:100,"gender"]],
+group =psychTools::bfi[1:100,"gender"],
    main="Biplot of Conscientiousness and Neuroticism by gender")
 
 
-r <- cor(bfi[1:200,1:10], use="pairwise") #find the correlations
+r <- cor(psychTools::bfi[1:200,1:10], use="pairwise") #find the correlations
 f2 <- fa(r,2) 
 x <- list() 
-x$scores <- factor.scores(bfi[1:200,1:10],f2)
+x$scores <- factor.scores(psychTools::bfi[1:200,1:10],f2)
 x$loadings <- f2$loadings
 class(x) <- c('psych','fa')
 biplot(x,main="biplot from correlation matrix and factor scores")

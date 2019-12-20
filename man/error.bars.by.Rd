@@ -25,7 +25,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
   \item{alpha}{alpha level of confidence interval.  Default is 1- alpha =95\% confidence interval}
   \item{sd}{sd=TRUE  will plot Standard Deviations instead of standard errors}
   \item{labels}{ X axis label }
-  \item{v.labels}{For a bar plot legend, these are the variable labels}
+  \item{v.labels}{For a bar plot legend, these are the variable labels, for a line plot,
+      the labels of the grouping variable.}
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
@@ -43,6 +44,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
 \details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors (adjusted for the t-distribution). 
 
 Improved/modified in August, 2018 to allow formula input (see examples) as well as to more properly handle multiple groups. 
+
+Following a request for better labeling of the grouping variables, the v.lab option is implemented for line graphs as well as bar graphs.  Note that if using multiple grouping variables, the labels are for the variable with the most levels (which should be the first one.)
 
 This function was originally just a wrapper for \code{\link{error.bars}} but has been written to allow groups to be organized either as the x axis or as separate lines.
 
@@ -68,8 +71,10 @@ The results of describeBy are reported invisibly.
 data(sat.act)
 #The generic plot of variables by group
 error.bars.by( SATV + SATQ ~ gender,data=sat.act)  #formula input 
-error.bars.by(SATV + SATQ ~ education + gender, data =sat.act)
+error.bars.by( SATV + SATQ ~ gender,data=sat.act,v.lab=cs(male,female)) #labels 
+error.bars.by(SATV + SATQ ~ education + gender, data =sat.act) #see below
 error.bars.by(sat.act[1:4],sat.act$gender,legend=7) #specification of variables
+error.bars.by(sat.act[1:4],sat.act$gender,legend=7,labels=cs(male,female))
 
 #a bar plot
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,labels=c("male","female"),
@@ -84,12 +89,22 @@ error.bars.by(SATV + SATQ ~ education,data=sat.act,bars=TRUE,xlab="Education",
   #plot SAT V and SAT Q by education
 error.bars.by(SATV + SATQ ~ education,data=sat.act,TRUE, xlab="Education",
     legend=5,labels=colnames(sat.act[5:6]),ylim=c(525,700),
-     main="self reported SAT scores by education")
+     main="self reported SAT scores by education",
+     v.lab =c("HS","in coll", "< 16", "BA/BS", "in Grad", "Grad/Prof"))
 #make the cats eyes semi-transparent by specifying a negative density
 
 error.bars.by(SATV + SATQ ~ education,data=sat.act, xlab="Education",
     legend=5,labels=c("SATV","SATQ"),ylim=c(525,700),
-     main="self reported SAT scores by education",density=-10)
+     main="self reported SAT scores by education",density=-10,
+     v.lab =c("HS","in coll", "< 16", "BA/BS", "in Grad", "Grad/Prof"))
+
+#use labels to specify the 2nd grouping variable, v.lab to specify the first
+error.bars.by(SATV  ~ education  + gender,data=sat.act, xlab="Education",
+    legend=5,labels=cs(male,female),ylim=c(525,700),
+     main="self reported SAT scores by education",density=-10,
+     v.lab =c("HS","in coll", "< 16", "BA/BS", "in Grad", "Grad/Prof"),
+     colors=c("red","blue"))
+
 
 #now for a more complicated examples using 25 big 5 items scored into 5 scales
 #and showing age trends by decade 
@@ -98,9 +113,9 @@ data(bfi)   #The Big 5 data
 #first create the keys 
  keys.list <- list(Agree=c(-1,2:5),Conscientious=c(6:8,-9,-10),
         Extraversion=c(-11,-12,13:15),Neuroticism=c(16:20),Openness = c(21,-22,23,24,-25))
- keys <- make.keys(bfi,keys.list)
+ keys <- make.keys(psychTools::bfi,keys.list)
  #then create the scores for those older than 10 and less than 80
- bfis <- subset(bfi,((bfi$age > 10) & (bfi$age < 80)))
+ bfis <- subset(psychTools::bfi,((psychTools::bfi$age > 10) & (psychTools::bfi$age < 80)))
 
  scores <- scoreItems(keys,bfis,min=1,max=6) #set the right limits for item reversals
  #now draw the results by age

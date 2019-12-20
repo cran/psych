@@ -4,12 +4,13 @@
 \description{Given a factor or principal components loading matrix, assign each item to a cluster corresponding to the largest (signed) factor loading for that item.  Essentially, this is a Very Simple Structure approach to cluster definition that corresponds to what most people actually do: highlight the largest loading for each item and ignore the rest.
 }
 \usage{
-factor2cluster(loads, cut = 0)
+factor2cluster(loads, cut = 0,aslist=FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{loads}{either a matrix of loadings, or the result of a factor analysis/principal components analyis with a loading component }
   \item{cut}{Extract items with absolute loadings > cut}
+  \item{aslist}{if TRUE, Return a keys list, else return a keys matrix (old style) }
 }
 \details{A factor/principal components analysis loading matrix is converted to a cluster (-1,0,1) definition matrix where each item is assigned to one and only one cluster.  This is a fast way to extract items that will be unit weighted to form cluster composites.  Use this function in combination with cluster.cor to find the corrleations of these composite scores. 
 
@@ -17,7 +18,7 @@ factor2cluster(loads, cut = 0)
  
  The input may be a matrix of item loadings, or the output from a factor analysis which includes a loadings matrix.
 }
-\value{a matrix of -1,0,1 cluster definitions for each item.
+\value{a keys list (new style or a matrix of -1,0,1 cluster definitions for each item.
 }
 \references{ \url{https://personality-project.org/r/r.vss.html}  }
 \author{ 
@@ -26,42 +27,12 @@ factor2cluster(loads, cut = 0)
 Maintainer: William Revelle  \email{  revelle@northwestern.edu           }
 }
 
-\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}}, \code{\link{fa}}, \code{\link{principal}}, \code{\link{ICLUST}} }
+\seealso{\code{\link{cluster.cor}}, \code{\link{factor2cluster}}, \code{\link{fa}}, \code{\link{principal}}, \code{\link{ICLUST}}
+\code{\link{make.keys}}, \code{\link{keys2list}} }
 \examples{
+#matches the factanal example
+f4  <- fa(Harman74.cor$cov,4,rotate="varimax")
+factor2cluster(f4) }
 
-\dontrun{
-f  <- factanal(x,4,covmat=Harman74.cor$cov)
-factor2cluster(f) }
-#                       Factor1 Factor2 Factor3 Factor4
-#VisualPerception             0       1       0       0
-#Cubes                        0       1       0       0
-#PaperFormBoard               0       1       0       0
-#Flags                        0       1       0       0
-#GeneralInformation           1       0       0       0
-#PargraphComprehension        1       0       0       0
-#SentenceCompletion           1       0       0       0
-#WordClassification           1       0       0       0
-#WordMeaning                  1       0       0       0
-#Addition                     0       0       1       0
-#Code                         0       0       1       0
-#CountingDots                 0       0       1       0
-#StraightCurvedCapitals       0       0       1       0
-#WordRecognition              0       0       0       1
-#NumberRecognition            0       0       0       1
-#FigureRecognition            0       0       0       1
-#ObjectNumber                 0       0       0       1
-#NumberFigure                 0       0       0       1
-#FigureWord                   0       0       0       1
-#Deduction                    0       1       0       0
-#NumericalPuzzles             0       0       1       0
-#ProblemReasoning             0       1       0       0
-#SeriesCompletion             0       1       0       0
-#ArithmeticProblems           0       0       1       0
-
-
-
-
-
-}
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

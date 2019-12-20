@@ -18,7 +18,7 @@ T <- Q%*%t(P)
      				    Phi <- NULL} else { 
      				      
      				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
-     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               if(inherits(ob,as.character("try-error")))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
      				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings

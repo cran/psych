@@ -27,7 +27,7 @@ if(!requireNamespace('GPArotation')) {stop("I am sorry, you need to have the  GP
                                          }
                                           
      if (fm =="pc") {
-        fact <- principal(model, nfactors,n.obs=n.obs,...)
+        fact <- principal(model, nfactors,n.obs=n.obs,covar=TRUE,...)
         fm <- 'minres'    #because we want to use factor analysis for the higher level factors
         message("The higher order factor is found using minres -- see the notes")
     } else {if ((fm == "pa") |(fm =="minres") | (fm =="wls")  |(fm =="minres") |(fm =="ml")|(fm =="mle")  |(fm =="gls") |(fm =="minchi") |(fm =="minrank")) {fact <- fa(model, nfactors,n.obs=n.obs,rotate="varimax",fm=fm,covar=covar) } else {
@@ -84,23 +84,23 @@ switch(rotate,
      			                Phi <- obminfact$Phi
      			                 },
      oblimin = 	{ obminfact <- try(GPArotation::oblimin(orth.load))
-           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        if(inherits(obminfact,as.character("try-error"))) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe oblimin solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi}},
        geominQ = 	{ obminfact <- try(GPArotation::geominQ(orth.load))
-           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        if(inherits(obminfact,as.character("try-error"))) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe geominQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi}},
                    						    
        bentlerQ = 	{ obminfact <- try(GPArotation::bentlerQ(orth.load))
-           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        if(inherits(obminfact,as.character("try-error"))) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe bentlerQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi}},            						    
         targetQ =   { obminfact <- try(GPArotation::targetQ(orth.load,...))
-           							        if(class(obminfact)== as.character("try-error")) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
+           							        if(inherits(obminfact,as.character("try-error"))) {obminfact <- Promax(orth.load)   #special case for examples with exactly 2 orthogonal factors
            							        message("\nThe targetQ solution failed, Promax used instead.\n")                   #perhaps no longer necessary with patch to GPForth and GPFoblq in GPArotation
            							        rotmat <- obminfact$rotmat
                    						    Phi <- obminfact$Phi}},          						    
@@ -190,13 +190,16 @@ switch(rotate,
     uniq2 <- diag(model) - uniq - primeload^2
     uniq2[uniq2<0] <- 0
     sm <-  sign(fload) * sqrt(uniq2)  #added June 1, 2010 to correctly identify sign of group factors
-    
-    
+    F <- cbind(gprimaryload, sm)  #the factor pattern matrix
+    #the next two lines are actually not needed because the factors are orthogonal
+    Structure  <- t( Pinv(t(F) %*% F) %*% t(F) %*% orth.load %*% t(orth.load))
+    Phi.S <- t(Structure) %*% F %*% Pinv(t(F) %*% F)  #this is the pseudo inverse Phi which is not the identity
+   
     colnames(sm) <- paste0("F",1:nfactors,"*")
     if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload,Call=cl)} else{
+        phi =factr, gloading = gload,S.Phi = Phi.S,Call=cl)} else{
     result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
-        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,scores=fact$scores,Call=cl )}
+        phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,scores=fact$scores,S.Phi = Phi.S,Call=cl )}
     class(result) <- c("psych" ,"schmid")
     return(result)
 }
@@ -222,7 +225,7 @@ T <- Q%*%t(P)
      				    Phi <- NULL} else { 
      				      
      				             ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(loadings,...)))
-     				               if(class(ob)== as.character("try-error"))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
+     				               if(inherits(ob, as.character("try-error")))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation")
      				               ob <- Promax(loadings)}
      				                 
      				loadings <- ob$loadings

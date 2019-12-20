@@ -11,7 +11,8 @@
 
 }
 \usage{
-AUC(t=NULL,BR=NULL,SR=NULL,Phi=NULL,VP=NULL,labels=NULL,plot="b",zero=TRUE)
+AUC(t=NULL,BR=NULL,SR=NULL,Phi=NULL,VP=NULL,labels=NULL,plot="b",zero=TRUE,correct=.5, 
+     col=c("blue","red"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +27,8 @@ diagnoses).(if t and Phi are not specified)}
   \item{labels}{Names of variables  1 and 2}
  \item{plot}{"b" (both), "d" (decision theory), "a" (auc), or "n" neither}
  \item{zero}{If True, then the noise distribution is centered at zero}
+ \item{correct}{Cell values of 0 are replaced with correct. (See \code{\link{tetrachoric}} for a discussion of why this is needed.)}
+ \item{col}{The color choice for the VP and FP, defaults to =c("blue","red") but could be c("grey","black") if we want to avoid colors }
 }
 
 \value{
@@ -101,7 +104,8 @@ Wickens, Christopher D. (1984) Engineering Psychology and Human Performance.  Me
 
 \examples{
 AUC(c(30,20,20,30))  #specify the table input
-AUC(c(140,60,100,900))  #Metz example 1
+AUC(c(140,60,100,900)) #Metz example with colors
+AUC(c(140,60,100,900),col=c("grey","black"))  #Metz example 1 no colors
 AUC(c(80,120,40, 960)) #Metz example 2  Note how the accuracies are the same but d's differ
 AUC(c(49,40,79,336)) #Wiggins p 249
 AUC(BR=.05,SR=.254,Phi = .317) #Wiggins 251 extreme Base Rates

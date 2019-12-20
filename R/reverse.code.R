@@ -56,8 +56,9 @@ return(x)
    # if (length(isvalue) == 1)  isvalue <- rep(isvalue, (length(where)))
     for(k in 1: maxlength) {
     i <- where[k]
-        x[(!is.na(x[, i]) & (x[, i] < min[k])), i] <- newvalue[k]
-        x[(!is.na(x[, i]) & (x[, i] > max[k])), i] <- newvalue[k]
+      if(is.numeric(x[,i])) {  x[(!is.na(x[, i]) & (x[, i] < min[k])), i] <- newvalue[k]
+        x[(!is.na(x[, i]) & (x[, i] > max[k])), i] <- newvalue[k] 
+        }
         x[(!is.na(x[, i]) & (x[, i] == isvalue[k])), i] <- newvalue[k]
        }
    
@@ -67,6 +68,8 @@ return(x)
 #modified December 6, 2010 to allow recoding
 #modified December 3, 2011 to be more general
 #modifed January 8, 2012 to be a  bit more flexible
+#modified April 11, 2019 to handle character data
+#fixed August 9, 2019 to correctly process is.numeric
 
 
 

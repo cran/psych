@@ -7,7 +7,7 @@
 \usage{
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
 alpha=.05,ci=TRUE,minlength=5)
-corr.p(r,n,adjust="holm",alpha=.05,minlength=5)
+corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
 }
 
 \arguments{
@@ -19,7 +19,7 @@ corr.p(r,n,adjust="holm",alpha=.05,minlength=5)
   \item{alpha}{alpha level of confidence intervals}
   \item{r}{A correlation matrix}
   \item{n}{Number of observations if using corr.p. May be either a matrix (as returned from corr.test, or a scaler. Set to n - np if finding the significance of partial correlations. (See below). }
-  \item{ci}{By default, confidence intervals are found.  However, this leads to a slight slowdown of speed.  So, for just the rs, ts and ps, set ci=FALSE}
+  \item{ci}{By default, confidence intervals are found.  However, this leads to a noticable slowdown of speed, particularly for large problems.  So, for just the rs, ts and ps, set ci=FALSE}
   \item{minlength}{What is the minimum length for abbreviations.  Defaults to 5.}
   
   }

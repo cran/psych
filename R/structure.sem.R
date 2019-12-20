@@ -5,10 +5,10 @@ function(fx,Phi=NULL,fy=NULL, out.file=NULL,labels=NULL,cut=.3,errors=TRUE,simpl
   xmodel <- fx
   ymodel <- fy
  if(!is.null(class(xmodel)) && (length(class(xmodel))>1)) {
-   if(class(xmodel)[1] =="psych" && class(xmodel)[2] =="omega") {
+   if((inherits(xmodel, "psych") &&( inherits(xmodel, "omega")))) {
     Phi <- xmodel$schmid$phi
     xmodel <- xmodel$schmid$oblique} else {
-   if(class(xmodel)[1] =="psych" && ((class(xmodel)[2] =="fa") | (class(xmodel)[2] =="principal"))) { if(!is.null(xmodel$Phi)) Phi <- xmodel$Phi
+   if(inherits(xmodel,"psych") && (inherits(xmodel,"fa")) | (inherits(xmodel,"principal"))) { if(!is.null(xmodel$Phi)) Phi <- xmodel$Phi
         xmodel <- as.matrix(xmodel$loadings)} 
          }} else {
  if(!is.matrix(xmodel) & !is.data.frame(xmodel) &!is.vector(xmodel))  {

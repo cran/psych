@@ -16,11 +16,11 @@
 Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. 
 }
 \usage{
-cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL)
+cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE)
 d.robust(x,group,trim=.2)
 cohen.d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
 d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
-cohen.d.by(x,group,group2,alpha=.05)
+cohen.d.by(x,group,group2,alpha=.05,MD=TRUE)
 d2r(d)
 r2d(rho)
 d2t(d,n=NULL,n2=NULL,n1=NULL)
@@ -50,6 +50,7 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
  \item{sort}{Should we sort (and if so, in which direction), the results of cohen.d? 
  Directions are "decreasing" or  "increasing".}
  \item{dictionary}{What are the items being described?}
+ \item{MD}{Find Mahalanobis distance in cohen.d.}
 }
 \details{
 There are many ways of reporting how two groups differ.  Cohen's d statistic is just the differences of means expressed in terms of the pooled within group standard deviation.  This is insensitive to sample size.  r is the a universal measure of effect size that is a simple function of d, but is bounded -1 to 1.  The t statistic is merely d * sqrt(n)/2 and thus reflects sample size.   
@@ -65,6 +66,9 @@ In the case of finding the confidence interval for a comparison against 0 (the o
 \code{\link{d.robust}} follows Algina et al. 2005) to find trimmed means (trim =.2) and Winsorize variances (trim =.2).  Supposedly, this provides a more robust estimate of effect sizes.
 
 \code{\link{m2t}} reports Student's t.test for two groups given their means, standard deviations, and sample size.  This is convenient when checking statistics where those estimates are provided, but the raw data are not available.  By default,it gives the pooled estimate of variance, but if pooled is FALSE, it applies Welch's correction.
+
+The Mahalanobis Distance combines the individual ds and weight them by their unique contribution:  \eqn{D = \sqrt{d' R^{-1}d}}{D = \sqrt{d' R^{-1}d}}.
+ By default, \code{\link{cohen.d}} will find the Mahalanobis distance between the two groups (if there is more than one DV.)  This requires finding the correlation of all of the DVs and can fail if that matrix is not invertible because some pairs do not exist.  Thus, setting MD=FALSE will prevent the Mahalanobis calculation.
  
 }
 \value{

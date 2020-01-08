@@ -263,11 +263,11 @@ conf.level <- alpha
     }}
       R2 <- diag(t(w) %*% f)   #but, we actually already found this in factor scores -- these are the Thurstone values
       if(is.null(fm)) {
-     if(prod(R2) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor extraction method\n")
+     if(prod(R2) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor score estimation method\n")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }
-     if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {warning("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
+     if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {warning("The estimated weights for the factor scores are probably incorrect.  Try a different factor score estimation method.")}
      }
       r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 

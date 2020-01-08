@@ -4,7 +4,7 @@
 #the entire set of functions for diagramming are all prefixed as dia. 
 "diagram" <- function(fit,...) {
 # figure out which psych function was called and then call the appropriate diagram
-fn <- NULL
+value <- NULL
 omega <- bassAck <- extend <- lavaan <- NULL    #weird requirement to avoid being global
 #if(length(class(fit)) == 1) {if (inherits(fit,"lavaan")) fn <- "lavaan" } 
 
@@ -16,7 +16,7 @@ omega <- bassAck <- extend <- lavaan <- NULL    #weird requirement to avoid bein
     
 #     } else {value <- "other"}
 
-switch(fn,  #replaced a series of if statements to switch  12/23/18
+switch(value,  #replaced a series of if statements to switch  12/23/18
 fa  = {fa.diagram(fit,...) },
 principal = {fa.diagram(fit,...) },
 iclust = {iclust.diagram(fit,...)},

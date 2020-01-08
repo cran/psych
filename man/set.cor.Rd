@@ -79,8 +79,11 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  The print function reports t and p values for the beta weights, the summary function just reports the beta weights.
  
- The Variance Inflation Factor is reported but should be taken with the normal cautions of interpretation discussed by Guide and Ketokivm.  That is to say, VIF > 10 is not a magic cuttoff to define colinearity.  It is merely 1/(1-smc(R(x)).
+ The Variance Inflation Factor is reported but should be taken with the normal cautions of interpretation discussed by Guide and Ketokivi.  That is to say, VIF > 10 is not a magic cuttoff to define colinearity.  It is merely 1/(1-smc(R(x)).
  
+ The Guide and Ketokivi article is well worth reading for all who want to use various regression models. 
+ 
+ \code{\link{setCorLookup}} will sort the beta weights and report them with item contents if given a dictionary. 
  \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x,  y and z variables. Its output includes betas, se, t, p and R2.  The call includes m for mediation variables, but these are only used to adjust the degrees of freedom.
  \code{\link{matReg}} does not work on data matrices, nor does it take formula input.  It is really just a helper function for  \code{\link{mediate}}
 }
@@ -115,7 +118,7 @@ H. Hotelling. (1936) Relations between two sets of variates. Biometrika 28(3/4):
 
 E.Cramer and W. A. Nicewander (1979) Some symmetric, invariant measures of multivariate association. Psychometrika, 44:43-54.
 
-V. D. R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefining some methodological criteria for the journal.  Journal of Operations Management. 37. v-viii.
+V. Daniel R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefining some methodological criteria for the journal.  Journal of Operations Management. 37. v-viii.
 
 }
 

@@ -28,7 +28,7 @@ fa2irt(f,rho,plot=TRUE,n.obs=NULL)
   \item{...}{Additional parameters to pass to the factor analysis function}
 }
 \details{
-\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Exploratory factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.  In this case, if it is desired to use the fm="minchi" factoring method, the number of observations needs to be specified as the matrix resulting from \code{\link{count.pairwise}}.
+\code{\link{irt.fa}} combines several functions into one to make the process of item response analysis easier.  Correlations are found using either \code{\link{tetrachoric}} or \code{\link{polychoric}}.  Exploratory factor analyeses with all the normal options are then done using \code{\link{fa}}.  The results are then organized to be reported in terms of IRT parameters (difficulties and discriminations) as well as the more conventional factor analysis output. In addition, because the correlation step is somewhat slow, reanalyses may be done using the correlation matrix found in the first step.  In this case, if it is desired to use the fm="minchi" factoring method, the number of observations needs to be specified as the matrix resulting from \code{\link{pairwiseCount}}.
 
 
 The tetrachoric correlation matrix of dichotomous items may be factored using a (e.g.) minimum residual factor analysis function \code{\link{fa}} and the resulting loadings, \eqn{\lambda_i} are transformed to discriminations by
@@ -71,6 +71,8 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 }
 \author{William Revelle}
 \note{
+\code{link{irt.fa}} makes use of the \code{\link{tetrachoric}} or 
+\code{\link{tetrachoric}} functions. Both of these will use multiple cores if this is an option.  To set these use options("mc.cores"=x) where x is the number of cores to use. (Macs default to 2, PCs seem to default to 1).
 
 In comparing irt.fa to the ltm function in the ltm package or to the analysis reported in Kamata and Bauer (2008) the discrimination parameters are not identical, because the irt.fa reports them in units of the normal curve while ltm and Kamata and Bauer report them in logistic units.  In addition, Kamata and Bauer do their factor analysis using a logistic error model.  Their results match the irt.fa results (to the 2nd or 3rd decimal) when examining their analyses using a normal model.  (With thanks to Akihito Kamata for sharing that analysis.) 
 

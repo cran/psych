@@ -49,13 +49,17 @@ if(any(is.na(R))) {
                }
 if(!covar) { R <- cor.smooth(R) }  
                             
- R.inv <- try(solve(R),TRUE)
- if(inherits(R.inv, as.character("try-error"))) {smc <- rep(1,p)
- message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)}
+# R.inv <- try(solve(R),TRUE)
+# if(inherits(R.inv, as.character("try-error"))) {smc <- rep(1,p)
+# message("In smc, the correlation matrix was not invertible, smc's returned as 1s")} else  {smc <- 1 -1/diag(R.inv)}
+R.inv <- Pinv(R)
+smc <- 1 - 1/diag(R.inv)
  names(smc) <- colnames(R)
-if(!is.null(tempR)) { R.na.inv <- try(solve(tempR),TRUE)
- if(inherits(R.na.inv, as.character("try-error"))) {smc.na <- rep(1,p)
-   message("Oh bother, in smc, the correlation matrix of the adjusted part was not invertible, smc's returned as 1s")} else  {smc.na <- 1 -1/diag(R.na.inv)}
+if(!is.null(tempR)) {# R.na.inv <- try(solve(tempR),TRUE)
+       R.na.inv <- Pinv(tempR)
+       smc.na <- smc.na <- 1 -1/diag(R.na.inv)
+# if(inherits(R.na.inv, as.character("try-error"))) {smc.na <- rep(1,p)
+ #  message("Oh bother, in smc, the correlation matrix of the adjusted part was not invertible, smc's returned as 1s")} else  {smc.na <- 1 -1/diag(R.na.inv)}
    } else {smc.na <- smc}
    
  if(all(is.na(smc))) {message ("Something is seriously wrong the correlation matrix.\nIn smc, smcs were set to 1.0")

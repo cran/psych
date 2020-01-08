@@ -27,7 +27,7 @@
     return(result)
     }
     
-    #begin main function
+#begin main function
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
     if(!inherits(x[1], "data.frame")) x <- fix.dplyr(x)    #to get around a problem created by dplyr
@@ -46,7 +46,7 @@
     scores <- NULL
     response.freq <- NULL
     raw <- FALSE
-    if (!isCorrelation(x))  { #find the correlations if we are given  raw data
+    if (!isCovariance(x))  { #find the correlations if we are given  raw data
       raw <- TRUE
        if(!is.null(impute) ) {
        		if(impute=="median") {item.impute <- apply(x,2,median,na.rm=na.rm)} else {item.impute <- apply(x,2,mean,na.rm=na.rm) } #column values

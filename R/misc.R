@@ -208,8 +208,19 @@ test.all <- function(p) {
  detach(ob,character.only=TRUE)
 }
 
+#lookup a set of items from a bigger set
+lookupItem <- function(x,y) {
+n.look <- NROW(x)
+possible <- list()
+y <- as.character(y)
+x <- as.character(x)
+for(i in 1:n.look){
+ temp <- grep(x[i],y)
+ if(length(temp)>0) possible[i]<- temp
 
-
+}
+return(possible)
+}
   
   
   #lookup which x's are found in y[c1],return matches for y[]
@@ -252,13 +263,18 @@ return(y)}
     n.fact <- NCOL(f)
 
    ord <- rownames(f)
+   old.names <- ord
+   ord <- sub("-","",ord)
+   rownames(f) <- ord
    if(!is.null(dictionary))  { 
    contents <- lookup(rownames(f),dictionary)} else {message("fa.lookup requires a dictionary, otherwise just use fa.sort")}
    if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits))} else {
    results <- data.frame(round(unclass(f),digits=digits))}
+   
    results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
    rownames(results) <- results[,"Row.names"]
    results <- results[ord,-1]  #now put it back into the correct order
+   rownames(results) <- old.names
    if(!is.null(n)) {
      rn <-rownames(results)
      results <- cbind(results,rn)
@@ -369,6 +385,30 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
   "item.lookup" <- 
 function (f,m, dictionary,cut=.3, digits = 2) {
     f <- fa.sort(f)
+    none<- NULL   #A strange requirement of R 4.0
+     if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust, none)
+     value <- inherits(f, obnames, which=TRUE)
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}} else {value <- "none"}
+  old.names <- NULL
+   switch(value,
+    
+    omega = {f <- f$schmid$sl
+            h2 <- NULL
+            old.names <- rownames(f)
+            rownames(f) <- sub("-","",old.names)},
+    fa    = {
+             h2 <- f$communality
+              com <- f$complexity
+              f <- f$loading        },
+    principal= {
+                h2 <- f$communality
+              com <- f$complexity
+              f <- f$loading},
+    iclust = {f <- f$loadings
+              h2 <- NULL},
+    none = {f <- f
+            h2 <- NULL})
+    
     if (!(is.matrix(f) || is.data.frame(f))) {
         h2 <- f$communality
         com <- f$complexity
@@ -398,13 +438,34 @@ function (f,m, dictionary,cut=.3, digits = 2) {
         sort = FALSE)
     rownames(results) <- results[, "Row.names"]
     results <- results[ord, -1]
-    res <- results[0,]  #make an empty data frame of the structure of results
-    for (i in 1:nfact) { temp <-results[abs(results[,i]) > cut,]
-     ord <- order(temp[,"means"])
-     res <- rbind(res,temp[ord,])
-     }
+    if(!is.null(old.names)) rownames(results) <- old.names
+    res <- results
+  #   res <- results[0,]  #make an empty data frame of the structure of results
+#     for (i in 1:nfact) { temp <- results[abs(results[,i]) > cut,]
+#      ord <- order(temp[,"means"])
+#      res <- rbind(res,temp[ord,])
+#      }
     return(res)
 }
+
+setCorLookup<- function(x,dictionary=NULL,cut=0,digits=2,p=.05) {
+coef <- x$coefficients
+probs <- x$Probability
+labels <- dictionary[rownames(coef),,drop=FALSE]
+
+coef[probs > p] <- NA
+result <- list()
+nvar <- NCOL(coef)
+for (i in 1:nvar) {
+ord <- order(abs(coef[,i]),decreasing=TRUE)
+temp <- cbind(coef=round(coef[ord,i],digits),labels[ord,])
+result[[i]] <- data.frame(temp[!is.na(temp[,1]),])
+}
+names(result) <- colnames(coef)
+result
+}
+
+
 
 
 
@@ -533,14 +594,15 @@ pretty}
               } 
               invisible(x)} 
 
-#this just shows if it is a matrix
+#this just shows if it is a matrix is symmetric and has diagonals of 1
 "isCorrelation" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
   if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
   value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
+  value <- value && isTRUE((min(x)>= -1) & (max(x) <= 1))
   return(value)}
   
-  #this just shows if it is a matrix
+  #this just shows if it is a symmetric matrix
 "isCovariance" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
   if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}

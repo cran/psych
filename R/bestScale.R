@@ -476,7 +476,9 @@ for(i in 1:ny) {short.key[[criteria[i]]] <- round(key.value(key[,i,drop=FALSE],r
  #actually we should not bother with the dictionary here, just at the summary level 
 if(!is.null(dictionary)) {if(!is.factor(dictionary)) {temp <- lookup(rownames(short.key[[criteria[i]]]),dictionary)
 
+#this next line needs to be rethought -- the merge command is very slow
   value[[criteria[[i]]]] <- merge(short.key[[i]],temp,by="row.names",all.x=TRUE,sort=FALSE)
+  
   rownames( value[[criteria[[i]]]]) <-  value[[criteria[[i]]]][,1]
   value[[criteria[[i]]]] <- value[[criteria[[i]]]][-1]             #this looks weird but is because there is an extra name
   ord <- order(abs(value[[criteria[[i]]]][[criteria[[i]]]]),decreasing=TRUE)

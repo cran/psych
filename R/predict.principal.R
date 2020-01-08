@@ -3,11 +3,11 @@
 #revised October 30, 2019 to include bestScales options
 "predict.psych" <-
 function(object,data,old.data,options=NULL,...) {
-  obnames <- cs(fa,bestScales )
+  obnames <- cs(fa,bestScales,setCor,pca, principal )
      value <- inherits(object, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
 
-if(value !="bestScales") value <- "fa"
+if(value %in% cs(factor,pca,principal,omega)) value <- "fa"
 
 switch(value, 
 
@@ -39,7 +39,22 @@ bwt <- object$final.stats$r *  object$final.stats$crit.sd/ object$final.stats$sd
 xmean <- object$final.stats$mean
 ymean <- object$final.stats$crit.mean
 pred <-  t(bwt *(t(scores) - xmean) + ymean )	
-})
+},
+
+#added January 5, 2020
+setCor = {
+   data <- as.matrix(data)
+   if(ncol(data) ==1) data <- t(data)
+   vars <- rownames(object$coefficients)
+   vars <-vars[ vars %in% colnames(data)]
+   data <- data[,vars,drop=FALSE]   
+	if(missing(old.data)) {data <- scale(data)} else {
+	stats <- describe(old.data)
+	data <- scale(data,center=stats$mean,scale=stats$sd)}
+	wt <- object$coefficients[vars,]  #don't use the intercept
+	pred <- data %*% wt
+   }
+)
 
 return(pred)}
 

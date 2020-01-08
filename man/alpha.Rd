@@ -149,7 +149,8 @@ alpha(r9)
 two.f <- sim.item(8)
 #specify which items to reverse key by name
  alpha(two.f,keys=c("V3","V4","V5","V6"))
- 
+ cov.two <- cov(two.f)
+ alpha(cov.two,check.keys=TRUE)
  #automatic reversal base upon first component
 alpha(two.f,check.keys=TRUE)    #note that the median is much less than the average R
 #this suggests (correctly) that the 1 factor model is probably wrong 

@@ -49,7 +49,7 @@ function(x,y=NULL,taux,tauy,i,j,correct=.5,global=TRUE,weight=NULL) {
 
       
  if(is.null(y)) {tab <- x} else {
- if(is.null(weight)) {tab <- tableF(x,y) }  else {tab <- wtd.table(x,y,weight)}  #switched to tableF for speed
+ if(is.null(weight)) {tab <- tableVeryFast(x,y) }  else {tab <- wtd.table(x,y,weight)}  #switched to tableF for speed
  }
  
  #changed 9/8/14 
@@ -64,6 +64,7 @@ function(x,y=NULL,taux,tauy,i,j,correct=.5,global=TRUE,weight=NULL) {
 
     }
   ###### put in the weights here
+  if(sum(tab)>0) {
   if(global) {cc <- taux
               rc <- tauy } else {
   tot <- sum(tab)
@@ -72,7 +73,9 @@ function(x,y=NULL,taux,tauy,i,j,correct=.5,global=TRUE,weight=NULL) {
   cc <- qnorm(rowSums(tab))[1]
   } 
   rho <- optimize(tetraF,interval=c(-1,1),rc=rc,cc=cc,tab=tab)
-  result <- list(rho=rho$minimum,tau=c(cc,rc),objective=rho$objective) }
+  result <- list(rho=rho$minimum,tau=c(cc,rc),objective=rho$objective) 
+  } else { result <- list(rho=NA,tau=c(NA,NA),objectiv=NA)}
+  }
   return(result)
   }
   
@@ -90,7 +93,7 @@ function(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL) {
 #the functions to do parallelism
 myfun <- function(x,i,j) {if(t(!is.na(x[,i]))%*% (!is.na(x[,j]))  > 2 ) {
   tetra <-  tetrac(x[,i],x[,j],tau[i],tau[j],i,j,correct=correct,global=global,weight=weight)} else  {
-  tetra <- NA}}
+  tetra <- list(rho=NA,tau=c(NA,NA),objective=NA)}}
 
 
 matpLower <- function(x,nvar) {
@@ -102,6 +105,8 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    jl [k] <- j
    k<- k+1}
    }
+   
+#for debugging, turn off mcmapply
 tet <- mcmapply(function(i,j) myfun(x,i,j) , il,jl)
 #tet <- mapply(function(i,j) myfun(x,i,j) , il,jl)   #for debugging, we do not do parallel cores
 #now make it a matrix
@@ -124,7 +129,8 @@ if(is.null(weight)) {tau <- -qnorm(colMeans(x,na.rm=TRUE))} else
         {tau <- -qnorm(apply(x,2,function(y) weighted.mean(y,weight,na.rm=TRUE)))}   #weighted tau
 
 mat <- matrix(0,nvar,nvar)
-colnames(mat) <- rownames(mat) <- colnames(x)
+colnames(mat) <- colnames(y)
+rownames(mat) <- colnames(x)
 names(tau) <- colnames(x)
 #cat("\nFinding the tetrachoric correlations\n")
 #for (i in 2:nvar) {
@@ -146,7 +152,7 @@ names(tau) <- colnames(x)
   result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
   
       # the case of having a y variable
-      my <- apply(x,2,function(x) min(x,na.rm=TRUE))
+      my <- apply(y,2,function(x) min(x,na.rm=TRUE))  #apply to y  Dec 24, 2019
         y <- t(t(y) - my)
       #y <- y -min(y,na.rm=TRUE) #in case the numbers are not 0,1 
       if(is.matrix(y)) {ny <- dim(y)[2]
@@ -154,8 +160,9 @@ names(tau) <- colnames(x)
            n.obs.y <- dim(y)[1]
              } else {
              	ny <- 1
-           		n.obs.y <- length(y)}
+           		n.obs.y <- length(y)
            	tauy <- -qnorm(mean(y,na.rm=TRUE))
+           	}
            y <- as.matrix(y) 
            
       if(dim(x)[1] != n.obs.y)  {stop("x and y must have the same number of observations")}
@@ -170,7 +177,9 @@ names(tau) <- colnames(x)
         for (j in 1:ny) {tetra <-  tetrac(x[,i],y[,j],taux[i],tauy[j],correct=correct)
         mat[i,j] <- tetra$rho }
          }
-      colnames(mat) <- rownames(mat) <- colnames(x)    
+      colnames(mat) <- colnames(y)
+      rownames(mat) <- colnames(x) 
+      mat <- t(mat)   
     result <-   list(rho = mat,tau = taux,tauy= tauy,n.obs=n.obs)
      }
  flush(stdout()) 
@@ -226,7 +235,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
                         smooth <- FALSE}
                      
   if(smooth) {mat <- cor.smooth(mat) }  #makes it positive semidefinite 
-   colnames(mat) <- rownames(mat) <- colnames(x)  
+   #colnames(mat) <- rownames(mat) <- colnames(x)   #probably alreday know these
    
   result <- list(rho = mat,tau = tau,n.obs=n.obs) } else {
   
@@ -247,6 +256,8 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
       taux <- -qnorm(colMeans(x,na.rm=TRUE))
       
       nx <- dim(x)[2]
+      
+    
      
       mat <- matrix(0,nx,ny)
       colnames(mat) <- colnames(y)
@@ -316,7 +327,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  return(result) 
  }
  #modified 1/14/14 to include the tableF function to double the speed for large problems
- 
+ #modified 12/25/19 to use tableVeryFast to be even be faster ()
  "tetrachor" <- 
  function(x,correct=.5) {
  #if(!require(mnormt)) {stop("I am sorry, you must have mnormt installed to use tetrachor")}
@@ -467,3 +478,10 @@ class(result) <- c("psych","smoother")
 return(result)
 }
 
+tableVeryFast <- function(x,y){ #just takes 0,1 data 
+#maxxy <-   4 #(maxx+(minx==0))*(maxy+(minx==0))
+bin <- x + y*2+ 1
+dims=c(2 ,2)
+ans <- matrix(tabulate(bin,4),dims)
+ans
+}

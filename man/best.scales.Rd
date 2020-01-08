@@ -172,10 +172,11 @@ bestboot <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),
  n.iter=10,dictionary=psychTools::bfi.dictionary[1:3])
 bestboot
 #compare with 10 fold cross validation 
+\donttest{  #for purposes of speed in installation to pass the debian CRAN test
 tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
 dictionary= psychTools::bfi.dictionary[1:3])
 tenfold
-\donttest{  #for purposes of speed in installation
+
 #Then, to display the results graphically
 #Note that we scale the two graphs with the same x.lim values
 error.dots(bestboot,eyes=TRUE,xlim=c(0,.4))

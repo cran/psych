@@ -107,7 +107,7 @@ z1 <- data[,group]
               covar <- TRUE},
        tet = {r <- by(data,z,function(x) tetrachoric(x[-gr])$rho)},
        poly = {r <- by(data,z,function(x) polychoric(x[-gr])$rho)},
-       mixed = {r <- by(data,z,function(x) mixed.cor(x[-gr])$rho)}
+       mixed = {r <- by(data,z,function(x) mixedCor(x[-gr])$rho)}
        )         
             
              nWg <- by(data,z,function(x) pairwise(x[-gr, -gr]))
@@ -191,7 +191,8 @@ z1 <- data[,group]
                xvals$nw <- pairwise(diffs)
                rwg <- cov2cor(xvals$rwg)
                t <- (rwg*sqrt(xvals$nw -2))/sqrt(1-rwg^2)
-               xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)
+                if(any(NCOL(rwg) > 2)) {xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)} else {xvals.ci.wg=NA}  #added the test for all nBg  <= 2 so we don't call cor.Ci and throw an error  11/2/19
+              # xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)   #this is a local function
                
                
             if(all(nG > 2)) {

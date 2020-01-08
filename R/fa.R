@@ -401,11 +401,13 @@ FA.OLS <- function(Psi,S,nf) {
        cov = {r <- cov(r,use=use) 
               covar <- TRUE},
        wtd = { r <- cor.wt(r,w=weight)$r},
+       spearman = {r <- cor(r,use=use,method="spearman")},
+       kendall = {r <- cor(r,use=use,method="kendall")},
        tet = {r <- tetrachoric(r,correct=correct,weight=weight)$rho},
        poly = {r <- polychoric(r,correct=correct,weight=weight)$rho},
        tetrachoric = {r <- tetrachoric(r,correct=correct,weight=weight)$rho},
        polychoric = {r <- polychoric(r,correct=correct,weight=weight)$rho},
-       mixed = {r <- mixed.cor(r,use=use,correct=correct)$rho},
+       mixed = {r <- mixedCor(r,use=use,correct=correct)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 
@@ -776,3 +778,4 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    #modified spring, 2015 to use switch in the rotation options
    #modified August 25, 2015 to add rot.mat as output
    #modified February 22, 2016 to keep the diagonal of the model as it should be -- e.g., the communalities
+   #December 23, 2019  changed the call to mixed.cor to be mixedCor.

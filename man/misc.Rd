@@ -12,6 +12,7 @@
 \alias{levels2numeric}
 \alias{char2numeric}
 \alias{isCorrelation}
+\alias{isCovariance}
 \alias{fromTo}
 \alias{cs}
 \alias{acs}
@@ -37,7 +38,9 @@ test.all(pl,package="psych",dependencies
       = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) 
  levels2numeric(x) 
  char2numeric(x) 
- isCorrelation(x) #test if an object is a symmetric matrix    
+ isCorrelation(x) #test if an object is a symmetric matrix with diagonals of 1 and 
+  # all values between -1 and 1
+ isCovariance(x)  #test if an object is a symmetric matrix   
  fromTo(data,from,to=NULL) #convert character names to locations as specified in colnames
  #of data
  cs(...) #convert a list of text words to  character vector
@@ -58,7 +61,8 @@ test.all(pl,package="psych",dependencies
   \item{flip}{The factor or components to be reversed keyed (by factor number)}
   \item{correct}{Correct for the maximum possible information in this item}
   \item{base}{What is the base for the log function (default=2, e implies base = exp(1))}
-  \item{pl}{The name of a package (or list of packages) to be activated and then have all the examples tested.}
+  \item{pl}{The name of a package (or list of packages) to be activated and then have all      
+         the examples tested.}
   \item{package}{Find the dependencies for this package, e.g., psych}
   \item{dependencies}{Which type of dependency to examine?}
   \item{find}{Look up the dependencies, and then test all of their examples}

@@ -15,7 +15,7 @@ The biserial correlation is between a continuous y variable and a dichotmous x v
 \usage{
 tetrachoric(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
      delete=TRUE)
-polychoric(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML=FALSE, std.err=FALSE, 
+polychoric(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML=FALSE, std.err=FALSE, 
      weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,  delete=TRUE)
 biserial(x,y)  
 polyserial(x,y) 
@@ -67,11 +67,13 @@ This is a very computationally intensive function which can be speeded up consid
 
 The tetrachoric correlation is used in a variety of contexts, one important one being in Item Response Theory (IRT) analyses of test scores, a second in the conversion of comorbity statistics to correlation coefficients.  It is in this second context that examples of the sensitivity of the coefficient to the cell frequencies becomes apparent:
 
+\code{\link{tetrachoric}} and \code{\link{polychoric}} can find non-symmetric correlation matrices of set of x variables (coluumns) and y variable (rows).  This is useful if extending a solution from a base set of items to a different set.  See \code{\link{fa.extension}} for an application of this.
+
 Consider the test data set from Kirk (1973) who reports the effectiveness of a ML algorithm for the tetrachoric correlation (see examples).
 
 Examples include the lsat6 and lsat7 data sets in the \code{\link{bock}} data.
 
-The polychoric function forms matrices of polychoric correlations by an local function (polyc) and will also report the tau values for each alternatives.  Earlier versions used  John Fox's polychor function which has now been replaced by the polyc function. 
+The polychoric function forms matrices of polychoric correlations by an local function (polyc) and will also report the tau values for each alternative.  Earlier versions used  John Fox's polychor function which has now been replaced by the polyc function. 
 
 For finding one polychoric correlation from a table, see the Olsson example (below).
 
@@ -211,7 +213,10 @@ points(dlow$y*5-4,dlow$x,typ="l",lty="dashed")
 lines(dhigh$y*5-4,dhigh$x,typ="l")
 }
 
-
+#show non-symmeteric results
+test1 <- tetrachoric(psychTools::ability[,1:4],psychTools::ability[,5:10])
+test2 <-  polychoric(psychTools::ability[,1:4],psychTools::ability[,5:10])
+all <- tetrachoric(psychTools::ability[,1:10])
 
 
 }

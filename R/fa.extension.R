@@ -11,7 +11,7 @@
        fl <- fo$loadings 
        fs <- fo$Structure
        
-     } else {if (class(fo)[2] == "omega") {
+     } else {if (inherits(fo,"omega")) {    #switched to inherits  December 20, 2019
          omega <- TRUE
          w <- fo$stats$weights
          fl <- fo$schmid$sl

@@ -67,7 +67,7 @@ response.frequencies <-
     max.item <- max(items, na.rm = TRUE)
    if(is.null(uniqueitems))  uniqueitems <- unique(as.vector(unlist(items)))
     if ((max.item - min.item > max) ||
-        (nlevels(factor(items[, 1])) > max) ||
+        (nlevels(factor(items[[ 1]])) > max) ||    #changed to [[ ]] following suggestion from Mikko Ronkko
         length(uniqueitems) > max) {
         frequency <- NULL
     }

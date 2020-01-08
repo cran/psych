@@ -595,10 +595,12 @@ partial.r = {cat("partial correlations \n")
             if(!is.null(x$twobytwo)) {
               print(x$twobytwo,digits=digits)
               cat("\n implies tetrachoric correlation of ",round(-x$rho,digits))} else {
-            
+            if(!isSymmetric(x$rho))  lower<- FALSE
             if(lower) {lowerMat (x$rho,digits) } else {print(x$rho,digits)}
+        
             cat("\n with tau of \n")
             print(x$tau,digits)
+            if(!is.null(x$tauy)) print(x$tauy,digits)
             }
    },
 
@@ -868,10 +870,12 @@ tau = {cat("Tau values from dichotomous or polytomous data \n")
             cat("tetrachoric correlation \n")
             if(!is.null(x$twobytwo)) {
               print(x$twobytwo,digits=digits)
-              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {
+              cat("\n implies tetrachoric correlation of ",round(x$rho,digits))} else {if(length(x$rho)>1) {
+            if(!isSymmetric(x$rho)) lower <- FALSE} else {lower<- FALSE}
            if(is.matrix(x$rho) &&  lower) {lowerMat (x$rho,digits)} else { print(x$rho,digits)}
             cat("\n with tau of \n")
             print(x$tau,digits)
+            if(!is.null(x$tauy)) print(x$tauy,digits)
           }
    },
    

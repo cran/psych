@@ -100,9 +100,34 @@
   \item Add RMSEA, TFI, etc. to esem (requested by Gabe Orona )
   \item Add formula mode to violinBy and the errorbarsBy, etc.
   \item Add formula mode to lowerCor and lowerMat (to be able to choose a few variables in a data set)
+ 
   }
   }
   }
+  
+   \section{Changes in psych version 1.9.12.31 (2019-12-31)}{
+  
+    \subsection{Additions}{
+
+    \itemize{
+      \item Changed the solve(R) to Pinv(R) in cohen.d when finding Mahalonobis D.
+      \item Modified the examples in bestScales to not test while doing CRAN installation, in order to pass the Debian timing constraints.
+     \item Changed smc to us Pinv rather than solve to find the inverse. 
+     \item Changed isCorrelation to isCovariance in alpha to allow us to find alpha from covariance matrices
+     \item Changed isCorrelation to check for symmetry, diagonals all = 1 and values -1 <= x <= 1
+     \item Added the y option in polychoric to match tetrachoric and the various cor functions. This allows asymmetric correlation matrices.
+     \item Added a number of different correlation options to pca/principal to match those in the fa function.
+     \item Added setCor to the models that can be used for prediction in predict.psych
+         }
+    }
+     \subsection{Bugs Fixed}{
+     \itemize{
+        \item fixed tetrachoric to handle y variables as well as x variables. Further modification to correctly handle empty cells.
+         \item Fixed fa.lookup to properly handle negative signs in names of omega output
+         \item Fixed response.frequencies to handle tibbles following a suggestion from Mikko Ronkko.
+        }
+      }
+    } 
   
   \section{Changes in psych version 1.9.12 (2019-12-15)}{
   

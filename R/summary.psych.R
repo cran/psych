@@ -47,7 +47,10 @@ bestScales = { cat("\nCall = ")
      print(object$summary,digits=digits)
      if(!is.null(object$optimal)) {
      cat("\n Optimal number of items, derivation and cross validation\n")
-   print(object$optimal,digits=digits) }}
+   print(object$optimal,digits=digits) } else {
+       df <- data.frame(correlation=object$r,n.items = object$n.items)
+    cat("The items most correlated with the criteria yield r's of \n")
+    print(round(df,digits=digits)) }}
      ,
 
  

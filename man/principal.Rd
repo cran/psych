@@ -6,7 +6,8 @@
 }
 \usage{
 principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FALSE,
- scores=TRUE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",...)
+ scores=TRUE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",
+ use ="pairwise",cor="cor",correct=.5,weight=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,11 +22,16 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FA
   \item{impute}{"median" or "mean" values are used to replace missing values} 
   \item{oblique.scores}{If TRUE (default), then the component scores are based upon the structure matrix.  If FALSE, upon the pattern matrix.}
   \item{method}{Which way of finding component scores should be used. The default is "regression"}
+   \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
+  \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
+\item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
+  "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixedCor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
+\item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
   \item{...}{other parameters to pass to functions such as factor.scores or the various rotation functions.  }
   }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
 
-There are a number of data reduction techniques including principal components analysis (PCA) and factor analysis (EFA).  Both PC and FA attempt to approximate a given correlation or covariance matrix of rank n with matrix of lower rank (p).  \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n.  For principal components, the item uniqueness is assumed to be zero and all elements of the correlation or covariance matrix are fitted. That is, \eqn{_nR_n \approx _{n}F_{kk}F_n'}{nRn = nFk kFn' }  The primary empirical difference between a components versus a factor model is the treatment of the variances for each item.  Philosophically, components are weighted composites of observed variables while in the factor model, variables are weighted composites of the factors.
+There are a number of data reduction techniques including principal components analysis (PCA) and factor analysis (EFA).  Both PC and FA attempt to approximate a given correlation or covariance matrix of rank n with matrix of lower rank (p).  \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n.  For principal components, the item uniqueness is assumed to be zero and all elements of the correlation or covariance matrix are fitted. That is, \eqn{_nR_n \approx _{n}F_{kk}F_n'}{nRn = nFk kFn' }  The primary empirical difference between a components versus a factor model is the treatment of the variances for each item.  Philosophically, components are weighted composites of observed variables while in the factor model, variables are weighted composites of the factors. As the number of items increases, the difference between the two models gets smaller.  Factor loadings are the asymptotic component loadings as the number of items gets larger. 
 
 For a n x n correlation matrix, the n principal components completely reproduce the correlation matrix.  However, if just the first k principal components are extracted, this is the best k dimensional approximation of the matrix.
 
@@ -77,6 +83,8 @@ The output from the print.psych function displays the component loadings (from t
 
 
 \note{By default, the accuracy of the varimax rotation function seems to be less than the Varimax function. This can be enhanced by specifying eps=1e-14 in the call to principal if using varimax rotation. Furthermore, note that Varimax by default does not apply the Kaiser normalization, but varimax does. Gottfried Helms compared these two rotations with those produced by SPSS and found identical values if using the appropriate options. (See the last two examples.)
+
+The ability to use different kinds of correlations was added in versin 1.9.12.31 to be compatible with the options in fa.
 
 }
 \author{ William Revelle}

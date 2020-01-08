@@ -17,7 +17,7 @@ importFrom(methods,new)
 
 importFrom(tools,file_ext)
 
-#importFrom(foreign,read.spss,read.xport,read.systat)
+#importFrom(foreign,read.spss,read.xport,read.systat) #these are imported in psychTools
 
 S3method(print,psych)
 S3method(biplot,psych)
@@ -231,6 +231,7 @@ item.sim,
 item.lookup,
 #irt2latex,
 isCorrelation,
+isCovariance,
 glb,
 glb.algebraic,
 glb.fa,
@@ -377,6 +378,7 @@ sem.graph,
 set.cor,
 setCor,
 setCor.diagram,
+setCorLookup,
 shannon,
 sim,
 sim.anova,

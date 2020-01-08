@@ -155,8 +155,9 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,
 
 #We have dropped option to use John Fox's polycor package, so we don't need the options
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
+#12/25/19 added the ability to have a y set of  variables as well
 "polychoric" <- 
-function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE)  {
+function(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE)  {
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
@@ -167,7 +168,8 @@ if(std.err) message("The std.error option has been removed from the polychoric f
 
 
 
-myfun <- function(x,i,j,gminx,gmaxx,gminy,gmaxy) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
+myfun <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
+myfuny <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy,tauy) {polyc(x[,i],y[,j],tau[,i],tauy[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
 
 matpLower <- function(x,nvar,gminx,gmaxx,gminy,gmaxy) {
 k <- 1
@@ -178,7 +180,7 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    jl [k] <- j
    k<- k+1}
    }
-poly <- mcmapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
+poly <- mcmapply(function(i,j) myfun(x,y=NULL,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
 #poly <- mapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
 #debugging, we turn off the mcmapply function and do it by hand
 # browser()
@@ -202,7 +204,48 @@ return(poly)
 stop("we need to quit because something was seriously wrong.  Please look at the results")} 
 }
 
+matpxy <- function(x,y,nvar,nvar.y,gminx,gmaxx,gminy,gmaxy,tauy) {
 
+
+if(!is.matrix(tauy)) tauy <- matrix(tauy,ncol=nvar.y)
+#make the lists that are passed to myfuny
+k <- 1
+il <- vector()
+jl <- vector()
+for(i in 1:nvar) {for (j in 1:(nvar.y)) {
+   il[k] <- i
+   jl [k] <- j
+   k<- k+1}
+   }
+ 
+   
+
+#poly <- mapply(function(i,j) myfuny(x,y,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,tauy) , il,jl) 
+poly <- mcmapply(function(i,j) myfuny(x,y,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,tauy) , il,jl) 
+ 
+
+# browser()
+# ppl <- list()
+# for (i in 2:nvar) {for (j in 1:(i-1)) {ppl[[i+j]] <- myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } }
+
+#now make it a matrix
+mat <-  matrix(NA,ncol=nvar,nrow=nvar.y)
+if(length(dim(poly)) == 2) {
+mat<-  as.numeric(poly[1,]) #first row of poly is correlation, 2nd the fit
+
+ fixed <- as.numeric(poly[3,])
+
+fixed <- sum(fixed) 
+if((fixed > 0) && ( correct > 0)) { warning(fixed ," cells were adjusted for 0 values using the correction for continuity. Examine your data carefully.")}
+
+return(mat)} else {
+warning("Something is wrong in polycor ")
+return(poly)
+#never actually gets here
+stop("we need to quit because something was seriously wrong.  Please look at the results")} 
+}
+
+#the main funcion starts here
 #if(!require(mnormt) ) {stop("I am sorry, you must have mnormt installed to use polychoric")}
 #if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
 # polycor <- FALSE}
@@ -216,13 +259,13 @@ if((prod(dim(x)) == 4) | is.table(x))  {result <- polytab(x,correct=correct)
 x <- as.matrix(x)
 if(!is.numeric(x)) {x <- matrix(as.numeric(x),ncol=nvar)
     message("Converted non-numeric input to numeric")}
-xt <- table(x)   #this is clearly not a good idea
-nvalues <- length(xt)  #find the number of response alternatives 
-maxx <- max(x,na.rm=TRUE) 
-if (maxx > nvalues)  {#now, if max(xt) > nvalues we need to recode this to range from 1 to nvalues  #added Jan 10, 2018
-   xtvalues <-as.numeric(names(xt))
-   for(i in 1:nvalues) {x[x==xtvalues[i]] <- i} 
-   }
+# xt <- table(x)   #this finds the number of alternatives in all of x
+# nvalues <- length(xt)  #find the number of response alternatives 
+# maxx <- max(x,na.rm=TRUE) 
+# if (maxx > nvalues)  {#now, if max(xt) > nvalues we need to recode this to range from 1 to nvalues  #added Jan 10, 2018
+#    xtvalues <-as.numeric(names(xt))
+#    for(i in 1:nvalues) {x[x==xtvalues[i]] <- i} 
+#    }
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
 if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
  #first delete any bad cases
@@ -261,7 +304,7 @@ colnames(tau) <- colnames(x)
 mat <- matrix(0,nvar,nvar)
 colnames(mat) <- rownames(mat) <- colnames(x)
 #x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly -- but we have already done it
-
+if(is.null(y)) {
 mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
 
 
@@ -272,7 +315,34 @@ mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra 
 
  colnames(mat) <- rownames(mat) <- colnames(x)
  tau <- t(tau)
-  result <- list(rho = mat,tau = tau,n.obs=nsub,Call=cl) 
+ tauy<- NULL
+ } else { #process the x * y data
+   ymin <- apply(y,2,function(x) min(x,na.rm=TRUE))
+   ymin <- min(ymin,na.rm=TRUE)
+   
+   nvar.y <- NCOL(y)
+   y <- t((t(y) - ymin +1))  #all numbers go from 1 to ymax +1
+   ymax <- apply(y,2,function(x) max(x,na.rm=TRUE))
+   ymax <- max(ymax,na.rm=TRUE)
+   gminy <- 1
+   gmaxy <- ymax 
+   nvaluesy <- ymax - ymin +1
+   yfreq <- apply(y,2,tabulate,nbins=nvaluesy)
+ 	n.obs.y <- colSums(yfreq)
+	yfreq <- t(t(yfreq)/n.obs.y)
+	tauy <- qnorm(apply(yfreq,2,cumsum))[1:(nvalues-1),]
+	if(!is.matrix(tauy)) tauy <- matrix(tauy,ncol=nvar.y) 
+	rownames(tauy) <- 1:(nvalues-1)
+	colnames(tauy) <- colnames(y)
+	
+   mat <- matpxy(x,y,nvar,nvar.y,gminx,gmaxx,gminy,gmaxy,tauy)
+   mat <- matrix(mat,ncol=nvar,nrow=nvar.y)
+   colnames(mat )<- colnames(x)
+   rownames(mat) <- colnames(y)
+   tauy <- t(tauy)
+   tau <- t(tau)
+   }
+  result <- list(rho = mat,tau = tau,tauy = tauy,n.obs=nsub,Call=cl) 
   
  class(result) <- c("psych","poly")
  }

@@ -150,8 +150,9 @@ ev <- eigen(observed.cor)$values
 f1 <- fa(observed.cor)$loadings
 om.fa <- sum(f1)^2/sum(observed.cor)
 e.f1 <- sum(f1^2)/nvar
-    sem.model <- omega.sem(x$fload,sl=TRUE,nf=nfact)  #this is the model based upon the true values
-    if(sem) {if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
+    sem.model <- omegaSem(x$fload,sl=TRUE,nfactors=nfact)  #this is the model based upon the true values
+    if(sem) {stop('The option to use the sem package  has been replaced with calls to lavaan')
+    if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
  
   omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
     if(omega.cfa$omega >1) omega.cfa$omega <- NA
@@ -167,7 +168,7 @@ om <- try(omega(x$observed,om.fact,flip=flip,plot=FALSE,option=option))}
             om <- NA
             next}}
           ic <- suppressWarnings(ICLUST(x$model,1,plot=FALSE))}
-results
+#results
 if(sem) {results[i,"omega"] <- om$omegaSem$omega_h
                 loads <- om$omegaSem$schmid$sl
      

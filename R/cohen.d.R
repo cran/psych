@@ -1,12 +1,11 @@
-"cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL) {
+"cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE) {
 cl <- match.call()
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
   group.in <- TRUE} else {group.in <- FALSE}
  stats <- statsBy(x,group)
  S <- stats$rwg
 
- S.inv <- solve(S)
-
+ S.inv <- Pinv(S)   #the pseudo inverse because it is possible this is not PSD   added December 15, 2019
 d <- stats$mean[2,] - stats$mean[1,]
 sd.p <- sqrt((( (stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,])) #if we subtract 2 from n, we get Hedges g
 sd.ph <- sqrt((((stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,]-2)) #if we subtract 2 from n, we get Hedges g
@@ -29,9 +28,9 @@ hedges.g <- hedges.g[-group]
 r <- cohen.d/sqrt(cohen.d^2 + 1/(  p1*p2)) #} else {r <- cohen.d/sqrt(cohen.d^2 + 1/( p1*p2) )} #for unequal n otherwise this is just 4
 t <- d2t(cohen.d,n)
 p <- ( 1-pt(abs(t),n-2)) * 2
-D <- sqrt(t(d) %*% S.inv %*% d)
-wt.d <- t(d) %*% S.inv *d 
-D <- as.vector(D)
+if(MD) {D <- sqrt(t(d) %*% S.inv %*% d)   #convert to D units from D2 units
+wt.d <- t(d) %*% S.inv *d    #what is this?
+D <- as.vector(D)} else {D <- NA}
 cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
 if(!is.null(dictionary)) {dict <- dictionary[match(rownames(cohen.d.conf),rownames(dictionary)),,drop=FALSE]
    cohen.d.conf <- cbind(cohen.d.conf,dict)} else {dict=NULL}
@@ -95,7 +94,7 @@ invisible(result) #return the values as well
   
  
  "cohen.d.by" <- 
-function(x,group,group2,alpha=.05)  {
+function(x,group,group2,alpha=.05,MD=TRUE)  {
 
 
   group1 <- group
@@ -108,7 +107,7 @@ function(x,group,group2,alpha=.05)  {
     for(i in 1:length(categories)) {
       group <- subset(x,x[group2]==categories[i])
       group <- group[-group2]
-      result[[i]] <- cohen.d(group,group1name)     
+      result[[i]] <- cohen.d(group,group1name,MD=MD)     
       }
       names(result) <- paste0(group1name,"for",group2name ,categories)
       class(result) <- class(result) <- c("psych","cohen.d.by")

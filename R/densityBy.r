@@ -1,10 +1,21 @@
+"violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",alpha= 1,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,ylab=ylab,xlab=xlab,main=main,alpha=alpha,adjust=adjust,restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale,...)
+}
+
 #switched from density = 50 to alpha =.5  to speed up the plotting 
-"violinBy"  <- function(x,var=NULL,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",alpha= 1,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+"violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",alpha= 1,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
 SCALE=.3  #how wide are the plots?
 
 count.valid <- function(x) {sum(!is.na(x)) }
-if(missing(col)) {col <- c("blue","red","black","purple","green","yellow")}
-
+if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}
+ formula <- FALSE
+   if(inherits(x, "formula")) {  ps <- fparse(x)
+   formula <- TRUE
+   if(is.null(data)) {data <- get(ps$y) 
+      var <- NULL #we specified the entire dataframe} else { #stop("You must specify the data if you are using formula input") 
+     x <- data} else {x <- data[ps$y] }
+   grp <- data[ps$x]
+   }
   if(!is.null(grp)) { 
     if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp,drop=FALSE]}
 
@@ -42,7 +53,7 @@ if(length(names) > 1 ) {names <- paste(rep(names,each=ngrp),grp.name[1:ngrp],sep
 
      col <- rep(col,nvar* ngrp)}
 d <- list(nvar)
-if(missing(xlim)) xlim <- c(.5,nvarg+.5)
+if(is.null(xlim)) xlim <- c(.5,nvarg+.5)
 
 for (i in 1:nvar) {
 #if(!is.null(grp)) { if(restrict) {d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE,from=rangex[1,i],to=rangex[2,i]))}
@@ -76,34 +87,53 @@ segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y
 #basically just a violin plot.
 #modified December, 2016 to allow for scaling of the widths of the plots by sample size. 
 
-
-"histBy" <- function(x,grp=NULL,restrict=TRUE,xlim=NULL,ylab="Observed",xlab="",main="Density plot",density=20,scale=TRUE,col= c("blue","red"),...) {
-count.valid <- function(x) {sum(!is.na(x)) }
-if(missing(col)) {col <- c("blue","red")}
-if(restrict) {minx <- min(x)
-   maxx <- max(x)}
-x <- as.matrix(x,drop=FALSE)
-meanX <- apply(x,2,mean,na.rm=TRUE)
-nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
-
-if(!is.null(grp)) { if(restrict) {d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE,from=min(xx,na.rm=TRUE),to=max(xx,na.rm=TRUE)))} else {
-d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE)) }} else {
-if(restrict) {d <- density(x[,1],na.rm=TRUE,from=minx,to=maxx)} else {
-d <- density(x[,1],na.rm=TRUE)} }
-d <- unlist(d,recursive=FALSE)
-maxy <- max(d[[1]]$y,d[[2]]$y,na.rm=TRUE)
-plot(NA,ylim=c(0,maxy),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
-  axis(1,1:nvarg,names,...)
-  axis(2,...)
-  box()
-if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
-polygon(width*c(-d[[i]]$x,d[[i]]$x[rev])+i,c(d[[i]]$y,d[[i]]$y[rev]),density=density,col=col[i],...)
-}
+# 
+# "histBy" <- function(x,grp=NULL,data=NULL,restrict=TRUE,xlim=NULL,ylab="Observed",xlab="",main="Density plot",density=20,scale=TRUE,col= c("blue","red"),...) {
+# count.valid <- function(x) {sum(!is.na(x)) }
+# formula <- FALSE
+#    if(inherits(x, "formula")) {  ps <- fparse(x)
+#    formula <- TRUE
+#    if(is.null(data)) stop("You must specify the data if you are using formula input") 
+#      x <- data[ps$y]
+#    grp <- data[ps$x]
+#    }
+# if(
+#(col)) {col <- c("blue","red")}
+# if(restrict) {minx <- min(x,na.rm=TRUE)
+#    maxx <- max(x,na.rm=TRUE)}
+# x <- as.matrix(x,drop=FALSE)
+# meanX <- apply(x,2,mean,na.rm=TRUE)
+# nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
+# 
+# if(!is.null(grp)) { if(restrict) {d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE,from=min(xx,na.rm=TRUE),to=max(xx,na.rm=TRUE)))} else {
+# d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE)) }} else {
+# if(restrict) {d <- density(x[,1],na.rm=TRUE,from=minx,to=maxx)} else {
+# d <- density(x[,1],na.rm=TRUE)} }
+# d <- unlist(d,recursive=FALSE)
+# maxy <- max(d[[1]]$y,d[[2]]$y,na.rm=TRUE)
+# plot(NA,ylim=c(0,maxy),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
+#   axis(1,1:nvarg,names,...)
+#   axis(2,...)
+#   box()
+# if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
+# polygon(width*c(-d[[i]]$x,d[[i]]$x[rev])+i,c(d[[i]]$y,d[[i]]$y[rev]),density=density,col=col[i],...)
+# }
 
 
 #11/28/17
 
- "densityBy" <- function(x,var=NULL,grp=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5,adjust=1,xlab="Variable", ylab="Density",main="Density Plot") {
+ "densityBy" <- function(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5,adjust=1,xlab="Variable", ylab="Density",main="Density Plot") {
+ formula <- FALSE
+   if(inherits(x, "formula")) {  ps <- fparse(x)
+   formula <- TRUE
+   if(is.null(data)) stop("You must specify the data if you are using formula input") 
+     var <- ps$y
+   grp <- ps$x
+    x <- data
+   
+   }
+ n.grp <- length(table(x[grp]))
+ if(length(col) < n.grp) col <- rainbow(n.grp)
 if(!is.null(var)) x <- x[,c(var,grp),drop=FALSE]
  x <- char2numeric(x)
  col <- adjustcolor(col,alpha.f =alpha)

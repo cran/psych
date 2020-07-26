@@ -14,7 +14,7 @@ describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
 \arguments{
   \item{x}{a data.frame or matrix. See note for statsBy.  }
   
-  \item{group}{a grouping variable or a list of grouping variables}
+  \item{group}{a grouping variable or a list of grouping variables.  (may be ignored if calling using the formula mode.)}
   \item{mat}{provide a matrix output rather than a list}
   \item{type}{Which type of skew and kurtosis should be found}
   \item{digits}{When giving matrix output, how many digits should be reported?}
@@ -22,6 +22,8 @@ describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
   \item{...}{parameters to be passed to describe}
 }
 \details{To get descriptive statistics for several different grouping variables, make sure that group is a list.  In the case of matrix output with multiple grouping variables, the grouping variable values are added to the output.
+
+As of July, 2020, the grouping variable(s) may be specified in formula mode (see the examples).
 
 The type parameter specifies which version of skew and kurtosis should be found.  See \code{\link{describe}} for more details. 
 
@@ -53,8 +55,10 @@ An alternative function (\code{\link{statsBy}}) returns a list of means, n, and 
 \examples{
 
 data(sat.act)
-describeBy(sat.act,sat.act$gender) #just one grouping variable	
+describeBy(sat.act,sat.act$gender) #just one grouping variable
+describeBy(sat.act ~ gender)	
 #describeBy(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
+describeBy(sat.act ~ gender +  education) #two grouping variables
 des.mat <- describeBy(sat.act$age,sat.act$education,mat=TRUE) #matrix (data.frame) output 
 des.mat <- describeBy(sat.act$age,list(sat.act$education,sat.act$gender),
              mat=TRUE,digits=2)  #matrix output

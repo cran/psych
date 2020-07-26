@@ -4,19 +4,27 @@
 \alias{set.cor}
 \alias{mat.regress}
 \alias{matReg} 
+\alias{crossValidation}
+\alias{matPlot}
 \title{Multiple Regression and Set Correlation from matrix or raw input}
 \description{Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets.
 }
 \usage{
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05)
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
+#an alias to setCor
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)    #an alias to setCor
+ main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)   
+  
 mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) #the old form
 
-matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE)  #does not handle 
-                    #formula input
+#does not handle formula input
+matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE) 
+
+
+crossValidation(model,data,options=NULL,select=NULL)
+matPlot(x, type = "b", minlength=6, xlas=0,...)
 }
 
 \arguments{
@@ -30,6 +38,7 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE)  #does not han
 
   \item{use}{find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
+  \item{part}{z is specified should part (TRUE) or partial (default) correlations be found.}
   \item{raw}{Are data from a correlation matrix or data matrix?}
   \item{means}{A vector of means for the data in matReg if giving matrix input}
   \item{main}{The title for setCor.diagram}
@@ -43,6 +52,12 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE)  #does not han
   \item{cex}{Text size of boxes displaying the variables in the diagram}
   \item{l.cex}{Text size of numbers in arrows, defaults to cex}
   \item{...}{Additional graphical parameters for setCor.diagram}
+  \item{model}{The resulting object from setCor or bestScales}
+  \item{options}{If using a bestScales object, which set of keys to use ("best.key","weights","optimal.key","optimal.weights")}
+  \item{select}{Not yet implemented option to crossValidation}
+  \item{type}{type="b" draws both lines and points}
+  \item{xlas}{Orientation of the x labels (3 to make vertical)}
+  \item{minlength}{When abbreviating x labels how many characters as a minimum}
   
 }
 \details{
@@ -50,7 +65,9 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE)  #does not han
  
  Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the data are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
  
- Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the last example.)
+ Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the last example.)  
+ 
+ If using covariates, should they be removed from the dependent as well as the independent variables (part = FALSE, the default which means partial correlations  or just the independent variables (part=TRUE or part aka semi-partial correlations).  The difference between part correlations and partial correlations is whether the variance of the covariate is removed from both the DV and IVs (a partial correlation) or from just the IVs (a part correlation).  The slopes of the regressions remain the same, but the amount of variance in the DV (and thus the standard errors) is larger when using part correlations.  Using partial correlations for the covariates is equivalent to using the covariate in the regression when interpreting the effects of the other variables. 
   
   The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
   
@@ -82,6 +99,10 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  The Variance Inflation Factor is reported but should be taken with the normal cautions of interpretation discussed by Guide and Ketokivi.  That is to say, VIF > 10 is not a magic cuttoff to define colinearity.  It is merely 1/(1-smc(R(x)).
  
  The Guide and Ketokivi article is well worth reading for all who want to use various regression models. 
+ 
+ \code{\link{crossValidation}} can be used to take the results from \code{\link{setCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
+ 
+ \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels).
  
  \code{\link{setCorLookup}} will sort the beta weights and report them with item contents if given a dictionary. 
  \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x,  y and z variables. Its output includes betas, se, t, p and R2.  The call includes m for mediation variables, but these are only used to adjust the degrees of freedom.
@@ -200,10 +221,12 @@ summary(sc)
 setCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
 data=Thurstone)  #showing formula input with two covariates
 
-#Do some regressions with real data 
+#Do some regressions with real data (rather than correlation matrices)
 setCor(reaction ~ cond + pmi + import, data = Tal.Or)
+
 #partial out importance
 setCor(reaction ~ cond + pmi - import, data = Tal.Or, main="Partial out importance")
+
 #compare with using lm by partialling
 mod1 <- lm(reaction ~ cond + pmi + import, data = Tal.Or)
 reaction.import <- lm(reaction~import,data=Tal.Or)$resid
@@ -214,11 +237,23 @@ summary(mod.partial)
 #lm uses raw scores, so set std = FALSE for setCor
 print(setCor(y = reaction ~ cond + pmi - import, data = Tal.Or,std = FALSE,
  main = "Partial out importance"),digits=4)
+#notice that the dfs of the partial approach using lm are 1 more than the setCor dfs 
  
  #Show how to find quadratic terms
 sc <- setCor(reaction ~ cond + pmi + I(import^2), data = Tal.Or)
 sc
 #pairs.panels(sc$data) #show the SPLOM of the data
+
+#Consider an example of a derivation and cross validation sample
+set.seed(42)
+ss <- sample(1:2800,1400)
+model <- setCor(y=26:28,x=1:25,data=bfi[ss,],plot=FALSE)
+original.fit <- crossValidation(model,bfi[ss,]) #the derivation set
+cross.fit <- crossValidation(model,bfi[-ss,])  #the cross validation set
+summary(original.fit)
+summary(cross.fit)
+
 }
+
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{multivariate }% __ONLY ONE__ keyword per line

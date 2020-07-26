@@ -108,7 +108,10 @@ for(f in 1:nf) {
 sumlist[[f]] <- apply(r.n[[f]],2,function(x) {which(max(abs(x))==abs(x))})
 sumnames[[f]] <- rownames(r.n[[f]])[sumlist[[f]]]
 labels[[f]] <- rownames(r.n[[f]])
-fa.loading.phi [[f]] <-list(loadings = fa[[f]],Phi=Phi[[f]])
+if(length(Phi)>0) { #added this check March 3, 2020 
+fa.loading.phi [[f]] <-list(loadings = fa[[f]],Phi=Phi[[f]])} else {
+fa.loading.phi [[f]] <-list(loadings = fa[[f]],Phi=NA) }
+
 class(fa.loading.phi[[f]]) <- cs(psych,fa)
 }
 labels[[nf+1]] <- rownames(fn$loadings)

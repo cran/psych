@@ -1,10 +1,10 @@
 "set.cor" <-
-function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE)  {
-setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show)}
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)  {
+setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show,zero=zero,part=part)}
 
 
 "setCor" <-
-function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05)  {
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05,part=FALSE)  {
 
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
   #and find the multiple correlation beta weights + R2 of the a set predicting the b set
@@ -140,7 +140,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	                zb <- m[y,z,drop=FALSE]
      	                zmi <- solve(zm)
      	                 x.matrix <- x.matrix - za %*% zmi %*% t(za)
-     	                 y.matrix <- y.matrix - zb %*% zmi %*% t(zb)
+     	               if(!part)  y.matrix <- y.matrix - zb %*% zmi %*% t(zb)   #part correlations do not partial y
      	                xy.matrix <- xy.matrix - za  %*% zmi %*% t(zb)
      	                m.matrix <- cbind(rbind(y.matrix,xy.matrix),rbind(t(xy.matrix),x.matrix))
      	               #m.matrix is now the matrix of partialled covariances -- make sure we use this one!
@@ -284,7 +284,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
     
      	                     ci.lower <- list()
      	                     ci.upper <- list() 
-     	                      df <- n.obs-k-1 # -length(z)    #this is the n.obs - length(x)
+     	                      df <- n.obs-k-1 -length(z)    #this is the n.obs - length(x) and number of covariates
      		   	                    	 
      	  #                   if(raw) { 
 #      	                     uniq <- (1-smc(x.matrix)
@@ -381,7 +381,7 @@ setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,
 if(missing(l.cex)) l.cex <- cex  
 beta <- round(sc$coefficients,digits)
 
-if(rownames(beta)[1] %in% c("(Intercept)", "intercept*")) {intercept <- TRUE} else {intercept <- FALSE}
+if(rownames(beta)[1] %in% c("(Intercept)", "intercept*", "(Intercept)*")) {intercept <- TRUE} else {intercept <- FALSE}
 x.matrix <- round(sc$x.matrix,digits)
 
 y.matrix <- round(sc$y.matrix,digits)
@@ -399,32 +399,46 @@ ylim=c(0,top)
 top <- max(nx,ny)
 x <- list()
 y <- list()
+
+var.list <- arrow.list <-  curve.list <- self.list<- list()
 x.scale <- top/(nx+1)
 y.scale <- top/(ny+1)
 plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
-for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i],cex=cex,...) }
+for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i],cex=cex,draw=FALSE,...) 
+               var.list <- c(var.list,x.names[i],x[[i]])}
  
-for (j in 1:ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,...) }
+for (j in 1:ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,draw=FALSE,...)
+                  var.list <- c(var.list,y.names[j],y[[j]]) }
 for(i in 1:nx) {
   for (j in 1:ny) {
-   dia.arrow(x[[i]]$right,y[[j]]$left,labels = beta[i,j],adj=4-j,cex=l.cex,...)
+  
+  d.arrow <-  dia.arrow(x[[i]]$right,y[[j]]$left,labels = beta[i,j],adj=4-j,cex=l.cex,draw=FALSE,...)
+   arrow.list <- c(arrow.list,d.arrow)
    }
 } 
 if(nx >1) {
   for (i in 2:nx) {
-  for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)),both=TRUE,dir="u",cex = l.cex,...)}
-                      #dia.curve(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)))  } 
+  for (k in 1:(i-1)) {dca <- dia.curved.arrow(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)),both=TRUE,dir="u",cex = l.cex,draw=FALSE,...)
+                     curve.list <- c(curve.list,dca)} #dia.curve(x[[i]]$left,x[[k]]$left,x.matrix[i,k],scale=-(abs(i-k)))  } 
   } }
   
-  if(ny>1) {for (i in 2:ny) {
-  for (k in 1:(i-1)) {dia.curved.arrow(y[[i]]$right,y[[k]]$right,y.resid[i,k],scale=(abs(i-k)),dir="u",cex=l.cex, ...)} 
+  if(ny >1) {for (i in 2:ny) {
+  for (k in 1:(i-1)) {dca <- dia.curved.arrow(y[[i]]$right,y[[k]]$right,y.resid[i,k],scale=(abs(i-k)),dir="u",cex=l.cex,draw=FALSE, ...)
+     curve.list <- c(curve.list,dca)} 
   }}
-  for(i in 1:ny) {dia.self(y[[i]],side=3,scale=.2,... )}
+  for(i in 1:ny) {d.self <- dia.self(y[[i]],side=3,scale=.2,draw=FALSE,... )
+          self.list <- c(self.list,d.self)}
  if(show) {text((10-nx/3)/2,0,paste("Unweighted matrix correlation  = ",round(sc$Ruw,digits)))}
+ 
+ 
+ #now draw all the arrows at once
+ multi.rect(var.list,...)
+ multi.arrow(arrow.list,...)
+ multi.curved.arrow(curve.list,...)
+ multi.self(self.list,...)
 }
 		 
-
-      
+ 
 
      	
 print.psych.setCor <- function(x,digits=2) {

@@ -1,5 +1,15 @@
 "cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE) {
 cl <- match.call()
+group2 <- NULL
+if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
+	x <- get(ps$y)
+	group <- ps$x 
+	if(length(group ) > 1) {group2 <- group[2]
+	 group <- group[1]}
+	 }
+	 
+	if(!is.null(group2)){cohen.d.by(x =x, group=group,group2=group2)} else {
+	
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
   group.in <- TRUE} else {group.in <- FALSE}
  stats <- statsBy(x,group)
@@ -42,6 +52,7 @@ se <- (cohen.d.conf[,3] - cohen.d.conf[,1])/2  #average upper - lower
 result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,Call=cl)
 class(result) <- c("psych","cohen.d")
 return(result)
+}
 }
 
 "d2t" <- function(d,n=NULL,n2=NULL,n1=NULL) {if(is.null(n1)) {t <- d*sqrt(n)/2} else 
@@ -95,6 +106,11 @@ invisible(result) #return the values as well
  
  "cohen.d.by" <- 
 function(x,group,group2,alpha=.05,MD=TRUE)  {
+if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
+	x <- get(ps$y)
+	group <- ps$x 
+	if(length(group ) > 1) {group2 <- group[2]
+	 group <- group[1]}}
 
 
   group1 <- group

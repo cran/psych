@@ -11,8 +11,8 @@ function(object,digits=2,items=FALSE,...) {
 #figure out which psych function called us 
 
 if(length(class(object)) > 1)  { 
-mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- NA    #to let it compile 
- obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, mat.reg, bassAck, bestScales,iclust,omega,omegaSem,omegaDirect,overlap,
+mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- crossV <- NA    #to let it compile in R4.0
+ obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, mat.reg, bassAck, bestScales,crossV,iclust,omega,omegaSem,omegaDirect,overlap,
      scores,testRetest, vss,cluster.cor, esem,fa,faBy,extend,extension,items,alpha,setCor,irt.fa,cohen.d,cohen.d.by,mediate,describeData,none)
      value <- inherits(object, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
@@ -50,9 +50,17 @@ bestScales = { cat("\nCall = ")
    print(object$optimal,digits=digits) } else {
        df <- data.frame(correlation=object$r,n.items = object$n.items)
     cat("The items most correlated with the criteria yield r's of \n")
-    print(round(df,digits=digits)) }}
-     ,
+    print(round(df,digits=digits)) }},
 
+ 
+ crossV = {cat("Cross Validation\n")
+          cat("Call:")
+            print(object$Call)
+         cat("\nValidities from raw items and from the correlation matrix\n")
+         cat("Number of unique predictors used = ",object$nvars,"\n")
+        print(object$crossV,digits=digits)
+ },
+ 
  
 iclust = { cat("ICLUST (Item Cluster Analysis)") 
  cat("Call: ")
@@ -73,7 +81,8 @@ print(object$purified$corrected,digits)  }
 } ,
 
 omega =  {
- cat( object$title,"\n") 
+ cat( object$title,"\n")
+ print(object$Call) 
  	cat("Alpha:                ",round(object$alpha,digits),"\n") 
  	cat("G.6:                  ",round(object$G6,digits),"\n")
  	cat("Omega Hierarchical:   " ,round(object$omega_h,digits),"\n")
@@ -321,7 +330,7 @@ setCor = {
               print(object$Call)
             cat("\nMultiple Regression from matrix input \n")
            cat("\nBeta weights \n")
-           print(object$beta,digits)
+           print(object$coefficients,digits)
            cat("\nMultiple R \n") 
            print(object$R,digits)
             cat("\nMultiple R2 \n") 

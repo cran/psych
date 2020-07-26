@@ -8,7 +8,7 @@
 }
 \usage{
 statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
-poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5)
+poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5,weights=NULL)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
@@ -25,6 +25,7 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
 \item{alpha}{The alpha level for the confidence intervals for the ICC1 and ICC2, and rwg, rbg}
 \item{minlength}{The minimum length to use when abbreviating the labels for confidence intervals}
+\item{weights}{If specified, weight the groups by weights when finding the pooled within group correlation.  Otherwise weight by sample size.}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
@@ -62,6 +63,10 @@ It is important to realize that the within group and between group correlations 
 There are actually two ways of finding the within group correlations pooled across groups.  We can find the correlations within every group, weight these by the sample size and then report this pooled value (pooled).  This is found if the cors option is set to TRUE.  It is logically  equivalent to doing a sample size weighted meta-analytic correlation.  The other way, rwg, considers the covariances, variances, and thus correlations when each subject's scores are given as deviation score from the group mean.  
 
 If finding tetrachoric, polychoric, or mixed correlations, these two estimates will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
+
+If the weights parameter is specified, the pooled correlations are found by weighting the groups by the specified weight, rather than sample size.
+
+
 
 Confidence values and significance  of  \eqn{r_{xy_{wg}}}, pwg, reflect the pooled number of cases within groups, while  \eqn{r_{xy_{bg}} }, pbg, the number of groups. These are not corrected for multiple comparisons.
 
@@ -103,9 +108,10 @@ Consider the case of the relationship between various tests of ability when the 
 }
 \author{William Revelle
 }
-\note{If finding polychoric correlations, the two estimates of the pooled within group correlations will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. 
+\note{If finding polychoric correlations, the two estimates of the pooled within group correlations will differ, for the pooled value is the weighted polychoric correlation, but the rwg is the Pearson correlation. As of March, 2020 the average is based upon the weighted FisherZ correlation (back transformed) rather than the average correlation. 
 
 The value of rbg (the between group correlation) is the group size weighted correlation.  This is not the same as just finding the correlation of the group means (i.e. cor(means)).
+
 
 The statsBy.boot function will sometimes fail if sampling with replacement because if the group sizes differ drastically, some groups will be empty.  In this case, sample without replacement.  
 

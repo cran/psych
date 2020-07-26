@@ -20,6 +20,7 @@ if(is.null(y) && is.list(x)) {
 			if(length(class(xi)) > 1)  {
 			   cln <- inherits(xi, obnames, which=TRUE)
 			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}} else {cln <- "other"}
+
 			    switch(cln,
 			      fa = {if(structure) {xi <- xi$Structure} else {xi <- xi$loadings}},
 			      omega = {xi <- xi$schmid$sl
@@ -42,8 +43,8 @@ if(is.null(y)) y <- xg
 }  else {
 if(length(class(x)) > 1) {#cln <- class(x)[2]} else {cln <- "other"}
                cln <- inherits(x, obnames, which=TRUE)
-			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}
-			   }
+			   if (any(cln > 1)) {cln <- obnames[which(cln >0)]} else {cln <- "other"}} else {cln <- "other"}  #fixe March 3, 2020
+			   
 			    switch(cln,
 			     fa = {if(structure) {x <- x$Structure} else {x <- x$loadings}},
 			      omega = {x <- x$schmid$sl

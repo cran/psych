@@ -235,14 +235,14 @@ return(y)}
  #use lookup to take fa/ic output and show the results 
  #modified July 4, 2017 to allow for omega output as well
  #modified June 23, 2018 to limit to top n items per factor and abs(loading) > cut
+ #modified April 30, 2020 to include the ability to handle bassAckward output
 "fa.lookup"  <-
    function(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE) {
-    if(sort) {f <- fa.sort(f)}
-    none <- NA 
-   if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust, none)
+    omega <- bassAck <- none <- lavaan <- NA    #weird requirement to avoid being global
+   if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust,bassAck, none)
      value <- inherits(f, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}}
-  
+   if(sort & (value !="bassAck")) {f <- fa.sort(f)}
    switch(value,
     
     omega = {f <- f$schmid$sl
@@ -257,6 +257,14 @@ return(y)}
               f <- f$loading},
     iclust = {f <- f$loadings
               h2 <- NULL},
+    bassAck = {nlevels <- length(f$bass.ack)	
+              h2 <- NULL
+              ord1 <- rownames(fa.sort(f$bass.ack[[nlevels-1]]))
+               f <- f$bass.ack[[nlevels]]
+               f <- f[,ord1]
+               f <- fa.sort(f)
+               colnames(f) <- paste0("F",1:ncol(f))           
+    },
     none = {f <- f
             h2 <- NULL})
     
@@ -466,7 +474,11 @@ result
 }
 
 
-
+"lookupItems" <- function(content=NULL,dictionary=NULL) {
+  location <-which(colnames(dictionary) %in% c("Item","Content","item"))
+  value <- grep(content,dictionary[,location])
+  dictionary[value,,drop=FALSE]
+}
 
 
 "falsePositive" <- function(sexy=.1,alpha=.05,power=.8) {
@@ -554,6 +566,8 @@ text(x,y-2,"Unreliable but Valid")
 # print(round(R,digits))
 # invisible(R)}
 
+#should we add in the abilty to not choke on character variables?
+
 "cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson") {
 multi <- FALSE
 if(is.list(x) && is.null(y)) {multi <- TRUE
@@ -585,14 +599,27 @@ pretty}
 
 
 #October 25, 2016
+#June 18 2020  added  as.factor to convert character strings that are not stored as factors
+#this has a downsize that it converts numbers stored as characters to factors (see nchar2numeric)
 "char2numeric" <- function(x) {
  nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
-                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
+                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
                           } else {x[[i]] <- NA} }
               } 
               invisible(x)} 
+#added June 25, 2020 to handle the case of numeric data stored as characters              
+"nchar2numeric" <- function(x) {
+ nvar <- NCOL(x)
+ for(i in 1:nvar) {   
+        if(!is.numeric(x[[i]] ))  { 
+                if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {
+                                  if(is.factor(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) } else {x[[i]] <- as.numeric(x[[i]])}
+                          } else {x[[i]] <- NA} }
+              } 
+              invisible(x)} 
+
 
 #this just shows if it is a matrix is symmetric and has diagonals of 1
 "isCorrelation" <-  function(x) {value <- FALSE

@@ -166,7 +166,7 @@ if(is.null(cut)) cut <- .2
   	 
       ECV <- eigenvalues[1]/sum(eigenvalues)
       if(!is.null(x$Fit)) {
-      cat("\nThe degrees of freedom of the confimatory model are ",x$Fit[[1]]$df, " and the fit is ", x$Fit[[1]]$stat, " with p = ",x$Fit[[1]]$pvalue)
+      cat("\nThe degrees of freedom of the confirmatory model are ",x$Fit[[1]]$df, " and the fit is ", x$Fit[[1]]$stat, " with p = ",x$Fit[[1]]$pvalue)
       }
    	cat("\ngeneral/max " ,round(gmax,digits),"  max/min =  ",round(maxmin,digits))
     cat("\nmean percent general = ",round(mp2,digits), "   with sd = ", round(sqrt(vp2),digits), "and cv of ",round(sqrt(vp2)/mp2,digits),"\n")

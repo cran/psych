@@ -11,13 +11,14 @@ May be used for single variables.
 \usage{multi.hist(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",
       dcol=c("black","black"),dlty=c("dashed","dotted"),
       main=NULL,mar=c(2,1,1,1),breaks=21,...)
-histBy(x,var,group,density=TRUE,alpha=.5,breaks=21,col,xlab,
+histBy(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,
             main="Histograms by group",...) 
 }
 \arguments{
   \item{x}{ matrix or data.frame}
   \item{var}{The variable in x to plot in histBy}
   \item{group}{The name of the variable in x to use as the grouping variable}
+  \item{data}{Needs to be specified if using formula input to histBy}
   \item{nrow}{number of rows in the plot}
   \item{ncol}{number of columns in the plot}
   \item{density}{density=TRUE, show the normal fits and density distributions}
@@ -46,7 +47,8 @@ multi.hist(sat.act,dcol="blue")  #make both lines blue
 multi.hist(sat.act,dcol= c("blue","red"),dlty=c("dotted", "solid")) 
 multi.hist(sat.act,freq=TRUE)   #show the frequency plot
 multi.hist(sat.act,nrow=2)
-histBy(sat.act,"SATQ","gender")
+histBy(sat.act,"SATQ","gender") #input by variable names
+histBy(SATQ~ gender, data=sat.act) #formula input
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

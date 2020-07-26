@@ -63,7 +63,7 @@ An even faster overview of the data is \code{\link{describeFast}} which reports 
 
 The fast=TRUE option will lead to a speed up of about 50\% for larger problems by not finding all of the statistics (see NOTE)
 
-To describe the data for different groups, see \code{\link{describeBy}}.
+To describe the data for different groups, see \code{\link{describeBy}} or specify the grouping variable(s) in formula mode (see the examples). 
 
 }
 \value{
@@ -115,6 +115,7 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 \examples{
 data(sat.act)
 describe(sat.act)
+describe(sat.act ~ gender) #formula mode option calls describeBy
 
 describe(sat.act,skew=FALSE)
 describe(sat.act,IQR=TRUE) #show the interquartile Range

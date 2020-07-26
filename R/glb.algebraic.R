@@ -36,7 +36,9 @@ cl<-match.call()
   }
   K<-list(type=c("s","l","l"),size=rep(p,3))
   # call csdp
-  result<- Rcsdp::csdp(C,A,opt,K)
+  #control=csdp.control(printlevel=0)
+  result<- Rcsdp::csdp(C,A,opt,K, control=Rcsdp::csdp.control(printlevel=0))
+  #result<- Rcsdp::csdp(C,A,opt,K)
   if (result$status>=4||result$status==2)
   { warning("Failure of csdp, status of solution=",result$status)
     lb<-list(glb=NA,solution=NA,status=result$status,Call=cl)

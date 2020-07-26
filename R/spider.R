@@ -1,9 +1,30 @@
 #radar and spider developed July 10, 2011
-"radar" <- function(x,labels=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,add=FALSE,linetyp="solid", main="Radar Plot",...) {
+#added the ability to rotate the entire figure 02/24/20 and to use keys
+"radar" <- function(x,labels=NULL,keys=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,add=FALSE,linetyp="solid", 
+       main="Radar Plot",angle=0,absolute=FALSE,show=TRUE,digits=2,cut=.2,...) {
 nvar <- length(x)
-if(is.null(labels)) labels <- paste("V",1:nvar,sep="")
 
-SEGMENTS <- 48
+ if(!is.null(keys) ) {key.ord <- selectFromKeys(keys)
+ num.keys <- length(keys)
+ for (i in 1:num.keys) {
+ select <- sub("-", "", unlist(keys[i]))
+ keys[[i]]<- select}
+ key.ord <- unlist(keys)
+
+} else {key.ord <-1:nvar
+num.keys <- 1 }
+
+ if(is.null(labels)) {labels <- names(keys)
+     show.keys<- TRUE} else {labels <- labels[key.ord]
+     show.keys <- FALSE}
+
+nvar <- length(key.ord)
+x <- x[key.ord]  #this order the x vector according to the keys vector
+if(is.null(labels)) labels <- paste("V",1:nvar,sep="")
+DELTA <- 1.1
+
+
+SEGMENTS <- max(48,nvar)
 if(ncolors < 2) {colors <- FALSE} else {colors <- TRUE}
  angles <- (0:SEGMENTS) * 2 * pi/SEGMENTS
  unit.circle <- cbind(cos(angles), sin(angles))
@@ -19,15 +40,15 @@ if(colors) {
       } else {
     colramp <- grey((ncolors:0)/ncolors)}
 
- for(c in 1:nvar) {
-  nx <-  (c-1)* SEGMENTS/nvar +1
+ for(c in 1:nvar) { 
+  nx <- (((c-1 + angle*num.keys) %% nvar) +1 )* SEGMENTS/nvar +1
 if(center) {x0 <- unit.circle[nx,1] * .5
             y0 <- unit.circle[nx,2] * .5
             } else {
            x0 <- 0
            y0 <- 0}
 
- scaler <- (x[c]*scale/2 + .5)#stats can go from -1 to 1, scale from 0 to 1
+ if(!absolute) {scaler <- (x[c]*scale/2 + .5) } else {scaler <- abs(x[c]*scale    )}#stats can go from -1 to 1, scale from 0 to 1
  x1 <- unit.circle[nx,1]
  y1 <- unit.circle[nx,2] 
  Lx <- c(x0,x1)*scaler
@@ -36,17 +57,32 @@ if(center) {x0 <- unit.circle[nx,1] * .5
  	        Oldy <- unit.circle[(nvar-1)*SEGMENTS/nvar + 1,2]*(x[nvar]*scale/2+.5)}
  
   if(colors) {   
-   if (scaler < .5) {col="red"} else {col="blue"}
+   if(absolute) {
+          {if (x[c] < 0 ) {col="red"} else {col="blue"}
+          }} else {if (scaler < .5) {col="red"} else {col="blue"}
+          }
+    
    lines(Lx,Ly,col=col,...) } else {
    lines(Lx,Ly,...)}
-
+    if(show) {
+    
+       if (abs(x[c]) > cut) {text(Lx[2]*DELTA,Ly[2]*DELTA,round(x[c],digits))}
+      }     
+   
  if(connect) {lines(c(Oldx,x1*scaler),c(Oldy,y1*scaler),lty=linetyp)}
  if(fill) {polygon(c(0,Oldx , x1*scaler,0),c(0,Oldy,y1*scaler,0),col=colramp[ceiling(scaler*ncolors)],...)} 
           
     Oldx <- x1*scaler
  	Oldy <- y1* scaler
  	
-text(x1*1.05,y1*1.05,labels[c])
+if(!show.keys) text(x1*1.05,y1*1.05,labels[c])
+ }
+ if(show.keys) {for(c in 1:num.keys) {
+    nx <- (((c-1 + angle) %% num.keys) +1 )* SEGMENTS/num.keys +1 
+    x1 <- unit.circle[nx,1]
+    y1 <- unit.circle[nx,2] 
+    text(x1*1.05 ,y1*1.05,labels[c])
+     }
  }
  }
  

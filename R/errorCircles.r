@@ -155,10 +155,12 @@ function (x,y,data,ydata=NULL,group=NULL,paired=FALSE, labels=NULL,main=NULL,xli
     	
    
     		text(xcen,ycen,labels=lab[i],pos=locate[i],col=col.text[i],offset=offset,...)     #puts in labels for all points
-    if(circles) { xrange <- xlim[2] - xlim[1]
+    if(circles) {
+   
+     xrange <- xlim[2] - xlim[1]
                 yrange <- ylim[2] - ylim[1]
-                xscale <-max(x$se) *circle.size
-                yscale <-max(y$se) *circle.size
+                xscale <-max(x$se,na.rm=TRUE) *circle.size
+                yscale <-max(y$se,na.rm=TRUE) *circle.size
     ellipse(xcen,ycen,sqrt(xscale*x$n[i]/Nmax),sqrt( yscale*x$n[i]/Nmax),col=col.arrows[i])
     	}
     	}	

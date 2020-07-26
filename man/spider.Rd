@@ -9,8 +9,9 @@ Radar plots and spider plots are just two of the many ways to show multivariate 
 \usage{
 spider(y,x,data,labels=NULL,rescale=FALSE,center=FALSE,connect=TRUE,overlay=FALSE,
     scale=1,ncolors=31,fill=FALSE,main=NULL,...)
-radar(x,labels=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,
-     add=FALSE,linetyp="solid", main="Radar Plot",...) 
+radar(x,labels=NULL,keys=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,
+  add=FALSE,linetyp="solid", main="Radar Plot",angle=0,absolute=FALSE, 
+  show=TRUE,digits=2,cut=.2,...) 
 }
 
 \arguments{
@@ -28,9 +29,15 @@ radar(x,labels=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,
   \item{add}{If TRUE, add a new spider diagram to the previous one.}
   \item{linetyp}{see lty in the par options}
   \item{main}{A label or set of labels for the plots}
+  \item{keys}{If a keys list is provided, then variables are grouped by the keys, with labels drawn for the key names}
+  \item{angle}{Rotate the entire figure angle/nvar to the left.  Useful for drawing circumplex structures}
+  \item{absolute}{If TRUE, then just use color to show correlation size}
+  \item{show}{If TRUE, show the values at the end of the radar lines if they are > cut}
+  \item{digits}{round the values to digits}
+  \item{cut}{Just show values > cut}
   \item{\dots}{Additional parameters can be passed to the underlying graphics call}
 }
-\details{Displaying multivariate profiles may be done by a series of lines (see, e.g., matplot), by colors (see, e.g., \code{\link{cor.plot}}, or by radar or spider plots.  
+\details{Displaying multivariate profiles may be done by a series of lines (see, e.g., matplot), by colors (see, e.g., \code{\link{corPlot}}, or by radar or spider plots. Spiders are particularly suitable for showing data thought to have circumplex structure. 
 
 To show just one variable as a function of several others, use \code{\link{radar}}.  To make multiple plots, use \code{\link{spider}}.  An additional option when comparing just a few y values is to do overlay plots.  Alternatively, set the plotting options to do several on one page.
 }
@@ -38,7 +45,7 @@ To show just one variable as a function of several others, use \code{\link{radar
 
 \author{William Revelle}
 
-\seealso{\code{\link{cor.plot}}  }
+\seealso{\code{\link{corPlot}}  }
 
 \examples{
 op <- par(mfrow=c(3,2))

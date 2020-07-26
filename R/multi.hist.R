@@ -45,7 +45,16 @@ lines(d$x,lty=dlty[1],col=dcol[1],...)}
 
 
 
-"histBy" <- function(x,var,group,density=TRUE,alpha=.5,breaks=21,col,xlab,main="Histograms by group",...) {
+"histBy" <- function(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,main="Histograms by group",...) {
+formula <- FALSE
+   if(inherits(x, "formula")) {  ps <- fparse(x)
+   formula <- TRUE
+   if(is.null(data)) stop("You must specify the data if you are using formula input") 
+     x <- data
+   group <- ps$x
+   var <- ps$y
+   }
+
 if(missing(xlab)) xlab = var
 if(missing(group)) {
    if(missing(col)) col12 <- col2rgb("blue",TRUE)/255
@@ -62,12 +71,15 @@ col12 <- col2rgb(col,TRUE)/255
 col <- rgb(col12[1,],col12[2,],col12[3,],alpha)
 
 xlim=range(x[var],na.rm=TRUE)
+test <- hist(x[,var],breaks=breaks,plot=FALSE)
+breaks <- test$breaks
+
 grp <- names(grp)
 d <- density(x[(gr==grp[1]),var],na.rm=TRUE)
-hist(x[(gr==grp[1]),var],xlim=xlim,col=col[1],breaks=breaks,freq=FALSE,xlab=xlab,main=main,...) 
+hist(x[(gr==grp[1]),var],xlim=xlim,col=col[1],breaks=breaks,freq=FALSE,xlab=xlab,main=main,...)
 if(density) lines(d)
 for(i in (2:length(grp))) {
- hist(x[(gr==grp[i]),var],col=col[i],freq=FALSE,breaks=breaks,add=TRUE,...)
+ hist(x[(gr==grp[i]),var],xlim=xlim,col=col[i],freq=FALSE,breaks=breaks,add=TRUE,...)
 d <- density(x[(gr==grp[i]),var],na.rm=TRUE)
 if(density) lines(d)
 }}

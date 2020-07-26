@@ -123,8 +123,7 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,
   if(tot ==0) {result <- list(rho=NA,objective=NA,fixed=1)
                return(result)} #we have no data for this cell   05/02/18
   tab <- tab/tot
-   if(correct > 0) {if(any(tab[]==0)) {fixed <- 1
-                 tab[tab==0] <- correct/tot }} #moved from below 16.6.22
+    
  if(global) { rho <- optimize(polyF,interval=c(-1,1),rc=taux, cc=tauy,tab)#this uses the global taux and tauy
        } else { #use item row and column information for this pair, rather than global values
       #this seems to match the polycor function
@@ -136,6 +135,11 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,
 		zc <- sum(zerocols)
 		tab <- tab[!zerorows, ,drop=FALSE]  
 		tab <- tab[, !zerocols, drop=FALSE] 
+		
+		if(correct > 0) {if(any(tab[]==0)) {fixed <- 1
+                 tab[tab==0] <- correct/tot }} #moved from below 16.6.22  which introduced a bug, moved to here 7/24/20
+                 
+                 
     	csum <- colSums(tab)
     	rsum <- rowSums(tab)
     	#if(correct > 0) tab[tab==0] <- correct/tot
@@ -157,7 +161,7 @@ function(x,y=NULL,taux,tauy,global=TRUE,weight=NULL,correct=correct,gminx,gmaxx,
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
 #12/25/19 added the ability to have a y set of  variables as well
 "polychoric" <- 
-function(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE)  {
+function(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML = FALSE, std.err = FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE,max.cat=8)  {
 #function(x,smooth=TRUE,global=TRUE,polycor=FALSE,weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,delete=TRUE) {
 #if(!require(parallel)) {message("polychoric requires the parallel package.")}
 #declare these next two functions to be local inside of polychoric
@@ -181,7 +185,7 @@ for(i in 2:nvar) {for (j in 1:(i-1)) {
    k<- k+1}
    }
 poly <- mcmapply(function(i,j) myfun(x,y=NULL,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
-#poly <- mapply(function(i,j) myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
+#poly <- mapply(function(i,j) myfun(x,y=NULL,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) , il,jl) 
 #debugging, we turn off the mcmapply function and do it by hand
 # browser()
 # ppl <- list()
@@ -219,15 +223,10 @@ for(i in 1:nvar) {for (j in 1:(nvar.y)) {
    }
  
    
-
+#Now, we apply the function myfuny and return the polychoric of the x by y
 #poly <- mapply(function(i,j) myfuny(x,y,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,tauy) , il,jl) 
 poly <- mcmapply(function(i,j) myfuny(x,y,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,tauy) , il,jl) 
  
-
-# browser()
-# ppl <- list()
-# for (i in 2:nvar) {for (j in 1:(i-1)) {ppl[[i+j]] <- myfun(x,i,j,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) } }
-
 #now make it a matrix
 mat <-  matrix(NA,ncol=nvar,nrow=nvar.y)
 if(length(dim(poly)) == 2) {
@@ -245,10 +244,8 @@ return(poly)
 stop("we need to quit because something was seriously wrong.  Please look at the results")} 
 }
 
-#the main funcion starts here
-#if(!require(mnormt) ) {stop("I am sorry, you must have mnormt installed to use polychoric")}
-#if(polycor && (!require(polycor))) {warning ("I am sorry, you must have  polycor installed to use polychoric with the polycor option")
-# polycor <- FALSE}
+#the main function starts here
+
  if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
  cl <- match.call() 
  
@@ -259,15 +256,10 @@ if((prod(dim(x)) == 4) | is.table(x))  {result <- polytab(x,correct=correct)
 x <- as.matrix(x)
 if(!is.numeric(x)) {x <- matrix(as.numeric(x),ncol=nvar)
     message("Converted non-numeric input to numeric")}
-# xt <- table(x)   #this finds the number of alternatives in all of x
-# nvalues <- length(xt)  #find the number of response alternatives 
-# maxx <- max(x,na.rm=TRUE) 
-# if (maxx > nvalues)  {#now, if max(xt) > nvalues we need to recode this to range from 1 to nvalues  #added Jan 10, 2018
-#    xtvalues <-as.numeric(names(xt))
-#    for(i in 1:nvalues) {x[x==xtvalues[i]] <- i} 
-#    }
+    
+
 nvalues <- max(x,na.rm=TRUE) - min(x,na.rm=TRUE) + 1
-if(nvalues > 8) stop("You have more than 8 categories for your items, polychoric is probably not needed")
+if(nvalues > max.cat) stop("You have more than", max.cat," categories for your items, polychoric is probably not needed")
  #first delete any bad cases
   item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
@@ -285,13 +277,13 @@ x <- t(t(x) - xmin +1)  #all numbers now go from 1 to nvalues
  
   gminx <- gminy <- 1  #allow for different minima if minmax is null
   xmax <- apply(x,2,function(x)  max(x,na.rm=TRUE))
-#if(global) xmax <- max(xmax)     
- xmax <- max(xmax)  #don't test for globality xmax
- gmaxx <- gmaxy <- xmax #check for different maxima
- 
+#if(global) xmax <- max(xmax) 
 if (min(xmax) != max(xmax)) {global <- FALSE
                       warning("The items do not have an equal number of response alternatives, global set to FALSE.")}
-#xfreq <- apply(x- xmin + 1,2,tabulate,nbins=nvalues)
+    
+ xmax <- max(xmax)  #don't test for globality xmax
+ gmaxx <- gmaxy <- xmax #check for different maxima
+
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
@@ -355,6 +347,7 @@ mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra 
 
 #use polychor from John Fox to do the same
 #matches polychor output perfectly if correct=FALSE
+#polytab is for just one pair of variables 
 "polytab" <- 
 function(tab,correct=TRUE) {
   
@@ -393,6 +386,7 @@ for(i in 1:np) {for (j in 1:nd) {
    jl [k] <- j
    k <- k+1}
    }
+   
 poly <- mcmapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl+np)  #the multicore version
 #poly <- mapply(function(i,j) myfun(x,i,j,correct=correct,taup=taup,taud=taud,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy,np=np) , il,jl +np)   #the normal version for debugging
 #now make it a matrix
@@ -446,6 +440,7 @@ gminx <- gminy <- 1    #set the global minima to 1
 
 pmax <- apply(p,2,function(x)  max(x,na.rm=TRUE)) #check for different maxima
 gmaxx <- max(pmax)
+
 if (min(pmax) != max(pmax)) {global <- FALSE
           warning("The items do not have an equal number of response alternatives, I am setting global to FALSE")}
 gmaxy <- max(apply(d,2,function(x) max(x,na.rm=TRUE)))                      

@@ -16,7 +16,7 @@ partial.r(data, x, y,use="pairwise",method="pearson")
   \item{method}{Which method of correlation should we use, the default is pearson.}
   
 }
-\details{There are two ways to use \code{\link{partial.r}}.  One is to find the complete partial correlation matrix (that is, partial all the other variables out of each variable).  This may be done by simply specify the raw data or correlation matrix.  (In the case of raw data, correlations will be found according to use and method.)  In this case, just specify the data matrix. 
+\details{There are two ways to use \code{\link{partial.r}}.  One is to find the complete partial correlation matrix (that is, partial all the other variables out of each variable).  This may be done by simply specifying the raw data or correlation matrix.  (In the case of raw data, correlations will be found according to use and method.)  In this case, just specify the data matrix. 
 
 This is useful in the case of multiple regression.  If we think of the data as an X matrix and a Y vector (D = X + Y) with correlations R.  Then the partial correlations of the X predictors are just the last column of R^(-1). See the \code{\link{Tal.Or}} example below.
 
@@ -24,6 +24,8 @@ The second usage is to partial a set of variables(y) out of another set (x). It 
 To find the confidence intervals and "significance" of the correlations, use the \code{\link{corr.p}} function with n = n - s where s is the numer of covariates. 
 
 Following a thoughtful request from Fransisco Wilheim,  just find the correlations of the variables specified in the call (previously I  had found the entire correlation matrix, which is a waste of time and breaks if some variables are non-numeric).)
+
+In the case of non-positive definite matrices, find the Pinv (pseudo inverse) of the matrix.
    
 }
 \value{The matrix of partial correlations.}

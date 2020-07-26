@@ -35,9 +35,9 @@ if(missing(m)) m  <- pro.m
 #based upon a suggestion to the R-help news group by Ulrich Keller and John Fox. 
 
 #added May 31st following suggestions to R-Help by Gunter Nickel
-"equamax" <- function(L, Tmat=diag(ncol(L)),  eps=1e-5, maxit=1000) {
+"equamax" <- function(L, Tmat=diag(ncol(L)),  eps=1e-5, maxit=1000) {   #added kappa in the call to cfT May 3, 2020
 kappa=ncol(L)/(2*nrow(L))
- if(requireNamespace('GPArotation')) {GPArotation::cfT(L, Tmat=diag(ncol(L)),  eps=eps, maxit=maxit)}  else {stop("biquartimin requires GPArotation")}}
+ if(requireNamespace('GPArotation')) {GPArotation::cfT(L, Tmat=diag(ncol(L)),kappa=kappa,  eps=eps, maxit=maxit)}  else {stop("biquartimin requires GPArotation")}}
 
 
 #based completely on the GPArotation  GPForth function

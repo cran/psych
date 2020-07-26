@@ -1,14 +1,17 @@
 "error.bars" <-
-function (x,stats=NULL,data=NULL,group=NULL,ylab ="Dependent Variable",xlab="Independent Variable",main=NULL,eyes=TRUE,ylim= NULL,xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col="blue",density=-10,...)  # x   data frame with 
-    {
-     if(!missing(x) && (inherits(x, "formula"))) {if(!is.null(data))
+function (x,stats=NULL,data=NULL,group=NULL,ylab ="Dependent Variable",xlab="Independent Variable", main=NULL, eyes=TRUE, ylim=NULL, xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,  
+pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col=c("black","blue","red"),density=-10,...)  # x   data frame with 
+    {    
+     if(!missing(x) && (inherits(x, "formula"))) {if(!is.null(data))   #if there is a grouping variable, call error.bars.by 
    # cat("\nFormula input detected, calling error.bars.by")
-     error.bars.by(x,data=data,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
-arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 
+error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
+ eyes=eyes,alpha=alpha,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
+ arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 
  legend=0,density=density,...)
-     } else {if(!missing(group)) {  error.bars.by(x,group=group,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
-arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 
- legend=0,density=density,...)}  else {
+     } else {if(!missing(group)) {  error.bars.by(x,group=group,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, 
+     v.labels=NULL, pos=pos, arrow.len=arrow.len, add=add,bars=bars, within=within, 
+     colors=col, legend=0,density=density,...)}  else {   #no grouping variable, this is the normal case
+     
     SCALE=.5   #scale the width of the cats eyes
     if(is.null(stats)) {
     	x.stats <- describe(x)

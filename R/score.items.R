@@ -205,15 +205,15 @@ if(any( !(select %in% colnames(items)) )) {
   rownames(G6) <- "Lambda.6"
   sn <-  av.r * num.item/(1-av.r)
   rownames(sn) <- "Signal/Noise"
-
+ keys.list <- keys2list(keys)  #put them into a list to save them
    if (!raw.data) { 
      if(impute =="none") {
        #rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
-       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,med.r=med.r,Call=cl)} else {
-                            results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,med.r=med.r,Call=cl)}  } else {
-   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,Call=cl)} else{  
-                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,Call=cl)} }
+       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} else {
+         results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,med.r=med.r,keys=keys.list,Call=cl)}  } else {
+   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} else{  
+                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
     return(results)

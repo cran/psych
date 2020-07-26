@@ -74,6 +74,7 @@ Two examples are given.  The first takes 200 cases from the \code{\link[psychToo
  \code{\link{alpha}}, \code{\link{omega}} \code{\link{scoreItems}}, \code{\link{cor2}}
 }
 \examples{
+\donttest{  #for faster compiling, dont test 
 #lmer set to FALSE for speed.
 #set lmer to TRUE to get variance components
 sai.xray <- subset(psychTools::sai,psychTools::sai$study=="XRAY")
@@ -92,7 +93,7 @@ select <-select[-c(1:3)]  #get rid of the id information
 
 dependability <-  testRetest(sai.xray1,msq.xray,keys=select,lmer=FALSE)
 dependability  #show the results
-
+}
 #now examine the Impulsivity subscale of the EPI
 #use the epiR data set which includes epi.keys
 data("epiR",package="psychTools")

@@ -8,7 +8,8 @@ Find the direct and indirect effects of a predictor in path models of mediation 
 }
 \usage{
 mediate(y, x, m=NULL, data, mod = NULL, z = NULL, n.obs = NULL, use = "pairwise",
- n.iter = 5000,  alpha = 0.05, std = FALSE,plot=TRUE,zero=TRUE,main="Mediation")
+ n.iter = 5000,  alpha = 0.05, std = FALSE,plot=TRUE,zero=TRUE,part=FALSE, 
+  main="Mediation")
 mediate.diagram(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE,
      main="Mediation model",cex=1,l.cex=1,...)
 moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model", cex=1,l.cex=1,...)
@@ -27,6 +28,7 @@ moderate.diagram(medi,digits=2,ylim=c(2,8),main="Moderation model", cex=1,l.cex=
   \item{n.iter}{Number of bootstrap resamplings to conduct}
   \item{alpha}{Set the width of the confidence interval to be 1 - alpha}
   \item{std}{standardize the covariances to find the standardized betas}
+  \item{part}{if part=TRUE, find part correlations otherwise find partial correlations when partialling}
   \item{plot}{Plot the resulting paths}
   \item{zero}{By default, will zero center the data before doing moderation}
   \item{digits}{The number of digits to report in the mediate.diagram.} 

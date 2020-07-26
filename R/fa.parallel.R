@@ -107,7 +107,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
     
    if (fa!="pc") {
         if(SMC) { diag(sim.cor) <- smc(sim.cor)
-   					 temp[["sim.fa"]]<- eigen(sim.cor)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,nfactors=nfactors,SMC=FALSE,warnings=FALSE)$values
+   					 temp[["sim.fa"]]<- eigen(sim.cor)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,nfactors=nfactors,rotate="none",SMC=FALSE,warnings=FALSE)$values
    		 temp[["sim.fa"]]    <- fa.values.sim
 }}}
    replicates <- list(samp=temp[["samp"]],samp.fa=temp[["samp.fa"]],sim=temp[["sim"]],sim.fa=temp[["sim.fa"]])

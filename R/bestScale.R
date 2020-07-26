@@ -12,6 +12,7 @@
           n.iter =1,folds=1,p.keyed=.9, #how many bootstraps (n.iter) or folds
           overlap=FALSE,dictionary=NULL,check=TRUE,impute="none", log.p=FALSE, digits=2) {
  cl <- match.call()
+ 
   first <- TRUE
  #check for bad input   -- the Mollycoddle option 
 	if(is.vector(criteria) & any( !(criteria %in% colnames(x)) )) {
@@ -381,6 +382,7 @@ function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,impute="med
  #or raw data are provided (getting ready to do bootstrapping) and we find just the necessary correlations
  
  nvar <- ncol(x)
+ n.item <- min(n.item,nvar-1)
  if(isCorrelation(x)) {r <- x      #  case 1
     raw <- FALSE} else {  #case 2
     y <- x[,criteria]
@@ -411,7 +413,7 @@ if(length(n.item) == 1) n.item <- rep(n.item,ny) #
         }
 #    cut has been adjusted
 
-#The unit weights
+#The unit weightsr
  key <- matrix(0,ncol=ny,nrow=nvar)
  key[t(t(r[,criteria]) >= cut)] <- 1
  key[t(t(r[,criteria]) <= -cut)]<- -1
@@ -426,7 +428,7 @@ if(length(n.item) == 1) n.item <- rep(n.item,ny) #
  used <- rowSums(abs(key))
  key <- key[used > 0,,drop=FALSE]  
  x <- x[,used >0,drop=FALSE]
- 
+ if(NCOL(x) < 1) stop("No items met the criteria.  Try changing the cut value.")
 #now, if we have raw data, find the correlation of the composite scale with the criteria
 #if we have raw data, then we find the scales from the data 
 if(raw)  { #case 2

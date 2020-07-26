@@ -1,7 +1,7 @@
 "describeFast" <- function(x) {
 nvar <- NCOL(x)
 nobs <- NROW(x)
- valid <- colSums(!is.na(x))
+valid <- colSums(!is.na(x))
 temp <- matrix(NA,nrow=nvar,ncol=4)
 for(i in 1:nvar) {temp[i,1] <- is.numeric(x[1,i])
                 temp[i,2] <- is.factor(x[1,i])
@@ -84,10 +84,17 @@ function (x, head = 4, tail = 4)
 #modified May 21, 2015 to allow non-numeric data to be described (but with a warning)
 #further modified June 21, 2016 to allow for character input as well as well reporting quantiles 
 #tried to improve the speed by using multicores, but this requires using s or lapply which don't do what I need.
+#Added the as.factor  to the convert to numeric for non-numeric data
+#Improved July 9, 2020 to allow formula input for grouping variables
 "describe" <-
 function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE)   #basic stats after dropping non-numeric data
                              #slightly faster if we don't do skews
-{                      
+{ 
+if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
+	x <- get(ps$y)
+	group <- ps$x
+	describeBy(x,group=group,na.rm=na.rm,interp=interp,skew=skew,ranges=ranges,trim=trim,type=type,check=check,fast=fast,quant=quant,IQR=IQR,omit=omit)
+  } else {                   
  cl <- match.call()
 #first, define a local function
     valid <- function(x) {sum(!is.na(x))}
@@ -100,7 +107,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
    	numstats <- 10 + length(quant)	+ IQR 
     if ( NCOL(x) < 2)  {if(is.data.frame(x)) {      #
                 if( !is.numeric(x[,1])) {warning ("You were trying to describe a non-numeric data.frame or vector which describe converted  to numeric.")
-                    x[,1] <- as.numeric(x[,])
+                    x[,1] <- as.numeric(as.factor(x[,]))
                     } 
         
                x <- x[,1] }   #getting around the problem of single column data frames       
@@ -142,7 +149,7 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
         if(!is.numeric(x[[i]] ))  {
                                  if(fast)  {x[[i]] <- NA} else {
                                  if(omit) {select[i] <- NA}
-                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(x[[i]]) 
+                                  if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
                                    rownames(stats)[i] <- paste(rownames(stats)[i],"*",sep="")
                                   
                           } else {x[[i]] <- NA} 
@@ -240,4 +247,5 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
 
     class(answer) <- c("psych","describe","data.frame")
     return(answer)
+    }
 }

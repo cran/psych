@@ -7,6 +7,7 @@
     mod <- x$var.names[["mod"]]
    # dv <- x$names[1]
     iv <- rownames(x$direct)
+    if(iv[1] == "Intercept") iv <- iv[-1]
     niv <- length(iv)
     nmed <- length(mv)
     ndv <- length(dv)
@@ -16,11 +17,13 @@
     cat("\nThe DV (Y) was ", dv,". The IV (X) was ", iv,". The mediating variable(s) = ", mv,".")
    if(!is.null(x$mod)) cat("  The moderating variable(s) = ",mod)
    if(!is.null(x$var.names$z))  cat(" Variable(s)  partialled out were", x$var.names[["z"]])
-     
+  
+  
+  
   if(!is.null(mv)) {
    for(j in 1:ndv) { 
-   for(i in 1:niv) { cat("\n\nTotal effect(c) of ",iv[i], " on ", dv[j]," = ",round(x$direct[i,j],digits), "  S.E. = ", round(x$total.reg$se[i,j],digits), " t  = ",round(x$total.reg$t[i,j],digits)," df= ",x$total.reg$df, "  with p = ", signif(x$total.reg$prob[i,j],digits))
-    cat("\nDirect effect (c') of ",iv[i],  " on ", dv[j]," removing ", mv ," = ",round(x$indirect[i,j],digits), "  S.E. = ", round(x$cprime.reg$se[i,j],digits), " t  = ",round(x$cprime.reg$t[i,j],digits), " df= ", x$cprime.reg$df, "  with p = ", signif(x$cprime.reg$prob[i,j],digits))
+   for(i in 1:niv) { cat("\n\nTotal effect(c) of ",iv[i], " on ", dv[j]," = ",round(x$direct[i+1,j],digits), "  S.E. = ", round(x$total.reg$se[i+1,j],digits), " t  = ",round(x$total.reg$t[i+1,j],digits)," df= ",x$total.reg$df, "  with p = ", signif(x$total.reg$prob[i+1,j],digits))
+    cat("\nDirect effect (c') of ",iv[i],  " on ", dv[j]," removing ", mv ," = ",round(x$cprime.reg$beta[i+1,j],digits), "  S.E. = ", round(x$cprime.reg$se[i+1,j],digits), " t  = ",round(x$cprime.reg$t[i+1,j],digits), " df= ", x$cprime.reg$df, "  with p = ", signif(x$cprime.reg$prob[i+1,j],digits))
      
    if(is.null(x$mod)) { cat("\nIndirect effect (ab) of ",iv[i], " on ", dv[j]," through " ,mv , "  = ", round(x$ab[i,j],digits),"\n")
    cat("Mean bootstrapped indirect effect = ",round(x$boot$mean[i],digits), " with standard error = ",round(x$boot$sd[i],digits), " Lower CI = ",round(x$boot$ci[1,i],digits), "   Upper CI = ", round(x$boot$ci[2,i],digits))}
@@ -36,10 +39,13 @@
    
  if(is.null(x$mod)) {
 
-
+ 
     
     cat("\n\n Full output  \n")
     
+      summary.psych.mediate(x)
+    
+    if(FALSE) {
     cat("\nDirect effect estimates (traditional regression)    (c') \n")
      for(j in 1:ndv) {
      
@@ -76,9 +82,9 @@
   if(niv==1) {
     	dfa <- round(data.frame(a = x$a.reg$beta[1,1:nmed],se = x$a.reg$se[1,1:nmed],t = x$a.reg$t[1,1:nmed],df= x$a.reg$df),digits)
     	dfa <- cbind(dfa,p=signif(x$a.reg$prob[1,1:nmed],digits=digits+1))
-    	if(NROW(dfa) ==1) {rownames(dfa) <- rownames(x$a.reg$beta)
+    	if(NROW(dfa) ==1) {rownames(dfa) <- rownames(x$a.reg$beta)[-1]
     	colnames(dfa) <-  c(colnames(x$a.reg$beta),"se","t","df", "Prob")} else {
-    	 rownames(dfa) <- colnames(x$a.reg$beta)
+    	rownames(dfa) <- colnames(x$a.reg$beta)
     	colnames(dfa) <-  c(rownames(x$a.reg$beta),"se","t","df", "Prob")}
     	
     	print(dfa)}  else {
@@ -129,7 +135,7 @@
      
     
     }
-
+}
     }  else {
     cat("\n\nEffect of interaction of ",iv[1], " with ", iv[2] , "  = ", round(x$direct[3],digits),"  S.E. = ", round(x$direct.reg$se[3,1],digits), " t  = ",round(x$direct.reg$t[3,1],digits), "  with p = ", signif(x$direct.reg$prob[3,1],digits))
     cat("\nIndirect effect due to interaction  of ",iv[1], " with ", iv[2] , "  = ", round(x$indirect,digits))

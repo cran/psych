@@ -134,6 +134,8 @@ The optimal number of items statistics:
 
 The stats object can be used to create \code{\link{error.dots}} plots to show the mean estimate and the standard error of the estimates.   See  the examples.
 
+The resulting best scales can be cross validated on a different hold out sample using \code{\link{crossValidation}}.  See the last example. 
+
 }
 
 \note{
@@ -141,12 +143,15 @@ The stats object can be used to create \code{\link{error.dots}} plots to show th
 Although \code{\link{bestScales}} was designed to form the best unit weighted scales, for large data sets, there seems to be some additional information in weighting by the average zero-order correlation. 
 
 To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the \code{link{bfi.dictionary}} as an example.
+
+This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package. The number of cores to use when doing bestScales may be specified using the options command. The greatest step in speed is going from 1 core to 2. This is about a 50% savings. Going to 4 cores seems to have about at 66% savings, and 8 a 75% savings. The number of parallel processes defaults to 2 but can be modified by using the options command: options("mc.cores"=4) will set the number of cores to 4.
+
 }
 \references{
 
 Dawes, R.M. (1979) The robust beauty of improper linear models in decision making, American Psychologist, 34, 571-582.
 
-Elleman, L. G., McDougald, S. K., Condon, D. M., & Revelle, W. (under review). That takes the BISCUIT: A comparative study of predictive accuracy and parsimony of four statistical learning techniques in personality data, with data missingness conditions.
+Elleman, L. G., McDougald, S. K., Condon, D. M., & Revelle, W. 2020 (in press). That takes the BISCUIT: A comparative study of predictive accuracy and parsimony of four statistical learning techniques in personality data, with data missingness conditions.  European Journal of Psychological Assessment. (Preprint available at https://psyarxiv.com/tuqap/)
 
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
 
@@ -168,25 +173,36 @@ Wilks, S. S. (1938), Weighting systems for linear functions of correlated variab
 }
 \examples{
 #This is an example of 'bagging' (bootstrap aggregation)
-bestboot <- bestScales(psychTools::bfi,criteria=cs(gender,age,education), 
- n.iter=10,dictionary=psychTools::bfi.dictionary[1:3])
-bestboot
+#not run in order to pass the timing tests for Debian at CRAN
+#bestboot <- bestScales(psychTools::bfi,criteria=cs(gender,age,education), 
+# n.iter=10,dictionary=psychTools::bfi.dictionary[1:3])
+#bestboot
 #compare with 10 fold cross validation 
-\donttest{  #for purposes of speed in installation to pass the debian CRAN test
+\donttest{#don't test for purposes of speed in installation to pass the debian CRAN test
 tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
-dictionary= psychTools::bfi.dictionary[1:3])
+           dictionary= psychTools::bfi.dictionary[1:3])
 tenfold
 
 #Then, to display the results graphically
 #Note that we scale the two graphs with the same x.lim values
-error.dots(bestboot,eyes=TRUE,xlim=c(0,.4))
-error.dots(tenfold,add=TRUE,pch=16,xlim=c(0,.4))
+
+ error.dots(tenfold,eyes=TRUE,pch=16,xlim=c(0,.4))
+ # error.dots(bestboot,add=TRUE,xlim=c(0,.4))
 #do this again, but this time display the scale fits from 1 to 15 Items
-tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
-dictionary= psychTools::bfi.dictionary[1:3],min.item=1,max.item=15)
-matplot(tenfold$multi.validities$wtd.deriv,typ="b",
-xlab="Number of Items",main="Fit as a function of number of items")   #the wtd weights
-matpoints(tenfold$multi.validities$unit.deriv,typ="b",lwd=2) #the unit weights 
+# tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
+# dictionary= psychTools::bfi.dictionary[1:3],min.item=1,max.item=15)
+# matplot(tenfold$multi.validities$wtd.deriv,typ="b",
+# xlab="Number of Items",main="Fit as a function of number of items")   #the wtd weights
+# matpoints(tenfold$multi.validities$unit.deriv,typ="b",lwd=2) #the unit weights 
+
+#an example of using crossValidation with bestScales
+set.seed(42)
+ss <- sample(1:2800,1400)
+model <- bestScales(bfi[ss,],criteria=cs(gender,education,age))
+original.fit <- crossValidation(model,bfi[ss,]) #the derivation set
+cross.fit <- crossValidation(model,bfi[-ss,])  #the cross validation set
+summary(original.fit)
+summary(cross.fit)
 }
 }
 \keyword{ models }

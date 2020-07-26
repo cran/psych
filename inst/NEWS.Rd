@@ -1,9 +1,9 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 1.9.12.15 (2019-12-15)}{ 
+\section{Changes in psych version 2.0.8 (2020-08-01)}{ 
   \subsection{Introduction}{
     \itemize{
-      \item Version 1.9.12.xx is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 1.9.12.  The second digit reflects the year (i.e., 2018), the third set the month (i.e., 1.8.3 was released in March of 2018, the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.0.8.xx is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{http://personality-project.org/r}. The released version on CRAN is 2.0.7.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.6 was released in June of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="http://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
       \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
@@ -25,7 +25,7 @@
      \item Add option to do subject density and item density plot to IRT plot.
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
-      \item clean up lavaan diagram so that the output is more readable    
+    
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
      \item To help those who want to simulate a bifactor model, make it explicit  
      
@@ -54,7 +54,7 @@
      \item Improve documentation for esem and cosinor
 
       \item Add interbattery diagram to the structure.    
-      \item fix bug in lavaan.diagram for lr=FALSE   
+    
      
       \item Add Krippendorf's alpha?
      
@@ -87,6 +87,8 @@
    \item Add formula input to densityBy
    \item Improve the print function for bassAckwards
    \item Cross reference fa.multi with other functions
+   
+   \item Fix error.bars and error.bars.by so that if there are empty cross tabs it doesn't choke
       } 
   }
   \subsection{To do}{
@@ -100,10 +102,77 @@
   \item Add RMSEA, TFI, etc. to esem (requested by Gabe Orona )
   \item Add formula mode to violinBy and the errorbarsBy, etc.
   \item Add formula mode to lowerCor and lowerMat (to be able to choose a few variables in a data set)
- 
+   \item Need to fix bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
+   \item Look at ICC3 in responde to query from Fred Oswald
+   \item Add a random restart option for various rotation solutions
+   \item Fix bug in fa or fa.stats reported by Kyle Husman (something is wrong with promax solutions)
+   \item Fix passing parameter to Equamax (reported by Erich Studerus)
+   \item Add a warning when doing omegaSem with one factor (or at least make it work -- reported by Erich Studerus)
+   \item Fix a bug in testRetest (reported by Miquel Biron)
+   \item Fix a bug in setCor summary function (reported by Hans Marius Norbom)
+   \item Fix a bug in alpha when finding averager R  (need to use cor rather than cov2cor when treating missing data)
+   \item Fix alpha and scoreItems to think more carefully about what to do if an item has no variance.  Score it anyway, just don't use it for item statistics. (raised by Eric Green).
+    \item Fix a bug in polychoric (reported with suggested patch by Ben Mainwaring.)
+    \item Fix a bug in testRetest (reported by Miguel Biron-Lattes )
+    \item Improve the help file for omegaFromSem and the error handling to quit nicely when asked for omega of a single factor.
+    \item Add weight option to statsBy (but the question is how to handle missing data)
+    \item Fix scoreItems so even if it drops an item with no variance, it still adds it to score (repeorted by Raul Espana)
+    \item Modify lavaan.diagram so that it handles cfa output better
+    \item Fix the mediate output so that it matches the summary
+    \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
+    
+
+
   }
   }
   }
+  
+  \section{Changes in psych version 2.0.7 (2020-7-26)}{
+  
+    \subsection{Additions}{
+
+    \itemize{ 
+    \item Added crossValidation to be compatible with setCor and bestItems
+    \item Added the weights option to statsBy (requested by Joshua Tuttle)  -- still needs to be worked on for weights within groups
+    \item Minor fix to error.dots to allow more control on the figures and to make sure that we are calling psych::describe 
+    \item Now reports the keys used in scoreItems 
+    \item Added the spengler data set as an example for  mediate
+    \item Improved faLookup to handle bassAckward output
+    \item Improved the print and summary from mediate to include the intercept term.
+    \item Improved bassAckward.diagram to allow labeling of higher level factors and to take advantage of the improvement in diagram.
+    \item Improved several of the diagram functions (e.g. bassAckward, fa.diagram, iclust.diagram  etc.) to draw the variable boxes and the path labels as vector calls.  This leads to an impressive increase in speed when drawing the figures.
+    \item Improved char2numeric to handle case of characters not stored as factors
+    \item Improved mediate to use multicores (if available) to speed up the bootstrapping for big problems.
+    \item Improved describe to handle case of characters not stored as factors 
+    \item Added responseFrequency as alias to response.frequencies and added class psych. 
+    \item Added the ability to use formula input for describe (calls describeBy) and describeBy (see the revised help page) 
+    \item Added formula input to cohen.d and cohen.d.by (allowing a cleaner call to cohen.d for 1 grouping or 2 grouping variables)
+    \item Added formula input to violinBy, densityBy, histBy.
+    \item Added the ability to lookup which items in a dictionary have a certain content (lookupItems)
+    \item Added the num.cat option to polychoric for those determined users who want more than 8 categories. 
+    \item Replaced solve with Pinv in the partial.r function.  This allows for inverses of matrices that are not positive semi-definite. 
+    \item Commented out several tests for bestScales in order to pass the Debian timing tests on CRAN
+    }
+    }
+    \subsection{Bugs fixed}{
+    \itemize{
+    \item Fixed summary for setCor to properly print betas (coefficients)  Error introduced in 1.9.12.31 (reported by Hans Marius Norbom)
+    \item Fixed bug in bassAckward for orthogonal rotations (reported by Eva Billen )
+    \item Fixed bug in fa.congruence for case of factor loadings provided by user rather than a psych function (reported by Lisa Debruine)
+    \item Changed the way to find the pooled correlation in statsBy by finding the average fisherZ transformed correlation (back transformed to r) rather than just using the average weighted r. 
+    \item error.bars (which was calling error.bar.by) was not passing all the parameters to error.bars.by.  (Reported by Lorien Elleman).
+    \item errorCircles was not plotting error circles if there were NAs in any of the descriptive statistics\
+    \item Fixed the equamax call to cfT to include kappa in the call (reported by David Condon and Gerard Saucier)
+    \item Fixed alpha to correctly report the alpha if dropped values for the case of nvar=2.  I was right for the first item, not the second (reported by  Thomas Buhl)
+    \item Fixed bug in statsBy that was not returning ci.wg for the case of just two variables (reported by Kate R)
+     \item Fixed typo in spelling of confirmatory of omegaSem
+     \item Fixed a bug in bestScales for the case of very few items (reported by Tim Kaiser)
+     \item Finally fixed a bug in polychoric where it would not properly correct for continuity in the case of different number of response alternatives. (Partly following a suggestion by Ben Mainwaring. )
+     
+     }
+    }
+    }
+    
   
    \section{Changes in psych version 1.9.12.31 (2019-12-31)}{
   

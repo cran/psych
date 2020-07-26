@@ -30,9 +30,9 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{A data frame or matrix}
-  \item{group}{Some dichotomous grouping variable}
-  \item{group2}{Apply cohen.d for each of the subgroups defined by group2}
+  \item{x}{A data frame or matrix }
+  \item{group}{Some dichotomous grouping variable (may be specified using formula input (see example))}
+  \item{group2}{Apply cohen.d for each of the subgroups defined by group2 (may be specified by formula as well)}
  \item{d}{An effect size}
  \item{trim}{The amount of trimming used in finding the means and sds in d.robust}
  \item{n}{Total sample size (of groups 1 and 2)}
@@ -61,7 +61,7 @@ The results of \code{\link{cohen.d}} may be displayed using the \code{\link{erro
 
 In the case of finding the confidence interval for a comparison against 0 (the one sample case), specify n1.  This will yield a d = t/sqrt(n1)  whereas in the case of the differnece between two samples, d = 2*t/sqrt(n) (for equal sample sizes n = n1+ n2) or d = t/sqrt(1/n1 + 1/n2)  for the case of unequal sample sizes.
  
-\code{\link{cohen.d.by}} will find Cohen's d for groups for each subset of the data defined by group2.  The summary of the output produces a simplified listing of the d values for each variable for each group.
+\code{\link{cohen.d.by}} will find Cohen's d for groups for each subset of the data defined by group2.  The summary of the output produces a simplified listing of the d values for each variable for each group.  May be called directly from cohen.d by using formula input and specifying two grouping variables. 
 
 \code{\link{d.robust}} follows Algina et al. 2005) to find trimmed means (trim =.2) and Winsorize variances (trim =.2).  Supposedly, this provides a more robust estimate of effect sizes.
 
@@ -98,8 +98,12 @@ William Revelle
 }
 \examples{
 cohen.d(sat.act,"gender")
+cohen.d(sat.act ~ gender) #formula input version
 cd <- cohen.d.by(sat.act,"gender","education")
 summary(cd)  #summarize the output
+#formula version combines these functions
+cd <- cohen.d(sat.act ~ gender + education)  #find d by gender for each level of education
+summary(cd)
 
 #now show several examples of confidence intervals
 #one group (d vs 0)

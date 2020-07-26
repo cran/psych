@@ -308,6 +308,17 @@ cor.wt = {cat("Weighted Correlations \n")
             print(x$Call)
         lowerMat(x$r,digits=digits) },
 
+crossV = {cat("Cross Validation\n")
+          cat("Call:")
+            print(x$Call)
+         cat("\nValidities from raw items and from the correlation matrix\n")
+         cat("Number of unique predictors used = ",x$nvars,"\n")
+        print(x$crossV,digits=digits)
+         cat("\nCorrelations based upon item based regressions \n")
+         lowerMat(x$item.R)
+          cat("\nCorrelations based upon correlation matrix based regressions\n")
+         lowerMat(x$mat.R)
+          },
          
 
 describe= {if(!is.null(x$signif)) {
@@ -690,7 +701,9 @@ overlap =  {
 	
 	  },
 	   
-                  
+frequency = { cat("Response frequencies (of non-missing items) \n")
+             print(unclass(x),digits=digits)
+            },                
 r.test =  {cat("Correlation tests \n")
             cat("Call:")
               print(x$Call)

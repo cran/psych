@@ -8,12 +8,12 @@
 error.bars(x,stats=NULL,data=NULL,group=NULL, ylab = "Dependent Variable",
 xlab="Independent Variable", main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05, 
 sd=FALSE, labels = NULL, pos = NULL,  arrow.len = 0.05,arrow.col="black",
- add = FALSE,bars=FALSE,within=FALSE, col="blue",density=-10,...)
+ add = FALSE,bars=FALSE,within=FALSE, col=c("black","blue","red"),density=-10,...)
 error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
 \arguments{
-  \item{x}{ A data frame or matrix of raw data OR, a formula of the form DV ~ IV }
+  \item{x}{ A data frame or matrix of raw data OR, a formula of the form DV ~ IV.  If formula input is specified, error.bars.by is called. }
   \item{t}{A table of frequencies}
   \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe)}
   \item{data}{If using formula input, specify the object where the data may found}
@@ -146,6 +146,8 @@ main="Probability of Arrest varies by treatment")
 error.bars.tab(arrest,raw=TRUE,ylab="Number Arrested",xlab="Control vs Treatment",
 main="Count of Arrest varies by treatment")
 
+#If a grouping variable is specified, the function calls error.bars.by
+#Use error.bars.by to have more control over the output.
 #Show  how to use grouping variables
 error.bars(SATV + SATQ ~ gender, data=sat.act) #one grouping variable, formula input
 error.bars(SATV + SATQ ~ education + gender,data=sat.act)#two  grouping variables

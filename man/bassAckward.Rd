@@ -5,7 +5,7 @@
 \title{The Bass-Ackward factoring algorithm discussed by Goldberg
 }
 \description{
- Goldberg (2006) described a hierarchical factor structure organization from the ``top down".  The original idea was to do successive factor analyses from 1 to nf factors organized by factor score correlations from  one level to the next.  Waller (2007) discussed a simple way of doing this for components without finding the scores.  Using the factor correlations (from Gorsuch) to organize factors hierarchically results may be organized at many different levels. The algorithm may be applied to principal components (pca) or to true factor analysis.
+ Goldberg (2006) described a	 hierarchical factor structure organization from the ``top down".  The original idea was to do successive factor analyses from 1 to nf factors organized by factor score correlations from  one level to the next.  Waller (2007) discussed a simple way of doing this for components without finding the scores.  Using the factor correlations (from Gorsuch) to organize factors hierarchically results may be organized at many different levels. The algorithm may be applied to principal components (pca) or to true factor analysis.
 }
 \usage{
 bassAckward(r, nfactors = 1, fm = "minres", rotate = "oblimin", scores = "tenBerge",
@@ -20,7 +20,7 @@ main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...)
 }
   \item{fm}{Factor method.  The default is 'minres' factoring.  Although to be consistent with the original Goldberg article, we can also do principal components (fm ="pca").
 }
-  \item{rotate}{What type of rotation to apply.  The default for factors is oblimin, for pca is varimax.}
+  \item{rotate}{What type of rotation to apply.  The default for factors is oblimin.  Unlike the normal call to pca where the default is varimax, in bassAckward the default for pca is oblimin.}
  \item{scores}{What factor scoring algorithm should be used. The default is "tenBerge", other possibilities include "regression", or "bartlett"}
  \item{adjust}{If using any other scoring proceure that "tenBerge" should we adjust the correlations for the lack of factor score fit?}
   \item{plot}{By default draw a bassAckward diagram}

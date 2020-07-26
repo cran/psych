@@ -4,6 +4,7 @@
 \alias{scoreVeryFast}
 \alias{score.items}
 \alias{response.frequencies}
+\alias{responseFrequency}
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
 \description{Given a data.frame or matrix of n items and N observations and a list of the direction to score them (a keys.list with k keys)  find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Items may be keyed 1 (score it), -1 ) (reverse score it), or 0 (do not score it). Negatively keyed items will be reverse scored.  Although prior versions used a keys matrix, it is now recommended to just use a list of scoring keys. See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items. \code{\link{scoreFast}} and   \code{\link{scoreVeryFast}} just find sums/mean scores and do not report reliabilities.  Much faster for large data sets.
 }
@@ -16,6 +17,7 @@ scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none
        delete=TRUE, min = NULL, max = NULL,count.responses=FALSE, digits = 2)
 scoreVeryFast(keys,items,totals=FALSE, min=NULL,max=NULL,count.responses=FALSE)
 response.frequencies(items,max=10,uniqueitems=NULL)
+responseFrequency(items,max=10,uniqueitems=NULL)
 }
 
 \arguments{

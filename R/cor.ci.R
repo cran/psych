@@ -28,7 +28,7 @@ dvars <- subset(1:nvar,len==2)   #find the dichotomous variables
 pvars <- subset(1:nvar,((len > 2) & (len <= ncat)))  #find the polytomous variables
 cvars <- subset(1:nvar,(len > ncat))  #find the continuous variables (more than ncat levels)
 if(length(pvars)==ncol(x)) {tet <- polychoric(x)
-	    typ = "poly"} else {tet <- mixed.cor(x)
+	    typ = "poly"} else {tet <- mixedCor(x)
 	    typ="mixed" }	    
 	  } 
    
@@ -68,15 +68,17 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
   rho <- cov2cor(rho)     #scale covariances to correlations  
   nvar <- dim(rho)[2]
  
+  
  if(n.iter > 1) {
  	replicates <- list()
  	rep.rots <- list()
  	##now replicate it to get confidence intervals
-
+   #replicates <- lapply(1:n.iter,function(XX) {
+   
  		replicates <- mclapply(1:n.iter,function(XX) {
 		 xs <- x[sample(n.obs,n.obs,replace=TRUE),]
  		{if(poly) {
- 		 if(typ!= "tet") {tets <- mixed.cor(xs)} else {tets <- tetrachoric(xs)}
+ 		 if(typ!= "tet") {tets <- mixedCor(xs)} else {tets <- tetrachoric(xs)}
 
   	R <- tets$rho} else {R <- cor(xs,use="pairwise",method=method)}  #R is the big correlation matrix
  

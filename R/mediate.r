@@ -15,7 +15,7 @@
 #added the ability to partial out variables
 #12/1/18  Added the ability to do quadractic terms (similar to setCor) 
 "mediate" <-
-function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=5000,alpha=.05,std=FALSE,plot=TRUE,zero=TRUE,main= "Mediation")  {
+function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=5000,alpha=.05,std=FALSE,plot=TRUE,zero=TRUE,part=FALSE,main= "Mediation")  {
  
  #this first part just gets the variables right, depending upon the way we input them
    cl <- match.call()
@@ -150,10 +150,11 @@ if (nmod > 0 ) {
 if(std) { C.int <- cov2cor(C.int) }  
 
 #first, find the complete regression model 
-cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,std=std,raw=raw) #we have added  the intercept term here (11/25/19)
+cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,std=std,raw=raw,part=part) #we have added  the intercept term here (11/25/19)
 
  ##this is the zero order beta -- the total effect
-   total.reg <- matReg(x,y,m=m,z=z,C=C,n.obs=n.obs,std=std)   #include m for correct df, add in the z here to do partial correlations
+  # total.reg <- matReg(x,y,m=m,z=z,C=C,n.obs=n.obs,std=std,part=part)   #include m for correct df, add in the z here to do partial correlations
+  total.reg <- matReg(c("Intercept",x),y,m=m,z=z,C=C.int,n.obs=n.obs,std=std,part=part)   #include m for correct df, add in the z here to do partial correlations
    direct <- total.reg$beta
    if(!is.null(z)) {colnames(direct) <- paste0(colnames(direct),"*")
                    rownames(direct) <- paste0(rownames(direct),"*") }
@@ -165,16 +166,17 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
    #For the purposes of moderation, at least for now, think of this as just 2 or 3 IVs
 
  #get a, b and cprime effects and their se
-  
- if(numm > 0) {a.reg <- matReg(x=c("Intercept",x),y=m,C=C.int,z=z,n.obs=n.obs,means=means,std=std)   #the default case is to have at least one mediator
- b.reg <- matReg(c(x,m),y,C=C,z=z,n.obs=n.obs)
+ 
+
+ if(numm > 0) {a.reg <- matReg(x=c("Intercept",x),y=m,C=C.int,z=z,n.obs=n.obs,means=means,std=std,part=part)   #the default case is to have at least one mediator
+ b.reg <- matReg(c(x,m),y,C=C,z=z,n.obs=n.obs,part=part)
 
  
 # cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,std=std) #we have added  the intercept term here (11/25/19)
 
  a <- a.reg$beta[-1,,drop=FALSE]
  b <- b.reg$beta[-(1:numx),,drop=FALSE]
- c <- total.reg$beta
+ c <- total.reg$beta[-1,,drop=FALSE]
  cprime <- cprime.reg$beta
  
 
@@ -209,7 +211,7 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
      
           mean.boot <- sd.boot <- ci.quant <- boot <-  se <- tvalue  <- prob <- NA } else {
          #  if(is.null(mod)) {
-           boot <- boot.mediate(data,x,y,m,z,n.iter=n.iter,std=std,use=use)   #this returns a list of vectors
+           boot <- p.boot.mediate(data,x,y,m,z,n.iter=n.iter,std=std,use=use)   #this returns a list of vectors
   #the first values are the indirect (c') (directly found), the later values are c-ab from  the products
             mean.boot <- colMeans(boot)
             sd.boot <- apply(boot,2,sd)
@@ -262,7 +264,7 @@ if(!is.null(z)) {var.names$IV <- paste0(var.names$IV,"*")
 #Fixed November 29, 2018 to handle se of partialed variables correctly
 #modified September 25, 2019 to find intercepts and standard errors using momements
 #modified even more November 25, 2019 to return the intercepts and R2
-matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE) {
+matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE) {
  if(is.null(n.obs)) n.obs <- 0
    numx <- length(x)   #this is the number of predictors (but we should adjust by the number of covariates)   
    numz <- length(z)
@@ -277,7 +279,7 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE) {
      	                zb <- C[y,z,drop=FALSE]
      	                zmi <- solve(zm)
      	                 x.matrix <- C[x,x,drop=FALSE] - za %*% zmi %*% t(za)
-     	                 y.matrix <- C[y,y,drop=FALSE] - zb %*% zmi %*% t(zb)
+     	               if(!part)  y.matrix <- C[y,y,drop=FALSE] - zb %*% zmi %*% t(zb)  #part versus partial (default)
      	                xy.matrix <- C[x,y,drop=FALSE] - za  %*% zmi %*% t(zb)
      	                 C <- cbind(rbind(y.matrix,xy.matrix),rbind(t(xy.matrix),x.matrix))
      	                
@@ -409,20 +411,90 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
  return(result)  }
 
  
+ 
+ short.boot <- function(i,data,n.obs,x,y,m,z,std,use=use ){ 
+   numx <- length(x)
+  numy <- length(y)
+  numm <- length(m)
+  nxy <- numx + numy 
+  samp.data <- data[sample.int(n.obs,replace=TRUE),]
+  C <- cov(samp.data,use=use)
+  if(!is.null(z)) C <- partialReg(C,x,y,m,z)  #partial out z
+  if(std) C <- cov2cor(C)
+   xy <- c(x,y)     
+        m.matrix <- C[c(x,m),c(x,m)]
+     #	df <- n.obs - nxy - 1 
+     	xy.matrix <- C[c(x,m),y,drop=FALSE]
+     	
+   if(numx ==1) { beta.x <- solve(C[x,x],t(C[x,y]) ) } else  {beta.x <- solve(C[x,x],C[x,y]) }  #this is the zero order beta -- the total effect
+  # if(numx ==0) { a <-  solve(C[x,x,drop=FALSE],t(C[x,m,drop=FALSE]) ) } else { a <-  solve(C[x,x,drop=FALSE],(C[x,m,drop=FALSE]) )} #the a paths    
+   a <-  solve(C[x,x,drop=FALSE],(C[x,m,drop=FALSE]))
+    beta.xm <- solve(m.matrix,xy.matrix)       #solve the equation bY~aX
+    beta <- as.matrix(beta.xm)     #these are the individual predictors, x and then m
+
+  b <- beta[-c(1:numx),,drop=FALSE]
+
+ if((numx == 1) & (numy==1)) {ab <- a * t(b)}  else {ab <- array(NA,dim=c(numx,numm,numy))   #was a[-1]
+                                 for(j in 1:numy) {
+                                 for(k in 1:numm) {
+                                  for (i in 1:numx) { ab[i,k,j] <- t(a[i,k] *  b[k,j])}}   #this needs to be fixed for two numm>1
+                                  }}
+                                  
+ # ab <- a %*% b    #each individual path  #this probably is only correct for the numx = 1 model
+#  if((numx > 1) & (numy > 1)) {for (i in 1:numx) {ab[i,] <- a[i,] * b}}
+  # ab <- a * b  #we don't really need this
+#all.ab <- matrix(NA,ncol=numm*numy,nrow=numx*numm)   
+   #The number of all.ab terms is ( numx * numm) * (numm * numy)
+ # for(j in 1:numm*numy) {
+ # for(i in 1:numx*numm) {all.ab[i,j] <- a[i,] * t(b[j,i])}  #this just does one column of b
+  #
+  
+  #consider muliple ivs 
+ # all.ab <-outer(a,t(b))    #this is cute,but actually not correct
+  #all.ab <- matrix(all.ab,nrow=numx*numm,ncol=numm*numy)
+  all.ab <- ab
+  indirect <-  beta.x - beta[1:numx,1:numy]  #this is c' = c - ab
+ # result[iteration,] <- c(indirect,ab)  #this is a list of vectors
+
+  result <- c(indirect, all.ab)  #this is a list of vectors -- do we really need all all.ab since it is identical to indirect? 
+  
+ return(result)  }
+ 
+ p.boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
+
+  n.obs <- nrow(data)
+  numx <- length(x)
+  numy <- length(y)
+  numm <- length(m)
+  nxy <- numx + numy 
+ result <- matrix(NA,nrow=n.iter,ncol = (numx*numy+ numm*numy*numx ))
+ if((numm > 1) &  (numx > 1)) ab <- matrix(0,nrow=numx,ncol=numy) 
+ 
+  p.result <- list()
+  #mapply to debug
+ p.result <- mcmapply(short.boot,c(1:n.iter),MoreArgs=list(data,n.obs=n.obs,x=x,y=y,m=m,z=z,std=std,use=use))
+
+ return(p.result) 
+  }
    
 "mediate.diagram" <- function(medi,digits=2,ylim=c(3,7),xlim=c(-1,10),show.c=TRUE, main="Mediation model",cex=1,l.cex=1,...) { 
     if(missing(l.cex)) l.cex <- cex
      dv <- medi$var.names[["DV"]]
    # iv <- medi$var.names[["IV"]]
      iv <- as.matrix(rownames(medi$direct))
+     if(iv[1] =="Intercept") iv <- iv[-1]
     mv <- medi$var.names[["med"]]
     mod <- medi$var.names[["mod"]]
    # numx <- length(medi$var.names[["IV"]])
-   numx <- NROW(iv)
+
     numy <- length(dv)
     direct <- round(medi$direct,digits)
-    C <- round(medi$C[c(iv,mv,dv),c(iv,mv,dv)],digits)
-#if have moderated effects, this is the same as more xs    
+    if(!("Intercept*" %in% rownames(C))) {iv <- as.matrix(rownames(medi$direct)[-1])}
+       numx <- NROW(iv)
+    C <- round(medi$C[c(iv,mv,dv),c(iv,mv,dv)],digits) 
+    
+#if have moderated effects, this is the same as more xs  
+  
 
 miny <- 5 - max(length(iv)/2,length(mv),2) - .5
 maxy <- 5 + max(length(iv)/2,length(mv),2) + .5
@@ -434,6 +506,8 @@ var.names <- c(rownames(medi$direct),colnames(medi$direct),rownames(medi$b))
 if(is.null(mv)) {n.mediate <- 0} else {n.mediate <- length(mv)}
 
 m <- list()
+arrow.list <- list()
+rect.list <- list()
  #c <- as.matrix(round(medi$total,digits))
  c <- as.matrix(round(medi$c,digits))
  a <- as.matrix(round(medi$a,digits))
@@ -449,14 +523,16 @@ viv <- 1:numx
 for(i in 1:numx)  {
 if((numx %% 2)== 0) {
 viv[i] <- switch(i,7,3,6,4,8,2,9,1,10)  } else { viv[i] <- switch(i,5,7,3,6,4,8,2,9)}
- x[[i]]  <- dia.rect(1,viv[i],iv[i],cex=cex,...)}
+ x[[i]]  <- dia.rect(1,viv[i],iv[i],cex=cex,draw=FALSE,...)
+   rect.list <- c(rect.list,iv[i],x[[i]])}
  
  vdv <- 1:numy
  y <- list()
  for (i in 1:numy) {
  if((numy %% 2)== 0) {
 vdv[i] <- switch(i,6,4,7,3,8,2,9,1,10)  } else { vdv[i] <- switch(i,5,7,3,6,4,8,2,9)}
- y[[i]] <- dia.rect(9,vdv[i],dv[i],cex=cex,...) 
+ y[[i]] <- dia.rect(9,vdv[i],dv[i],cex=cex,draw=FALSE,...) 
+ rect.list <- c(rect.list,dv[i],y[[i]])
  }
 
 #y <- dia.rect(9,5,dv) 
@@ -481,17 +557,25 @@ for (mediate in 1:n.mediate) {
 v.loc <- sort(v.loc,decreasing=TRUE)
 if(n.mediate ==0) { for(j in 1:numy) {
 			for(i in 1: numx) {
-     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",direct[i,j]),pos=0,cex=l.cex,...)}
+     			d.arrow <-  dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",direct[i,j]),pos=NULL,cex=l.cex,draw=FALSE,...)
+     			arrow.list <- c(arrow.list,d.arrow)}
 	}  
 } else {
 if(n.mediate==1) a <- t(a)
 for (mediate in 1:n.mediate) {
-	m[[mediate]] <- dia.rect(5,v.loc[mediate],mv[mediate],cex=cex,... ) 
+	m[[mediate]] <- dia.rect(5,v.loc[mediate],mv[mediate],cex=cex,draw=FALSE,... )
+	  rect.list <- c(rect.list,mv[mediate],m[[mediate]]) 
+	  
+	  
 		for(j in 1:numy) {
-			for(i in 1: numx) {dia.arrow(x[[i]]$right,m[[mediate]]$left,labels=a[i,mediate],adj=adj,cex=l.cex,...) #a term
-     			if(show.c) {dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",c[i,j]),pos=3,cex=l.cex,...)}
-     			 dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c' = ",cprime[i+1,j]),pos=1,cex=l.cex,...)}   #we have an intercept
-      			dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=b[mediate,j],cex=l.cex,...)  #     
+			for(i in 1: numx) {d.arrow <- dia.arrow(x[[i]]$right,m[[mediate]]$left,labels=a[i,mediate],adj=adj,cex=l.cex,draw=FALSE,...)
+			           arrow.list <- c(arrow.list,d.arrow) #a term
+     			if(show.c) {d.arrow <- dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",c[i,j]),pos=3,cex=l.cex,draw=FALSE,...)
+     			  arrow.list <- c(arrow.list,d.arrow)}
+     			 d.arrow <- dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c' = ",cprime[i+1,j]),pos=1,cex=l.cex,draw=FALSE,...)
+     			  arrow.list <- c(arrow.list,d.arrow)}   #we have an intercept
+      			d.arrow <- dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=b[mediate,j],cex=l.cex,draw=FALSE,...)
+      			 arrow.list <- c(arrow.list,d.arrow)  #     
 			}
 		} 
 		}
@@ -500,6 +584,9 @@ if(numx >1) {
   for (i in 2:numx) {
   for (k in 1:(i-1)) {dia.curved.arrow(x[[i]]$left,x[[k]]$left,C[i,k],scale=-(numx-1)*(abs(viv[i]-viv[k])/rviv),both=TRUE,dir="u",cex=l.cex,...)} 
   } }
+  
+ multi.rect(rect.list,...)
+ multi.arrow(arrow.list,...) 
 	}
 
 
@@ -511,6 +598,7 @@ xlim=c(0,10)
 #plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
 var.names <- rownames(medi$direct)
 x.names <- rownames(medi$direct)
+if(x.names[1] == "Intercept") x.names <- x.names[-1]
 y.names <- colnames(medi$direct)
 beta <- round(medi$direct,digits)
 
@@ -556,7 +644,7 @@ if(nx >1) {
     mv <- x$var.names[["med"]]
     mod <- x$var.names[["mod"]]
    # dv <- x$names[1]
-    iv <- rownames(x$direct)
+    iv <- rownames(x$direct)[-1]
     niv <- length(iv)
     nmed <- length(mv)
     ndv <- length(dv)

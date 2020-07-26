@@ -1,5 +1,6 @@
 \name{fa.lookup}
 \alias{lookup}
+\alias{lookupItems}
 \alias{fa.lookup}
 \alias{item.lookup}
 \alias{keys.lookup}
@@ -11,6 +12,7 @@
 }
 \usage{
 lookup(x,y,criteria=NULL)
+lookupItems(content=NULL,dictionary=NULL)
 fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 keys.lookup(keys.list,dictionary)
@@ -22,6 +24,7 @@ setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{y}{A data matrix or data frame or a vector}
 \item{criteria}{Which variables (by name or location) should be the empirical target for bestScales and bestItems.  May be a separate object. }
 \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
+\item{content}{The word(s) to search for from a dictionary}
 \item{keys.list}{A list of scoring keys suitable to use for make.keys}
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
 \item{n}{Return the n best items per factor (as long as they have their highest loading on that factor)}
@@ -46,7 +49,9 @@ Suppose that you have a "dictionary" of the many variables in a study but you wa
 
 Similarly, given a correlation matrix, r, of the x variables, if you want to find the items that most correlate with another item or scale, and then show the contents of that item from the dictionary, bestItems(r,c1=column number or name of x, contents = y)
 
-\code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements.  
+\code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements. 
+
+\code{\link{lookupItems}} searches a dictionary for all items that have a certain content.  The rownames of the returned object are the item numbers which can then be used in other functions to find statistics (e.g. omega) of a scale with those items.  
 }
 \value{ 
 \code{\link{bestItems}} returns a sorted list of factor loadings or correlations with the labels as provided in the dictionary.
@@ -89,7 +94,7 @@ extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5
 openness = c("O1","-O2","O3","O4","-O5")) 
 lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5)
  #show the keying information
-
+lookupItems("life",psychTools::spi.dictionary) #find those items with "life" in the item
 }
 
 \keyword{ models }

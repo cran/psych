@@ -114,6 +114,7 @@ fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9
  om.extend #show it
  #now, include it in an omega diagram
  combined.om <- rbind(om5$schmid$sl[,1:ncol(om.extend$loadings)],om.extend$loadings)
+ class(combined.om) <-c("psych","extend")
  omega.diagram(combined.om,main="Extended Omega") 
  
 }

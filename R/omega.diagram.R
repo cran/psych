@@ -24,11 +24,13 @@
 #which kind of input are we drawing?
     if(length(class(om.results)) > 1)  {
       omegaSem <- omegaDirect <- omega <- NULL  #strange fix to R 4,0,0 compiler
-    names <- cs(extend, omegaSem, omegaDirect, omega)
+    names <- cs(matrix, extend, omegaSem, omegaDirect, omega)
     value <- inherits(om.results,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { result <- names[which(value > 0)]} else {result <- "other"}
     
     } else {result <- "extend"}    #just a raw matrix
+   if(result == "matrix") result <- "extend"
+
     
 #dispatch to the right option
     switch(result,
@@ -95,6 +97,7 @@ if(result !="other") {#skip to the end if we don' know what we are doing
  
    colnames(factors)[1:length(fact)] <- fact
    var.rect <- list()
+   arrows.list <- list()
    fact.rect <- list()
     max.len <- max(nchar(rownames(factors)))*rsize
    cex <-  min(cex,40/nvar)
@@ -113,32 +116,63 @@ if(result !="other") {#skip to the end if we don' know what we are doing
             end <- num.factors
             }
   for (v in 1:nvar) { 
- 	 var.rect[[v]] <- dia.rect(vloc,nvar-v+1,rownames(factors)[v],xlim=c(0,nvar),ylim=c(0,nvar),cex=cex,...)
+ 	 var.rect[[v]] <- dia.rect(vloc,nvar-v+1,rownames(factors)[v],xlim=c(0,nvar),ylim=c(0,nvar),cex=cex,draw=FALSE,...)
      }
    f.scale <- (nvar+ 1)/(num.factors+1)
    f.shift <- nvar/num.factors
    for (f in 1:num.factors) {
-   		fact.rect[[f]] <- dia.ellipse(grouploc,(num.factors+1-f)*f.scale,colnames(factors)[f+start],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
+   		fact.rect[[f]] <- dia.ellipse(grouploc,(num.factors+1-f)*f.scale,colnames(factors)[f+start],xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,draw=TRUE,...)
      		for (v in 1:nvar)  {
-    			if (abs(factors[v,f+start]) > cut) {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,col=colors[((sign(factors[v,f+start])<0) +1)],lty=((sign(factors[v,f+start])<0)+1),labels=round(factors[v,f+start],digits),adj=f %% adj +1)
-                               }
+    			if (abs(factors[v,f+start]) > cut) {d.arrow <- dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,col=colors[((sign(factors[v,f+start])<0) +1)],lty=((sign(factors[v,f+start])<0)+1),labels=round(factors[v,f+start],digits),adj=f %% adj +1,draw=FALSE)
+                   if(!is.null(d.arrow) )arrows.list <- c(arrows.list,d.arrow)            }
                              }
                      }
    
   g.ellipse <-  dia.ellipse(gloc,(num.var+1)/2,"g",xlim=c(0,nvar),ylim=c(0,nvar),e.size=e.size,...)
    if(!sl) { 
    for (f in 1:num.factors) {
-              dia.arrow(from=g.ellipse,to=fact.rect[[f]],col=colors[((sign(gloading[f])<0) +1)],lty=((sign(gloading[f])<0) +1),labels=round(gloading[f],digits),adj=f %% adj +1)                
-                            }
+            d.arrow <-   dia.arrow(from=g.ellipse,to=fact.rect[[f]],col=colors[((sign(gloading[f])<0) +1)],lty=((sign(gloading[f])<0) +1),labels=round(gloading[f],digits),adj=f %% adj +1,draw=FALSE)                
+            arrows.list <- c(arrows.list,d.arrow)                }
              } else {
               for (i in 1:nvar) {
               if(abs(factors[i,1]) > gcut) {
-               dia.arrow(from=g.ellipse,to=var.rect[[i]]$left,col=colors[((sign(factors[i,1])<0) +1)],lty=((sign(factors[i,1])<0)+1),labels=round(factors[i,1],digits),adj=1)}
-                                 }
+             d.arrow <- dia.arrow(from=g.ellipse,to=var.rect[[i]]$left,col=colors[((sign(factors[i,1])<0) +1)],lty=((sign(factors[i,1])<0)+1),labels=round(factors[i,1],digits),adj=1,draw=FALSE)}
+               if(!is.null(d.arrow) ) arrows.list <- c(arrows.list,d.arrow)         
+                         }
  
 	  }
   if (errors) {for (v in 1:nvar) {
        dia.self(location=var.rect[[v]],scale=.5,side=side)  }
        }
     } #end of normal case
+    
+ tv <- matrix(unlist(var.rect),nrow=nvar,byrow=TRUE)
+      all.rects.x <- tv[,5] #the center of the figure
+      all.rects.y <- tv[,2]
+      all.rects.names <- rownames(factors)
+      dia.rect(all.rects.x, all.rects.y,all.rects.names) 
+ #   multi.rect(var.rect,...)
+
+#draw the factors  not implemented 
+   fv <- matrix(unlist(fact.rect),nrow=num.factors,byrow=TRUE)
+      all.rects.x <- fv[,5] #the center of the figure
+      all.rects.y <- fv[,6]
+      all.rects.names <- colnames(factors)[2:(num.factors+1)]
+    #  dia.ellipse1(all.rects.x, all.rects.y,all.rects.names) 
+      
+
+ 
+#    now show all the loadings as arrows
+#    tv <- matrix(unlist(arrows.list),byrow=TRUE,ncol=20)
+#    cname<- colnames(tv)
+#    tv  <- data.frame(tv)
+#    tv[,c(1:18,20)] <- nchar2numeric(tv[,c(1:18,20)])
+#    colnames(tv) <- cname
+#         text(tv[,1],tv[,2],tv[,3],cex=tv[,4])
+#         len1 <- as.numeric(tv[1,9])
+#         len2 <- as.numeric(tv[1,16]) 
+#         arrows(x0=tv[,5],y0=tv[,6],x1=tv[,7],y1=tv[,8],length=len1,angle=30,code=1,col=tv[,19],lty=tv[,20],...)
+#         arrows(x0=tv[,12],y0=tv[,13],x1=tv[,14],y1=tv[,15],length=len2,angle=30,code=2,col=tv[,19],lty=tv[,29],...)
+# 
+   multi.arrow(arrows.list,...)   
 }                  

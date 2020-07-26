@@ -5,9 +5,13 @@
 #August 12, added the ability to find (and save) the stats using describe or describeBy
 #Modified Oct, 4, 2019 to include cohen.d values
 "error.dots" <- 
-function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,alpha=.05,eyes=FALSE,
-   min.n = NULL,max.labels =40, labels = NULL, groups = NULL, gdata = NULL, cex = par("cex"), 
-    pt.cex = cex, pch = 21, gpch = 21, bg = par("bg"), color = par("fg"), 
+function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
+ stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,
+ alpha=.05,eyes=FALSE, min.n = NULL,max.labels =40, labels = NULL,
+  label.width=NULL, select=NULL, 
+   groups = NULL, gdata = NULL, cex = par("cex"), 
+    pt.cex = cex, pch = 21, gpch = 21, 
+    bg = par("bg"), fg=par("fg"), color = par("fg"), 
     gcolor = par("fg"), lcolor = "gray", 
     xlab = NULL, ylab = NULL,xlim=NULL,add=FALSE,order=NULL, ...) 
 {
@@ -174,14 +178,14 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
     }
    if(!add) plot.new()
     linch <- if (!is.null(labels)) 
-        max(strwidth(labels, "inch"), na.rm = TRUE)
+        max(strwidth(labels, "inch"),label.width, na.rm = TRUE)
     else 0
     if (is.null(glabels)) {
         ginch <- 0
         goffset <- 0
     }
     else {
-        ginch <- max(strwidth(glabels, "inch"), na.rm = TRUE)
+        ginch <- max(strwidth(glabels, "inch"),label.width, na.rm = TRUE)
         goffset <- 0.4
     }
     if (!(is.null(labels) && is.null(glabels))) {
@@ -192,7 +196,10 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
     }
     if (is.null(groups)) {
         o <- 1L:n
-        y <- o
+       if(!is.null(select))  o <- o[select]
+       y <- o 
+       x <- x[o]
+       if(!is.null(ci)) ci <- ci[o]
         ylim <- c(0, n + 1)
     }
     else {
@@ -217,8 +224,8 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,stats=NULL,
     abline(h = y, lty = "dotted", col = lcolor)
     points(x, y, pch = pch, col = color, bg = bg, cex = pt.cex/cex)
     if(!is.null(ci)) {if(!eyes) {
-    segments(x - ci, y, x+ci, y,
-         col = par("fg"), lty = par("lty"), lwd = par("lwd"))
+    segments(x - ci, y, x+ci, y,bg=bg,col=fg,...)
+ #        col = par("fg"), lty = par("lty"), lwd = par("lwd"))
          } }
     if (!is.null(groups)) {
         gpos <- rev(cumsum(rev(tapply(groups, groups, length)) + 

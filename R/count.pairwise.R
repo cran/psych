@@ -143,7 +143,7 @@ if(isCorrelation(x)) {#we have already found correlations, flag those that are m
       return(result)
       }
       
-"pairwisePlot" <- function(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,colors=FALSE,gr=NULL,min.length=6,xlas=1,ylas=2,main="Relative Frequencies",count=TRUE,...) {
+"pairwisePlot" <- function(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,colors=FALSE,gr=NULL,minlength=6,xlas=1,ylas=2,main="Relative Frequencies",count=TRUE,...) {
     if(count){ r <- pairwiseCount(x=x,y=y,diagonal=diagonal)} else {r <- x}
      if(!upper) r[col (r) < row(r) ] <- NA   #blank out the upper diagonal
 if(!diagonal) r[col(r) == row(r)] <- NA
@@ -152,9 +152,9 @@ if(!diagonal) r[col(r) == row(r)] <- NA
      MAR <- 5
      if(is.null(colnames(x))) colnames(r) <- paste0("V",1:nf)
      if(is.null(rownames(x))) rownames(r) <- paste0("V",1:nvar)
-     if(!labels) {min.length <- NULL
+     if(!labels) {minlength <- NULL
         max.len <- 1} else {
-    max.len <- min(max(nchar(rownames(r)))/6,min.length)}
+    max.len <- min(max(nchar(rownames(r)))/6,minlength)}
     r <- r/max(r,na.rm=TRUE)
     zlim <- c(0,1)
 if(colors) { 
@@ -191,9 +191,9 @@ if(show.legend) {   #set it up to do two plots
 image(r,col=colramp,axes=FALSE,main=main,zlim=zlim)
 box()
 if(labels) {
-if(!is.null(min.length)) {
-    rownames(r) <- abbreviate(rownames(r),minlength = min.length)
-    colnames(r) <- abbreviate(colnames(r),minlength = min.length)
+if(!is.null(minlength)) {
+    rownames(r) <- abbreviate(rownames(r),minlength = minlength)
+    colnames(r) <- abbreviate(colnames(r),minlength = minlength)
     
  max.len <- max(nchar(rownames(r)))/6}
  at1 <- (0:(nf-1))/(nf-1)

@@ -5,6 +5,7 @@
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 #modifed November 3, 2018 to allow a single DV (in case cohen.d is just comparing two groups on one DV)
 #corrected January 1, 2019 to allow for grouping variables that are characters
+#March, 2020 Added the ability to weight groups with external weighs  
 "statsBy" <-
    function (data,
             group,
@@ -15,7 +16,8 @@
              poly=FALSE,
              na.rm=TRUE,
              alpha=.05,
-             minlength=5) { #  
+             minlength=5,
+             weights=NULL) { #  
  cl <- match.call()
     
 valid <- function(x) { #count the number of valid cases 
@@ -25,6 +27,7 @@ valid <- function(x) { #count the number of valid cases
 #define a function to count pairwise observations
  pairwise <- function(x) {n <- t(!is.na(x)) %*% (!is.na(x))
               n}
+              
 #get the grouping information
 
 if(length(group) < NROW(data) ){   #added 01/01/19 to handle the case of non-numeric grouping data
@@ -40,6 +43,8 @@ z1 <- data[,group]
              data[,i] <- as.numeric(data[,i])
             # colnames(data)[i] <- paste(cnames[i],"*",sep="")
              }}
+             
+             
        xvals <- list()
        #find the statistics by group
                temp <- by(data,z,colMeans,na.rm=na.rm)
@@ -132,11 +137,17 @@ z1 <- data[,group]
      	  
      	# rownames(xvals$within) <- paste0("z",names(xvals$r))
           rownames(xvals$within) <- rowname
-             
-             wt <- by(data,z,function(x) pairwiseCount(x[-gr]))
-             lower.wt <- t(matrix(unlist(lapply(wt,function(x) if(!is.null(x)) { x[lower.tri(x)]})    )  ,nrow=nvars*(nvars-1)/2))
-             lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))
-             pool  <- colSums( lower.wt * xvals$within,na.rm=TRUE)
+            if(is.null(weights)) {
+             wt <- by(data,z,function(x) pairwiseCount(x[-gr]))  #the normal way is to weight by sample size
+              lower.wt <- t(matrix(unlist(lapply(wt,function(x) if(!is.null(x)) { x[lower.tri(x)]})    )  ,nrow=nvars*(nvars-1)/2)) } else {
+            # wt <- matrix(rep(weights,nvars),ncol=nvars)
+             lower.wt <- matrix(rep(weights,  nvars * (nvars-1)/2),ncol= nvars * (nvars-1)/2) }   #weights are specified in the call
+            
+            
+             lower.wt <- t(t(lower.wt)/colSums(lower.wt,na.rm=TRUE))  #converting to fractions
+            #changed 03/03/20 to weight fisher Z transformed correlations
+            
+             pool  <- colSums(fisherz2r( lower.wt * fisherz(xvals$within)),na.rm=TRUE)
              pool.sd <- apply(xvals$within, 2,FUN=sd, na.rm=TRUE)
              xvals$pooled <- matrix(0,nvars,nvars)
              xvals$pooled[lower.tri(xvals$pooled)] <- pool  
@@ -191,7 +202,8 @@ z1 <- data[,group]
                xvals$nw <- pairwise(diffs)
                rwg <- cov2cor(xvals$rwg)
                t <- (rwg*sqrt(xvals$nw -2))/sqrt(1-rwg^2)
-                if(any(NCOL(rwg) > 2)) {xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)} else {xvals.ci.wg=NA}  #added the test for all nBg  <= 2 so we don't call cor.Ci and throw an error  11/2/19
+               #changed to greater than 1, May 20, 2020
+                if(any(NCOL(rwg) > 1)) {xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)} else {xvals.ci.wg=NA}  #added the test for all nBg  <= 2 so we don't call cor.Ci and throw an error  11/2/19
               # xvals$ci.wg <- cor.Ci(rwg,xvals$nw,alpha=alpha,minlength=minlength)   #this is a local function
                
                

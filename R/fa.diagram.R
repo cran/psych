@@ -5,6 +5,7 @@
 #Rgraphviz uses a NEL  (Node, Edge, Label) representation while diagram uses a complete linking matrix
 #thus, I am trying to combine these two approaches
 #some small revisions, March 2015 to allow cex to be passed to dia.ellipse and dia.rect
+#revised June, 2020 to use dia.ellipse and dia.rect and dia.arrow in vector mode
 
 
 "fa.diagram" <-
@@ -70,38 +71,76 @@
         middle <- .5*x.max
         gf <- 1}  
  for (v in 1:nvar) { 
- 	 var.rect[[v]] <- dia.rect(left,top -v - max(0,n.evar-nvar)/2  ,rownames(factors)[v],xlim=limx,ylim=limy,cex=cex,...)
+ 	 var.rect[[v]] <- dia.rect(left,top -v - max(0,n.evar-nvar)/2  ,rownames(factors)[v],xlim=limx,ylim=limy,cex=cex,draw=FALSE,...)  #find their locations but don't draw them
      }
+     all.rects.x <- rep(left,nvar)
+     all.rects.y <-  top - 1:nvar -  max(0,n.evar-nvar)/2
+     all.rects.names <- rownames(factors)[1:nvar]
+    dia.rect(all.rects.x, all.rects.y,all.rects.names)    #now draw them as a vector
+    
    f.scale <- (top)/(num.factors+1)
    f.shift <- max(nvar,n.evar)/num.factors
    if(g) {fact.rect[[1]] <- dia.ellipse(-max.len/2,top/2,colnames(factors)[1],xlim=limx,ylim=limy,e.size=e.size,cex=cex,...)
           	for (v in 1:nvar)  {if(simple && (abs(factors[v,1]) == max(abs(factors[v,])) )  && (abs(factors[v,1]) > cut) | (!simple && (abs(factors[v,1]) > cut))) { 
     			dia.arrow(from=fact.rect[[1]],to=var.rect[[v]]$left,labels =round(factors[v,1],digits),col=((sign(factors[v,1])<0) +1),lty=((sign(factors[v,1])<0)+1))
     	 }}}
+    	  
+    	  text.values <- list()
+    	  tv.index <- 1
    for (f in gf:num.factors) {  #body  34
-   		if (pc) {fact.rect[[f]] <- dia.rect(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,cex=cex,...) 
-   		} else {fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,cex=cex,...)}
+   		if (pc) {fact.rect[[f]] <- dia.rect(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,cex=cex,draw=FALSE,...) 
+   		} else {fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,cex=cex,draw=FALSE,...)}
+     		
+     		
      		for (v in 1:nvar)  {
      		
     			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
-    		if(pc) {dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj ,cex=cex) 
-    		} else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj +1,cex=cex)}
+    		if(pc) {text.values[[tv.index]] <- dia.arrow(to=fact.rect[[f]],from=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj ,cex=cex,draw=FALSE)
+    		    tv.index <- tv.index + 1 
+    		} else {text.values[[tv.index]] <- dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =round(factors[v,f],digits),col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0)+1),adj=f %% adj +1,cex=cex,draw=FALSE)
+    		       tv.index <- tv.index + 1  }   
     			 }
    }
    }
-   
-   if(!is.null(Phi) && (ncol(Phi) >1)) { for (i in 2:num.factors) {
+    #now draw all the factors/components and their associated loadings
+    #first, just the factors and their labels
+    
+     
+      tv <- matrix(unlist(fact.rect),nrow=num.factors,byrow=TRUE)
+      all.rects.x <- tv[,5] #the center of the figure
+      all.rects.y <- tv[,2]
+      all.rects.names <- colnames(factors)
+     
+      dia.rect(all.rects.x, all.rects.y,all.rects.names)   
+     
+   #now show all the loadings
+   tv <- matrix(unlist(text.values),byrow=TRUE,ncol=21)
+        text(tv[,1],tv[,2],tv[,3],cex=tv[,5])
+        arrows(x0=tv[,6],y0=tv[,7],x1=tv[,8],y1=tv[,9],length=tv[1,10],angle=tv[1,11],code=1,col=tv[,20],lty=tv[,21])
+        arrows(x0=tv[,13],y0=tv[,14],x1=tv[,15],y1=tv[,16],length=tv[1,17],angle=tv[1,18],code=2,col=tv[,20],lty=tv[,21])
+
+
+
+   if(!is.null(Phi) && (ncol(Phi) >1)) { 
+       curve.list <- list()
+       for (i in 2:num.factors) {
+  
      for (j in 1:(i-1)) {
      if(abs(Phi[i,j]) > cut) {
        # dia.curve(from=c(x.max-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(x.max -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}
-		dia.curve(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),cex=cex,...)} }
+		d.curve <- dia.curved.arrow(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),draw=FALSE,cex=cex,...)
+		curve.list <- c(curve.list,d.curve)
+		} }
   															 }
+  			multi.curved.arrow(curve.list,...)												 
  
 						}
-	
+	self.list <- list()
   if (errors) {for (v in 1:nvar) {
-       dia.self(location=var.rect[[v]],scale=.5,side=side)  }
+      d.self <-  dia.self(location=var.rect[[v]],scale=.5,side=side)
+      self.list <- c(self.list,d.self)  }
        }
+    if(length(self.list) > 0)  multi.self(self.list)
        
    if(!is.null(fe.results)) {
      e.loadings <- fe.results$loadings

@@ -15,7 +15,7 @@ pairwiseDescribe(x,y,diagonal=FALSE,...)
 pairwiseImpute(keys,R,fix=FALSE)
 pairwiseReport(x,y=NULL,cut=0,diagonal=FALSE,...) 
 pairwisePlot(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,
-colors=FALSE,gr=NULL,min.length=6,xlas=1,ylas=2,
+colors=FALSE,gr=NULL,minlength=6,xlas=1,ylas=2,
 main="Relative Frequencies",count=TRUE,...)
 count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
 }
@@ -36,7 +36,7 @@ count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
    \item{n.legend}{How many categories should be labelled in the legend?}
     \item{colors}{Defaults to FALSE and  will use a grey scale. colors=TRUE use colors \
     from the colorRampPalette from red through white to blue}
-     \item{min.length}{If not NULL, then the maximum number of characters to use in 
+     \item{minlength}{If not NULL, then the maximum number of characters to use in 
     row/column labels}
      \item{xlas}{Orientation of the x axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
   \item{ylas}{Orientation of the y axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}

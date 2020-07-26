@@ -15,13 +15,14 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    if(is.null(data)) stop("You must specify the data if you are using formula input") 
      x <- data[ps$y]
    group <- data[ps$x]
+   }
    
    if(is.null(ylab)) ylab <- colnames(x)
    if(is.null(xlab)) xlab <- colnames(group)
    if(missing(by.var)) by.var=TRUE
    if(missing(lines)) lines <- FALSE
-   }
-   if(NCOL(group)==1) {n.grp1 <- length(table(group))} else {n.grp1 <- length(table(group[1]))}
+  
+   if(NCOL(group)==1) {n.grp1 <- length(table(group))} else {n.grp1 <- (dim(table(group))[1])}
    
     nvar <- NCOL(x)
    # if(is.null(nvar)) nvar <- 1  #added May 21, 2016 to handle the case of a single variable
@@ -98,7 +99,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
        text.col = "green4", lty = lty[1:n.var],
        merge = TRUE, bg = 'gray90')}
                
-  } else {   #the normal case is to not use bars
+    } else {   #the normal case is to not use bars
     group.stats <- describeBy(x,group)
     n.group <- length(group.stats)   #this is total number of groups but it may  be 2 x 2 or n x m
     n.var <- ncol(x)
@@ -171,26 +172,27 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    	 	var.n [,g] <- group.stats[[g]]$n
    	 	}
    	 	
-   	 if(x.cat) {x.values <- 1:n.grp1}  else {
-   	   x.values <- as.numeric(names(group.stats))  }  
    	 
+   	    if(x.cat) {x.values <- 1:n.grp1}  else {
+   	        x.values <- as.numeric(names(group.stats))  }  
+   	   if(missing(xlim)) xlim <- c(.5,n.grp1 + .5)
+   	   if(is.null(v.labels)) v.labels <- names(unlist(dimnames(group.stats)[1]))
+   	   
     for (i in 1:n.vars) {	
- 
+       
     	if(!add) {
-    	if(missing(xlim)) xlim <- c(.5,n.grp1 + .5)
-    	if(is.null(v.labels)) v.labels <- names(unlist(dimnames(group.stats)[1]))
+    	
+    	
     	 plot(x.values,var.means[1,1:n.grp1],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[1],pch=pch[1],col = colors[(i-1) %% n.color +1],...)
-    		if(x.cat) {axis(1,1:n.grp1,v.labels,...) } else {axis(1)}
-    		axis(2,...)
-    		box() 
+    		
     	 if(n.grp1 < n.group) {
-    
-    	 points(x.values,var.means[i,(n.grp1 +1):n.group],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) #the first grouping variable
+           x.values1 <- rep(x.values,(n.group/n.grp1 -1))
+    	 points(x.values1,var.means[i,(n.grp1 +1):n.group],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) #the first grouping variable
     	 }
     		add <- TRUE
     		} else {
     		  points(x.values,var.means[i,1:(n.grp1)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) 
-    		 if(n.grp1 < n.group) { points(x.values,var.means[i,(n.grp1 +1):(n.group)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) }
+    		 if(n.grp1 < n.group) { points(x.values1,var.means[i,(n.grp1 +1):(n.group)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) }
     		        # points(x.values,var.means[i,],typ = typ,lty=lty,...)
     		}
     
@@ -230,7 +232,10 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
  
  
      #lty <- "dashed"
-     }   #end of i loop 
+     }
+     if(x.cat) {axis(1,1:n.grp1,v.labels,...) } else {axis(1)}
+    		axis(2,...)
+    		box()    #end of i loop 
       if(legend >0  ){
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")} 
        legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.vars],
@@ -246,3 +251,5 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
    #modifed Feb 2, 2011 to not plot lines if they are not desired.
    #modified May 21, 2016 to handle a case of a single vector having no columns
    #modified April 9, 2019 to include v.labels for plots
+   #modified July 11, 2020 to allow formula input
+   

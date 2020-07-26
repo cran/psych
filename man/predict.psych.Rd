@@ -5,7 +5,7 @@
 \description{Finds predicted factor/component scores from a factor analysis or principal components analysis (pca) of data set A predicted to data set B.  Predicted factor scores use the weights matrix used to find estimated factor scores, predicted components use the loadings matrix. Scores are either standardized with respect to the prediction sample or based upon the original data. Predicted scores from a bestScales model are based upon the statistics from the original sample.
 }
 \usage{
-\method{predict}{psych}(object, data,old.data,options=NULL,...)
+\method{predict}{psych}(object, data,old.data,options=NULL,missing=FALSE,impute="none",...)
 }
 
 \arguments{
@@ -13,7 +13,10 @@
   \item{data}{Data set B, of the same number of variables as data set A.}
   \item{old.data}{if specified, the data set B will be standardized in terms of values from the old data.  This is probably the preferred option. This is done automatically if object is from \code{\link{bestScales}} }
   \item{options}{scoring options for bestScales objects 
-  ("best.keys","weights","optimal.keys","optimal.weights")}
+       ("best.keys","weights","optimal.keys","optimal.weights")}
+\item{missing}{If missing=FALSE, cases with missing data are given NA scores, otherwise they are given the values based upon the wts x complete data }
+\item{impute}{Should missing cases be replaced by "means", "medians" or treated as missing 
+("none" is the default}
   \item{...}{More options to pass to predictions }
 }
 
@@ -21,6 +24,8 @@
 Predicted factor/components/criteria scores.  If predicting from either \code{\link{fa}} or \code{\link{pca}},the scores are based upon standardized items where the standardization is either that of the original data (old.data) or of the prediction set.  This latter case can lead to confusion if just a small number of predicted scores are found.   
 
 If the object is from \code{\link{bestScales}}, unit weighted scales are found (by default) using the best.keys and the predicted scores are then put into the metric of the means and standard deviations of the derivation sample. Other scoring key options may be specified using the "options" parameter.  Possible values are best.keys","weights","optimal.keys","optimal.weights".  See \code{\link{bestScales}} for details.
+
+By default, predicted scores are found by the matrix product of the standardized data with the factor or regression weights.  If missing is TRUE, then the predicted scores are the mean of the standardized data x weights for those data points that are not NA.
 
 }
 

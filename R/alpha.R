@@ -56,13 +56,15 @@
             }
        item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))
-       if((length(bad) > 0) && delete) {
-            for (baddy in 1:length(bad)) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted")}
+       n.bad <-length(bad)
+       if((n.bad > 0) && delete) {
+            for (baddy in 1:n.bad) {warning( "Item = ",colnames(x)[bad][baddy], " had no variance and was deleted but still is counted in the score")}
+            first.bad <- x[1,bad]
             x <- x[,-bad] 
-            nvar <- nvar - length(bad)
+            nvar <- nvar - n.bad
              }
          response.freq <- response.frequencies(x,max=max)
-         C <- cov(x,use=use)} else {C <- x}
+         C <- cov(x,use=use)} else {C <- x}  #to find average R, we need to find R, not C  cov2cor(C) != R  !
         
         if(is.null(colnames(x)))  colnames(x) <- paste0("V",1:nvar)
          #flip items if needed and wanted
@@ -109,10 +111,13 @@
          	   adjust <- max.item + min.item
          	   flip.these <- which(keys < 0 )
          	   x[,flip.these]  <- adjust - x[,flip.these] 
+         	  #note that we do not reverse key bad items 
          	    }
          	
-
+        if(n.bad > 0 ){sum.bad <- sum(first.bad, na.rm=TRUE) 
+                      if(cumulative) {total <- rowSums(x,na.rm=na.rm) + sum.bad  } else {total <- (nvar * rowMeans(x,na.rm=na.rm) + sum.bad) /(nvar+n.bad)}} else {
         if(cumulative) {total <- rowSums(x,na.rm=na.rm) } else {total <- rowMeans(x,na.rm=na.rm)}
+        }
                 mean.t <- mean(total,na.rm=na.rm)
                 sdev <- sd(total,na.rm=na.rm) 
                 raw.r <- cor(total,x,use=use)
@@ -130,8 +135,9 @@
          for (i in 1:nvar) {
          drop.item[[i]] <- alpha.1(C[-i,-i,drop=FALSE],R[-i,-i,drop=FALSE])
                             } 
-         } else {drop.item[[1]] <- drop.item[[2]] <- c(rep(R[1,2],2),smc(R)[1],R[1,2],NA,NA,NA,NA)  #added the extra 2 NA June 18, 2017
-       }
+         } else {drop.item[[1]]<- c(C[1,2]/C[2,2],R[1,2],smc(R)[1],R[1,2],R[1,2]/(1-R[1,2]),NA,NA,NA,0,R[1,2])
+                 drop.item[[2]] <- c(C[1,2]/C[1,1],R[1,2],smc(R)[1],R[1,2],R[1,2]/(1-R[1,2]),NA,NA,NA,0,R[1,2]) }  #added the extra 2 NA June 18, 2017  -- and further fixed May 7, 2020
+       
         by.item <- data.frame(matrix(unlist(drop.item),ncol=10,byrow=TRUE)) 
         
                   #allows us to specify the number of subjects for correlation matrices

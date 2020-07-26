@@ -60,18 +60,25 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
   #introduce a function to get cell frequencies and compensate for possible different number of response alternatives
  
 
-response.frequencies <-
+"response.frequencies" <- function(items,max=10,uniqueitems=NULL) {responseFrequency(items=items,max=max,uniqueitems=uniqueitems)}
+
+"responseFrequency" <- 
     function (items, max = 10,uniqueitems=NULL)
 {
-    min.item <- min(items, na.rm = TRUE)
-    max.item <- max(items, na.rm = TRUE)
+     min.item <- apply(items,2,function(x) min(x,na.rm=TRUE))
+     max.item <- apply(items,2,function(x) max(x,na.rm=TRUE))
+     select <- (max.item - min.item) < (max +1) 
+     items <- items[,select]
+     
    if(is.null(uniqueitems))  uniqueitems <- unique(as.vector(unlist(items)))
-    if ((max.item - min.item > max) ||
+    if ( min((max.item - min.item ) > max) ||
         (nlevels(factor(items[[ 1]])) > max) ||    #changed to [[ ]] following suggestion from Mikko Ronkko
         length(uniqueitems) > max) {
         frequency <- NULL
     }
     else {
+       #just describe those items that have less than max categories
+       
         n.var <- dim(items)[2]
         n.cases <- dim(items)[1]
         dummy <- matrix(rep(uniqueitems, n.var), ncol = n.var)
@@ -83,7 +90,9 @@ response.frequencies <-
         frequency <- frequency/responses
         miss <- 1 - responses/n.cases
         frequency <- cbind(frequency, miss)
+       # class(frequency) <- cs(psych,frequency)
     }
+   
     return(frequency)
 }
 	
@@ -92,3 +101,4 @@ response.frequencies <-
  #revised Sept 7, 2010 to correctly handle missing data in terms of finding alpha and correlation
  #revised April 3, 2011 to incorporate very nice suggestion by Joshua Wiley to handle unique categories
  #revised August 4, 2012 to allow the specification of unique items-- useful for irt.responses
+ #revised July 8, 2020 to use psych print function and added the camel case version. Also to process  just those items that have  <= max responses

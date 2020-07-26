@@ -1,5 +1,6 @@
 #January 22, 2008
 #omega.graph without the graph
+#called from omega to do some work without the graphics
 
 "omega.sem" <-
 function(om.results,out.file=NULL,sl=TRUE,labels=NULL,nf=3){

@@ -16,7 +16,7 @@ The biserial correlation is between a continuous y variable and a dichotmous x v
 tetrachoric(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
      delete=TRUE)
 polychoric(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML=FALSE, std.err=FALSE, 
-     weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,  delete=TRUE)
+     weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,  delete=TRUE,max.cat=8)
 biserial(x,y)  
 polyserial(x,y) 
 polydi(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,
@@ -50,10 +50,12 @@ d) a vector with elements of the two marginal frequencies (row and column) and t
 \item{ML}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow! Deprecated}
 \item{na.rm}{Should missing data be deleted}
 \item{delete}{Cases with no variance are deleted with a warning before proceeding.}
+\item{max.cat}{The maximum number of categories to bother with for polychoric.  }
 \item{p}{The polytomous input to polydi}
 \item{d}{The dichotomous input to polydi}
 \item{taup}{The tau values for the polytomous variables -- if global=TRUE}
 \item{taud}{The tau values for the dichotomous variables -- if globabl = TRUE}
+
 
 }
 
@@ -65,9 +67,11 @@ The data typically will be a raw data matrix of responses to a questionnaire sco
 
 This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric may be specified using the options command. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
+\code{\link{tetrachoric}} and \code{\link{polychoric}} can find non-symmetric correlation matrices of set of x variables (coluumns) and y variable (rows).  This is useful if extending a solution from a base set of items to a different set.  See \code{\link{fa.extension}} for an application of this.
+
 The tetrachoric correlation is used in a variety of contexts, one important one being in Item Response Theory (IRT) analyses of test scores, a second in the conversion of comorbity statistics to correlation coefficients.  It is in this second context that examples of the sensitivity of the coefficient to the cell frequencies becomes apparent:
 
-\code{\link{tetrachoric}} and \code{\link{polychoric}} can find non-symmetric correlation matrices of set of x variables (coluumns) and y variable (rows).  This is useful if extending a solution from a base set of items to a different set.  See \code{\link{fa.extension}} for an application of this.
+
 
 Consider the test data set from Kirk (1973) who reports the effectiveness of a ML algorithm for the tetrachoric correlation (see examples).
 
@@ -89,6 +93,8 @@ Ability tests and personality test matrices will typically have a cleaner struct
 
 A biserial correlation (not to be confused with the point-biserial correlation which is just a Pearson correlation) is the latent correlation between x and y where y is continuous and x is dichotomous but assumed to represent an (unobserved) continuous normal variable. Let p = probability of x level 1, and q = 1 - p.  Let zp = the normal ordinate of the z score associated with p.  Then, \eqn{rbi = r s* \sqrt(pq)/zp }.
 
+As nicely discussed by MacCallum et al, 2002, if artificially dichotomizing at the mean, the point biserial will be .8 of the biserial (actually .798).  Similarly, the phi coefficient (a Pearson on dichotmous data will be  2[arcsin(rho)/pi) of the real value (rho).
+
 The 'ad hoc' polyserial correlation, rps is just \eqn{r = r * sqrt(n-1)/n) \sigma y /\sum(zpi) } where zpi are the ordinates of the normal curve at the normal equivalent of the cut point boundaries between the item responses. (Olsson, 1982) 
 
 
@@ -103,11 +109,15 @@ John Uebersax (2015)  makes the interesting point that both polychoric and tetra
 
 For combinations of continous, categorical, and dichotomous variables, see \code{\link{mixed.cor}}.
 
-If using data with a variable number of response alternatives, it is necessary to use the global=FALSE option in polychoric.
+If using data with a variable number of response alternatives, it is necessary to use the global=FALSE option in polychoric.  (This is set automatically if this condition is detected).
 
 For relatively small samples with dichotomous data  if some cells are empty, or if the resampled matrices are not positive semi-definite, warnings are issued. this leads to serious problems if using multi.cores (the default if using a Mac). The solution seems to be to not use multi.cores  (e.g., options(mc.cores =1)   
-}
 
+\code{\link{mixedCor}} which calls \code{\link{polychoric}} for the N = 4,000 with 145 items of the spi data set, on a Mac book Pro with a 2.4 GHz 8-core Intel i9,  1 core took 130 seconds, 2 cores, 68 seconds, 4 37, 8 22 and 16 22.8.  Just finding the polychoric correlations (spi[11:145]) for 4 cores took 34 and for 8 cores, 22 seconds.  
+
+As the number of categories increases, the computation time does as well.  For more than about 8 categories, the difference between a normal Pearson correlation and the polychoric is not very large.  However, the number of categories (num.cat) may be set to large values if desired.  (Added for version 2.0.6).
+ }
+ 
 \value{
 
  \item{rho}{The (matrix) of tetrachoric/polychoric/biserial correlations}
@@ -121,13 +131,15 @@ A. Gunther and M. Hofler. Different results on tetrachorical correlations in mpl
 
 David Kirk (1973) On the numerical approximation of the bivariate normal (tetrachoric) correlation coefficient. Psychometrika, 38, 259-268.
 
-U. Olsson, Maximum Likelihood Estimation of the Polychoric Correlation Coefficient, Psychometrika, 44:443-460.
+MacCallum, Robert C. and Zhang, Shaobo and Preacher, Kristopher J. and Rucker, Derek D. (2002) On the practice of dichotomization of quantitative variables., Psychological Methods, 7, (1) 19-40. 
+
+Olsson, U. Maximum Likelihood Estimation of the Polychoric Correlation Coefficient, Psychometrika, 44:443-460.
 
 U.Olsson, F.Drasgow, and N.Dorans (1982). The polyserial correlation coefficient. Psychometrika, 47:337-347. 
 
 Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cognition: New Methods for examining the Personality-Cognition Link In Gruszka, A.  and Matthews, G. and Szymura, B. (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control, Springer.
 
- Revelle, W,  Condon, D.M.,  Wilt, J.,  French, J.A., Brown, A.,  and  Elleman, L.G. (2016) Web and phone based data collection using planned missing designs. In  Fielding, N.G.,  Lee, R.M. and  Blank, G. (Eds). SAGE Handbook of Online Research Methods (2nd Ed), Sage Publcations
+Revelle, W,  Condon, D.M.,  Wilt, J.,  French, J.A., Brown, A.,  and  Elleman, L.G. (2016) Web and phone based data collection using planned missing designs. In  Fielding, N.G.,  Lee, R.M. and  Blank, G. (Eds). SAGE Handbook of Online Research Methods (2nd Ed), Sage Publcations
 
 }
 \author{

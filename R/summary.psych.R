@@ -275,8 +275,10 @@ fa =  {
 
 faBy = {cat("\nFactor analysis within groups with Call: ")
  print(object$Call)
+ cat("\nLoadings pooled across groups\n")
  print(object$mean.loading,digits=digits)
- print(object$mean.phi,digits = digits)
+ cat("\nFactor correlations pooled across groups\n")
+ print(object$mean.Phi,digits = digits)
  
  
  

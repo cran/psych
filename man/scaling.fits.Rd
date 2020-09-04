@@ -23,7 +23,7 @@ scaling.fits(model, data, test = "logit", digits = 2, rowwise = TRUE)
   \item{resid }{Sum of squares for residuals given the data and the model}
    \item{residual }{Residual matrix}
 }
-\references{Revelle, W. (in preparation) Introduction to psychometric theory with applications in R, Springer.  \url{https://personality-project.org/r/book}}
+\references{Revelle, W. (in preparation) Introduction to psychometric theory with applications in R, Springer.  \url{https://personality-project.org/r/book/}}
 \author{ William Revelle }
 \note{ Mainly for demonstration purposes for a course on  psychometrics
 

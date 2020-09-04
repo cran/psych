@@ -2,7 +2,7 @@
 function (x,stats=NULL,data=NULL,group=NULL,ylab ="Dependent Variable",xlab="Independent Variable", main=NULL, eyes=TRUE, ylim=NULL, xlim=NULL, alpha=.05, sd=FALSE, labels=NULL,  
 pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col=c("black","blue","red"),density=-10,...)  # x   data frame with 
     {    
-     if(!missing(x) && (inherits(x, "formula"))) {if(!is.null(data))   #if there is a grouping variable, call error.bars.by 
+     if(!missing(x) && (inherits(x, "formula"))) {#if(!is.null(data))   #if there is a grouping variable, call error.bars.by 
    # cat("\nFormula input detected, calling error.bars.by")
 error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
  eyes=eyes,alpha=alpha,sd=sd,labels=labels, v.labels=NULL, pos=pos, 

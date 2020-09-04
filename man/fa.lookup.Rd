@@ -12,7 +12,7 @@
 }
 \usage{
 lookup(x,y,criteria=NULL)
-lookupItems(content=NULL,dictionary=NULL)
+lookupItems(content=NULL,dictionary=NULL,search=c("Item","Content","item"))
 fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 keys.lookup(keys.list,dictionary)
@@ -29,6 +29,7 @@ setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
 \item{n}{Return the n best items per factor (as long as they have their highest loading on that factor)}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}
+\item{search}{Column names of dictionary to search, defaults to "Item" or "Content" (dictionaries have different labels for this column), can search any column specified by search.}
 \item{m}{A data frame of item means}
 \item{digits}{round to digits}
 \item{sort}{Should the factors be sorted first?}
@@ -62,7 +63,7 @@ Similarly, given a correlation matrix, r, of the x variables, if you want to fin
 }
 
 \references{
-Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
+Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book/}). 
 
 }
 \author{William Revelle}

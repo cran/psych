@@ -26,7 +26,7 @@ mixed.cor(x = NULL, p = NULL, d=NULL,smooth=TRUE, correct=.5,global=TRUE,
   \item{weight}{If specified, this is a vector of weights (one per participant) to differentially weight participants. The NULL case is equivalent of weights of 1 for all cases. }
 }
 \details{
-This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) (\url{https://sapa-project.org}) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010).  
+This function is particularly useful as part of the Synthetic Apeture Personality Assessment (SAPA) (\url{https://www.sapa-project.org/}) data sets where continuous variables (age, SAT V, SAT Q, etc) and mixed with polytomous personality items taken from the International Personality Item Pool (IPIP) and the dichotomous experimental IQ items that have been developed as part of SAPA (see, e.g., Revelle, Wilt and Rosenthal, 2010 or Revelle, Dworak and Condon, 2020.).  
 
 This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package. (See the note for timing comparisons.) This adjusts the  number of cores to use when doing polychoric or tetrachoric. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
@@ -46,7 +46,7 @@ Note that the variables may be organized by type of data:  continuous, polytomou
 }
 
 \author{William Revelle}
-\note{mixedCor was designed for the SAPA project (\url{https://sapa-project.org}) with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
+\note{mixedCor was designed for the SAPA project (\url{https://www.sapa-project.org/}) with large data sets with a mixture of continuous, dichotomous, and polytomous data.  For smaller data sets, it is sometimes the case that the global estimate of the tau parameter will lead to unstable solutions.  This may be corrected by setting the global parameter = FALSE.  
 
 \code{\link{mixedCor}} was added in April, 2017 to be slightly more user friendly. \code{\link{mixed.cor}} was deprecated in February, 2018.
 
@@ -65,6 +65,8 @@ W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-c
   Control, chapter 2, pages 27-49. Springer, 2010.
 
 W Revelle, D. M. Condon,  J. Wilt,  J.A. French,  A. Brown, and L G. Elleman(2016) Web and phone based data collection using planned missing designs in Nigel G. Fielding and Raymond M. Lee and Grant Blank (eds) SAGE Handbook of Online Research Methods, Sage Publications, Inc.
+
+W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power of the item in understanding personality structure. Personality and Individual Differences, \url{https://doi.org/10.1016/j.paid.2020.109905}
 
 }
 

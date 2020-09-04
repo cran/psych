@@ -276,7 +276,7 @@ conf.level <- alpha
    	 # result$R2.corrected <- factor.indeterm(r,f)
    	 # result$R2.total <- R2.cor$R2
    	 # result$beta.total <- R2.cor$beta.total
-   	  #course coding
+   	  #coarse coding
    	  keys <- factor2cluster(f) 
    	  covar <- t(keys) %*% r %*% keys 
  
@@ -285,6 +285,13 @@ conf.level <- alpha
      cluster.correl <- sd.inv %*% covar  %*% sd.inv   #this is just cov2cor(covar)
    	 valid <- t(f) %*% keys %*% sd.inv
    	 result$valid <- diag(valid)
+   	 if(NCOL(cluster.correl) < NCOL(r.scores)) {#we need to pad out the cluster.correl matrix so that fa.organize does not choke   9/2/20
+   	    temp <- cluster.correl
+   	    n.temp <- NROW(temp)
+   	    cluster.correl <- matrix(NA,ncol(r.scores),nrow(r.scores))
+   	    cluster.correl[1:n.temp,1:n.temp] <- temp
+   	 
+   	    }
    	 result$score.cor <- cluster.correl} else {sd.inv <- 1/sqrt(covar)
    	                                           if(dim(sd.inv)[1] == 1) sd.inv <- diag(sd.inv)
    	                                           valid <- try(t(f) %*% keys * sd.inv)

@@ -6,7 +6,7 @@
 \description{Report basic summary statistics by a grouping variable.  Useful if the grouping variable is some experimental variable and data are to be aggregated for plotting.  Partly a wrapper for by and \code{\link{describe}}
 }
 \usage{
-describeBy(x, group=NULL,mat=FALSE,type=3,digits=15,...)
+describeBy(x, group=NULL,mat=FALSE,type=3,digits=15,data,...)
 describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
 
 }
@@ -18,7 +18,7 @@ describe.by(x, group=NULL,mat=FALSE,type=3,...)  # deprecated
   \item{mat}{provide a matrix output rather than a list}
   \item{type}{Which type of skew and kurtosis should be found}
   \item{digits}{When giving matrix output, how many digits should be reported?}
-  
+  \item{data}{Needed if using formula input}
   \item{...}{parameters to be passed to describe}
 }
 \details{To get descriptive statistics for several different grouping variables, make sure that group is a list.  In the case of matrix output with multiple grouping variables, the grouping variable values are added to the output.
@@ -56,12 +56,14 @@ An alternative function (\code{\link{statsBy}}) returns a list of means, n, and 
 
 data(sat.act)
 describeBy(sat.act,sat.act$gender) #just one grouping variable
-describeBy(sat.act ~ gender)	
+describeBy(sat.act ~ gender)   #describe the entire set	formula input
+describeBy(SATV + SATQ ~ gender,data =sat.act)  #specify the data set if using formula
 #describeBy(sat.act,list(sat.act$gender,sat.act$education))  #two grouping variables
 describeBy(sat.act ~ gender +  education) #two grouping variables
-des.mat <- describeBy(sat.act$age,sat.act$education,mat=TRUE) #matrix (data.frame) output 
-des.mat <- describeBy(sat.act$age,list(sat.act$education,sat.act$gender),
-             mat=TRUE,digits=2)  #matrix output
+des.mat <- describeBy(age ~ education,mat=TRUE,data = sat.act) #matrix (data.frame) output 
+des.mat <- describeBy(age ~ education + gender, data=sat.act,
+               mat=TRUE,digits=2)  #matrix output  rounded to 2 decimals            
+             
 
 
 }

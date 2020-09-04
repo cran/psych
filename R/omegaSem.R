@@ -1,10 +1,12 @@
+#August 12, 2020  dropped the calls to the sem package.  Just use lavaan for the processing
+
 "omegaSem" <-
 function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",lavaan=TRUE,...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
       #if Phi is not null, this implies that we have been given a factor matrix  -- added May 30, 2010
-if(lavaan) {if(!requireNamespace('lavaan')) stop("You must have the lavaan package installed to use omegaSem")} else {if(!requireNamespace('sem')) stop("You must have the sem package installed to use omegaSem")}
+if(lavaan) {if(!requireNamespace('lavaan')) stop("You must have the lavaan package installed to use omegaSem")} #else {if(!requireNamespace('sem')) stop("You must have the sem package installed to use omegaSem")}
 if (!sl) {warning("OmegaSem only works for Bifactor models, sl set to TRUE ")
     sl <- TRUE}
 
@@ -31,11 +33,11 @@ if(is.na(n.obs)) {message("Number of observations not specified. Arbitrarily set
                             
       if(is.null(colnames(m))) {  rownames(m) <- colnames(m) <- paste("V",1:nvar,sep="") }
        m.names <- colnames(m)
-if(lavaan) {if(!requireNamespace('lavaan')) stop("You must have the lavaan package installed to use omegaSem")} else {if(!requireNamespace('sem')) stop("You must have the sem package installed to use omegaSem")}
+if(lavaan) {if(!requireNamespace('lavaan')) stop("You must have the lavaan package installed to use omegaSem")} #else {if(!requireNamespace('sem')) stop("You must have the sem package installed to use omegaSem")}
 
 #if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")
   
- if(lavaan) {sem.om <- lavaan::cfa(sem.model,sample.cov=m,sample.nobs=n.obs,orthogonal=TRUE,std.lv=TRUE) } else {sem.om <- sem::sem(sem.model,m, n.obs) }
+ if(lavaan) {sem.om <- lavaan::cfa(sem.model,sample.cov=m,sample.nobs=n.obs,orthogonal=TRUE,std.lv=TRUE) } #else {sem.om <- sem::sem(sem.model,m, n.obs) }
 omega.efa <- omegaFromSem(sem.om,m,flip=flip)
 results <- list(omegaSem=om,omega.efa=omega.efa,sem=sem.om,Call=cl)
 class(results) <- c("psych", "omegaSem")
@@ -88,7 +90,9 @@ if(flip) {
 w <- solve(m,cfa.loads)
 rownames(cfa.loads)  <- rn
 rownames(w)  <- rn
-colnames(cfa.loads) <- c("gs",paste0("F",1:(n.fact-1),"s*"))
+if(NCOL(cfa.loads) >1 ) {colnames(cfa.loads) <- c("gs",paste0("F",1:(n.fact-1),"s*"))} else {
+warning("\nJust one factor defined, therefore, just omega_total is found")
+ colnames(cfa.loads) <- "gs"}
 gR2 <- diag(t(w) %*% cfa.loads)
 Vt <- sum(m)
 omh.sem <- sum(g)^2/Vt
@@ -124,6 +128,7 @@ class(results) <- c("psych","omegaSem")
 if(plot) {if(n.fact > 1) { omega.diagram(results,sort=TRUE)} else {if(sem == 'lavaan') lavaan.diagram(fit,cut=0) } }
 return(results)
 }
+#added the ability to work with just 1 factor (following error report by Erich Studerus) August 12, 2020
 
 
 

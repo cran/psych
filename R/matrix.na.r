@@ -23,7 +23,7 @@ if(scale) x <- scale(x) #zero center and standaridize
 tx <- t(x) #we want to do  it on the transposed matrix
 ny <- ncol(y)
 result <- matrix(NA,nrow = nrow(x),ncol= ncol(y))
-result <- apply(y,2,function(x ) colMeans(x * tx,na.rm=TRUE))
+result <- apply(y,2,function(x ) colSums(x * tx,na.rm=TRUE))
 return((result))
 
 }

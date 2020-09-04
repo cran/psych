@@ -1,6 +1,6 @@
 "faBy" <- function(stats,nfactors=1,rotate="oblimin",fm="minres",free=TRUE,all=FALSE,min.n=12,quant=.1,...) {
 
- if(!inherits(stats[2], "statsBy")) stop("Please run statsBy first")
+ if(!inherits(stats, "statsBy")) stop("Please run statsBy first")
  cl <- match.call() 
   fo.orth <- fa(stats$pooled,nfactors=nfactors,rotate="none",fm=fm) #get the overall pooled structure
   fo.rotated <-  fa(stats$pooled,nfactors=nfactors,rotate=rotate,fm=fm,...)  
@@ -100,8 +100,13 @@
      phis <-phis + t(phis)
      diag(phis) <- 1   
      colnames(phis) <- rownames(phis) <- fnames
-   if(all) {faBy <- list(fa=lapply(replicateslist,function(X) X$fa),loadings=faby,Phi=phiby,Call=cl) } else {
-    faBy <- list(mean.loading= meanloading,mean.Phi= phis,faby.sum=faby.sum,Phi.sum = phiby.sum,loadings=t(faby),Phi=t(phiby),nfactors=nfactors,quant,Call=cl)}
+     
+    faBy <- list(mean.loading= meanloading,mean.Phi= phis,faby.sum=faby.sum,Phi.sum = phiby.sum,loadings=t(faby),Phi=t(phiby),nfactors=nfactors,quant=quant,Call=cl)
+     
+   if(all) {faBy$fa=lapply(replicateslist,function(X) X$fa)
+          
+            } 
+   
     class(faBy) <- c("psych","faBy")
     return(faBy)
   }

@@ -2,6 +2,7 @@
 \alias{sim.structure}
 \alias{sim.structural}
 \alias{sim.correlation}
+\alias{simCor}
 
 \title{Create correlation matrices or data matrices with a particular measurement and structural model }
 \description{Structural Equation Models decompose correlation or correlation matrices into a measurement (factor) model and a structural (regression) model.  sim.structural creates data sets with known measurement and structural properties. Population or sample correlation matrices with known properties are generated. Optionally raw data are produced. 
@@ -15,7 +16,10 @@ sim.structure(fx=NULL,Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE,
   items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)
 sim.structural(fx=NULL, Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE,
       items = FALSE, low=-2,high=2,d=NULL,cat=5, mu=0)  #deprecated
-sim.correlation(R,n=1000,data=FALSE)
+simCor(R,n=1000,data=FALSE,scale=TRUE, skew=c("none","log","lognormal",
+   "sqrt","abs"),vars=NULL,latent=FALSE,quant=NULL)
+sim.correlation(R,n=1000,data=FALSE,scale=TRUE, skew=c("none","log","lognormal",
+    "sqrt","abs"),vars=NULL,latent=FALSE,quant=NULL)
 
 }
 \arguments{
@@ -34,7 +38,11 @@ sim.correlation(R,n=1000,data=FALSE)
   \item{mu}{A vector of means, defaults to 0}
   \item{R}{The correlation matrix to reproduce}
   \item{data}{if TRUE, return the raw data, otherwise return the sample correlation matrix.}
-  
+  \item{scale}{standardize the simulated data?}
+  \item{skew}{Defaults to none (the multivariate normal case.  Alternatives take the log, the squareroot, or the absolute value of latent or observed data )}
+  \item{vars}{Apply the skewing or cuts to just these variables.  If NULL, to all the variables/}
+  \item{latent}{Should the skewing transforms be applied to the latent variables, or the observed variables?}
+  \item{quant}{Either a single number or a vector length nvar.  The data will be dichotomized at quant.}
  }
 \details{Given the measurement model, fx and the structure model Phi, the model is  f \%*\% Phi \%*\%  t(f).   Reliability is f \%*\% t(f). \eqn{f \phi f'} and the reliability for each test is the items communality or just the diag of the model. 
 
@@ -44,7 +52,7 @@ If creating a correlation matrix, (uniq=NULL) then the diagonal is set to 1, oth
 
 A special case of a structural model are one factor models such as parallel tests, tau equivalent tests, and congeneric tests.  These may be created by letting the structure matrix = 1 and then defining a vector of factor loadings. Alternatively, \code{\link{sim.congeneric}} will do the same. 
 
-\code{\link{sim.correlation}} will create data sampled from a specified correlation matrix for a particular sample size. If desired, it will just return the sample correlation matrix.  With data=TRUE, it will return the sample data as well.
+The general case is to use \code{\link{simCor}} aka \code{\link{sim.correlation}} which will create data sampled from a specified correlation matrix for a particular sample size. If desired, it will just return the sample correlation matrix.  With data=TRUE, it will return the sample data as well.  It uses an eigen value decomposition of the original matrix times a matrix of random normal deviates (code adapted from the mvnorm function of Brian Ripley's MASS package).  These resulting scores may be transformed using a number of transforms (see the skew option) or made into dichotomous variables (see quant option) for all or a select set (vars option) of the variables.  
 
       
 }
@@ -93,9 +101,11 @@ congeneric
 example.congeneric <- sim.correlation(congeneric$model,n=200) #create a sample matrix
 lowerMat(example.congeneric ) #show the correlation matrix
 #or create another sample and show the data
-example.congeneric.data <- sim.correlation(congeneric$model,n=200,data=TRUE) 
-describe(example.congeneric.data )
+example.congeneric.data <- simCor(congeneric$model,n=200,data=TRUE) 
+describe(example.congeneric.data)
 lowerCor(example.congeneric.data )
+example.skewed <- simCor(congeneric$model,n=200,vars=c(1,2),data=TRUE,skew="log") 
+describe(example.skewed)
 
 }
 

@@ -76,7 +76,7 @@ Alpha is a poor estimate of the general factor saturation of a test (see Revelle
 Correlations between scales are attenuated by a lack of reliability.  Correcting correlations for reliability (by dividing by the square roots of the reliabilities of each scale) sometimes help show structure.  This is done in the scale intercorrelation matrix with raw correlations below the diagonal and unattenuated correlation above the diagonal.
 
 
-There are several alternative ways to treat missing values.  By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://sapa-project.org}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items. 
+There are several alternative ways to treat missing values.  By default, missing values are replaced with the corresponding median value for that item.  Means can be used instead (impute="mean"), or subjects with missing data can just be dropped (missing = FALSE).  For data with a great deal of missingness, yet another option is to just find the average of the available responses (impute="none").  This is useful for findings means for scales for the SAPA project (see \url{https://www.sapa-project.org/}) where most scales are estimated from random sub samples of the items from the scale. In this case, the alpha reliabilities are seriously overinflated because they are based upon the total number of items in each scale.  The "alpha observed" values are based upon the average number of items answered in each scale using the standard form for alpha a function of inter-item correlation and number of items. 
 
 Using the impute="none" option as well as asking for totals (totals="TRUE") will be done, although a warning will be issued because scores will now reflect the number of items responded to much more than the actual pattern of responses.
 
@@ -88,7 +88,7 @@ This is shown in the last example.
 
 Note that the default for scoreItems is to impute missing items with their median, but the default for scoreFAst is to not impute but must return the scale scores based upon the mean or total value for the items scored.
 
-
+By default, \code{\link{scoreItems}} will drop those items with no variance. This changes the reliability calculations (number of items is reduced), and it mean that those items are not used in finding scores.  Using the delete=FALSE option, these variables will not be dropped and their scores will be found.  Various warnings are issued about the SMC not being correct.  What do you you expect when there is no variance for an item?
 
 
 \code{\link{scoreItems}} can be applied to correlation matrices to find just the reliability statistics.  This will be done automatically if the items matrix is symmetric.  
@@ -112,7 +112,7 @@ Note that the default for scoreItems is to impute missing items with their media
  \item{num.ob.item}{The average number of items with responses on a scale.  Used in calculating the alpha.observed-- relevant for SAPA type data structures.}
 }
 
-\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://sapa-project.org}) or the International Cognitive Ability Resources (\url{https://icar-project.org})) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
+\note{It is important to recognize in the case of massively missing data (e.g., data from a Synthetic Aperture Personality Assessment (\url{https://www.sapa-project.org/}) or the International Cognitive Ability Resources (\url{https://icar-project.org})) study where perhaps only 10-50\% of the items per scale are given to any one subject)) that the number of items per scale, and hence standardized alpha, is not the nominal value and hence alpha of the observed scales will be overestimated.  For this case (impute="none"), an additional alpha (alpha.ob) is reported. 
 
 More importantly in this case of massively missing data, there is a difference between the correlations of the composite scales based upon the correlations of the items and the correlations of the scored scales based upon the observed data.  That is, the cor object will have correlations as if all items had been given, while the correlation of the scores object will reflect the actual correlation of the scores.  For SAPA data, it is recommended to use the cor object.  Confidence of these correlations may be found using the \code{\link{cor.ci}} function.
 
@@ -139,7 +139,7 @@ Duhachek, A. and Iacobucci, D. (2004). Alpha's standard error (ase): An accurate
 
 McDonald, R. P. (1999). Test theory: A unified treatment. L. Erlbaum Associates, Mahwah, N.J.
 
-Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{https://personality-project.org/r/book}
+Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{https://personality-project.org/r/book/}
 
 Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (in press).
 

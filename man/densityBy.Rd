@@ -5,7 +5,7 @@
 
 \title{Create a 'violin plot' or density plot of the distribution of a set of variables}
 
-\description{Among the many ways to describe a data set, one is density plot for each value of a grouping variable and another is violin plot of multiple variables.  A density plot shows the density for different groups to show effect sizes. A violin plot is similar 
+\description{Among the many ways to describe a data set, one is a density plot for each value of a grouping variable and another is violin plot of multiple variables.  A density plot shows the density for different groups to show effect sizes. A violin plot is similar 
 to a box plot but shows the actual distribution.
 Median and 25th and 75th percentile lines are added to the display. If a grouping variable is specified, violinBy will draw violin plots for each variable and for each group. }
 \usage{
@@ -19,7 +19,8 @@ main="Density plot", alpha= 1,adjust=1, restrict=TRUE,xlim=NULL, add=FALSE,
 col=NULL,pch=20,scale=NULL,...) 
  
 densityBy(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5, 
- adjust=1,xlab="Variable", ylab="Density",main="Density Plot")
+ adjust=1,ylim=NULL,xlim=NULL,xlab="Variable", ylab="Density",
+       main="Density Plot",legend=NULL)
 
 }
 
@@ -35,14 +36,17 @@ densityBy(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),a
   \item{main}{Figure title}
   \item{alpha}{A degree of transparency (0=transparent ... 1 not transparent)}
   \item{adjust}{Allows smoothing of density histograms when plotting variables like height}
+  
   \item{freq}{if TRUE, then plot frequencies (n * density)}
   \item{restrict}{Restrict the density to the observed max and min of the data}
   \item{xlim}{if not specified, will be .5 beyond the number of variables}
+  \item{ylim}{If not specified, determined by the data}
   \item{add}{Allows overplotting}
   \item{col}{Allows for specification of colours.  The default for 2 groups is 
           blue and red, for more group levels, rainbows.}
  \item{pch}{The plot character for the mean is by default a small filled circle.  To not show the mean, use pch=NA }
  \item{scale}{If NULL, scale the widths by the square root of sample size, otherwise scale by the value supplied.}
+ \item{legend}{If not NULL, draw a legend at c(topleft,topright,top,left,right) }
   \item{\dots}{Other graphic parameters}
 }
 \details{
@@ -55,12 +59,13 @@ The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin
 \author{William Revelle
 }
 \note{Formula input added July 12, 2020}
+
 \seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}} \code{\link{error.bars.by}} and  \code{\link{bi.bars}} for graphic displays }
 \examples{
 violin(psychTools::bfi[1:5])
 violin(SATV + SATQ ~ gender, data=sat.act, grp.name =cs(M,F)) #formula input
 violinBy(psychTools::bfi,var=1:5,grp ="gender",grp.name=c("M","F"))
-densityBy(SATV  ~ gender,data =sat.act)  #formula input 
+densityBy(SATV  ~ gender,data =sat.act,legend=1)  #formula input 
   
 }
 \keyword{ multivariate }

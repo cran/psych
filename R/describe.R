@@ -86,14 +86,16 @@ function (x, head = 4, tail = 4)
 #tried to improve the speed by using multicores, but this requires using s or lapply which don't do what I need.
 #Added the as.factor  to the convert to numeric for non-numeric data
 #Improved July 9, 2020 to allow formula input for grouping variables
+#Further improved Sept 02, 2020 to allow formula input with data specified to match other formula features
 "describe" <-
-function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE)   #basic stats after dropping non-numeric data
+function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)   #basic stats after dropping non-numeric data
                              #slightly faster if we don't do skews
 { 
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
-	x <- get(ps$y)
-	group <- ps$x
-	describeBy(x,group=group,na.rm=na.rm,interp=interp,skew=skew,ranges=ranges,trim=trim,type=type,check=check,fast=fast,quant=quant,IQR=IQR,omit=omit)
+	if(missing(data)) {x <- get(ps$y)
+	group <- ps$x } else {x <- data[ps$y]
+	group <- data[ps$x]}
+	describeBy(x,group=group,na.rm=na.rm,interp=interp,skew=skew,ranges=ranges,trim=trim,type=type,check=check,fast=fast,quant=quant,IQR=IQR,omit=omit,data=data)
   } else {                   
  cl <- match.call()
 #first, define a local function

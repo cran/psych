@@ -230,3 +230,4 @@ cat("\n Test of various factor solutions\n")
  if (!short) { return(out)}
 
 }#end function
+

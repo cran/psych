@@ -36,7 +36,7 @@ If given raw data, correlations are found.  If keys are specified (the normal ca
 
 Then (with raw data) the data are recreated n.iter times by sampling subjects (rows) with replacement and the correlations (and composite scales) are found again (and again and again).  Mean and standard deviations of these values are calculated based upon the Fisher Z transform of the correlations.  Summary statistics include the original correlations and their confidence intervals.  For those who want the complete set of replications, those are available as an object in the resulting output.
 
-Although particularly useful for SAPA (\url{https://sapa-project.org}) type data where we have lots of missing data, this will work for any normal data set as well. 
+Although particularly useful for SAPA (\url{https://www.sapa-project.org/}) type data where we have lots of missing data, this will work for any normal data set as well. 
 
 Although the correlations are shown automatically as a \code{\link{cor.plot}}, it is possible to show the upper and lower confidence intervals by using \code{\link{cor.plot.upperLowerCi}}. This will also return, invisibly, a matrix for printing with the lower and upper bounds of the correlations shown below and above the diagonal (see the first example).
 

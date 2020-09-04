@@ -28,7 +28,7 @@ The data may be either a square matrix of dataframe of preferences (as proportio
 }
 \references{ Thurstone, L. L. (1927) A law of comparative judgments.  Psychological Review, 34, 273-286.
 
-Revelle, W. An introduction to psychometric theory with applications in R. (in preparation), Springer. \url{https://personality-project.org/r/book} }
+Revelle, W. An introduction to psychometric theory with applications in R. (in preparation), Springer. \url{https://personality-project.org/r/book/} }
 
 \author{William Revelle}
 

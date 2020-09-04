@@ -30,7 +30,7 @@ score.multiple.choice(key, data, score = TRUE, totals = FALSE, ilabels = NULL,
 
 The item-whole correlation is inflated because of item overlap.
 
-The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{https://sapa-project.org}.
+The example data set is taken from the Synthetic Aperture Personality Assessment personality and ability test at \url{https://www.sapa-project.org/}.
 
 }
 

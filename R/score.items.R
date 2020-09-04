@@ -139,16 +139,23 @@ if(any( !(select %in% colnames(items)) )) {
     cor.scales <- cov2cor(cov.scales)    
     sum.item.var <- item.var %*% abskeys 
     sum.item.var2 <- item.var^2 %*% abskeys 
-    item.r <- cov2cor(C)
+    item.r <- cov2cor(C) #this does not handle pairwise complete correctly because cov and cor with pairwise work differently
    #find the median correlation within every scale 
    
    med.r <- rep(NA, n.keys)
    for(k in 1:n.keys) {
+  
    temp <- keys[,k][abs(keys[,k]) > 0]
+   temp.keys <- temp
    temp <- diag(temp,nrow=length(temp))
   # temp  <- diag(keys[,k ][abs(keys[,k])>0] )
-   small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0]
-   small.r <- temp %*% small.r %*% temp
+
+  
+  
+   small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0,drop=FALSE]  #drop = FALSE for the case of 1 item scales
+  # small.r <- temp %*% small.r %*% temp    #this flips, but does not work if any r is na
+     small.r[temp.keys < 0,] <- -small.r[temp.keys< 0,,drop=FALSE]   #these two lines flip negatively keyed items even if some are NA (August 25, 2020)
+      small.r[,temp.keys < 0] <- -small.r[,temp.keys< 0,drop=FALSE]
     med.r[k]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
    } 
   names(med.r) <- slabels
@@ -170,7 +177,13 @@ if(any( !(select %in% colnames(items)) )) {
    ase <- NULL  #to have something if we don't have raw data
    #now find the Guttman 6 * reliability estimate as well as the corrected item-whole correlations
    
-   if(raw.data) { item.cor <- cor(items,scores)} else {if (n.keys >1) {
+   if(raw.data) {
+   if(length(bad) >0 ) {items <- items[,-bad]
+    # item.var <-  item.var[-bad]
+    # C <- C[-bad,-bad]
+   } #this removes those items with no variance from the item statistics
+    item.cor <- cor(items,scores)
+    } else {if (n.keys >1) {
          item.cor <- C %*% keys %*% diag(1/sqrt(var.scales))/sqrt(item.var)} else {item.cor <- C %*% keys /sqrt(var.scales * item.var)}}
          colnames(item.cor) <- slabels
     c.smc <- smc(C,TRUE)
@@ -187,7 +200,7 @@ if(any( !(select %in% colnames(items)) )) {
   if(n.subjects > 0) {ase <- sqrt(Q/ n.subjects )} else {if(!is.null(n.obs)) {ase <- sqrt(Q/ n.obs )} else {ase=NULL}}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
   if(is.null(ilabels)) {ilabels <-  paste("I",1:n.items,sep="")}
-   rownames(item.rc) <- ilabels
+   #if(length(bad) >0 ) {rownames(item.rc) <- ilabels[-bad]} else {rownames(item.rc) <- ilabels}
   if(raw.data) {
      correction <- (colSums(abs(keys)-(keys))/2)*(max+min) #correct for flipping
      scores <- scores  + matrix(rep(correction,n.subjects),byrow=TRUE,nrow=n.subjects)
@@ -233,6 +246,7 @@ if(any( !(select %in% colnames(items)) )) {
  #Modified November 22, 2013 to add confidence intervals for alpha 
  #modified Sept 9, 2016 to add the keys.list option for the scoring keys
  #modified April 22, 2018 to include median within scale correlation
+ #Modified August 25, 2020 to calculate median correlation in the case of variables with no variance
  
  "selectFromKeyslist" <- function(itemname,keys) {nkey <- length(keys)
  select <- NULL

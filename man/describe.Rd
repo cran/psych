@@ -10,7 +10,7 @@ There are many summary statistics available in R; this function
 }
 \usage{
 describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
-              type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE)
+              type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)
 describeData(x,head=4,tail=4)
 describeFast(x)  
 }
@@ -33,9 +33,10 @@ describeFast(x)
   \item{omit}{Do not convert non-numerical variables to numeric, omit them instead}
   \item{head}{show the first 1:head cases for each variable in describeData}
   \item{tail}{Show the last nobs-tail cases for each variable in describeData}
+  \item{data}{Allows formula input for specific grouping variables}
 }
 \details{In basic data analysis it is vital to get basic descriptive statistics. 
-Procedures such as \code{\link{summary}} and hmisc::describe do so.  The describe function in the \code{\link{psych}} package is meant to produce the most frequently requested stats in psychometric and psychology studies, and to produce them in an easy to read data.frame. The results from describe can be used in graphics functions (e.g., \code{\link{error.crosses}}).
+Procedures such as \code{\link{summary}} and Hmisc::describe do so.  The describe function in the \code{\link{psych}} package is meant to produce the most frequently requested stats in psychometric and psychology studies, and to produce them in an easy to read data.frame. If a grouping variable is called for in formula mode, it will also call \code{\link{describeBy}} to the processing. The results from describe can be used in graphics functions (e.g., \code{\link{error.crosses}}).
 
 The range statistics (min, max, range) are most useful for data checking to detect coding errors, and should be found in early analyses of the data.  
 
@@ -115,7 +116,8 @@ Maintainer: William Revelle \email{revelle@northwestern.edu} \cr
 \examples{
 data(sat.act)
 describe(sat.act)
-describe(sat.act ~ gender) #formula mode option calls describeBy
+describe(sat.act ~ gender) #formula mode option calls describeBy for the entire data frame
+describe(SATV + SATQ ~ gender, data=sat.act) #formula mode specifies just two variables
 
 describe(sat.act,skew=FALSE)
 describe(sat.act,IQR=TRUE) #show the interquartile Range

@@ -16,11 +16,11 @@
     \item{\code{SATQ}}{SAT Quantitative scores may range from 200 - 800}
   }
 }
-\details{hese items were collected as part of the  SAPA  project  (\url{https://sapa-project.org})to develop online measures of ability (Revelle, Wilt and Rosenthal, 2009).  The score means are higher than national norms suggesting both self selection for people taking on line personality and ability tests and a self reporting bias in scores.
+\details{hese items were collected as part of the  SAPA  project  (\url{https://www.sapa-project.org/})to develop online measures of ability (Revelle, Wilt and Rosenthal, 2009).  The score means are higher than national norms suggesting both self selection for people taking on line personality and ability tests and a self reporting bias in scores.
 
 See also the iq.items data set.  
 }
-\source{\url{https://personality-project.org} 
+\source{\url{https://personality-project.org/} 
 }
 \references{Revelle, William, Wilt, Joshua,  and Rosenthal, Allen (2009)  Personality and Cognition: The Personality-Cognition Link. In Gruszka, Alexandra  and Matthews, Gerald   and Szymura, Blazej (Eds.) Handbook of Individual Differences in Cognition: Attention, Memory and Executive Control,
 	Springer. 

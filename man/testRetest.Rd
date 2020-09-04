@@ -49,7 +49,7 @@ DeSimone, J. A. (2015). New techniques for evaluating temporal consistency. Orga
 
 Revelle, W. and Condon, D. Reliability  (in prep)
 
-Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
+Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book/}). 
 
 Shrout, P. E., & Lane, S. P. (2012). Psychometrics. In Handbook of research methods for studying daily life. Guilford Press.
 

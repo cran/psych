@@ -311,6 +311,7 @@ return(results)}
  #revised 12/07/18 to allow for simple matrix input
  #read a matrix, return a matrix
  #read a list, return a list
+ #modified 9/2/20 for the case of not full rank cluster scores
   "fa.organize" <- 
 function(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE,flip=TRUE) {
 if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form          
@@ -321,21 +322,31 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
                  temp <- t( t(temp) * flipper ) }
                  if(!is.null(o)) {temp <- temp[,o]}
                  if(!is.null(i)) {temp <-temp[i,]}
-                 fa.results <- temp } else { # the list form 
+                 fa.results <- temp 
+                 nf <- ncol(temp)} else { # the list form 
+    nf <- ncol(fa.results$loadings)
      if(echelon & is.null(o) ) {temp <- apply(abs(  fa.results$loadings),1,which.max)
      nf <- ncol(fa.results$loadings)
      nvar <- nrow(fa.results$loadings)
-  o <- 1:nf
+  o <- rep(NA,nf)
   k <- 1
   o[k] <- temp[k]
   for (ki in 2:nvar) {if (!(temp[ki] %in% o[1:k])) {o[k+1] <- temp[ki]
     k <- k + 1}  }
     }
+    
+    #now, a kludge for the case where there are some empty columns
+   
+    n.good <- sum(1:nf %in% o)
+    if (n.good < nf) { tt <- 1:nf
+      o[(n.good + 1):nf] <- tt[!1:nf %in% o]
+       }
   if(flip) {
         total.load <- colSums(fa.results$loadings)
        flipper <- sign(total.load)
         flipper[flipper==0] <-1 } else { flipper <- rep(1,NCOL(fa.results$loadings)) }
    fa.results$loadings <- t(t(fa.results$loadings) * flipper)                      
+
 
   if(!is.null(o)) {fa.results$loadings <- fa.results$loadings[,o]
       flipper <- flipper[o] 
@@ -474,8 +485,8 @@ result
 }
 
 
-"lookupItems" <- function(content=NULL,dictionary=NULL) {
-  location <-which(colnames(dictionary) %in% c("Item","Content","item"))
+"lookupItems" <- function(content=NULL,dictionary=NULL,search=c("Item","Content","item")) {
+  location <-which(colnames(dictionary) %in% search)
   value <- grep(content,dictionary[,location])
   dictionary[value,,drop=FALSE]
 }
@@ -654,7 +665,11 @@ fromTo <- function(data,from,to=NULL) {cn <- colnames(data)
   
   
 
-
+#flip -- not public but useful trick
+flip <- function(R,key) {#reverse correlations with keys  < 0
+	R[key<0,] <- -R[key < 0,]
+	R[,key<0] <- -R[,key < 0]
+  return(R)}
     
     
  

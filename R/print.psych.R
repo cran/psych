@@ -365,7 +365,8 @@ faBy = { cat("Call: ")
         cat("\nAverage standardized loadings (pattern matrix) based upon correlation matrix for all cases as well as each group\n")
         cat("\nlow and high ", x$quant,"% quantiles\n")
         print(x$faby.sum,digits)
-        if(!short) {  
+        if(!short) { 
+        cat("\n Pooled loadings across groups \n") 
         print(x$mean.loading,digits=digits)
         cat("\n Average factor intercorrelations for all cases and  each group\n")
         print(x$mean.Phi,digits=2)
@@ -375,8 +376,8 @@ faBy = { cat("Call: ")
         print(x$Phi,digits=2)
         if(!is.null(x$fa)) {
         cat("\nFactor analysis results for each group\n")
-        print(x$faby.sum,digits)
-        }}
+        print(x$fa,digits)
+        } else {print("For a more informative output, print with short=FALSE")}}
                 
 },
 
@@ -913,16 +914,18 @@ KMO = {cat("Kaiser-Meyer-Olkin factor adequacy")
    print(round(x$MSAi,digits))
    },
    
-unidim = {cat("\nA measure of unidimensionality \n Call: ")
+ unidim=  {
+  cat("\nA measure of unidimensionality \n Call: ")
   print(x$Call)
   
   cat("\nUnidimensionality index = \n" )
   print(round(x$uni,digits=digits))
   
  cat("\nunidim adjusted index reverses negatively scored items.")
-  cat("\nalpha ","  Based upon reverse scoring some items.")
-  cat ("\naverage correlations are based upon reversed scored items") 
-   },
+ cat("\nalpha ","  Based upon reverse scoring some items.")
+ cat ("\naverage and median  correlations are based upon reversed scored items") 
+     },
+  
    
 yule = {cat("Yule and Generalized Yule coefficients")
      cat("\nCall: ")

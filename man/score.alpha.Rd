@@ -14,7 +14,7 @@ score.alpha(keys, items, labels = NULL, totals=TRUE,digits = 2) #deprecated
   \item{totals}{Find sum scores (default) or average score}
   \item{digits}{Number of digits for answer (default =2) }
 }
-\details{This function has been replaced with \code{\link{score.items}} (for multiple scales) and \code{\link{alpha}} for single scales.
+\details{This function has been replaced with \code{\link{scoreItems}} (for multiple scales) and \code{\link{alpha}} for single scales.
 
 The process of finding sum or average scores for a set of scales given a larger set of items is a typical problem in psychometric research.  Although the structure of scales can be determined from the item intercorrelations, to find scale means, variances, and do further analyses, it is typical to find the sum or the average scale score.  
 
@@ -31,7 +31,7 @@ Alpha is a poor estimate of the general factor saturation of a test (see Zinbarg
   \item{cor}{The intercorrelation of all the scales}
   \item{item.cor}{The correlation of each item with each scale.  Because this is not corrected for item overlap, it will overestimate the amount that an item correlates with the other items in a scale.}
 }
-\references{An introduction to psychometric theory with applications in R (in preparation).  \url{https://personality-project.org/r/book}}
+\references{An introduction to psychometric theory with applications in R (in preparation).  \url{https://personality-project.org/r/book/}}
 \author{ William Revelle }
 
 \seealso{ \code{\link{score.items}}, \code{\link{alpha}}, \code{\link{correct.cor}},  \code{\link{cluster.loadings}}, \code{\link{omega}} }

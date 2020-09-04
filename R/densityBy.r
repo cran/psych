@@ -121,8 +121,9 @@ segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y
 
 
 #11/28/17
+#Improved 09/02/20
 
- "densityBy" <- function(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5,adjust=1,xlab="Variable", ylab="Density",main="Density Plot") {
+ "densityBy" <- function(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5,adjust=1,ylim=NULL,xlim=NULL,xlab="Variable", ylab="Density",main="Density Plot",legend=NULL) {
  formula <- FALSE
    if(inherits(x, "formula")) {  ps <- fparse(x)
    formula <- TRUE
@@ -132,6 +133,8 @@ segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y
     x <- data
    
    }
+   
+
  n.grp <- length(table(x[grp]))
  if(length(col) < n.grp) col <- rainbow(n.grp)
 if(!is.null(var)) x <- x[,c(var,grp),drop=FALSE]
@@ -143,21 +146,40 @@ if(!is.null(var)) x <- x[,c(var,grp),drop=FALSE]
  if(!is.null(grp)) { 
     if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp,drop=FALSE]
    d <- by(x[,var],grp,function(xx) density(xx, adjust=adjust,na.rm=TRUE))
+   quants <-by(x[,var],grp,function(xx) quantile(xx,c(.25,.5,.75),na.rm=TRUE))
    maxiy <- rep(NA,length(d))
+   rangex <- matrix(NA, ncol=2,nrow= length(d))
    for(i in 1:length(d) ) {if(freq){ maxiy[i] <- max(d[[i]]$n *d[[i]]$y)} else { 
                    maxiy[i] <- max(d[[i]]$y)}
+                   rangex[i,] <- range(d[[i]]$x)
                    }
    maxy <- max(maxiy)
-   
-   plot(d[[1]],ylim=c(0,maxy),main=main,ylab=ylab,xlab=xlab ) 
+   ranges <- range(rangex)
+   if(missing(ylim)) ylim <- c(0,maxy)
+   if(missing(xlim)) xlim <- ranges
+   plot(d[[1]],ylim=ylim,xlim=xlim,main=main,ylab=ylab,xlab=xlab ) 
    
    for (i in 1:length(d)) {
    if(freq) {scal <- d[[i]]$n
       d[[i]]$y <- d[[i]]$y*scal} 
    polygon(d[[i]] ,col=col[i])
+
+   #find the y value corresponding to x median
+   medy <- max(which(d[[i]]$x <= quants[[i]][2]))
+   segments(x0 = quants[[i]][2],y0=0,x1=quants[[i]][2],y1=d[[i]]$y[medy],  lty= i)
    }
  } else {
  d <- density(x[,var],na.rm=TRUE,adjust=adjust)
    plot(d,main=main,ylab=ylab,xlab=xlab )
     polygon(d,col=col[1])
- } }
+ }
+ if(!missing(legend)) {
+ location <- c("topleft","topright","top","left","right")
+ 
+ grp.names <- paste(names(grp),names(table(grp)))
+ leg.text <- grp.names
+ legend(location[legend],legend=leg.text,col=c(1:n.grp),fill=c(1:n.grp), lty=c(1:n.grp))
+
+ }
+ invisible(d)
+  }

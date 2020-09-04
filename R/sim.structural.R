@@ -8,9 +8,9 @@ function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE,
    #these are parameters for simulating items
    nf <- ncol(f)
    nvar <- nrow(f)
-if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar/nf-1))
-            d <- rep(d,nf)} else {if(length(d)==1) d <- rep(d,nvar)}
-	a <- rep(1,nvar)         
+#if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar/(nf-1)))
+         #   d <- rep(d,nvar)} else {if(length(d)==1) d <- rep(d,nvar)}
+	#a <- rep(1,nvar)         
   
   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
@@ -25,12 +25,14 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
     mu <- rep(mu,nvar)
   	#observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
   	 eX <- eigen(model)
-                                      observed <- matrix(rnorm(nvar * n),n)
-                                      observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + mu) 
+                                      theta <- matrix(rnorm(nvar * n),n)
+                                      observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(theta) + mu)   #this way theta and observed not identical
                                       theta <- observed
-  	if(items) {observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar) 
+  	if(items) {#observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar)    #this is not useful
   	         #observed[] <- rbinom(n*nvar, cat, observedp) #this puts in error again
-  	         observed[] <- round(cat * observedp)}
+  	         range.ob <- range(observed)
+  	         observed <- (observed - range.ob[1])/(range.ob[2]- range.ob[1])
+  	         observed<- round(cat * observed)}
   	  colnames(observed) <- colnames(model)
   r <- cor(observed) 
   } 
@@ -152,11 +154,11 @@ om.fa <- sum(f1)^2/sum(observed.cor)
 e.f1 <- sum(f1^2)/nvar
     sem.model <- omegaSem(x$fload,sl=TRUE,nfactors=nfact)  #this is the model based upon the true values
     if(sem) {stop('The option to use the sem package  has been replaced with calls to lavaan')
-    if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
+    #if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
  
-  omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
-    if(omega.cfa$omega >1) omega.cfa$omega <- NA
-  results[i,"omegaCFA"] <- omega.cfa$omega
+  #omega.cfa <- omegaFromSem(observed.cor,sem.om,flip=flip)
+  #  if(omega.cfa$omega >1) omega.cfa$omega <- NA
+  #results[i,"omegaCFA"] <- omega.cfa$omega
   } else {omega.cfa <- NULL}
 results[i,"n"] <- n
 if(n > 0) {

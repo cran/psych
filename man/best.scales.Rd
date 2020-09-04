@@ -153,7 +153,7 @@ Dawes, R.M. (1979) The robust beauty of improper linear models in decision makin
 
 Elleman, L. G., McDougald, S. K., Condon, D. M., & Revelle, W. 2020 (in press). That takes the BISCUIT: A comparative study of predictive accuracy and parsimony of four statistical learning techniques in personality data, with data missingness conditions.  European Journal of Psychological Assessment. (Preprint available at https://psyarxiv.com/tuqap/)
 
-Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book}). 
+Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book/}). 
 
 
 Wainer, H. (1979) Estimating coefficients in linear models: It don't make no nevermind. Psychological Buletin, 83, 213-217.

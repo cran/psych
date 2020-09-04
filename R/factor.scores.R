@@ -5,7 +5,7 @@
 
     if(length(method) > 1) method <- "tenBerge"   #the default
     if(method=="regression") method <- "Thurstone"
-    if(method=="tenberge") method <- "tenBerge"
+    if(method %in% c("tenberge", "Tenberge","tenBerge","TenBerge")) method <- "tenBerge"
     if(length(class(f)) > 1) { if(inherits(f[2] ,"irt.fa" )) f <- f$fa  }
     
      if(!is.matrix(f)) {Phi <- f$Phi

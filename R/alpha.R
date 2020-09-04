@@ -40,7 +40,7 @@
       	keys <- temp
       }}
       }
-      
+    if(missing(impute) | (!is.null(impute) && (impute =="none"))) impute <- NULL  
     nvar <- dim(x)[2]
     nsub <- dim(x)[1]
     scores <- NULL
@@ -50,9 +50,9 @@
       raw <- TRUE
        if(!is.null(impute) ) {
        		if(impute=="median") {item.impute <- apply(x,2,median,na.rm=na.rm)} else {item.impute <- apply(x,2,mean,na.rm=na.rm) } #column values
-  #     		apply(x,1,function(x) { x[is.na(x)]  <- item.impute[]}) }  #replace row wise
-                 
-            for(i in 1:nsub) {for (j in 1:nvar) {x[i,is.na(x[i,j])] <- item.impute[j] }   }  
+ 
+            find.na <- which(is.na(x),arr.ind=TRUE)
+            if(NROW(find.na) >0) x[find.na] <- item.impute[find.na[,2]]   #added 08/28/20 to fix a problem where we putting in imputed values for all the variables
             }
        item.var <- apply(x,2,sd,na.rm=na.rm)
        bad <- which((item.var <= 0)|is.na(item.var))

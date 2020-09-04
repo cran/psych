@@ -229,7 +229,11 @@ If using the lavaan=TRUE option in \code{\link{omegaSem}} please note that varia
  Omega can also be found from  an analysis  done using lavaan or sem directly by calling  \code{\link{omegaFromSem}} with the original correlation matrix and the fit of the sem/lavaan model.  See the last (not run) example)
 }
 
-\seealso{ \code{\link{omega.graph}} \code{\link{ICLUST}}, \code{\link{ICLUST.graph}}, \code{\link{VSS}}, \code{\link{schmid} }, \code{\link{make.hierarchical} }}
+\seealso{ \code{\link{omega.graph}} for a dot code graphic.   \code{\link{ICLUST}}, \code{\link{ICLUST.diagram}} for hierarchical cluster analysis, \code{\link{VSS}}, \code{\link{nfactors}}, \code{\link{fa.parallel}} for alternative ways of estimating the appropriate number of factors. \code{\link{schmid} } for the decomposition used in omega.
+ \code{\link{make.hierarchical}} to simulate a hierarchical model.
+
+ \code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of 2nd  order factors. 
+ }
 \examples{
 \dontrun{
  test.data <- Harman74.cor$cov

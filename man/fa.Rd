@@ -208,9 +208,13 @@ The output from the print.psych.fa function displays the factor loadings (from t
 
 \item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
 
-\item{score.cor}{The correlation matrix of course coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix rather than the weights matrix.  }
+\item{score.cor}{The correlation matrix of coarse coded (unit weighted) factor score estimates, if they were to be found, based upon the structure matrix rather than the weights or loadings matrix.  }
 
 \item{rot.mat}{The rotation matrix as returned from GPArotation.}
+
+\item{scores}{Estimated scores for subjects with complete data. If missing=TRUE, then scores are based upon imputed values for those missing items.  See \code{\link{factor.scores}} for more detail on these options.
+
+}
  }
 
 
@@ -276,7 +280,7 @@ A few more lines of output were added in August 2017 to show the measures of fac
 
 \code{\link{factor.scores}} to find factor scores with alternative options.
  \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis with one general factor. 
- code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of 2nd  order factors. 
+ \code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of 2nd  order factors. 
  
 
 \code{\link{fa.sort}} will sort the factor loadings into echelon form. \code{\link{fa.organize}} will reorganize the factor pattern matrix into any arbitrary order of factors and items.  

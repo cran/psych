@@ -62,7 +62,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
  }
 \references{ \url{https://personality-project.org/r/r.omega.html} \cr
 
-Revelle, W. (in preparation) An Introduction to  Psychometric Theory with applications in R.  \url{https://personality-project.org/r/book}
+Revelle, W. (in preparation) An Introduction to  Psychometric Theory with applications in R.  \url{https://personality-project.org/r/book/}
 
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 

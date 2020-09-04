@@ -10,18 +10,22 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     
       #first, see if they are in formula mode   added August 18, 2018
   formula <- FALSE
-   if(inherits(x, "formula")) {  ps <- fparse(x)
+   if(inherits(x, "formula")) {  ps <- fparse(x) 
+     if(missing(data) | (length(data)==0)) {x <- get(ps$y)
+	group <- ps$x } else {x <- data[ps$y]
+	group <- data[ps$x]}
+   
    formula <- TRUE
-   if(is.null(data)) stop("You must specify the data if you are using formula input") 
-     x <- data[ps$y]
-   group <- data[ps$x]
-   }
+  #  if(is.null(data)) stop("You must specify the data if you are using formula input") 
+#      x <- data[ps$y]
+#    group <- data[ps$x]
+    }
    
    if(is.null(ylab)) ylab <- colnames(x)
    if(is.null(xlab)) xlab <- colnames(group)
    if(missing(by.var)) by.var=TRUE
    if(missing(lines)) lines <- FALSE
-  
+   if(NROW(group) <2 ) group <- x[,group]    
    if(NCOL(group)==1) {n.grp1 <- length(table(group))} else {n.grp1 <- (dim(table(group))[1])}
    
     nvar <- NCOL(x)
@@ -213,7 +217,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	 if (eyes) { 
     	        catseyes(g,xcen[g],xse[g],group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}}  else {
     	     
-    	            arrows(x.values[g],xcen[g]-ci[g]*xse[g],x.values[g],xcen+ci[g]* xse[g],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	           if(xse[g]> 0) arrows(x.values[g],xcen[g]-ci[g]*xse[g],x.values[g],xcen+ci[g]* xse[g],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	            if (eyes) {catseyes(x.values[g],xcen[g],xse[g],x.stats$n[g],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
    		}
@@ -224,7 +228,8 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
     	        catseyes(g,xcen[g+n.grp1],xse[g+n.grp1],group.stats[[g+n.grp1]]$n[i],alpha=alpha,density=density,col=colors[(i) %% n.color +1] )}}
     	        }}  else {
     	     
-    	            arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
+    	          # if(xse[g + n.grp1]> 0) 
+    	           arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
     	
     	

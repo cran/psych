@@ -7,7 +7,7 @@
 }
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r} webpages. 
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
 
 A companion package \code{\link[psychTools]{psychTools}} includes larger data set examples and one more vignette. 
 
@@ -26,7 +26,7 @@ Scales can be formed that best predict (after cross validation) particular crite
 
 Additional functions make for more convenient descriptions of item characteristics  include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning. \code{\link{scoreIrt}}, \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} do basic IRT based scoring.
 
- A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA \url{https://sapa-project.org}) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{setCor}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
+ A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA \url{https://www.sapa-project.org/}) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{setCor}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
  
 \code{\link{setCor}} and \code{\link{mediate}} meet the desire to do regressions and mediation analysis from either raw data or from correlation matrices.  If raw data are provided, these functions can also do  moderation analyses.
  
@@ -95,8 +95,8 @@ Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 persona
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 1.9.11 \cr
-Date: \tab 2019--November--28\cr
+Version: \tab 2.0.8 \cr
+Date: \tab 2020--August--12\cr
 License: \tab GPL version 2 or newer\cr
 }
 Partial Index:
@@ -334,7 +334,7 @@ sets.  Primarily for development purposes.\cr
 }
 
 }
-\note{Development versions (source code) of this package are maintained at the  repository \url{https://personality-project.org/r} along with further documentation.   Specify that you are downloading a source package.  
+\note{Development versions (source code) of this package are maintained at the  repository \url{https://personality-project.org/r/} along with further documentation.   Specify that you are downloading a source package.  
 \cr
 Some functions require other packages. Specifically, omega and schmid require the GPArotation package,  ICLUST.rgraph and fa.graph require Rgraphviz but have alternatives using the diagram functions.  i.e.:
 \cr
@@ -361,7 +361,7 @@ function  \tab     requires\cr
 Maintainer: William Revelle <revelle@northwestern.edu>
 
 }
-\references{A general guide to personality theory and research may be found at the personality-project \url{https://personality-project.org}. See also the short guide to R at \url{https://personality-project.org/r}.
+\references{A general guide to personality theory and research may be found at the personality-project \url{https://personality-project.org/}. See also the short guide to R at \url{https://personality-project.org/r/}.
 In addition, see 
 
 Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}    }

@@ -68,7 +68,7 @@ if(NROW(x) != NROW(y) ) {stop("Number of subjects in x must match those in y")}
       p1 <- pca(x)
       p2 <- pca(y)
       
-#Evem though, if given keys, we have already flipped them, we check one more time
+#Even though, if given keys, we have already flipped them, we check one more time
     #  if(is.null(keys) ) { keys <- rep(1,n.items) }  else {keys <- temp }
      keys <- rep(1,n.items)
       if((any(p1$loadings < 0)) | (any(p2$loadings < 0))) {if (check.keys) {if(warnings) message("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
@@ -249,9 +249,13 @@ mlr1 <- function(x,na.action= "na.omit" ) {
   MS_id <- vc$id[1,1]
   MS_time <- vc$time[1,1]
   MS_items <- vc$items[1,1]
-  MS_pxt <- vc[[1]][[1]]
-  MS_pxitem <- vc[[2]][[1]]
-  MS_txitem <- vc[[3]][[1]]
+ # MS_pxt <- vc[[1]][[1]]
+ # MS_pxitem <- vc[[2]][[1]]
+ # MS_txitem <- vc[[3]][[1]]              #changed to named locations (which were incorrect when doing by numbers)
+  MS_pxt <- vc[["id:time"]][[1]]
+  MS_pxitem <- vc[["id:items"]][[1]]
+  MS_txitem <- vc[["items:time"]][[1]]
+
   error <- MS_resid <- (attributes(vc)$sc)^2
   s.lmer <- s.aov <- summary(mod.lmer)
  MS.df <- data.frame(variance= c(MS_id, MS_time ,MS_items, MS_pxt, MS_pxitem, MS_txitem, MS_resid,NA))

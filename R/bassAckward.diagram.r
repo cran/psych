@@ -1,5 +1,5 @@
 #modified 6/620  to increase drastically increase speed by taking the drawing out of a loop
-
+#fixed a problem of plotting in wrong order   8/20/20
 bassAckward.diagram <- function(x,digits=2,cut = .3,labels=NULL,marg=c(1.5,.5,1.0,.5),
 main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...) {
  old.par<- par(mar=marg)  #give the window some narrower margins
@@ -16,19 +16,20 @@ ylim <- c(-1,(nf-2))}
 lower <- list()
 upper <- list()
 if(is.null(labels)) labels <- x$labels
-labels[[nf]] <- x$labels[[nf]]  #this puts in the bottom row (the items) 
+labels[[nf]] <- x$labels[[nf]]  #this puts in the bottom row/left hand side (the items) 
 plot(0,type="n",xlim=xlim,ylim=ylim,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
 #first draw the bottom row
 nvar <- NROW(x$bass.ack[[nf]])
 max.var <- nvar
 rname <- labels[[nf]] 
 if(lr) {
-all.rects.x <- rep(-1,nvar)
-all.rects.y <- seq(nvar:1)
-all.rects.rname <- rname } else {
- all.rects.y <- rep(-1,nvar)
-all.rects.x <- seq(nvar:1) 
-all.rects.rname <- rname[nvar:1] }
+	all.rects.x <- rep(-1,nvar)
+	all.rects.y <- seq(1:nvar)  #this was not doing it before  (seq(nvar:1) was wronge)
+	all.rects.rname <- rname[1:nvar] 
+	} else {
+ 	all.rects.y <- rep(-1,nvar)
+	all.rects.x <- seq(1:nvar) 
+	all.rects.rname <- rname[seq(nvar,1,-1)] }
 
 
 #first define the various locations but don't draw them
@@ -40,20 +41,21 @@ dia.rect(all.rects.x, all.rects.y,all.rects.rname)  #now draw them
 #now draw the next row and then repeat until the top 
 
 for(j in (nf):2) {
-if((j < nf)  & organize) x <- ba.organize(x,j)
-nvar <- NCOL(x$bass.ack[[j]]) 
-scale <- max.var/(nvar+1)
+	if((j < nf)  & organize) x <- ba.organize(x,j)
+	nvar <- NCOL(x$bass.ack[[j]]) 
+	scale <- max.var/(nvar+1)
 
 #store the locations
 if(lr) {
-all.rects.x <- rep(nf-j,nvar)
-all.rects.y <- seq(nvar:1) * scale
-all.rects.rname <- labels[[j-1]][nvar:1]} else {
- all.rects.y <- rep(nf-j,nvar)
-all.rects.x <- seq(nvar:1) *scale
-all.rects.rname <- labels[[j-1]] }
+	all.rects.x <- rep(nf-j,nvar)
+	all.rects.y <- seq(nvar,1,-1) * scale
+	all.rects.rname <- labels[[j-1]]
+	} else {
+ 	all.rects.y <- rep(nf-j,nvar)
+	all.rects.x <- seq(1:nvar) *scale
+	all.rects.rname <- labels[[j-1]] }
 
-for(i in 1:nvar) {
+for(i in 1:nvar) {  #which is actually the number of lower level variables or factors
   cname <- labels[[j-1]]
   
   if(lr) {upper[[i]] <-  dia.rect(nf-j,(nvar-i + 1) *scale, labels= cname[i],draw=FALSE,...)} else {  upper[[i]] <-  dia.rect(i*scale,nf-j, labels= cname[i],draw=FALSE,...) }
@@ -80,14 +82,14 @@ nfact  <- NROW(x$bass.ack[[j]])
               }
 
 for(k in 1:nfact) {
-if(abs(x$bass.ack[[j]][k,i]) >  cut ) {
+if(abs(x$bass.ack[[j]][k,i]) >  cut ) { #just draw the large loadings
    value <- x$bass.ack[[j]][k,i]
    
-   if(lr) {text.values[[ki]] <- dia.arrow(upper[[i]]$left,lower[[k]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
+   if(lr) {text.values[[ki]] <- dia.arrow(upper[[nvar-i +1]]$left,lower[[nfact-k+1]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
                                col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
    												
    } else {
-   text.values[[ki]] <-  dia.arrow(upper[[i]]$bottom,lower[[k]]$top,adj=((i-k) %% 3)   ,labels = round(value,digits),
+   text.values[[ki]] <-  dia.arrow(upper[[nvar-i+1]]$bottom,lower[[nfact-k+1]]$top,adj=((i-k) %% 3)   ,labels = round(value,digits),
                               col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)}
  
   #text.values <- list(x0,y0,xr,yr,  length = (both+0) * .1*scale, angle = 30, code = 1, xl,yl,xe,ye, length2 = 0.1*scale, angle = 30, code2 = 2)
@@ -117,7 +119,7 @@ ba.organize <- function(x,level=NULL){
 if(is.null(level)) {nf = length(x$bass.ack) #this counts how many results are there
 level0 <- fa.sort(x$bass.ack[[nf]])
 x$labels[[nf]] <- rownames(level0) 
-fa <- x$fa$loadings[[nf-1] ]   #added as fa$loadings to match change if bassAckward
+fa <- x$fa$loadings[[nf-1] ]   #added as fa$loadings to match change in bassAckward
 fa <- fa[x$labels[[nf]],]
 x$fa[[nf-1] ] <- fa
 

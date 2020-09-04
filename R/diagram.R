@@ -378,9 +378,9 @@ text(x= textvalues[,1],y = textvalues[,2],labels=textvalues[,3])
 "multi.arrow" <- function(arrows.list,...){
  tv <- matrix(unlist(arrows.list),byrow=TRUE,ncol=21)
    #cname<- colnames(tv)
-   tv  <- data.frame(tv)
+   tv  <- data.frame(tv,stringsAsFactors=FALSE)
    tv[,c(1:2,4:19)] <- nchar2numeric(tv[,c(1:2,4:19)])
-   if(nchar(tv[1,21]) ==1) tv[,21] <- as.numeric(tv[,21 ]) #sometimes this is "solid", sometimes "1"
+   if(nchar(as.vector(tv[1,21])) ==1) tv[,21] <- as.numeric(tv[,21 ]) #sometimes this is "solid", sometimes "1"  #the as.vector gets around a problem in R 3.6
    #colnames(tv) <- cname
   textlocation <- tv[,1:5]
   #colnames(textlocation) <- c("x","y","labels","pos","cex")

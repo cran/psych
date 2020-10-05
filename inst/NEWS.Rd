@@ -1,6 +1,6 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 2.0.9 (2020-09-02)}{ 
+\section{Changes in psych version 2.0.10 (2020-10-01)}{ 
   \subsection{Introduction}{
     \itemize{
       \item Version 2.0.9.xx is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.8.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
@@ -114,11 +114,35 @@
     \item Fix the mediate output so that it matches the summary
     \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
    
-
-
+   
+    \item Fix bug in testRetest (reported by Jacob Lee) about fixed id column
+    
+     \item There is a problem in error.bars.by for the case of 0 cases reported in describeBy
   }
   }
   }
+  
+   \section{Changes in psych version 2.0.9 (2020-9-09)}{
+   
+     \subsection{Additions}{
+        
+    \itemize{
+       \item Added grouping option (and formula input) to scatterHist
+      \item Fixed a minor confusion between main and title in fa.plot
+       \item Add minlength parameter to lowerCor and lowerMat for length of abbreviations
+      }
+    }
+  
+   \subsection{Bugs fixed}{
+    \itemize{
+    \item  Fixed a problem with crossValidation where it would not work with a single criterion
+    \item Fix a problem with alpha if the number of categories differed drastically and max was not specified.  Reported by Daniel Bradford.
+    \item Fixed a bug in geometric.mean where it was not processing na.rm for the case of a single vector  (reported by Jesse Aldersliesten)
+    \item Fixed a bug in mediate where the standard errors of the boot values were wrong (reported by Felicia Zerwas)
+     }
+    }
+    }
+  
   
    \section{Changes in psych version 2.0.8 (2020-8-31)}{
    

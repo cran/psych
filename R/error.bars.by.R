@@ -104,7 +104,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
        merge = TRUE, bg = 'gray90')}
                
     } else {   #the normal case is to not use bars
-    group.stats <- describeBy(x,group)
+    group.stats <- describeBy(x,group)    #why not use matrix output for this
     n.group <- length(group.stats)   #this is total number of groups but it may  be 2 x 2 or n x m
     n.var <- ncol(x)
      if(is.null(n.var)) n.var <- 1 
@@ -170,6 +170,7 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
      
 
  #if there are two or more grouping variables,this strings them out
+
     for (g in 1:n.group) {
    	 	var.means[,g] <- group.stats[[g]]$mean    #problem with dimensionality -- if some grouping variables are empty
    	 	if(sd) {var.se[,g] <- group.stats[[g]]$sd}  else {var.se[,g] <- group.stats[[g]]$se }

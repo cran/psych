@@ -16,7 +16,7 @@ If the input is an object of class "kmeans", then the cluster centers are plotte
 cluster.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,
           title = "Cluster plot",pch=18,pos,show.points=TRUE,choose=NULL,...)
 fa.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title, 
-             jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,...)
+    jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,main=NULL,...)
 factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,
                   amount=.02,pch=18,pos,show.points=TRUE,...)  #deprecated
 }
@@ -34,6 +34,7 @@ factor.plot(ic.results, cluster = NULL, cut = 0, labels=NULL,title,jiggle=FALSE,
   \item{pos}{Position of the text for labels for two dimensional plots. 1=below, 2 = left, 3 = above, 4= right}
   \item{show.points}{When adding labels to the points, should we show the points as well as the labels.  For many points, better to not show them, just the labels.}
   \item{choose}{Specify the factor/clusters to plot}
+  \item{main}{Any title -- redundant with title}
   \item{...}{Further options to plot}
   
 }

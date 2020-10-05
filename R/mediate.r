@@ -213,7 +213,8 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
          #  if(is.null(mod)) {
            boot <- p.boot.mediate(data,x,y,m,z,n.iter=n.iter,std=std,use=use)   #this returns a list of vectors
   #the first values are the indirect (c') (directly found), the later values are c-ab from  the products
-            mean.boot <- colMeans(boot)
+         
+            mean.boot <- colMeans(boot)    
             sd.boot <- apply(boot,2,sd)
             ci.quant <- apply(boot,2, function(x) quantile(x,c(alpha/2,1-alpha/2),na.rm=TRUE)) 
 
@@ -472,7 +473,7 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
  
   p.result <- list()
   #mapply to debug
- p.result <- mcmapply(short.boot,c(1:n.iter),MoreArgs=list(data,n.obs=n.obs,x=x,y=y,m=m,z=z,std=std,use=use))
+ p.result <-  t(mcmapply(short.boot,c(1:n.iter),MoreArgs=list(data,n.obs=n.obs,x=x,y=y,m=m,z=z,std=std,use=use))) #added the transpose 10/03/20 
 
  return(p.result) 
   }

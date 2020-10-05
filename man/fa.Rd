@@ -141,7 +141,7 @@ One reason for this problem when using tetrachorics or polychorics seems to be t
 
 For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
-For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted ).  This is now returned by the fa function as well (e.g. p <- fa(ability)$Vaccounted ).
+For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted ).  This is now returned by the fa function as well (e.g. p <- fa(ability)$Vaccounted ).  Just as communalities may be found by the diagonal of Pattern \%*\% t(Structure) so can the variance accounted for be found by diagonal ( t(Structure) \%*\% Pattern.  Note that referred to as SS loadings. 
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 

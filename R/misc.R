@@ -7,7 +7,7 @@
 function() {}
 
 "lowerMat" <- 
-function(R,digits=2) {
+function(R,digits=2,minlength=5) {
    lowleft <- lower.tri(R,diag=TRUE)
    nvar <- ncol(R)
 	nc <- digits+3
@@ -15,7 +15,7 @@ function(R,digits=2) {
 	k1 <- width/(nc+2)
    if(is.null(colnames(R))) {colnames(R) <- paste("C",1:nvar,sep="")}
    if(is.null(rownames(R))) {rownames(R) <- paste("R",1:nvar,sep="")}
-	colnames(R) <- abbreviate(colnames(R),minlength=digits+3)
+	colnames(R) <- abbreviate(colnames(R),minlength=minlength)
 	
 	nvar <- ncol(R)
 	nc <- digits+3
@@ -31,9 +31,9 @@ function(R,digits=2) {
 	invisible(R[lower.tri(R,diag=FALSE)])}
 	
 "lowerCor" <- 
-function(x,digits=2,use="pairwise",method="pearson") {
+function(x,digits=2,use="pairwise",method="pearson",minlength=5) {
    R <- cor(x,use=use,method=method)
-   lowerMat(R,digits)
+   lowerMat(R,digits,minlength=minlength)
    invisible(R)
    }
 

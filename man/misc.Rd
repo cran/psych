@@ -28,9 +28,9 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 }
 \usage{
 psych.misc()
-lowerCor(x,digits=2,use="pairwise",method="pearson")
+lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5)
 cor2(x,y,digits=2,use="pairwise",method="pearson")
-lowerMat(R, digits = 2)
+lowerMat(R, digits = 2,minlength=5)
 tableF(x,y)
 reflect(f,flip=NULL)
 progressBar(value,max,label=NULL) 
@@ -55,6 +55,7 @@ test.all(pl,package="psych",dependencies
   \item{y}{A data matrix or data frame or a vector}
   \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
   \item{digits}{round to digits}
+  \item{minlength}{Abbreviate to minlength in lowerCor}
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
   \item{method}{"pearson", "kendall", "spearman"} 
   \item{value}{the current value of some looping variable}

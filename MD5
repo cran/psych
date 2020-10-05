@@ -1,4 +1,4 @@
-27c058c4ace145258551a6eb09419d18 *DESCRIPTION
+05797e1c990961062575d52d7e45462c *DESCRIPTION
 663d2ec4171a6592cf6800efa720f339 *NAMESPACE
 13d9ab3fbb68605e336eaf29f98bd80a *R/BASS.R
 40710078e10b210767d9bb8adccf4399 *R/ICC.R
@@ -36,7 +36,7 @@ e8cde9d21cf4a426abb5c0f441c499f2 *R/circ.tests.R
 34543cb45a3daee1c90291b4dcfaec37 *R/cluster.cor.R
 e1e60b3b6603b90d5315fbb62d1b400d *R/cluster.fit.R
 f1d9b87a04ccea8081dc082e62b87c78 *R/cluster.loadings.R
-04b0baab24bdba488bd2e963760a20c9 *R/cluster.plot.R
+3690084363d8f43502b61016ea170654 *R/cluster.plot.R
 861e6e0682d9d30322553d81ad283de4 *R/cluster2keys.R
 cee08c38611f5d7cbca3da47abc65635 *R/cohen.d.R
 727ee779cba4b35601c0f67761ccf256 *R/comorbidity.R
@@ -54,7 +54,7 @@ fe8acb2f96feda0a660696a39ccd4447 *R/cortest.bartlett.R
 122ba6363838778649d84d70633f8dfd *R/cortest.normal.R
 a31eb80a4cfbc9546ed5aa6f13aac681 *R/cosinor.R
 d9c70f298bd35e4c7c58a1543b16f00a *R/count.pairwise.R
-2501b34719c33f1cef46dfd71e5ef85c *R/crossValidation.r
+db4e4d50593b05ec7de996a21d3062c5 *R/crossValidation.r
 3bc895efe60839a41e820731d8fb93d0 *R/cta.15.R
 55da70d9c9bec31f46ff865582d29dc6 *R/cta.R
 a78b60720c43a284d53aa1bfd2e1fec0 *R/densityBy.r
@@ -68,7 +68,7 @@ d8d009661960c10b3d5c10bcccfd22db *R/dummy.code.R
 e7df2e7682994996c551c62ed0ffef97 *R/eigen.loadings.R
 b6e45d9e7f8a43ffab32363c88b9cbeb *R/ellipses.R
 e4c4291f6450cfe57ea1f8bd831e1c6d *R/error.bars.R
-e235799f7fdb18faa6c931baf403afad *R/error.bars.by.R
+1c80ad085437b13550b9acc7bb45d405 *R/error.bars.by.R
 cb63d95b6898016dd1867dc6e1bfb19e *R/error.crosses.R
 f7e063791224d7d042be507c504d4720 *R/error.dots.r
 5296d038f210b0abacb326c842b8585e *R/errorCircles.r
@@ -104,7 +104,7 @@ ca36ef7502c324e8cdd1537633b0bda8 *R/factor2cluster.R
 e10754196a212278bb50b3f669a3705e *R/fiml.R
 4582be0ba4e7ace62870776df2cbc2a5 *R/fisherz.R
 59a411c575963c65934529a2db1c589f *R/fix.dplyr.R
-f89c037c1fa27c410e6c2b136292e6db *R/geometric.mean.R
+d9cc5a54eb83059346f5f85cbeffdfb0 *R/geometric.mean.R
 e972d7d599d676e916eef1d9f9bab773 *R/glb.R
 3d45734b104d5337b15156483d7dbcba *R/glb.algebraic.R
 117e706ca382944f87b94ed5bd496c58 *R/glbs.R
@@ -140,9 +140,9 @@ bcd98bc6e3255a86ddab0f1739851dac *R/mat.plot.R
 ebfb848141f2e063822863870429a8eb *R/mat.sqrt.R
 2cef0a7e4980b9f150a88ad4089cc4fd *R/matrix.addition.R
 438c6c5f26abbcc932692e5a3376f2e8 *R/matrix.na.r
-014c89b330265a8fcf8a3e123f011376 *R/mediate.r
+248f0973a22951ca4c4649531e515180 *R/mediate.r
 7efd423b076037ac3ef6b4fa9e984f55 *R/meta.schmid.R
-97eb585648611b2119bc9085dfceaed3 *R/misc.R
+dd478e7d3a52898c105e4381ea23448f *R/misc.R
 ece308ca3ee5ea3232d20c93e81875ad *R/missing.cor.R
 d65a1a877f1bc255b31bfafa3676322e *R/mixed.cor.R
 555d4d852ec8b0f7ee4f423a5d6b8dab *R/multi.hist.R
@@ -189,12 +189,12 @@ bb2e02fdc68b7c6f37e058d40bdca022 *R/psych.R
 094b0845b011870d6301aed8dc7b65c4 *R/reverse.code.R
 d4be2ecb1314c8994b3b161cea8268c1 *R/reverseKey.R
 87fd7c4266c93d1588d37183964e0ce1 *R/scaling.fits.R
-766b91194c36f397d1b3d893e84f76b4 *R/scatter.hist.R
+bef2f9eb5064bc7365d30001084ca5e2 *R/scatter.hist.R
 c808e199dce0631ad41652e99ee3f003 *R/schmid.R
 a8e68675f21774507cf9526bc25fc454 *R/score.alpha.r
 8badac79a8ed35fd0f83b3bc16dee585 *R/score.irt.r
 c7b188a91e5ad0ec80f677951a883525 *R/score.items.R
-a44c54ef565d211a67dea16dd2fb8ccd *R/score.multiple.choice.R
+ea10c36dbb3b79ee6c16d197a719764b *R/score.multiple.choice.R
 6b855198dfb198de051f4ed85db1f578 *R/scoreFast.r
 471d005ad9d155e249365e72e73e5af1 *R/scoreOverlap.r
 660a1b78df1f9950e6cb740579411eab *R/scoreWtd.R
@@ -238,7 +238,7 @@ bc3fced45a4ac8103d9df50cbea9cfe2 *R/test.all.R
 e70757153ddccbd41bb360dc33db8c52 *R/toDotty.R
 efc0345900114fbf13942f7bda3957dd *R/unidim.r
 d49d4eb35da9e11010df63cb6b0aacb8 *R/winsor.R
-8d2adf51d8e98c973d76bba4a27442cb *build/vignette.rds
+4fe3e1b7fe811d17ee289cb6c1949a60 *build/vignette.rds
 b448c67916d03c7e63fcdb984133b1c0 *data/Bechtoldt.1.rda
 3c1e24d0897e155babfa9494ec271d6b *data/Bechtoldt.2.rda
 4b8f9be884c4c128296d882c00c9eec6 *data/Bechtoldt.rda
@@ -266,14 +266,14 @@ e4d1ce3c98c451afe63b70e5e894b1c0 *data/cattell.rda
 750cfdfc8737a90915fd746403696f5d *data/sat.act.rda
 eef271883aaafe139c572158fde02134 *data/tal_or.rda
 16da6b1e624fce7a452326bfab7d390d *data/withinBetween.rda
-58ff56f71ffcea81a1382a2ac9ae8e63 *inst/CITATION
-a658c09bb5c7daeb4dc9a2293d74ee8b *inst/News.Rd
+b54b931b6e89ff6d408256d3bca3612f *inst/CITATION
+60a3614aadd6eaf4fa0dcb4f574b4448 *inst/News.Rd
 cd1153161121e3b7ee1f7c660f6c7935 *inst/doc/intro.R
 a99220630cd264120908841b85bf6603 *inst/doc/intro.Rnw
-fb62708b89c2751c6d4c6dec750c675e *inst/doc/intro.pdf
-cb33dde7cb0cf19c5be9dcd2b13faad9 *inst/doc/omega.R
-e874560d9a75f396bf7e0954e8f9438f *inst/doc/omega.Rnw
-15b059aceab70c7dd50e1c1d9082ec98 *inst/doc/omega.pdf
+4423b04a2a481663dbc594580ca28762 *inst/doc/intro.pdf
+588f26b5bde89ef494c7d43272da16d8 *inst/doc/scoring.R
+b344671e5478316ae817ff2821d0fdff *inst/doc/scoring.Rnw
+94af835021ed1be4161042ec05f129d2 *inst/doc/scoring.pdf
 fc62bef8cb1476abc1d1875d478de0c8 *man/00.psych-package.Rd
 c7771f2a203563b1a4c3950ef7888dcb *man/AUC.Rd
 425933c02ec48aafde2fa2309119700a *man/Garcia.Rd
@@ -312,7 +312,7 @@ f052dd55c21b47736781d941fb39d258 *man/block.random.Rd
 6a3f9f38b776a8e06fb6ca991ef312b8 *man/cluster.cor.Rd
 cbfc59b49670ea02e90b45dca2d65657 *man/cluster.fit.Rd
 a5da3d7d71594147fc2ec133db25ad60 *man/cluster.loadings.Rd
-cc289b8680823b9f245043870280fc5b *man/cluster.plot.Rd
+6e0e6f1f89a2bbae8a202e923b904397 *man/cluster.plot.Rd
 8a2b12d771d57672b7abe446e68b058c *man/cluster2keys.Rd
 9df5608411af069e81e40cde6f9afef6 *man/cohen.d.Rd
 cc731a9871fee22ff7789011d71c716a *man/comorbidity.Rd
@@ -345,7 +345,7 @@ eab1274c45abff6c0518b0c083a796d5 *man/error.circles.Rd
 9f5725ab170df7786b3e9924cb906693 *man/error.crosses.Rd
 7572ef828e62644d426107851e4ba843 *man/error.dots.Rd
 645fd4a87a757d86fa925b9a82fe0d55 *man/esem.Rd
-beb275bdc5cabee314915644a6b6571f *man/fa.Rd
+46c9318da08af2f8f22d62670b77e2fa *man/fa.Rd
 ff1b4ecd13c5988a4105ea5d1e24088f *man/fa.diagram.Rd
 9b9b333f698b896724731106e2a15a35 *man/fa.extension.Rd
 932d882a88c1f7b8a57efac2c026c538 *man/fa.lookup.Rd
@@ -383,8 +383,8 @@ af37e1f303b0cf083bb39648f0d332fb *man/kappa.Rd
 db77c28de2728c6d8d4ee0bcc39afced *man/manhattan.Rd
 78ddd3301587bad307199d65531f0f2c *man/mat.sort.Rd
 42bd24ab4c5723382fbd3e5715edcc06 *man/matrix.addition.Rd
-063a59fcc81be38ad8a3b32da52fada5 *man/mediate.Rd
-b7837042ebb653fe252ff9b55b1b540f *man/misc.Rd
+bb6c59bc78d32a12ed27afe7689633f9 *man/mediate.Rd
+44540064e2ab5699c197b35f9dec2c61 *man/misc.Rd
 ac92b3cab730c54f1e639e738beb4aaf *man/mixed.cor.Rd
 5b2622cfeec3c373b0313e05266ce539 *man/mssd.Rd
 a1abe4b6f8eda99e4c01f91f1e7c4437 *man/multi.hist.Rd
@@ -413,7 +413,7 @@ f99ff7d11e369be1804bb523c32bfacf *man/rescale.Rd
 be47add74e88900e4b798fff0c0752c7 *man/reverse.code.Rd
 8a0bd3874bda78ad6a7f125a12abb2cd *man/sat.act.Rd
 2da775ad361fe3e94063c8e0280ec817 *man/scaling.fits.Rd
-41d14de529a46d4bd8735dab3861ef46 *man/scatter.hist.Rd
+87db146cc2edce72143a20c067f2e011 *man/scatter.hist.Rd
 3c7b5d4f197af85bbdc25ed75806838a *man/schmid.Rd
 bb2a36477041a966a1aec50359978fda *man/score.alpha.Rd
 1ff1aa21df5d484af88070e32ecac64b *man/score.irt.Rd
@@ -433,7 +433,7 @@ e366a87713a2c3a38ee2e4fc19b0ac15 *man/sim.Rd
 345dd8f33a548d31942e1b731c096872 *man/simulation.circ.Rd
 dd16dd94c60aeca30689372040653e0f *man/skew.Rd
 b88a06f4cb7afb01bc5eeac26865490f *man/smc.Rd
-909a5847672d96bc8395fe22c8e289a7 *man/spengler.Rd
+829f2b2ece2b9a77e188f39189462adb *man/spengler.Rd
 a1277374a09fbb24ee3fa62637376617 *man/spider.Rd
 7f08a0c59401e9f0eb28a7a33fd9c793 *man/statsBy.Rd
 7ba13eb28fb836856a8c726cc8c079dd *man/structure.diagram.Rd
@@ -451,4 +451,4 @@ a5a9de59b2bd39a31cf3d80ed4b516a8 *man/unidim.Rd
 a97beb62973191f13316725510371abc *man/winsor.Rd
 ccb9366f57062e9ea9346f0bff4f1782 *man/withinBetween.Rd
 a99220630cd264120908841b85bf6603 *vignettes/intro.Rnw
-e874560d9a75f396bf7e0954e8f9438f *vignettes/omega.Rnw
+b344671e5478316ae817ff2821d0fdff *vignettes/scoring.Rnw

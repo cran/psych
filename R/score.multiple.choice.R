@@ -75,12 +75,14 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
         (nlevels(factor(items[[ 1]])) > max) ||    #changed to [[ ]] following suggestion from Mikko Ronkko
         length(uniqueitems) > max) {
         frequency <- NULL
+       message("Number of categories should be increased  in order to count frequencies. ")
     }
     else {
        #just describe those items that have less than max categories
        
-        n.var <- dim(items)[2]
-        n.cases <- dim(items)[1]
+        n.var <- NCOL(items)              #changed to handle case of single variable 
+        n.cases <- NROW(items)
+        if(n.var < 2 ) message("Number of categories should be increased  in order to count frequencies. ")
         dummy <- matrix(rep(uniqueitems, n.var), ncol = n.var)
         colnames(dummy) <- names(items)
         xdum <- rbind(items, dummy)

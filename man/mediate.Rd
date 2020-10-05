@@ -160,7 +160,7 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 mediate (SATIS ~ THERAPY + (ATTRIB),data=sobel, n.iter=50) #specify the mediator by 
 # adding parentheses
 
-
+#A.C. Kerchoff, (1974) Ambition and Attainment: A Study of Four Samples of American Boys.
 #Data from sem package taken from Kerckhoff (and in turn, from Lisrel manual)
 R.kerch <- structure(list(Intelligence = c(1, -0.1, 0.277, 0.25, 0.572, 
 0.489, 0.335), Siblings = c(-0.1, 1, -0.152, -0.108, -0.105, 

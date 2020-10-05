@@ -54,12 +54,13 @@ fa.plot(ic.results,cluster=cluster,cut=cut,labels=labels,title=title,jiggle=jigg
 
 
  "fa.plot" <- 
-function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,...) {
+function(ic.results,cluster=NULL,cut = 0.0,labels=NULL, title,jiggle=FALSE,amount=.02,pch=18,pos,show.points=TRUE,choose=NULL,main=NULL,...) {
 if(missing(title) ) { title="Plot"
               if (length(class(ic.results)) >1 )  {if (inherits(ic.results, "fa")) {title = "Factor Analysis"} else {
                      if (inherits(ic.results,"principal")) {title = "Principal Component Analysis"} 
                      } }
                      }
+ if(missing(main)) {main<- title} else {title <- main}  #getting rid of confusion from years ago
  if (!is.matrix(ic.results)) {
         if (!is.null(class(ic.results))) {
        if(inherits(ic.results, "kmeans")) { load <- t(ic.results$centers) }  else {

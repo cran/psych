@@ -7,7 +7,7 @@ obnames <- cs(setCor,bestScales )
 
 switch(value, 
 setCor = {wt <- model$coefficients
-    if(rownames(wt)[1] =="(Intercept)") wt <- wt[-1,] },
+    if(rownames(wt)[1] =="(Intercept)") wt <- wt[-1,,drop=FALSE] },
     
 bestScales ={#the default
 if(is.null(options)){options <- "best.keys"}
@@ -50,12 +50,15 @@ if(is.null(options)){options <- "best.keys"}
     }  #this is a matrix of the (criteria + predictors)
     cv <- rep(NA,ncrit)
     Mij <- matrix(NA,ncrit,ncrit)
-    for(i in 1:ncrit)  {y <- wt[,i]
+    for(i in 1:ncrit)  {y <- wt[,i,drop=FALSE]
      wtm <- diag(wt[,i])
      Cxx <- wtm %*% R[predictors,predictors] %*% wtm
      Vxx <- sum(Cxx)
-     Cxyi  <- wt[,i] * R[i,predictors]
-     Cxxy <- wt[,i] *t(R[1:ncrit,predictors])
+     
+     
+     
+     Cxyi  <- wt[,i,drop=FALSE] * R[i,predictors]
+     Cxxy <- wt[,i] *t(R[1:ncrit,predictors,drop=FALSE])
      cv[i]<-  sum(Cxyi)/sqrt(Vxx)
 
      #Cxyi <- (Cxyi)/sqrt(Vxx)
@@ -92,4 +95,4 @@ matPlot <- function(x, type = "b", minlength=6, xlas=0,...) {
      axis(1,at=at1,labels=labx,las=xlas)
      }
      
- 
+ #Fixed 9/9/20 to handle case of single criterion (by using drop=FALSE in appropriate places)

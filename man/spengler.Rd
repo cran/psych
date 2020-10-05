@@ -47,8 +47,8 @@ Marion Spengler, supplementary material to Damian et al. and Spengler et al.
 
 }
 \references{
-Rodica Ioana Damian and Marion Spengler and Andreea Sutu and Brent W. Roberts, 2018, Sixteen going on sixty-six: A longitudinal study of personality stability and change across 50 years 
-Journal of Personality and Social Psychology
+Rodica Ioana Damian and Marion Spengler and Andreea Sutu and Brent W. Roberts, 2019, Sixteen going on sixty-six: A longitudinal study of personality stability and change across 50 years 
+Journal of Personality and Social Psychology. 117, (3) 274-695.
 
 Marian Spengler and Rodica Ioana Damian and Brent W. Roberts (2018), How you behave in school predicts life success above and beyond family background, broad traits, and cognitive ability
 Journal of Personality and Social Psychology, 114 (4) 600-636

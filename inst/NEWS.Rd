@@ -1,15 +1,18 @@
 \name{NEWS}
 \title{News for Package 'psych'}
-\section{Changes in psych version 2.0.10 (2020-10-01)}{ 
+
+
+\section{Changes in psych version 2.1.01 (2021-01-01)}{ 
   \subsection{Introduction}{
     \itemize{
-      \item Version 2.0.9.xx is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.8.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
-       
-      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
+     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
+      \item Version 2.1.01 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.12.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
+       
+     
  }
  }
   
@@ -27,12 +30,10 @@
       \item add the ability to add labels to lavaan.diagram  
     
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
-     \item To help those who want to simulate a bifactor model, make it explicit  
+     \item To help those who want to simulate a bifactor model, make it explicit.  
      
      \item Check the bias in bootstrap resampling using cor.ci  
      
-     \item Start to use the drop=FALSE when doing subsetting (doing this more and more)
-   
      \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
      \item Add an analysis if DIF to the irt functions  (requested by David Condon)
      \item Add some power functions
@@ -53,9 +54,8 @@
      \item Fix bug in esem.diagram for ability- bifactor 3,3 simple=FALSE,cut=.2
      \item Improve documentation for esem and cosinor
 
-      \item Add interbattery diagram to the structure.    
+      \item Add interbattery diagram to the structure diagram function.    
     
-     
       \item Add Krippendorf's alpha?
      
       \item Add the ability to weight factor residuals to allow WLMS
@@ -67,28 +67,26 @@
        \item Change help file examples so they are cleaner for people who example(fn)
     \item Make the main functions more "tidy" in terms of their output
     \item Add testthat functionality
-    \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.
-    \item Consider creating a new package (psych.tools) to add some of the useful utilities.
+    \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.  Partially done (not yet for spider)
+  
      \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
      \item Need to add documentation to mediate/moderate/setCor for what dfs are used and why.
-    \item Examine the stats::anova, stats::summary.lm, stats::anova.lm for hints on how to do these anova comparisons
+  
    \item Add an n.iter option to pca (requested by Michael Wood) 
    \item There is a bug in bestItems for the case of no iterations and dictionary = something
    \item Fix bug in fa.lookup for omega g values that are negative
    \item Fix bug in bestScales that does not report items if not iterating
    \item Adjust stats in fa.extend to report the raw and then the extended values
    \item Improve documentation for extension diagram to clarify that it works with fa.results
-   \item Add s.e. to intercept in set cor (requested by Eric Youngstrom)
+  
    \item Add just check variables specified for being numeric (instead of entire data.frame)  (suggested by Fransisco Wilheim)
   
    \item Pretty up the output from mediate (perhaps make a mediate2latex function
-   \item There is a bug in setCor for finding the intercepts
-   \item Add a anova.test for two setCor objects
-   \item Add formula input to densityBy
-   \item Improve the print function for bassAckwards
   
-   
-   \item Fix error.bars and error.bars.by so that if there are empty cross tabs it doesn't choke
+  
+  
+   \item Improve the print function for bassAckwards
+
       } 
   }
   \subsection{To do}{
@@ -114,19 +112,68 @@
     \item Fix the mediate output so that it matches the summary
     \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
    
-   
+    \item Give model fit in setCor?
     \item Fix bug in testRetest (reported by Jacob Lee) about fixed id column
     
-     \item There is a problem in error.bars.by for the case of 0 cases reported in describeBy
+     \item Fix statsBy so the grouping variable can be categorical and don't use it when finding the within group correlations
+    
+     \item Reorder spi.keys to match the ideal order  (maybe they already are)
+     \item Improve documentation for thurstone
+      \item scoreIrt.2pl needs to be able to adjust for group differences correctly
+    
   }
   }
   }
+  
+   \section{Changes in psych version 2.0.12 (2020-12-12)}{
+   
+     \subsection{Additions}{
+        
+    \itemize{
+       \item Released 2.0.9 to CRAN 10/05/20  -- this 2.0.12 is now the development version
+       \item Added the option to print correlations in lookupItemFromKeys (requested by Seo Young Myaeng)
+       \item Modified isCorrelation to allow for NAs in correlation matrices (requested by Lorien Elleman)
+       \item Improved error.bars and error.bars.by in response to requestes by Lizz Dworak
+       \item Improve violin and violinBy to provide more features including vertical versus horizontal plots, stripcharts of the data points, and error bars.
+       \item Added fa.pooled in response to a query from Asghar Minaei about how to pool various imputation runs.
+      \item make cohen.d handle categorical (character) data (requested by Evan Grandoit)
+     \item Finally got the  s.e. to intercept in set cor (requested by Eric Youngstrom)  to work.  See attempts from version 1.9.12 onwards.
+        \item Added a anova.test for two setCor objects (did this a while ago, not sure when)
+        \item Moved cta and cta.15 to psychTools to save space.
+     
+      }
+    }
+  
+   \subsection{Bugs fixed}{
+    \itemize{
+      \item Fixed a bug in setCor where it was not correctly handling the case of std=FALSE, zero = TRUE (reported by Robert Stupinsky)
+      \item Fixed a bug in mediate.diagram so that it properly ignores the intercept (also reported by  Robert Stupinsky )
+     \item fixed a hidden function in thurstone so that it actually works given ranked data 
+     \item Fixed a bug in scoreFast for the case of one scale and count.responses=TRUE (reported by  Alyssa Counsell)
+     \item Finally fixed a bug in error.bars.by for the case of multiple variables with some missing data 
+      \item ptci in corCi  should be 1-ptci  
+      \item Corrected the spelling of Branscombe in the documentation of Garcia (with thanks to Barbara Toizer)
+      \item Added drop=FALSE to violinby so it can handle single x variables.
+      \item Replace all calls to mixed.cor with mixedCor (responding to a question from Lisandro D Colantonio about mixed.cor being deprecated in a call from statsBy)
+      \item Finally (?) fixed bassAckward.diagram to draw the lower level factors correctly both vertically and horizontally
+      \item Fixed a bug in faBy so it will work with one factor (reported by Kondwani Kajera)
+      \item Fixed print.psych.vss to properly handle NA in BIC and EBIC (as reported by Paulo Sergio Panse Silveira  )
+      \item Finally ? got the error terms in setCor for the intercept and the residuals to match lm!
+      \item Seems to be something wrong in mediate df  1 IV 
+    )
+    
+    }
+    }
+    }
+  
+  
   
    \section{Changes in psych version 2.0.9 (2020-9-09)}{
    
      \subsection{Additions}{
         
     \itemize{
+       \item Added formula input to densityBy
        \item Added grouping option (and formula input) to scatterHist
       \item Fixed a minor confusion between main and title in fa.plot
        \item Add minlength parameter to lowerCor and lowerMat for length of abbreviations
@@ -139,6 +186,7 @@
     \item Fix a problem with alpha if the number of categories differed drastically and max was not specified.  Reported by Daniel Bradford.
     \item Fixed a bug in geometric.mean where it was not processing na.rm for the case of a single vector  (reported by Jesse Aldersliesten)
     \item Fixed a bug in mediate where the standard errors of the boot values were wrong (reported by Felicia Zerwas)
+  
      }
     }
     }

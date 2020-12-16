@@ -47,7 +47,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
  stop("I am stopping because the variable names are incorrect.  See above.")}
  
  
-  if(!isCorrelation(data))  {
+  if(!isCorrelation(data))  {  # We have a data matrix rather than a correlation matrix 
 
  
                   data <- data[,c(y,x,z,ex)] 
@@ -59,8 +59,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                    if(!is.numeric(data)) stop("The data must be numeric to proceed")
                    if(!is.null(prod) | (!is.null(ex))) {#we want to find a product term
                   if(zero) data <- scale(data,scale=FALSE)
-                  if(!is.null(prod)) {
-                 
+                  
+     if(!is.null(prod)) {
                      prods <- matrix(NA,ncol=length(prod),nrow=nrow(data))
                      colnames(prods) <- prod
                      colnames(prods) <- paste0("V",1:length(prod))
@@ -73,9 +73,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                       x <- c(x,colnames(prods))
                     }
                     
-                    if(!is.null(ex)) {
-                 
-                    quads <- matrix(NA,ncol=length(ex),nrow=nrow(data))  #find the quadratric terms
+        if(!is.null(ex)) {
+                  quads <- matrix(NA,ncol=length(ex),nrow=nrow(data))  #find the quadratric terms
                     colnames(quads) <- paste0(ex)
                      for(i in 1:length(ex)) {
                       quads[,i] <- data[,ex[i]] * data[,ex[i]]
@@ -86,22 +85,27 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                     }
 
                     }
-                   n.obs <- max(pairwiseCount(data),na.rm=TRUE)
+                   n.obs <- max(pairwiseCount(data),na.rm=TRUE)  #this overestimates the number of observations for missing data 
                    df <- n.obs - length(x) -length(z)  #we have the intercept as one degree of freedom, partialed variables count as well
                     means <- colMeans(data,na.rm=TRUE)   #use these later to find the intercept
                     sds <- apply(data,2,sd, na.rm=TRUE)
                  	C <- cov(data,use=use)
                          	
-                    if(std) {
-                       C["(Intercept)","(Intercept)"] <- 1
+                         	
+                     
+            if(std) {
+                        C["(Intercept)","(Intercept)"] <- 1  
                        m <- cov2cor(C)
-                             C <- m
-                        } else {#   do it on the moments matrix to get intercepts
-                             m <- C
+                       C <- m
+                    } else {
+                        #   do it on the moments matrix to get intercepts
+                           #if(zero) C["(Intercept)","(Intercept)"] <- 1  
+                           if(zero) means[1] <- 1 
+                            m <- C
                            if(length(z) < 1) { m <- C * (n.obs-1) + means %*% t(means) * n.obs} else { #this creates the moments matrix unless we are partialling
-                           
+                              #multiply C * (n.obs-1) to convert the covariances to momements
                             means []<- 0
-                             m <- C * (n.obs-1)# + means %*% t(means) * n.obs
+                             m <- C * (n.obs-1)   # + means %*% t(means) * n.obs   # should this be nobs
                            m[1,1] <- n.obs
                          
                            }
@@ -149,8 +153,6 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 ###  The actual regression calculations start here
 ### 
 ### some modifications made 12/1/19 to adjust the dfs when returning SSRs    
-
-                
 	                 
      	if(numx == 1 ) {beta <- matrix(xy.matrix,nrow=1)/x.matrix[1,1]
      	                rownames(beta) <- rownames(xy.matrix)
@@ -174,19 +176,24 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
        	resid <- y.matrix - yhat   #this is in moments  units
         
          se.beta <- list()
+   
        if(raw) {
+   
+       df.fudge <- (n.obs-1) #maybe n.obs-1  
             if(std) { R2 <- colSums(beta * xy.matrix)/diag(y.matrix) 
               SST <- 1 
-              MSE <- diag(resid/df) 
-              df.fudge <- (n.obs-1)   #this is used to find the SSR
-             Residual.se <- sqrt(MSE*df.fudge )   #to put in the SSR units, we need to use the number of observations -1
+              MSE <- diag(resid/df)  
+                #this is used to find the SSR  was n.obs -1
+               Residual.se <- sqrt(diag(resid)*(n.obs-1)/(df))
+           
+               #to put in the SSR units, we need to use the number of observations -1  df.fudge?
                         for (i in 1:length(y)) {
-     	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
+     	       				 se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
                  }
               #se.beta <- sqrt(as.vector(MSE) * diag(x.inv))
              } else {
 
-       		Residual.se <- sqrt(diag(resid /df))  #this is the df  n.obs - length(x))
+       		 Residual.se <- sqrt(diag(resid) /df)  #this is the df  n.obs - length(x))
               MSE <- diag(resid )/(df) 
                if(length(y) > 1) {SST <- diag( m [y,y] - means[y]^2 * n.obs)} else {SST <- ( m [y,y] - means[y]^2 * n.obs)}
      	       R2 <- (SST - diag(resid)) /SST 
@@ -196,15 +203,17 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                  }
               }
           
-                }    else {#from correlations
+                }    else { #from correlations
   
                 R2  <- colSums(beta * xy.matrix)/diag(y.matrix) 
               SST <- 1 
               MSE <- diag( resid/(df-1 ))  #because df is inflated in normal regression because of the intercept term should this be df or df -1
               df.fudge <- n.obs-1
-             Residual.se <- sqrt(MSE*df.fudge ) 
+            # Residual.se <- sqrt(diag(resid)/ df)    #df.fudge?
+            # Residual.se <- sqrt(diag(resid)*(n.obs-1)/(df+1))  #since we are not estimating the intercept
             # Residual.se <- sqrt(diag(resid)) #*df/(n.obs-1))  #don't use df 
-           # Residual.se <- sqrt(diag(resid))
+            Residual.se <- sqrt(diag(resid) * (n.obs-1)/(df-1))
+
               for (i in 1:length(y)) {
      	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
                  }
@@ -374,6 +383,11 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 #modified February 19, 2015 to just find the covariances of the data that are used in the regression
 #this gets around the problem that some users have large data sets, but only want a few variables in the regression
 #corrected February 17, 2018 to correctly find the unweighted correlations
+
+#corrected December 12, 2020 to correctly report the se of the intercept as well as the residual.se 
+#I had been been off by  sqrtdf/(n.obs-1)
+
+
 #mdified Sept 22, 2018 to allow cex and l.cex to be set
 
 #mdified November, 2017 to allow an override of which way to draw the arrows  

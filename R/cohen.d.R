@@ -9,7 +9,7 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
 	 }
 	 
 	if(!is.null(group2)){cohen.d.by(x =x, group=group,group2=group2)} else {
-	
+	x <- char2numeric(x)  # just in case there are character values  12/12/20
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
   group.in <- TRUE} else {group.in <- FALSE}
  stats <- statsBy(x,group)
@@ -128,7 +128,7 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
       names(result) <- paste0(group1name,"for",group2name ,categories)
       class(result) <- class(result) <- c("psych","cohen.d.by")
       return(result)
-   }
+}
     
     
     "print.cohen.d" <- function(x,digits=2) {cat("Call: ")

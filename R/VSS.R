@@ -83,7 +83,7 @@ complexrow <- function(x,c)     #sweep out all except c loadings
       tetrachoric = {x <- tetrachoric(x)$rho},
        poly = {x <- polychoric(x)$rho},
        polychoric = {x <- polychoric(x)$rho},
-       mixed = {x <- mixed.cor(x,use=use)$rho},
+       mixed = {x <- mixedCor(x,use=use)$rho},
        Yuleb = {x <- YuleCor(x,,bonett=TRUE)$rho},
        YuleQ = {x <- YuleCor(x,1)$rho},
        YuleY = {x <- YuleCor(x,.5)$rho } 

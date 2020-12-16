@@ -37,24 +37,35 @@ result[[criterion]] <- value }
 return(result)
 }
 
+
+#adjusted 11/15/20 to add correlations if provided
  "lookupFromKeys" <- 
-function(keys.list,dictionary,n=1,suppress.names=FALSE){
+function(keys.list,dictionary,n=20,cors = NULL,sort=TRUE,suppress.names=FALSE,digits=2){
 n.scales <- length(keys.list)
-results <- list()
+results <- item.cors <- result.df <- list()
 for(i in 1:n.scales) {
   list.name <- names(keys.list[i])
   list.i <- keys.list[[i]]
    keys <- rep(1,length(list.i))[1:(min(n,length(list.i)))]
-    neg <- grep("-", list.i[1:n])
+    neg <- grep("-", list.i[1:(min(n,length(list.i)))])
     keys[neg] <- -1
   select <- sub("-", "", list.i)
-  results[[i]] <- lookup(select[1:n],dictionary)
+  results[[i]] <- lookup(select[1:(min(n,length(list.i)))],dictionary)
  if(!is.null(rownames(results[[i]])[keys < 0]))  rownames(results[[i]])[keys < 0] <- paste0(rownames(results[[i]])[keys<0],"-")
+
+ if(!is.null(cors)) { item.cors[[i]] <- round(cors[select[1:(min(n,length(select)))],i],digits=digits)
+ result.df[[i]] <- data.frame(results[[i]],cors=item.cors[[i]])
+ if(sort) {
+      ord <- order(abs(item.cors[[i]]),decreasing=TRUE)
+      result.df[[i]] <- result.df[[i]][ord,]
+ }
+ } else {result.df[[i]] <- data.frame(results[[i]])} #results[[i]] <- c(results[[i]],cors= round(cors[select[1:n],i],digits=digits))
   if(suppress.names) names(results[[i]]) <- ""
+ 
  # names(results[i]) <- list.name
 }
-names(results) <- names(keys.list)
-return(results)}  
+names(result.df) <- names(keys.list)
+return(result.df)}  
   
   #lookup which x's are found in y[c1],return matches for y[]
  

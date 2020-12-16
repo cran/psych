@@ -40,7 +40,7 @@ return(x)
  
  
 "scrub" <- 
- function (x, where, min, max, isvalue,newvalue) 
+ function (x, where, min, max, isvalue,newvalue,cuts=NULL) 
 {
     if (missing(min))  min <- -Inf
     if (missing(max))  max <- Inf
@@ -54,13 +54,20 @@ return(x)
     if(length(isvalue) ==1) isvalue <- rep(isvalue,maxlength)
     if(length(newvalue) ==1) newvalue <- rep(newvalue,maxlength)
    # if (length(isvalue) == 1)  isvalue <- rep(isvalue, (length(where)))
-    for(k in 1: maxlength) {
+    if(is.null(cuts)) {for(k in 1: maxlength) {
     i <- where[k]
       if(is.numeric(x[,i])) {  x[(!is.na(x[, i]) & (x[, i] < min[k])), i] <- newvalue[k]
         x[(!is.na(x[, i]) & (x[, i] > max[k])), i] <- newvalue[k] 
         }
         x[(!is.na(x[, i]) & (x[, i] == isvalue[k])), i] <- newvalue[k]
-       }
+       }} else {
+          n.cuts <- length(cuts)
+          for (j in 1:n.cuts) {
+          for(k in 1:length(where)) {
+           x[ (!is.na(x[where[k]])) & (x[where[k]]  >= cuts[j] ) & (x[where[k]] <  cuts[j+1]),where[k]] <- j }
+                                     }
+                  
+     }
    
     return(x)
 }
@@ -70,6 +77,7 @@ return(x)
 #modifed January 8, 2012 to be a  bit more flexible
 #modified April 11, 2019 to handle character data
 #fixed August 9, 2019 to correctly process is.numeric
+#modified December 12th ,2020 to include the "bucketing" option
 
 
 

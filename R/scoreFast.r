@@ -93,8 +93,8 @@ if(any( !(select %in% colnames(items)) )) {
   ilabels<- paste(keynames,"S",sep="-")} else {
     	             ilabels <- paste(keynames,"A",sep="-")} }
                     
- if(count.responses) { scores <- scoresList[1:n.subjects,]
-   responses <- scoresList[(n.subjects+1):nrow(scoresList),]
+ if(count.responses) { scores <- scoresList[1:n.subjects,,drop=FALSE]   #added drop  11/14/20
+   responses <- scoresList[(n.subjects+1):nrow(scoresList),,drop=FALSE]
    colnames(scores) <- ilabels
    colnames(responses) <- ilabels
     results <- list(scores=scores,responses = responses)} else {

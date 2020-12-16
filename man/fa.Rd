@@ -2,6 +2,7 @@
 \alias{fa}
 \alias{fac}
 \alias{fa.sapa}
+\alias{fa.pooled}
 
 
 
@@ -19,6 +20,12 @@ fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALS
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
 oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, weight=NULL,...)
+
+fa.pooled(datasets,nfactors=1,rotate="oblimin",scores="regression", 
+residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001
+,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, 
+p =.05, oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
+correct=.5,weight=NULL,...) 
 
 fa.sapa(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
 residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,
@@ -56,6 +63,7 @@ frac=.1,...)
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
 \item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
 \item{frac}{The fraction of data to sample n.iter times if showing stability across sample sizes}
+\item{datasets}{A list of replication data sets to analyse in fa.pooled. All need to have the same number of variables.}
 \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -145,7 +153,7 @@ For those who want to have an object of the variances accounted for, this is ret
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 
-
+In response to a request from Asghar Minaei who wanted to combine several imputation data sets from mice, fa.pooled was added.  The separate data sets are combined into a list (datasets) which are then factored separately. Each solution is rotated towards the first set in the list.  The results are then reported in terms of pooled loadings and confidence intervals based upon the replications.  
 
 \code{\link{fa.sapa}} simulates the process of doing SAPA (Synthetic Aperture Personality Assessment).  It will do iterative solutions for successive random samples of  fractions (frac) of the data set. This allows us to find the stability of solutions for various sample sizes and various sample rates. Need to specify the number of iterations (n.iter) as well as the percent of data sampled (frac).  
 
@@ -310,6 +318,7 @@ print(uls,sort=TRUE)
 #then compare with a maximum likelihood solution using factanal
 mle <- factanal(covmat=Harman74.cor$cov,factors=4)
 factor.congruence(list(mle,pa,pc,uls,wls))
+
 #note that the order of factors and the sign of some of factors may differ 
 
 #finally, compare the unrotated factor, ml, uls, and  wls solutions
@@ -343,6 +352,11 @@ factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
 #Get the variance accounted for object from the print function
 p <- print(mr3)
 round(p$Vaccounted,2)
+
+#pool data and fa the pooled result (not run)
+#datasets.list <- list(bfi[1:500,1:25],bfi[501:1000,1:25],
+#   bfi[1001:1500,1:25],bfi[1501:2000,1:25],bfi[2001:2500,1:25])  #five different data sets
+#temp <- fa.pooled(datasets.list,5)    #do 5 factor analyses, pool the results
 }
 
 \keyword{ multivariate }

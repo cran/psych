@@ -92,9 +92,11 @@ function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=T
                              #slightly faster if we don't do skews
 { 
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
-	if(missing(data)) {x <- get(ps$y)
-	group <- ps$x } else {x <- data[ps$y]
-	group <- data[ps$x]}
+	if(missing(data)) { 
+	 x <- get(ps$y)
+	group <- x[,ps$x]} else {x <- data[ps$y]
+	group <- data[ps$x]
+	}
 	describeBy(x,group=group,na.rm=na.rm,interp=interp,skew=skew,ranges=ranges,trim=trim,type=type,check=check,fast=fast,quant=quant,IQR=IQR,omit=omit,data=data)
   } else {                   
  cl <- match.call()

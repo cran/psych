@@ -1,5 +1,6 @@
 #modified 6/620  to increase drastically increase speed by taking the drawing out of a loop
 #fixed a problem of plotting in wrong order   8/20/20
+#perhaps finally fixed the variables to appear in the right order for both lr and vertical mode  09/12/20
 bassAckward.diagram <- function(x,digits=2,cut = .3,labels=NULL,marg=c(1.5,.5,1.0,.5),
 main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...) {
  old.par<- par(mar=marg)  #give the window some narrower margins
@@ -24,17 +25,23 @@ max.var <- nvar
 rname <- labels[[nf]] 
 if(lr) {
 	all.rects.x <- rep(-1,nvar)
-	all.rects.y <- seq(1:nvar)  #this was not doing it before  (seq(nvar:1) was wronge)
+	#all.rects.y <- seq(1:nvar)  #this was not doing it before  (seq(nvar:1) was wronge)
+	all.rects.y <- seq(nvar,1, -1 )  #this was not doing it before  (seq(nvar:1) was wronge)
 	all.rects.rname <- rname[1:nvar] 
 	} else {
  	all.rects.y <- rep(-1,nvar)
 	all.rects.x <- seq(1:nvar) 
-	all.rects.rname <- rname[seq(nvar,1,-1)] }
+	#all.rects.rname <- rname[seq(nvar,1,-1)] }
+	all.rects.rname <- rname[seq(1, nvar, 1)] }
+
 
 
 #first define the various locations but don't draw them
  for(j in 1:nvar) {
-   if(lr) {lower [[j] ] <- dia.rect(-1,nvar-j +1, rname[j],draw=FALSE,...) } else {lower [[j] ] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}
+   if(lr) {lower [[j]] <- dia.rect(-1, nvar - j + 1, rname[ nvar - j + 1],draw=FALSE,...) } else {lower [[j]] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}
+  #  if(lr) {lower [[j]] <- dia.rect(-1,j , rname[j],draw=FALSE,...) } else {lower [[j]] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}  #12/07/20
+ 
+ 
  } 
 dia.rect(all.rects.x, all.rects.y,all.rects.rname)  #now draw them 
 
@@ -63,7 +70,7 @@ for(i in 1:nvar) {  #which is actually the number of lower level variables or fa
     }
 dia.rect(all.rects.x,all.rects.y,all.rects.rname)
   
-  #connect them
+  #connect them and then put  in the correlation values
 
 text.values <- list()     #save the text values from the arrows
 ki <- 1   #set the counter to 1
@@ -81,15 +88,18 @@ nfact  <- NROW(x$bass.ack[[j]])
               }}
               }
 
+
 for(k in 1:nfact) {
 if(abs(x$bass.ack[[j]][k,i]) >  cut ) { #just draw the large loadings
    value <- x$bass.ack[[j]][k,i]
    
-   if(lr) {text.values[[ki]] <- dia.arrow(upper[[nvar-i +1]]$left,lower[[nfact-k+1]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
+   if(lr) {#text.values[[ki]] <- dia.arrow(upper[[nvar-i +1]]$left,lower[[nfact-k+1]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
+            #                   col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
+            text.values[[ki]] <- dia.arrow(upper[[i ]]$left,lower[[k]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
                                col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
    												
    } else {
-   text.values[[ki]] <-  dia.arrow(upper[[nvar-i+1]]$bottom,lower[[nfact-k+1]]$top,adj=((i-k) %% 3)   ,labels = round(value,digits),
+     text.values[[ki]] <-  dia.arrow(upper[[i]]$bottom,lower[[k]]$top,adj=((i-k) %% 3)   ,labels = round(value,digits),
                               col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)}
  
   #text.values <- list(x0,y0,xr,yr,  length = (both+0) * .1*scale, angle = 30, code = 1, xl,yl,xe,ye, length2 = 0.1*scale, angle = 30, code2 = 2)

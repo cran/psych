@@ -8,9 +8,12 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
  eyes=eyes,alpha=alpha,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
  arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 
  legend=0,density=density,...)
-     } else {if(!missing(group)) {  error.bars.by(x,group=group,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, 
+     } else {
+      if(!missing(group)) {  error.bars.by(x,group=group,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, 
      v.labels=NULL, pos=pos, arrow.len=arrow.len, add=add,bars=bars, within=within, 
-     colors=col, legend=0,density=density,...)}  else {   #no grouping variable, this is the normal case
+     colors=col, legend=0,density=density,...)}  else {
+     
+  #no grouping variable, this is the normal case
      
     SCALE=.5   #scale the width of the cats eyes
     if(is.null(stats)) {
@@ -64,7 +67,7 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
       s <- c(1:z)   #this allows us to address each one separately
     	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else { 
     	       
-    	        if(is.null(x.stats$values)) {
+   if(is.null(x.stats$values)) {
     	 arrows(s[s],x.stats$mean[s]-ci[s]* x.stats$se[s],s[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col=arrow.col) } else {
     	 arrows(x.stats$values,x.stats$mean[s]-ci[s]* x.stats$se[s],x.stats$values,x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3, col=arrow.col)}
  	 

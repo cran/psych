@@ -59,6 +59,13 @@
 
 \newcommand{\ve}[1]{{\textbf{#1}}} %trying to get a vector command
 
+\DefineVerbatimEnvironment{Sinput}{Verbatim}
+{fontseries=b, fontsize=\scriptsize, frame=single, label=\fbox{R code}, framesep=5mm}
+
+
+\DefineVerbatimEnvironment{Rinput}{Verbatim}
+{fontseries=b, fontsize=\scriptsize, frame=single, label=\fbox{R code}, framesep=5mm}
+
 
 \makeindex         % used for the subject index
 
@@ -71,7 +78,9 @@
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\SweaveOpts{concordance=TRUE,(prompt=" ",continue=" "}
+%\SweaveOpts{(prompt=" ",continue=" ")
+
 \maketitle
 \tableofcontents
 \newpage
@@ -83,14 +92,12 @@ You have installed \Rpkg{psych}  (section  \ref{sect:starting}) and you want to 
 \begin{enumerate}
 \item Activate the  \Rpkg{psych} package and the  \Rpkg{psychTools} package:
 
-\begin{scriptsize}
-\begin{Schunk}
-\begin{Sinput}
+
+\begin{Rinput}
 library(psych)
 library(psychTools)
-\end{Sinput}
-\end{Schunk}
-\end{scriptsize}
+\end{Rinput}
+
 
 \item Input your data (section  \ref{sect:read}). There are two ways to do this:
 
@@ -477,12 +484,12 @@ describe(sat.act)  #basic descriptive statistics
 @
 \end{scriptsize}
 
-These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.
+These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.  Here we use formula mode.
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>= 
  #basic descriptive statistics by a grouping variable.
-describeBy(sat.act,sat.act$gender,skew=FALSE,ranges=FALSE)
+describeBy(sat.act ~ gender,skew=FALSE,ranges=FALSE)
 @
 \end{scriptsize}
 
@@ -491,7 +498,7 @@ The output from the \pfun{describeBy} function can be forced into a matrix form 
 
 \begin{scriptsize}
 <<print=FALSE,echo=TRUE>>= 
-sa.mat <- describeBy(sat.act,list(sat.act$gender,sat.act$education),
+sa.mat <-  describeBy(sat.act ~ gender + education,
  skew=FALSE,ranges=FALSE,mat=TRUE)
 headTail(sa.mat)
 @
@@ -628,7 +635,7 @@ Graphical presentation of data may be shown using box plots to show the median a
 <<violin>>=
 png('violin.png')
 data(sat.act)
-violinBy(sat.act,5:6,"gender",grp.name=c("M", "F"),main="Density Plot by gender for SAT V and Q")
+violinBy(SATV+SATQ ~ gender, data=sat.act,grp.name=cs(Verbal.M,Verbal.F, Quan.M,Quant.F),  main="Density Plot by gender for SAT V and Q")
 dev.off()
 @
 \end{scriptsize}

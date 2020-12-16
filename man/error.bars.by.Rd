@@ -6,9 +6,10 @@
 }
 \usage{
 error.bars.by(x,group,data=NULL, by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL, main=NULL, 
-ylim= NULL, xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL, pos=NULL, 
-arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"), 
- lty,lines=TRUE, legend=0,pch,density=-10,...)
+ylim= NULL, xlim=NULL, 
+eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL,v.labels=NULL,v2.labels=NULL, add.labels=NULL,
+pos=NULL,arrow.len=.05,min.size=1,add=FALSE,bars=FALSE,within=FALSE,
+colors=c("black","blue","red"), lty,lines=TRUE, legend=0,pch=16,density=-10,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,8 +28,11 @@ arrow.len=.05,add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
   \item{labels}{ X axis label }
   \item{v.labels}{For a bar plot legend, these are the variable labels, for a line plot,
       the labels of the grouping variable.}
+  \item{v2.labels}{the names for the 2nd grouping variable, if there is one}
+  \item{add.labels}{if !NULL, then add the v2.labels to the left/right of the lines (add.labels="right")}
   \item{pos}{where to place text: below, left, above, right}
   \item{arrow.len}{ How long should the top of the error bars be?}
+  \item{min.size}{Draw error bars for groups > min.size}
   \item{add}{ add=FALSE, new plot, add=TRUE, just points and error bars}
   \item{bars}{Draw a barplot with error bars rather than a simple plot of the means}
   \item{within}{Should the s.e. be corrected by the correlation with the other variables?}

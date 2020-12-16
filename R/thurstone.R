@@ -25,7 +25,7 @@ function(x, ranks = FALSE,digits=2) {     #the main routine
         model <- pnorm(-scale.values %+% t(scale.values))
 		error <- model - choice
 		fit <- 1-(sum(error*error)/sum(choice*choice))
-       result <- list(scale=round(scale.values,digits), GF= fit, residual=error,Call=cl)
+       result <- list(scale=round(scale.values,digits), GF= fit, choice=choice,residual=error,Call=cl)
        class(result) <- c("psych","thurstone")
     return(result)}
     
@@ -36,7 +36,8 @@ function(x, ranks = FALSE,digits=2) {     #the main routine
 #if we have rank order data, then convert them to a choice matrix
 #convert a rank order matrix into a choice matrix
 orders.to.choice <- function(x,y) {      #does one subject (row) at a time
-   nvar <-dim(x)[2]
+   nvar <- length(x)          #changed to length 11/8/20
+   
    for (i in 1:nvar) {
       for (j in 1:nvar) {
         if (x[j]< x[i] ) {y[i,j] <- y[i,j]+1

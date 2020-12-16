@@ -22,7 +22,7 @@ r <- r[,vars]  #we organize the data to be just the ones we want, that is, ignor
        wtd = { r <- cor.wt(r,w=weight)$r},
        tet = {r <- tetrachoric(r)$rho},
        poly = {r <- polychoric(r)$rho},
-       mixed = {r <- mixed.cor(r,use=use)$rho},
+       mixed = {r <- mixedCor(r,use=use)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 
@@ -254,7 +254,7 @@ n.obs <- nrow(r)
               covar <- TRUE}, 
        tet = {r <- tetrachoric(r)$rho},
        poly = {r <- polychoric(r)$rho},
-       mixed = {r <- mixed.cor(r,use=use)$rho},
+       mixed = {r <- mixedCor(r,use=use)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 

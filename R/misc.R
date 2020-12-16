@@ -637,7 +637,7 @@ pretty}
   if(NROW(x) == NCOL(x)) {
   if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
   value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
-  value <- value && isTRUE((min(x)>= -1) & (max(x) <= 1))
+  value <- value && isTRUE((min(x,na.rm=TRUE)>= -1) & (max(x,na.rm=TRUE) <= 1))  
   return(value)}
   
   #this just shows if it is a symmetric matrix

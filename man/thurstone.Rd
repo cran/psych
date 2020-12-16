@@ -17,13 +17,17 @@ thurstone(x, ranks = FALSE, digits = 2)
 Thurstone considered five different sets of assumptions about the equality and independence of the variances for each item (Thurston, 1927). Torgerson expanded this analysis slightly by considering three classes of data collection (with individuals, between individuals and mixes of within and between) crossed with three sets of assumptions (equal covariance of decision process, equal correlations and small differences in variance, equal variances).  
 
 The data may be either a square matrix of dataframe of preferences (as proportions with the probability of the column variable being chosen over the row variable) or a matrix or dataframe of rank orders ( 1 being prefered to 2, etc.)
+
+The second example creates 100 random permutations of ranks 1-5.  These data are then converted to a matrix of choices and then scaled.  The goodness of fit is practically perfect, even though the data are meaningless.   
+
+This suggests a better goodness of fit test should be applied.  
 }
 \value{
   \item{GF }{Goodness of fit 1 = 1 - sum(squared residuals/squared original) for lower off diagonal. \cr
   
     Goodness of fit 2 =  1 -  sum(squared residuals/squared original) for full matrix.}
   \item{residual }{square matrix of residuals (of class dist)}
-  \item{data}{The original choice data}
+  \item{choice}{The original choice data}
   ...
 }
 \references{ Thurstone, L. L. (1927) A law of comparative judgments.  Psychological Review, 34, 273-286.
@@ -35,6 +39,16 @@ Revelle, W. An introduction to psychometric theory with applications in R. (in p
 \examples{
 data(psychTools::vegetables)
 thurstone(psychTools::veg)
+#But consider the case of 100 random orders
+set.seed((42))
+ranks <- matrix(NA,nrow=100,ncol=5)
+for(i in 1:100) ranks[i,] <- sample(5,5)
+ t <- thurstone(ranks,TRUE)
+ t   #show the fits
+ t$hoice #show the choice matrix
+
+
+
 }
 
 \keyword{ models }

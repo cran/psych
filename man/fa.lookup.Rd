@@ -16,7 +16,8 @@ lookupItems(content=NULL,dictionary=NULL,search=c("Item","Content","item"))
 fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 keys.lookup(keys.list,dictionary)
-lookupFromKeys(keys.list,dictionary,n=1,suppress.names=FALSE)
+lookupFromKeys(keys.list,dictionary,n=20,cors=NULL,sort=TRUE,suppress.names=FALSE,
+      digits=2)
 setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05) 
 }
 \arguments{
@@ -28,6 +29,7 @@ setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{keys.list}{A list of scoring keys suitable to use for make.keys}
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
 \item{n}{Return the n best items per factor (as long as they have their highest loading on that factor)}
+\item{cors}{If provided (e.g. from scoreItems) will be added to the lookupFromKeys output}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}
 \item{search}{Column names of dictionary to search, defaults to "Item" or "Content" (dictionaries have different labels for this column), can search any column specified by search.}
 \item{m}{A data frame of item means}
@@ -52,7 +54,7 @@ Similarly, given a correlation matrix, r, of the x variables, if you want to fin
 
 \code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements. 
 
-\code{\link{lookupItems}} searches a dictionary for all items that have a certain content.  The rownames of the returned object are the item numbers which can then be used in other functions to find statistics (e.g. omega) of a scale with those items.  
+\code{\link{lookupItems}} searches a dictionary for all items that have a certain content.  The rownames of the returned object are the item numbers which can then be used in other functions to find statistics (e.g. omega) of a scale with those items.   If an scales by items correlation matrix is given, then the item correlation with that scale are also shown. 
 }
 \value{ 
 \code{\link{bestItems}} returns a sorted list of factor loadings or correlations with the labels as provided in the dictionary.
@@ -89,11 +91,14 @@ item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2])
  #just show the item content, not the source of the items
 fa.lookup(f5,dictionary=psychTools::bfi.dictionary[2]) 
 
+
+#show how to use lookupFromKeys 
 bfi.keys <- 
 list(agree=c("-A1","A2","A3","A4","A5"),conscientiousness=c("C1","C2","C3","-C4","-C5"),
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
-lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5)
+bfi.over <- scoreOverlap(bfi.keys,bfi) #returns the corrected for overlap values
+lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5, cors=bfi.over$item.cor)
  #show the keying information
 lookupItems("life",psychTools::spi.dictionary) #find those items with "life" in the item
 }

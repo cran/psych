@@ -13,7 +13,7 @@ n.obs <- dim(x)[1]
 	    typ = "tet"
 	    if(sim) { tx.item <- matrix(apply(x,2,table),ncol=ncol(x))
 	    px <- matrix(tx.item/colSums(tx.item),ncol=2,byrow=TRUE)
-	    } } else {tet <- mixed.cor(x,global=global)
+	    } } else {tet <- mixedCor(x,global=global)
 	    typ = "poly"}
 	    cat("\n")  #to try to clear the progress bar
         flush(stdout())

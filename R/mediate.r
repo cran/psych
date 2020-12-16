@@ -134,15 +134,16 @@ if (nmod > 0 ) {
 
      	xy.matrix <- C[c(x,m),y,drop=FALSE]   #this is the matrix of correlations with the criterion
 
-#this next section adds the intercept to the regressions 
+#this next section adds the intercept to the regressions
+
  C.int <- matrix(NA,nrow=NROW(C)+1,ncol=ncol(C)+1)
   C.int[1,] <- C.int[,1] <- 0
-  C.int[-1,-1] <-C
+  C.int[-1,-1] <- C
  if(!raw) { std <- TRUE
      C.int[1,1] <- 1
      means <- rep(0,NCOL(data))} else {
      C.int[1,1] <- 0 
-    if(!std){ means <-colMeans(data,na.rm=TRUE)} else { means <- rep(0,ncol(C))}
+    if(!std){ means <- colMeans(data,na.rm=TRUE)} else { means <- rep(0,ncol(C))}
      means <- c(1,means)
      C.int <- C.int *  (n.obs-1) + means %*% t(means) * n.obs
      } 
@@ -483,13 +484,14 @@ boot.mediate <- function(data,x,y,m,z,n.iter=10,std=FALSE,use="pairwise") {
      dv <- medi$var.names[["DV"]]
    # iv <- medi$var.names[["IV"]]
      iv <- as.matrix(rownames(medi$direct))
-     if(iv[1] =="Intercept") iv <- iv[-1]
+     if(iv[1] =="Intercept") {iv <- iv[-1]
+            direct <- round(medi$direct[-1,,drop=FALSE],digits)} else { direct <- round(medi$direct,digits)}
     mv <- medi$var.names[["med"]]
     mod <- medi$var.names[["mod"]]
    # numx <- length(medi$var.names[["IV"]])
 
     numy <- length(dv)
-    direct <- round(medi$direct,digits)
+   # direct <- round(medi$direct,digits)
     if(!("Intercept*" %in% rownames(C))) {iv <- as.matrix(rownames(medi$direct)[-1])}
        numx <- NROW(iv)
     C <- round(medi$C[c(iv,mv,dv),c(iv,mv,dv)],digits) 
@@ -599,9 +601,10 @@ xlim=c(0,10)
 #plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
 var.names <- rownames(medi$direct)
 x.names <- rownames(medi$direct)
-if(x.names[1] == "Intercept") x.names <- x.names[-1]
+if(x.names[1] == "Intercept") {x.names <- x.names[-1]
+ beta <- round(medi$direct[-1,,drop=FALSE],digits)} else { beta <- round(medi$direct,digits)}   #fixed 10/29/20
 y.names <- colnames(medi$direct)
-beta <- round(medi$direct,digits)
+#beta <- round(medi$direct,digits)
 
 nx <- length(x.names)
 ny <- length(y.names)

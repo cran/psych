@@ -121,8 +121,8 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x)
       low.e <- apply(replicates,2,quantile, p/2,na.rm=TRUE)
       up.e  <- apply(replicates, 2, quantile, 1-p/2,na.rm=TRUE)
       tci <- abs(means.rot)/sds.rot
-      ptci <- pnorm(tci)
-      ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e,p =2*(1-ptci))
+      ptci <- 1- pnorm(tci)    #subtract from 1 (added 11/14/20)
+      ci.rot <- data.frame(lower=ci.rot.lower,low.e=low.e,upper=ci.rot.upper,up.e=up.e,p =2*(ptci))   #dropped the 1-ptci 11/14/20
       cnR <- abbreviate(colnames(rho),minlength=minlength) 
       k <- 1
      for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {

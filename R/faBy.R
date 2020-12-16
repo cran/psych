@@ -31,8 +31,10 @@
         fs <- faMatch(fl,fs)  #try to match them but don't force a rotation
         }    else {
         fs <- try(fac(X,nfactors=nfactors,rotate=rotate,scores="none",...)) #call fa with the appropriate parameters
-        fs$loadings <- faMatch(fl,fs)$loadings  #try to match them but don't force a rotation
+        if(nfactors > 1) fs$loadings <- faMatch(fl,fs)$loadings  #try to match them but don't force a rotation
       } 
+      
+  
   
   #if( length(class(fs)) ==1  ) {warning("could not factor a within subject matrix")} else {
   #     if(!free && (nfactors > 1))  { else {
@@ -43,17 +45,13 @@
   if(all) { replicates <- list(fa=fs,loadings=(fs$loadings),phis=phis,vloadings = as.vector(fs$loadings),vphis = phis[lower.tri(phis)])}  else {
   
    replicates <- list(loadings=fs$loadings,phis=phis,vloadings = as.vector(fs$loadings),vphis = phis[lower.tri(phis)])} 
-   #} else 
-   #  {replicates <- list(loadings=fs$loadings,vloadings <- as.vector(fs$loadings))}
- # }} 
+   } else   {replicates <- list(loadings=fs$loadings,vloadings = as.vector(fs$loadings))}
+}
  }
- }
+ )
 
- }
-  ) #end mclapply
-  
 
-  fabygroups <- lapply(replicateslist,function(X) X$vloadings)
+ fabygroups <- lapply(replicateslist,function(X) X$vloadings)
   notnullgroup <- unlist(lapply(fabygroups,function(x) !is.null(x)))
   namesbygroup <- names(fabygroups)[notnullgroup] 
   fabygroups  <- matrix(unlist(lapply(replicateslist,function(X) X$vloadings)),ncol=nvar*nfactors,byrow=TRUE)
@@ -90,16 +88,17 @@
    for (fi in 1:(nfactors-1)) { 
        for (fj in (fi+1):(nfactors)) {rownames(phiby)[k] <- paste(fnames[fi],"-",fnames[fj],sep="")
               k <- k +1 }}
-              }
-    meanloading <- matrix(means,ncol=nfactors) 
-    colnames(meanloading) <- fnames
-    rownames(meanloading) <- vnames
-    
-     phis <- matrix(0,nfactors,nfactors)
+              phis <- matrix(0,nfactors,nfactors)
      phis[lower.tri(phis)]   <- means.phis
      phis <-phis + t(phis)
      diag(phis) <- 1   
      colnames(phis) <- rownames(phis) <- fnames
+              } else {phiby.sum <- phis <- phiby <- NA }
+    meanloading <- matrix(means,ncol=nfactors) 
+    colnames(meanloading) <- fnames
+    rownames(meanloading) <- vnames
+    
+     
      
     faBy <- list(mean.loading= meanloading,mean.Phi= phis,faby.sum=faby.sum,Phi.sum = phiby.sum,loadings=t(faby),Phi=t(phiby),nfactors=nfactors,quant=quant,Call=cl)
      

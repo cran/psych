@@ -143,18 +143,17 @@
     cat("\nSummary of a, b, and ab estimates and ab confidence intervals\n")
     } 
     }
-    } else {#This is a pure moderation model, just show it
-    
-    for(i in 1:ndv) {cat("\n DV = ",colnames(x$total.reg$beta)[i], "\n")
-          result.df <- data.frame( round(x$total.reg$beta[,i],digits),round(x$total.reg$se[,i],digits),round(x$total.reg$t[,i],digits),signif(x$total.reg$prob[,i],digits))
-              colnames(result.df) <- c("slope","se", "t", "p")              
-             print(result.df)
-             cat("\nWith R2 = ", round(x$total.reg$R2[i], digits))
-              F <-  x$total.reg$df * x$total.reg$R2[i]/((nrow(x$total.reg$beta) * (1-x$total.reg$R2[i])))
-      pF <-  -expm1(pf(F,nrow(x$total.reg$beta),x$total.reg$df,log.p=TRUE)) 
-      cat("\nR =", round(sqrt(x$total.reg$R2[i]),digits),"R2 =", round(x$total.reg$R2[i],digits),  "  F =", round(F,digits), "on",nrow(x$total.reg$beta), "and", x$total.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
-    
+    } else {#This is a pure regression  model, just show it
+  summary(x)
+   #  for(i in 1:ndv) {cat("\n DV = ",colnames(x$total.reg$beta)[i], "\n")
+#           result.df <- data.frame( round(x$total.reg$beta[,i],digits),round(x$total.reg$se[,i],digits),round(x$total.reg$t[,i],digits),signif(x$total.reg$prob[,i],digits))
+#               colnames(result.df) <- c("slope","se", "t", "p")              
+#              print(result.df)
+#             # cat("\nWith R2 = ", round(x$cpime.reg$R2[i], digits))
+#               F <-  x$cprime.reg$df * x$cprime.reg$R2[i]/(((nrow(x$cprime.reg$beta)-1) * (1-x$cprime.reg$R2[i])))
+#       pF <-  -expm1(pf(F,nrow(x$cprime.reg$beta),x$cprime.reg$df,log.p=TRUE)) 
+#       cat("\nR =", round(sqrt(x$cprime.reg$R2[i]),digits),"R2 =", round(x$cprime.reg$R2[i],digits),  "  F =", round(F,digits), "on",nrow(x$cprime.reg$beta)-1, "and", x$total.reg$df,"DF   p-value: ",signif(pF,digits+1), "\n") 
+#     
        }
      
       }
-}

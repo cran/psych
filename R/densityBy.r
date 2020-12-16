@@ -1,22 +1,41 @@
-"violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",alpha= 1,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
-violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,ylab=ylab,xlab=xlab,main=main,alpha=alpha,adjust=adjust,restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale,...)
+"violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL, xlab=NULL, ylab=NULL,main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,
+alpha=1,errors=FALSE,eyes=TRUE,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+
+violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,xlab=xlab,ylab=ylab,main=main,vertical=vertical,dots=dots,jitter=jitter,alpha=alpha,errors=errors,eyes=eyes,adjust=adjust,restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale,...)
 }
 
 #switched from density = 50 to alpha =.5  to speed up the plotting 
-"violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,ylab="Observed",xlab="",main="Density plot",alpha= 1,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+"violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,xlab=NULL, ylab=NULL, main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,alpha= 1,errors=FALSE,eyes=TRUE,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
 SCALE=.3  #how wide are the plots?
 
 count.valid <- function(x) {sum(!is.na(x)) }
+
 if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}
+
  formula <- FALSE
    if(inherits(x, "formula")) {  ps <- fparse(x)
-   formula <- TRUE
+   	formula <- TRUE
    if(is.null(data)) {data <- get(ps$y) 
       var <- NULL #we specified the entire dataframe} else { #stop("You must specify the data if you are using formula input") 
-     x <- data} else {x <- data[ps$y] }
+     x <- data} else {x <- data[,ps$y,drop=FALSE] }  #added the drop = FALSE 11/28/20
    grp <- data[ps$x]
+   if(is.null(xlab)) xlab  <- ps$x 
+   names <- ps$x
+   grp.n <- ps$x
+   if(is.null(ylab)) ylab <- ps$y
    }
-  if(!is.null(grp)) { 
+  if(!formula) {ps <- list(x = grp, y = x)  #convert from x, grp   to y ~ x format 
+     if(is.null(data))  {data <- x
+       
+       if(!is.null(var))  {data <- data[,var]}
+        var <-  ps$y <- colnames(data)}
+        if(!is.null(grp)) {x <- cbind(data[,ps$y,drop=FALSE], x[,grp,drop=FALSE])} else {
+     x <- data[,ps$y,drop=FALSE] }
+     data <- x 
+     if(is.null(ylab)) ylab = "Observed "
+     if(is.null(xlab))  xlab = "" 
+    }  
+       if(!is.null(grp)) { 
     if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp,drop=FALSE]}
 
  if(!is.null(var)) {if(missing(ylab) & (length(var) ==1)) {ylab <- var}
@@ -25,33 +44,51 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}
  x <- char2numeric(x)
      
  col <- adjustcolor(col,alpha.f =alpha)        
-if(!is.null(grp)) {
-# if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp]	
- Qnt <-  apply(x,2,function(xx) by(xx,grp,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE))
-meanX <- apply(x,2,function(xx) by(xx,grp,mean,na.rm=TRUE))
-nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
-meanX <- matrix(unlist(meanX))
-   Qnt <- matrix(unlist(Qnt),nrow=5)
-   ngrp <- ncol(Qnt)/nvar
-   nvarg <- ncol(Qnt)
-   rangex <- matrix(c(Qnt[1,],Qnt[2,]),nrow=2,byrow=TRUE)
-} else {Qnt <- apply(x,2,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE)
-meanX <- apply(x,2,mean,na.rm=TRUE)}
-minx <- Qnt[1,]
-maxx <- Qnt[2,]
-medx <- Qnt[3,]
-Q25 <-  Qnt[4,]
-Q75 <-  Qnt[5,]
-#rangex <- apply(x,2,range,na.rm=TRUE)
-rangex <- matrix(c(Qnt[1,],Qnt[2,]),nrow=2,byrow=TRUE)
-names <- colnames(x)
+#if(!is.null(grp)) {
+# if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp]
+
+ if(!is.null(grp)) {stats <- describeBy(data[,ps$y],group = data[,ps$x],quant=c(0,1,.5,.25,.75),mat=TRUE,skew=FALSE) } else { stats <- describe(data[,ps$y],quant=c(0,1,.5,.25,.75),skew=FALSE)}
+  meanX <- stats[,"mean"]
+  minx <- stats[,"min"]
+  maxx <- stats[,"max"]
+  medx <- stats[,"Q0.5"]
+   Q25 <- stats[,"Q0.25"]
+  Q75  <- stats[,"Q0.75"]
+  nvarg <- NROW(stats)
+  n.col <- length(col)
+  nX <- stats[,"n"]
+  col <- rep(col,nvarg) #too many, but this will do
+
+#  Qnt <-  apply(x,2,function(xx) by(xx,grp,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE))
+# meanX <- apply(x,2,function(xx) by(xx,grp,mean,na.rm=TRUE))
+# nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
+# meanX <- matrix(unlist(meanX))
+#    Qnt <- matrix(unlist(Qnt),nrow=5)
+#    ngrp <- ncol(Qnt)/nvar
+#    nvarg <- ncol(Qnt)
+#    rangex <- matrix(c(Qnt[1,],Qnt[2,]),nrow=2,byrow=TRUE)
+# } else {Qnt <- apply(x,2,quantile,prob=c(0,1,.5,.25,.75),na.rm=TRUE)
+# meanX <- apply(x,2,mean,na.rm=TRUE)}
+# minx <- Qnt[1,]
+# maxx <- Qnt[2,]
+# medx <- Qnt[3,]
+# Q25 <-  Qnt[4,]
+# Q75 <-  Qnt[5,]
+# #rangex <- apply(x,2,range,na.rm=TRUE)
+# rangex <- matrix(c(Qnt[1,],Qnt[2,]),nrow=2,byrow=TRUE)
+
 tot.n.obs <- nrow(x)
 
-if(!is.null(grp)) {
-if(missing(grp.name)) grp.name <- 1:ngrp
-if(length(names) > 1 ) {names <- paste(rep(names,each=ngrp),grp.name[1:ngrp],sep=" ")} else {names <- grp.name}
+                                                        
 
-     col <- rep(col,nvar* ngrp)}
+names <- grp.name  
+if(is.null(grp.name) & !is.null(grp)) { grp.name <- paste(ps$x[1],stats[,"group1"])
+names <- grp.name  } else {if(length(grp.name) != NROW(stats)) names <- rownames(stats)}
+
+# names <- rep(grp.name, length(ps$x)) 
+# #if(length(ps$x) > 1) ) ) {names <- paste(rep(names,each=ngrp),grp.name[1:ngrp],sep=" ")} else {names <- grp.name}
+# if(length(ps$y) > 1) names <- rep(names,length(ps$x))
+#      col <- rep(col,nvar* ngrp)
 d <- list(nvar)
 if(is.null(xlim)) xlim <- c(.5,nvarg+.5)
 
@@ -63,29 +100,66 @@ if(restrict) {d[[i]] <- density(x[,i],na.rm=TRUE,adjust=adjust,from=minx[i],to=m
 d[[i]] <- density(x[,i],na.rm=TRUE)} }
 }
 
-if(!add) {plot(meanX,ylim=c(min(minx),max(maxx)),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
+if(!add) {if(vertical){plot(1:nvarg,meanX,ylim=c(min(minx),max(maxx)),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
   axis(1,1:nvarg,names,...)
-  axis(2,...)
+  axis(2,...)} else {plot(meanX,1:nvarg,xlim=c(min(minx),max(maxx)),ylim=c(.5,nvarg+.5),axes=FALSE,xlab=ylab,ylab=xlab,main=main,pch=pch,...)
+      axis(1,...)
+     axis(2, 1:nvarg,names,...)}
   box()}
 if(!is.null(grp)) d <- unlist(d,recursive=FALSE)
 rev <- (length(d[[1]]$y):1) #this prevents a line down the middle
+
+
 for(i in 1:nvarg) {
 if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
 #polygon(width*c(-d[[i]]$y,d[[i]]$y[rev])+i,c(d[[i]]$x,d[[i]]$x[rev]),density=density,col=col[i],...)
-polygon(width*c(-d[[i]]$y,d[[i]]$y[rev])+i,c(d[[i]]$x,d[[i]]$x[rev]),col=col[i],...)
+if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]),col=col[i ],...)} else {
+         polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}
+         
+        
 dmd <- max(which(d[[i]]$x <= medx[i]))
 d25 <- max(which(d[[i]]$x <= Q25[i]))
 d75 <- max(which(d[[i]]$x <= Q75[i]))
+if(vertical) {
 segments(x0=width*d[[i]]$y[dmd] +i ,y0=d[[i]]$x[dmd],x1=-width*d[[i]]$y[dmd]+i,y1=d[[i]]$x[dmd],lwd=2)
 segments(x0=width*d[[i]]$y[d25] +i ,y0=d[[i]]$x[d25],x1=-width*d[[i]]$y[d25]+i,y1=d[[i]]$x[d25])
 segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y1=d[[i]]$x[d75])
-}
+  } else {
+  segments(y0=width*d[[i]]$y[dmd] +i ,x0=d[[i]]$x[dmd],y1=-width*d[[i]]$y[dmd]+i,x1=d[[i]]$x[dmd],lwd=2)
+segments(y0=width*d[[i]]$y[d25] +i ,x0=d[[i]]$x[d25],y1=-width*d[[i]]$y[d25]+i,x1=d[[i]]$x[d25])
+segments(y0=width*d[[i]]$y[d75] +i ,x0=d[[i]]$x[d75],y1=-width*d[[i]]$y[d75]+i,x1=d[[i]]$x[d75])
+  }
+ } 
+
  
+ if(errors) {   #currently only works for one DV and one IV
+
+ if(vertical) {
+    error.bars.by(x[,1],group=grp[,1],add=TRUE,lines=FALSE,eyes=eyes,v.labels=names,...) 
+
+ } else {
+           message("error bars are not implemented for horizontal plots")}
  }
+ 
+if(dots) { if(!is.null(grp)) {
+if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
+        stripchart(x[,ps$y]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} else {
+  if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1]]+ grp[,ps$x[,2]],vertical=vertical,add=TRUE,pch=pch,...)} else {
+       {stripchart(x[,ps$y]~ grp[,ps$x[1]],vertical=vertical,add=TRUE,pch=pch,...)} 
+       }}
+       } else {
+       if(jitter >0) {stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
+        stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} 
+ 
+                   }
+       
+       }
+        
 #created March 10, 2014 following a discussion of the advantage of showing distributional values
 #modified March 22, 2014 to add the grouping variable
 #basically just a violin plot.
 #modified December, 2016 to allow for scaling of the widths of the plots by sample size. 
+#modified  December 2020 to provide stripcharts and errorbar options
 
 # 
 # "histBy" <- function(x,grp=NULL,data=NULL,restrict=TRUE,xlim=NULL,ylab="Observed",xlab="",main="Density plot",density=20,scale=TRUE,col= c("blue","red"),...) {

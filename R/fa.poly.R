@@ -33,7 +33,7 @@ if(length(pvars)==ncol(x)) {tet <- polychoric(x,weight=weight,global=global)
  rep.rots <- vector("list",n.iter)
  for (trials in 1:n.iter) {
  xs <- x[sample(n.obs,n.obs,replace=TRUE),]
-  if(typ!= "tet") {tets <- mixed.cor(xs,weight=weight,global=global)} else {tets <- tetrachoric(xs,weight=weight)}
+  if(typ!= "tet") {tets <- mixedCor(xs,weight=weight,global=global)} else {tets <- tetrachoric(xs,weight=weight)}
   r <- tets$rho
   values.samp <- eigen(tets$rho)$values
    					e.values[["pc"]][[trials]] <- values.samp

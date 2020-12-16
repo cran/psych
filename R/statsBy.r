@@ -39,10 +39,11 @@ gr <- which(colnames(data) %in% group) } else {gr <- group}
 z1 <- data[,group]
        z <- z1
        cnames <- colnames(data)
-       for (i in 1:ncol(data)) {if(is.factor(data[,i]) || is.logical(data[,i])) {
-             data[,i] <- as.numeric(data[,i])
+       for (i in 1:ncol(data)) {if(is.factor(data[,i]) || is.logical(data[,i]) ) {
+             data[,i] <- as.numeric(data[,i])}
+             if (is.character(data[,i])) data[,i] <- as.numeric(as.factor(data[,i])) 
             # colnames(data)[i] <- paste(cnames[i],"*",sep="")
-             }}
+             }
              
              
        xvals <- list()
@@ -170,7 +171,7 @@ z1 <- data[,group]
               covar <- TRUE},
              poly=  {xvals$raw <- polychoric(data)$rho},
              tet = {xvals$raw <- tetrachoric(data)$rho},
-             mixed = {xvals$raw <- mixed.cor(data)$rho}   
+             mixed = {xvals$raw <- mixedCor(data)$rho}   
        )
        
              new.data <- as.matrix( merge(xvals$mean,data,by=group,suffixes =c(".bg",""))) #drop the grouping variable(s) 
@@ -192,7 +193,7 @@ z1 <- data[,group]
               xvals$pbg <- 2*(1 - pt(abs(t),(nG-2)))
               } else { t <- xvals$pbg <- NA }
                       #     xvals$rwg <- cor(diffs,use="pairwise",method=method)  #the within group (differences)
-            if(cor %in% c("tet","poly","mixed","mixed.cor") ) cor <- "cor"
+            if(cor %in% c("tet","poly","mixed","mixedCor","mixed.cor") ) cor <- "cor"
             switch(cor, 
       			 cor = {xvals$rwg  <- cor(diffs,use=use,method=method)},
       			 cov = {xvals$rwg  <- cov(diffs,use=use) 

@@ -6,7 +6,7 @@
 \title{Data from the sexism (protest) study of Garcia, Schmitt, Branscome, and Ellemers (2010)
 }
 \description{
-Garcia, Schmitt, Branscome, and Ellemers (2010) report data for 129 subjects on the effects of perceived sexism on anger and liking of women's reactions to ingroup members who protest discrimination. This data set is also used as the `protest' data set by Hayes (2013 and 2018).  It is a useful example of mediation and moderation in regression. It may also be used as an example of plotting interactions.
+Garcia, Schmitt, Branscombe, and Ellemers (2010) report data for 129 subjects on the effects of perceived sexism on anger and liking of women's reactions to ingroup members who protest discrimination. This data set is also used as the `protest' data set by Hayes (2013 and 2018).  It is a useful example of mediation and moderation in regression. It may also be used as an example of plotting interactions.
 }
 \usage{data("GSBE")}
 \format{

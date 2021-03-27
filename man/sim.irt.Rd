@@ -1,16 +1,22 @@
-\name{sim}
-\alias{sim}
-\alias{sim.simplex}
-\alias{sim.minor}
-
-
-
+\name{sim.irt}
+\alias{sim.irt}
+\alias{sim.rasch}
+\alias{sim.irt}
+\alias{sim.npl}
+\alias{sim.npn}
+\alias{sim.poly}
+\alias{sim.poly.npl}
+\alias{sim.poly.npn}
+\alias{sim.poly.ideal}
+\alias{sim.poly.ideal.npl}
+\alias{sim.poly.ideal.npn}
+\alias{sim.poly.mat}
 \title{Functions to simulate psychological/psychometric data.}
 \description{A number of functions in the psych package will generate simulated data with particular structures.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
 \code{\link{sim.minor}} to simulate major and minor factors,
 \code{\link{sim.omega}} to test various examples of omega,
-\code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors.   See the help pages for some more simulation functions here: 
+\code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors,
 \code{\link{sim.rasch}} to create simulated rasch data, 
 \code{\link{sim.irt}} to create general 1 to 4 parameter IRT data by calling 
 \code{\link{sim.npl}} 1 to 4 parameter logistic IRT or 
@@ -25,38 +31,47 @@
 \code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
-sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
-sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
-sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
+
+sim.rasch(nvar = 5,n = 500, low=-3,high=3,d=NULL, a=1,mu=0,sd=1)
+sim.irt(nvar = 5, n = 500, low=-3, high=3, a=NULL,c=0, z=1,d=NULL, mu=0,sd=1,  
+  mod="logistic",theta=NULL)
+sim.npl(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL)
+sim.npn(nvar = 5, n = 500, low=-3,high=3,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,theta=NULL)
+sim.poly(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+    mu=0,sd=1,cat=5,mod="logistic",theta=NULL) 
+sim.poly.npn(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL,   mu=0, sd=1, 
+     cat=5,theta=NULL) 
+sim.poly.npl(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL,  mu=0, sd=1, 
+cat=5,theta=NULL) 
+sim.poly.ideal(nvar = 5 ,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+   mu=0,sd=1,cat=5,mod="logistic") 
+sim.poly.ideal.npn(nvar = 5,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, mu=0,sd=1,cat=5) 
+sim.poly.ideal.npl(nvar = 5,n = 500,low=-2,high=2,a=NULL,c=0,z=1,d=NULL, 
+      mu=0,sd=1,cat=5,theta=NULL)
+sim.poly.mat(R,m,n) 
 
 }
 \arguments{
-  \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
-  \item{Phi}{The structure matrix of the latent variables}
-  \item{fy}{The measurement model for y}
-  \item{mu}{The means structure for the fx factors}
-  \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
-  \item{raw}{if raw=TRUE, raw data are returned as well.}
-  \item{nvar}{Number of variables for a simplex structure}
-  \item{nfact}{Number of large factors to simulate in sim.minor,number of group factors in sim.general,sim.omega}
-  \item{g}{General factor correlations in sim.general and general factor loadings in sim.omega and sim.minor}
- 
-  \item{alpha}{the base correlation for an autoregressive simplex}
-  \item{lambda}{the trait component of a State Trait Autoregressive Simplex}
-  \item{beta}{Test reliability of a STARS simplex}
-  \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
-  \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
-  \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
-  
+  \item{n}{Number of cases to simulate}
+  \item{mu}{The means for the items (if not 0)}
+  \item{nvar}{Number of variables for a simplex structure} 
+  \item{low}{lower difficulty for sim.rasch or sim.irt}
+  \item{high}{higher difficulty for sim.rasch or sim.irt}
+  \item{a}{if not specified as a vector, the descrimination parameter a = \eqn{\alpha} will be set to 1.0 for all items}
+  \item{d}{ if not specified as a vector, item difficulties (d = \eqn{\delta}) will range from low to high}
+  \item{c}{the gamma parameter: if not specified as a vector, the guessing asymptote is set to 0}
+  \item{z}{the zeta parameter: if not specified as a vector, set to 1} 
+  \item{sd}{the standard deviation for the underlying latent variable in the irt simulations}
+  \item{mod}{which IRT model to use, mod="logistic" simulates a logistic function, otherwise, a normal function}
+  \item{cat}{Number of categories to simulate in sim.poly.  If cat=2, then this is the same as simulating t/f items and sim.poly is functionally equivalent to sim.irt}
+  \item{theta}{The underlying latent trait value for each simulated subject}
+  \item{R}{A correlation matrix to be simulated using the sim.poly.mat function}
+  \item{m}{The matrix of marginals for all the items}
    }
 
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
 
-The simulations documented here are the core set of functions.  Others are documented in other help files.
-
-\code{\link{sim}} simulates one (fx) or two (fx and fy) factor structures where both fx and fy respresent factor loadings of variables.  The use of fy is particularly appropriate for simulating sem models.  This is better documentated in the help for \code{\link{sim.structural}}.
-
-Perhaps the easist simulation to understand is just \code{\link{sim}}.  A factor model (fx) and perhaps fy with intercorrelations between the two factor sets of Phi.  This will produce a correlation matrix R = fx' phi fy.  Factors can differ in their mean values by specifying mu.  
+The simulations documented here are a miscellaneous set of functions that will be documented in other help files eventually.
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 

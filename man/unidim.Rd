@@ -45,8 +45,8 @@ The product of fa.fit and av.r.fit is the measure of unidimensionality, u.
 \item{Unidim }{The raw value of the unidimensional criterion}
 \item{raw.model}{The ratio of the FF' model to the sum(R)}
 \item{adj.model}{The ratio of the FF' model to the sum(R) when items are flipped.}
-item{Total}{The ratio of the sum(R - uniqueness)/sum(R)}
-item{Total.A}{Same ratio with flipped items}
+\item{Total}{The ratio of the sum(R - uniqueness)/sum(R)}
+\item{Total.A}{Same ratio with flipped items}
 
 
 }

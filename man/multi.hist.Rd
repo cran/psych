@@ -12,7 +12,7 @@ May be used for single variables.
       dcol=c("black","black"),dlty=c("dashed","dotted"),
       main=NULL,mar=c(2,1,1,1),breaks=21,...)
 histBy(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,
-            main="Histograms by group",...) 
+            main="Histograms by group",freq=FALSE,...) 
 }
 \arguments{
   \item{x}{ matrix or data.frame}
@@ -39,7 +39,7 @@ histBy(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,
 
 \author{ William Revelle }
 
-\seealso{ \code{\link{bi.bars}} for drawing pairwise histograms}
+\seealso{ \code{\link{bi.bars}} for drawing pairwise histograms and  \code{\link{scatterHist}} for bivariate scatter and histograms}
 \examples{
 multi.hist(sat.act) 
 multi.hist(sat.act,bcol="red")

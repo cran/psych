@@ -1,29 +1,29 @@
 ### R code from vignette source 'intro.Rnw'
 
 ###################################################
-### code chunk number 1: intro.Rnw:474-475
+### code chunk number 1: intro.Rnw:481-482
 ###################################################
     options(width=100)
 
 
 ###################################################
-### code chunk number 2: intro.Rnw:479-483
+### code chunk number 2: intro.Rnw:486-490
 ###################################################
-library(psych)
-library(psychTools)
+library(psych)   #need to make psych active the first time you call it
+library(psychTools)  #additional tools and data are here
 data(sat.act) 
 describe(sat.act)  #basic descriptive statistics
 
 
 ###################################################
-### code chunk number 3: intro.Rnw:490-492
+### code chunk number 3: intro.Rnw:497-499
 ###################################################
  #basic descriptive statistics by a grouping variable.
 describeBy(sat.act ~ gender,skew=FALSE,ranges=FALSE)
 
 
 ###################################################
-### code chunk number 4: intro.Rnw:500-503
+### code chunk number 4: intro.Rnw:507-510
 ###################################################
 sa.mat <-  describeBy(sat.act ~ gender + education,
  skew=FALSE,ranges=FALSE,mat=TRUE)
@@ -39,7 +39,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 6: intro.Rnw:534-538
+### code chunk number 6: intro.Rnw:541-545
 ###################################################
 x <- matrix(1:120,ncol=10,byrow=TRUE)
 colnames(x) <- paste('V',1:10,sep='')
@@ -66,7 +66,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 9: affect
+### code chunk number 9: affect1
 ###################################################
 keys <- make.keys(msq[1:75],list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
@@ -95,21 +95,21 @@ dev.off()
 
 
 ###################################################
-### code chunk number 11: intro.Rnw:668-670
+### code chunk number 11: intro.Rnw:675-677
 ###################################################
 data(epi.bfi)
 error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 
 
 ###################################################
-### code chunk number 12: intro.Rnw:683-685
+### code chunk number 12: intro.Rnw:690-692
 ###################################################
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,
         labels=c("Male","Female"),ylab="SAT score",xlab="")
 
 
 ###################################################
-### code chunk number 13: intro.Rnw:699-703
+### code chunk number 13: intro.Rnw:706-710
 ###################################################
 T <- with(sat.act,table(gender,education))
 rownames(T) <- c("M","F")
@@ -118,7 +118,7 @@ main="Proportion of sample by education level")
 
 
 ###################################################
-### code chunk number 14: intro.Rnw:722-732
+### code chunk number 14: intro.Rnw:729-739
 ###################################################
 op <- par(mfrow=c(1,2))
   data(affect)
@@ -150,13 +150,13 @@ dev.off()
 
 
 ###################################################
-### code chunk number 17: intro.Rnw:784-785
+### code chunk number 17: intro.Rnw:791-792
 ###################################################
 lowerCor(sat.act)
 
 
 ###################################################
-### code chunk number 18: intro.Rnw:792-798
+### code chunk number 18: intro.Rnw:799-805
 ###################################################
 female <- subset(sat.act,sat.act$gender==2)
  male <- subset(sat.act,sat.act$gender==1)
@@ -167,7 +167,7 @@ round(both,2)
 
 
 ###################################################
-### code chunk number 19: intro.Rnw:804-806
+### code chunk number 19: intro.Rnw:811-813
 ###################################################
 diffs <-  lowerUpper(lower,upper,diff=TRUE)
 round(diffs,2)
@@ -202,62 +202,62 @@ dev.off()
 
 
 ###################################################
-### code chunk number 23: intro.Rnw:873-874
+### code chunk number 23: intro.Rnw:880-881
 ###################################################
 corr.test(sat.act)
 
 
 ###################################################
-### code chunk number 24: intro.Rnw:885-886
+### code chunk number 24: intro.Rnw:892-893
 ###################################################
 r.test(50,.3)
 
 
 ###################################################
-### code chunk number 25: intro.Rnw:892-893
+### code chunk number 25: intro.Rnw:899-900
 ###################################################
 r.test(30,.4,.6)
 
 
 ###################################################
-### code chunk number 26: intro.Rnw:900-901
+### code chunk number 26: intro.Rnw:907-908
 ###################################################
 r.test(103,.4,.5,.1)
 
 
 ###################################################
-### code chunk number 27: intro.Rnw:907-908
+### code chunk number 27: intro.Rnw:914-915
 ###################################################
 r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B 
 
 
 ###################################################
-### code chunk number 28: intro.Rnw:916-917
+### code chunk number 28: intro.Rnw:923-924
 ###################################################
 cortest(sat.act)
 
 
 ###################################################
-### code chunk number 29: intro.Rnw:931-932
+### code chunk number 29: intro.Rnw:938-939
 ###################################################
 draw.tetra()
 
 
 ###################################################
-### code chunk number 30: intro.Rnw:1003-1004
+### code chunk number 30: intro.Rnw:1010-1011
 ###################################################
 setCor(y = 5:9,x=1:4,data=Thurstone)
 
 
 ###################################################
-### code chunk number 31: intro.Rnw:1011-1013
+### code chunk number 31: intro.Rnw:1018-1020
 ###################################################
 sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 
 
 ###################################################
-### code chunk number 32: intro.Rnw:1026-1040
+### code chunk number 32: intro.Rnw:1033-1047
 ###################################################
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
@@ -276,33 +276,33 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 
 
 ###################################################
-### code chunk number 33: intro.Rnw:1042-1043
+### code chunk number 33: intro.Rnw:1049-1050
 ###################################################
 preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Preacher and Hayes
 
 
 ###################################################
-### code chunk number 34: intro.Rnw:1050-1051
+### code chunk number 34: intro.Rnw:1057-1058
 ###################################################
 mediate.diagram(preacher)
 
 
 ###################################################
-### code chunk number 35: intro.Rnw:1062-1064
+### code chunk number 35: intro.Rnw:1069-1071
 ###################################################
 preacher <- setCor(SATIS ~ THERAPY + ATTRIB,data =sobel,std=FALSE)
 setCor.diagram(preacher)
 
 
 ###################################################
-### code chunk number 36: intro.Rnw:1106-1108
+### code chunk number 36: intro.Rnw:1113-1115
 ###################################################
 mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
 
 
 ###################################################
-### code chunk number 37: intro.Rnw:1132-1136
+### code chunk number 37: intro.Rnw:1139-1143
 ###################################################
 
 C <- cov(sat.act,use="pairwise")
@@ -311,14 +311,14 @@ summary(model1)
 
 
 ###################################################
-### code chunk number 38: intro.Rnw:1139-1141
+### code chunk number 38: intro.Rnw:1146-1148
 ###################################################
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
 
 
 ###################################################
-### code chunk number 39: intro.Rnw:1262-1263
+### code chunk number 39: intro.Rnw:1269-1270
 ###################################################
 sessionInfo()
 

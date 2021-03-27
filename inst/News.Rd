@@ -2,14 +2,14 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.1.01 (2021-01-01)}{ 
+\section{Changes in psych version 2.1.2 (2021-02-01)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.1.01 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.12.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.1.2 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.12.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
      
@@ -29,19 +29,19 @@
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
       \item add the ability to add labels to lavaan.diagram  
     
-     \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models but will require not using mvrnorm 
+    
      \item To help those who want to simulate a bifactor model, make it explicit.  
      
      \item Check the bias in bootstrap resampling using cor.ci  
      
      \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
-     \item Add an analysis if DIF to the irt functions  (requested by David Condon)
-     \item Add some power functions
+     \item Add an analysis of DIF to the irt functions  (requested by David Condon)
+     \item Add some power functions.
      
      \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman
-     \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).
+     \item Fix statsBy to handle the case of NULL groups.  (particularly for the cors=TRUE option).  I think I have done this.
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
-     \item Clean up the various sim functions so that they are better documented
+     
      \item Clean up documentation of score.irt etc.  (partly done)
      \item Add complexity  to omega solution
      \item Add statistic to fa to report max fa. (partly done with fm = minrank)
@@ -59,7 +59,7 @@
       \item Add Krippendorf's alpha?
      
       \item Add the ability to weight factor residuals to allow WLMS
-      \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn)
+     
       \item Create a reliabilities  function to combine omega and alpha and splitHalf
     
       \item Add the Hull method for number of factors      
@@ -82,9 +82,7 @@
    \item Add just check variables specified for being numeric (instead of entire data.frame)  (suggested by Fransisco Wilheim)
   
    \item Pretty up the output from mediate (perhaps make a mediate2latex function
-  
-  
-  
+
    \item Improve the print function for bassAckwards
 
       } 
@@ -93,18 +91,14 @@
   \itemize{
   \item Problem with scoreIrt.1pl with keys of length 2
   \item Change examples to dontrun rather than commented out 
- 
   \item Check the raw df in esem
   \item Add RMSEA, TFI, etc. to esem (requested by Gabe Orona )
-  
-  \item Add formula mode to lowerCor and lowerMat (to be able to choose a few variables in a data set)
+  \item Clean up the various sim functions so that they are better documented.  (partly done.) 
+  \item Add formula mode to lowerCor and lowerMat (to be able to choose a few variables in a data set)  Probably not useful
    \item Need to fix bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
-  
-   \item Add a random restart option for various rotation solutions
-  
+  \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn). Partly done in omega, but there are problems associated with the entire problem of factor scores. 
  
    \item Fix a bug in alpha when finding averager R  (need to use cor rather than cov2cor when treating missing data)
-   
    
     \item Add weight option to statsBy (but the question is how to handle missing data)
    
@@ -113,16 +107,49 @@
     \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
    
     \item Give model fit in setCor?
-    \item Fix bug in testRetest (reported by Jacob Lee) about fixed id column
-    
-     \item Fix statsBy so the grouping variable can be categorical and don't use it when finding the within group correlations
-    
-     \item Reorder spi.keys to match the ideal order  (maybe they already are)
-     \item Improve documentation for thurstone
+  
+     \item Improve documentation for thurstone.  Would help if we had an example of scaling.
       \item scoreIrt.2pl needs to be able to adjust for group differences correctly
-    
+     
+    \item scoreIrt does not work unless keys are specified for nf > 1 (reported by Andrew Olney)
+    \item Add ability to do N random restarts in rotations in fa
+     \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models This is now done for sim and sim.minor, sim.hierarchical, others are in process. 
   }
   }
+  }
+  
+  
+  \section{Changes in psych version 2.1.3 (2021-03-24)}{ 
+     \subsection{Additions}{
+         \itemize{
+         \item Added char2numeric feature  in lowerCor and cor2 so they will no longer choke when given character information (e.g. sex, education level in sapa data)
+         \item Added flag=TRUE to char2numeric so that it changes the colnames of those variables that have been converted to numeric.  Set flag = FALSE to not change colnames
+         \item Minor improvements to error.bars.by
+         \item Followed by a major rewrite of error.bars.by to make the code cleaner. 
+         \item Added the data option to cohen.d so that we can just do a subset of the variables
+         \item Added the ability to do multiple DVs for anova of setCor objects.
+         \item Changed the sim (and related functions) to return the underlying theta that generates the data. This allows for tests of adequacy of recovery of the model.
+         \item Added pairwiseSample to allow for faster counting of pairwise frequencies.
+         \item Added pairwiseZero to display those pairs of items with 0 (entries)  (Requested by J.D. Haltigan)
+         \item Completely rewrote sim.hierarchical to produce the orthogonal factor scores that produced the data.  (Following correspondence with Niels Waller addressing the estimation problem.)
+         \item Added the adjusted probability as an output object in corr.test. (Requested by Alex Weiss).
+          \item Added legend to matPlot and other bells and whistles.
+          \item Modified testRetest so that it automatically sort on time and user id and drop subjects with non-matching tests.   (Inspired by some comments from Jacob Lee).
+          \item Reordered spi.keys to match the  bassAckward  order.   Added Big and Little 27 identifiers to the spi.dictionary (in psychTools)
+         \item Added to the fa and smc documentation to reflect using pseudoinverse. 
+          \item Fixed statsBy so the grouping variable can be categorical and don't use it when finding the within group correlations.
+          \item Improved testRetest to allow for a different number of subjects in the trial 1 and trial 2 data.  Also allows for randomized data.  
+         } 
+     
+     } 
+     \subsection{Bugs fixed}{
+       \itemize{
+       \item  Fixed a bug in describeBy to handle more than 2 grouping variables (reported by Nicholas Stafniak)
+       \item Changed the term eigenvalue to sum of squared loadings  in omega (in response to a comment by Niels Waller)
+    \item Fixed bug in testRetest (reported by Jacob Lee) about fixed id column
+       }
+     }
+  
   }
   
    \section{Changes in psych version 2.0.12 (2020-12-12)}{
@@ -139,7 +166,7 @@
       \item make cohen.d handle categorical (character) data (requested by Evan Grandoit)
      \item Finally got the  s.e. to intercept in set cor (requested by Eric Youngstrom)  to work.  See attempts from version 1.9.12 onwards.
         \item Added a anova.test for two setCor objects (did this a while ago, not sure when)
-        \item Moved cta and cta.15 to psychTools to save space.
+        
      
       }
     }
@@ -159,7 +186,7 @@
       \item Fixed a bug in faBy so it will work with one factor (reported by Kondwani Kajera)
       \item Fixed print.psych.vss to properly handle NA in BIC and EBIC (as reported by Paulo Sergio Panse Silveira  )
       \item Finally ? got the error terms in setCor for the intercept and the residuals to match lm!
-      \item Seems to be something wrong in mediate df  1 IV 
+      \item Seems to be something wrong in mediate df  1 IV  (fixed?)
     )
     
     }

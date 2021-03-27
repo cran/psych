@@ -143,6 +143,23 @@ if(isCorrelation(x)) {#we have already found correlations, flag those that are m
       return(result)
       }
       
+#Added Feb 1, 2021 to allow smaller samples for faster processing of enormous data sets (e.g. sapa)
+"pairwiseSample" <- function(x,y=NULL,diagonal=FALSE,size=100,...) {
+ cl <- match.call()
+ n.items <- NCOL(x)
+ size <- min(size,n.items)
+ ss <- sample(n.items,size)
+       #do a count pairwise  and then get report those below <=  cut
+   if(NCOL(x)!=NROW(x))  {pc <- pairwiseCount(x[ss])}
+  cp <- as.vector(pc[lower.tri(pc,diag=diagonal)])
+    des <- describe(cp,quant=c(.05,.25,.5,.75,.95))
+    result <- des
+  
+    #  class(result) <- c("psych","pairwiseCounts")
+      return(result)
+      }
+
+      
 "pairwisePlot" <- function(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,colors=FALSE,gr=NULL,minlength=6,xlas=1,ylas=2,main="Relative Frequencies",count=TRUE,...) {
     if(count){ r <- pairwiseCount(x=x,y=y,diagonal=diagonal)} else {r <- x}
      if(!upper) r[col (r) < row(r) ] <- NA   #blank out the upper diagonal
@@ -217,4 +234,45 @@ tick <- FALSE
 ord1 <- seq(nvar,1,-1)  
 r <- r[,ord1 ]
 invisible(r)
+}
+
+
+
+"pairwiseZero" <- function(x,y=NULL, min=0, short=TRUE) {
+nvar <- NCOL(x)
+ynull <- is.null(y)
+if(ynull) y <- x
+ny <- NCOL(y)
+count <- 0
+loc <- list()
+rn <- colnames(x)
+cn <- colnames(y)
+
+for(i in 1:(nvar-(ynull))) {
+  for(j in (min(i,ny) + (ynull)):ny) {
+  minxy <- min(tableF(x[,i],y[,j]), na.rm=TRUE)
+  if(minxy <= min) {count <- count + 1
+         loc[[count]] <- c(rn[i],cn[j])}
+      }
+  }
+
+if(count>0) {cat("\n Number of cells with values <= ", min," = ", count,"\n")
+           count.df <- matrix(unlist(loc), ncol=2, byrow=TRUE)
+           colnames(count.df) <- c("row", "column")
+           print(count.df)
+           tables <- list()
+           
+           for (i in 1:count) {
+           cat("\n Item pair ", count.df[i,],"\n") 
+         
+           tables[[i]] = tableF(x[,count.df[i,1]],y[,count.df[i,2]] ) 
+           if(!short) {# cat("\n" ,count.df[i, ],"\n" )
+             print(tables[[i]])}
+         }
+         names(tables) <- paste(count.df[,1],count.df[,2])
+              
+          
+        } else {cat("\n Minimum cell all exceed", min)}
+result <- list(items=count.df, tables=tables)
+invisible(result)
 }

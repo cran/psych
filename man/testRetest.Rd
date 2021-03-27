@@ -8,7 +8,7 @@
 }
 \usage{
 testRetest(t1,t2=NULL,keys=NULL,id="id", time=  "time", select=NULL, 
-check.keys=TRUE, warnings=TRUE,lmer=TRUE)
+check.keys=TRUE, warnings=TRUE,lmer=TRUE,sort=TRUE)
 }
 
 \arguments{
@@ -21,6 +21,7 @@ check.keys=TRUE, warnings=TRUE,lmer=TRUE)
   \item{check.keys}{If TRUE will automatically reverse items based upon their correlation with the first principal component.  Will throw a warning when doing so, but some people seem to miss this kind of message.}
   \item{warnings}{If TRUE, then warn when items are reverse scored}
   \item{lmer}{If TRUE, include the lmer variance decomposition. By default, this is true, but this can lead to long times for large data sets. }
+  \item{sort}{If TRUE, the data are sorted by id and time.  This allows for random ordering of data, but will fail if ids are duplicated in different studies.  In that case, we need to add a constant to the ids for each study.  See the last example.}
 }
 \details{There are many ways of measuring reliability. Test - Retest is one way.  If the time interval is very short (or immediate), this is known as a dependability correlation, if the time interval is longer, a stability coefficient.  In all cases, this is a correlation between two measures at different time points.  Given the multi-level nature of these data, it is possible to find variance components associated with individuals, time, item, and time by item, etc.  This leads to several different estimates of reliability (see \code{\link{multilevel.reliability}} for a discussion and references).
 
@@ -47,7 +48,7 @@ Cranford, J. A., Shrout, P. E., Iida, M., Rafaeli, E., Yip, T., \& Bolger, N. (2
 
 DeSimone, J. A. (2015). New techniques for evaluating temporal consistency. Organizational Research Methods, 18(1), 133-152. doi: 10.1177/1094428114553061
 
-Revelle, W. and Condon, D. Reliability  (in prep)
+Revelle, W. and Condon, D. Reliability from alpha to omega: A tutorial. Psychological Assessment, 31 (12) 1395-1411. 
 
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book/}). 
 
@@ -65,7 +66,15 @@ For the 1895 subjects with repeated measures on the \code{\link[psychTools]{sai}
 
 In the case of just two tests (no items specified), the item based statistics (alpha, rqq, item.stats, scores, xy.df) are not reported. 
 
-Two examples are given.  The first takes 200 cases from the \code{\link[psychTools]{sai}} data set.  Subjects were given the \code{link[psychTools]{sai}} twice with an intervening mood manipulation (four types of short film clips, with or without placebo/caffeine).  The test retest stability of the sai are based upon the 20 sai items.  The second example compares the scores of the 10 sai items that overlap with 10 items from the \code{\link[psychTools]{msqR}} data set from the same study.  \code{link[psychTools]{sai}} and  \code{\link[psychTools]{msqR}} were given immediately after each other and although the format differs slightly, can be seen as measures of dependability.  
+Several examples are given.  The first takes 200 cases from the \code{\link[psychTools]{sai}} data set.  Subjects were given the \code{link[psychTools]{sai}} twice with an intervening mood manipulation (four types of short film clips, with or without placebo/caffeine).  The test retest stability of the sai are based upon the 20 sai items.  The second example compares the scores of the 10 sai items that overlap with 10 items from the \code{\link[psychTools]{msqR}} data set from the same study.  \code{link[psychTools]{sai}} and  \code{\link[psychTools]{msqR}} were given immediately after each other and although the format differs slightly, can be seen as measures of dependability. 
+
+The third example considers the case of the Impulsivity scale from the Eysenck Personality Inventory.  This is a nice example of how different estimates of reliability will differ.  The alpha reliability is .51 but the test-retest correlation across several weeks is .71! That is to say, the items don't correlate very much with each other (alpha) but do with themselves across time (test-retest).  
+
+The fourth example takes the same data and jumble the subjects (who are identified by their ids).  This result should be the same as the prior result because the data are automatically sorted by id.  
+
+ 
+
+Although typically, there are as many subjects at time 1 as time 2, testRetest will handle the case of a different number of subjects.  The data are first sorted by time and id, and then those cases from time 1 that are matched at time 2 are analyzed. It is important to note that the subject id numbers must be unique. 
 
 }
 
@@ -93,7 +102,7 @@ select <-select[-c(1:3)]  #get rid of the id information
 
 dependability <-  testRetest(sai.xray1,msq.xray,keys=select,lmer=FALSE)
 dependability  #show the results
-}
+
 #now examine the Impulsivity subscale of the EPI
 #use the epiR data set which includes epi.keys
 data("epiR",package="psychTools")
@@ -101,6 +110,17 @@ data("epiR",package="psychTools")
 Imp <- c("V1", "V3", "V8", "V10","V13" ,"V22", "V39" , "V5" , "V41")
 imp.analysis <- testRetest(psychTools::epiR,select=Imp) #test-retest = .7, alpha=.51,.51 
 imp.analysis
+
+#demonstrate random ordering  -- the results should be the same
+n.obs <- NROW(psychTools::epiR)
+set.seed(42)
+ss <- sample(n.obs,n.obs)
+temp.epi <- psychTools::epiR
+temp.epi <-char2numeric(temp.epi)  #make the study numeric
+temp.epi$id <- temp.epi$id + 300*temp.epi$study
+random.epi <- temp.epi[ss,]
+random.imp.analysis <- testRetest(random.epi,select=Imp)
+}
 }
 \keyword{ multivariate }% use one of  RShowDoc("KEYWORDS")
 \keyword{ models }% __ONLY ONE__ keyword per line

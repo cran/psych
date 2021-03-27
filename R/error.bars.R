@@ -7,11 +7,11 @@ pos=NULL,arrow.len=.05,arrow.col="black",add=FALSE,bars=FALSE,within=FALSE,col=c
 error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
  eyes=eyes,alpha=alpha,sd=sd,labels=labels, v.labels=NULL, pos=pos, 
  arrow.len=arrow.len,add=add,bars=bars,within=within,colors=col, 
- legend=0,density=density,...)
+ legend=0,density=density,stats=stats,...)
      } else {
       if(!missing(group)) {  error.bars.by(x,group=group,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim, eyes=eyes,alpha=.05,sd=sd,labels=labels, 
      v.labels=NULL, pos=pos, arrow.len=arrow.len, add=add,bars=bars, within=within, 
-     colors=col, legend=0,density=density,...)}  else {
+     colors=col, legend=0,density=density,stats=stats,...)}  else {
      
   #no grouping variable, this is the normal case
      
@@ -26,6 +26,7 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
     	}  else { x.stats <- stats
     	          z <- dim(x.stats)[1]
     	          names <- rownames(stats)
+    	          if(is.null(x.stats$se) ) x.stats$se <- x.stats$sd/sqrt(x.stats$n-1)
     	}
     	min.x <- min(x.stats$mean,na.rm=TRUE)
     	max.x <- max(x.stats$mean,na.rm=TRUE)

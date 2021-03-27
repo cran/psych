@@ -32,6 +32,8 @@ function(R,digits=2,minlength=5) {
 	
 "lowerCor" <- 
 function(x,digits=2,use="pairwise",method="pearson",minlength=5) {
+nvar <- NCOL(x)
+x <- char2numeric(x)    #added 1/2/21
    R <- cor(x,use=use,method=method)
    lowerMat(R,digits,minlength=minlength)
    invisible(R)
@@ -577,15 +579,18 @@ text(x,y-2,"Unreliable but Valid")
 # print(round(R,digits))
 # invisible(R)}
 
-#should we add in the abilty to not choke on character variables?
+#finally added the char2numeric so it will not choke on character variables   1/3/21
 
 "cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson") {
 multi <- FALSE
 if(is.list(x) && is.null(y)) {multi <- TRUE
  n <- length(x)
 xi <- x[[1]]
- for (i in 2:n) {xi <- cbind(xi,x[[i]])} 
+ for (i in 2:n) {xi <- cbind(xi,x[[i]])}
+  
 R <- cor(xi,use=use,method=method) }else {
+x <- char2numeric(x)
+y <- char2numeric(y)
 R <- cor(x,y,use=use,method=method)}
 if(multi) {lowerMat(R,digits) } else {print(round(R,digits))}
 invisible(R)}
@@ -612,22 +617,32 @@ pretty}
 #October 25, 2016
 #June 18 2020  added  as.factor to convert character strings that are not stored as factors
 #this has a downsize that it converts numbers stored as characters to factors (see nchar2numeric)
-"char2numeric" <- function(x) {
+#added the flag option and the change the colname option 1/2/21
+
+"char2numeric" <- function(x,flag=TRUE) {
  nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
-                          } else {x[[i]] <- NA} }
+                          } else {x[[i]] <- NA}
+                         if(flag) colnames(x)[i] <- paste0(colnames(x)[i],"*")
+                          } 
+                          
               } 
               invisible(x)} 
-#added June 25, 2020 to handle the case of numeric data stored as characters              
-"nchar2numeric" <- function(x) {
+              
+              
+#added June 25, 2020 to handle the case of numeric data stored as characters  
+#added flag and colnames option  1/2/21             
+"nchar2numeric" <- function(x,flag=TRUE) {
  nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  { 
                 if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {
                                   if(is.factor(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) } else {x[[i]] <- as.numeric(x[[i]])}
-                          } else {x[[i]] <- NA} }
+                          } else {x[[i]] <- NA}
+                          if(flag) colnames(x)[i] <- paste0(colnames(x)[i],"*")
+                            }
               } 
               invisible(x)} 
 

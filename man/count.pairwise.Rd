@@ -2,18 +2,22 @@
 \alias{pairwiseCount}
 \alias{count.pairwise}
 \alias{pairwiseDescribe}
+\alias{pairwiseZero}
+\alias{pairwiseSample}
 \alias{pairwiseReport}
 \alias{pairwiseImpute}
 \alias{pairwisePlot}
 \title{Count number of pairwise cases for a data set with missing (NA) data and impute values. }
 \description{
-  When doing cor(x, use= "pairwise"), it is nice to know the number of cases for each pairwise correlation.  This is particularly useful when doing SAPA type analyses. More importantly, when there are some missing pairs, it is useful to supply imputed values so that further analyses may be done.  This is useful if using the Massively Missing Completely at Random (MMCAR) designs used by the SAPA project. 
+  When doing cor(x, use= "pairwise"), it is nice to know the number of cases for each pairwise correlation.  This is particularly useful when doing SAPA type analyses. More importantly, when there are some missing pairs, it is useful to supply imputed values so that further analyses may be done.  This is useful if using the Massively Missing Completely at Random (MMCAR) designs used by the SAPA project.  The specific pairs missing may be identified by pairwiseZero.  Summaries of the counts are given by pairwiseDescribe.
 }
 \usage{
 pairwiseCount(x, y = NULL,diagonal=TRUE)
 pairwiseDescribe(x,y,diagonal=FALSE,...) 
+pairwiseZero(x,y=NULL, min=0, short=TRUE)
 pairwiseImpute(keys,R,fix=FALSE)
 pairwiseReport(x,y=NULL,cut=0,diagonal=FALSE,...) 
+pairwiseSample(x,y=NULL,diagonal=FALSE,size=100,...)
 pairwisePlot(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,
 colors=FALSE,gr=NULL,minlength=6,xlas=1,ylas=2,
 main="Relative Frequencies",count=TRUE,...)
@@ -25,6 +29,8 @@ count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
   \item{y}{ An optional second input matrix }
   \item{diagonal}{if TRUE, then report the diagonal, else fill the diagonals with NA}
   \item{...}{Other parameters to pass to describe}
+  \item{min}{Count the number of item pairs with <= min entries}
+  \item{short}{Show the table of the item pairs that have entries <= min}
   \item{keys}{A keys.list specifying which items belong to which scale.}
   \item{R}{A correlation matrix to be described or imputed}
   \item{cut}{Report the item pairs and numbers with cell sizes less than cut}
@@ -43,6 +49,7 @@ count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
    \item{main}{A title. Defaults to "Relative Frequencies"}
     \item{gr}{A color gradient: e.g.,  gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))  will produce slightly more pleasing (to some) colors. See next to last example of \code{\link{corPlot}}.  }
  \item{count}{Should we count the number of pairwise observations using pairwiseCount, or just plot the counts for a matrix?}
+ \item{size}{Sample size of the number of variables to sample in pairwiseSample}
     
 }
 
@@ -50,11 +57,14 @@ count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
 
 In order to identify item pairs with counts less than a certain value \code{\link{pairwiseReport}} reports the names of those pairs with fewer than 'cut' observations.  By default, it just reports the number of offending items. With short=FALSE, the print will give the items with n.obs < cut. Even more detail is available in the returned objects.
 
+The specific pairs that have values <= n min in any particular table of the paiwise counts may be given by \code{\link{pairwiseZero}}.  
+
   To remedy the problem of missing correlations, we impute the missing correlations using \code{\link{pairwiseImpute}}.
 The technique takes advantage of the scale based structure of SAPA items.  Items within a scale (e.g. Letter Number Series similar to the \code{\link[psychTools]{ability}} items) are  imputed to correlate with items from another scale (e.g., Matrix Reasoning) at the average of these two between scale inter-item mean correlations.  The average correlations within and between scales are reported by \code{\link{pairwiseImpute}} and if the fix paremeter is specified, the imputed correlation matrix is returned. 
 
 Alternative methods of imputing these correlations are not yet implemented.
- }
+
+The time to count cell size  varies linearly by the number of subjects and of the number of items squared.  This becomes prohibitive for larger (big n items) data sets. \code{\link{pairwiseSample}} will take samples of size=size of these bigger data sets and then returns basic descriptive statistics of these counts, including mean, median, and the .05, .25, .5, .75 and .95 quantiles.   }
 
 \value{
 \item{result}{ = matrix of counts of pairwise observations (if pairwiseCount)}

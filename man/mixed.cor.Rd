@@ -66,7 +66,7 @@ W.Revelle, J.Wilt, and A.Rosenthal. Personality and cognition: The personality-c
 
 W Revelle, D. M. Condon,  J. Wilt,  J.A. French,  A. Brown, and L G. Elleman(2016) Web and phone based data collection using planned missing designs in Nigel G. Fielding and Raymond M. Lee and Grant Blank (eds) SAGE Handbook of Online Research Methods, Sage Publications, Inc.
 
-W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power of the item in understanding personality structure. Personality and Individual Differences, \url{https://doi.org/10.1016/j.paid.2020.109905}
+W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power of the item in understanding personality structure. Personality and Individual Differences, \doi{/10.1016/j.paid.2020.109905}
 
 }
 

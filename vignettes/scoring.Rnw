@@ -1,0 +1,724 @@
+% \VignetteIndexEntry{Scoring scales with psych}
+% \VignettePackage{psych}
+% \VignetteKeywords{multivariate}
+% \VignetteKeyword{models}
+% \VignetteKeyword{Hplot}
+%\VignetteDepends{psych}
+%\documentclass[doc]{apa}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteEncoding{UTF-8}
+
+\documentclass[11pt]{article}
+
+%\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{mathptmx}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{epstopdf}
+\usepackage{makeidx}        % allows index generation
+\usepackage[authoryear,round]{natbib} 
+\usepackage{gensymb}
+\usepackage{longtable}
+%\usepackage{geometry}   
+\usepackage{amssymb}    
+\usepackage{amsmath}
+%\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+%\usepackage{Sweave} 
+
+%\usepackage{/Volumes/'Macintosh HD'/Library/Frameworks/R.framework/Versions/2.13/Resources/share/texmf/tex/latex/Sweave}
+%\usepackage[ae]{Rd}
+%\usepackage[usenames]{color}
+%\usepackage{setspace}
+\usepackage{fancyvrb} % to allow us to define Sinput 
+
+\bibstyle{apacite}
+\bibliographystyle{apa}   %this one plus author year seems to work?
+%\usepackage{hyperref}
+\usepackage[colorlinks=true,citecolor=blue]{hyperref}  %this makes reference links hyperlinks in pdf!
+
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+\let\proglang=\textsf
+\newcommand{\R}{\proglang{R}}
+%\newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}} 
+\newcommand{\fun}[1]{{\texttt{#1}\index{#1}\index{R function!#1}}}
+\newcommand{\pfun}[1]{{\texttt{#1}\index{#1}\index{R function!#1}\index{R function!psych package!#1}}}\newcommand{\Rc}[1]{{\texttt{#1}}}    %R command  same as Robject
+\newcommand{\Robject}[1]{{\texttt{#1}}} 
+\newcommand{\Rpkg}[1]{{\textit{#1}\index{#1}\index{R package!#1}}}   %different from pkg  - which is better?
+\newcommand{\iemph}[1]{{\emph{#1}\index{#1}}} 
+\newcommand{\wrc}[1]{\marginpar{\textcolor{blue}{#1}}}   %bill's comments
+\newcommand{\wra}[1]{\textcolor{blue}{#1}}  %bill's comments
+
+\newcommand{\ve}[1]{{\textbf{#1}}} %trying to get a vector command
+
+\usepackage{fancyvrb}  %this allows fancy boxes
+
+
+\fvset{fontfamily=courier}
+\DefineVerbatimEnvironment{Routput}{Verbatim}
+%{fontsize=\scriptsize, xleftmargin=0.6cm}
+{fontseries=b,fontsize=\scriptsize, xleftmargin=0.1cm}
+
+\DefineVerbatimEnvironment{Soutput}{Verbatim}
+%{fontsize=\scriptsize, xleftmargin=0.6cm}
+{fontseries=b,fontsize=\scriptsize, xleftmargin=0.1cm}
+
+\DefineVerbatimEnvironment{Binput}{Verbatim}
+{fontseries=b, fontsize=\scriptsize,frame=single, label=\fbox{lavaan model syntax}, framesep=2mm}
+
+%\DefineShortVerb{\!} %%% generates error!
+%change the definition of Sinput from Sweave
+
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontseries=b, fontsize=\scriptsize, frame=single, label=\fbox{R code},xleftmargin=0pt, framesep=1mm}
+
+
+\DefineVerbatimEnvironment{Rinput}{Verbatim}
+%{fontsize=\scriptsize, frame=single, label=\fbox{R code}, framesep=1mm}
+{fontseries=b, fontsize=\scriptsize, frame=single, label=\fbox{R code},xleftmargin=0pt, framesep=1mm}
+            
+\DefineVerbatimEnvironment{Link}{Verbatim}
+{fontseries=b, fontsize=\small, formatcom=\color{darkgreen}, xleftmargin=1.0cm}
+
+\DefineVerbatimEnvironment{Toutput}{Verbatim}
+{fontseries=b,fontsize=\tiny, xleftmargin=0.1cm}
+
+\DefineVerbatimEnvironment{rinput}{Verbatim}
+{fontseries=b, fontsize=\tiny, frame=single, label=\fbox{R code}, framesep=1mm}
+
+
+
+\newcommand{\citeti}[1]{\begin{tiny}\citep{#1}\end{tiny}}
+
+\newcommand{\light}[1]{\textcolor{gray}{#1}}
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\let\vec\vect
+\makeindex         % used for the subject index
+
+
+\title{Using \R{} to score personality scales\footnote{Part of a set of tutorials for the psych package.}}
+\author{William Revelle\\Northwestern University}
+
+%the following works only with apaclass
+%\affiliation{Northwestern University }
+
+%\acknowledgements{\\ contact: William Revelle revelle@northwestern.edu \\
+%Version of  \today{}
+%}
+%
+%
+%\shorttitle{Scoring scales}
+%\rightheader{Scoring scales using \pfun{psych}}
+%\leftheader{PMC Lab}   
+
+\begin{document}
+\maketitle
+
+
+\abstract{The \Rpkg{psych} package \citep{psych} was developed to perform most basic psychometric functions using \R{} \citep{R}  A common problem is the need to take a set of items (e.g., a questionnaire) and score one or more scales on that questionnaire.  Scores for subsequent analysis, reliabilities and intercorrelations are easily done using the \pfun{scoreItems} function.}
+\tableofcontents
+\section{Overview of this and related documents}
+To do basic and advanced personality and psychological research using \R{} is not as complicated as some think.  This is one of a set of ``How To'' to do various things using \R{} \citep{R}, particularly using the \Rpkg{psych} \citep{psych} package.
+
+The current list of How To's includes:
+
+\begin{enumerate}
+\item An \href{http://personality-project.org/r/psych/intro.pdf}{introduction} (vignette) of the \Rpkg{psych} package 
+\item An \href{http://personality-project.org/r/psych/overview.pdf}{overview} (vignette) of the \Rpkg{psych} package 
+\item \href{http://personality-project.org/r/psych/HowTo/getting_started.pdf}{Installing} \R{}  and some useful packages
+\item Using \R{} and the \Rpkg{psych} package to find \href{http://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
+\item Using  \R{} and the \Rpkg{psych} for \href{http://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
+\item Using the \pfun{scoreItems} function to find \href{http://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}  (this document).
+\item Using \pfun{mediate} and \pfun{setCor} to do \href{http://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}
+
+
+\end{enumerate}
+
+By following these simple guides, you soon will be able to do such things as find scale scores by issuing just five lines of code:\\
+
+\begin{Rinput}
+library(psych)  #necessary whenever you want to run functions in the psych package
+my.data <- read.clipboard()   
+my.keys <- make.keys(my.data,list(scale1 = c(1,4,5),scale2 = c(2,3,6))  #etec
+my.scales <- scoreItems(my.keys,my.data)
+my.scales
+\end{Rinput}
+
+The resulting output will be both graphical and textual.
+
+This guide helps the naive \R{} user to issue those three lines.  Be careful, for once you start using \R,  you will want to do more.  
+
+Suppose you have given a questionnaire with some items (n) to some participants (N).  You would like to create scale scores for each person on k different scales.  This may be done using the \Rpkg{psych} package in \R{}.  The following assumes that you have installed \R{} and downloaded the \Rpkg{psych} package.
+
+\section{Overview for the impatient}
+Remember, before using \Rpkg{psych} and the \Rpkg{psychTools} packages  you must make them active:\\
+
+
+<<echo=TRUE>>=
+library(psych)
+library(psychTools)
+@
+
+
+Then
+\begin{enumerate}
+\item Enter the data into a spreadsheet (Excel or Numbers) or  a text file using a text editor (Word, Pages, BBEdit). The first line of the file should include names for the variables (e.g., Q1, Q2, ... Qn).  
+\item Copy the data to the clipboard (using the normal copy command for your spreadsheet or word processor) or save it as .txt or .csv file.
+\item Read the data into \R{} using the read.clipboard command.  (Depending upon your data file, this might need to be read.clipboard.csv (for comma separated data fields) or read.clipboard.tab  (for tab separated data fields).
+\item Or, if you have a data file already that end in .sav, .text, .txt, .csv, .xpt, .rds, .Rds, .rda, or .RDATA, then just read it in directly using \pfun{read.file} (from \Rpkg{psychTools})..  
+
+\item Construct a set of scoring keys for the scales you want to score using the \pfun{make.keys} function.  This is simply the item names or numbers that go into each scale.  A negative sign implies that the item will be reverse scored.
+\item Use the \pfun{scoreItems} function to score the scales.
+\item Use the output for \pfun{scoreItems} for further analysis.
+\end{enumerate}
+
+\section{An example}
+Suppose we have 12 items for 200 subjects.  The items represent 4 different scales: Positive Energetic Arousal (EAp), Negative Energetic Arousal (EAn), Tense Arousal (TAp) and negative Tense Arousal (TAn, also known as being relaxed).  These four scales can also be thought of a forming two higher order constructs, Energetic Arousal (EA) and Tense Arousal (TA).  EA is just EAp - EAn, and similarly TA is just TAp - TAn.  
+
+\subsection{Getting the data}
+
+There are, of course, many ways to enter data into \R. 
+\subsubsection{Reading from a local file}
+ Reading from a local file using \fun{read.table} is perhaps the most common procedure.   You first need to find the file and then read it.  This can be done with the \fun{file.choose} and \fun{read.table} functions. \fun{file.choose} opens a search window on your system just like any open file command does.  It doesn't actually read the file, it just finds the file.  The read command is also necessary.
+\\ \begin{Rinput}
+file.name <- file.choose()
+my.data <- read.table(file.name) 
+\end{Rinput}
+
+Even easier is to use the \pfun{read.file} function which combines the \fun{file.chooose} and \fun{read.table} functions into one function.  In addition, \pfun{read.file}  will read normal text (txt) files,  comma separated files (csv), SPSS (sav) files as well as files saved by \R  (rds) files.  By default, it assumes that the first line of the file has header information (variable names).  \pfun{read.file} is included in the \Rpkg{psychTools} package which needs to be installed (once) and made active using the \pfun{library} function.
+\\
+\begin{Rinput}
+my.data <- read.file()  #locate the file to read using your normal system.
+\end{Rinput}
+
+
+\subsection{Reading from a remote file}
+To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.\\
+
+~\
+<<>>=
+file.name <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+my.data <- read.file(file.name)
+@
+
+\subsubsection{Read from the clipboard}
+
+Many users find it more convenient to enter their data in a text editor or spreadsheet program and then just copy and paste into \R{}. The  \pfun{read.clipboard} set of functions are perhaps more user friendly.  These functions are included in the \Rpkg{psychTools} package:
+
+ \begin{description}
+ \item [\pfun{read.clipboard}] is the base function for reading data from the clipboard.
+ \item [\pfun{read.clipboard.csv}] for reading text that is comma delimited. 
+  \item [\pfun{read.clipboard.tab}] for reading text  that is tab delimited (e.g., copied directly from an Excel file). 
+ \item [\pfun{read.clipboard.lower}] for reading input of a lower triangular matrix with or without a diagonal.  The resulting object is a square matrix.
+ \item [\pfun{read.clipboard.upper}] for reading input of an upper triangular matrix.
+ \item[\pfun{read.clipboard.fwf}] for reading in fixed width fields (some very old data sets)
+ \end{description}
+ 
+ For example, given a data set copied to the clipboard from a spreadsheet, just enter the command.\\
+ 
+\begin{Rinput}
+my.data <- read.clipboard()   #note the parentheses
+\end{Rinput}
+
+
+This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
+
+
+
+
+\begin{Rinput}
+ my.tab.data <- read.clipboard.tab()   #This is for data from a spreadsheet
+\end{Rinput}
+
+For the case of data in fixed width fields (some old data sets tend to have this format), copy to the clipboard and then specify the width of each field (in the example below, the first variable is 5 columns, the second is 2 columns, the next 5 are 1 column the last 4 are 3 columns). 
+
+\begin{Rinput}
+my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
+\end{Rinput}
+
+
+\subsubsection{An example data set}
+Consider the data stored at \href{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq}{remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
+ \\
+
+\begin{Rinput}
+my.data <- read.clipboard()
+headTail(my.data)
+dim(my.data)
+describe(my.data)
+\end{Rinput}
+\begin{Routput}
+
+> headTail(my.data)
+    active alert aroused sleepy tired drowsy anxious jittery nervous calm relaxed at.ease
+1        1     1       1      1     1      1       1       1       1    1       1       1
+2        1     1       0      1     1      1       0       0       0    1       1       1
+3        1     0       0      0     1      0       0       0       0    1       2       2
+4        1     1       1      1     1      1       1       3       2    1       2       1
+...    ...   ...     ...    ...   ...    ...     ...     ...     ...  ...     ...     ...
+197      1     1       0      1     2      1       0       0       0    1       1       1
+198      2     2       0      0     1      0       1       0       0    2       3       3
+199      1     3       0      1     0      1       0       1       0    3       3       3
+200      1     2       0      1     1      0       0       0       0    2       3       3
+> dim(my.data)
+[1] 200  12
+
+\end{Routput}
+
+~\
+<<>>=
+fn <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
+my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard one, we need to specify the file type
+ dim(my.data)  #same as before
+ headTail(my.data) #same as before
+ describe(my.data)
+@
+
+\subsection{Reading data from a Qualtrics data set}
+If you have used Qualtrics to collect your data, you can export the data as a csv data file.  Unfortunately, this file is poorly organized and has one too many header lines.  You can open the file using a spreadsheet program (e.g. Excel) and then change the line above the data to be item labels (e.g., Q1, Q2, ....).  Then select that line and all the lines of data that you want to read, and use the \pfun{read.clipboard.tab} function (see above).
+
+\section{Scoring scales: an example}
+ To score particular items on particular scales, we must create a set of \emph{scoring keys}.  These simply tell us which items go on which scales. Note that we can have scales with overlapping items.  There are several ways of creating keys.  Probably the most intuitive is just to make up a list of keys.  For example, make up keys to score Energetic Arousal, Activated Arousal,  Deactivated Arousal ...    We can do this by specifying the names of the items or their location.  For demonstration purposes, we do this both ways. 
+ 
+ ~\
+  
+<<echo=TRUE>>=
+ 
+my.keys <-  list(EA= c("active","alert","aroused", "-sleepy","-tired", "-drowsy"),
+                            TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),
+                            EAp = c("active","alert","aroused"),
+                            EAn = c("sleepy","tired", "drowsy"),
+                            TAp = c("anxious","jittery","nervous"),
+                            TAn = c("calm", "relaxed", "at.ease")
+                            )
+        
+ another.keys.list <- list(EA=c(1:3,-4,-5,-6),TA=c(7:9,-10,-11,-12),
+                    EAp =1:3,EAn=4:6,TAp =7:9,TAn=10:12)
+   
+@           
+ 
+ 
+ 
+ \begin{tiny}
+ Earlier versions of \pfun{scoreItems} required a \pfun{keys} matrix created by \pfun{make.keys}.  This is no longer necessary.
+ 
+ Two things to note.  The number of variables is the total number of variables (columns) in the data file.  You do not need to include all of these items in the scoring keys, but you need to say how many there are.  For the keys, items are scored either +1, -1 or 0 (not scored).  Just specify the items to score and their direction. 
+ 
+ What is actually done internally in the \pfun{scoreItem} function is the keys.list are converted to a matrix of -1s, 0s, and 1s to represent the scoring keys and this multiplied by the data. 
+ 
+ \end{tiny}
+
+%
+%
+%
+%\begin{Rinput}
+%my.keys <- make.keys(my.data,list(EA=c(1:3,-4,-5,-6),TA=c(7:9,-10,-11,-12),
+%                    EAp =1:3,EAn=4:6,TAp =7:9,TAn=10:12))
+%\end{Rinput}
+%These keys are shown in Table~\ref{tab:keys}.
+%
+%\begin{table}[htpb]\caption{Scoring keys made by using the \pfun{make.keys} function.  }
+%\begin{center}
+%\begin{scriptsize} 
+%\begin{tabular} {l r r r r r r }
+% \multicolumn{ 6 }{l}{  } \cr 
+% \hline Variable  &   EA  &  TA  &  EAp  &  EAn  &  TAp  &  TAn \cr 
+%  \hline 
+%active   &   1  &   0  &   1  &   0  &   0  &   0 \cr 
+% alert   &   1  &   0  &   1  &   0  &   0  &   0 \cr 
+% aroused   &   1  &   0  &   1  &   0  &   0  &   0 \cr 
+% sleepy   &  -1  &   0  &   0  &   1  &   0  &   0 \cr 
+% tired   &  -1  &   0  &   0  &   1  &   0  &   0 \cr 
+% drowsy   &  -1  &   0  &   0  &   1  &   0  &   0 \cr 
+% anxious   &   0  &   1  &   0  &   0  &   1  &   0 \cr 
+% jittery   &   0  &   1  &   0  &   0  &   1  &   0 \cr 
+% nervous   &   0  &   1  &   0  &   0  &   1  &   0 \cr 
+% calm   &   0  &  -1  &   0  &   0  &   0  &   1 \cr 
+% relaxed   &   0  &  -1  &   0  &   0  &   0  &   1 \cr 
+% at.ease   &   0  &  -1  &   0  &   0  &   0  &   1 \cr 
+% \hline 
+%\end{tabular}
+%\end{scriptsize}
+%\end{center}
+%\label{tab:keys}
+%\end{table} 
+% my.scales <- scoreItems(my.keys.list,my.data)
+
+Now, we use those keys to score the data using \pfun{scoreItems}:\\
+
+These three commands allow you to score the scales, find various descriptive statistics (such as coefficient $\alpha$),  the scale intercorrelations, and also to get the scale scores.
+
+<<echo=TRUE>>=
+my.scales <- scoreItems(my.keys,my.data)
+my.scales   #show the output
+my.scores <- my.scales$scores    #the actual scores are saved in the scores object
+@
+
+
+
+
+%\begin{Routput}
+%
+%> my.scales <- scoreItems(my.keys.list,my.data)
+%> my.scales   #show the output
+%Call: scoreItems(keys = my.keys, items = my.data)
+%
+%(Unstandardized) Alpha:
+%        EA   TA  EAp  EAn  TAp TAn
+%alpha 0.84 0.74 0.72 0.91 0.66 0.8
+%
+%Standard errors of unstandardized Alpha:
+%         EA    TA   EAp   EAn   TAp   TAn
+%ASE   0.035 0.044 0.071 0.052 0.077 0.063
+%
+%Average item correlation:
+%            EA   TA  EAp  EAn  TAp  TAn
+%average.r 0.46 0.33 0.46 0.76 0.39 0.58
+%
+% Guttman 6* reliability: 
+%           EA   TA  EAp  EAn  TAp  TAn
+%Lambda.6 0.88 0.79 0.71 0.88 0.61 0.77
+%
+%Signal/Noise based upon av.r : 
+%              EA  TA EAp EAn TAp TAn
+%Signal/Noise 5.2 2.9 2.6 9.7 1.9 4.1
+%
+%Scale intercorrelations corrected for attenuation 
+% raw correlations below the diagonal, alpha on the diagonal 
+% corrected correlations above the diagonal:
+%         EA    TA   EAp   EAn     TAp   TAn
+%EA   0.8387 -0.30  1.00 -1.06 -0.0045  0.38
+%TA  -0.2357  0.74 -0.26  0.26  1.0011 -1.17
+%EAp  0.7819 -0.19  0.72 -0.59  0.2350  0.45
+%EAn -0.9208  0.21 -0.48  0.91  0.1373 -0.26
+%TAp -0.0033  0.70  0.16  0.11  0.6574 -0.45
+%TAn  0.3100 -0.90  0.35 -0.22 -0.3272  0.80
+%
+% In order to see the item by scale loadings and frequency counts of the data
+% print with the short option = FALSE
+%
+%\end{Routput}
+
+
+Two things to notice about this output is a) the message about how to get more information (item by scale correlations and frequency counts) and b) that the correlation matrix between the six scales has the raw correlations below the diagonal, alpha reliabilities on the diagonal, and correlations adjusted for reliability above the diagonal. Because EAp and EAn are both part of EA, they correlate with the total more than would be expected given their reliability. Hence the impossible values greater than $|1.0 |$. 
+
+
+
+\subsection{Long output}To get the scale correlations corrected for item overlap and scale reliability,  we print the object that we found, but ask for long output.\\
+
+<<echo=TRUE>>=
+print(my.scales,short=FALSE)
+@
+
+%\begin{Routput}
+%> print(my.scales,short=FALSE)
+%Call: scoreItems(keys = my.keys, items = my.data)
+%
+%(Unstandardized) Alpha:
+%        EA   TA  EAp  EAn  TAp TAn
+%alpha 0.84 0.74 0.72 0.91 0.66 0.8
+%
+%Standard errors of unstandardized Alpha:
+%         EA    TA   EAp   EAn   TAp   TAn
+%ASE   0.035 0.044 0.071 0.052 0.077 0.063
+%
+%Average item correlation:
+%            EA   TA  EAp  EAn  TAp  TAn
+%average.r 0.46 0.33 0.46 0.76 0.39 0.58
+%
+% Guttman 6* reliability: 
+%           EA   TA  EAp  EAn  TAp  TAn
+%Lambda.6 0.88 0.79 0.71 0.88 0.61 0.77
+%
+%Signal/Noise based upon av.r : 
+%              EA  TA EAp EAn TAp TAn
+%Signal/Noise 5.2 2.9 2.6 9.7 1.9 4.1
+%
+%Scale intercorrelations corrected for attenuation 
+% raw correlations below the diagonal, alpha on the diagonal 
+% corrected correlations above the diagonal:
+%         EA    TA   EAp   EAn     TAp   TAn
+%EA   0.8387 -0.30  1.00 -1.06 -0.0045  0.38
+%TA  -0.2357  0.74 -0.26  0.26  1.0011 -1.17
+%EAp  0.7819 -0.19  0.72 -0.59  0.2350  0.45
+%EAn -0.9208  0.21 -0.48  0.91  0.1373 -0.26
+%TAp -0.0033  0.70  0.16  0.11  0.6574 -0.45
+%TAn  0.3100 -0.90  0.35 -0.22 -0.3272  0.80
+%
+%Item by scale correlations:
+% corrected for item overlap and scale reliability
+%           EA    TA   EAp   EAn   TAp   TAn
+%active   0.64 -0.25  0.78 -0.47  0.10  0.39
+%alert    0.58 -0.26  0.63 -0.47  0.08  0.39
+%aroused  0.44  0.04  0.62 -0.27  0.36  0.14
+%sleepy  -0.85  0.22 -0.55  0.89  0.12 -0.23
+%tired   -0.82  0.29 -0.55  0.85  0.16 -0.30
+%drowsy  -0.78  0.16 -0.46  0.84  0.09 -0.17
+%anxious -0.11  0.34  0.00  0.15  0.50 -0.19
+%jittery  0.03  0.48  0.21  0.07  0.62 -0.31
+%nervous  0.05  0.53  0.22  0.05  0.68 -0.35
+%calm     0.11 -0.65  0.24 -0.02 -0.35  0.68
+%relaxed  0.33 -0.71  0.34 -0.28 -0.37  0.76
+%at.ease  0.39 -0.72  0.47 -0.29 -0.34  0.79
+%
+%Non missing response frequency for each item
+%           0    1    2    3 miss
+%active  0.49 0.35 0.13 0.04 0.01
+%alert   0.37 0.46 0.16 0.02 0.02
+%aroused 0.70 0.23 0.07 0.01 0.01
+%sleepy  0.13 0.30 0.25 0.33 0.01
+%tired   0.12 0.23 0.33 0.33 0.01
+%drowsy  0.17 0.30 0.27 0.25 0.01
+%anxious 0.68 0.25 0.04 0.03 0.50
+%jittery 0.69 0.26 0.04 0.01 0.01
+%nervous 0.78 0.17 0.04 0.02 0.01
+%calm    0.09 0.37 0.33 0.21 0.01
+%relaxed 0.09 0.35 0.37 0.20 0.01
+%at.ease 0.13 0.38 0.32 0.17 0.01>
+% \end{Routput}
+ 
+ \subsection{Correcting for overlapping items across scales}
+ The \pfun{scoreOverlap} function will correct for item overlap. In the case of overlapping keys, (items being scored on multiple scales), scoreOverlap will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item. This parallels the operation done when finding alpha reliability. This is similar to ideas suggested by \cite{cureton:66} and \cite{bashaw:anderson:67} but uses the smc or the average interitem correlation (default).
+ 
+ \begin{Rinput}
+ scales.ov <- scoreOverlap(my.keys,my.data)
+ scales.ov
+ \end{Rinput}
+ 
+ \begin{Routput}
+ scales
+Call: scoreOverlap(keys = my.keys, r = my.data)
+
+(Standardized) Alpha:
+  EA   TA  EAp  EAn  TAp  TAn 
+0.83 0.76 0.72 0.91 0.73 0.81 
+
+(Standardized) G6*:
+  EA   TA  EAp  EAn  TAp  TAn 
+0.66 0.61 0.72 0.88 0.69 0.77 
+
+Average item correlation:
+  EA   TA  EAp  EAn  TAp  TAn 
+0.45 0.34 0.47 0.76 0.48 0.58 
+
+Number of items:
+ EA  TA EAp EAn TAp TAn 
+  6   6   3   3   3   3 
+
+Signal to Noise ratio based upon average r and n 
+ EA  TA EAp EAn TAp TAn 
+5.0 3.1 2.6 9.8 2.7 4.1 
+
+Scale intercorrelations corrected for item overlap and attenuation 
+ adjusted for overlap correlations below the diagonal, alpha on the diagonal 
+ corrected correlations above the diagonal:
+        EA     TA   EAp    EAn    TAp   TAn
+EA   0.833 -0.211  0.88 -0.893  0.073  0.39
+TA  -0.168  0.758 -0.12  0.234  0.831 -0.85
+EAp  0.684 -0.086  0.72 -0.579  0.286  0.44
+EAn -0.776  0.194 -0.47  0.907  0.111 -0.26
+TAp  0.057  0.619  0.21  0.091  0.733 -0.42
+TAn  0.320 -0.661  0.34 -0.222 -0.320  0.81
+
+ In order to see the item by scale loadings and frequency counts of the data
+ print with the short option = FALSE
+
+ 
+ \end{Routput}
+ 
+ 
+
+
+
+\subsection{Get the actual scores for analysis.}
+Although we would probably not look at the raw scores, we can if we want by asking for the scores object which is part of the my.scales output.
+For printing purposes, we round them  to two decimal places for compactness.  We just look at first 10 cases.\\
+
+<<echo=TRUE>>=
+my.scores <- my.scales$scores
+headTail(round(my.scores,2) )
+@
+
+\subsection{The example, continued}
+Once you have the results, you should probably want to \pfun{describe} them and also show a graphic of the scatterplot using the \pfun{pairs.panels} function (Figure~\ref{fig.splom}). (Note that  for the figure, we set the plot character to be '.' so that it makes a cleaner plot.)\\
+
+
+~\
+<<echo=TRUE>>=
+describe(my.scores)
+pairs.panels(my.scores,pch='.')
+@
+
+
+
+~\
+<<pairs, echo=FALSE>>=
+png('splom.png')
+pairs.panels(my.scores,pch='.')
+dev.off()
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics{splom.png}
+\caption{A simple scatter plot matrix shows the histograms for the variables on the diagonal, the correlations above the diagonal, and the scatter plots below the diagonal.  The best fitting loess regression is shown as the red line.}
+\label{fig.splom}
+\end{center}
+\end{figure}
+
+
+
+\section{Exploring a real data set}
+ The 12 mood items for 200 subjects were taken from the much larger data set, \pfun{msq}  in the \Rpkg{psych} package.  That data set has 92 variables for 3896 subjects.  We can repeat our analysis of EA and TA on that data set.  This is a data set collected over about 10 years at the Personality, Motivation and Cognition laboratory at Northwestern and described by \cite{ari:97} and \cite{rafaeli:rev:06}.
+
+
+
+\subsection{Conventional reliability and scoring}
+
+First we get the data for the items that match our small example.  Then we describe the data, and finally, find the 6 scales as we did before.  Note that the colnames of our small sample are the items we want to pick from the larger set.  Another way to choose some items is to use  the \pfun{selectFromKeys} function.\\
+
+<<echo=TRUE>>=
+select <- colnames(my.data) 
+#or
+select <- selectFromKeys(my.keys)
+
+small.msq <- msq[select]
+describe(small.msq)  
+@
+~\
+<<echo=TRUE>>=
+msq.scales <- scoreItems(my.keys,small.msq)
+msq.scales   #show the output
+@
+
+% describe(small.msq)  
+%        vars    n mean   sd median trimmed  mad min max range  skew kurtosis   se
+%active     1 3890 1.03 0.93      1    0.95 1.48   0   3     3  0.47    -0.76 0.01
+%alert      2 3885 1.15 0.91      1    1.09 1.48   0   3     3  0.33    -0.76 0.01
+%aroused    3 3890 0.71 0.85      0    0.59 0.00   0   3     3  0.95    -0.04 0.01
+%sleepy     4 3880 1.25 1.05      1    1.18 1.48   0   3     3  0.40    -1.04 0.02
+%tired      5 3886 1.39 1.04      1    1.36 1.48   0   3     3  0.22    -1.10 0.02
+%drowsy     6 3884 1.16 1.03      1    1.08 1.48   0   3     3  0.46    -0.93 0.02
+%anxious    7 2047 0.67 0.86      0    0.54 0.00   0   3     3  1.09     0.26 0.02
+%jittery    8 3890 0.59 0.80      0    0.45 0.00   0   3     3  1.24     0.81 0.01
+%nervous    9 3879 0.35 0.65      0    0.22 0.00   0   3     3  1.93     3.47 0.01
+%calm      10 3814 1.55 0.92      2    1.56 1.48   0   3     3 -0.01    -0.83 0.01
+%relaxed   11 3889 1.68 0.88      2    1.72 1.48   0   3     3 -0.17    -0.68 0.01
+%at.ease   12 3879 1.59 0.92      2    1.61 1.48   0   3     3 -0.09    -0.83 0.01
+%
+%
+%Call: scoreItems(keys = my.keys.list, items = small.msq)
+%
+%(Unstandardized) Alpha:
+%        EA   TA  EAp  EAn  TAp TAn
+%alpha 0.87 0.75 0.81 0.93 0.64 0.8
+%
+%Standard errors of unstandardized Alpha:
+%          EA     TA   EAp   EAn   TAp   TAn
+%ASE   0.0071 0.0099 0.014 0.011 0.018 0.014
+%
+%Average item correlation:
+%            EA   TA  EAp  EAn  TAp  TAn
+%average.r 0.54 0.34 0.58 0.81 0.37 0.57
+%
+% Guttman 6* reliability: 
+%          EA   TA  EAp EAn  TAp  TAn
+%Lambda.6 0.9 0.77 0.76 0.9 0.59 0.74
+%
+%Signal/Noise based upon av.r : 
+%              EA TA EAp EAn TAp TAn
+%Signal/Noise 6.9  3 4.1  13 1.8   4
+%
+%Scale intercorrelations corrected for attenuation 
+% raw correlations below the diagonal, alpha on the diagonal 
+% corrected correlations above the diagonal:
+%        EA      TA    EAp    EAn    TAp    TAn
+%EA   0.874 -0.0207  1.004 -1.006  0.218  0.168
+%TA  -0.017  0.7515 -0.011  0.024  1.096 -1.140
+%EAp  0.842 -0.0084  0.806 -0.618  0.360  0.246
+%EAn -0.906  0.0197 -0.534  0.927 -0.067 -0.076
+%TAp  0.163  0.7590  0.258 -0.052  0.638 -0.512
+%TAn  0.141 -0.8837  0.198 -0.065 -0.366  0.800
+%
+% In order to see the item by scale loadings and frequency counts of the data
+% print with the short option = FALSE
+%
+%
+%\end{Routput}
+
+\subsection{Show the correction for overlap}
+
+
+<<echo=TRUE>>=
+msq.scales.ov <- scoreOverlap(my.keys,small.msq)
+msq.scales.ov   #show the output
+@
+
+\section{Even more analysis: Factoring, clustering, and more tutorials}
+Far more analyses could be done with these data, but the basic scale scoring techniques is a start.  Download the  \href{http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf}{vignette} for using \Rpkg{psych} for even more guidance.  On a Mac, this is also available in the vignettes list in the help menu. 
+
+In addition, look at the examples in the help for \pfun{scoreItems}. 
+
+For examples and tutorials in how to do \emph{factor analysis} or to find \emph{coefficient omega} see the \href{http://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis tutorial} or the  \href{http://personality-project.org/r/psych/HowTo/omega.pdf}{omega tutorial}. 
+
+
+\section{Session Information}
+
+<<echo=TRUE>>=
+sessionInfo()
+@
+\newpage
+%\bibliography{all} 
+%\bibliography{../../../all} 
+\begin{thebibliography}{}
+
+\bibitem[\protect\astroncite{Bashaw and Anderson~Jr}{1967}]{bashaw:anderson:67}
+Bashaw, W. and Anderson~Jr, H.~E. (1967).
+\newblock A correction for replicated error in correlation coefficients.
+\newblock {\em Psychometrika}, 32(4):435--441.
+
+\bibitem[\protect\astroncite{Cureton}{1966}]{cureton:66}
+Cureton, E. (1966).
+\newblock Corrected item-test correlations.
+\newblock {\em Psychometrika}, 31(1):93--96.
+
+\bibitem[\protect\astroncite{{R Core Team}}{2020}]{R}
+{R Core Team} (2020).
+\newblock {\em R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+
+\bibitem[\protect\astroncite{Rafaeli and Revelle}{2006}]{rafaeli:rev:06}
+Rafaeli, E. and Revelle, W. (2006).
+\newblock A premature consensus: Are happiness and sadness truly opposite
+  affects?
+\newblock {\em Motivation and Emotion}, 30(1):1--12.
+
+\bibitem[\protect\astroncite{Revelle}{2020}]{psych}
+Revelle, W. (2020).
+\newblock {\em psych: Procedures for Personality and Psychological Research}.
+\newblock Northwestern University, Evanston,
+  https://CRAN.r-project.org/package=psych.
+\newblock R package version 2.0.8.
+
+\bibitem[\protect\astroncite{Revelle and Anderson}{1997}]{ari:97}
+Revelle, W. and Anderson, K.~J. (1997).
+\newblock Personality, motivation and cognitive performance. final report to
+  the {Army} {Research} {Institute} on contract {MDA 903-93-K-0008}.
+\newblock Technical report, Northwestern University:.
+
+\end{thebibliography}
+
+\printindex
+\end{document}  

@@ -5,6 +5,9 @@
 % \VignetteKeyword{Hplot}
 %\VignetteDepends{psych}
 %\documentclass[doc]{apa}
+
+%\VignetteEncoding{UTF-8}
+
 \documentclass[11pt]{article}
 %\documentclass[11pt]{amsart}
 \usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
@@ -25,11 +28,10 @@
 %\usepackage{geometry}   
 \usepackage{amssymb}    
 \usepackage{amsmath}
-
 %\usepackage{siunitx}
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-\usepackage{Sweave}  
+\usepackage{Sweave}    % (replaced with knirR ccde 
 %\usepackage{/Volumes/'Macintosh HD'/Library/Frameworks/R.framework/Versions/2.13/Resources/share/texmf/tex/latex/Sweave}
 %\usepackage[ae]{Rd}
 %\usepackage[usenames]{color}
@@ -41,7 +43,7 @@
 %\usepackage{hyperref}
 \usepackage[colorlinks=true,citecolor=blue]{hyperref}  %this makes reference links hyperlinks in pdf!
 
-
+\usepackage{fancyvrb}    %allows us to defineEnvironments
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \usepackage{multicol}        % used for the two-column index
 \usepackage[bottom]{footmisc}% places footnotes at page bottom
@@ -78,7 +80,7 @@
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE,(prompt=" ",continue=" "}
+%\SweaveOpts{concordance=TRUE,(prompt=" ",continue=" "}
 %\SweaveOpts{(prompt=" ",continue=" ")
 
 \maketitle
@@ -106,21 +108,22 @@ library(psychTools)
 \item Find and read standard files using \pfun{read.file}.  This will open a search window for your operating system which you can use to find the file.  If the file has a suffix of .text, .txt, .TXT, .csv, ,dat,  .data, .sav,  .xpt, .XPT,  .r, .R, .rds, .Rds, .rda,  .Rda, .rdata, Rdata,  or .RData, then the file will be opened and the data will be read in (or loaded in the case of Rda files)  
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
-myData <- read.file() # find the appropriate file using your normal operating system
+myData <- read.file() # find the appropriate file using 
+                                #   your normal operating system
 \end{Sinput}
-\end{Schunk}
+%%\end{Schunk}
 \end{scriptsize}
 
 \item  Alternatively, go to your friendly text editor or data manipulation program (e.g., Excel) and copy the data to the clipboard.  Include a first line that has the variable labels.  Paste it into  \Rpkg{psych} using the \pfun{read.clipboard.tab} command:
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 myData <- read.clipboard.tab() # if on the clipboard
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 Note that there are number of options for \pfun{read.clipboard} for reading in Excel based files, lower triangular files, etc. 
 
@@ -129,44 +132,44 @@ Note that there are number of options for \pfun{read.clipboard} for reading in E
 \item Make sure that what you just read is right.  Describe it   (section~\ref{sect:describe}) and perhaps look at the first and last few lines.  If you have multiple groups, try \pfun{describeBy}.
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 dim(myData)    #What are the dimensions of the data?
 describe(myData)  # or
 describeBy(myData,groups="mygroups")   #for descriptive statistics by groups
 headTail(myData)  #show the first and last n lines of a file
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Look at the patterns in the data. If you have fewer than about 12 variables, look at the SPLOM (Scatter Plot Matrix) of the data using \pfun{pairs.panels} (section~\ref{sect:pairs})  Then, use the \pfun{outlier} function to detect outliers.
 
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 pairs.panels(myData)
 outlier(myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Note that you might have some weird subjects, probably due to data entry errors.  Either edit the data by hand (use the \fun{edit} command) or just \pfun{scrub} the data (section \ref{sect:scrub}).
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 cleaned <- scrub(myData,  max=9)  #e.g., change anything great than 9 to NA
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Graph the data with error bars for each variable (section \ref{sect:errorbars}).  
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 error.bars(myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Find the correlations of all of your data.  \pfun{lowerCor} will by default find the pairwise correlations, round them to 2 decimals, and display the lower off diagonal matrix. 
@@ -174,32 +177,32 @@ error.bars(myData)
 \begin{itemize}
 \item Descriptively (just the values) (section \ref{sect:lowerCor})
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 r  <-  lowerCor(myData) #The correlation matrix, rounded to 2 decimals
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Graphically  (section \ref{sect:corplot}).  Another way is to show a heat map of the correlations with the correlation values included.
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 corPlot(r)   #examine the many options for this function.
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 
 \item Inferentially (the values, the ns, and the p values) (section \ref{sect:corr.test})  
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 corr.test(myData)
 
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \end{itemize}
@@ -213,36 +216,36 @@ Several functions are meant to do multiple regressions, either from the raw data
 \item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.  If we have the raw data, we can also find the interaction term (x1 * x2).  Although we can find the regressions from just a correlation matrix, we can not find the interaction (moderation effect) unless given raw data.
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 myData <- sat.act
 colnames(myData) <- c("mod1","med1","x1","x2","y1","y2")
 setCor(y1 + y2 ~  x1 + x2 + x1*x2, data = myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 
-\item \pfun{mediate}  will take raw data or a correlation matrix and find  (and graph the path diagram) for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  We specify the mediation variable by enclosing it in parentheses, and show the moderation by the standard multiplication. For the purpose of this demonstration, we do the boot strap with just 50 iterations.  The default is 5,000.  We use the data from \cite{talor} which was downloaded from  the supplementary material for Hayes (2013) \href{"https://www.afhayes.com/public/hayes2013data.zip"}{https://www.afhayes.com/public/hayes2013data.zip}.
+\item \pfun{mediate}  will take raw data or a correlation matrix and find  (and graph the path diagram) for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  We specify the mediation variable by enclosing it in parentheses, and show the moderation by the standard multiplication. For the purpose of this demonstration, we do the boot strap with just 50 iterations.  The default is 5,000.  We use the data from \cite{talor:10} which was downloaded from  the supplementary material for Hayes (2013) \href{"https://www.afhayes.com/public/hayes2013data.zip"}{https://www.afhayes.com/public/hayes2013data.zip}.
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 mediate(reaction ~ cond + (import) + (pmi), data =Tal_Or,n.iter=50)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 We can also find the moderation effect by adding in a product term. 
  \item \pfun{mediate}  will take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.  By default, we find the raw regressions and mean center. If we specify zero=FALSE, we do not mean center the data. If we specify std=TRUE, we find the standardized regressions.
 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 mediate(respappr ~ prot * sexism +(sexism),data=Garcia,zero=FALSE, n.iter=50,   
     main="Moderated  mediation (not mean centered)")
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 \end{itemize}
 
@@ -256,44 +259,45 @@ Many additional functions, particularly designed for basic and advanced psychome
 
 \item Test for the number of factors in your data using parallel analysis (\pfun{fa.parallel}) or Very Simple Structure (\pfun{vss}) .
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 fa.parallel(myData)
 vss(myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Factor analyze (see section 4.1)  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities such as minres (section 4.1.1), alpha factoring, and wls. Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section 4.1.6).  Also consider a hierarchical factor solution to find coefficient $\omega$).
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 fa(myData)
 iclust(myData)
 omega(myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 If you prefer to do a principal components analysis you may use the \pfun{principal} function. The default is one component. 
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 principal(myData)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \item Some people like to find coefficient $\alpha$ as an estimate of reliability.  This may be done for a single scale using the \pfun{alpha} function.  Perhaps more useful is the ability to create several scales as unweighted averages of specified items using the \pfun{scoreItems} function  and to find various estimates of internal consistency for these scales, find their intercorrelations, and find scores for all the subjects.
 \begin{scriptsize}
-\begin{Schunk}
+%%\begin{Schunk}
 \begin{Sinput}
 alpha(myData)   #score all of the items as part of one scale.
-myKeys  <- make.keys(nvar=20,list(first = c(1,-3,5,-7,8:10),second=c(2,4,-6,11:15,-16)))
+myKeys  <- make.keys(nvar=20,list(first = c(1,-3,5,-7,8:10),
+             second=c(2,4,-6,11:15,-16)))
 my.scores <- scoreItems(myKeys,myData)  #form several scales
 my.scores  #show the highlights of the results
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 \end{itemize}
@@ -308,20 +312,23 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.file},  \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions. Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions.  Rotations and transformations of these solutions are done by calling the many rotations available in the \Rpkg{GPArotation} \citep{gpa.roration}.
+
+ Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
 
  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}.  Higher order models can also be found using \pfun{fa.multi}. 
  
- Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}(\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+ Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}  (\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
  
  For data with a a multilevel structure (e.g., items within subjects across time, or items within subjects across groups), the \pfun{describeBy}, \pfun{statsBy} functions will give basic descriptives by group.  \pfun{StatsBy} also will find within group (or subject) correlations as well as the between group correlation.
  
- \pfun{multilevel.reliability} \pfun{mlr} will find various generalizability statistics for subjects over time and items.  \pfun{mlPlot} will graph items over for each subject, \pfun{mlArrange} converts wide data frames to long data frames suitable for multilevel modeling.
+ \pfun{multilevel.reliability} (\pfun{mlr}) will find various generalizability statistics for subjects over time and items.  \pfun{mlPlot} will graph items over for each subject, \pfun{mlArrange} converts wide data frames to long data frames suitable for multilevel modeling.
 
 Graphical displays include Scatter Plot Matrix (SPLOM) plots using \pfun{pairs.panels}, correlation ``heat maps'' (\pfun{corPlot}) factor, cluster, and  structural diagrams using \pfun{fa.diagram}, \pfun{iclust.diagram}, \pfun{structure.diagram} and \pfun{het.diagram}, as well as item response characteristics and item and test information characteristic curves \pfun{plot.irt} and \pfun{plot.poly}.   
 
 
-This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at \url{psych_manual.pdf} includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{https://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at \url{https://personalty-project.org/r/psych_for_sem.pdf}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"https://personality-project.org/r/book/psych_for_sem.pdf"}{\url{https://personality-project.org/r/psych/vignettes/psych_for_sem.pdf}}).
+This vignette is meant to give an overview of  the  \Rpkg{psych} package.  That is, it is meant to give a summary of the main functions in the \Rpkg{psych} package with examples of how they are used for data description, dimension reduction, and scale construction.  The extended  user manual at  \href{"https://personality-project.org/r/psych_manual.pdf"}{\url{psych.manual.pdf}} 
+includes examples of graphic output and more extensive demonstrations than are found in the help menus. (Also available at \url{https://personality-project.org/r/psych_manual.pdf}).  The vignette, psych for sem,  at  \href{https://personalty-project.org/r/psych_for_sem.pdf}{\url{https://personalty-project.org/r/psych_for_sem.pdf}}, discusses how to use psych as a front end to the \Rpkg{sem} package of John Fox \citep{sem}. (The vignette is also available at \href{"https://personality-project.org/r/book/psych_for_sem.pdf"}{\url{https://personality-project.org/r/psych/vignettes/psych_for_sem.pdf}}).
 
 In addition, there are a growing number of ``HowTo"s at the personality project.  Currently these include:
 
@@ -348,20 +355,20 @@ Some of the functions described in the Overview Vignette require other packages.
 
 The ``Psychometrics'' task view will install a large number of useful packages.  To install the bare minimum for the examples in this vignette, it is necessary to install just 3 packages:
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 install.packages(list(c("GPArotation","mnormt")
 \end{Sinput}
-\end{Schunk} 
+%%\end{Schunk} 
 
 Alternatively, many packages for psychometric can be downloaded at once using the ``Psychometrics" task view:
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 install.packages("ctv")
 library(ctv)
 task.views("Psychometrics")
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 
 
@@ -374,12 +381,12 @@ A number of \Rpkg{psych} functions facilitate the entry of data and finding basi
 
 Remember, to run any of the \Rpkg{psych} functions, it is necessary to make the package active by using the \fun{library} command: 
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
  library(psych)
  library(psychTools)
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 The other packages, once installed, will be called automatically by \Rpkg{psych}. 
 
@@ -387,42 +394,42 @@ It is possible to automatically load  \Rpkg{psych} and other functions by creati
 
 
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 .First <-  function(x) {library(psych)
     library(psychTools)}
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 \subsection{Getting the data by using read.file}
 \label{sect:read}
 Although many find copying the data to the clipboard and then using the \pfun{read.clipboard} functions (see below), a helpful alternative is to read the data in directly.  This can be done using the \pfun{read.file} function which calls \fun{file.choose} to find the file and then based upon the suffix of the file, chooses the appropriate way to read it.  For files with suffixes of .text, .txt, .TXT, .csv, ,dat,  .data, .sav,  .xpt, .XPT,  .r, .R, .rds, .Rds, .rda,  .Rda, .rdata, Rdata,  or .RData,  the file will be read correctly.  
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
  my.data <- read.file()
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
  If the file contains Fixed Width Format (fwf) data, the column information can be specified with the widths command.  
  
- \begin{Schunk}
+ %\begin{Schunk}
 \begin{Sinput}
- my.data <- read.file(widths = c(4,rep(1,35))  #will read in a file without a header row 
- # and 36 fields, the first of which is 4 colums, the rest of which are 1 column each.
+my.data <- read.file(widths = c(4,rep(1,35)) #will read in a file without a header row 
+# and 36 fields, the first of which is 4 colums, the rest of which are 1 column each.
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 If the file is a .RData file (with suffix of .RData, .Rda, .rda, .Rdata, or .rdata) the object will be loaded.  Depending what was stored, this might be several objects.  If the file is a .sav file from SPSS, it will be read with the most useful default options (converting the file to a data.frame and converting character fields to numeric). Alternative options may be specified.  If it is an export file from SAS (.xpt or .XPT) it will be read.  .csv files (comma separated files), normal .txt or .text files, .data, or .dat files will be read as well.  These are assumed to have a header row of variable labels (header=TRUE).  If the data do not have a header row, you must specify read.file(header=FALSE).  
 
 To read SPSS files and to keep the value labels, specify  use.value.labels=TRUE.  
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 #this will keep the value labels for .sav files
  my.spss  <- read.file(use.value.labels=TRUE)  
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 
 \subsection{Data input from the clipboard}
@@ -440,26 +447,26 @@ There are of course many ways to enter data into \R.  Reading from a local file 
  
  For example, given a data set copied to the clipboard from a spreadsheet, just enter the command
  
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
  my.data <- read.clipboard()
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
 This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 > my.data <- read.clipboard(sep="\t")   #define the tab option, or 
 > my.tab.data <- read.clipboard.tab()   #just use the alternative function
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 For the case of data in fixed width fields (some old data sets tend to have this format), copy to the clipboard and then specify the width of each field (in the example below, the first variable is 5 columns, the second is 2 columns, the next 5 are 1 column the last 4 are 3 columns). 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 > my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
 \end{Sinput}
-\end{Schunk} 
+%\end{Schunk} 
 
  \subsection{Basic descriptive statistics}
 \label{sect:describe} 
@@ -471,14 +478,14 @@ Once the data are read in, then \pfun{describe} or \pfun{describeBy} will provid
 \end{description}
 
 
-<<echo=false>>=
+<<echo=FALSE>>=
     options(width=100)
 @
   
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
-library(psych)
-library(psychTools)
+<<echo=TRUE>>=
+library(psych)   #need to make psych active the first time you call it
+library(psychTools)  #additional tools and data are here
 data(sat.act) 
 describe(sat.act)  #basic descriptive statistics
 @
@@ -487,7 +494,7 @@ describe(sat.act)  #basic descriptive statistics
 These data may then be analyzed by groups defined in a logical statement or by some other variable.  E.g., break down the descriptive data for males or females.  These descriptive data can also be seen graphically using the \pfun{error.bars.by} function (Figure~\ref{fig:error.bars}). By setting skew=FALSE and ranges=FALSE, the output is limited to the most basic statistics.  Here we use formula mode.
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>= 
+<<echo=TRUE>>=
  #basic descriptive statistics by a grouping variable.
 describeBy(sat.act ~ gender,skew=FALSE,ranges=FALSE)
 @
@@ -497,7 +504,7 @@ describeBy(sat.act ~ gender,skew=FALSE,ranges=FALSE)
 The output from the \pfun{describeBy} function can be forced into a matrix form for easy analysis by other programs.  In addition, describeBy can group by several grouping variables at the same time.
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>= 
+<<echo=TRUE>>=
 sa.mat <-  describeBy(sat.act ~ gender + education,
  skew=FALSE,ranges=FALSE,mat=TRUE)
 headTail(sa.mat)
@@ -531,7 +538,7 @@ If, after describing the data it is apparent that there were data entry errors t
 Consider a data set of 10 rows of 12 columns with values from 1 - 120.  All values of columns 3 - 5 that are less than 30, 40, or 50 respectively, or greater than 70 in any of the three columns will be replaced with NA.  In addition, any value exactly equal to 45 will be set to NA.  (max and isvalue are set to one value here, but they could be a different value for every column).
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>= 
+<<echo=TRUE>>=
 x <- matrix(1:120,ncol=10,byrow=TRUE)
 colnames(x) <- paste('V',1:10,sep='')
 new.x <- scrub(x,3:5,min=c(30,40,50),max=70,isvalue=45,newvalue=NA)
@@ -596,7 +603,7 @@ Yet another demonstration of  \pfun{pairs.panels}  is useful when you have many 
 %\begin{figure}[htbp]
 %\begin{center}
 \begin{scriptsize}
-<<affect>>=
+<<affect1>>=
 keys <- make.keys(msq[1:75],list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
        "lively", "-sleepy", "-tired", "-drowsy"),
@@ -665,7 +672,7 @@ The use of the \pfun{error.bars.by} function allows for graphic comparisons of d
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 data(epi.bfi)
 error.bars.by(epi.bfi[,6:10],epi.bfi$epilie<4)
 @
@@ -680,7 +687,7 @@ Although not recommended, it is possible to use the \pfun{error.bars} function t
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 error.bars.by(sat.act[5:6],sat.act$gender,bars=TRUE,
         labels=c("Male","Female"),ylab="SAT score",xlab="")
 @
@@ -696,7 +703,7 @@ However, it is sometimes useful to show error bars for tabular data, either foun
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 T <- with(sat.act,table(gender,education))
 rownames(T) <- c("M","F")
 error.bars.tab(T,way="both",ylab="Proportion of Education Level",xlab="Level of Education",
@@ -719,7 +726,7 @@ Yet another way to display data for different conditions is to use the \pfun{err
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 op <- par(mfrow=c(1,2))
   data(affect)
 colors <- c("black","red","white","blue")
@@ -781,7 +788,7 @@ dev.off()
 There are many ways to display correlations. Tabular displays are probably the most common.  The output from the \fun{cor} function in core R is a rectangular matrix.  \pfun{lowerMat} will round this to (2) digits and then display as a lower off diagonal matrix.  \pfun{lowerCor} calls \fun{cor} with  \emph{use=`pairwise', method=`pearson'} as default values and returns  (invisibly) the full correlation matrix and displays the lower off diagonal matrix.
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 lowerCor(sat.act)
 @
 \end{scriptsize}
@@ -789,7 +796,7 @@ lowerCor(sat.act)
 When comparing results from two different groups, it is convenient to display them as one matrix, with the results from one group below the diagonal, and the other group above the diagonal.  Use \pfun{lowerUpper} to do this:
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 female <- subset(sat.act,sat.act$gender==2)
  male <- subset(sat.act,sat.act$gender==1)
 lower <- lowerCor(male[-1])
@@ -801,7 +808,7 @@ round(both,2)
 It is also possible to compare two matrices by taking their differences and displaying one (below the diagonal) and the difference of the second from the first above the diagonal:
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 diffs <-  lowerUpper(lower,upper,diff=TRUE)
 round(diffs,2)
 @
@@ -870,7 +877,7 @@ Correlations are wonderful descriptive statistics of the data but some people li
 \begin{table}[htpb]
 \caption{The \pfun{corr.test} function reports correlations,  cell sizes, and raw and adjusted probability values.  \pfun{corr.p} reports the probability values for a correlation matrix.  By default, the adjustment used is that of \cite{holm:79}.}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 corr.test(sat.act)
 @
 \end{scriptsize}
@@ -882,14 +889,14 @@ Testing the difference between any two correlations can be done using the \pfun{
 
 1) For a sample size n, find the t  and p value for a single correlation as well as the confidence interval. 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 r.test(50,.3)
 @
 \end{scriptsize}
 
 2) For sample sizes of n and n2 (n2 = n if not specified) find the z of the difference between the z transformed correlations divided by the standard error of the difference of two z scores. 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 r.test(30,.4,.6)
 @
 \end{scriptsize}
@@ -897,14 +904,14 @@ r.test(30,.4,.6)
 
 3) For sample size n, and correlations ra= r12, rb= r23 and r13 specified, test for the difference of two dependent correlations (Steiger case A).
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 r.test(103,.4,.5,.1)
 @
 \end{scriptsize}
 
 4) For sample size n, test for the difference between two dependent correlations involving different variables. (Steiger case B).
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B 
 @
 \end{scriptsize}
@@ -913,7 +920,7 @@ r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B
 To test whether a matrix of correlations differs from what would be expected if the population correlations were all zero, the function \pfun{cortest} follows \cite{steiger:80b} who pointed out that the sum of the squared elements of a correlation matrix, or the Fisher z score equivalents, is distributed as chi square under the null hypothesis that the values are zero (i.e., elements of the identity matrix).  This is particularly useful for examining whether correlations in a single matrix differ from zero or for comparing two matrices.  Although obvious, \pfun{cortest} can be used to test whether the \pfun{sat.act} data matrix produces non-zero correlations (it does).  This is a much more appropriate test when testing whether a residual matrix differs from zero.
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 cortest(sat.act)
 @
 \end{scriptsize}
@@ -928,7 +935,7 @@ The Pearson correlation of dichotomous data is also known as the $\phi$ coeffici
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 draw.tetra()
 @
 \end{scriptsize}
@@ -981,13 +988,13 @@ Confirmatory factor analysis comparing the structures in multiple groups can be 
 
 
 \begin{scriptsize}
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 sb <- statsBy(bfi[c(1:25,27)], group="education",cors=TRUE)
 faBy(sb,nfactors=5)  #find the 5 factor solution for each education level
 \end{Sinput}
 
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 
@@ -1000,7 +1007,7 @@ The typical application of the \fun{lm} function is to do a linear model of one 
 The \pfun{setCor} function will take a set of y variables predicted from a set of x variables, perhaps with a set of z covariates removed from both x and y.  Consider the \iemph{Thurstone} correlation matrix and find the multiple correlation of the last five variables as a function of the first 4.  
 
 \begin{scriptsize}
-<<print=TRUE,echo=TRUE>>=
+<<echo=TRUE>>=
 setCor(y = 5:9,x=1:4,data=Thurstone)
 @
 \end{scriptsize}
@@ -1008,7 +1015,7 @@ setCor(y = 5:9,x=1:4,data=Thurstone)
 By specifying the number of subjects in correlation matrix, appropriate estimates of standard errors, t-values, and probabilities are also found.  The next example finds the regressions with variables 1 and 2 used as covariates.  The $\hat{\beta}$ weights for variables 3 and 4 do not change, but the multiple correlation is much less.  It also shows how to find the residual correlations between variables 5-9 with variables 1-4 removed.
 
 \begin{scriptsize}
-<<print=TRUE,echo=TRUE>>=
+<<echo=TRUE>>=
 sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 @
@@ -1023,7 +1030,7 @@ Consider the example from \cite{preacher:04} as analyzed using the \pfun{mediate
 
 
 \begin{scriptsize}
-<<print=FALSE,echo=FALSE>>=
+<<echo=FALSE>>=
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
 -0.03, 1.75, -0.8, -1.2, -1.27, 0.7, -1.59, 0.68, -0.39, 1.33, 
@@ -1039,7 +1046,7 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 "Therapy", "Attributional Positivity"), .Names = c("SATIS", "THERAPY", 
 "ATTRIB")))
 @
-<<print=TRUE,echo=FALSE>>=
+<<echo=FALSE>>=
 preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Preacher and Hayes
 @
 \end{scriptsize}
@@ -1047,7 +1054,7 @@ preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Prea
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 mediate.diagram(preacher)
 @
 \end{scriptsize}
@@ -1059,7 +1066,7 @@ mediate.diagram(preacher)
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+<<echo=TRUE>>=
 preacher <- setCor(SATIS ~ THERAPY + ATTRIB,data =sobel,std=FALSE)
 setCor.diagram(preacher)
 @
@@ -1078,22 +1085,22 @@ setCor.diagram(preacher)
 \item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.
 
 \begin{scriptsize}
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 setCor(SATV +      SATQ ~ education + age, data = sat.act, std=TRUE)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 
 \item \pfun{mediate}  will take raw data or a correlation matrix and find  (and graph the path diagram) for multiple y variables depending upon multiple x variables mediated through a mediation variable. It then tests the mediation effect using a boot strap.
 
 \begin{scriptsize}
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 mediate( SATV ~ education+ age + (ACT), data =sat.act,std=TRUE,n.iter=50)
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 \end{scriptsize}
 
 
@@ -1103,7 +1110,7 @@ mediate( SATV ~ education+ age + (ACT), data =sat.act,std=TRUE,n.iter=50)
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<print=FALSE,echo=FALSE, fig=TRUE,eps=FALSE>>=
+<<echo=FALSE>>=
 mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
 @
@@ -1129,14 +1136,14 @@ Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  Fi
 For this example, the analysis is done on the correlation matrix rather than the raw data.
 
 \begin{scriptsize}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 
 C <- cov(sat.act,use="pairwise")
 model1 <- lm(ACT~ gender + education + age, data=sat.act)
 summary(model1)
 @
 Compare this with the output from \pfun{setCor}.
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
 @
@@ -1228,11 +1235,11 @@ A number of data sets for demonstrating psychometric techniques are included in 
 The most recent development version is available as a source file at the repository maintained at \href{ href="https://personality-project.org/r"}{\url{https://personality-project.org/r}}.  That version will have removed the most recently discovered bugs (but perhaps introduced other, yet to be discovered ones). To download that version, go to the repository %\href{"http://personality-project.org/r/src/contrib/}{
 \url{http://personality-project.org/r/src/contrib/} and wander around. For both  Macs and PC, this version can be installed directly using the ``other repository" option in the package installer.  Make sure to specify type="source" 
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
 > install.packages("psych", repos="https://personality-project.org/r", type="source")
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 
   % For a PC, the zip file for the most recent release has been created using the win-builder facility at CRAN.  The development release for the Mac is usually several weeks ahead of the PC development version.
 
@@ -1241,11 +1248,11 @@ Although the individual help pages for the \Rpkg{psych} package are available as
 
 News and a history of changes are available in the NEWS and CHANGES files in the source files. To view the most recent news, 
 
-\begin{Schunk}
+%\begin{Schunk}
 \begin{Sinput}
-> news(Version >= "1.8.4",package="psych")
+> news(Version >= "2.1.1",package="psych")
 \end{Sinput}
-\end{Schunk}
+%\end{Schunk}
 
 
 
@@ -1259,7 +1266,7 @@ For more extensive discussion of the use of \Rpkg{psych} in particular and \R{} 
 \section{SessionInfo}
 This document was prepared using the following settings.
 \begin{tiny}
-<<print=FALSE,echo=TRUE>>=
+<<echo=TRUE>>=
 sessionInfo()
 @
 \end{tiny}
@@ -1300,6 +1307,13 @@ Cattell, R.~B. (1966).
 Cattell, R.~B. (1978).
 \newblock {\em The scientific use of factor analysis}.
 \newblock Plenum Press, New York.
+
+\bibitem[\protect\citeauthoryear{Coen \& Jennrich}{Coen \&
+  Jennrich}{2005}]{gpa.rotate}
+A. Bernaards Coen . \&  Robert I. Jennrich  (2005).
+\newblock Gradient Projection Algorithms and Software for Arbitrary 
+             Rotation Criteria in Factor Analysis
+\newblock {\em Educational and Psychological Measurement}, {\em 65}, 676-696.
 
 \bibitem[\protect\astroncite{Cohen}{1982}]{cohen:set}
 Cohen, J. (1982).

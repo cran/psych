@@ -8,8 +8,8 @@
 \usage{
 fa.extension(Roe,fo,correct=TRUE)
 fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
-  correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, 
-      fm="minres",alpha=.1,omega=FALSE,  ...) 
+  correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",
+  alpha=.1,omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL, ...) 
 }
 
 \arguments{
@@ -30,8 +30,11 @@ fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   \item{fm}{factoring method  fm="minres" will do a minimum residual (OLS), fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair.}
 \item{alpha}{alpha level for the confidence intervals for RMSEA}
 \item{omega}{Do the extension analysis for an omega type analysis}
-
- \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
+\item{cor}{Pass the kind of correlation to fa (defaults to Pearson, can use mixed)}
+\item{use}{Option for the cor function on how to handle missing data.}
+\item{cor.correct}{The correction to be passed to mixed, tet, or polycor (defaults to .5)}
+\item{weight}{Should we weight the variables? (see \code{\link{fa}})} 
+ \item{...}{Additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
 
 }
 \details{It is sometimes the case that factors are derived from a set of variables (the Fo factor loadings) and we want to see what the loadings of an extended set of variables (Fe) would be. Given the original correlation matrix Ro and the correlation of these original variables with the extension variables of Roe, it is a straight forward calculation to find the loadings Fe of the extended variables on the original factors.  This technique was developed by Dwyer (1937) for the case of adding new variables to a factor analysis without doing all the work over again. But, as discussed by Horn (1973) factor extension is also appropriate when one does not want to include the extension variables in the original factor analysis, but does want to see what the loadings would be anyway.

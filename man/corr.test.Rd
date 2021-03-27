@@ -41,10 +41,14 @@ The probability values may be adjusted using the Holm (or other) correction.  If
   \item{t}{value of t-test for each correlation}
   \item{p}{two tailed probability of t for each correlation.  For symmetric matrices, p values adjusted for multiple tests are reported above the diagonal. }
   \item{se}{standard error of the correlation}
-  \item{ci}{the alpha/2 lower and upper values, as well as the (Holm or Bonferroni) adjusted confidence intervals. }
+  \item{ci}{the alpha/2 lower and upper values.}
+  \item{ci2}{ci but with the adjusted pvalues as well.  This was added after tests showed we were breaking some packages that were calling the ci object without bothering to check for its dimensions.}
+  \item{ci.adj}{These are the adjusted ((Holm or Bonferroni) confidence intervals. If asking to not adjust, the Holm adjustments for the confidence intervals are shown anyway, but the probability values are not adjusted and the appropriate confidence intervals are shown in the ci object.  }
 }
 
-\note{For very large matrices (> 200 x 200), there is a noticeable speed improvement if confidence intervals are not found.}
+\note{For very large matrices (> 200 x 200), there is a noticeable speed improvement if confidence intervals are not found.
+
+That adjusted confidence intervals are shown even when asking for no adjustment might be confusing.  If you don't want adjusted intervals, just use the ci object.  The adjusted values are given in the ci.adj object. }
 
 \seealso{  \code{\link{cor.test}} for tests of a single correlation,  Hmisc::rcorr for an equivalant function, \code{\link{r.test}} to test the difference between correlations, and \code{\link{cortest.mat}} to test for equality of two correlation matrices. 
 

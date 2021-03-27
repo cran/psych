@@ -5,11 +5,12 @@
 \title{Draw a scatter plot with associated X and Y histograms, densities and correlation}
 \description{Draw a X Y scatter plot with associated X and Y histograms with estimated densities.  Will also draw density plots by groups. Partly a demonstration of the use of layout. Also includes lowess smooth or linear model slope, as well as correlation.  Originally  from addicted to R example 78 with further modifications suggested by Jared Smith. 
 }
-\usage{scatterHist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,data=NULL,density=TRUE,ellipse=TRUE,  
-  digits=2,method,cex.cor=1, title="Scatter plot + histograms", xlab=NULL,ylab=NULL,  
-   smoother=FALSE,nrpoints=0, xlab.hist=NULL,ylab.hist=NULL,grid=FALSE, xlim=NULL, 
-   ylim=NULL, x.breaks=11,y.breaks=11, x.space=0, y.space=0 ,freq=TRUE, x.axes=TRUE, 
-   y.axes=TRUE,size=c(1,2),col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21,...) 
+\usage{scatterHist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,data=NULL,density=TRUE,
+    ellipse=TRUE,  digits=2,method,cex.cor=1, title="Scatter plot + histograms", 
+    xlab=NULL,ylab=NULL,   smoother=FALSE,nrpoints=0,
+     xlab.hist=NULL,ylab.hist=NULL,grid=FALSE, xlim=NULL,  ylim=NULL,
+     x.breaks=11,y.breaks=11, x.space=0, y.space=0 ,freq=TRUE, x.axes=TRUE, 
+    y.axes=TRUE,size=c(1,2),col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21,...) 
  
  scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE,correl=TRUE,data=NULL,density=TRUE,
   ellipse=TRUE,  

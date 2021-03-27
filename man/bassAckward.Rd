@@ -5,7 +5,7 @@
 \title{The Bass-Ackward factoring algorithm discussed by Goldberg
 }
 \description{
- Goldberg (2006) described a	 hierarchical factor structure organization from the ``top down".  The original idea was to do successive factor analyses from 1 to nf factors organized by factor score correlations from  one level to the next.  Waller (2007) discussed a simple way of doing this for components without finding the scores.  Using the factor correlations (from Gorsuch) to organize factors hierarchically results may be organized at many different levels. The algorithm may be applied to principal components (pca) or to true factor analysis.
+ Goldberg (2006) described a hierarchical factor structure organization from the ``top down".  The original idea was to do successive factor analyses from 1 to nf factors organized by factor score correlations from  one level to the next.  Waller (2007) discussed a simple way of doing this for components without finding the scores.  Using the factor correlations (from Gorsuch) to organize factors hierarchically results may be organized at many different levels. The algorithm may be applied to principal components (pca) or to true factor analysis.
 }
 \usage{
 bassAckward(r, nfactors = 1, fm = "minres", rotate = "oblimin", scores = "tenBerge",
@@ -83,18 +83,48 @@ Waller, N. (2007), A general method for computing hierarchical component structu
 }
 \author{William Revelle}
 \note{Goldberg calculated factor/component scores and then correlated these.  Waller suggests just looking at the unrotated components and then examining the correlations when rotating  different numbers of components.  I do not follow the Waller procedure, but rather find successive factors and then  find factor/component correlations following Gorsuch. 
+
+It is important to note that the BassAckward solution is not a hierarchical solution in the standard meaning. The factors are not factors of factors as is found in a hierarchical model (e.g. \code{\link{sim.hierarchical}} or \code{\link{omega}}, but is merely way of organising solutions with a different number of factors. In each case, unlike \code{\link{omega}} the factors are of the original variables, not the lower level factors.  Thus, detailed statistics for any level of the hierarchy may be found by doing a factoring with that particular number of factors.  
+
+To find basic statistics for the multiple factorings, examine the fa object.  For more detail just do the factoring at that level. 
+
+To see the items associated with the lowest level factors, use \code{\link{fa.lookup}}. For the items associated with other levels, use \code{\link{fa.lookup}} specifying the level.  (See examples.)
 }
 
 \seealso{ \code{\link{fa}}, \code{\link{pca}},  \code{\link{omega}} and \code{\link{iclust}}  for alternative hierarchical solutions. 
+\code{link{fa.lookup}} to show the items in the lowest level of the solution.
 
 }
 \examples{
 bassAckward(Thurstone,4,main="Thurstone data set")
-print(bassAckward(psychTools::bfi[1:25],c(2,3,5),main="bfi data set"),short=FALSE)
+f.labels <- list(level1=cs(Approach,Avoid),level2=cs(PosAffect,NegAffect,Constraint), 
+level3 = cs(Extraversion,Agreeableness,Neuroticism,Conscientiousness,Openness))
+
+ba <- bassAckward(psychTools::bfi[1:25],c(2,3,5),labels=f.labels,
+        main="bfi data set from psychTools")
+print(ba,short=FALSE)
+#show the items associated with the 5 level solution
+fa.lookup(ba,dictionary=psychTools::bfi.dictionary)
+#now show the items associated with the 3 level solution
+fa.lookup(ba$fa[[2]],dictionary=psychTools::bfi.dictionary)
+# compare the 3 factor solution to what get by extracting 3 factors directly
+f3 <- fa(psychTools::bfi[1:25],3)
+f3$loadings - ba$fa[[2]]$loadings   # these are the same
  #do pca instead of factors  just summarize, don't plot
-summary(bassAckward(psychTools::bfi[1:25],c(1,3,5,7),fm="pca",main="Components",plot=FALSE))
+summary(bassAckward(psychTools::bfi[1:25],c(1,3,5,7),fm="pca",
+       main="Components",plot=FALSE))
 ##not run, but useful example
-#sp5 <- bassAckward(psychTools::spi[11:145], c(3,4,5,27))
+\donttest{  
+f.labels <- list(level1 = cs(Neg,Pos,Constrain),level2 = cs(Extra,Neuro,Cons,Open,Agree),
+level3 = cs(attnseeking,sociability,impulsivity,
+   charisma,sensationseek,emotexpr,humor,anxiety,
+   emotstab,irritability,wellbeing,industry,order,author,honesty,perfect,easygoing,
+   selfcontrol,conservatism,creativity,introspect,art,
+   intellect,conform,adaptability,compassion,trust))
+ 
+sp5 <- bassAckward(psychTools::spi[11:145], c(3,5,27),labels=f.labels,
+           main="spi data set from psychTools")
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

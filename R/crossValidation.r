@@ -86,13 +86,22 @@ if(is.null(options)){options <- "best.keys"}
          }
 
 #small function to call matplot with labels         
-matPlot <- function(x, type = "b", minlength=6, xlas=0,...) {
+matPlot <- function(x, type = "b", minlength=6, xlas=0,legend=NULL,lab=NULL,pch=16,col=1:6,lty=NULL,...) {
      rownames(x)<- abbreviate(rownames(x),minlength=minlength)
-    matplot(x,type=type,xaxt="n",...)
+      nvar <- NCOL(x)
+       if(missing(pch)) pch <- seq(15,(15+nvar))
+    matplot(x,type=type,xaxt="n",pch=pch,col=col,...)
     #now add the labels 
      at1 <- (1:nrow(x))
      labx <- (rownames(x))
      axis(1,at=at1,labels=labx,las=xlas)
+     if(!is.null(legend)) {
+    
+     lab <- colnames(x)
+    
+    if(missing(lty)) lty <- 1:8
+      legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
+      legend(legend.location[legend],legend=lab,lty=lty,pch = pch,col=col)}
      }
      
  #Fixed 9/9/20 to handle case of single criterion (by using drop=FALSE in appropriate places)

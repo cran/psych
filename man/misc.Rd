@@ -38,8 +38,8 @@ shannon(x,correct=FALSE,base=2)
 test.all(pl,package="psych",dependencies 
       = c("Depends", "Imports", "LinkingTo"),find=FALSE,skip=NULL) 
  levels2numeric(x) 
- char2numeric(x) 
- nchar2numeric(x)
+ char2numeric(x,flag=TRUE) 
+ nchar2numeric(x,flag=TRUE)
  isCorrelation(x) #test if an object is a symmetric matrix with diagonals of 1 and 
   # all values between -1 and 1
  isCovariance(x)  #test if an object is a symmetric matrix   
@@ -62,6 +62,7 @@ test.all(pl,package="psych",dependencies
   \item{max}{The maximum value the loop will achieve}
   \item{label}{what function is looping}
   \item{flip}{The factor or components to be reversed keyed (by factor number)}
+  \item{flag}{flag=TRUE in char2numeric will flag those variables that had been numeric}
   \item{correct}{Correct for the maximum possible information in this item}
   \item{base}{What is the base for the log function (default=2, e implies base = exp(1))}
   \item{pl}{The name of a package (or list of packages) to be activated and then have all      
@@ -81,7 +82,7 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{tableF}} is fast alternative to the table function for creating two way tables of numeric variables.  It does not have any of the elegant checks of the table function and thus is much faster.  Used in the \code{\link{tetrachoric}} and \code{\link{polychoric}} functions to maximize speed.
 
-\code{\link{lowerCor}} Finds and prints (using \code{\link{lowerMat}}) the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places. 
+\code{\link{lowerCor}} Finds and prints (using \code{\link{lowerMat}}) the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places.  By default, it will change character variables to numeric and flag them. 
 
 \code{\link{lowerMat}}Shows the lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3
 
@@ -102,6 +103,8 @@ test.all(pl,package="psych",dependencies
 \code{\link{nchar2numeric}}converts numbers coded as characters (quoted) to numeric without forcing them to factors first.  
 
 \code{\link{fromTo}} selects the columns in data from to 
+
+\code{\link{cs}} concatenates strings without the need to identify variables by " ".
 }
 
 \details{

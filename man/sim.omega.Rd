@@ -1,11 +1,9 @@
-\name{sim}
-\alias{sim}
-\alias{sim.simplex}
-\alias{sim.minor}
-
-
-
-\title{Functions to simulate psychological/psychometric data.}
+\name{sim.omega}
+\alias{sim.omega}
+\alias{sim.general}
+\alias{sim.parallel}
+\title{Further functions to simulate psychological/psychometric data.
+}
 \description{A number of functions in the psych package will generate simulated data with particular structures.  These functions include
 \code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
 \code{\link{sim.minor}} to simulate major and minor factors,
@@ -25,38 +23,30 @@
 \code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
-sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE)
-sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0)
-sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) 
-
+sim.omega(nvar = 12, nfact = 3, n = 500, g = NULL, sem = FALSE, fbig = NULL, 
+     fsmall = c(-0.2, 0.2),bipolar = TRUE, om.fact = 3, flip = TRUE,
+      option = "equal", ntrials = 10)
+sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
+            n = c(200,400)) 
 }
+%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fx}{The measurement model for x. If NULL, a 4 factor model is generated}
-  \item{Phi}{The structure matrix of the latent variables}
-  \item{fy}{The measurement model for y}
-  \item{mu}{The means structure for the fx factors}
+   \item{nvar}{Number of variables}
+  \item{nfact}{Number of group factors in sim.general, sim.omega}
   \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
-  \item{raw}{if raw=TRUE, raw data are returned as well.}
-  \item{nvar}{Number of variables for a simplex structure}
-  \item{nfact}{Number of large factors to simulate in sim.minor,number of group factors in sim.general,sim.omega}
   \item{g}{General factor correlations in sim.general and general factor loadings in sim.omega and sim.minor}
- 
-  \item{alpha}{the base correlation for an autoregressive simplex}
-  \item{lambda}{the trait component of a State Trait Autoregressive Simplex}
-  \item{beta}{Test reliability of a STARS simplex}
-  \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
-  \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
-  \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
-  
-   }
-
+  \item{sem}{Should the sim.omega function do both an EFA omega as well as a CFA omega using the sem package?}
+ \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
+   \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
+ \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
+ \item{om.fact}{Number of  factors to extract in omega}
+ \item{flip}{In omega, should item signs be flipped if negative}
+   \item{option}{In omega, for the case of two factors, how to weight them?}
+ \item{ntrials}{Number of replications per level}
+}
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
 
-The simulations documented here are the core set of functions.  Others are documented in other help files.
-
-\code{\link{sim}} simulates one (fx) or two (fx and fy) factor structures where both fx and fy respresent factor loadings of variables.  The use of fy is particularly appropriate for simulating sem models.  This is better documentated in the help for \code{\link{sim.structural}}.
-
-Perhaps the easist simulation to understand is just \code{\link{sim}}.  A factor model (fx) and perhaps fy with intercorrelations between the two factor sets of Phi.  This will produce a correlation matrix R = fx' phi fy.  Factors can differ in their mean values by specifying mu.  
+The simulations documented here are a miscellaneous set of functions that will be documented in other help files eventually.
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 
@@ -123,51 +113,42 @@ sim.minor will generate such data sets with big factors with loadings of .6 to .
 
 \code{\link{sim.multilevel}}  To understand some of the basic concepts of multilevel modeling, it is useful to create multilevel structures.  The correlations of aggregated data is sometimes called an 'ecological correlation'.  That group level and individual level correlations are independent makes such inferences problematic.  This simulation allows for demonstrations that correlations within groups do not imply, nor are implied by, correlations between group means. 
 
-
 }
-\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}  }
+\value{\code{link{sim.parallel}} returns the results of multiple simulations of fa.parallel for various combinations of the number of variables, numbers of factors, and sample size.
+  \code{link{sim.general}} returns either a correlation matrix (if n is not specified) or a data matrix with a general factor.
+}
+\references{ \url{https://personality-project.org/r/r.omega.html} \cr
 
-\author{William Revelle}
+Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
-\seealso{ See above}
+Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
+
+Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{https://personality-project.org/revelle/publications/rz09.pdf}
+
+Waller, N. G. (2017) Direct {Schmid-Leiman} Transformations and Rank-Deficient Loadings Matrices.  Psychometrika.  DOI: 10.1007/s11336-017-9599-0
+
+ Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
+
+Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures containing two group factors:  Perils and prospects.  Applied Psychological Measurement. 31 (2), 135-157.
+ 
+ Zinbarg, R., Yovel, I., Revelle, W. & McDonald, R. (2006).  Estimating generalizability to a universe of indicators that all have one attribute in common:  A comparison of estimators for omega.  Applied Psychological Measurement, 30, 121-144. DOI: 10.1177/0146621605278814 \url{https://journals.sagepub.com/doi/10.1177/0146621605278814}
+}
+\author{ 
+ \url{https://personality-project.org/revelle.html} \cr
+Maintainer: William Revelle  \email{  revelle@northwestern.edu  } 
+}
+\note{A few  of the various sim functions are included here.
+}
+
+
+
+\seealso{\code{\link{omega}}
+}
 \examples{
-simplex <- sim.simplex() #create the default simplex structure
-lowerMat(simplex) #the correlation matrix
-#create a congeneric matrix
-congeneric <- sim.congeneric()
-lowerMat(congeneric)
-R <- sim.hierarchical()
-lowerMat(R)
-#now simulate categorical items with the hierarchical factor structure.  
-#Let the items be dichotomous with varying item difficulties.
-marginals = matrix(c(seq(.1,.9,.1),seq(.9,.1,-.1)),byrow=TRUE,nrow=2)
-X <- sim.poly.mat(R=R,m=marginals,n=1000)
-lowerCor(X) #show the raw correlations
-#lowerMat(tetrachoric(X)$rho) # show the tetrachoric correlations (not run)
-#generate a structure 
-fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
-fy <- c(.6,.5,.4)
-Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
-R <- sim.structure(fx,Phi,fy) 
-cor.plot(R$model) #show it graphically
-
-simp <- sim.simplex()
-#show the simplex structure using cor.plot
-cor.plot(simp,colors=TRUE,main="A simplex structure")
-#Show a STARS model 
-simp <- sim.simplex(alpha=.8,lambda=.4)
-#show the simplex structure using cor.plot
-cor.plot(simp,colors=TRUE,main="State Trait Auto Regressive Simplex" )
-
-dichot.sim <- sim.irt()  #simulate 5 dichotomous items
-poly.sim <- sim.poly(theta=dichot.sim$theta)  #simulate 5 polytomous items that correlate 
-  #with the dichotomous items
-
-}
+#test <- sim.omega()
+  }
 
 
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{multivariate}
+\keyword{ multivariate}
 \keyword{datagen}
 

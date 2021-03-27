@@ -89,7 +89,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                    df <- n.obs - length(x) -length(z)  #we have the intercept as one degree of freedom, partialed variables count as well
                     means <- colMeans(data,na.rm=TRUE)   #use these later to find the intercept
                     sds <- apply(data,2,sd, na.rm=TRUE)
-                 	C <- cov(data,use=use)
+                 	C <- cov(data,use=use)  
                          	
                          	
                      

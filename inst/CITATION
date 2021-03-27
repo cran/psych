@@ -4,12 +4,12 @@ citEntry(entry="Manual",
          author = "William Revelle",
          Organization = " Northwestern University",        
          address      = " Evanston, Illinois",
-         year         = 2020,
-         note         = "R package version 2.0.12",
+         year         = 2021,
+         note         = "R package version 2.1.3",
          url          = "https://CRAN.R-project.org/package=psych",
          textVersion =  
          paste("Revelle, W. (2020) ", 
                "psych: Procedures for Personality and Psychological Research, ",
                "Northwestern University, Evanston, Illinois, USA, ",
                 "https://CRAN.R-project.org/package=psych",
-                " Version = 2.0.12,",".",sep="") )
+                " Version = 2.1.3,",".",sep="") )

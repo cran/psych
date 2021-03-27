@@ -26,7 +26,7 @@
     }
     }
  
- if(!omega) fe <- t( Roe) %*% fl %*% (solve(t(fl)%*% (fl))) 
+ if(!omega) fe <- t( Roe) %*% fl %*% (solve(t(fl)%*% (fl)))  #should we include Phi?
   if(!is.null(Phi)) fe <- fe %*% solve(Phi)
  
  if(!correct) {#the Gorsuch case
@@ -47,22 +47,39 @@ if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- Roe - fl 
 #created December 8, 2012 to allow for extension and goodness of fits of total model
 #modified 31/5/14 to allow for omega extension as well 
 #modified 04-09/16 to pass the Structure matrix as well
+#Added the cors and correct parameters to pass to fa 1/3/21
 "fa.extend" <- 
-function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE, ...) {
+function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL, ...) {
  cl <- match.call()
   nv <- c(ov,ev)
  if(nrow(r) > ncol(r)){  #the case of a data matrix
- if(omega) {fo <- omega(r[,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
-       fo <- fa(r[,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)}
-         n.obs <- nrow(r)
+     #first find the correlations
+      n.obs <- nrow(r)
          np.obs.r <- pairwiseCount(r)[nv,nv]
          np.obs <- np.obs.r[ov,ov]
-        r <- cor(r,use='pairwise')  
+       # r <- cor(r,use='pairwise') 
+       switch(cor, 
+       cor = {r <- cor(r,use=use) },   #does not include the weight option from fa 
+       cov = {r <- cov(r,use=use) 
+              covar <- TRUE},
+       wtd = { r <- cor.wt(r,w=weight)$r},
+       spearman = {r <- cor(r,use=use,method="spearman")},
+       kendall = {r <- cor(r,use=use,method="kendall")},
+       tet = {r <- tetrachoric(r,correct=cor.correct,weight=weight)$rho},
+       poly = {r <- polychoric(r,correct=cor.correct,weight=weight)$rho},
+       tetrachoric = {r <- tetrachoric(r,correct=cor.correct,weight=weight)$rho},
+       polychoric = {r <- polychoric(r,correct=cor.correct,weight=weight)$rho},
+       mixed = {r <- mixedCor(r,use=use,correct=cor.correct)$rho}
+       )
+       
+ if(omega) {fo <- omega(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
+       fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,...)}
+         
     } else {  #the case of a correlation matrix         
        R <- r[ov,ov]
        np.obs.r <- np.obs
-      if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
-      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,np.obs=np.obs[ov,ov],...)}
+      if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
+      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor, correct=correct,alpha=alpha,np.obs=np.obs[ov,ov],...)}
      }
 Roe <- r[ov,ev,drop=FALSE]
 fe <- fa.extension(Roe,fo,correct=correct)

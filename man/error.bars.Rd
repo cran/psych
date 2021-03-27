@@ -8,14 +8,15 @@
 error.bars(x,stats=NULL,data=NULL,group=NULL, ylab = "Dependent Variable",
 xlab="Independent Variable", main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05, 
 sd=FALSE, labels = NULL, pos = NULL,  arrow.len = 0.05,arrow.col="black",
- add = FALSE,bars=FALSE,within=FALSE, col=c("black","blue","red"),density=-10,...)
+ add = FALSE,bars=FALSE,within=FALSE, col=c("black","blue","red"),density=-10,
+ ...)
 error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
 \arguments{
   \item{x}{ A data frame or matrix of raw data OR, a formula of the form DV ~ IV.  If formula input is specified, error.bars.by is called. }
   \item{t}{A table of frequencies}
-  \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe)}
+  \item{stats}{Alternatively, a data.frame of descriptive stats from (e.g., describe). if specified, the means, sd, n and perhaps of se of a data set to be plotted}
   \item{data}{If using formula input, specify the object where the data may found}
   \item{group}{If not null, then do error.bars.by syntax}
   \item{ylab}{y label}

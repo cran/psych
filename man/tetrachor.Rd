@@ -141,7 +141,7 @@ Revelle, W., Wilt, J.,  and Rosenthal, A. (2010)  Individual Differences in Cogn
 
 Revelle, W,  Condon, D.M.,  Wilt, J.,  French, J.A., Brown, A.,  and  Elleman, L.G. (2016) Web and phone based data collection using planned missing designs. In  Fielding, N.G.,  Lee, R.M. and  Blank, G. (Eds). SAGE Handbook of Online Research Methods (2nd Ed), Sage Publcations
 
-W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power of the item in understanding personality structure. Personality and Individual Differences, \url{https://doi.org/10.1016/j.paid.2020.109905}
+W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power of the item in understanding personality structure. Personality and Individual Differences, \doi{10.1016/j.paid.2020.109905}
 
 }
 \author{

@@ -1,5 +1,5 @@
 "scatter.hist" <- "scatterHist" <- 
-function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,ellipse=TRUE,digits=2,method,cex.cor=1,title="Scatter plot + histograms",
+function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,ellipse=TRUE,digits=2,method="pearson",cex.cor=1,title="Scatter plot + histograms",
    xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
    x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21,...) {
 old.par <- par(no.readonly = TRUE) # save default 
@@ -42,7 +42,7 @@ if (is.null(y)) {y <- x[,2]
                  
 if(missing(ylab)) { ylab <- colnames(y) }                                                               
 if(is.null(grp)) grp <-1 
-
+if((length(pch) ==1 )&&(pch ==".")) pch <- 45     #this is kludge because we add 1 to pch later
 
 
 if(NROW(grp) > 1) { byGroup <- TRUE

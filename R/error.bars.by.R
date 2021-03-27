@@ -2,7 +2,7 @@
 function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
 xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL,v2.labels=NULL,add.labels=NULL,
  pos=NULL,arrow.len=.05,min.size=1, add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
- lty,lines=TRUE, legend=0,pch=16,density=-10,...)  # x   data frame with 
+ lty,lines=TRUE, legend=0,pch=16,density=-10,stats=NULL,...)  # x   data frame with 
     {
 
     if(!lines) {typ <- "p"} else {typ <- "b"}
@@ -36,14 +36,22 @@ n.pch =length(pch)
     if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)}
     if(!missing(density)) {col12 <- col2rgb(colors,TRUE)/255
     colors <- rgb(col12[1,],col12[2,],col12[3,],.5)
-               n.color <- nvar}
+     n.color <- length(colors)
+     if(length(density==1)) density=rep(density,n.color)}
     #density = -10
     
     if(missing(lty)) lty <- 1:8
  
     legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
-    
-    all.stats <- describe(x)
+   if(is.null(stats)) {
+   
+    all.stats <- describe(x) } else {all.stats <- stats
+    	          z <- dim(all.stats)[1]
+    	          names <- rownames(stats)
+    	          if(is.null(all.stats$se) ) stats$se <-  all.stats$se <- stats$sd/sqrt(stats$n-1)
+    	          if(is.null(all.stats$max)) all.stats$max <- max(stats$mean,na.rm=TRUE)
+    	           if(is.null(all.stats$min)) all.stats$min <- min(stats$mean,na.rm=TRUE)
+    	}
         min.x <- min(all.stats$min,na.rm=TRUE)
    		max.x <- max(all.stats$max,na.rm=TRUE)
     	max.se <- max(all.stats$se,na.rm=TRUE)
@@ -55,12 +63,26 @@ n.pch =length(pch)
     
     
     if(is.null(main)) {if(sd) {main <- paste("Means + Standard Deviations") } else {main <- paste((1-alpha)*100,"% confidence limits",sep="")} }
-    
+
+##########
+# bar plot (ugly but some people like them) 
+##########   
  if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
-    group.stats <- describeBy(x,group,mat=TRUE,skew=FALSE)   
-           n.var <- dim(all.stats)[1]
-           n.group <- length(group.stats[[1]])/n.var
-           group.means <- matrix(group.stats$mean,ncol=n.group,byrow=TRUE)
+   if(is.null(stats)){ group.stats <- describeBy(x,group,mat=TRUE,skew=FALSE)
+      n.var <- dim(all.stats)[1]
+       n.group <- length(group.stats[[1]])/n.var  #this is total number of groups but it may  be 2 x 2 or n x m
+    } else {n.group <- NROW(stats)   #we have the stats as input, we just use them here
+        group.stats <- list()
+        group.stats$mean <- stats$mean
+        group.stats$n <- stats$n
+        group.stats$sd <- stats$sd
+        group.stats$se <- stats$se
+     } 
+   # group.stats <- describeBy(x,group,mat=TRUE,skew=FALSE)   
+          # n.var <- dim(all.stats)[1]
+          # n.group <- length(group.stats[[1]])/n.var
+          
+          if(is.null(stats)){group.means <- matrix(group.stats$mean,ncol=n.group,byrow=TRUE)} else {group.means <- as.matrix(group.stats$mean,drop=FALSE)}
            
             if(missing(pch)) pch <- seq(15,(15+n.grp2))
           
@@ -107,10 +129,20 @@ n.pch =length(pch)
        merge = TRUE, bg = 'gray90')}
                
     } else {  
-    
+
+
+###############   
 #the normal case is to not use bars
-    group.stats <- describeBy(x,group)    #why not use matrix output for this
+# could use some of the code from the bars section to be tighter code
+###############
+   if(is.null(stats)){ group.stats <- describeBy(x,group)
     n.group <- length(group.stats)   #this is total number of groups but it may  be 2 x 2 or n x m
+    } else {n.group <- NROW(stats)   #we have the stats as input, we just use them here
+        group.stats <- list()
+      for(g in (1:n.group)) {group.stats[[g]] <- stats[g,]}
+   
+     }    #why not use matrix output for this
+   
     n.var <- ncol(x)
      if(is.null(n.var)) n.var <- 1 
     #first set up some defaults to allow the specification of colors, lty, and pch dynamically and with defaults
@@ -139,6 +171,8 @@ n.pch =length(pch)
     	       }
     	if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:z,sep="")}
    
+   
+   
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      	if (length(labels)==0) lab <- rep("",z) else lab <-labels
         for (i in 1:z)  {xcen <- x.stats$mean[i]
@@ -148,7 +182,7 @@ n.pch =length(pch)
     	if(sd) {ci <- 1} else { if(x.stats$n[i] >1) {ci <- qt(1-alpha/2,x.stats$n[i]-1)} else {ci <- 0}}  #corrected Sept 11, 2013
     	  if(is.finite(xse) & (xse > 0))  {
     	  arrows(i,xcen-ci*xse,i,xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = colors[(g-1) %% n.color +1], lty=(lty[((g-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
-    	 if (eyes) {catseyes(i,xcen,xse,x.stats$n[i],alpha=alpha,density=density,col=colors[(g-1) %% n.color +1] )}
+    	 if (eyes) {catseyes(i,xcen,xse,x.stats$n[i],alpha=alpha,density=density[(g-1) %% n.color +1],col=colors[(g-1) %% n.color +1] )}
     	#text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
     	}
     	}
@@ -185,8 +219,9 @@ n.pch =length(pch)
      var.n[is.na(var.n)] <- 0
    	 var.n[var.n < min.size] <- 0
    	    if(x.cat) {x.values <- 1:n.grp1}  else {
-   	        x.values <- as.numeric(names(group.stats))  }  
-   	   if(missing(xlim)) xlim <- c(.5,n.grp1 + .5)
+   	      x.values <- names(table(group[,1]))
+          x.values <- as.numeric(x.values)    }  
+   	   if(missing(xlim)) xlim <- c(.5,max(x.values) + .5)
    	   if(is.null(v.labels)) v.labels <- names(unlist(dimnames(group.stats)[1]))
 
    	   
@@ -241,61 +276,71 @@ n.pch =length(pch)
     	   if(x.cat)  {   #the normal case
     	      # arrows(g,xcen[g]-ci[g]*xse[g],g,xcen[g]+ci[g]* xse[g],length=arrow.len, angle = 90, code=3, col = colors[(i-1) %% n.color +1], lty = NULL, lwd = par("lwd"), xpd = NULL)
     	 if(!is.na(var.n[g]) & (var.n [g] >1)) {if (eyes) { 
-    	        catseyes(g,xcen[g],xse[g],group.stats[[g]]$n[i],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )   #why is this here?
+    	        catseyes(g,xcen[g],xse[g],group.stats[[g]]$n[i],alpha=alpha,density=density[(i-1) %% n.color +1],col=colors[(i-1) %% n.color +1] )   #why is this here?
     	                              }  else {
     	     
     	           if(ci[g]> 0) arrows(x.values[g],xcen[g]-ci[g]*xse[g],x.values[g],xcen[g]+ci[g]* xse[g],length=arrow.len, angle = 90, code=3,col = colors[(i-1) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
-    	            if (eyes) {catseyes(x.values[g],xcen[g],xse[g],x.stats$n[g],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
+    	            if (eyes) {catseyes(x.values[g],xcen[g],xse[g],x.stats$n[g],alpha=alpha,density=density[(i-1) %% n.color +1],col=colors[(i-1) %% n.color +1] )}} 
     	            }
-    	            }
+    	            }  else {#consider the !x.cat condition
+    	                      }
+    	        
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
    		}
- 
-   		 if(n.grp1 < n.group) {
+          x.values <- as.numeric(x.values)
+   	if(n.grp1 < n.group) {
    		  for (g in 1: n.grp1) {
+   		 
    		    for(grp2 in 1:(n.grp2-1)){
-    	   if(x.cat)  {arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
-    	}
-    	 if (eyes) { 
-    	        catseyes(g,xcen[g+n.grp1*grp2],xse[g+n.grp1 * grp2],group.stats[[g+n.grp1*grp2]]$n[i],alpha=alpha,density=density,col=colors[(i) %% n.color +1] )}}
-    	        }}  else {
+    	              if(x.cat)  {arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
+    	                   } else {#consider the none cat condition 
+    			                  x.values <- as.numeric(x.values)
+    			                  arrows(x.values[g],xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],x.values[g],xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
+    	                    }  
+    	         	 if (eyes) { 
+    	        catseyes(x.values[g],xcen[g+n.grp1*grp2],xse[g+n.grp1 * grp2],group.stats[[g+n.grp1*grp2]]$n[i],alpha=alpha,density=density[(i) %% n.color +1],col=colors[(i) %% n.color +1] )
+    	                   }  else {
     	     
     	          # if(xse[g + n.grp1]> 0) 
     	          if(ci[g]>0) {arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen[g + n.grp1]+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3,col = colors[(grp2-1) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"),
     	        xpd = NULL)
-    	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density,col=colors[(i-1) %% n.color +1] )}} 
+    	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density[(i-1) %% n.color +1],col=colors[(i-1) %% n.color +1] )}} 
     	}
-    	
-    	
+    	}
+    	}
  
      }
      if(x.cat) {axis(1,1:n.grp1,v.labels,...) } else {axis(1)}
     		axis(2,...)
-    		box()    #end of i loop 
-    		
+    		box() 
+    		}   #end of i loop 
+    
+    #### now add labels and lengeds if desirec		
       if(!is.null(add.labels)) {
-      
-    
-    
-       if(is.null(v2.labels)) v2.labels <- names(unlist(dimnames(group.stats)[2]))
-       if(is.null(pos)) {
-        text.values <- data.frame(x=rep((.5+ (add.labels == "right")* n.grp1),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)
-        text(text.values$x,text.values$y,text.values$name)
+
+        
+               if(is.null(v2.labels)) v2.labels <- names(unlist(dimnames(group.stats)[2]))
+        if(is.null(pos)) {
+        if(x.cat){text.values <- data.frame(x=rep((.5+ (add.labels == "right")* n.grp1),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)} else {
+                   text.values <- data.frame(x=rep((.5+ (add.labels == "right") * x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)}
+                   
+                   text(text.values$x,text.values$y,text.values$name)
         } else {
-            text.values <- data.frame(x=rep((.5+ (add.labels == "right")* n.grp1),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels,position=pos)
-        text(text.values$x,text.values$y,text.values$name,pos=text.values$position)}
+            text.values <- data.frame(x=rep((.5+ (add.labels == "right")* x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels,position=pos)
+        text(text.values$x,text.values$y,text.values$name,pos=text.values$position)
+               }
 
           }
       if(legend > 0  ){
   
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.grp2,sep="")} 
-   if ((nvar > 1) & (n.grp2 ==1)) { legend(legend.location[legend], lab, col = colors[(1: nvar)%% n.color + 1],pch=pch[1: n.grp2],
+   if ((nvar > 1) & (n.grp2 ==1)) { legend(legend.location[legend], lab, col = colors[(0: nvar)%% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:nvar],
        merge = TRUE, bg = 'gray90')} else {
         legend(legend.location[legend], lab, col = colors[(0: n.grp2) %% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:n.grp2],
        merge = TRUE, bg = 'gray90') }   
-     }
+                        }
      
     }  #end of by var is true loop
    
@@ -309,4 +354,5 @@ n.pch =length(pch)
    #modified July 11, 2020 to allow formula input
    #modified Novemember, 2020 to  handle NULL sample sizes
    #further modified November 2020 to properly label the lines and fix the pch to match the legend
+   #And yet some more, December 31st to better handle non-=categorial variables
    

@@ -18,8 +18,9 @@ nvar <- ncol(r)
 
 
 p[p>1] <- 1
+pa <- p  #in case we don't do adjustments
 if (adjust !="none") {
-  if (is.null(y)) {lp <- upper.tri(p)  #the case of a symmetric matrix
+  if (is.null(y)) {lp <- upper.tri(p)  #the case of a symmetric matrix  (remember upper.tri =! lower tri)
      pa <- p[lp]
      pa <- p.adjust(pa,adjust)
      p[upper.tri(p,diag=FALSE)] <- pa
@@ -48,7 +49,11 @@ if (adjust !="none") {
    
     lower.corrected <- fisherz2r(z - dif.corrected * sef)
     upper.corrected <- fisherz2r(z + dif.corrected * sef)
+    p.adj <- t(p)
+    p.adj <- p.adj[lower.tri(p.adj)]
+     
      ci <- data.frame(lower=lower,r=r[lower.tri(r)],upper=upper,p=p[lower.tri(p)])
+     ci2 <- data.frame(lower=lower,r=r[lower.tri(r)],upper=upper,p=p[lower.tri(p)],p.adj =p.adj)
      ci.adj <- data.frame(lower.adj=lower.corrected,upper.adj=upper.corrected)
   
 
@@ -75,19 +80,20 @@ if (adjust !="none") {
      lower.corrected <- fisherz2r(z - dif.corrected * sef)
     upper.corrected <- fisherz2r(z + dif.corrected * sef)
     
-    
-  ci <- data.frame(lower=lower,r=as.vector(r),upper=upper,p=as.vector(p))
+  ci <-  data.frame(lower=lower,r=as.vector(r),upper=upper,p=as.vector(p))   
+  ci2 <- data.frame(lower=lower,r=as.vector(r),upper=upper,p=as.vector(p),pa=as.vector(pa))  #adding pa breaks two other packages
   ci.adj <- data.frame(lower.adj=as.vector(lower.corrected),r=as.vector(r),upper.adj= as.vector(upper.corrected))
   cnR <- abbreviate(rownames(r),minlength=minlength)  #added minlength as a parameter than fixed to 5  5/28/18
   cnC <- abbreviate(colnames(r),minlength=minlength)
   k <- 1
       for(i in 1:NCOL(y)) {for (j in 1:NCOL(x)) {
-      rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-")  
+      rownames(ci)[k] <- paste(cnR[j],cnC[i],sep="-") 
+      rownames(ci2)[k] <- paste(cnR[j],cnC[i],sep="-")   
       k<- k +1 }}
     }
-} else {ci <-  sef <- ci.adj <- NULL
+} else {ci <-  ci2 <-  sef <- ci.adj <- NULL
     }
-result <- list(r = r,n=n,t=t,p=p,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,ci.adj=ci.adj, Call=cl)
+result <- list(r = r,n=n,t=t,p=p,p.adj = pa,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,  ci2 =  ci2,ci.adj=ci.adj, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
 }
@@ -97,6 +103,7 @@ return(result)
 #modified 3/27/14 to correct bug reported by Louis-Charles Vannier
 #modified 2/21/15 to make confidence intervals an option (incredible decrease in speed if doing cis)
 #modified 8/24/17 to include Bonferoni adjusted confidence intervals
+#modified 3/27/21 to include the adjusted p values in the long output (requested by Alexander Weiss)
 
 
 "corr.p" <-
@@ -107,6 +114,7 @@ sym <- FALSE
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
 #p <- 2*(1 - pt(abs(t),(n-2)))
 p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  
+pa <- p
 p[p>1] <- 1
 if (adjust !="none") {
 if(isSymmetric(unclass(p))) {sym <- TRUE

@@ -20,7 +20,7 @@ smc(R,covar=FALSE)
 
 \value{a vector of squared multiple correlations.  Or, if covar=TRUE, a vector of squared multiple correlations * the item variances
 
-If the matrix is not invertible, then a vector of 1s is returned.
+If the matrix is not invertible, then a vector of 1s is returned.  Note, that I now take the left pseudo inverse so this is less likely to happen (if at all).
 
 In the case of correlation or covariance matrices with some NAs, those variables with NAs are dropped and the SMC for the remaining variables are found.  The missing SMCs are then estimated by finding the maximum correlation for that column (with a warning).  
 }

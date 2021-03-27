@@ -43,7 +43,12 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
     if(is.null(mod)) {nmod<- 0} else {nmod<- length(mod)}
      var.names <- list(IV=x,DV=y,med=m,mod=mod,z=z,ex=ex)
   
-  if(any(!(unlist(var.names) %in% colnames(data)))) {stop ("Variable names not specified correctly")}                                      
+ # if(any(!(unlist(var.names) %in% colnames(data)))) {stop ("Variable names not specified correctly")} 
+  if(any( !(unlist(var.names) %in% colnames(data)) )) {
+     select <- unlist(var.names)
+  cat("\nOops! Variable names are incorrect. Offending items are ", select[which(!(select %in% colnames(data)))],"\n")
+ stop("I am stopping because the variable names are incorrect.  See above.")}
+                                     
     if(ncol(data) == nrow(data)) {raw <- FALSE 
             if(nmod > 0) {stop("Moderation Analysis requires the raw data") } else {data <- data[c(y,x,m,z),c(y,x,m,z)]} 
                  } else { data <- data[,c(y,x,m,z,ex)]
@@ -300,6 +305,7 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,par
       yhat <- t(C[x,y,drop=FALSE]) %*% x.inv %*% C[x,y,drop=FALSE]
       resid <- C[y,y]- yhat
       
+
      if(!std ) {
         df <- n.obs - numx - numz
 

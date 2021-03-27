@@ -13,15 +13,16 @@ anova.psych <- function(object,...) {
      } else {value <- "other"}
 
 #this does the work for setCor and mediate or any model that returns SSR and dfs
-small.function <- function(models,dfs,SSR) {
+small.function <- function(models,dfs,SSR,nvar=1) {
   #this next section is adapted  from anova.lm and anova.lmlist
 
- n.mod <- length(models)
+if(nvar==1) { n.mod <- length(models)
  mods <- unlist(models)
  for(i in 1:n.mod) {
    temp <- unlist(mods[[i]])
    cat("Model",i, "= ")
    print(temp,rownames=FALSE)
+    }
     }
 
  table <- data.frame(df=unlist(dfs),SSR=unlist(SSR))
@@ -86,11 +87,20 @@ setCor ={
  if (length(list(object, ...)) > 1L)  {
  	 objects <- list(object,...)	
  	 dfs <- lapply(objects, function(x) x$df[2])
-  	SSR <- lapply(objects, function(x) x$SE.resid^2 * x$df[2])
- 	 models <- lapply(objects, function(x) x$Call)
  	 
- 	 table <-  small.function(models=models,dfs=dfs,SSR=SSR)	  
+  	 SSR <- lapply(objects, function(x) x$SE.resid^2 * x$df[2])
+ 	 models <- lapply(objects, function(x) x$Call)
+     if (length(SSR) ==1) {table <-  small.function(models=models,dfs=dfs,SSR=SSR)} else  {
+ 	 table <- list()
+ 	 nvar <- length(SSR[[1]])
+ 	 ssrm <- matrix(unlist(SSR),ncol=nvar,byrow=TRUE)
+ 	 for (i in (1:nvar)) {
+ 	 table[[names(SSR[[1]][i])]] <-  small.function(models=models,dfs=dfs,SSR=ssrm[,i],nvar=i)
+ 	 } 
+ 	 
 	 }
+	 }
+	 return(table)
    },
 
 
@@ -132,9 +142,5 @@ omega = {   #should change this to include more than 2 models (see above )
    }
 }
 )
-
-
-
-structure(table,heading = c("ANOVA Test for Difference Between Models",""),
-             class = c("anova", "data.frame"))		
+return(table)
 			}

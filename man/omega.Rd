@@ -6,7 +6,7 @@
 \alias{omegaDirect}
 \alias{directSl}
 \title{  Calculate McDonald's  omega estimates of general and total factor saturation }
-\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory (bi-factor) analysis using the sem or lavaan packages.  This is done by omegaSem and omegaFromSem. omegaFromSem will convert appropriate sem/lavaan objects to find omega.  Yet another option is to do the direct Schmid-Leiman of Waller.ing
+\description{McDonald has proposed coefficient omega as an estimate of the general factor saturation of a test.  One way to find omega is to do a factor analysis of the original data set, rotate the factors obliquely, do a Schmid Leiman transformation, and then find omega. This function estimates omega as suggested by McDonald by using hierarchical factor analysis (following Jensen). A related option is to define the model using omega and then perform a confirmatory (bi-factor) analysis using the sem or lavaan packages.  This is done by omegaSem and omegaFromSem. omegaFromSem will convert appropriate sem/lavaan objects to find omega.  Yet another option is to do the direct Schmid-Leiman of Waller.
 }
 \usage{
 omega(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,
@@ -171,6 +171,8 @@ The various objects returned from omega include:
 }
 
 \references{ \url{https://personality-project.org/r/r.omega.html} \cr
+
+Jensen, Arthur R. and Li-Jen  Weng (1994) What is a good g?  Intelligence, 18, 3, 231-258
 
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 

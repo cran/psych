@@ -16,7 +16,7 @@
 Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. 
 }
 \usage{
-cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE)
+cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL)
 d.robust(x,group,trim=.2)
 cohen.d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
 d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
@@ -30,9 +30,10 @@ m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{A data frame or matrix }
+  \item{x}{A data frame or matrix  (can be specified in formula mode) }
   \item{group}{Some dichotomous grouping variable (may be specified using formula input (see example))}
   \item{group2}{Apply cohen.d for each of the subgroups defined by group2 (may be specified by formula as well)}
+  \item{data}{If using formula mode and specifying a particular variable (see example)}
  \item{d}{An effect size}
  \item{trim}{The amount of trimming used in finding the means and sds in d.robust}
  \item{n}{Total sample size (of groups 1 and 2)}
@@ -82,11 +83,16 @@ The Mahalanobis Distance combines the individual ds and weight them by their uni
 \item{descriptive}{The descriptive statistics for each group}
 
 }
+\note{Cohen and Hedges differ in they way they calculate the pooled within group standard deviation. I find the treatment by McGrath and Meyer to be most helpful in understanding the differences.
+}
 \references{Cohen, Jackob (1988) Statistical Power Analysis for the Behavioral Sciences. 2nd Edition, Lawrence Erlbaum Associates. 
 
 Algina, James and Keselman, H. J. and Penfield, Randall D. (2005) An Alternative to Cohen's Standardized Mean Difference Effect Size: A Robust Parameter and Confidence Interval in the Two Independent Groups Case. Psychological Methods.  10, 317-328.
 
+McGrath, Robert E and Meyer, Gregory J. (2006) When effect sizes disagree: the case of r and d. Psychological methods, 11, 4, 386-401.
+
 }
+
 \author{
 William Revelle
 }
@@ -100,6 +106,7 @@ William Revelle
 cohen.d(sat.act,"gender")
 cohen.d(sat.act ~ gender) #formula input version
 cd <- cohen.d.by(sat.act,"gender","education")
+cohen.d(SATV + SATQ ~ gender, data=sat.act) #just choose two variables
 summary(cd)  #summarize the output
 #formula version combines these functions
 cd <- cohen.d(sat.act ~ gender + education)  #find d by gender for each level of education

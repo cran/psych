@@ -9,7 +9,8 @@ error.bars.by(x,group,data=NULL, by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL, m
 ylim= NULL, xlim=NULL, 
 eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL,v.labels=NULL,v2.labels=NULL, add.labels=NULL,
 pos=NULL,arrow.len=.05,min.size=1,add=FALSE,bars=FALSE,within=FALSE,
-colors=c("black","blue","red"), lty,lines=TRUE, legend=0,pch=16,density=-10,...)
+colors=c("black","blue","red"), lty,lines=TRUE, 
+legend=0,pch=16,density=-10,stats=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,8 +42,9 @@ colors=c("black","blue","red"), lty,lines=TRUE, legend=0,pch=16,density=-10,...)
   \item{lines}{By default, when plotting different groups, connect the groups with a line of type = lty.  If lines is FALSE, then do not connect the groups}
   \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
   \item{pch}{The first plot symbol to use.  Subsequent groups are pch + group}
-  \item{density}{How many lines/inch should fill the cats eyes.  If missing, non-transparent colors are used.  If negative, transparent colors are used.}
-  \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
+  \item{density}{How many lines/inch should fill the cats eyes.  If missing, non-transparent colors are used.  If negative, transparent colors are used. May be a vector for different values.}
+  \item{stats}{if specified, the means, sd, n and perhaps of se of a data set to be plotted} 
+   \item{\dots}{other parameters to pass to the plot function e.g., lty="dashed" to draw dashed lines}
 
 }
 \details{Drawing the mean +/- a confidence interval is a frequently used function when reporting experimental results. By default, the confidence interval is 1.96 standard errors (adjusted for the t-distribution). 
@@ -123,14 +125,18 @@ data(bfi)   #The Big 5 data
 
  scores <- scoreItems(keys,bfis,min=1,max=6) #set the right limits for item reversals
  #now draw the results by age
- 
+#specify the particular colors to use
  error.bars.by(scores$scores,round(bfis$age/10)*10,by.var=TRUE,
       main="BFI age trends",legend=3,labels=colnames(scores$scores),
-        xlab="Age",ylab="Mean item score")
-
+        xlab="Age",ylab="Mean item score",
+        colors=cs(green,yellow,black,red,blue),
+        v.labels =cs(10-14,15-24,25-34,35-44,45-54,55-64,65-74))
+#show transparency 
  error.bars.by(scores$scores,round(bfis$age/10)*10,by.var=TRUE,
       main="BFI age trends",legend=3,labels=colnames(scores$scores),
-        xlab="Age",ylab="Mean item score",density=-10)
+        xlab="Age",ylab="Mean item score", density=-10, 
+        colors=cs(green,yellow,black,red,blue),
+        v.labels =cs(10-14,15-24,25-34,35-44,45-54,55-64,65-74))
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

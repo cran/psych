@@ -24,7 +24,8 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE)
 
 
 crossValidation(model,data,options=NULL,select=NULL)
-matPlot(x, type = "b", minlength=6, xlas=0,...)
+matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
+      lab=NULL,pch=16,col=1:6,lty=NULL,...)
 }
 
 \arguments{
@@ -58,6 +59,11 @@ matPlot(x, type = "b", minlength=6, xlas=0,...)
   \item{type}{type="b" draws both lines and points}
   \item{xlas}{Orientation of the x labels (3 to make vertical)}
   \item{minlength}{When abbreviating x labels how many characters as a minimum}
+  \item{legend}{If not NULL, the draw a legend at the appropriate location}
+  \item{pch}{What plot character(s) to use in matPlot}
+  \item{col}{colors to use in matPlot}
+  \item{lty}{line types to use in matPlot}
+  \item{lab}{What labels should be supplied to the lines in matPlot.  (Defaults to colnames of the variables.)}
   
 }
 \details{
@@ -102,7 +108,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  \code{\link{crossValidation}} can be used to take the results from \code{\link{setCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
  
- \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels).
+ \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels). matPlot has been improved to draw legends and to allow for specifications of the line types.
  
  \code{\link{setCorLookup}} will sort the beta weights and report them with item contents if given a dictionary. 
  \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x,  y and z variables. Its output includes betas, se, t, p and R2.  The call includes m for mediation variables, but these are only used to adjust the degrees of freedom.

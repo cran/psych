@@ -45,7 +45,7 @@ lines(d$x,lty=dlty[1],col=dcol[1],...)}
 
 
 
-"histBy" <- function(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,main="Histograms by group",...) {
+"histBy" <- function(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,main="Histograms by group",freq=FALSE,...) {
 formula <- FALSE
    if(inherits(x, "formula")) {  ps <- fparse(x)
    formula <- TRUE
@@ -59,7 +59,8 @@ if(missing(xlab)) xlab = var
 if(missing(group)) {
    if(missing(col)) col12 <- col2rgb("blue",TRUE)/255
     col <- rgb(col12[1],col12[2],col12[3],alpha)
-   hist(x[,var],xlab=xlab,main=main,breaks=breaks,freq=FALSE,col=col,...)
+   hist(x[,var],xlab=xlab,main=main,breaks=breaks,freq=freq,col=col,...)
+  # hist(x[,var],xlab=xlab,main=main,breaks=breaks,col=col,...)
       d <- density(x[,var],na.rm=TRUE)
       if(density) lines(d)
  } else { #the normal case 
@@ -76,10 +77,12 @@ breaks <- test$breaks
 
 grp <- names(grp)
 d <- density(x[(gr==grp[1]),var],na.rm=TRUE)
-hist(x[(gr==grp[1]),var],xlim=xlim,col=col[1],breaks=breaks,freq=FALSE,xlab=xlab,main=main,...)
+ hist(x[(gr==grp[1]),var],xlim=xlim,col=col[1],breaks=breaks,freq=freq,xlab=xlab,main=main,...)
+
 if(density) lines(d)
 for(i in (2:length(grp))) {
- hist(x[(gr==grp[i]),var],xlim=xlim,col=col[i],freq=FALSE,breaks=breaks,add=TRUE,...)
+# hist(x[(gr==grp[i]),var],xlim=xlim,col=col[i],freq=FALSE,breaks=breaks,add=TRUE,...)
+hist(x[(gr==grp[i]),var],xlim=xlim,col=col[i],breaks=breaks,add=TRUE,freq=freq,...)
 d <- density(x[(gr==grp[i]),var],na.rm=TRUE)
 if(density) lines(d)
 }}

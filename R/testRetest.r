@@ -1,6 +1,7 @@
 #Developed January 2018 while writing an article on reliability
+#modified March 2021 in response to some helpful suggestions by Jacob Lee
 
-"testRetest" <- function(t1,t2=NULL,keys=NULL,id="id",time= "time",select=NULL,check.keys=TRUE,warnings=TRUE,lmer=TRUE) {
+"testRetest" <- function(t1,t2=NULL,keys=NULL,id="id",time= "time",select=NULL,check.keys=TRUE,warnings=TRUE,lmer=TRUE,sort=TRUE) {
  cl <- match.call() 
  
  #first, some basic checks of the data
@@ -8,16 +9,34 @@
  #x and y as time 1 and time 2
  #x includes a time variable and an id variable
  x <- t1
+ 
  y <- t2
  if(NCOL(x) ==1) {just.test <-TRUE } else {just.test <- FALSE}
  keys.orig <- keys
   #first check if we have a y variable, if not, then create it
  
- if(is.null(y)) {n.times <- table(x[time])
-   
+ if(is.null(y)) {n.times <- table(x[time])    
+  #sort the data by id and time
+  if(id %in% colnames(x)) {
+ if(sort) x <- psychTools::dfOrder(x,c(time,id),) }   #don't sort if we don't have ids
  y <- x[x[,time] == names(n.times)[2],]
  x <- x[x[,time] == names(n.times)[1],]
- }
+ }  else {
+ if(sort) {x <- psychTools::dfOrder(x,c(time,id),) 
+           y <- psychTools::dfOrder(y,c(time,id),)
+          }} 
+ 
+  #only take matching cases   
+if(NROW(x) != NROW(y) ) {warning("The number of subjects in x do not  match those in y")
+  not.missing.x <- x[,id] %in% y[,id]
+  not.missing.y <- y[,id] %in% x[,id]
+  missing.idx <- x[!not.missing.x,id]
+  missing.idy <- y[!not.missing.y,id]
+  cat("\nThe non-matched subjects were\n",missing.idx, missing.idy,"\n I have deleted them")
+  
+  x <- x[not.missing.x,]
+  y <- y[not.missing.y,]
+  } 
  
  n.obs <- NROW(x)
  if(!just.test) {
@@ -25,7 +44,8 @@
     x <- x[select]
     y <- y[select]
     }
- if(is.null(keys)){ items <- colnames(x) [!colnames(x) %in% c("id","time")]} else {items <- keys }
+
+ if(is.null(keys)){ items <- colnames(x) [!colnames(x) %in% c(id,time)]} else {items <- keys }
   #first check if we should reverse any items and convert location numbers (if specified) to location names
  n.items <- length(items)
   if(is.character(items)) {
@@ -39,16 +59,18 @@
  #check for bad input   -- the Mollycoddle option 
 if(any( !(items %in% colnames(x)) )) {
  cat("\nVariable names in keys are incorrectly specified. Offending items are ", items[which(!(items %in% colnames(x)))],"\n")
- stop("I am stopping because of improper input in the scoring keys.  See the list above for the bad item(s). ")}   
+ stop("I am stopping because of improper input in the scoring keys.  See the list above for the bad item(s). ")}  
+ 
  x <- x[,items,drop=FALSE]
  y <- y[,items,drop=FALSE]
+ 
 #these are the means of the unreversed items
 if(NCOL(x) > 1) {mean.x <- colMeans(x,na.rm=TRUE)
 mean.y <- colMeans(y,na.rm=TRUE)
 }
 
  
-if(NROW(x) != NROW(y) ) {stop("Number of subjects in x must match those in y")}
+
 
      min.item <- min(x[items],na.rm=TRUE)
      max.item <- max(x[items],na.rm=TRUE)
@@ -113,6 +135,7 @@ for (j in (1:n.items)) {
 
 
  #ok, the data seem ok lets create a dummy variable and do the lmer on it
+ n.obs <- min(NROW(newx),NROW(newy))
  xy.df <- data.frame(id = rep(1:n.obs,2), time=c(rep(1,n.obs), rep(2,n.obs)), rbind(newx,newy),row.names=1:(2*n.obs))   #this is getting it ready for mlr1 
  } else {#The case of  just two tests, no items 
  

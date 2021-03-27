@@ -157,7 +157,7 @@ if(is.null(cut)) cut <- .2
 	    
 	   loads <- as.matrix(load.2) 
 	   eigenvalues <- diag(t(loads) %*% loads)
-       cat("\nWith eigenvalues of:\n")
+       cat("\nWith sum of squared loadings of:\n")
        ev.rnd <- round(eigenvalues,digits)
        print(ev.rnd,digits=digits)
        

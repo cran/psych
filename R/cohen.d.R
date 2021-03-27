@@ -1,8 +1,15 @@
-"cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE) {
+"cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL) {
 cl <- match.call()
 group2 <- NULL
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
-	x <- get(ps$y)
+	if(is.null(data)) {x <- try(get(ps$y))
+	        if(is.null(dim(x) )) stop("You need to specify the data if asking for a specific variable")} else {select <- c(ps$y,ps$x)
+	 #check for bad input   -- the Mollycoddle option 
+	 		if(any( !(select %in% colnames(data)) )) {
+ 				cat("\nVariable names are incorrect. Offending items are ", select[which(!(c(ps$y,ps$x) %in% colnames(data)))],"\n")
+ 				stop("Improper input.  See above. ")}
+ 	x <- data[,select] #add the group variable to x
+	} #added tha ability to choose y variables if data is specified  01/17/21
 	group <- ps$x 
 	if(length(group ) > 1) {group2 <- group[2]
 	 group <- group[1]}

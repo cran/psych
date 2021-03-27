@@ -45,48 +45,181 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
   class(results) <- c("psych", "sim")
  return(results)}
  
-  
-"sim" <-
+ # Replaced 1/8/21 with a version that reports theta 
+# "sim" <-
+# function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
+#  cl <- match.call()
+# ##set up some default values 
+# if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
+#    if(is.null(Phi)) {Phi <- diag(1,4,4)
+#                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
+#                      diag(Phi) <- max((alpha + lambda),1)
+# 	                Phi <- cov2cor(Phi)}
+#    if(is.null(mu)) {mu <- c(0,.5,1,2)}                   }
+#     if(is.null(fy)) {f <- fx} else {
+#     f <- superMatrix(fx,fy)} 
+#   
+#    if(is.null(mu)) {mu <- rep(0,ncol(fx))} 
+#    
+#      means <- fx %*% mu        
+#   
+#   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
+#                     Phi <- 1}
+#   if(!is.null(Phi)) {
+#   model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
+# } else { model <- f%*% t(f)}
+# diag(model)<- 1                       # put ones along the diagonal
+#   nvar <- dim(f)[1]
+#   colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
+#   if(n>0) {
+#     
+#   #	observed <- mvrnorm(n = n, means, Sigma=model, tol = 1e-6, empirical = FALSE)
+#   	 eX <- eigen(model)
+#      observed <- matrix(rnorm(nvar * n),n)
+#      observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + rep(means,n))
+#   r <- cor(observed) } 
+#   	reliability <- diag(f %*% t(f))
+#   if(n<1) {results <- list(model=model,reliability=reliability) } else {
+#   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
+#              results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+#   results$Call <- cl
+#   class(results) <- c("psych", "sim")
+#  return(results)}
+#  
+
+
+#####
+#Added 1/7/21  to report the generating theta
+#corrected 1/29/21 to correctly report generating theta (with correlations)
+####
+ 	
+# "sim" <-
+# function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,theta=TRUE) {
+#  cl <- match.call()
+#  
+# ##set up some default values 
+# if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)}
+#     if(is.vector(fx)) {fx <- as.matrix(fx) } #this is the case if doing a congeneric model
+#                    
+#   if(is.vector(fy)) {fy <- as.matrix(fy)}
+#      
+#     nvar <- NROW(fx)
+#     nfact <- NCOL(fx)
+#    if(is.null(Phi)& is.null(fy)) {Phi <- diag(nfact)
+#                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
+#                      diag(Phi) <- max((alpha + lambda),1)
+# 	                Phi <- cov2cor(Phi)}    #put in a simplex structure as default
+#                  
+#     if(is.null(fy)) {f <- fx} else {
+#     f <- superMatrix(fx,fy)}
+#     
+#      if(is.null(mu))  mu <- as.matrix(0:(NCOL(f)-1),drop=FALSE)
+#      if(is.null(Phi)) Phi <- diag(NCOL(f)) 
+#   
+#    if(is.null(mu)) {mu <- as.matrix(rep(0,NCOL(f)),drop=FALSE)} 
+#    
+#      means <- f %*% mu        
+#   
+# 
+#      model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
+#    
+#    
+#      nvar <- NROW(f) #we do this here because we have made f a supermatrix of fx and fy   
+#      colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")  
+#      
+#         
+#  if((n > 0)) { 
+#      nfactors <- NCOL(f)
+#      theta <- matrix(rnorm(n * nfactors),n)   #make up some random data 
+#      
+#      eX <- eigen(model)  #the model is actually the covariance matrix
+#       t.scores <-  t(eX$vectors[,1:nfactors] %*% diag(sqrt(pmax(eX$values[1:nfactors], 0)))    %*%  t(theta)  + rep(means,n)) #the true scores for each variable
+#       U <- diag(sqrt(1-diag(model)))
+#       error <- t(U %*% matrix(rnorm(n * nvar),nrow=nvar))
+#       observed <- t.scores + error
+#       colnames(observed) <- paste0("V",1:ncol(observed))
+#        r <- cor(observed)
+#       if(!is.null(Phi)) { exPhi <- eigen(Phi)
+#       # f.scores <- f.scores %*% Phi
+# 
+#         #f.scores <-t((exPhi$vectors %*% diag(sqrt(exPhi$values)) %* t(f.scores)) + mu)}
+#         theta <-    t(exPhi$vectors %*% diag(sqrt(exPhi$values)) %*% t(theta) + rep(mu,n) ) 
+#      }
+#      } #  else {
+#      
+# 
+#   diag(model)<- 1                       # put ones along the diagonal
+#   	reliability <- diag(f %*% t(f))
+#   if(n < 1) {results <- list(model=model,reliability=reliability) } else {
+#   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
+#              results <- list( model=model,reliability=reliability,r=r, observed= observed,theta=theta,Phi=Phi, N=n) } }
+#   results$Call <- cl
+#   class(results) <- c("psych", "sim")
+#  return(results)} 
+#  
+#  
+ 
+ 
+ #complete rewrite to allow the true factor scores (theta) to be reported
+#rewritten March, 2021
+ "sim" <-
 function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
  cl <- match.call()
+ 
 ##set up some default values 
+# 4 correlated factors growing over time
+# The four factors have a simplex structure
+
+
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
-   if(is.null(Phi)) {Phi <- diag(1,4,4)
+   	if(is.null(Phi)) {Phi <- diag(NCOL(fx))         #create a simplex of the factors
                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
                      diag(Phi) <- max((alpha + lambda),1)
 	                Phi <- cov2cor(Phi)}
-   if(is.null(mu)) {mu <- c(0,.5,1,2)}                   }
+   if(is.null(mu)) {mu <- seq(0,NCOL(fx)-1)}                  
+      }    #end of default
     if(is.null(fy)) {f <- fx} else {
     f <- superMatrix(fx,fy)} 
-  
-   if(is.null(mu)) {mu <- rep(0,ncol(fx))} 
-   
-     means <- fx %*% mu        
-  
-  if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
+     nvar <- NROW(f)
+     nfactors <- NCOL(f)
+    if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
-  if(!is.null(Phi)) {
-  model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
-} else { model <- f%*% t(f)}
-diag(model)<- 1                       # put ones along the diagonal
-  nvar <- dim(f)[1]
-  colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")
-  if(n>0) {
+   if(is.null(mu)) {mu <- rep(0,NCOL(f))} 
+   
+     means <- f  %*% mu  
+        
+  
+  if(is.null(Phi)) {Phi <-diag(NCOL(f))}
+        model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
+          U <- diag(sqrt(1-diag(model)))   #the uniquensses 
+          diag(model)<- 1                  # put ones along the diagonal
+   
+     colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")  
+     
+ #Create factor scores and raw data       
+ if((n>0) ) { 
     
-  #	observed <- mvrnorm(n = n, means, Sigma=model, tol = 1e-6, empirical = FALSE)
-  	 eX <- eigen(model)
-     observed <- matrix(rnorm(nvar * n),n)
-     observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed) + rep(means,n))
-  r <- cor(observed) } 
-  	reliability <- diag(f %*% t(f))
+     theta <- matrix(rnorm(n * nfactors),ncol=nfactors)   #the orthogonal factors
+     et <- eigen(Phi)
+  
+     theta <- t(et$vectors %*% diag(sqrt(et$values ))%*% t(theta))  #the correlated factors
+     observed <- theta %*% t(f)
+
+      error <- t(U %*% matrix(rnorm(n * nvar),nrow=nvar))
+      observed <- t(t(observed + error) + rep(means,n))  #observed are factors * loadings + error + means
+       
+       r <- cor(observed)  #will approximate the model
+     }  
+  	reliability <- diag(f %*% t(f))   
   if(n<1) {results <- list(model=model,reliability=reliability) } else {
   if (!raw) {results <- list( model=model,reliability=reliability,r=r,N=n )} else {
-             results <- list( model=model,reliability=reliability,r=r,observed= observed,N=n) } }
+             results <- list( model=model,reliability=reliability,r=r,observed= observed,theta=theta,N=n) } }
   results$Call <- cl
   class(results) <- c("psych", "sim")
  return(results)}
+
  
- 	
+ ###########################	
 "sim.simplex" <-
 	function(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0) {
 	 cl <- match.call()
@@ -95,11 +228,11 @@ diag(model)<- 1                       # put ones along the diagonal
 	diag(R) <- max((alpha * beta) + lambda,1)
 	R <- cov2cor(R)
 	colnames(R) <- rownames(R) <- paste("V",1:nvar,sep="")
-	#require(MASS)
+	
 	if(is.null(mu)) {mu <- rep(0,nvar)} 
 	if(n>0) {
 	#observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
-	observed <- matrix(rnorm(nvar*n),n)
+	observed <- matrix(rnorm(nvar *n),n)
 	 	 eX <- eigen(R)
                 observed.scores <- matrix(rnorm(nvar * n),n)
                 observed.scores <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed)+mu)
@@ -123,14 +256,20 @@ if(bipolar) fx <- 2*((sample(2,nvar,replace=TRUE) %%2)-.5) * fx
 if(!is.null(g)) {if (length(g) < nvar) {g <- sample(g,nvar,replace=TRUE)}
         fx <- cbind(g,fx)
         }
+if(!is.null(fsmall)) {
 fsmall  <- c(fsmall,rep(0,nvar/4))
 fs <- matrix(sample(fsmall,nvar*floor(nvar/2),replace=TRUE),ncol=floor(nvar/2))  
 fload <- cbind(fx,fs)
 if(is.null(g)) {
 colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))} else {
     colnames(fload) <- c("g",paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))}
-rownames(fload) <- paste("V",1:nvar,sep="")
-results <- sim(fload,n=n)
+    } else {
+     fload <- fx
+      colnames(fload) <- paste0("F",1:nfact)
+      }
+rownames(fload) <- paste0("V",1:nvar)
+Phi <- diag(ncol(fload))
+results <- sim(fload,n=n, Phi=Phi)
          results$fload <- fload
  class(results) <- c("psych", "sim")
  return(results)
@@ -142,7 +281,10 @@ results <- sim(fload,n=n)
 function(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
 results <- matrix(NaN,nrow=ntrials,ncol=12)
 colnames(results) <- c("n","om.model","omega","ev.N","e.f1","omega.f1","Beta","omegaCFA","omegaSem","rms","RMSEA","coeff.v")
+
+#iterate the entire process n.trials times
 for (i in 1:ntrials) {
+#make up some data using the Tucker notion of big and small factors
 x <- try(sim.minor(nvar=nvar,nfact=nfact,n=n,g=g,fbig=fbig,fsmall=fsmall,bipolar=bipolar))
 if(is.null(g)) {omega.model <- 0} else {gsum <- colSums(x$fload)[1]
     omega.model <- gsum^2/sum(x$model)}
@@ -152,7 +294,7 @@ ev <- eigen(observed.cor)$values
 f1 <- fa(observed.cor)$loadings
 om.fa <- sum(f1)^2/sum(observed.cor)
 e.f1 <- sum(f1^2)/nvar
-    sem.model <- omegaSem(x$fload,sl=TRUE,nfactors=nfact)  #this is the model based upon the true values
+    sem.model <- omegaSem(x$fload[,1:nfact],sl=TRUE,nfactors=nfact)  #this is the model based upon the true values
     if(sem) {stop('The option to use the sem package  has been replaced with calls to lavaan')
     #if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")} else {sem.om <- try(sem(model=sem.model,S=observed.cor, N=n))} 
  
@@ -267,3 +409,23 @@ if(bg < 1) {mu2 <- c(d,0)} else {mu2 <- d}
  data <- rbind(data,data2)
  return(data)
  }
+ 
+ 
+ "sim.general.theta" <- 
+function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
+#require(MASS)
+  r1 <- matrix(r,nvar/nfact,nvar/nfact)
+  R <- matrix(g,nvar,nvar)
+  rf <- superMatrix(r1,r1)
+  if(nfact>2) {for (f in 1:(nfact-2)){
+  rf <- superMatrix(r1,rf)}}
+  R <- R + rf
+  diag(R) <- 1
+  colnames(R) <- rownames(R) <- paste((paste("V",1:(nvar/nfact),sep="")),rep(1:nfact,each=(nvar/nfact)),sep="gr")
+  if(n > 0) {#x <-  mvrnorm(n = n, mu=rep(0,nvar), Sigma = R, tol = 1e-06,empirical = FALSE)
+   eX <- eigen(R)
+                                      x <- matrix(rnorm(nvar * n),n)
+                                      x <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(x))
+                                       
+   return(x)} else {
+  return(R)} }

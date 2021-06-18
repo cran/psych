@@ -271,7 +271,7 @@ corr.test = {cat("Call:")
               cat("Sample Size \n")
               print(x$n)
               if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
-                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
+                 if (x$adjust != "none" )  {cat("These are the unadjusted probability values.\n  The probability values  adjusted for multiple tests are in the p.adj object. \n")}}
              print(round(x$p,digits))
             if(short)  cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
              if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
@@ -287,7 +287,7 @@ corr.p = {cat("Call:")
               cat("Sample Size \n")
               print(x$n)
               if(x$sym) {cat("Probability values (Entries above the diagonal are adjusted for multiple tests.) \n")} else {
-                 if (x$adjust != "none" )  {cat("Probability values  adjusted for multiple tests. \n")}}
+                 if (x$adjust != "none" )  {cat("These are the unadjusted probability values. \n To see the values  adjusted for multiple tests see the p.adj object. \n")}}
              print(round(x$p,digits))
              if(short) cat("\n To see confidence intervals of the correlations, print with the short=FALSE option\n")
               if(!short) {cat("\n Confidence intervals based upon normal theory.  To get bootstrapped values, try cor.ci\n")
@@ -476,9 +476,9 @@ mardia =  {
      cat("\nMardia tests of multivariate skew and kurtosis\n")
      cat("Use describe(x) the to get univariate tests")
       cat("\nn.obs =",x$n.obs,"  num.vars = ",x$n.var,"\n")
-     cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability = ", signif(x$p.skew,digits)) 
-     cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability = ", signif(x$p.small,digits)) 
-     cat("\nb2p = ", round(x$b2p,digits),"  kurtosis = ",round(x$kurtosis,digits)," with probability = ",signif(x$p.kurt,digits ))
+     cat("b1p = ",round(x$b1p,digits),"  skew = ",round(x$skew,digits ), " with probability  <= ", signif(x$p.skew,digits)) 
+     cat("\n small sample skew = ",round(x$small.skew,digits ), " with probability <= ", signif(x$p.small,digits)) 
+     cat("\nb2p = ", round(x$b2p,digits),"  kurtosis = ",round(x$kurtosis,digits)," with probability <= ",signif(x$p.kurt,digits ))
   },
 
   
@@ -712,7 +712,14 @@ r.test =  {cat("Correlation tests \n")
               if(!is.null(x$t)) {cat(" t value" ,round(x$t,digits),"   with probability <", signif(x$p,digits) )}
               if(!is.null(x$z)) {cat(" z value" ,round(x$z,digits),"   with probability ",  round(x$p,digits) )}               
               if(!is.null(x$ci)) {cat("\n and confidence interval ",round(x$ci,digits) ) }
-         },   
+         }, 
+        
+reliability ={cat("Measures of reliability \n")
+            if(is.list(x)) {
+            print(x$Call)
+            x <- x$result.df}
+            print(round(unclass(x),digits))
+            },  
          
 residuals = { if(NCOL(x) == NROW(x)) {
    if (lower) {lowerMat (x,digits=digits)}} else {print(round(unclass(x),digits))}  #tweaked 1/30/18

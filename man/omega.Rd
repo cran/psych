@@ -18,7 +18,7 @@ omegaSem(m,nfactors=3,fm="minres",key=NULL,flip=TRUE,digits=2,title="Omega",
   
 omegah(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, 
 digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,
-   n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) 
+   n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,two.ok=FALSE,...) 
 
 omegaFromSem(fit,m=NULL,flip=TRUE,plot=TRUE)
 omegaDirect(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3,
@@ -49,6 +49,7 @@ directSl(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3)
   \item{Phi}{If specified, then omega is found from the pattern matrix (m) and the factor intercorrelation matrix (Phi).}
   \item{option}{In the two factor case (not recommended), should the loadings be equal, emphasize the first factor, or emphasize the second factor. See in particular the option parameter in  \code{\link{schmid}} for treating the case of two group factors.}
   \item{covar}{defaults to FALSE and the correlation matrix is found (standardized variables.)  If TRUE, the do the calculations on the unstandardized variables and use covariances.}
+  \item{two.ok}{If TRUE, do not give a warning about 3 factors being required. }
   \item{lavaan}{if FALSE, will use John Fox's sem package to do the omegaSem.  If TRUE, will use Yves Rosseel's lavaan package. }
   \item{fit}{The fitted object from lavaan or sem. For lavaan, this includes the correlation matrix and the variable names and thus m needs not be specified.}
   \item{...}{Allows additional parameters to be passed through to the factor routines.  }
@@ -178,6 +179,8 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
+
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{https://personality-project.org/revelle/publications/rz09.pdf}
 
 Waller, N. G. (2017) Direct {Schmid-Leiman} Transformations and Rank-Deficient Loadings Matrices.  Psychometrika.  DOI: 10.1007/s11336-017-9599-0
@@ -235,6 +238,8 @@ If using the lavaan=TRUE option in \code{\link{omegaSem}} please note that varia
  \code{\link{make.hierarchical}} to simulate a hierarchical model.
 
  \code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of 2nd  order factors. 
+ 
+ \code{\link{reliability}} to do multiple omega analysis at the same time on different subsets of items.
  }
 \examples{
 \dontrun{

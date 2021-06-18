@@ -44,13 +44,18 @@ bestScales = { cat("\nCall = ")
     print(object$Call)
     # print(object$first.result)
     # print(round(object$means,2))
-     print(object$summary,digits=digits)
-     if(!is.null(object$optimal)) {
-     cat("\n Optimal number of items, derivation and cross validation\n")
-   print(object$optimal,digits=digits) } else {
-       df <- data.frame(correlation=object$r,n.items = object$n.items)
-    cat("The items most correlated with the criteria yield r's of \n")
-    print(round(df,digits=digits)) }},
+    if(!is.null(object$summary)) {
+     print(object$summary,digits=digits)} else {
+        df <- data.frame(correlation=object$r,n.items = object$n.items)
+       cat("The items most correlated with the criteria yield r's of \n")
+      print(round(df,digits=digits)) }
+#     if(!is.null(object$optimal)) {
+#      cat("\n Optimal number of items, derivation and cross validation\n")
+#    print(object$optimal,digits=digits) } else {
+#        df <- data.frame(correlation=object$r,n.items = object$n.items)
+#     cat("The items most correlated with the criteria yield r's of \n")
+#     print(round(df,digits=digits)) }
+    },
 
  
  crossV = {cat("Cross Validation\n")
@@ -286,7 +291,7 @@ faBy = {cat("\nFactor analysis within groups with Call: ")
       
 
 items= { 
-    if(omega) {
+    if(object=="omega") {
        cat("\nSchmid Leiman Factor loadings:\n")
        print(object$schmid$sl)
        numfactors <- dim(object$schmid$sl)[2] -2
@@ -398,7 +403,39 @@ describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.ca
 none = {warning("I am sorry, I do not have a summary function for this object")}
    )  #end of switch
                  
-      
+     if( items) { 
+    if(object=="omega") {
+       cat("\nSchmid Leiman Factor loadings:\n")
+       print(object$schmid$sl)
+       numfactors <- dim(object$schmid$sl)[2] -2
+       eigenvalues <- diag(t(object$schmid$sl[,1:numfactors]) %*% object$schmid$sl[,1:numfactors])
+       cat("\nWith eigenvalues of:\n")
+       print(eigenvalues,digits=digits)
+       
+       }
+    
+	if(!is.null(object$item.cor) ) {
+		cat("\nItem by scale correlations:\n")
+		print(object$item.cor,digits) } 
+
+	if (!is.null(object$p.sorted$sorted)) {
+ 		cat("\nItem by Cluster Structure matrix:\n")
+ 		print(object$p.sorted$sorted,digits) }
+ 
+ 	if (!is.null(object$purified$pattern)) {
+ 		cat("\nItem by Cluster Pattern matrix:\n")
+		 print(object$purified$pattern,digits) }
+		 
+   if(vss) {
+      cat("\nVelicer MAP\n")
+      print(object$map,digits)
+       cat("\nVery Simple Structure Complexity 1\n")
+       print(object$cfit.1,digits)
+       cat("\nVery Simple Structure Complexity 2\n")
+       print(object$cfit.2,digits)
+      }
+	
+	} #end if items
 
 #invisible(result)
    }

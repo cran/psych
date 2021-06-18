@@ -106,12 +106,13 @@
     #first, just the factors and their labels
     
      
-      tv <- matrix(unlist(fact.rect),nrow=num.factors,byrow=TRUE)
+      tv <- matrix(unlist(fact.rect),nrow=num.factors,byrow=TRUE)   #unfortunately, this loses whether it is an elipse or not
       all.rects.x <- tv[,5] #the center of the figure
       all.rects.y <- tv[,2]
       all.rects.names <- colnames(factors)
-     
-      dia.rect(all.rects.x, all.rects.y,all.rects.names)   
+     if(pc) {
+      dia.rect(all.rects.x, all.rects.y,all.rects.names)} else {dia.multi.ellipse(all.rects.x,all.rects.y,all.rects.names,e.size=e.size)
+      }  #we need to remember whether to draw ellipses or boxes
      
    #now show all the loadings
    tv <- matrix(unlist(text.values),byrow=TRUE,ncol=21)

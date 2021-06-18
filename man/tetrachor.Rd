@@ -115,7 +115,10 @@ For relatively small samples with dichotomous data  if some cells are empty, or 
 
 \code{\link{mixedCor}} which calls \code{\link{polychoric}} for the N = 4,000 with 145 items of the spi data set, on a Mac book Pro with a 2.4 GHz 8-core Intel i9,  1 core took 130 seconds, 2 cores, 68 seconds, 4 37, 8 22 and 16 22.8.  Just finding the polychoric correlations (spi[11:145]) for 4 cores took 34 and for 8 cores, 22 seconds.  
 
-As the number of categories increases, the computation time does as well.  For more than about 8 categories, the difference between a normal Pearson correlation and the polychoric is not very large.  However, the number of categories (num.cat) may be set to large values if desired.  (Added for version 2.0.6).
+As the number of categories increases, the computation time does as well.  For more than about 8 categories, the difference between a normal Pearson correlation and the polychoric is not very large*.  However, the number of categories (num.cat) may be set to large values if desired.  (Added for version 2.0.6).
+  
+  *A recent article by Foldnes and Gronneberg suggests using polychoric is appropriate for categorical data even if the number of categories is large.  This particularly the case for very non-normal distributions of the category frequencies.
+
  }
  
 \value{
@@ -130,6 +133,9 @@ As the number of categories increases, the computation time does as well.  For m
 A. Gunther and M. Hofler. Different results on tetrachorical correlations in mplus and stata-stata announces modified procedure. Int J Methods Psychiatr Res, 15(3):157-66, 2006.
 
 David Kirk (1973) On the numerical approximation of the bivariate normal (tetrachoric) correlation coefficient. Psychometrika, 38, 259-268.
+
+Foldnes, N., & Gronneberg, S. (2021, April 1). The Sensitivity of Structural Equation Modeling With Ordinal Data to Underlying Non-Normality and Observed Distributional Forms. Psychological Methods. Advance online publication. http://dx.doi.org/10.1037/met0000385
+
 
 MacCallum, Robert C. and Zhang, Shaobo and Preacher, Kristopher J. and Rucker, Derek D. (2002) On the practice of dichotomization of quantitative variables., Psychological Methods, 7, (1) 19-40. 
 

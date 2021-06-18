@@ -205,7 +205,7 @@ my.data <- read.file()  #locate the file to read using your normal system.
 
 
 \subsection{Reading from a remote file}
-To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.\\
+To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
 
 ~\
 <<>>=
@@ -250,7 +250,7 @@ my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
 
 
 \subsubsection{An example data set}
-Consider the data stored at \href{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq}{remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
+Consider the data stored at \href{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt}{a remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
  \\
 
 \begin{Rinput}

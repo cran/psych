@@ -114,9 +114,11 @@ n.pch =length(pch)
             for(i in 1:n.var) {
              for (j in 1:n.group) {
          	 xcen <- group.means[i,j]
-    	 	 xse  <- group.se[i,j]
+    	 	 
+    	 	xse  <- group.se[i,j]
+    	 	xn <- group.n[i,j]
     	 	if(sd) {ci <- 1} else {ci <- qt(1-alpha/2,group.n[i,j])}
-        if(is.finite(xse) && xse>0)     arrows(mp[i,j],xcen-ci*xse,mp[i,j],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
+        if(is.finite(xse) && xse>0 && xn > 0  && is.finite(ci))     arrows(mp[i,j],xcen-ci*xse,mp[i,j],xcen+ci* xse,length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)
           }} }
          
          
@@ -291,8 +293,13 @@ n.pch =length(pch)
    	if(n.grp1 < n.group) {
    		  for (g in 1: n.grp1) {
    		 
-   		    for(grp2 in 1:(n.grp2-1)){
-    	              if(x.cat)  {arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
+   		    for(grp2 in 1:(n.grp2-1)){if(!is.na(xse[g + n.grp1]) && (xse[g + n.grp1] > 0) && (ci[g + n.grp1]>0 )) {
+   		    
+   		   
+   		    
+   		    
+    	              if(x.cat)  {
+    	              arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
     	                   } else {#consider the none cat condition 
     			                  x.values <- as.numeric(x.values)
     			                  arrows(x.values[g],xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],x.values[g],xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
@@ -307,8 +314,8 @@ n.pch =length(pch)
     	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density[(i-1) %% n.color +1],col=colors[(i-1) %% n.color +1] )}} 
     	}
     	}
-    	}
- 
+    	}  #for grp2 loop
+   }
      }
      if(x.cat) {axis(1,1:n.grp1,v.labels,...) } else {axis(1)}
     		axis(2,...)

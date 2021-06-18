@@ -28,6 +28,7 @@ S3method(plot,irt)
 S3method(plot,poly)
 S3method(plot,poly.parallel)
 S3method(plot,residuals)
+S3method(plot,reliability)
 S3method(predict,psych)
 S3method(residuals,psych)
 S3method(summary,psych)
@@ -110,6 +111,7 @@ cs,
 d.ci,
 d2r,
 d2t,
+d2OVL,d2OVL2,d2CL,d2U3,
 d.robust,
 #df2latex,
 #dfOrder,
@@ -265,6 +267,7 @@ lowerUpper,
 make.congeneric,
 make.hierarchical,
 make.keys,
+makePositiveKeys,
 make.irt.stats,
 manhattan,
 mardia,
@@ -317,6 +320,7 @@ plot.psych,
 plot.irt,
 plot.poly,
 plot.poly.parallel,
+plot.reliability,
 plot.residuals,
 polar,
 polychoric,
@@ -350,6 +354,7 @@ rangeCorrection,
 #read.file,
 #read.file.csv,
 #read.https,
+reliability,
 residuals.psych,
 reflect,
 resid.psych,

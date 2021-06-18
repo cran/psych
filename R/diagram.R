@@ -72,6 +72,7 @@ extend = {extension.diagram(fit ,...)}
 #code adapted from John Fox
     segments=51
     angles <- (0:segments) * 2 * pi/segments
+    angles <- c(angles,NA)   #this allows us to draw multiple ellipses
     unit.circle <- cbind(cos(angles), sin(angles))
     xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
@@ -82,6 +83,24 @@ extend = {extension.diagram(fit ,...)}
     ellipse[,2] <- ellipse[,2]*xs + y  #ys?
    if(draw) lines(ellipse, ...)
     return(xs)
+}
+
+#added to allow for fast drawing of multiple ellipses in fa.diagram and bassAckward diagram
+dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xlim=c(0,1),ylim=c(0,1),draw=TRUE, ...) {
+ segments=51
+    text(x=x, y = y, labels = labels,cex = cex, ...)
+    angles <- (0:segments) * 2 * pi/segments
+    angles <- c(angles,NA)   #this allows us to draw multiple ellipses
+    unit.circle <- cbind(cos(angles), sin(angles))
+    xrange = (xlim[2] - xlim[1])
+    yrange = (ylim[2] - ylim[1])
+    xs <- e.size * xrange
+   xs  <- max(strwidth(labels,units="user"))*.55  #make the radius slightly bigger than .5 label
+    ys <- max(strheight(labels,units="user"))  #*.55
+    ellipse <- unit.circle 
+     ellipsex <- rep(x,each=(segments + 2)) + unit.circle[,1] * xs
+     ellipsey <- rep(y,each=(segments + 2))  + unit.circle[,2] *ys
+      lines(ellipsex,ellipsey)
 }
        
 "dia.triangle" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...) {

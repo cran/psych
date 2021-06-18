@@ -23,7 +23,8 @@ function(R,digits=2,minlength=5) {
 	
 	if(k1 * nvar < width) {k1 <- nvar}  
 	k1 <- floor(k1)
-	fx <- format(round(R,digits=digits))
+	if(!is.character(R) ) {
+	fx <- format(round(R,digits=digits))} else {fx <- format(R)}
 	 if(nrow(R) == ncol(R) ) {fx[!lowleft] <- ""}
 	 for(k in seq(0,nvar,k1)) { if(k<nvar) {
 	print(fx[(k+1):nvar,(k+1):min((k1+k),nvar)],quote=FALSE)}
@@ -648,9 +649,10 @@ pretty}
 
 
 #this just shows if it is a matrix is symmetric and has diagonals of 1
+#Added the unclass to  handle a problem with class partial.r  4/10/21
 "isCorrelation" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
-  if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
+  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}}
   value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
   value <- value && isTRUE((min(x,na.rm=TRUE)>= -1) & (max(x,na.rm=TRUE) <= 1))  
   return(value)}
@@ -658,7 +660,7 @@ pretty}
   #this just shows if it is a symmetric matrix
 "isCovariance" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
-  if( is.data.frame(x)) {if(isSymmetric(unname(as.matrix(x)))) { value <- TRUE}} else {if(isSymmetric(unname(x))) {value <- TRUE}}}
+  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}}
  # value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )  #don't check for diagonal of 1
   return(value)}
   
@@ -686,6 +688,31 @@ flip <- function(R,key) {#reverse correlations with keys  < 0
 	R[,key<0] <- -R[,key < 0]
   return(R)}
     
-    
- 
+
+ matMult <- function(A,B) {  #matrix multiplication without matrices!  
+  nvar1 <- ncol(A)
+  nvar2 <- ncol(B)
+  M <- matrix(NA,ncol=nvar1,nrow=nrow(B))
+    if(nrow(A) != nvar2) {stop("incompatible dimensions")}
+   for(i in 1:nvar1) {
+    for (j in 1:nrow(B))  {
+    M[j,i] <-  sum(A[,i] * B[j,], na.rm=TRUE)
+    } 
+    }
+    return(M)}
+     
+   
+   
+   factorScoresSapa  <- function(weights,items) {
+  nf <- NCOL(weights)
+  scores<- matrix(NA,nrow=NROW(items),ncol=nf)
+  n.obs <- NROW(items)
+  n.items <- NCOL(items)
+  titem <- t(items)
+  for (factors in (1:nf)) {
+           
+    scores[,factors] <-t(colMeans( weights[,factors] * titem,  na.rm=TRUE))
+    }
+    return(scores)
+  }
 

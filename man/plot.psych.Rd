@@ -48,7 +48,7 @@
 
 Note that plotting an irt result will call either plot.irt or plot.poly depending upon the type of data that were used in the original \code{\link{irt.fa}} call.  
 
-These are calls to the generic plot function that are intercepted for objects of type "psych".  More precise plotting control is available in the separate plot functions.  plot may be used for psych objects returned from \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{ICLUST}}, \code{\link{omega}}, as well as  \code{\link{principal}} 
+These are calls to the generic plot function that are intercepted for objects of type "psych".  More precise plotting control is available in the separate plot functions.  plot may be used for psych objects returned from \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{principal}} as well as \code{\link{plot.reliability}} .
 
 A "jiggle" parameter is available in the fa.plot function (called from plot.psych when the type is a factor or cluster.  If jiggle=TRUE, then the points are jittered slightly (controlled by amount) before plotting.  This option is useful when plotting items with identical factor loadings (e.g., when comparing hypothetical models).
 
@@ -70,7 +70,7 @@ It is also possible to create irt like plots based upon just a scoring key and i
 
  
 }
-\seealso{ \code{\link{VSS.plot}} and \code{\link{fa.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, or \code{\link{principal}}   
+\seealso{ \code{\link{VSS.plot}} and \code{\link{fa.plot}}, \code{\link{cluster.plot}}, \code{\link{fa}}, \code{\link{irt.fa}}, \code{\link{VSS}}, \code{\link{ICLUST}}, \code{\link{omega}}, \code{\link{principal}} or   \code{\link{plot.reliability}} 
 }
 \examples{
 test.data <- Harman74.cor$cov

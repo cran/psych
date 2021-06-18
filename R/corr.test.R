@@ -16,7 +16,6 @@ se <- sqrt((1-r*r)/(n-2))
 
 nvar <- ncol(r)
 
-
 p[p>1] <- 1
 pa <- p  #in case we don't do adjustments
 if (adjust !="none") {
@@ -25,7 +24,7 @@ if (adjust !="none") {
      pa <- p.adjust(pa,adjust)
      p[upper.tri(p,diag=FALSE)] <- pa
   } else {
-  p[] <- p.adjust(p,adjust)  #the case of an asymmetric matrix 
+  pa[] <- p.adjust(p,adjust)  #the case of an asymmetric matrix    #corrected 4/9/21
 } }
 #find confidence intervals
   z <- fisherz(r[lower.tri(r)])
@@ -93,7 +92,8 @@ if (adjust !="none") {
     }
 } else {ci <-  ci2 <-  sef <- ci.adj <- NULL
     }
-result <- list(r = r,n=n,t=t,p=p,p.adj = pa,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,  ci2 =  ci2,ci.adj=ci.adj, Call=cl)
+ stars <- addStars(r,p,digits=2)
+result <- list(r = r,n=n,t=t,p=p,p.adj = pa,se=se,sef=sef, adjust=adjust,sym =sym,ci=ci,  ci2 =  ci2,ci.adj=ci.adj,stars=stars, Call=cl)
 class(result) <- c("psych", "corr.test")
 return(result)
 }
@@ -190,8 +190,19 @@ class(result) <- c("psych", "corr.test")
 return(result)
  }
  
- 
- 
+ #added April 6, 2021 in response to a request by Uthpala Pinto
+ addStars <- function(r,p,digits=2) {
+  symp <- symnum(p, corr = FALSE,cutpoints = c(0,  .001,.01,.05, 1),
+    symbols = c("***","**","*"," "),legend=FALSE)
+   stars <- paste0(round(r,digits),symp)
+   nc <- NCOL(r)
+   nr <- NROW(r)
+   stars <- matrix(stars,nrow=nr,ncol=nc)
+   colnames(stars) <- colnames(r)
+   rownames(stars) <- rownames(r)
+  # print(stars,quote=FALSE)
+    return(stars)
+ }
  
  
 

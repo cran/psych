@@ -1,7 +1,6 @@
 \name{sim.irt}
 \alias{sim.irt}
 \alias{sim.rasch}
-\alias{sim.irt}
 \alias{sim.npl}
 \alias{sim.npn}
 \alias{sim.poly}

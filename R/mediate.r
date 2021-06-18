@@ -175,13 +175,13 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
  
 
  if(numm > 0) {a.reg <- matReg(x=c("Intercept",x),y=m,C=C.int,z=z,n.obs=n.obs,means=means,std=std,part=part)   #the default case is to have at least one mediator
- b.reg <- matReg(c(x,m),y,C=C,z=z,n.obs=n.obs,part=part)
+ b.reg <- matReg(c(x,m),y,C=C,z=z,n.obs=n.obs,part=part)  #the df is fudged in matReg -- need to fix that 
 
  
 # cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,std=std) #we have added  the intercept term here (11/25/19)
 
  a <- a.reg$beta[-1,,drop=FALSE]
- b <- b.reg$beta[-(1:numx),,drop=FALSE]
+ b <- b.reg$beta[-(1:numx),,drop=FALSE]  #this reports just the mediator stats
  c <- total.reg$beta[-1,,drop=FALSE]
  cprime <- cprime.reg$beta
  
@@ -218,8 +218,17 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
           mean.boot <- sd.boot <- ci.quant <- boot <-  se <- tvalue  <- prob <- NA } else {
          #  if(is.null(mod)) {
            boot <- p.boot.mediate(data,x,y,m,z,n.iter=n.iter,std=std,use=use)   #this returns a list of vectors
+
   #the first values are the indirect (c') (directly found), the later values are c-ab from  the products
-         
+           #we have now dropped those extra values  
+           if(numy==1) {colnames(boot) <- c(x,paste0(rep(m,each=length(x)),"*",x))} else {
+              cn  <-  c(x,paste0(rep(m,each=length(x)),"*",x))
+              long.cn <- NULL
+              for(tem in 1:numy) {long.cn <- c(long.cn,paste0(y[tem],cn)) }
+              colnames(boot) <- long.cn }
+    
+           #if(ncol(boot)== length(c(x,m) )) colnames(boot) <- c(x,m)
+           boot <- boot[, c(paste0(rep(m,each=length(x)),"*",x)),drop=FALSE]
             mean.boot <- colMeans(boot)    
             sd.boot <- apply(boot,2,sd)
             ci.quant <- apply(boot,2, function(x) quantile(x,c(alpha/2,1-alpha/2),na.rm=TRUE)) 
@@ -232,7 +241,7 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
           ci.ab <- ci.quant
            # colnames(mean.boot) <- colnames(sd.boot)  <- c(y,m)
             rownames(mean.boot) <- rownames(sd.boot) <- x
-            
+
             boots <- list(mean=mean.boot,sd=sd.boot,ci=ci.quant,ci.ab=ci.ab)
             
            
@@ -271,6 +280,7 @@ if(!is.null(z)) {var.names$IV <- paste0(var.names$IV,"*")
 #Fixed November 29, 2018 to handle se of partialed variables correctly
 #modified September 25, 2019 to find intercepts and standard errors using momements
 #modified even more November 25, 2019 to return the intercepts and R2
+#correct May 31, 2021 to correctly estimate dfs with and without intercept terms (finally)
 matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE) {
  if(is.null(n.obs)) n.obs <- 0
    numx <- length(x)   #this is the number of predictors (but we should adjust by the number of covariates)   
@@ -278,8 +288,11 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,par
    numy <- length(y)
    #df <- n.obs -1 - numx - length(z) - length(m)    #but this does not take into account the mediating variables
    #note that the x variable includes the intercept and thus uses up one extra df
-   df <- n.obs  - numx -numz #We have partialed out z, should we use the df from it?  This is changed 11/26/19 to reduce df for z  
-   Cr <- cov2cor(C)  
+   #
+  # df <- n.obs  - numx -numz #We have partialed out z, should we use the df from it?  This is changed 11/26/19 to reduce df for z  
+    #   This df is correct if we are calculating the intercept but is off if we we are not
+    if("Intercept" %in% colnames(C)) { df <- n.obs  - numx -numz } else {df <- n.obs -1  - numx -numz  } #05/31/21
+       Cr <- cov2cor(C)  
         	if(!is.null(z)){numz <- length(z)      #partial out the z variables
      	                zm <- C[z,z,drop=FALSE]
      	                za <- C[x,z,drop=FALSE]
@@ -307,7 +320,7 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,par
       
 
      if(!std ) {
-        df <- n.obs - numx - numz
+       # df <- n.obs - numx - numz
 
          Residual.se <- sqrt(diag(resid /df))  #this is the df  n.obs - length(x))
          se <- MSE <- diag(resid )/(df) 
@@ -333,9 +346,9 @@ matReg <- function(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,par
 
         
                     colnames(se) <- colnames(beta) } else {se <- NA}
-                   if(raw) {   #used to compare models  -- we need to adjust this for dfs
-                           Residual.se <-   sqrt((1-R2)* df/(df-1)) } else {  #this is a kludge and is necessary to treat the SSR correctly
-                       Residual.se <- sqrt((1-R2)/df * (n.obs-1))}
+                  # if(raw) {   #used to compare models  -- we need to adjust this for dfs
+                        #   Residual.se <-   sqrt((1-R2)* df/(df-1)) } else {  #this was a kludge which was necessary to treat the SSR correctly -- probably because I was off on df
+                           Residual.se <- sqrt((1-R2)/df * (n.obs-1)) #}
                    }
                    
                 
@@ -646,7 +659,8 @@ if(nx >1) {
 }  
      		 
   #finally got the print to work on multiple dvs    11/24/19 	
-  "summary.psych.mediate" <- function(x,digits=2,short=FALSE) {
+  
+"summary.psych.mediate" <- function(x,digits=2,short=FALSE) {
  cat("Call: ")
     print(x$Call)
     dv <- x$var.names[["DV"]]
@@ -662,7 +676,7 @@ if(nx >1) {
      
  if(nmed < 1) {
  cat("\nNo mediator specified leads to traditional regression \n") } else {    
- cat("\nDirect effect estimates (traditional regression)    (c') \n")}
+ cat("\nDirect effect estimates (traditional regression)    (c') X + M on Y \n")}
  
      for(j in 1:ndv) {
      
@@ -680,7 +694,7 @@ if(nx >1) {
    }
  
  if(nmed > 0) {
-     cat("\n Total effect estimates (c) \n")
+     cat("\n Total effect estimates (c) (X on Y) \n")
       
         for(j in 1:ndv) {
 
@@ -695,7 +709,7 @@ if(nx >1) {
    
     
      
-    cat("\n 'a'  effect estimates \n")
+    cat("\n 'a'  effect estimates (X on M) \n")
 
   if(niv==1) {
     for(i in 1:nmed) {
@@ -718,7 +732,7 @@ if(nx >1) {
      	
      	}
      	        
-      cat("\n 'b'  effect estimates \n")
+      cat("\n 'b'  effect estimates (M on Y controlling for X) \n")
       for (j in 1:ndv) {
       if(niv==1) {
      dfb <- round(data.frame(direct=x$b.reg$beta[-(1:niv),j],se = x$b.reg$se[-(1:niv),j],t=x$b.reg$t[-(1:niv),j], df=x$b.reg$df),digits)
@@ -731,7 +745,7 @@ if(nx >1) {
       }
  
       cat("\n 'ab'  effect estimates (through mediators)\n")
-     
+
  for (j in 1:ndv) {
      
       dfab  <-round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],sd=x$boot$sd[,j],
@@ -747,21 +761,77 @@ if(nx >1) {
       }
       
     #now show the individual ab effects (just works for 1 dv)
+    
+
+#rownames(x$boot$ci) <- rownames(x$boot$mean) <- rownames(x$boot$sd ) <- NULL
 for(k in 1: ndv) {
     if(nmed > 1) {
     cat("\n 'ab' effects estimates for each mediator for",colnames(x$ab)[k], "\n")
     for (j in 1:nmed) {
        dfab  <-round(data.frame(#indirect = x$all.ab[,j],
-             boot = x$boot$mean[,j+ndv*k],sd=x$boot$sd[,j+ndv*k],
-                           lower=x$boot$ci[1,(j*niv*k +1):(j*niv*k +niv)],
-                           upper=x$boot$ci[2,(j*niv*k +1):(j*niv*k +niv)]),digits)
-      rownames(dfab) <- rownames(x$ab)
-      colnames(dfab)[1] <- mv[j]
+             boot = as.vector(x$boot$mean),sd=as.vector(x$boot$sd),
+                           #lower=x$boot$ci[1,(j*niv*k +1):(j*niv*k +niv)],
+                           #upper=x$boot$ci[2,(j*niv*k +1):(j*niv*k +niv)]),digits)
+                            lower=x$boot$ci[1,(1:(j*niv*k ))],
+                           upper=x$boot$ci[2,(1:(j*niv*k))]),digits)
+                           }
+     rownames(dfab) <- colnames(x$boot$ci)
+     # colnames(dfab)[1] <- mv[j]
+     
       print(round(dfab,digits))
-      }
+    
+       #now, if number of mediators >1, compare them
+     
+
+     
      }
     }
+    
+   if(nmed * niv * ndv > 1) {
+          cat("\n Compare the ab estimates for each mediator \n")
+      print(round(compare.boot(x$boot.values),digits))
+      }
     }
     } 
           
- 
+compare.boot <- function(boot,alpha=.05)  {
+  #find the differences
+  ncboot <- ncol(boot)
+  npairs <- ncboot * (ncboot-1)/2
+  
+  if(ncboot > 1) {
+  num.cases <- nrow(boot)
+  cnames <- colnames(boot)
+  diff<- matrix(NA,ncol=npairs,nrow=nrow(boot))
+  cn <- rep(NA,npairs)
+  k <- 1
+  for(i in 2:ncboot) {
+    for (j in 1:(i-1)){
+    diff[,k] <- boot[,i]- boot[,j]
+    k <- k +1  }}
+    
+  mean.diff <- colMeans(diff)    
+            sd.diff <- apply(diff,2,sd)
+            ci.quant <- apply(diff,2, function(x) quantile(x,c(alpha/2,1-alpha/2),na.rm=TRUE)) 
+
+           # mean.boot <- matrix(mean.boot[1:(numx*numy)],nrow=numx)
+           mean.diff <- matrix(mean.diff,nrow=npairs)
+           # sd.boot <- matrix(sd.boot[1:(numx*numy)],nrow=numx)
+           sd.diff <- matrix(sd.diff,nrow=npairs)
+           k <- 1
+           for(i in 2:length(cnames)) {
+              for (j in 1:(i-1)){cn[k] <- paste0(cnames[i]," x ",cnames[j])
+              k <- k + 1}
+             } 
+             
+             diff.df <- data.frame(mean.diff=mean.diff,sd.diff=sd.diff,low=ci.quant[1,], high=ci.quant[2,])
+             rownames(diff.df)<-cn
+          #  ci.ab <- matrix(ci.quant,nrow=2*numx)
+          ci.ab <- ci.quant
+           # colnames(mean.boot) <- colnames(sd.boot)  <- c(y,m)
+         #   rownames(mean.diff) <- rownames(sd.diff) <- x
+            
+            #boots <- list(diffs=diff.df)
+            return(diff.df)
+            } else {} #nothing to do
+            }

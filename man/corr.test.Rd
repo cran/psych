@@ -44,6 +44,7 @@ The probability values may be adjusted using the Holm (or other) correction.  If
   \item{ci}{the alpha/2 lower and upper values.}
   \item{ci2}{ci but with the adjusted pvalues as well.  This was added after tests showed we were breaking some packages that were calling the ci object without bothering to check for its dimensions.}
   \item{ci.adj}{These are the adjusted ((Holm or Bonferroni) confidence intervals. If asking to not adjust, the Holm adjustments for the confidence intervals are shown anyway, but the probability values are not adjusted and the appropriate confidence intervals are shown in the ci object.  }
+  \item{stars}{For those people who like to show magic asterisks denoting ``statistical significance" the stars object flags those correlation values that are unlikely given normal theory. See the last example for  how to print these neatly.}
 }
 
 \note{For very large matrices (> 200 x 200), there is a noticeable speed improvement if confidence intervals are not found.
@@ -73,6 +74,9 @@ print(corr.p(cts$r,n=30),short=FALSE)
 
 #don't adjust the probabilities
 print(corr.test(sat.act[1:3],sat.act[4:6],adjust="none"),short=FALSE)  
+
+#print out the stars object without showing quotes
+print(corr.test(attitude)$stars,quote=FALSE)  #note that the adjusted ps are given as well
 
 }
 

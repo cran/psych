@@ -108,8 +108,10 @@ return(result)
 invisible(result) #return the values as well
      }
      
-
-  
+"d2OVL" <- function(d) {2*pnorm(-abs(d)/2)}
+"d2OVL2" <- function(d) {d2OVL(d)/(2-d2OVL(d))}
+"d2CL" <- function(d) {pnorm(abs(d)/sqrt(2))}
+"d2U3" <- function(d) {pnorm(abs(d))}
  
  "cohen.d.by" <- 
 function(x,group,group2,alpha=.05,MD=TRUE)  {

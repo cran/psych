@@ -6,7 +6,7 @@
 #modified November, 2014 to allow for covariances in addition to correlations.
 #also cleaned up the code to take advantage of switch
 "schmid" <-
-function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,covar=FALSE,...) 
+function (model, nfactors = 3, fm = "minres",  digits=2,rotate="oblimin",n.obs=NA,option="equal",Phi=NULL,covar=FALSE,two.ok=FALSE,...) 
 {
  cl <- match.call()
 #if Phi is not Null, then we have been given a factor matrix, otherwise
@@ -162,7 +162,7 @@ switch(rotate,
             if(option=="equal") {
       			 gload[1] <- sqrt(abs(factr[1,2]))
       			 gload[2] <- sign(factr[1,2])*sqrt(abs(factr[1,2])) 
-      			 message("\nThree factors are required for identification -- general factor loadings set to be equal. \nProceed with caution. \nThink about redoing the analysis with alternative values of the 'option' setting.\n")} else { if(option=="first") {
+      			if(!two.ok) message("\nThree factors are required for identification -- general factor loadings set to be equal. \nProceed with caution. \nThink about redoing the analysis with alternative values of the 'option' setting.\n")} else { if(option=="first") {
       			 gload[1] <- 1
       			# gload[2] <- abs(factr[1,2])
       			gload[2] <-  (factr[1,2])

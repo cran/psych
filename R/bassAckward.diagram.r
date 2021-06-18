@@ -11,7 +11,7 @@ nf = length(x$bass.ack) #this counts how many results are there
 if(!items) nf <- nf-1
 if(sort){ x$bass.ack[[nf]] <- fa.sort(x$bass.ack[[nf]])
        x$labels[[nf]] <- rownames(x$bass.ack[[nf]]) }
-if(lr) {ylim <- c(0,NROW(x$bass.ack[[nf]]))
+if(lr) {ylim <- c(0,NROW(x$bass.ack[[nf]]))   #this is the number of variables 
 xlim <- c(-1,(nf-2)) } else {xlim <- c(0,NROW(x$bass.ack[[nf]]))
 ylim <- c(-1,(nf-2))}
 lower <- list()
@@ -65,11 +65,12 @@ if(lr) {
 for(i in 1:nvar) {  #which is actually the number of lower level variables or factors
   cname <- labels[[j-1]]
   
-  if(lr) {upper[[i]] <-  dia.rect(nf-j,(nvar-i + 1) *scale, labels= cname[i],draw=FALSE,...)} else {  upper[[i]] <-  dia.rect(i*scale,nf-j, labels= cname[i],draw=FALSE,...) }
+#  if(lr) {upper[[i]] <-  dia.rect(nf-j,(nvar-i + 1) *scale, labels= cname[i],draw=FALSE,...)} else {  upper[[i]] <-  dia.rect(i*scale,nf-j, labels= cname[i],draw=FALSE,...) }
+    if(lr) {upper[[i]] <-  dia.ellipse(nf-j,(nvar-i + 1) *scale, labels= cname[i],draw=FALSE,e.size=1,...)} else {  upper[[i]] <-  dia.ellipse(i*scale,nf-j, labels= cname[i],draw=FALSE,e.size=1,...) }
     
     }
-dia.rect(all.rects.x,all.rects.y,all.rects.rname)
-  
+#dia.rect(all.rects.x,all.rects.y,all.rects.rname)
+ dia.multi.ellipse(all.rects.x,all.rects.y,all.rects.rname) 
   #connect them and then put  in the correlation values
 
 text.values <- list()     #save the text values from the arrows
@@ -112,7 +113,7 @@ if(abs(x$bass.ack[[j]][k,i]) >  cut ) { #just draw the large loadings
 }
 
 tv <- matrix(unlist(text.values),byrow=TRUE,ncol=21)
-text(tv[,1],tv[,2],tv[,3],tv[,5])
+text(tv[,1],tv[,2],tv[,3]) # ,tv[,5])    #don't use the adj parameter
       arrows(x0=tv[,6],y0=tv[,7],x1=tv[,8],y1=tv[,9],length=tv[1,10],angle=tv[1,11],code=1,col=tv[,20],lty=tv[,21])
         arrows(x0=tv[,13],y0=tv[,14],x1=tv[,15],y1=tv[,16],length=tv[1,17],angle=tv[1,18],code=2,col=tv[,20],lty=tv[,21])
 

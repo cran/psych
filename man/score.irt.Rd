@@ -10,7 +10,6 @@
 \alias{make.irt.stats}
 \alias{irt.tau}
 \alias{irt.se}
-\alias{make.irt.stats}
 \title{Find Item Response Theory (IRT) based scores for dichotomous or polytomous items}
 
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{scoreIrt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. \code{\link{scoreIrt.2pl}} will score lists of scales.

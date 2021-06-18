@@ -63,3 +63,22 @@ return(keys)}
       names(keys.list) <- colnames(keys)
       keys.list}
       
+    
+"makePositiveKeys" <- function(keys.list,sign=FALSE) {
+     nkeys <- length(keys.list)
+     pos.list <- neg.list  <- list()
+     for(i in 1:nkeys) {temp <- keys.list[[i]]
+      neg.pos <- grep("-",temp)
+      if(length(neg.pos)  >0) {
+      pos.list[[i]]  <- temp[-neg.pos]
+      neg.list[[i]]  <- temp[neg.pos]} else {pos.list[[i]] <- keys.list[[i]]
+      neg.list[[i]] <-keys.list[[i]]}
+      if(!sign) neg.list[[i]] <- sub("-","",neg.list[[i]])
+      }
+    names(pos.list) <- names(keys.list)
+    names(neg.list) <- paste0(names(keys.list),".neg")
+    return(c(pos.list,neg.list)) 
+    }
+      
+    
+   

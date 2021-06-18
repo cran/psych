@@ -6,7 +6,8 @@
 \description{Create a population orthogonal or hierarchical correlation matrix from a set of factor loadings and factor intercorrelations. Samples of size n may be then be drawn from this population.  Return either the sample data, sample correlations, or population correlations.  This is used to create sample data sets for instruction and demonstration.
 }
 \usage{
-sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = TRUE,mu = NULL)
+sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = TRUE,mu = NULL,
+    categorical=FALSE, low=-3,high=3)
 sim.bonds(nvar=9,loads=c(0,0,.5,.6),validity=.8)
 
 make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
@@ -19,6 +20,9 @@ make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
   \item{n}{ Number of subjects to generate: N=0 => population values }
   \item{raw}{ raw=TRUE, report the raw data, raw=FALSE, report the sample  correlation matrix. }
   \item{mu}{means for the individual variables}
+  \item{low}{lower cutoff for categorical data}
+  \item{categorical}{If True, then create categorical data}
+  \item{high}{Upper cuttoff for categorical data}
   \item{nvar}{Number of variables to simulate}
   \item{loads}{A vector of loadings that will be sampled (rowwise) to define the factors}
   \item{validity}{The factor loadings of `pure' measures of the factor.}

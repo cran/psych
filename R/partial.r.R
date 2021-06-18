@@ -22,7 +22,7 @@ function(data,x,y,use="pairwise",method="pearson")  {
        phi.inv <- Pinv(phi)
         X.resid <- X - Y %*% phi.inv %*% t(Y)
         X.resid <- cov2cor(X.resid) 
-        class(X.resid)  <- c("psych","partial.r") }
+        class(X.resid)  <- c("psych","partial.r", "matrix") }
        
         return(X.resid)
      	}
@@ -30,4 +30,5 @@ function(data,x,y,use="pairwise",method="pearson")  {
      #05/08/17  Completely rewritten to be easier to use and follow for the case of complete partials 
      #modified 03/19/19 to just choose the items to correlate instead of entire matrix
      #modified 07/25/20 to use the Pseudo Inverse so that in cases of improper matrices, we still give a partial
+     #modified 06/09/21 to add the matrix class to the object.
      

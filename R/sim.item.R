@@ -228,7 +228,22 @@ warning("Not ready for prime time")
 	return (result) 
 	}  	
 
+"sim.poly.npl.m" <- 
+function (nvar = 5 ,n = 500, low=-2,high=2,a=NULL,c=0,z=1,d=NULL,mu=0,sd=1,cat=5,theta=NULL) 
+	{ cat <- cat - 1
+	if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar-1))} else {if(length(d)==1) d <- rep(d,nvar)}
+	
+	if(is.null(a)) {a <- rep(1,nvar)}
+	if(is.null(theta)) {theta <- rnorm(n,mu,sd)}
+	item <- matrix(t(c+(z-c)/(1+exp(a*t((-theta %+% t( d)))))),n,nvar)
+	item[] <- rbinom(n*nvar, cat, item)
 
+      
+    colnames(item) <- paste("V",1:nvar,sep="")
+     
+    result <- list(items=item,discrimination=a,difficulty=d,gamma=c,zeta=z,theta=theta)
+	return (result) 
+	} 
 
 #simulate a particular polychoric structure R with specified marginals (m)
 #Modified December 17,2013 to actually work

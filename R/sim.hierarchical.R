@@ -63,9 +63,10 @@ for(i in (nvar+1):NROW(f)) {
 # A function to create a correlation matrix with a hierarchical structure
 # The default values match those of Jensen and Weng
 #completely rewritten, March 15, 2021 to add in the ability to report factor sccores
+#modified May 16 to be able to return "items" rather than continuous scales
 
 "sim.hierarchical" <-
-function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL) {
+function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL,categorical=FALSE, low=-3,high=3) {
 
 cl <- match.call()
 #first, prepare the jensen defaults
@@ -105,6 +106,14 @@ cl <- match.call()
      theta <- t(gfstar %*% t(g))  #g are the orthogonal factor scores, theta are the noise free observed
      error <- matrix(rnorm(n*nvar),ncol=nvar)
      observed <-  theta + error %*% (U)  #weight the error by uniqueness of the variables
+     
+     if(categorical) {#convert from continuous to categorical
+        
+    	observed = round(observed)       #round all items to nearest integer value
+		observed[(observed <= low)] <- low     
+		observed[(observed > high) ] <- high   
+		}
+
      colnames(observed) <- paste0("V",1:nvar)
     
   	 r <- cor(observed)

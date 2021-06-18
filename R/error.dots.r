@@ -80,9 +80,22 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
                 names(x) <- names
                 sd <- TRUE #use these values for the confidence intervals
          },
+         
+  reliability ={ x <- x$splits
+         if (sort) { if(is.null(order)) {ord <- order(x,decreasing=!decreasing) } else {ord<- order}
+    }  else {ord <- n.var:1}  
+ 
+   
+    		 x <- x[ord]
+              names <- rownames(x)
+              se <- NULL
+             
+             },
+             
   other = {}   #an empty operator 
         )#end switch
       if (obj=="other"){
+
       if(is.null(group)) {  #the case of just one observation per condition
       	if(is.null(stats)) {
      		 if(is.null(dim(x))) {se <- rep(0,length(x))

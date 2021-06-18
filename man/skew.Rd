@@ -66,6 +66,7 @@ K.V. Mardia (1970). Measures of multivariate skewness and kurtosis with applicat
 \note{The mean function supplies means for the columns of a data.frame, but the overall mean for a matrix.  Mean will throw a warning for non-numeric data, but colMeans stops with non-numeric data. Thus, the function uses either mean (for data frames) or colMeans (for matrices).  This is true for skew and kurtosi as well.
 
 }
+\note{ 	Probability values less than  10^-{300} are set to 0.  }
 
 \seealso{\code{\link{describe}}, \code{\link{describe.by}}, mult.norm in QuantPsyc, Kurt in QuantPsyc}
 

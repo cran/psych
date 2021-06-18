@@ -9,11 +9,16 @@
 \alias{d2t}
 \alias{t2d}
 \alias{m2t}
+\alias{d2OVL}
+\alias{d2OVL2}
+\alias{d2CL}
+\alias{d2U3}
+
 
 \title{Find Cohen d and confidence intervals} 
 
 \description{
-Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. 
+Given a data.frame or matrix, find the standardized mean difference (Cohen's d) and confidence intervals for each variable depending upon a grouping variable.  Convert the d statistic to the r equivalent, report the student's t statistic and associated p values, and return statistics for both values of the grouping variable.  The Mahalanobis distance between the centroids of the two groups in the space defined by all the variables ia also found.  Confidence intervals for Cohen d for one group (difference from 0) may also be found. Several measures of the distributional overlap (e.g. OVL, OVL2, etc.) are available.
 }
 \usage{
 cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL)
@@ -26,7 +31,10 @@ r2d(rho)
 d2t(d,n=NULL,n2=NULL,n1=NULL)
 t2d(t,n=NULL,n2=NULL,n1=NULL)
 m2t(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE)
-
+d2OVL(d)  #Percent overlap for 1 distribtion
+d2OVL2(d)  #Percent overlap joint distribution
+d2CL(d)   #Common language effect size
+d2U3(d)   #Proportion in higher group exceedding median of lower group
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -81,6 +89,7 @@ The Mahalanobis Distance combines the individual ds and weight them by their uni
 \item{n}{sample size used for each analysis}
 \item{p}{The probability of abs(t)>0}
 \item{descriptive}{The descriptive statistics for each group}
+\item{OVL}{etc. some of the measures of overlap discussed by DelGiudice, 2013}
 
 }
 \note{Cohen and Hedges differ in they way they calculate the pooled within group standard deviation. I find the treatment by McGrath and Meyer to be most helpful in understanding the differences.
@@ -89,7 +98,13 @@ The Mahalanobis Distance combines the individual ds and weight them by their uni
 
 Algina, James and Keselman, H. J. and Penfield, Randall D. (2005) An Alternative to Cohen's Standardized Mean Difference Effect Size: A Robust Parameter and Confidence Interval in the Two Independent Groups Case. Psychological Methods.  10, 317-328.
 
+Marco Del Giudice (2013) Multivariate Misgivings: Is D a Valid Measure of Group and Sex Differences?, Evolutionary Psychology (11) doi:10.1177/147470491301100511
+
+
+
 McGrath, Robert E and Meyer, Gregory J. (2006) When effect sizes disagree: the case of r and d. Psychological methods, 11, 4, 386-401.
+
+
 
 }
 
@@ -100,7 +115,7 @@ William Revelle
 
 
 \seealso{
-\code{\link{describeBy}}, \code{\link{describe}}
+\code{\link{describeBy}}, \code{\link{describe}} \code{\link{error.dots}} to display the results.  \code{\link{scatterHist}} to show d and MD for pairs of variables..
 }
 \examples{
 cohen.d(sat.act,"gender")

@@ -2,14 +2,14 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.1.2 (2021-02-01)}{ 
+\section{Changes in psych version 2.1.4 (2021-04-10)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.1.2 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.0.12.  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.1.4 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.1.3  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
      
@@ -114,11 +114,50 @@
     \item scoreIrt does not work unless keys are specified for nf > 1 (reported by Andrew Olney)
     \item Add ability to do N random restarts in rotations in fa
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models This is now done for sim and sim.minor, sim.hierarchical, others are in process. 
-  }
+     
+    \item Fix fa.diagram so that factors are enclosed in ellipses (as they had been).  Reported by Mark Greenwood.
+  \item Possible problem in pooled correlations for statsBy
+   \item Think about improvements in itemLookup to show means if desired
+      }
   }
   }
   
-  
+   \section{Changes in psych version 2.1.6 (2021-06-20)}{ 
+     \subsection{Additions}{
+         \itemize{
+          \item Added addStars to allow significance printout to corr.test (requested by Uthpala Pinto).  Now, automatically gives a "stars" object.  This has probability "stars" for raw and adusted p values.
+          \item Minor tweak to lowerMat to allow it to print character fields  (for stars objects)
+        \item Adjusted the way p values are displayed for mardia (requested by Jhonys de Araugjo) to show out to 10^-300.
+        \item Modified the mediate function to report tests of ab terms against each other (requested by Nancy Collins)
+      \item Added within group density circles to scatterhist. A nice way of showing how M.distances work.  Also added Mahalanobis distance calculation to scatterHist. 
+      \item Added matrix as class to partial.r 
+      \item Added various overlap measures for cohen.d (d2OVL, etc.)
+      \item Added the reliability function to find alpha, both omegas, and split half for a set of scales at once.
+      \item Added plot.reliability to allow for nice graphical displays of these results
+      
+      
+      
+          }
+        }
+    
+    
+    \subsection{Bugs fixed}{
+         \itemize{
+         \item The p and p.adj objects in corr.test were reversed for non-symmetric matrices (reported by wangshun)
+         \item Fixed isCorrelation to handle output from partial.r (reported by Isaac Petersen)
+         \item added unclass(r) to fa for the same problem of partial.rs
+         \item fixed catseyes  to not choke if no variance.
+         \item Fixed a problem introduced into fa.diagram where it was not drawing circles for factors (reported by  Mark Greenwood. ) 
+         \item Fixed a subtle error in bassAckward.diagram where  the numbers where not quite alligning with the arrows.  
+         \item Finally stopped getting zero length arrow warnings in error.bars
+         \item Fixed the mediate function to correctly report df for the b term (following reports of the problem from Nancy Collins and Amanda Montoya)
+         \item Fixed the printing of non-symmetric correlation p-values for corr.test (reported by Bowen Li)
+         \item Fixed predict.psych for the case of missing=TRUE to find colSums of weights time scores  instead of colMeans.  (No change in correlations, just the scale sd)
+          }
+          }
+    }
+          
+          
   \section{Changes in psych version 2.1.3 (2021-03-24)}{ 
      \subsection{Additions}{
          \itemize{

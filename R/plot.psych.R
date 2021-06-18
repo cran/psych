@@ -4,13 +4,13 @@ function(x,labels=NULL,...)
 
    result <- NULL
   
-     vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <- residuals <-   FALSE 
+     vss <- iclust <- omega <- fa <-  irt.fa <- irt.poly <-  principal <- parallel <- set.cor <- residuals <- reliability <-    FALSE 
   
 
 
    if(length(class(x)) > 1)  {
    #This next section was added December 7, 2019 to change from class(x)[2] to inherits(x, ...)
-   		names <- cs(irt.fa,irt.poly,vss,iclust,fa, principal,omega,parallel,set.cor,residuals)
+   		names <- cs(irt.fa,irt.poly,vss,iclust,fa, principal,omega,parallel,set.cor,residuals,reliability)
         value <- inherits(x,names,which=TRUE)   # value <- class(x)[2]
          if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "None"}
     
@@ -104,6 +104,8 @@ fa =  {fa.plot(x,labels=labels,...)},
 principal = {fa.plot(x,labels=labels,...)},
 
 parallel = {plot.fa.parallel(x,...)},
+
+reliability = {plot.reliability(x,...)},
 
 residuals = {plot.residuals(x,...)},
 

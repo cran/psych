@@ -2,6 +2,7 @@
 \alias{make.keys}
 \alias{keys2list}
 \alias{selectFromKeys}
+\alias{makePositiveKeys}
 \title{ Create a keys matrix for use by score.items or cluster.cor}
 \description{ When scoring items by forming composite scales either from the raw data using \code{\link{scoreItems}} or from the correlation matrix using \code{\link{cluster.cor}}, it used to be  necessary to create a keys matrix. This is no longer necessary as most of the scoring functions will directly use a keys list. \code{\link{make.keys}}  is just a short cut for creating a keys matrix.  The keys matrix is a nvar x nscales matrix of -1,0, 1 and defines the membership for each scale. Items can be specified by location or by name.
 }
@@ -9,7 +10,9 @@
 make.keys(nvars, keys.list, item.labels = NULL, key.labels = NULL)
 keys2list(keys,sign=TRUE)
 selectFromKeys(keys.list)
+makePositiveKeys(keys.list,sign=FALSE)
 }
+
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{nvars}{Number of variables items to be scored, or the name of the data.frame/matrix to be scored}
@@ -18,6 +21,7 @@ selectFromKeys(keys.list)
   \item{key.labels}{ Labels for the scales can be specified here, or in the key.list }
   \item{keys}{A keys matrix returned from make.keys}
   \item{sign}{if TRUE, prefix negatively keyed items with - (e.g., ``-E2")}
+  
 }
 \details{The easiest way to prepare keys for \code{\link{scoreItems}}, \code{\link{scoreOverlap}}, \code{\link{scoreIrt.1pl}}, or \code{\link{scoreIrt.2pl}}  is to specify a keys.list.  This is just a list specifying the name of the scales to be scores and the direction of the items to be used.
 
@@ -40,7 +44,10 @@ See the examples for the various options.
 
 Note that make.keys was revised in Sept, 2013 to allow for keying by name.
 
-It is also possible to do several make.keys operations and then combine them using \code{\link{superMatrix}}.
+It is also possible to do several make.keys operations and then combine them using \code{\link{superMatrix}}.  The alternative, if using the keys.list features is just to concatenate them. 
+
+makePositiveKeys is useful for taking subsets of keys (e.g. from \code{\link{bestScales}} )and create separate keys for the positively and negatively keyed items.
+
 
 
 }

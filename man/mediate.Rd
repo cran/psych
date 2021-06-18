@@ -204,8 +204,8 @@ mod.k2
     n.obs = 1952, n.iter=50)
  mod2 <- mediate(Income.50 ~ IQ + Parental+ (Ed.11)  + (Income.11)
   ,data=Spengler,n.obs = 1952, n.iter=50)
- mod22 <-  mediate(Income.50 + Educ.50 ~ IQ + Parental+ (Ed.11)  + (Income.11) 
-     ,data=Spengler,n.obs = 1952, n.iter=50)
+# mod22 <-  mediate(Income.50 + Educ.50 ~ IQ + Parental+ (Ed.11)  + (Income.11) 
+#     ,data=Spengler,n.obs = 1952, n.iter=50)
 #Now, compare these models
 anova(mod1,mod2)
 

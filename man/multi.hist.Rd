@@ -10,7 +10,7 @@ May be used for single variables.
 }
 \usage{multi.hist(x,nrow=NULL,ncol=NULL,density=TRUE,freq=FALSE,bcol="white",
       dcol=c("black","black"),dlty=c("dashed","dotted"),
-      main=NULL,mar=c(2,1,1,1),breaks=21,...)
+      main=NULL,mar=c(2,1,1,1),breaks=21,global=TRUE,...)
 histBy(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,
             main="Histograms by group",freq=FALSE,...) 
 }
@@ -30,12 +30,17 @@ histBy(x,var,group,data=NULL,density=TRUE,alpha=.5,breaks=21,col,xlab,
   \item{mar}{Specify the lower, left, upper and right hand side margin in lines -- set to be tighter than normal default of c(5,4,4,2) + .1 }
   \item{xlab}{Label for the x variable}
   \item{breaks}{The number of breaks in histBy (see hist)}
+  \item{global}{If TRUE, use the same x-axis for all plots}
   \item{alpha}{The degree of transparency of the overlapping bars in histBy}
   \item{col}{A vector of colors in histBy  (defaults to the rainbow)}
   \item{...}{additional graphic parameters (e.g., col)}
 }
 
+\details{This allows for quick summaries of multiple distributions.  Particularly useful when examining the results of multiple-split halves that come from the \code{\link{reliability}} function.  
 
+By default, will try to make a square plot with equal number of rows and columns.  However, the number of columns and rows may be specified for a particular plot.
+
+}
 
 \author{ William Revelle }
 

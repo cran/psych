@@ -265,6 +265,8 @@ Correction to documentation: as of September, 2014, the oblique.scores option is
 
 If the raw data are factored, factors scores are found.  By default this will be done using 'regression' but alternatives are available. Although the scores are found by multiplying the standardized data by the weights, if using regression, the resulting factor scores will not necessarily have unit variance. 
 
+In the case of missing data for some items, the factor scores will return NA for any case where any item is missing.  Specifying missing=TRUE will return factor scores for all cases using the imputation option chosen.  
+
 The minimum residual solution is done by finding those communalities that will minimize the off diagonal residual. The uls solution finds those communalities that minimize the total residuals.   
 
 The minres solution has been modified (April, 2107) following suggestions by Hao Wu. Although the fitting function was the minimal residual, the first derivative of the fitting function was incorrect. This has now been modified so that the results match those of SPSS and CEFA.  The prior solutions are still available using fm="old.min". 
@@ -272,6 +274,7 @@ The minres solution has been modified (April, 2107) following suggestions by Hao
 Alpha factoring was added in August, 2017 to add to the numerous alternative models of factoring.    
 
 A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output. 
+
 
 
 }

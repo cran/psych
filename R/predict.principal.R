@@ -15,8 +15,8 @@ fa = {
 	data <- as.matrix(data)
 	if(ncol(data) ==1) data <- t(data)
 	if(missing(old.data)) {data <- scale(data)} else {
-	stats <- describe(old.data)
-	data <- scale(data,center=stats$mean,scale=stats$sd)}
+	  stats <- describe(old.data)
+	   data <- scale(data,center=stats$mean,scale=stats$sd)}
 	wt <- object$weights
 	if(impute !="none") data <- impute.na(data,impute)
 	if(missing) {pred <- matrixMult.na(data,wt)} else {
@@ -60,7 +60,7 @@ setCor = {
 	data <- scale(data,center=stats$mean,scale=stats$sd)}
 	wt <- object$coefficients[vars,]  #don't use the intercept
 	if(impute !="none") data <- impute.na(data,impute)
-	if(missing) {pred <- matrixMult.na(data,wt)} else {
+	if(missing) {pred <- matrixMult.na(data,wt,scale=FALSE)} else {
 	pred <- data %*% wt}
    }
 )
@@ -103,11 +103,12 @@ matrixMult.na <- function(x,y,scale=TRUE) {
 nvar <- ncol(x)
 if(nvar != nrow(y) ) stop("matrices are not compatible")#matrices are not compatible
 
-if(scale) x <- scale(x) #zero center and standaridize
+if(scale) {x <- scale(x)} #zero center and standaridize
+#if(scale) {y <- scale(y)} #zero center and standaridize
 tx <- t(x) #we want to do  it on the transposed matrix
 ny <- ncol(y)
 result <- matrix(NA,nrow = nrow(x),ncol= ncol(y))
-result <- apply(y,2,function(x ) colMeans(x * tx,na.rm=TRUE))
+result <- apply(y,2,function(x ) colSums(x * tx,na.rm=TRUE))  #changed to sums rather than means  06/16/21
 return((result))
 }
 

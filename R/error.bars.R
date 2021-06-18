@@ -65,12 +65,18 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
      
      if (length(pos)==0) {locate <- rep(1,z)} else {locate <- pos}
      if (length(labels)==0) lab <- rep("",z) else lab <-labels
-      s <- c(1:z)   #this allows us to address each one separately
+     
+        
+      for(s in 1:z) {  #this allows us to address each one separately --probably slower but avoids complaints of 0 length 
     	        if(bars) {arrows(mp[s],x.stats$mean[s]-ci[s]* x.stats$se[s],mp[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col = par("fg"), lty = NULL, lwd = par("lwd"), xpd = NULL)} else { 
-    	       
-   if(is.null(x.stats$values)) {
-    	 arrows(s[s],x.stats$mean[s]-ci[s]* x.stats$se[s],s[s],x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col=arrow.col) } else {
+ 
+    
+ if( (!is.na(x.stats$se[s]))  && (x.stats$se[s] > 0)) { if(is.null(x.stats$values)) {
+    	 arrows(s,x.stats$mean[s]-ci[s]* x.stats$se[s],s,x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3,col=arrow.col) } else {
     	 arrows(x.stats$values,x.stats$mean[s]-ci[s]* x.stats$se[s],x.stats$values,x.stats$mean[s]+ci[s]* x.stats$se[s],length=arrow.len, angle = 90, code=3, col=arrow.col)}
+    	 }
+    }
+    }	 
  	 
    	 
   if(eyes) { if(length(col) == 1) col <- rep(col,z)  
@@ -83,7 +89,7 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
     	    }
    }
    }
- }  
+   
    
    #corrected July 25, 2009 to fix bug reported by Junqian Gordon Xu and then modified to be cleaner code
  
@@ -96,9 +102,11 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
    #corrected April 22, 2016 to correctly handle the "stats" option with cats eyes
    
    
-   
+  #added the se>0 test to not choke on drawing empty cats eyes 
   "catseyes" <- function(x,y,se,n,alpha=alpha,density=density,col=col) {
      SCALE=.7
+      if(!is.na(se) &&(!is.null(se))&& ( se >0)) { #skip everything if no se
+       #don't choke with no standard errors, just don't draw anything 
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)
     if(is.null(n) || is.na(n))  {norm <- dnorm(ln) 
@@ -111,10 +119,11 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
     
     cln <- seq(clim,-clim,.01)
     cnorm <- dnorm(cln)
-    cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	  
+    cnorm <- c(0,cnorm,0,-cnorm,0)  #this closes the probability interval	
+  
     polygon(norm*SCALE+x,c(ln,ln[rev])*se+y)
     polygon(cnorm*SCALE+x,c(clim,cln,-clim,-cln,clim)*se+y,density=density,col=col)}
-    
+    }
     
   #added May 30, 2016   
  error.bars.tab <- function(t,way="columns",raw=FALSE,col=c('blue','red'),...) {

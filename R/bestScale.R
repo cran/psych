@@ -115,6 +115,8 @@ if(!is.null(dim(criteria))| (length(criteria) == NROW(x)))  { x <- cbind(x,crite
  if(n.iter > 1) { 
 result <- list()
 #This does the work across n.iter and across all criteria
+#result <- mapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
+
 result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
 
 #we have done the heavy lifting, now we need to prepare various results for output.

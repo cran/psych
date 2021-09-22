@@ -2,6 +2,7 @@
 \alias{reliability}
 \alias{plot.reliability}
 
+
 \title{Reports 7 different estimates of scale reliabity including alpha, omega, split half}
 
 \description{
@@ -19,13 +20,14 @@ Although the \code{\link{alpha}} and \code{\link{omega}} functions will find rel
 \code{\link{plot.reliability}} takes the output of  \code{\link{reliability}} and displays it as a dot chart showing the values of both omegas as well as alpha and the distributions of split half reliabilities.
 }
 \usage{
-reliability(keys, items, nfactors = 2, split = TRUE, raw=FALSE, plot=FALSE,hist=FALSE)
-\method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,add=FALSE,xlim=NULL,
-     main=NULL,...)
+reliability(keys=NULL, items, nfactors = 2, split = TRUE, raw=TRUE, plot=FALSE,hist=FALSE,
+  n.sample=10000)
+\method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,uni=TRUE,add=FALSE,
+xlim=NULL, main=NULL,...)
 }
 
 \arguments{
-  \item{keys}{A list of items to be scored (may be taken from a keys.list for \code{\link{scoreItems}}. This list may contain one or more keys.  )
+  \item{keys}{A list of items to be scored (may be taken from a keys.list for \code{\link{scoreItems}}. This list may contain one or more keys. ) If keys are not specified, then all the items are used.
 
 }
   \item{items}{The matrix or data.frame of items to be scored.  Can be substantially greater than the items included in keys. For just those items in each key are scored.
@@ -36,12 +38,17 @@ reliability(keys, items, nfactors = 2, split = TRUE, raw=FALSE, plot=FALSE,hist=
   
   \item{plot}{By default, suppress the omega plots for each scale.}
   
-  \item{raw}{If TRUE, return a list of all the possible splits}
+  
+  
+  \item{raw}{If TRUE, return a list of all the possible splits (up to n.samples).  Useful for graphic display. }
   
   \item{hist}{If TRUE then  split and raw are forced to TRUE and the histograms of the split half values are drawn.  (Otherwise, just return the values for later plotting)}
   
+  \item{n.sample}{Normally defaults to 10,000.  This means that for up to 16 item tests, all possible splits are found.  choose(n,n/2)/2 explodes above that, eg. for all splits of the epi E scale requires 1,352,078 splits or 23.4 seconds on a MacBook Pro with a 2.4GHZ 8 core Intel Core I9.  Can be done, but do you want to do so?  }
+  
   \item{x}{The object returned from reliability}
   \item{omega}{Add in the values of omega_h and omega_t}
+  \item{uni}{Show the unidimensionality value from \code{\link{unidim}}.  }
   \item{alpha}{Add the value of alpha}
   \item{add}{Allows us to merge this figure with other ones}
   \item{main}{Defaults to "Split half distributions + omega, alpha"}
@@ -49,13 +56,15 @@ reliability(keys, items, nfactors = 2, split = TRUE, raw=FALSE, plot=FALSE,hist=
   \item{...}{Other graphical parameters}
       
   }
-\details{\code{\link{reliability}} is basically just a wrapper for \code{\link{omegah}} and \code{\link{splitHalf}}. Revelle and Condon (2019) recommended reporting at least three reliability statistics for any scale, here we make it easy to do. 
+\details{\code{\link{reliability}} is basically just a wrapper for \code{\link{omegah}}, \code{\link{unidim}} and \code{\link{splitHalf}}. Revelle and Condon (2019) recommended reporting at least three reliability statistics for any scale, here we make it easy to do. 
 
-If the hist option is set to true, histgrams and density plots of the split half values for each test are also shown. The output from \code{\link{reliability}} can be passed to \code{\link{error.dots}} to show the reliability statistics for multiple scales graphically.  It is however more useful to just call the \code{\link{plot.reliability}} function to the basic information.
+If the hist option is set to true, histgrams and density plots of the split half values for each test are also shown. The output from \code{\link{reliability}} can be passed to \code{\link{error.dots}} to show the reliability statistics for multiple scales graphically.  It is however more useful to just call the \code{\link{plot.reliability}} function to show the basic information.
 
 For detailed analysis of any one scale, it is recommended to do a complete \code{\link{omega}} analysis, perhaps combined with a \code{\link{splitHalf}} analysis. The \code{\link{reliability}} function is just meant for the case where the user has multiple scales (perhaps scored using \code{\link{scoreItems}}) and then wants to get more complete reliability information for all of the scales.  
 
-\code{\link{plot.reliability}} provides a dot chart summary of the distributions of the split half values, as well as the estimates of omega and alpha.  It can also be called by just issuing a plot command.
+Following a suggestion, the ability to not bother with keys and just do omega and split half and draw the results has been added.  Either specify that keys=NULL, or just specify the items to use. (See the first example.)
+
+\code{\link{plot.reliability}} provides a dot chart summary of the distributions of the split half values, as well as the estimates of omega and alpha and unidimensionality.  It can also be called by just issuing a plot command.
 }
 
 
@@ -64,6 +73,9 @@ For detailed analysis of any one scale, it is recommended to do a complete \code
  \item{omega_h}{Omega_h is the (model based) hierarchical estimate of the general factor saturation of a scale.}
   \item{alpha}{The conventional alpha statistic (which is not model based)}
   \item{omega.tot}{A model based estimate of the total reliability of a scale}
+  \item{Uni}{An experimental estimate of unidimensionality (from unidim)}
+  \item{r.fit}{How well does the average r of the correlations reproduce the matrix?}
+  \item{f.fit}{How well does a single factor reproduce the correlation matrix}
   \item{max.split}{The greatest split half reliability of the scale.  Found by finding all possible splits (if this is < 10,000) or sampled from 10,000 possible splits.}
   \item{min.split}{The lowest split half reliability of the scale.  An estimate of beta (see \code{\link{iclust}}). }
   \item{mean.r}{The average correlation of the items in the scale}
@@ -87,8 +99,12 @@ William Revelle
 
 \seealso{See Also \code{\link{omega}} to find more complete output for the various omega analyses,\code{\link{splitHalf}} to show more detail on split half estimates, \code{\link{scoreItems}} to find scores on multiple scales using unit weights, \code{\link{testRetest}} to find test retest reliabilities, \code{\link{mlr}} to find multilevel reliabilities.  
 
+\code{\link{predicted.validity}} will call \code{\link{reliability}} and \code{\link{item.validity}} to use the average r information to find the asymptotic validity of a set of scales for a set of criteria.
+
 }
 \examples{
+reliability(psychTools::ability) #an example of finding reliability for all items
+plot(reliability(psychTools::ability.keys,psychTools::ability)) #versus all and subsets
 reliability(psychTools::bfi.keys,psychTools::bfi)
 
 \dontrun{  
@@ -101,7 +117,7 @@ spi.rel #show them
 plot(spi.rel)  #draw the density distrbutions
 
 plot(spi.rel,split=FALSE) #don't draw the split half density distribution
-
+plot(spi.rel,omega=FALSE) # don't add omega values to the diagram
 #or do this without the densities
 
 #plot the first three values in a dot chart

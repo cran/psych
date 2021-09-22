@@ -1,123 +1,83 @@
-reliability <- function(keys,items,nfactors=2,split=TRUE,raw=FALSE,plot=FALSE,hist=FALSE) {
+
+
+#Developed 6/15/21
+#Fixed 6/20/21 to avoid the problem of scales of one item or too many to find splits
+#Modified 7/10/21 to allow it to function with just a set of items, no keys specified
+#Modified 7/11/21 to include the unidimensional estimates from unidim  and to use the R object for speed
+reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALSE,hist=FALSE,
+   n.sample=10000) {
  cl <- match.call()
   result <- list()
   splits <- list()
+  best <- worst <- list()
+   res.name <- list()
   if(hist) raw <-TRUE 
   if(raw) split <- TRUE
-  n.scales <- length(keys)
+  #check to see if the first parameter is a list of keys, if not, then we want to do reliability on just one scale
   
+  if(!is.null(keys)){ if(NCOL(keys)==1) { n.scales <- length(keys) } else {
+         items <- keys  #this is the case where the user did not specify keys but just the data
+         n.scales  <- 1 
+         keys <- list()
+          keys[["All_items"]] <- colnames(items)
+         }} else {n.scales <- 1
+   keys[["All_items"]] <- colnames(items)
+     }
+
   for (scales in 1:n.scales) {
   scale.key <- keys[[scales]]
  select <- selectFromKeys(scale.key)
-
+ if(length(select)>1 )  {
+  
    om <- omegah(items[,select], nfactors=nfactors,plot=plot,two.ok=TRUE)
-  if(split){ split.half <- suppressWarnings(splitHalf(items[,select],raw=raw,brute=TRUE))
-          result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,maxrb=split.half$maxrb,minrb=split.half$minrb,
-          mean.r=split.half$av.r, med.r <- split.half$med.r )
+    uni <- unidim(om$R)  #use the R object rather than redoing the factoring
+    
+    
+  if(split){temp.keys <- colnames(om$R) <-  gsub("-","",colnames(om$R))
+            sign.key <- rep("",length(select))
+            sign.key[which(colnames(om$R)!= rownames(om$R))] <- "-"
+             temp.keys <- paste0(sign.key,temp.keys)
+                       
+     split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample, key=temp.keys))
+          best[[scales]] <- list(max=split.half$maxAB)
+          worst[[scales]] <- list(min=split.half$minAB)
+         
+          result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],maxrb=split.half$maxrb,minrb=split.half$minrb,
+          mean.r=split.half$av.r, med.r <- split.half$med.r, n.items=length(select) ) 
           if(raw) splits[[scales]] <- split.half$raw} else {      
-   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot) }
-   
+   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot, u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],n.items=length(select)) }
+  res.name[scales] <- names(keys)[scales]
+   }
   }
-  names(result) <- names(keys)
-  if(split) {ncol <- 7} else {ncol <- 3}
-   result.df <- matrix(unlist(result), ncol=ncol,byrow=TRUE)
-  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot","max.split","min.split","mean.r", "med.r") } else {
-  colnames(result.df) <- c("omega_h", "alpha", "omega.tot")}
-  rownames(result.df) <- names(keys)
+
+ best <- unlist(unlist(best,recursive=FALSE),recursive=FALSE) #Creates a list that keeps the names
+ worst <- unlist(unlist(worst,recursive=FALSE),recursive=FALSE)
+  # names(result) <- res.name
+  if(split) {ncol <- 11} else {ncol <- 7}
+   result.df <- matrix(unlist(result[!is.null(result)]), ncol=ncol,byrow=TRUE)
+  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot", "Uni","r.fit","fa.fit","max.split","min.split","mean.r", "med.r", "n.items") } else {
+  colnames(result.df) <- c("omega.h", "alpha", "omega.tot", "Uni","r.fit","fa.fit","n.items")}
+  rownames(result.df) <- unlist(res.name)
   if(raw) {
-  names(splits) <-names(keys)
+  lx <- unlist(lapply(splits,length))
+  splits <- splits[lx>0]
+  names(splits) <- rownames(result.df)
+  
  # splits.mat <- matrix(unlist(splits),ncol=length(keys))
  # colnames(splits.mat) <- names(keys)
    class(result.df) <- c("psych","reliability", "matrix")
-  result <- list(result.df = result.df,splits= splits, Call = cl)
+   names(best)<- paste(rep(res.name,each=2),names(best))
+   names(worst) <- paste(rep(res.name,each=2),names(worst))
+  result <- list(result.df = result.df,splits= splits,max=best,min=worst, Call = cl)
   if(hist) {multi.hist(splits)}
   class(result) <-  c("psych","reliability")
   return(result) } else {
-  
+
    class(result.df) <- c("psych","reliability", "matrix")
   return(result.df)
   }
   }
   
   #Created June 11-17, 2021
-  
- plot.reliability <- function(x,omega=TRUE,alpha=TRUE,split=TRUE, add=FALSE,xlim=NULL,main=NULL,...) {
-   if(!is.list(x)  &&  split)  {stop("To show split halfs, you must call reliability with raw=TRUE")}
-   rel.object <- x 
-   if(!is.list(x)) {result.df<- x} else {result.df<- x$result.df}
-  if(split) { x <- rel.object$splits
-               global.min <- min(unlist(lapply(x,min)),result.df[,1])
-               global.max <- max(unlist(lapply(x,max)),rel.object$result.df[,3])
-               nvar <- length(x)
-              labels<- names(x)
-    }  else {
-       global.min <- min(result.df[,1])
-       global.max <- max(result.df[,3])
-       nvar <- NROW(result.df)
-       labels <- rownames(result.df)}
-       
-  if(!add) plot.new()
-  
-  
-    ord <- nvar:1
-    labels[ord] <-labels
-      linch <- max(strwidth(labels))
-       lheight <- par("csi") 
-     # linch <- if (!is.null(labels)) max(strwidth(labels, "inch"),label.width, na.rm = TRUE)
-        ginch <- max(strwidth(labels, "inch"), na.rm = TRUE)
-        goffset <- (max(linch + 0.2, ginch, na.rm = TRUE) + 0.1)/lheight
-   gpos <- 1:nvar
-    if (!(is.null(labels) )) {
-        nmai <- par("mai")
-        nmai[2L] <- nmai[4L] + max(linch + 0, ginch) + 
-            0.1
-        par(mai = nmai)
-    }
- if(!add ) {if(missing(xlim)) xlim=c(global.min-.05,global.max+.05) #this makes all the plots on the same scale
-    plot.window(xlim = xlim, ylim = c(1,nvar+1))}
-   
-      
-      linch <- max(strwidth(labels))
-       lheight <- par("csi") 
-     # linch <- if (!is.null(labels)) max(strwidth(labels, "inch"),label.width, na.rm = TRUE)
-        ginch <- max(strwidth(labels, "inch"), na.rm = TRUE)
-        goffset <- (max(linch + 0.2, ginch, na.rm = TRUE) + 0.1)/lheight
-        mtext(labels, side = 2, line = goffset, at = gpos, adj = 0,  las = 2, ...)
-       # if (!is.null(gdata)) {
-            abline(h = gpos, lty = "dotted")
-   for(i in 1:nvar) {   #show the distributions
-    abline(h = i, lty = "dotted")
-    if(split) { h <- density(x[[i]],na.rm=TRUE)
-      hor  <- h$x
-      vert <- h$y/(1 * max(h$y)) + nvar - i + 1
-     points(hor,vert,type="l",...) }
-   }
-if(!add) axis(1)
-if(!add) box()
-
- if(omega){ text(result.df[,1],nvar:1,expression(omega[h]))   #omega_h
-            text(result.df[,3],nvar:1,expression(omega[t]))  #omega total
-            }
-  if(alpha) {text(result.df[,2],nvar:1,expression(alpha))
-    }
-if(is.null(main)) {if(split) {
-        if(omega & alpha){
-                  main=expression(paste("Split half distributions +", ~~~~ omega[h], ~~~~ alpha,~~~~ omega[t]))} else {
-                  if(omega & !alpha) { main=expression(paste("Split half distributions +", ~~~~ omega[h], ~~~~ omega[t]))} else {
-                  if(!omega & alpha) {main=expression(paste("Split half distributions +",  ~~~~ alpha,))}
-                  }         
-                  
-                   }
-                  } else {
-                  if(omega & alpha) {
-                  main=expression(paste(" ", ~~~~ omega[h], ~~~~ alpha,~~~~ omega[t]))} else {
-                   if(omega & !alpha) { main=expression(paste( ~~~~ omega[h], ~~~~ omega[t]))} else {
-                  if(!omega & alpha) {main=expression(paste(  ~~~~ alpha,))}}
-                  }
-                  } }
-         title(main) 
-##title(main)
-   }
-  
-
-   
+  #fixed 6/20/21 to avoid the problem of null cases
+                                                                                

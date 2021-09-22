@@ -108,24 +108,24 @@ if(density) lines(d)
 }
 
 
-
- plot.reliability <- function(x,ncol=NULL,nrow=NULL,...) {
-   global.min <- min(x,na.rm=TRUE)
-  global.max <- max(x,na.rm=TRUE)
-  nvar <-nrow(x)
-  
-    old.par <- par(no.readonly = TRUE)
-    nsize=ceiling(sqrt(nvar))
-   if(is.null(nrow) ) {nrow <- nsize} else {ncol <- nvar/nrow}
-     if(is.null(ncol)) {ncol  <- ceiling(nvar/nsize )} else {nrow <- nvar/ncol}
-     
-    par(mfrow=c(nrow,ncol))       #set new graphic parameters
-    #par(mar=mar)
-  
-  for (i in 1:nvar){
-  
-  mp =barplot(x[i,],...)
-
-   }  
-   on.exit(par(old.par))    
-  }
+#moved to (and expanded) as plot.reliabiity
+#  plot.reliability <- function(x,ncol=NULL,nrow=NULL,...) {
+#    global.min <- min(x,na.rm=TRUE)
+#   global.max <- max(x,na.rm=TRUE)
+#   nvar <-nrow(x)
+#   
+#     old.par <- par(no.readonly = TRUE)
+#     nsize=ceiling(sqrt(nvar))
+#    if(is.null(nrow) ) {nrow <- nsize} else {ncol <- nvar/nrow}
+#      if(is.null(ncol)) {ncol  <- ceiling(nvar/nsize )} else {nrow <- nvar/ncol}
+#      
+#     par(mfrow=c(nrow,ncol))       #set new graphic parameters
+#     #par(mar=mar)
+#   
+#   for (i in 1:nvar){
+#   
+#   mp =barplot(x[i,],...)
+# 
+#    }  
+#    on.exit(par(old.par))    
+#   }

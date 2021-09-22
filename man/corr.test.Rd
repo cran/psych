@@ -6,7 +6,7 @@
 }
 \usage{
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
-alpha=.05,ci=TRUE,minlength=5)
+    alpha=.05,ci=TRUE,minlength=5,normal=TRUE)
 corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
 }
 
@@ -14,13 +14,14 @@ corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
   \item{x}{A matrix or dataframe }
   \item{y}{A second matrix or dataframe with the same number of rows as x }
   \item{use}{use="pairwise" is the default value and will do pairwise deletion of cases. use="complete" will select just complete cases. }
-  \item{method}{method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall"}
+  \item{method}{method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall".  These last two are much slower, particularly for big data sets. }
   \item{adjust}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \code{\link{p.adjust}} for details about why to use "holm" rather than "bonferroni"). }
   \item{alpha}{alpha level of confidence intervals}
   \item{r}{A correlation matrix}
   \item{n}{Number of observations if using corr.p. May be either a matrix (as returned from corr.test, or a scaler. Set to n - np if finding the significance of partial correlations. (See below). }
   \item{ci}{By default, confidence intervals are found.  However, this leads to a noticable slowdown of speed, particularly for large problems.  So, for just the rs, ts and ps, set ci=FALSE}
   \item{minlength}{What is the minimum length for abbreviations.  Defaults to 5.}
+  \item{normal}{By default, probabilities for method="spearman" and method="kendall" are found by normal theory.  If normal=="FALSE", then repetitive calls are made to cor.test.  This is much slower, but gives more accurate p values. exact is set to be FALSE which means that exact p values for small samples are not found given the problem of ties. }
   
   }
 \details{corr.test uses the \code{\link{cor}} function to find the correlations, and then applies a t-test to the individual correlations using the formula
@@ -30,6 +31,8 @@ corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
 \deqn{se = \sqrt(\frac{1-r^2}{n-2}) }{se = sqrt((1-r^2)/(n-2))}
 
 The t and Standard Errors are returned as objects in the result, but are not normally displayed. Confidence intervals are found and printed if using the print(short=FALSE) option.  These are found by using the fisher z transform of the correlation and then taking the range r +/- qnorm(alpha/2) *  se and the standard error of the z transforms is \deqn{se = \sqrt(\frac {1}{n-3}) }{se = sqrt(1/(n-3))}.   These values are then back transformed to be in correlation units. They are returned in the ci object. 
+
+Note that in the case of method=="kendall" since these are the normal theory confidence intervals they are slightly too big.
 
 The probability values may be adjusted using the Holm (or other) correction.  If the matrix is symmetric (no y data), then the original p values are reported below the diagonal and the adjusted above the diagonal.  Otherwise, all probabilities are adjusted (unless adjust="none").  This is made explicit in the output. Confidence intervals are shown for raw and adjusted probabilities in the ci object.
 
@@ -78,6 +81,11 @@ print(corr.test(sat.act[1:3],sat.act[4:6],adjust="none"),short=FALSE)
 #print out the stars object without showing quotes
 print(corr.test(attitude)$stars,quote=FALSE)  #note that the adjusted ps are given as well
 
+
+kendall.r <- corr.test(bfi[1:40,4:6], method="kendall", normal=FALSE)
+#compare with 
+cor.test(x=bfi[1:40,4],y=bfi[1:40,6],method="kendall", exact=FALSE)
+print(kendall.r,digits=6)
 }
 
 \keyword{multivariate }

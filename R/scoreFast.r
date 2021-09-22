@@ -29,6 +29,11 @@ if(any( !(select %in% colnames(items)) )) {
  cat("\nVariable names are incorrect. Offending items are ", select[which(!(select %in% colnames(items)))],"\n")
  stop("Improper input.  See above. ")}
        } else {
+       
+
+       
+       
+       
       keys <- keys2list(keys)
         select <- selectFromKeyslist(colnames(items),keys)
       select <- select[!duplicated(select)]

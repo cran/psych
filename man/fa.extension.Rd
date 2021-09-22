@@ -83,6 +83,10 @@ set.seed(42)
  fe <- fa.extension(Roe,fo)
  fa.diagram(fo,fe=fe)
  
+ #alternatively just specify the original variables and the extension variables
+ fe = fa.extend(R, 2, ov =c(1,2,4,5,7,8,10,11), ev=c(3,6,9,12))
+ fa.diagram(fe$fo, fe = fe$fe)
+ 
  #create two correlated factors
  fx <- matrix(c(.9,.8,.7,.85,.75,.65,rep(0,12),.9,.8,.7,.85,.75,.65),ncol=2)
  Phi <- matrix(c(1,.6,.6,1),2)
@@ -96,7 +100,7 @@ set.seed(42)
  
  #now show how fa.extend works with the same data set
  #note that we have to make sure that the variables are in the order to do the factor congruence
- fe2 <- fa.extend(R,2,ov=c(1,2,4,5,7,8,10,11),ev=c(3,6,9,12),n.obs=1000)
+ fe2 <- fa.extend(sim.data$observed,2,ov=c(1,2,4,5,7,8,10,11),ev=c(3,6,9,12))
  fa.diagram(fe2,main="factor analysis with extension variables")
  fa2 <- fa(sim.data$observed[,c(1,2,4,5,7,8,10,11,3,6,9,12)],2)
  factor.congruence(fe2,fa2)

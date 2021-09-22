@@ -68,7 +68,7 @@ dev.off()
 ###################################################
 ### code chunk number 9: affect1
 ###################################################
-keys <- make.keys(msq[1:75],list(
+keys <- list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
        "lively", "-sleepy", "-tired", "-drowsy"),
  TA =c("intense", "jittery", "fearful", "tense", "clutched.up", "-quiet", "-still", 
@@ -76,8 +76,8 @@ EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep"
 PA =c("active", "excited", "strong", "inspired", "determined", "attentive", 
           "interested", "enthusiastic", "proud", "alert"),
 NAf =c("jittery", "nervous", "scared", "afraid", "guilty", "ashamed", "distressed",  
-         "upset", "hostile", "irritable" )) )
-scores <- scoreItems(keys,msq[,1:75])
+         "upset", "hostile", "irritable" )) 
+scores <- scoreItems(keys,psychTools::msq[,1:75])
 #png('msq.png')
 # pairs.panels(scores$scores,smoother=TRUE,
 #  main ="Density distributions of four measures of affect" )
@@ -150,13 +150,24 @@ dev.off()
 
 
 ###################################################
-### code chunk number 17: intro.Rnw:791-792
+### code chunk number 17: scatterhist
+###################################################
+png( 'scatterHist.png' )
+psych::scatterHist(F ~ M + gender, data=GERAS.scales, cex.point=.3,smooth=FALSE, 
+xlab="Masculine Scale",ylab="Feminine Scale",correl=FALSE, 
+d.arrow=TRUE,col=c("red","blue"), bg=c("red","blue"), lwd=4, title="Combined  M and F 
+scales",cex.cor=2,cex.arrow=1.25)
+dev.off()
+
+
+###################################################
+### code chunk number 18: intro.Rnw:814-815
 ###################################################
 lowerCor(sat.act)
 
 
 ###################################################
-### code chunk number 18: intro.Rnw:799-805
+### code chunk number 19: intro.Rnw:822-828
 ###################################################
 female <- subset(sat.act,sat.act$gender==2)
  male <- subset(sat.act,sat.act$gender==1)
@@ -167,14 +178,14 @@ round(both,2)
 
 
 ###################################################
-### code chunk number 19: intro.Rnw:811-813
+### code chunk number 20: intro.Rnw:834-836
 ###################################################
 diffs <-  lowerUpper(lower,upper,diff=TRUE)
 round(diffs,2)
 
 
 ###################################################
-### code chunk number 20: corplot.png
+### code chunk number 21: corplot.png
 ###################################################
 png('corplot.png')
 corPlot(Thurstone,numbers=TRUE,upper=FALSE,diag=FALSE,main="9 cognitive variables from Thurstone")
@@ -182,7 +193,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 21: circplot.png
+### code chunk number 22: circplot.png
 ###################################################
 png('circplot.png')
 circ <- sim.circ(24)
@@ -192,7 +203,7 @@ dev.off()
 
 
 ###################################################
-### code chunk number 22: spider.png
+### code chunk number 23: spider.png
 ###################################################
 png('spider.png')
 op<- par(mfrow=c(2,2))
@@ -202,62 +213,62 @@ dev.off()
 
 
 ###################################################
-### code chunk number 23: intro.Rnw:880-881
+### code chunk number 24: intro.Rnw:903-904
 ###################################################
 corr.test(sat.act)
 
 
 ###################################################
-### code chunk number 24: intro.Rnw:892-893
+### code chunk number 25: intro.Rnw:915-916
 ###################################################
 r.test(50,.3)
 
 
 ###################################################
-### code chunk number 25: intro.Rnw:899-900
+### code chunk number 26: intro.Rnw:922-923
 ###################################################
 r.test(30,.4,.6)
 
 
 ###################################################
-### code chunk number 26: intro.Rnw:907-908
+### code chunk number 27: intro.Rnw:930-931
 ###################################################
 r.test(103,.4,.5,.1)
 
 
 ###################################################
-### code chunk number 27: intro.Rnw:914-915
+### code chunk number 28: intro.Rnw:937-938
 ###################################################
 r.test(103,.5,.6,.7,.5,.5,.8)  #steiger Case B 
 
 
 ###################################################
-### code chunk number 28: intro.Rnw:923-924
+### code chunk number 29: intro.Rnw:946-947
 ###################################################
 cortest(sat.act)
 
 
 ###################################################
-### code chunk number 29: intro.Rnw:938-939
+### code chunk number 30: intro.Rnw:961-962
 ###################################################
 draw.tetra()
 
 
 ###################################################
-### code chunk number 30: intro.Rnw:1010-1011
+### code chunk number 31: intro.Rnw:1033-1034
 ###################################################
 setCor(y = 5:9,x=1:4,data=Thurstone)
 
 
 ###################################################
-### code chunk number 31: intro.Rnw:1018-1020
+### code chunk number 32: intro.Rnw:1041-1043
 ###################################################
 sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 
 
 ###################################################
-### code chunk number 32: intro.Rnw:1033-1047
+### code chunk number 33: intro.Rnw:1056-1070
 ###################################################
 #data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
@@ -276,33 +287,33 @@ sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35,
 
 
 ###################################################
-### code chunk number 33: intro.Rnw:1049-1050
+### code chunk number 34: intro.Rnw:1072-1073
 ###################################################
 preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Preacher and Hayes
 
 
 ###################################################
-### code chunk number 34: intro.Rnw:1057-1058
+### code chunk number 35: intro.Rnw:1080-1081
 ###################################################
 mediate.diagram(preacher)
 
 
 ###################################################
-### code chunk number 35: intro.Rnw:1069-1071
+### code chunk number 36: intro.Rnw:1092-1094
 ###################################################
 preacher <- setCor(SATIS ~ THERAPY + ATTRIB,data =sobel,std=FALSE)
 setCor.diagram(preacher)
 
 
 ###################################################
-### code chunk number 36: intro.Rnw:1113-1115
+### code chunk number 37: intro.Rnw:1136-1138
 ###################################################
 mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
 
 
 ###################################################
-### code chunk number 37: intro.Rnw:1139-1143
+### code chunk number 38: intro.Rnw:1162-1166
 ###################################################
 
 C <- cov(sat.act,use="pairwise")
@@ -311,14 +322,14 @@ summary(model1)
 
 
 ###################################################
-### code chunk number 38: intro.Rnw:1146-1148
+### code chunk number 39: intro.Rnw:1169-1171
 ###################################################
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
 
 
 ###################################################
-### code chunk number 39: intro.Rnw:1269-1270
+### code chunk number 40: intro.Rnw:1292-1293
 ###################################################
 sessionInfo()
 

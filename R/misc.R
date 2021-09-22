@@ -444,7 +444,7 @@ function (f,m, dictionary,cut=.3, digits = 2) {
         ord <- rownames(f)
         nfact <- ncol(f)
     }
-    means <- m[ord]
+    means <- m[ord]   #incorrectly added a comma to allow it sort dataframes 6/22/21
     f <- data.frame(unclass(f),means=means)
 
     contents <- lookup(rownames(f), y=dictionary)

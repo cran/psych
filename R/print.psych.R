@@ -412,7 +412,7 @@ guttman =  {
             cat("\nIntraclass correlation coefficients \n")
             print(x$results,digits=digits)
             cat("\n Number of subjects =", x$n.obs, "    Number of Judges = ",x$n.judge)
-
+            cat("\nSee the help file for a discussion of the other 4 McGraw and Wong estimates,")
    },
    
 iclust.sort = {
@@ -674,6 +674,13 @@ polydi= {cat("Call: ")
      print(max.info,digits=digits)
     }
     },
+
+validity = { cat("Call: ")
+    print(x$Call)
+	cat("\nPredicted Asymptotic Scale Validity:\n")
+	  print(x$asymptotic,digits) 
+	 cat("\n For predicted scale validities, average item validities, or scale reliabilities, print the separate objects")
+     }, 
 
 overlap =  {
     cat("Call: ")

@@ -66,9 +66,13 @@ There are many ways of reporting how two groups differ.  Cohen's d statistic is 
 
 Confidence intervals for Cohen's d may be found by converting the d to a t, finding the confidence intervals for t, and then converting those back to ds.  This take advantage of the uniroot function and the non-centrality parameter of the t distribution.
 
+
+
 The results of \code{\link{cohen.d}} may be displayed using the \code{\link{error.dots}} function.  This will include the labels provided in the dictionary.  
 
 In the case of finding the confidence interval for a comparison against 0 (the one sample case), specify n1.  This will yield a d = t/sqrt(n1)  whereas in the case of the differnece between two samples, d = 2*t/sqrt(n) (for equal sample sizes n = n1+ n2) or d = t/sqrt(1/n1 + 1/n2)  for the case of unequal sample sizes.
+
+Since we find d and then convert this to t, using d2t,  the question is how to pool the variances. Until 7/14/21 I was using the total n to estimate the t and thus the p values.  In response to a query (see news), I switched to using the actual sample size ns (n1 and n2) and then finding t based upon the hedges g value.  This produces t values as reported by t.test with the var.equal = TRUE option.
  
 \code{\link{cohen.d.by}} will find Cohen's d for groups for each subset of the data defined by group2.  The summary of the output produces a simplified listing of the d values for each variable for each group.  May be called directly from cohen.d by using formula input and specifying two grouping variables. 
 

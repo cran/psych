@@ -16,17 +16,19 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
 	 }
 	 
 	if(!is.null(group2)){cohen.d.by(x =x, group=group,group2=group2)} else {
-	x <- char2numeric(x)  # just in case there are character values  12/12/20
+	#x <- char2numeric(x)  # just in case there are character values  12/12/20  -- removed 7/7/21 following problem reported by Frank Poppenmeier
 if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(x) %in% group)
   group.in <- TRUE} else {group.in <- FALSE}
+  
  stats <- statsBy(x,group)
  S <- stats$rwg
 
- S.inv <- Pinv(S)   #the pseudo inverse because it is possible this is not PSD   added December 15, 2019
+ if(MD) S.inv <- Pinv(S)   #the pseudo inverse because it is possible this is not PSD   added December 15, 2019, added as if statement 7/7/21
 d <- stats$mean[2,] - stats$mean[1,]
 sd.p <- sqrt((( (stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,])) #if we subtract 2 from n, we get Hedges g
 sd.ph <- sqrt((((stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,]-2)) #if we subtract 2 from n, we get Hedges g
 n <- stats$n[1,]+ stats$n[2,]
+
 cohen.d <- d/sd.p
 
 hedges.g <- d/sd.ph
@@ -43,12 +45,15 @@ cohen.d <- cohen.d[-group]
 hedges.g <- hedges.g[-group]
 
 r <- cohen.d/sqrt(cohen.d^2 + 1/(  p1*p2)) #} else {r <- cohen.d/sqrt(cohen.d^2 + 1/( p1*p2) )} #for unequal n otherwise this is just 4
-t <- d2t(cohen.d,n)
+t <- d2t(hedges.g,n1=n1,n2=n2)   #added the n1 and n2 following a report from Emil Kiergagard  7/14/21  also used pooled sd formula (i.e. hedges.g) to find t  This matches t.test with var.equal=TRUE
 p <- ( 1-pt(abs(t),n-2)) * 2
 if(MD) {D <- sqrt(t(d) %*% S.inv %*% d)   #convert to D units from D2 units
-wt.d <- t(d) %*% S.inv *d    #what is this?
-D <- as.vector(D)} else {D <- NA}
+     wt.d <- t(d) %*% S.inv *d    #what is this?
+D <- as.vector(D)} else {D <- NA 
+   wt.d <- NA}
 cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
+
+
 if(!is.null(dictionary)) {dict <- dictionary[match(rownames(cohen.d.conf),rownames(dictionary)),,drop=FALSE]
    cohen.d.conf <- cbind(cohen.d.conf,dict)} else {dict=NULL}
 if(!is.null(sort)) {if(sort %in%( c("decreasing","descending","TRUE"))) {ord <- order(cohen.d.conf["effect"],decreasing=TRUE)} else {ord <- order(cohen.d.conf["effect"],decreasing=FALSE)}
@@ -76,8 +81,7 @@ return(result)
     tail <- 1- alpha/2 
     ci <- matrix(NA,ncol=3,nrow=length(d))
     for(i in 1:length(d)) {
-    nmax <- pmax(c(n,n1+1,n1+n2))
-
+    nmax <- pmax(c(n/2+1,n1+1,n1+n2))   #divide n/2 added 9/16/21 
  upper <- try(t2d( uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - alpha/2}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i])*10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
   
      if(inherits( upper, "try-error")) {ci[i,3] <- NA} else {ci[i,3] <- upper}

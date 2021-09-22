@@ -15,7 +15,7 @@ Psychometric applications include routines (\code{\link{fa}} for  maximum likeli
 
 An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}). This function is particularly appropriate for exploratory scale construction.
 
-There are a number of functions for finding various eliability coefficients. These include the traditional  \code{\link{alpha}}  (found for multiple scales and with more useful output by \code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and  both of McDonald's omega coefficients (\code{\link{omega}}, \code{\link{omegaSem}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
+There are a number of functions for finding various reliability coefficients (see Revelle and Condon, 2019). These include the traditional  \code{\link{alpha}}  (found for multiple scales and with more useful output by \code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and  both of McDonald's omega coefficients (\code{\link{omega}}, \code{\link{omegaSem}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
 
 Multilevel analyses may be done by \code{\link{statsBy}} and  \code{\link{multilevel.reliability}}.
 
@@ -95,8 +95,8 @@ Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 persona
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 2.0.8 \cr
-Date: \tab 2020--August--12\cr
+Version: \tab 2.1.9\cr
+Date: \tab 2021--September--20\cr
 License: \tab GPL version 2 or newer\cr
 }
 Partial Index:
@@ -256,6 +256,7 @@ Graphical functions that do not require Rgraphviz \cr
 \link{ICLUST.diagram}     \tab           Draw the tree diagram from ICLUST  \cr
 \link{plot.psych}        \tab           A call to plot various types of output (e.g. from irt.fa, fa, omega, iclust \cr
 \link{cor.plot}        \tab            A heat map display of correlations \cr
+\link{scatterHist}     \tab            Bivariate scatter plot and histograms \cr
 \link{spider}          \tab            Spider and radar plots (circular displays of correlations)
 }
 
@@ -364,7 +365,9 @@ Maintainer: William Revelle <revelle@northwestern.edu>
 \references{A general guide to personality theory and research may be found at the personality-project \url{https://personality-project.org/}. See also the short guide to R at \url{https://personality-project.org/r/}.
 In addition, see 
 
-Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}    }
+Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}   
+
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv  }
 
 \keyword{package}% __ONLY ONE__ keyword per line
 \keyword{multivariate}% at least one, from doc/KEYWORDS

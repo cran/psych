@@ -58,25 +58,22 @@ colnames(x.df ) <- c("values","items","id")    #this makes it simpler to underst
  MS.df["Total",]  <- sum(MS.df[1:3,1],na.rm=TRUE)
  MS.df["Percent"] <- MS.df/MS.df["Total",1]
 lmer.MS <- MS.df  #save these
-#convert to AOV equivalents
+#convert to AOV equivalents  #changed to a cleaner form 8/18/21 
  MSB <- nj * MS_id + error
  MSJ <- n.obs * MS_items + error
  MSW <- error + MS_items
- stats <- matrix(NA,ncol=3,nrow=5)  #create an anova equivalent table
-stats[1,1] <- dfB <-  n.obs -1
-stats[1,2] <- dfJ <-  nj - 1
-stats[1,3] <- dfE <-  ( n.obs -1) * ( nj - 1)
-stats[2,1] <- MSB *( n.obs -1)
-stats[2,2] <- MSJ *(nj -1)
-stats[2,3] <- MSE * (n.obs-1) *(nj-1)
- stats[3,1] <- MSB
- stats[3,2] <- MSJ
- stats[3,3] <- MSE
- stats[4,1] <- FB <-  MSB/MSE
- stats[4,2] <- FJ <-  MSJ/MSE
- stats[5,1] <-  -expm1(pf(FB,dfB,dfE,log.p=TRUE))  
- stats[5,2] <- -expm1(pf(FJ,dfJ,dfE,log.p=TRUE))  
-# s.aov  <-  MS.df
+
+stats <- matrix(NA,ncol=3,nrow=5)  #create an anova equivalent table from the lmer results
+dfB <-  n.obs -1
+dfJ <-  nj - 1
+dfE <-  ( n.obs -1) * ( nj - 1)
+FB <-  MSB/MSE
+FJ <-  MSJ/MSE
+stats[1,] <- c(dfB,dfJ,dfE)
+stats[2,] <- c( MSB *( n.obs -1),MSJ *(nj -1),MSE * (n.obs-1) *(nj-1))
+stats[3,] <- c(MSB, MSJ,MSE)
+stats[4,] <- c(MSB/MSE, MSJ/MSE, NA)
+stats[5,] <-  c(-expm1(pf(FB,dfB,dfE,log.p=TRUE)), -expm1(pf(FJ,dfJ,dfE,log.p=TRUE))  , NA)
 s.aov <- mod.lmer
  
 } else {
@@ -92,24 +89,27 @@ s.aov <- mod.lmer
  }
  colnames(stats) <- c("subjects","Judges", "Residual")
  rownames(stats) <- c("df","SumSq","MS","F","p")
-  
+  #McGraw and Wong use MSr for MSB
   
   ICC1 <- (MSB- MSW)/(MSB+ (nj-1)*MSW)
   ICC2 <- (MSB- MSE)/(MSB + (nj-1)*MSE + nj*(MSJ-MSE)/n.obs)
   ICC3 <- (MSB - MSE)/(MSB+ (nj-1)*MSE)
-  ICC12 <- (MSB-MSW)/(MSB)
+  ICC12 <- (MSB-MSW)/(MSB)    #MW case 2
   ICC22 <- (MSB- MSE)/(MSB +(MSJ-MSE)/n.obs)
-  ICC32 <- (MSB-MSE)/MSB
+  ICC32 <- (MSB-MSE)/MSB    #MW  Case 3a
+  
+  
  
   #find the various F values from Shrout and Fleiss 
   F11 <- MSB/MSW
   df11n <- n.obs-1
   df11d <- n.obs*(nj-1)
- # p11 <- 1-pf(F11,df11n,df11d)
-   p11 <-  -expm1(pf(F11,df11n,df11d,log.p=TRUE))  
+ 
+ p11 <-  -expm1(pf(F11,df11n,df11d,log.p=TRUE))  
   F21 <- MSB/MSE
   df21n <- n.obs-1
   df21d <- (n.obs-1)*(nj-1)
+  # p11 <- 1-pf(F11,df11n,df11d)
  # p21 <- 1-pf(F21,df21n,df21d)
    p21 <-  - expm1(pf(F21,df21n,df21d,log.p=TRUE)) 
   F31 <- F21
@@ -119,28 +119,42 @@ s.aov <- mod.lmer
  results <- data.frame(matrix(NA,ncol=8,nrow=6))
  colnames(results ) <- c("type", "ICC","F","df1","df2","p","lower bound","upper bound")
  rownames(results) <- c("Single_raters_absolute","Single_random_raters","Single_fixed_raters", "Average_raters_absolute","Average_random_raters","Average_fixed_raters")
- results[1,1] = "ICC1"
- results[2,1] = "ICC2"
- results[3,1] = "ICC3"
- results[4,1] = "ICC1k"
- results[5,1] = "ICC2k"
- results[6,1] = "ICC3k"
- results[1,2] = ICC1
- results[2,2] = ICC2
- results[3,2] = ICC3
- results[4,2] = ICC12
- results[5,2] = ICC22
- results[6,2] = ICC32
- results[1,3] <- results[4,3] <- F11  
- results[2,3] <- F21
- results[3,3] <-  results[6,3] <-  results[5,3] <- F31 <- F21 
- results[5,3] <- F21  
- results[1,4] <-   results[4,4] <- df11n
- results[1,5] <-    results[4,5] <-df11d
- results[1,6] <- results[4,6] <- p11
- results[2,4] <-  results[3,4] <-  results[5,4] <-  results[6,4] <- df21n
- results[2,5] <-  results[3,5] <-  results[5,5] <-  results[6,5] <- df21d
- results[2,6]  <- results[5,6] <-  results[3,6]  <-results[6,6] <- p21
+
+ results[,1] <- c("ICC1","ICC2","ICC3","ICC1k","ICC2k","ICC3k")
+ results[,2] <- c(ICC1,ICC2,ICC3,ICC12,ICC22,ICC32)
+ results[,3] <- c(F11,F21,F21,F11,F21,F21)
+ results[,4] <- c(df11n,df21n,df21n,df11n,df21n,df21n )
+ results[,5] <-   c(df11d, df21d, df21d, df11d, df21d, df21d ) 
+ results[,6] <- c(p11 ,p21, p21,  p11 ,p21,p21)
+ 
+ 
+ #  results[1,1] = "ICC1"
+#  results[2,1] = "ICC2"
+#  results[3,1] = "ICC3"
+#  results[4,1] = "ICC1k"
+#  results[5,1] = "ICC2k"
+#  results[6,1] = "ICC3k"
+ 
+ 
+#  results[1,2] = ICC1
+#  results[2,2] = ICC2
+#  results[3,2] = ICC3
+#  results[4,2] = ICC12
+#  results[5,2] = ICC22
+#  results[6,2] = ICC32
+
+ # results[1,3] <- results[4,3] <- F11  
+#  results[2,3] <- F21
+#  results[3,3] <-  results[6,3] <-  results[5,3] <- 
+#  results[5,3] <- F21  
+
+# results[1,4] <-   results[4,4] <-  df11n
+ 
+ #results[4,5] <- df11d
+ 
+# results[2,4] <-  results[3,4] <-  results[5,4] <-  results[6,4] <- df21n
+# results[2,5] <-  results[3,5] <-  results[5,5] <-  results[6,5] <- df21d
+# results[2,6]  <- results[5,6] <-  results[3,6]  <-results[6,6] <- p21
  
  #now find confidence limits
  #first, the easy ones
@@ -179,7 +193,7 @@ s.aov <- mod.lmer
  results[5,8] <- U3k
  
  #clean up the output
- results[,2:8] <- results[,2:8]
+# results[,2:8] <- results[,2:8]
  result <- list(results=results,summary=s.aov,stats=stats,MSW=MSW,lme = MS.df,Call=cl,n.obs=n.obs,n.judge=nj)
  class(result) <- c("psych","ICC")
  return(result)

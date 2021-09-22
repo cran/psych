@@ -65,7 +65,7 @@ Tetrachoric correlations infer a latent Pearson correlation from a two x two tab
 
 The data typically will be a raw data matrix of responses to a questionnaire scored either true/false (tetrachoric) or with a limited number of responses (polychoric).  In both cases, the marginal frequencies are converted to normal theory thresholds and the resulting table for each item pair is converted to the (inferred)  latent  Pearson correlation that would produce the observed cell frequencies with the observed marginals.  (See \code{\link{draw.tetra}} and \code{\link{draw.cor}} for  illustrations.)
 
-This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric may be specified using the options command. The greatest step in speed is going from 1 core to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
+This is a computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package.  The number of cores to use when doing polychoric or tetrachoric may be specified using the options command. The greatest step up in speed is going from 1 cores to 2.  This is about a 50\% savings.  Going to 4 cores seems to have about at 66\% savings, and 8 a 75\% savings.  The number of parallel processes defaults to 2 but can be modified by using the \code{\link{options}} command:  options("mc.cores"=4) will set the number of cores to 4.
 
 \code{\link{tetrachoric}} and \code{\link{polychoric}} can find non-symmetric correlation matrices of set of x variables (coluumns) and y variable (rows).  This is useful if extending a solution from a base set of items to a different set.  See \code{\link{fa.extension}} for an application of this.
 
@@ -89,7 +89,7 @@ biserial and polyserial correlations are the inferred latent correlations equiva
 
 The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{https://www.sapa-project.org/}) (Revelle et al. 2010, 2016, 2020)  with large amounts of missing data and no complete cases. See also the International Cognitive Ability Resource (\url{https://www.icar-project.org/}) for simiilar data.
 
-Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation. However, if either alpha or omega is used to find the reliability, this will be an overestimate of the squared correlation of a latent variable the observed variable.
+Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation. However, if either alpha or omega is used to find the reliability, this will be an overestimate of the squared correlation of a latent variable with the observed variable.
 
 A biserial correlation (not to be confused with the point-biserial correlation which is just a Pearson correlation) is the latent correlation between x and y where y is continuous and x is dichotomous but assumed to represent an (unobserved) continuous normal variable. Let p = probability of x level 1, and q = 1 - p.  Let zp = the normal ordinate of the z score associated with p.  Then, \eqn{rbi = r s* \sqrt(pq)/zp }.
 
@@ -160,6 +160,8 @@ For correct=FALSE, the results agree perfectly with John Fox's polycor function.
 
 
 Switched to using sadmvn from the mnormt package to speed up by 50\%. 
+
+Some small data sets with differing number of alternatives and missing values can lead to errors.  This seems to be solved by setting the correct=0 option.  
 }
 
 

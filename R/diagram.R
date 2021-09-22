@@ -57,12 +57,17 @@ extend = {extension.diagram(fit ,...)}
  "dia.ellipse" <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.05,xlim=c(0,1),ylim=c(0,1),draw=TRUE, ...) {
     if(draw) text(x=x, y = y, labels = labels,cex = cex, ...)
      len <- max(strwidth(labels),strwidth("abc"))/1.6
+     ht <-  max(strheight(labels),strheight("abc"))/1.0
      #vert <- cex*.3
      xs <- dia.ellipse1(x,y,xlim=xlim,ylim=ylim,e.size=e.size*len,draw=draw,...)
-     left <- c(x-xs,y)
+    # ys <- xs[2]
+    # xs <- xs[1]
+    ys <- xs* ht/len
+    
+     left <- c(x-xs,y)   #xs is a little too big
      right <- c(x+xs,y)
-     top <- c(x,y+xs)
-     bottom <- c(x,y-xs)
+     top <- c(x,y+ys)
+     bottom <- c(x,y-ys)
      center <- c(x,y)
     dia.ellipse <- list(left=left,right=right,top=top,bottom=bottom,center=center,radius=xs)
      }
@@ -77,12 +82,13 @@ extend = {extension.diagram(fit ,...)}
     xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
     xs <- e.size * xrange
-    #ys <- e.size * yrange
+    ys <- e.size * yrange
     ellipse <- unit.circle 
     ellipse[,1] <- ellipse[,1]*xs + x
-    ellipse[,2] <- ellipse[,2]*xs + y  #ys?
+    ellipse[,2] <- ellipse[,2]*ys + y  #ys?
    if(draw) lines(ellipse, ...)
-    return(xs)
+   # return(list(xs=xs,ys=ys))
+   return(xs)
 }
 
 #added to allow for fast drawing of multiple ellipses in fa.diagram and bassAckward diagram
@@ -94,12 +100,16 @@ dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xli
     unit.circle <- cbind(cos(angles), sin(angles))
     xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
-    xs <- e.size * xrange
-   xs  <- max(strwidth(labels,units="user"))*.55  #make the radius slightly bigger than .5 label
+   # xs <- e.size * xrange
+  
     ys <- max(strheight(labels,units="user"))  #*.55
     ellipse <- unit.circle 
-     ellipsex <- rep(x,each=(segments + 2)) + unit.circle[,1] * xs
+
+  
+   xs  <- strwidth(labels,units="user")*.6 #this makes the ellipse closer to left and right
+     ellipsex <- rep(x,each=(segments + 2)) + unit.circle[,1] * rep(xs,each=segments +2)
      ellipsey <- rep(y,each=(segments + 2))  + unit.circle[,2] *ys
+     
       lines(ellipsex,ellipsey)
 }
        

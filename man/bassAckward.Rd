@@ -9,10 +9,11 @@
 }
 \usage{
 bassAckward(r, nfactors = 1, fm = "minres", rotate = "oblimin", scores = "tenBerge",
-adjust=TRUE, plot=TRUE,cut=.3, use = "pairwise", cor = "cor", weight = NULL,
-correct = 0.5,...)
+   adjust=TRUE, plot=TRUE,cut=.3, use = "pairwise", cor = "cor", weight = NULL,
+   correct = 0.5,...)
 bassAckward.diagram(x,digits=2,cut = .3,labels=NULL,marg=c(1.5,.5,1.0,.5),
-main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...) 
+   main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,
+   values=FALSE,...) 
 }
 \arguments{
   \item{r}{A correlation matrix or a data matrix suitable for factoring}
@@ -44,6 +45,7 @@ main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...)
 \item{lr}{Should the graphic be drawn left to right or top to bottom}
 \item{curves}{Should we show the correlations between factors at the same level}
 \item{organize}{Rename and sort the factors at two lowest levels for a more pleasing figure}
+\item{values}{If TRUE, then show the percent variance accounted for by this factor.}
 \item{...}{Other graphic parameters (e.g., cex)}
 }
 \details{
@@ -69,6 +71,7 @@ item{fa}{A list of the factor loadings at each level}
 \item{r}{The correlation matrix analyzed}
 \item{Phi}{The factor correlations at each level}
 \item{fa}{The factor analysis loadings at each level, now includes Phi values }
+\item{fa.vac}{The variance accounted for by each factor at each level}
 }
 \references{
 Goldberg, L.R. (2006) Doing it all Bass-Ackwards: The development of hierarchical factor structures from the top down. Journal of Research in Personality, 40, 4, 347-358.
@@ -101,7 +104,7 @@ f.labels <- list(level1=cs(Approach,Avoid),level2=cs(PosAffect,NegAffect,Constra
 level3 = cs(Extraversion,Agreeableness,Neuroticism,Conscientiousness,Openness))
 
 ba <- bassAckward(psychTools::bfi[1:25],c(2,3,5),labels=f.labels,
-        main="bfi data set from psychTools")
+        main="bfi data set from psychTools", values=TRUE)
 print(ba,short=FALSE)
 #show the items associated with the 5 level solution
 fa.lookup(ba,dictionary=psychTools::bfi.dictionary)

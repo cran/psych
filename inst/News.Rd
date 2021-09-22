@@ -2,7 +2,7 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.1.4 (2021-04-10)}{ 
+\section{Changes in psych version 2.1.8 (2021-08-01)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
@@ -115,12 +115,53 @@
     \item Add ability to do N random restarts in rotations in fa
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models This is now done for sim and sim.minor, sim.hierarchical, others are in process. 
      
-    \item Fix fa.diagram so that factors are enclosed in ellipses (as they had been).  Reported by Mark Greenwood.
+  
   \item Possible problem in pooled correlations for statsBy
    \item Think about improvements in itemLookup to show means if desired
+   \item Fix bug in polychoric where it doesn't handle empty cells very well. (reported by Björn Büdenbender)
+ 
       }
   }
   }
+  
+   \section{Changes in psych version 2.1.9 (2021-09-21)}{ 
+     \subsection{Additions}{
+          \itemize{
+          \item Modified the call to splitHalf from reliability to allow for sampling of all possible splits in the case of n.items > 16.  The version released to CRAN (2.1.6) would unfortunately not complain if the n.items was too large and would cheerfully run for ever.
+    \item Also modified the reliablility function so it would not choke in the case of scales of size 1.
+    \item Changed splitHalf to only sample splits if the number of possible splits exceeds 10,000. (That means, if there are more than 16 items in a scale.)  This can be adjusted in splitHalf but not in the reliability function.
+
+  \item Modified error.dots when using dictionaries to pull the column with a name of c("Item","item","Content","content").  It had been limited to "Content".  This way you can use a full dictionary and not worry about the extra columns.
+  \item Improved bestScales so it will work with a dictionary more easily  
+   \item Two further tweaks to reliability:  it can be used on one scale without specifying keys. (Suggested by Tom Olino) and reports the unidimensionality statistic (u) 
+   \item Think about adding the test for number of factors function from xx  
+   \item Added factor.scores to the fa.extension so that we can do biplots  
+   \item Various tweaks to radar to allow for more complicated graphics.
+   \item Added the ability to plot the variance accounted in bassAckward.diagram
+   \item Improved the help page of ICC to explain why the Shrout and Fleiss estimates are the same as the McGraw and Wong estimates.
+   \item Minor modifications to reliability and split half to return scoring keys for the best and worst splits as lists, rather than vectors.  
+     \item Fix fa.diagram so that factors are enclosed in ellipses (as they had been).  Reported by Mark Greenwood.
+    \item Added the normal=FALSE option to corr.test to allow for more precise estimation of probability values for method="spearman" or method="kendall". (Suggested by James  Conigrave)  
+          }
+        }
+        
+   \subsection{Bugs Fixed}{
+   \itemize{
+       \item Added the ability to sort means correctly in item.lookup. 
+        \item Removed the char2numeric in cohen.d (added in version 2.0.12) in response to 
+        an error report from Frank Papenmeier.  It seems to have been an unneccessary fix to cohen.d.  
+        \item Change the d2t call in cohen.d to reflect differences in sample sizes (reported by Emil Kiergagard). Also am now passing the hedges.g value when finding t 
+    \item Fixed a slight disagreement between cohen.d and scatterHist for reporting the cohen.d. cohen.d was correct. 
+    \item Fixed bassAckward.diagram to draw boxes for components, ellipses for factors. 
+    \item divide n/2 in case of equal cell sizes in d.ci  #reported by Fred Oswald 
+           }
+  }
+  }
+  
+  
+  
+  
+  
   
    \section{Changes in psych version 2.1.6 (2021-06-20)}{ 
      \subsection{Additions}{

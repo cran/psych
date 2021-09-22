@@ -312,13 +312,13 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.file},  \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions.  Rotations and transformations of these solutions are done by calling the many rotations available in the \Rpkg{GPArotation} \citep{gpa.roration}.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions.  Rotations and transformations of these solutions are done by calling the many rotations available in the \Rpkg{GPArotation} package \citep{gpa.rotation}.
 
  Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
 
  Bifactor and hierarchical factor structures may be estimated by using Schmid Leiman transformations \citep{schmid:57} (\pfun{schmid}) to transform a hierarchical factor structure into a \iemph{bifactor} solution \citep{holzinger:37}.  Higher order models can also be found using \pfun{fa.multi}. 
  
- Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}  (\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
+ Scale construction can be done using the Item Cluster Analysis \citep{revelle:iclust} (\pfun{iclust}) function to determine the structure  and to calculate reliability coefficients $\alpha$ \citep{cronbach:51}  (\pfun{alpha}, \pfun{scoreItems}, \pfun{score.multiple.choice}), $\beta$ \citep{revelle:iclust,rz:09} (\pfun{iclust}) and McDonald's $\omega_h$ and $\omega_t$ \citep{mcdonald:tt} (\pfun{omega}). Guttman's six estimates of internal consistency reliability (\cite{guttman:45}, as well as additional estimates \citep{rz:09}, \citep{rc:pa} are in the  \pfun{guttman} function. The six measures of Intraclass correlation coefficients (\pfun{ICC}) discussed by \cite{shrout:79} are also available.
  
  For data with a a multilevel structure (e.g., items within subjects across time, or items within subjects across groups), the \pfun{describeBy}, \pfun{statsBy} functions will give basic descriptives by group.  \pfun{StatsBy} also will find within group (or subject) correlations as well as the between group correlation.
  
@@ -604,7 +604,7 @@ Yet another demonstration of  \pfun{pairs.panels}  is useful when you have many 
 %\begin{center}
 \begin{scriptsize}
 <<affect1>>=
-keys <- make.keys(msq[1:75],list(
+keys <- list(
 EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep",
        "lively", "-sleepy", "-tired", "-drowsy"),
  TA =c("intense", "jittery", "fearful", "tense", "clutched.up", "-quiet", "-still", 
@@ -612,8 +612,8 @@ EA = c("active", "energetic", "vigorous", "wakeful", "wide.awake", "full.of.pep"
 PA =c("active", "excited", "strong", "inspired", "determined", "attentive", 
           "interested", "enthusiastic", "proud", "alert"),
 NAf =c("jittery", "nervous", "scared", "afraid", "guilty", "ashamed", "distressed",  
-         "upset", "hostile", "irritable" )) )
-scores <- scoreItems(keys,msq[,1:75])
+         "upset", "hostile", "irritable" )) 
+scores <- scoreItems(keys,psychTools::msq[,1:75])
 #png('msq.png')
 # pairs.panels(scores$scores,smoother=TRUE,
 #  main ="Density distributions of four measures of affect" )
@@ -780,6 +780,29 @@ dev.off()
 \end{center}
 \end{figure}
 
+
+\clearpage
+\subsubsection{ScatterPlot Histograms}
+The \pfun{scatterHist} function shows scatter plots for two variables and includes histograms by a grouping variable (see Figure~\ref{fig:scatterHist}).  The data shown in the figure are from \cite{gruber:20} and the results are discussed by \cite{eagly:revelle}.  The data are in GERAS data set in the \Rpkg{psychTools} package.  
+\begin{figure}[!ht]
+\begin{center}
+\begin{scriptsize}
+   %  <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
+data(GERAS)
+<<scatterhist>>=
+png( 'scatterHist.png' )
+psych::scatterHist(F ~ M + gender, data=GERAS.scales, cex.point=.3,smooth=FALSE, 
+xlab="Masculine Scale",ylab="Feminine Scale",correl=FALSE, 
+d.arrow=TRUE,col=c("red","blue"), bg=c("red","blue"), lwd=4, title="Combined  M and F 
+scales",cex.cor=2,cex.arrow=1.25)
+dev.off()
+@
+\end{scriptsize}
+\includegraphics{scatterHist}
+\caption{A scatter plot with histograms for males and females on a scale developed by \cite{gruber:20}  and used in an article by \cite{eagly:revelle}. Two scales (Masculine and Feminine) show univariate sex differences as well as Mahalobinis distances.  }
+\label{fig:scatterHist}
+\end{center}
+\end{figure}
 
 
 \clearpage
@@ -1351,6 +1374,12 @@ Dwyer, P.~S. (1937).
   known factor loadings of other tests.
 \newblock {\em Psychometrika}, 2(3):173--178.
 
+
+\bibitem[\protect\astroncite{Eagly and Revelle}{2021}]{eagly:revelle}
+Eagly and Revelle (2021).
+\newblock Understanding the Magnitude of Psychological Differences Between Women and Men Requires Seeing the Forest and the Trees (in press)
+\newblock {\em Perspectives in Psychological Science},(in press)
+
 \bibitem[\protect\astroncite{Everitt}{1974}]{everitt:74}
 Everitt, B. (1974).
 \newblock {\em Cluster analysis}.
@@ -1371,6 +1400,12 @@ Garcia, D.~M., Schmitt, M.~T., Branscombe, N.~R., and Ellemers, N. (2010).
 Grice, J.~W. (2001).
 \newblock Computing and evaluating factor scores.
 \newblock {\em Psychological Methods}, 6(4):430--450.
+
+\bibitem[\protect\astroncite{Gruber et al. }{2020}]{gruber:20}
+Gruber, Freya M. and Distlberger, Eva and Scherndl, Thomas and Ortner, Tuulia M. and Pletzer, Belinda (2020)
+\newblock Psychometric properties of the multifaceted Gender-Related Attributes Survey (GERAS)
+\newblock {\em  European Journal of Psychological Assessment.}, 36, (4) 612-623
+
 
 \bibitem[\protect\astroncite{Guilford}{1954}]{guilford:54}
 Guilford, J.~P. (1954).
@@ -1489,11 +1524,11 @@ Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
-\bibitem[\protect\astroncite{Revelle}{2018}]{psych}
-Revelle, W. (2018).
+\bibitem[\protect\astroncite{Revelle}{2021}]{psych}
+Revelle, W. (2032).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 1.8.6
+\newblock R package version 2.1.9
 
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).
@@ -1501,12 +1536,16 @@ Revelle, W. ({in prep}).
   {R}}.
 \newblock Springer.
 
-\bibitem[Revelle and Condon, 2014]{rc:reliability}
-Revelle, W. and Condon, D.~M. (2014).
+\bibitem[Revelle and Condon, 2018]{rc:reliability}
+Revelle, W. and Condon, D.~M. (2018).
 \newblock Reliability.
 \newblock In Irwing, P., Booth, T., and Hughes, D., editors, {\em
-  Wiley-Blackwell Handbook of Psychometric Testing}. Wiley-Blackwell (in
-  press).
+  Wiley-Blackwell Handbook of Psychometric Testing}. Wiley-Blackwell 2018).
+
+\bibitem[Revelle and Condon, 2019]{rc:pa}
+Revelle, W. and Condon, D.~M. (2019).
+\newblock Reliability from alpha to omega: A tutorial. 
+\newblock  {\em Psychological Assessment}  31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
 
 
 \bibitem[\protect\astroncite{Revelle et~al.}{2011}]{rcw:methods}

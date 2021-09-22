@@ -1,6 +1,9 @@
+#modified 9/18/21 to find Kendall and Spearman probabilities
 "corr.test" <-
-function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE,minlength=5){
+function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE,minlength=5, normal=TRUE){
 cl <- match.call()
+
+if(normal) {     #the normal case 
 if(is.null(y)) {r <- cor(x,use=use,method=method)
  sym <- TRUE
 n <- t(!is.na(x)) %*% (!is.na(x))
@@ -13,11 +16,21 @@ t <- (r*sqrt(n-2))/sqrt(1-r^2)
 #p <- 2*(1 - pt(abs(t),(n-2)))
 p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  #suggested by Nicholas Clark 
 se <- sqrt((1-r*r)/(n-2))
+} else {temp <- prob.Kendall(x=x,y=y,method=method)
+if(is.null(y)) { sym <- TRUE
+    n <- t(!is.na(x)) %*% (!is.na(x))} else {sym <- FALSE
+    n <- t(!is.na(x)) %*% (!is.na(y))}
+r <- temp$r
+p <- temp$p
+
+se <- sqrt((1-r*r)/(n-2))
+}
 
 nvar <- ncol(r)
 
 p[p>1] <- 1
 pa <- p  #in case we don't do adjustments
+
 if (adjust !="none") {
   if (is.null(y)) {lp <- upper.tri(p)  #the case of a symmetric matrix  (remember upper.tri =! lower tri)
      pa <- p[lp]
@@ -204,6 +217,45 @@ return(result)
     return(stars)
  }
  
- 
 
+#added 9/18/21 to find Spearman and Kendall probabilities 
+prob.Kendall <- function(x=x,y=NULL,method=c("kendall","spearman"),continuity=FALSE) {
+
+ exact <- FALSE
+ alternative <- "two.sided"
+
+ nvar <- NCOL(x)
+if(!is.null(y)) {nvary <- NCOL(y)
+   sym <- FALSE} else {nvary<- nvar
+   sym <- TRUE}
+  r <- diag(.5,nvar,nvary)
+  p <- diag(0,nvar,nvary)
+if(sym) {
+ for(i in 2:(nvar) ) {
+  xi <- x[,i]
+    for (j in 1:(i-1)){    
+      yj <- x[,j]
+      temp <- cor.test(xi,yj,method,alternative=alternative,exact=exact)  
+      r[i,j] <- temp$estimate
+     p[i,j]<- temp$p.value 
+    }
+   }
+ r <- r + t(r)
+ p <- p + t(p)
+} else {
+for (i in 1:nvar) {
+ if(nvar > 1) {xi <- x[,i]} else {xi <- x}  #the weird case of a single variable
+  for (j in 1: nvary) {
+  if(nvary > 1) {yj <- y[,j]} else { yj <- y}
+  temp <- cor.test(xi,yj,method,alternative=alternative,exact=exact)  
+      r[i,j] <- temp$estimate
+     p[i,j]<- temp$p.value 
+  }}
+  }
+rownames(r) <- rownames(p) <- colnames(x)
+if(is.null (y) ) {colnames(r) <- colnames(p) <- colnames(x)} else {colnames(r) <- colnames(p) <- colnames(y)}
+result <- list(r=r,p=p)
+return(result)    
+ }  
+        
 

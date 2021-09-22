@@ -75,7 +75,13 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
                       des <- NULL},
     cohen.d = {des <- x$cohen.d[,"effect"]
              se <- x$se
-             if(!is.null(x$dict)) {names <- x$dict[,]} else {names <- rownames(x$cohen.d)}
+             
+             if(!is.null(x$dict)) {
+             cn <- colnames(x$dict)[which(colnames(x$dict) %in% c("Content","Items","content","item","Items"))]
+            # names <- x$dict %in% c("Content","Items","content","item","Items")
+             names <- x$dict[,cn]
+            # names <- x$dict[,"Content"]
+             } else {names <- rownames(x$cohen.d)}
                 x <- des
                 names(x) <- names
                 sd <- TRUE #use these values for the confidence intervals

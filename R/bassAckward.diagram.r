@@ -2,31 +2,36 @@
 #fixed a problem of plotting in wrong order   8/20/20
 #perhaps finally fixed the variables to appear in the right order for both lr and vertical mode  09/12/20
 bassAckward.diagram <- function(x,digits=2,cut = .3,labels=NULL,marg=c(1.5,.5,1.0,.5),
-main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,...) {
+main="BassAckward",items=TRUE,sort=TRUE,lr=TRUE,curves=FALSE,organize=TRUE,values=FALSE,...) {
  old.par<- par(mar=marg)  #give the window some narrower margins
     on.exit(par(old.par))  #set them back
 
+if(x$fm == "pca") {pca <-TRUE} else {pca <- FALSE}  #added 19/08/21 to draw boxes for components
 if(organize) x <- ba.organize(x)    
 nf = length(x$bass.ack) #this counts how many results are there
 if(!items) nf <- nf-1
 if(sort){ x$bass.ack[[nf]] <- fa.sort(x$bass.ack[[nf]])
        x$labels[[nf]] <- rownames(x$bass.ack[[nf]]) }
+       
 if(lr) {ylim <- c(0,NROW(x$bass.ack[[nf]]))   #this is the number of variables 
-xlim <- c(-1,(nf-2)) } else {xlim <- c(0,NROW(x$bass.ack[[nf]]))
-ylim <- c(-1,(nf-2))}
+	    xlim <- c(-1.1,(nf-1.9)) } else {xlim <- c(.9,NROW(x$bass.ack[[nf]]))
+        ylim <- c(-1.1,(nf-1.9))}
 lower <- list()
 upper <- list()
 if(is.null(labels)) labels <- x$labels
-labels[[nf]] <- x$labels[[nf]]  #this puts in the bottom row/left hand side (the items) 
+if(values) labels<- add.values(labels,x$fa.vac , lr = lr)
+if(items) labels[[nf]] <- x$labels[[nf]]  #this puts in the bottom row/left hand side (the items) 
 plot(0,type="n",xlim=xlim,ylim=ylim,frame.plot=FALSE,axes=FALSE,ylab="",xlab="",main=main)
 #first draw the bottom row
 nvar <- NROW(x$bass.ack[[nf]])
 max.var <- nvar
 rname <- labels[[nf]] 
+
+
 if(lr) {
 	all.rects.x <- rep(-1,nvar)
-	#all.rects.y <- seq(1:nvar)  #this was not doing it before  (seq(nvar:1) was wronge)
-	all.rects.y <- seq(nvar,1, -1 )  #this was not doing it before  (seq(nvar:1) was wronge)
+	
+	all.rects.y <- seq(nvar,1, -1 ) #top to bottom numbering
 	all.rects.rname <- rname[1:nvar] 
 	} else {
  	all.rects.y <- rep(-1,nvar)
@@ -35,15 +40,17 @@ if(lr) {
 	all.rects.rname <- rname[seq(1, nvar, 1)] }
 
 
-
 #first define the various locations but don't draw them
  for(j in 1:nvar) {
-   if(lr) {lower [[j]] <- dia.rect(-1, nvar - j + 1, rname[ nvar - j + 1],draw=FALSE,...) } else {lower [[j]] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}
+   if(lr) {lower [[j]] <- dia.rect(-1, nvar - j + 1, rname[ j],draw=FALSE,...) } else {lower [[j]] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}
   #  if(lr) {lower [[j]] <- dia.rect(-1,j , rname[j],draw=FALSE,...) } else {lower [[j]] <- dia.rect(j,-1, rname[j],draw=FALSE,...)}  #12/07/20
  
  
  } 
-dia.rect(all.rects.x, all.rects.y,all.rects.rname)  #now draw them 
+ #if either the bottom (item) row or pca draw rectangles. otherwise ellipses
+if(pca | items) {dia.rect(all.rects.x,all.rects.y,all.rects.rname) } else {
+ dia.multi.ellipse(all.rects.x,all.rects.y,all.rects.rname) }
+
 
 #now draw the next row and then repeat until the top 
 
@@ -58,9 +65,12 @@ if(lr) {
 	all.rects.y <- seq(nvar,1,-1) * scale
 	all.rects.rname <- labels[[j-1]]
 	} else {
+
  	all.rects.y <- rep(nf-j,nvar)
 	all.rects.x <- seq(1:nvar) *scale
 	all.rects.rname <- labels[[j-1]] }
+
+
 
 for(i in 1:nvar) {  #which is actually the number of lower level variables or factors
   cname <- labels[[j-1]]
@@ -69,8 +79,9 @@ for(i in 1:nvar) {  #which is actually the number of lower level variables or fa
     if(lr) {upper[[i]] <-  dia.ellipse(nf-j,(nvar-i + 1) *scale, labels= cname[i],draw=FALSE,e.size=1,...)} else {  upper[[i]] <-  dia.ellipse(i*scale,nf-j, labels= cname[i],draw=FALSE,e.size=1,...) }
     
     }
-#dia.rect(all.rects.x,all.rects.y,all.rects.rname)
- dia.multi.ellipse(all.rects.x,all.rects.y,all.rects.rname) 
+    
+if(pca) {dia.rect(all.rects.x,all.rects.y,all.rects.rname) } else {    #this makes all the ellipses the same size, but we need to adjust the limits to match the ellipses
+ dia.multi.ellipse(all.rects.x,all.rects.y,all.rects.rname) }
   #connect them and then put  in the correlation values
 
 text.values <- list()     #save the text values from the arrows
@@ -80,7 +91,6 @@ if(length(x$Phi)>0) {Phi <- x$Phi[[j-1]]} else {Phi <- NULL}
 nfact  <- NROW(x$bass.ack[[j]])
 
  if(!is.null(Phi) && (ncol(Phi) >1) && curves) {
-
 
    if(i < nvar) {for(k in ((i+1):(nvar))) {
      if(abs(Phi[i,k]) > cut) {
@@ -94,16 +104,12 @@ for(k in 1:nfact) {
 if(abs(x$bass.ack[[j]][k,i]) >  cut ) { #just draw the large loadings
    value <- x$bass.ack[[j]][k,i]
    
-   if(lr) {#text.values[[ki]] <- dia.arrow(upper[[nvar-i +1]]$left,lower[[nfact-k+1]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
-            #                   col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
-            text.values[[ki]] <- dia.arrow(upper[[i ]]$left,lower[[k]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
-                               col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
+   if(lr) { text.values[[ki]] <- dia.arrow(upper[[i ]]$left,lower[[k]]$right,adj=((i-k) %% 3)   ,labels = round(value,digits),
+                                 col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)
    												
    } else {
      text.values[[ki]] <-  dia.arrow(upper[[i]]$bottom,lower[[k]]$top,adj=((i-k) %% 3)   ,labels = round(value,digits),
                               col=(sign(value <0) +1),lty=(sign(value<0)+1),draw=FALSE,...)}
- 
-  #text.values <- list(x0,y0,xr,yr,  length = (both+0) * .1*scale, angle = 30, code = 1, xl,yl,xe,ye, length2 = 0.1*scale, angle = 30, code2 = 2)
    ki <- ki +1 
 } 
    
@@ -113,12 +119,17 @@ if(abs(x$bass.ack[[j]][k,i]) >  cut ) { #just draw the large loadings
 }
 
 tv <- matrix(unlist(text.values),byrow=TRUE,ncol=21)
+
+
+
 text(tv[,1],tv[,2],tv[,3]) # ,tv[,5])    #don't use the adj parameter
       arrows(x0=tv[,6],y0=tv[,7],x1=tv[,8],y1=tv[,9],length=tv[1,10],angle=tv[1,11],code=1,col=tv[,20],lty=tv[,21])
         arrows(x0=tv[,13],y0=tv[,14],x1=tv[,15],y1=tv[,16],length=tv[1,17],angle=tv[1,18],code=2,col=tv[,20],lty=tv[,21])
 
 
-lower <- upper
+lower <- upper #go on to the next level
+upper <- list()  #zeros it out 
+
 
 }
 invisible(x)
@@ -146,3 +157,15 @@ x$bass.ack[[nf-1]] <- level1 } else {nf <- level  #just organize the factors, no
 }
 return(x)
 }
+
+
+add.values <- function(labels=NULL,values=NULL,lr=FALSE) {
+nlab <- length(labels)
+if(length(values) < nlab) nlab=length(values)
+for (i in 1:nlab) {
+ attributes(values[[i]]) <- NULL
+ if(lr) {labels[[i]] <- paste(labels[[i]]," ",round(values[[i]],2))} else {labels[[i]] <- paste(labels[[i]],"\n",round(values[[i]],2))}
+  }
+return(labels)
+}
+

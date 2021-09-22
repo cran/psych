@@ -1,5 +1,7 @@
 #November 30, 2013
 #parts adapted from combn
+#modified 6/20/21 to just do the unique splits if < 10,000
+#modified 9/7/21 to handle keys as lists of variable names with negative signs
 "splitHalf"<- 
 function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,ci=.05,use="pairwise") {
 cl <- match.call()
@@ -15,6 +17,7 @@ Rab <- R[1,2]/sqrt(R[1,1]*R[2,2])
 rab <- 4*R[1,2]/sum(R)
 result <- list(rab=rab,AB=AB)}
 
+#if(!is.null(key)) {r <- r[,selectFromKeys(key)]}
 v.names <- colnames(r)
 keys <- key   
 maxrb <- -9999
@@ -31,7 +34,10 @@ if(check.keys && is.null(keys)) {
             keys <- 1- 2* (p1$loadings < 0 ) 
             }  #keys is now a vector of 1s and -1s
             
-         if(is.null(keys)) {keys <- rep(1,n)} else {  
+         if(is.null(keys)) {keys <- rep(1,n)} else {     #in case keys is a list, we need to tranform to a keys vector 
+            if(is.character(keys))  {temp <- rep(1,n)
+                  temp[which(strtrim(keys,1)=="-")] <- -1
+                  keys <- temp } 
          			keys<- as.vector(keys) 
          			if(length(keys) < n) {temp <- keys  #this is the option of keying just the reversals
          			                         keys <- rep(1,n)
@@ -42,7 +48,7 @@ if(check.keys && is.null(keys)) {
                      r <- key.d %*% r %*% key.d
                      signkey <- strtrim(keys,1)
             		 signkey[signkey=="1"] <- ""
-                     colnames(r) <- paste(colnames(r),signkey,sep="")
+                     colnames(r) <- paste(signkey,colnames(r),sep="")
 
 e <- 0
 m <- n2
@@ -66,7 +72,7 @@ a <- seq_len(m)
 #count <- as.integer(round(choose(n, m)))/2 #doesn't work for very large values of n.
 count <- round(choose(n, m))/2
 
-if(brute || ((count <= n.sample) && !raw)) {    #brute force -- try all combinations
+if(brute || ((count <= n.sample))) {    #brute force -- try all combinations
 brute <- TRUE 
  if(raw) result <- rep(NA,count)  #keep the results if raw
  #first do the original order
@@ -123,9 +129,11 @@ for (i in 1:n.sample) {
 if(brute) {meanr <- sumr/count } else {meanr <- sumr/n.sample }
 
 kd <- diag(key.d)    #reverse them so we can use the keys
-maxAB = maxAB * kd
+maxAB =maxAB * kd
 minAB = minAB * kd
 rownames(maxAB) <- rownames(minAB) <- v.names
+maxAB <- keys2list(maxAB)
+minAB <- keys2list(minAB)
 if(!anyNA(result))  {
 ci <- quantile(result,c(ci/2,.5, 1 - ci/2))} else {ci <- rep(NA,3) }
 if(raw) {

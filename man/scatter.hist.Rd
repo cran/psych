@@ -13,7 +13,7 @@ xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid
 xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
 x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
 col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21, show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,...)
+   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...)
  
 scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
 means=TRUE, ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,
@@ -22,7 +22,7 @@ xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid
 xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
 x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
 col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21, show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,...)
+   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...)
 }
 \arguments{
   \item{x}{The X vector, or the first column of a  data.frame or matrix. Can be specified using formula input.  }
@@ -65,6 +65,7 @@ col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21, show.d=TRUE,
   \item{d.arrow}{If TRUE, draw an arrow between the two centroids}
   \item{x.arrow}{optional lable for the arrow connecting the two groups for the x axis}
   \item{y.arrow}{optional lable for the arrow connecting the two groups for the y axis}
+  \item{cex.arrow}{cex control for the label size of the arrows.}
   \item{\dots}{Other parameters for graphics}
 }
 \details{Just a straightforward application of layout and barplot, with some tricks taken from \code{\link{pairs.panels}}.  The various options allow for correlation ellipses (1 and 2 sigma from the mean), lowess smooths, linear fits, density curves on the histograms, and the value of the correlation.  ellipse = TRUE implies smooth = TRUE.  The grid option provides a background grid to the scatterplot.
@@ -77,7 +78,7 @@ For plotting data for two groups, Mahalobnis differences between the groups may 
 }
 \author{William Revelle}
 \note{
-Originally  from Addicted to R example 78.  Modified following some nice suggestions from Jared Smith. Substantial revisions in 2021 to allow for a clearer demonstration of group differences 
+Originally adapted from Addicted to R example 78.  Modified following some nice suggestions from Jared Smith. Substantial revisions in 2021 to allow for a clearer demonstration of group differences.    
 }
 
 \seealso{\code{\link{pairs.panels}} for multiple plots, \code{\link{multi.hist}} for multiple histograms.

@@ -28,6 +28,7 @@
 r.n <- list()
 fa <- list()
 Phi <- list()
+fa.Vaccounted <- list()
 num.fac <- length(nfactors)
 if (num.fac == 1L) { num.fac <- nfactors 
         nfactors <- 1:num.fac}
@@ -43,6 +44,7 @@ fn <- pca(r,nfactors[nf],rotate=rotate)
 colnames(fn$loadings) <-    paste0("C",1:ncol(fn$loadings))
 fa[[nf]] <- fn$loadings
 Phi[[nf]] <- fn$Phi
+fa.Vaccounted[[nf]] <- fn$Vaccounted[2,]
 pcn.weights <- fn$weights
 colnames(pcn.weights) <- paste0("C",1:ncol(pcn.weights))
 colnames(pc$weights) <- paste0("C",1:ncol(pc$weights))
@@ -61,6 +63,7 @@ colnames(fn$loadings) <-  paste0("F",1:ncol(fn$loadings))
 fa[[nf]] <- fn$loadings
 Phi[[nf]] <- fn$Phi
 fn.weights <- fn$weights
+fa.Vaccounted[[nf]] <- fn$Vaccounted[2,]
 colnames(fn.weights) <- paste0("F",1:ncol(fn$weights))
 colnames(f$weights) <- paste0("F",1:ncol(f$weights))
 
@@ -102,7 +105,7 @@ f <- fn
 }
 
 #Now summarize the results 
-sumlist <-  sumnames <- labels <- list()
+sumlist <-  sumnames <- labels <-  list()
 fa.loading.phi <-list()
 for(f in 1:nf) {
 sumlist[[f]] <- apply(r.n[[f]],2,function(x) {which(max(abs(x))==abs(x))})
@@ -111,14 +114,14 @@ labels[[f]] <- rownames(r.n[[f]])
 if(length(Phi)>0) { #added this check March 3, 2020 
 fa.loading.phi [[f]] <-list(loadings = fa[[f]],Phi=Phi[[f]])} else {
 fa.loading.phi [[f]] <-list(loadings = fa[[f]],Phi=NA) }
-
 class(fa.loading.phi[[f]]) <- cs(psych,fa)
 }
 labels[[nf+1]] <- rownames(fn$loadings)
 r.n[[nf+1]] <- fn$loadings
 
 
-result <- list(Call=cl,fm=fm,bass.ack= r.n,Phi=Phi,r = r,summary=sumlist,sumnames=sumnames,labels =labels,fa=fa.loading.phi)
+result <- list(Call=cl,fm=fm,bass.ack= r.n,Phi=Phi,r = r,summary=sumlist,sumnames=sumnames,labels =labels,fa=fa.loading.phi,
+        fa.vac=fa.Vaccounted)
 class(result) <- c("psych","bassAck")
 if(plot) bassAckward.diagram(result,cut=cut,...)
 return(result)

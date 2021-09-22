@@ -1,5 +1,5 @@
 
-
+#modified 7/25/21 to report factor scores so that we can use biplot on the exensions.\
 "fa.extension" <-
   function(Roe,fo,correct=TRUE) {
  cl <- match.call()
@@ -57,6 +57,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
       n.obs <- nrow(r)
          np.obs.r <- pairwiseCount(r)[nv,nv]
          np.obs <- np.obs.r[ov,ov]
+         data <- r  #if we want to find factor scores
        # r <- cor(r,use='pairwise') 
        switch(cor, 
        cor = {r <- cor(r,use=use) },   #does not include the weight option from fa 
@@ -75,7 +76,8 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
  if(omega) {fo <- omega(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
        fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,...)}
          
-    } else {  #the case of a correlation matrix         
+    } else {  #the case of a correlation matrix  
+       data <- NULL       
        R <- r[ov,ov]
        np.obs.r <- np.obs
       if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
@@ -99,6 +101,7 @@ if(omega) result$schmid$sl <- foe
     result$fm <- fm  #remember what kind of analysis we did
     
     result$fo=fo
+    if(!is.null(data)) result$scores <- factor.scores(data[,ov],fo)
     if(omega) {result$schmid$sl <- foe
               result$schmid$gloading <- fo$schmid$gloading
               result$schmid$oblique <- oblique
@@ -109,6 +112,7 @@ if(omega) result$schmid$sl <- foe
     result$Phi=fo$Phi
     result$fn="fa"
     result$Call=cl
+
 class(result) <- c("psych","extend")
 return(result)
 }

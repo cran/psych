@@ -87,7 +87,7 @@ To create a dictionary, create an object with row names as the item numbers, and
 
 f5 <- fa(psychTools::bfi,5)
 m <- colMeans(psychTools::bfi,na.rm=TRUE)
-item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2])
+item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2,drop=FALSE])
  #just show the item content, not the source of the items
 fa.lookup(f5,dictionary=psychTools::bfi.dictionary[2]) 
 

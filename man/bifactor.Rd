@@ -50,7 +50,7 @@ The two Bechtoldt data sets are two samples from Thurstone and Thurstone (1941).
 
 Two more data sets with  similar structures are found in the \code{\link{Harman}} data set.  This includes the another 9 variables (with 696 subjects) from Holzinger used by Harman \code{link{Harman.Holzinger}} as well as 8 affective variables from \code{link{burt}}. 
 
-Another data set that is worth examining for tests of bifactor structure is the holzinger.swineford  data set which includes the original data from Holzinger and Swineford (1939) supplied by Keith Widaman.  This is in  psychTools.1.9.11 or later.
+Another data set that is worth examining for tests of bifactor structure is the holzinger.swineford  data set which includes the original data from Holzinger and Swineford (1939) supplied by Keith Widaman.  This is in the  psychTools package.
 
 
 
@@ -104,7 +104,7 @@ Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika
 
 For the Holzinger 14 tests these were found from 1- t2 where t = c(.332, .517, .360, .382, .354,.249, .444, .393, .455, .424, .393, .487, .534, .382) (page  53) and thus the reliabilities were 0.890, 0.733, 0.870, 0.854, 0.875, 0.938, 0.803, 0.846, 0.793, 0.820, 0.846, 0.763, 0.715, 0.854. 
 
-For the Holzinger.9 tests, the reliabilities for the Grant-White tests were: .76, .57, .94, .65, .75, .87, .95, .84 and .89 (Keith Widamn, personal communication, 2020),
+For the Holzinger.9 tests, the reliabilities for the Grant-White tests were: .76, .57, .94, .65, .75, .87, .95, .84 and .89 (Keith Widaman, personal communication, 2020),
 }
 
 

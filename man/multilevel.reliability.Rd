@@ -119,7 +119,7 @@ Bolger, Niall and Laurenceau, Jean-Phillippe, (2013) Intensive longitudinal mode
 
 Cranford, J. A., Shrout, P. E., Iida, M., Rafaeli, E., Yip, T., \& Bolger, N. (2006). A procedure for evaluating sensitivity to within-person change: Can mood measures in diary studies detect change reliably? Personality and Social Psychology Bulletin, 32(7), 917-929.
 
-Revelle, W. and Condon, D. M. (2018) Reliability. 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
 
 Revelle, W. and Wilt, J. (2017) Analyzing dynamic data: a tutorial. Personality and Individual Differences. DOI: 10.1016/j.paid.2017.08.020
 

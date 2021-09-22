@@ -3,9 +3,9 @@ function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,mean
    xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
    x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21,
    show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,...) {
+   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...) {
 old.par <- par(no.readonly = TRUE) # save default 
- grp <- NULL
+ sb <- grp <- NULL
  main <- title
  if(inherits(x, "formula")) {  ps <- fparse(x)
    formula <- TRUE
@@ -52,7 +52,6 @@ if(missing(ylab)) { ylab <- colnames(y) }
 if(is.null(grp)) grp <-1 
 #if((length(pch) ==1 )&&(pch ==".")) pch <- 45     #this is kludge because we add 1 to pch later
 
-
 if(NROW(grp) > 1) { byGroup <- TRUE
    dx <- by(x,grp,function(xx) density(xx, adjust=1,na.rm=TRUE))
    dy <- by(y,grp,function(xx) density(xx, adjust=1,na.rm=TRUE))     #what does adjust do?  I am copying this from my densityBy function
@@ -62,8 +61,8 @@ if(NROW(grp) > 1) { byGroup <- TRUE
    y.sd <-  by(y, grp, function (xx) sd(xx, na.rm=TRUE))
     x.n <-by(x,grp,function(xx) sum(!is.na(xx)))
     y.n   <-by(y,grp,function(xx) sum(!is.na(xx)))
-    x.d <-  (x.means[1]-x.means[2])/sqrt(((x.sd[1]^2*x.n[1]+ x.sd[2]^2* x.n[2]))/(x.n[1] + x.n[2])) 
-   y.d <-  (y.means[1]-y.means[2])/sqrt(((y.sd[1]^2*y.n[1]+ y.sd[2]^2* y.n[2]))/(y.n[1] + y.n[2])) 
+    x.d <-  (x.means[2]-x.means[1])/sqrt(((x.sd[1]^2*(x.n[1]-1))+ x.sd[2]^2* (x.n[2]-1))/(x.n[1] + x.n[2]))   #changed to n-1 7/29/21 
+   y.d <-  (y.means[2]-y.means[1])/sqrt(((y.sd[1]^2*(y.n[1]-1)+ y.sd[2]^2* (y.n[2]-2)))/(y.n[1] + y.n[2])) 
    
    R.inv <- solve(sb$rwg)
    dist <- c(x.d,y.d)
@@ -79,7 +78,9 @@ if(NROW(grp) > 1) { byGroup <- TRUE
   
   dx.max <- max(dx.max, dx[[i]]$y)
   dy.max <- max(dy.max, dy[[i]]$y)}
-} else {byGroup <- FALSE}
+} else {byGroup <- FALSE
+      x.means <- y.means <-x.d <- y.d<- stats<- NA   #give them a value so we have something to report in the results
+      }
 
                                    
 xrange <- range(x,na.rm=TRUE)
@@ -127,7 +128,7 @@ if(ellipse) {
   ellipses(x.grp,y.grp,smooth=FALSE,add=TRUE,n=1,size=size,col=col[i],...)
 
  }
-if(d.arrow) dia.arrow(c(x.means[1],y.means[1]), c(x.means[2],y.means[2]),labels=round(Md,2),both=TRUE)
+if(d.arrow) dia.arrow(c(x.means[1],y.means[1]), c(x.means[2],y.means[2]),labels=round(Md,2),both=TRUE,cex=cex.arrow)
 } else {
    #do something (but how?)
   # xy <- cbind(x,y,grp)
@@ -155,7 +156,9 @@ par(mar=c(.75,4,2,1))  #the left and right here should match the left and right 
 
 
 if(byGroup) {
-plot(dx[[1]],main=main,xlim=xrange,axes=FALSE,ylim =c(0,dx.max))
+
+plot(dx[[1]],main="",xlim=xrange,axes=FALSE,ylim =c(0,dx.max))
+title(main,...)
 
  for (i in 1:length(dx)) {
    if(freq) {scal <- dx[[i]]$n
@@ -170,7 +173,7 @@ plot(dx[[1]],main=main,xlim=xrange,axes=FALSE,ylim =c(0,dx.max))
       }
  
   if(!is.null(x.arrow)) {    
-  dia.arrow(c(x.means[1],.2*max(dx[[1]]$y)), c(x.means[2],.2*max(dx[[1]]$y)),labels=x.arrow,both=TRUE)}
+  dia.arrow(c(x.means[1],.2*max(dx[[1]]$y)), c(x.means[2],.2*max(dx[[1]]$y)),labels=x.arrow,both=TRUE,cex=cex.arrow)}
   
 } else {
 if(freq) { mp <- barplot(xhist$counts, axes=x.axes, space=x.space,xlab=xlab.hist)} else { mp <- barplot(xhist$density, axes=x.axes, space=x.space,xlab=xlab.hist)}
@@ -186,7 +189,7 @@ if(freq) { mp <- barplot(xhist$counts, axes=x.axes, space=x.space,xlab=xlab.hist
 
 }
  
- title(title)
+# title(title,cex=cex.title)   #doesn't actually do anything
 
 #now show the y axis densities
 par(mar=c(5,0.5,1,2))        #the location for the y density 
@@ -217,7 +220,7 @@ if(byGroup) {
       }
       
        if(!is.null(y.arrow)) {    
-  dia.arrow(c(.2*max(dx[[1]]$y),y.means[1]), c(.2*max(dx[[1]]$y), y.means[2]),labels=y.arrow,both=TRUE)}
+  dia.arrow(c(.2*max(dx[[1]]$y),y.means[1]), c(.2*max(dx[[1]]$y), y.means[2]),labels=y.arrow,both=TRUE,cex=cex.arrow)}
 
   
   
@@ -249,18 +252,23 @@ med.y <- median(y,na.rm=TRUE)
 if(missing(method)) method <- "pearson"
  r = (cor(x, y,use="pairwise",method=method))
 # txt <- format(c(r, 0.123456789), digits=digits)[1]
-txt <- paste0("r = ", round(r,digits))
+txt <- paste0("r = ", round(r,digits),"\n")
  if(missing(cex.cor)) {cex <- 0.75/strwidth(txt)} else {cex <- cex.cor}
-  text(1,1, txt,cex=cex)} else {
+  text(1,1, txt,cex=cex)
+  if(!is.null(sb))text(1,.8,paste0("r wg =",round(sb$rwg[1,2],2) ),cex=.8*cex)} else {
   plot(1,1,type="n",axes=FALSE)
   if(!is.null(Md) ) {
   
-  txt <- paste0("Md = ",round(Md,2),"\n")
+  txt <- paste0("D = ",sprintf("%.2f",round(Md,2)),"\n")
   if(missing(cex.cor)) {cex <- 0.75/strwidth(txt)} else {cex <- cex.cor}
-  text(1,1,txt,cex=cex)}
-  text(1,.8,paste0("r wg =",round(sb$rwg[1,2],2) ),cex=cex)
+  text(1,1,txt,cex=cex)
+  #text(1,.8,paste0("r wg =",round(sb$rwg[1,2],2) ),cex=cex)
   }
+  }
+  
+  result <- list(x.means=x.means,y.means=y.means,x.d=x.d, y.d = y.d,stats=sb)
 par(old.par)
+invisible(result)
 }
 #version of March 7, 2011
 #revised Sept 7, 2013 to include method option in cor

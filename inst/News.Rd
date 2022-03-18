@@ -98,7 +98,7 @@
    \item Need to fix bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
   \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn). Partly done in omega, but there are problems associated with the entire problem of factor scores. 
  
-   \item Fix a bug in alpha when finding averager R  (need to use cor rather than cov2cor when treating missing data)
+   \item Fix a bug in alpha when finding average R  (need to use cor rather than cov2cor when treating missing data)
    
     \item Add weight option to statsBy (but the question is how to handle missing data)
    
@@ -112,18 +112,76 @@
       \item scoreIrt.2pl needs to be able to adjust for group differences correctly
      
     \item scoreIrt does not work unless keys are specified for nf > 1 (reported by Andrew Olney)
-    \item Add ability to do N random restarts in rotations in fa
+   
      \item Add the ability to return the true scores for subjects when simulating structures.  This will help fitting reliability models This is now done for sim and sim.minor, sim.hierarchical, others are in process. 
      
   
   \item Possible problem in pooled correlations for statsBy
    \item Think about improvements in itemLookup to show means if desired
    \item Fix bug in polychoric where it doesn't handle empty cells very well. (reported by Björn Büdenbender)
+   
+   \item Fix bug in mediate for multiple dependent variables (reported by Martin Zeschke)
+   \item Add option in fa to do multiple restarts of rotation (following suggestion by Niels Waller)
+  
  
+  
+  
+   \item scoreItem should find the mean item correlation with na.rm=TRUE (Liz D)
+   \item  create a scoreFastBy  
+   \item improve the help menu for sim.multi  and return the latent values 
+ \item think about linking person scores to item difficulty scores in IRT
+ \item Left justify content in lookupItems  (not sure how to do this)
+ 
+ \item Consider using the Jennrich approach to standard errors of rotated loadings
+ 
+  \item Improve the documentation for sim.minor to reflect the MacCallum paper.  Improve the code so that it screens for impossible models.
+  
+ 
+ \item Still need to fix mediate to handle more than 1 DVs
+  
+  \item Possible problem with the use of try  in several functions.
+ 
+     
       }
   }
   }
   
+   \section{Changes in psych version 2.2.3 (2022-03-15)}{ 
+     \subsection{Additions}{
+          \itemize{
+           \item Added ability to do N random restarts in rotations in fa and added the faRotations function to do this more easily
+             \item Added a hyperplane count statistic to the output of fa (following Niels Waller), especially if we do multiple rotations.
+          \item Added congruence (aka cohen.profile) to find profile similarities and general congrucences.
+          \item Added scoreBy to find scores for multiple subjects from statsBy (requested by Lizz Dworak)
+           \item Add variance accounted for for each variable in setCor (requested by Pierre-Emmanueal Encinar)
+            \item Added a citation to grieder (2021) for a comparison of fa to SPSS
+             \item Added a comment in fa help that oblimin as implemented is a quartimin solution with delta =0
+             \item Added formula input to partial.r
+             \item Added m2d to find Cohen.d from two means and 2 sigmas (and 2 ns if desired)
+        \item Added bigCor and pairwiseCountBig to speed up correlations for large data sets.  This takes advantage of the multiple cores available on Macs.  bigCor is also useful for very large data sets even without multiple cores.
+        \item Modified setCor to just zero center the independent variables when taking product terms.  (Suggested by Keith Widaman)
+        \item Added the confidence intervals for hedges g in cohen.d
+         \item  Changing the name of categorical variables to *variable leads to problems. Added the flag option to not change the names in char2numeric
+           }
+           }
+           
+     \subsection{Bugs fixed}{
+       \itemize{
+          \item  Fixed sim.multi to generate more than two factors (reported by Lizz Dworak)
+           \item Fixed reliability so that it doesn't give hopeless split halfs -- was incorrectly keying items.
+           \item Fixed p value in mardia (don't multiply by 2!).  Reported by Malen Roberts 
+           \item Fixed the estimate of VIF for raw and unstandardized data
+            \item Fixed reliability so that it will work from correlations as well as raw data
+            \item Fixed bestScales to work from correlation matrices
+            \item Fixed a bug in describe for single variables from data frames (reported by Mike Linacre)
+            \item fixed bug in cohen d reported by David Kellen (using wrong group size calculation)
+            \item Fixed bug in error.bars  (and error.bar.by) to match the colors of the lines with the colors of the errors (reported by Lizz Dworak)
+            \item  Fixed bug in df of ci for alpha.ci (reported by Mijke Rhemtulla.)
+            \item Fixed (again) the correct p values for ICC (reported by Mijke Rhemtulla.)
+           }
+           } 
+         }
+         
    \section{Changes in psych version 2.1.9 (2021-09-21)}{ 
      \subsection{Additions}{
           \itemize{

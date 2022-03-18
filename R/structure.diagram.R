@@ -115,7 +115,7 @@ length.labels <-  0    # a filler for now
 #strwd <- try(strwidth(xvars),silent=TRUE)
 strwd <- try(length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8,silent=TRUE)  #although this throws an error if the window is not already open, we don't show it
 #if (class(strwd) == "try-error" ) {plot.new() } 
-if (class(strwd) == "try-error" ) {length.labels = max(nchar(xvars),3)/1.8 } 
+if (inherits(strwd, "try-error" )) {length.labels = max(nchar(xvars),3)/1.8 } 
 #length.labels <- max(strwidth(xvars),strwidth("abc"))/1.8
 
 if(lr) {limx <- c(-(length.labels + x.curves+ errors/4),max(num.xvar,num.yvar)+2 + y.curves) 

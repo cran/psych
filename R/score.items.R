@@ -28,7 +28,7 @@ if(any( !(select %in% colnames(items)) )) {
  stop("I am stopping because of improper input.   See above for a list of bad item(s). ")}
  keys <- make.keys(items[,select],keys)} else {select <- 1:ncol(items) }
    #modified once again April 6,2017 to allow for selecting items 
-   
+   if(is.list(keys)) keys <- make.keys(ncol(items),keys,item.labels=colnames(items))   #added 12/26/21 to handle select=FALSE 
    keys <- as.matrix(keys)   #just in case they were not matrices to start with
     n.keys <- dim(keys)[2]
     n.items <- dim(keys)[1]
@@ -236,7 +236,190 @@ if(any( !(select %in% colnames(items)) )) {
  #modified August 8 to add colnames to scores
  #modified Sept 23, 2007 to allow for short output
  #modified December 10, 2007 to default to ilabels as colnames(items)
- #modified March, 2009 to better use the print.psych function
+ #modified March, 2009 to better#Find scores from correlations for each subject
+#impute missing values?
+#The correlations for each subject are found by statsBy
+#and are stored as a list of matrices in the r element
+
+"scoreBy" <-
+function(keys,stats,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select=TRUE) { #function to score clusters according to the key matrix, correcting for item overlap
+cl <- match.call() 
+if(!inherits(stats, "statsBy")) stop("Please run statsBy first")
+if(is.null(stats$r)) stop("I am sorry, but you need to run statsBy with the cors=TRUE option first")
+MIN.n <- 3
+r.list <- stats$r  #the call uses the output of statsBy 
+Select <- select
+keys.list<- keys #we are saving these for each pass	
+ngroups <-length(r.list)	
+ tol=sqrt(.Machine$double.eps)    #machine accuracy
+
+#now, do repeated scoring, one pass for each group
+result <- list(Call = cl)
+cor.list <- list()
+alpha.list <- list()
+r.list <- list()
+for(group in 1:ngroups) {
+
+num.n <- stats$n[group,]
+
+#if(sum(!is.na(num.n)) <  10 || mean(num.n,na.rm=TRUE) < MIN.n){
+if(mean(num.n,na.rm=TRUE) < MIN.n){
+    cor.list[[group]] <- NA
+    alpha.list[[group]] <- NA   #add an empty element
+    r.list[[group]] <- NA
+   next()
+   }
+r <- stats$r[[group]]
+
+
+keys <- keys.list #these are the original keys
+select <- Select  #the original values
+ bad <- FALSE
+ if(is.list(keys) & (!is.data.frame(keys))) { if (select) {
+    select <- selectFromKeyslist(colnames(r),keys)
+ # select <- sub("-","",unlist(keys))   #added April 7, 2017
+      select <- select[!duplicated(select)]
+      }  else {select <- 1:ncol(r) }   
+ if (!isCorrelation(r)) {r <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
+ keys <- make.keys(r,keys)}  #added 9/9/16    (and then modified March 4, 2017
+ if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
+  #only use correlations
+ #if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
+ #if(any(abs(r[!is.na(r)]) > 1)) warning("Something is seriously wrong with the correlation matrix, some correlations had absolute values > 1!  Please check your data.")
+ if(any(is.na(r))) {
+                SMC=FALSE
+ #                warning("Missing values in the correlation matrix do not allow for SMC's to be found")
+                 bad <- TRUE}
+
+ if(SMC && is.null(item.smc)) {item.smc <- smc(r)} else {
+         diag(r) <- NA
+         item.smc <- apply(r,1,function(x) max(abs(x),na.rm=TRUE))
+         item.smc[is.infinite(item.smc) ] <- 1 
+         diag(r) <- 1}
+                                   
+ if(all(item.smc ==1)) SMC <- FALSE
+ if(!bad) {covar <- t(keys) %*% r %*% keys} else  #matrix algebra is our friend 
+     {covar<- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!
+  }
+  
+ 
+ var <- diag(covar)    #these are the scale variances
+ n.keys <- ncol(keys)
+ item.var <- item.smc
+ raw.r  <- cov2cor(covar)
+ key.var <- diag(t(keys) %*% keys)
+ key.smc <- t(keys) %*% item.smc  
+ key.alpha <- ((var-key.var)/var)*(key.var/(key.var-1))
+ key.lambda6 <-  (var - key.var + key.smc)/var
+ key.alpha[is.nan(key.alpha)] <- 1           #if only 1 variable to the cluster, then alpha is undefined
+ key.alpha[!is.finite(key.alpha)] <- 1   
+ key.av.r <- key.alpha/(key.var - key.alpha*(key.var-1))  #alpha 1 = average r
+ colnames(raw.r) <- rownames(raw.r)  <- colnames(keys)
+ names(key.lambda6) <- colnames(keys)
+ key.lambda6 <- drop(key.lambda6)
+ 
+ n.keys <- ncol(keys)
+ sn <- key.av.r * key.var/(1-key.av.r)
+ 
+if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlations
+         raw.cov <- item.cov %*% keys} else {  
+         item.cov <- apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))  #some correlations are NA
+         raw.cov <-  apply(keys,2,function(x) colSums(item.cov*x,na.rm=TRUE))
+         item.cov <- t(item.cov)
+   }
+ adj.cov <- raw.cov 
+ 
+ #now adjust them
+ 
+  med.r <- rep(NA, n.keys)
+ for (i in 1:(n.keys)) {
+    temp <- keys[,i][abs(keys[,i]) > 0]
+   temp <- diag(temp,nrow=length(temp))
+   small.r <- r[abs(keys[,i])>0,abs(keys[,i])>0]
+   small.r <- temp %*% small.r %*% temp
+    med.r[i]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
+    for (j in 1:i) {
+   
+ if(av.r) { adj.cov[i,j] <- adj.cov[j,i]<- raw.cov[i,j] - sum(keys[,i] * keys[,j] ) + sum(keys[,i] * keys[,j] *  sqrt(key.av.r[i] * key.av.r[j]))
+  } else {
+     adj.cov[i,j] <- adj.cov[j,i] <- raw.cov[i,j] - sum(keys[,i] * keys[,j] )+ sum( keys[,i] * keys[,j] * sqrt(item.smc[i]* abs(keys[,i])*item.smc[j]*abs(keys[,j]) ))
+ 
+ }
+    } }
+
+scale.var <- diag(raw.cov)
+
+diag(adj.cov) <- diag(raw.cov)
+adj.r <- cov2cor(adj.cov)   #this is the overlap adjusted correlations
+
+#adjust the item.cov for item overlap
+#we do this by replacing the diagonal of the r matrix with the item.var (probably an smc, perhaps a maximum value)
+
+diag(r) <- item.var
+if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlations
+        } else {  
+         item.cov <- t(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE)))  #some correlations are NA
+         }
+
+
+
+ if(n.keys > 1) {
+    item.cor <-   sqrt(diag(1/(key.lambda6*scale.var))) %*% (item.cov)  # %*% diag(1/sqrt(item.var))
+    rownames(item.cor) <- colnames(keys)
+    } else {
+      item.cor <- r %*% keys /sqrt(key.lambda6*scale.var) }
+   colnames(item.cor) <- colnames(r)
+   item.cor <- t(item.cor)
+   names(med.r) <- colnames(keys)
+
+
+ 
+ 
+ 
+ if (correct) {cluster.corrected <- correct.cor(adj.r,t(key.alpha))
+ 
+adj.r.vect <- as.vector(adj.r[lower.tri(adj.r)])
+r.list [[group]] <- adj.r.vect
+ alpha.list[[group]] <-  list(alpha=key.alpha)
+ cor.list[[group]] <- list(cor=adj.r)
+# names(result[group]) <- names(stats$r[group])
+ }  #correct for attenuation
+ else {
+result[[group]] <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,med.r=med.r,Call=cl)}
+
+
+}   #end of group loop
+ names(alpha.list) <- names(cor.list) <- names(stats$r)
+
+ r.list <- r.list[!is.na(r.list)]  #this gets rid of the missing cases
+ cor.mat <- matrix(unlist(r.list),ncol=length(adj.r.vect),byrow=TRUE)
+
+# rownames(cor.mat) <- names(cor.list[!is.na(cor.list)])
+ 
+ cnR <- abbreviate(colnames(keys),minlength=5) 
+      k <- 1
+      nvar <- NCOL(keys)
+      temp.name <- rep(NA,nvar*(nvar-1)/2)  #strange, but seems necessary
+     for(i in 1:(nvar-1)) {for (j in (i+1):nvar) {
+     temp.name[k]  <- paste(cnR[i],cnR[j],sep="-") 
+     # colnames(cor.mat)[k] <- paste(cnR[i],cnR[j],sep="-")
+      k<- k +1 }}
+      colnames(cor.mat)<- temp.name
+ 
+ result <- list(alpha=alpha.list,cor = cor.list,cor.mat=cor.mat)
+ class(result) <- c ("psych", "scoreBy")
+ return(result)}
+ #modified 01/11/15 to find r if not a square matrix
+#modifed 03/05/15 to do pseudo matrix multiplication in case of missing data 
+
+select.from.list <- function(x){
+ngroups <- length(x)
+result <-list()
+for (i in 1:ngroups) {
+ result[[i]] <- x[[i]]$cor[lower.tri(x[[i]]$cor)]}
+ return(result)
+}
+ #use the print.psych function
  #modified March 22, 2009 to add G6 and corrected for item overlap correlation
  #also allow for correlation/covariance matrix input
  #modified Sept 3, 2010 to include response frequencies

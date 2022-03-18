@@ -8,8 +8,9 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
     select <- selectFromKeyslist(colnames(r),keys)
  # select <- sub("-","",unlist(keys))   #added April 7, 2017
       select <- select[!duplicated(select)]
-      }  else {select <- 1:ncol(r) }   
- if (!isCorrelation(r)) {r <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
+      }  else {select <- 1:ncol(r) } 
+        
+ if (!isCorrelation(r,na.rm=TRUE)) {r <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
  keys <- make.keys(r,keys)}  #added 9/9/16    (and then modified March 4, 2017
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
@@ -27,9 +28,10 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
                                    
  if(all(item.smc ==1)) SMC <- FALSE
  if(!bad) {covar <- t(keys) %*% r %*% keys} else  #matrix algebra is our friend 
-     {covar<- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!
+     {#covar<- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))*x,na.rm=TRUE))  #matrix multiplication without matrices!
+     covar <- score.na(keys,r,cor=FALSE)
   }
-  
+
  var <- diag(covar)    #these are the scale variances
  n.keys <- ncol(keys)
  item.var <- item.smc
@@ -50,7 +52,7 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
  
 if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlations
          raw.cov <- item.cov %*% keys} else {  
-         item.cov <- apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))  #some correlations are NA
+         item.cov <- apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))  #some correlations are NA have to adjust
          raw.cov <-  apply(keys,2,function(x) colSums(item.cov*x,na.rm=TRUE))
          item.cov <- t(item.cov)
    }
@@ -61,10 +63,14 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
   med.r <- rep(NA, n.keys)
  for (i in 1:(n.keys)) {
     temp <- keys[,i][abs(keys[,i]) > 0]
-   temp <- diag(temp,nrow=length(temp))
+  temp <- diag(temp,nrow=length(temp))
    small.r <- r[abs(keys[,i])>0,abs(keys[,i])>0]
-   small.r <- temp %*% small.r %*% temp
+   #small.r <- temp %*% small.r %*% temp   #this is just flipping the signs, but will not work with missing data
+   small.r <- apply(temp,2, function(x) colSums(apply(temp,2, function(x) colSums(small.r * x,na.rm=TRUE))*x,na.rm=TRUE))
+
+
     med.r[i]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
+
     for (j in 1:i) {
    
  if(av.r) { adj.cov[i,j] <- adj.cov[j,i]<- raw.cov[i,j] - sum(keys[,i] * keys[,j] ) + sum(keys[,i] * keys[,j] *  sqrt(key.av.r[i] * key.av.r[j]))
@@ -85,7 +91,7 @@ adj.r <- cov2cor(adj.cov)   #this is the overlap adjusted correlations
 diag(r) <- item.var
 if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlations
         } else {  
-         item.cov <- t(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE)))  #some correlations are NA
+         item.cov <- t(apply(keys,2,function(x) colMeans(r*x,na.rm=TRUE)) *NROW(keys))  #some correlations are NA
          }
 
 

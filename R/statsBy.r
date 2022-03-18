@@ -5,7 +5,8 @@
 #some ideas taken from Bliese multilevel package (specifically, the WABA results)
 #modifed November 3, 2018 to allow a single DV (in case cohen.d is just comparing two groups on one DV)
 #corrected January 1, 2019 to allow for grouping variables that are characters
-#March, 2020 Added the ability to weight groups with external weighs  
+#March, 2020 Added the ability to weight groups with external weights 
+#Jan 2022, Added the nWg object to count cell sizes within groups 
 "statsBy" <-
    function (data,
             group,
@@ -101,7 +102,7 @@ z1 <- data[,group]
  U2 <- 1 -1/F1U
  xvals$ci1 <-as.matrix(data.frame(L1 = L1,U1 = U1) ) 
  xvals$ci2 <- as.matrix(data.frame(L2 = L2,U2 = U2) )    
- 
+ nWg<- NULL  #if we don't find within group correlations, make this NULL
     #if we want within group correlations, then find them  
      # if(cors) {if(!poly) { r <- by(data,z,function(x) cor(x[-gr],use="pairwise",method=method)) } else { r <- by(data,z,function(x) polychoric(x[-gr])$rho)}
                
@@ -115,11 +116,13 @@ z1 <- data[,group]
        poly = {r <- by(data,z,function(x) polychoric(x[-gr])$rho)},
        mixed = {r <- by(data,z,function(x) mixedCor(x[-gr])$rho)}
        )         
-            
-             nWg <- by(data,z,function(x) pairwise(x[-gr, -gr]))
+
+             nWg <- by(data,z,function(x) pairwise(x[-gr]))   #drop the group 
               nvars <-  ncol(r[[1]])
+              
+              
               xvals$r <- r   #store them as square matrices
-             
+           
               length.r <- length(r)
               # xvals$r.ci <- r
              
@@ -157,6 +160,7 @@ z1 <- data[,group]
              xvals$sd.r <-  matrix(NaN,nvars,nvars)
              xvals$sd.r[lower.tri(xvals$sd.r)] <- pool.sd
              xvals$sd.r[upper.tri(xvals$sd.r)] <- pool.sd
+            
              colnames(xvals$pooled) <- rownames (xvals$pooled) <- cnames[-gr]
               }
 
@@ -214,9 +218,9 @@ z1 <- data[,group]
              xvals$etabg <- diag(cor(new.data[,1:(nvar)],new.data[,(nvar+1):ncol(new.data)],use="pairwise",method=method) )#the means with the data
              xvals$etawg <- diag(cor(new.data[,(nvar+1):ncol(new.data)],diffs,use="pairwise",method=method)) #the deviations and the data
             names(xvals$etabg)  <- colnames(xvals$rbg)
-         
-            xvals$nwg <- N - nG
-            xvals$nG <- nG
+            xvals$nWg <- nWg   #this is the pairwise number of subjects
+            xvals$nwg <- N - nG  #why do we report this?  Am I making a mistake
+            xvals$nG <- nG  #number of groups
             
             xvals$Call <- cl
     statsBy <- xvals

@@ -83,6 +83,10 @@ Revelle, W. (in prep) An introduction to psychometric theory with applications i
 Starting with psych  1.4.2, the confidence intervals are based upon (1-alpha)\% at both tails of the confidence interval.  This is in agreement with Shrout and Fleiss.  Prior to 1.4.2 the confidence intervals were (1-alpha/2)\%. 
 However, at some point, this error slipped back again.  It has been fixed in version 1.9.5 (5/21/19).
 
+However, following some very useful comments from Mijke Rhumtulla, I should divide by 2 after all.  This has been fixed (again) 3/05/22 for version 2.2.2.
+
+
+
 An occasionally asked question: How do these 6 measures compare to the 10 ICCsreported by SPSS?  The answer is that the 6 Shrout and Fleiss are the same as the 10 by McGraw and Wong.
 
 

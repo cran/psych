@@ -4,11 +4,9 @@
 \alias{Specificity}
 \alias{Sensitivity}
 
-
 \title{Decision Theory measures of specificity, sensitivity, and d prime}
+
 \description{In many fields, decisions and outcomes are categorical even though the underlying phenomenon are probably continuous.  E.g. students are accepted to graduate school or not, they finish or not. X-Rays are diagnosed as patients having cancer or not.   Outcomes of such decisions are usually labeled as Valid Positives, Valid Negatives, False Positives and False Negatives. In hypothesis testing, False Positives are known as Type I errors, while False Negatives are Type II errors.  The relationship between these four cells depends upon the correlation between the decision rule and the outcome as well as the level of evidence needed for a decision (the criterion).  Signal Detection Theory and Decision Theory have a number of related measures of performance (accuracy = VP + VN), Sensitivity (VP/(VP + FN)), Specificity (1 - FP), d prime (d'), and the area under the Response Operating Characteristic Curve (AUC). More generally, these are examples of correlations based upon dichotomous data.  \code{\link{AUC}} addresses some of these questions.  
-
-
 }
 \usage{
 AUC(t=NULL,BR=NULL,SR=NULL,Phi=NULL,VP=NULL,labels=NULL,plot="b",zero=TRUE,correct=.5, 
@@ -55,21 +53,22 @@ In diagnoses, it is whether to diagnose an illness or not given some noisy signa
 
 In college admissions, we accept some students and reject others.  Four-Five years later we observe who "succeeds" or graduates. 
 
-All of these decisions lead to four cells based upon a two x two categorization.  Given the true state of the world is Positive or Negative, and a rater assigns positive or negative ratings, then the resulting two by two table has True Positives and True Negatives on the diagonal and False Positives and False Negatives off the diagonal. 
+All of these decisions lead to four cells based upon a two x two categorization.  Given the true state of the world is Positive or Negative, and a rater assigns positive or negative ratings, then the resulting two by two table has True (Valid) Positives and True (Valid) Negatives on the diagonal and False Positives and False Negatives off the diagonal. 
 
 When expressed as percentages of the total, then  Base Rates (BR) depend upon the state of the world, but Selection Ratios (SR) are  under the control of the person making the decision and affect the number of False Positives and the number of Valid Positives.
 
 Given a two x two table of counts or percentages \cr
 \tabular{lllll}{
 \tab       \tab Decide +  \tab Decide - \cr
-\tab True + \tab VP \tab FN  \tab BR \cr
-\tab True - \tab FP \tab VN  \tab 1- BR \cr
-\tab \tab   SR \tab  1 - SR  \tab  (N)
+\tab True + \tab Valid Positive  \tab False Negative  \tab Base Rate \% \cr
+\tab True - \tab False Positive \tab Valid Negative   \tab 1- Base Rate \cr
+\tab \tab   Selection ratio \tab  1 - Selection ratio  \tab  (Total N)
 }
 
 Unfortunately, although this way of categorizing the data is typical in assessment (e.g., Wiggins 1973), and everything is expressed as percentages of the total, in some decision papers, VP are expressed as the ratio of VP to total positive decisions (e.g., Wickens, 1984).  This requires dividing through by the column totals (and represented as VP* and FP* in the table below).
 
-The relationships implied by these data can be summarized as a \code{\link{phi}} or \code{\link{tetrachoric}}  correlation between the raters and the world, or as a decision process with several alternative measures:
+The relationships implied by these data can be summarized as a \code{\link{phi}} or \code{\link{tetrachoric}}  correlation between the raters and the world, or as a decision process with several alternative measures.  If we make the assumption that the two dimensions are continuous and were artificially dichotomised, then the \code{\link{tetrachoric}} correlation is an estimate of the continuous correlation between these two latent dimensions.  If we think of the data as truly representing two states e.g., vaccinated or not vaccinanated, dead or alive, then the \code{\link{phi}} coefficient is more appropriate.  
+
 
  Sensitivity, Specificity, Accuracy, Area Under the Curve, and d' (d prime). These measures  may be defined as \cr
 
@@ -82,7 +81,7 @@ The relationships implied by these data can be summarized as a \code{\link{phi}}
 \tab FP* \tab (FP/(VP + FP \cr
 \tab d'  \tab z(VP*) - z(FP*) \cr
 \tab d' \tab sqrt(2) z(AUC) \cr
-\tab beta \tab prob(X/S)/(prob(X/N) \cr
+\tab beta \tab prob(X/S)/(prob(X/N)) \cr
 }
 
 Although only one point is found, we can form a graphical display of VP versus FP as a smooth curve as a function of the decision criterion. The smooth curve assumes normality whereas the other merely are the two line segments between the points (0,0), (FP,VP), (1,1). The resulting correlation between the inferred continuous state of the world and the dichotomous decision process is a biserial correlation.
@@ -98,7 +97,6 @@ Metz, C.E. (1978) Basic principles of ROC analysis. Seminars in Nuclear Medicine
 Wiggins, Jerry S. (1973) Personality and Prediction: Principles of Personality Assessment. Addison-Wesley.
 
 Wickens, Christopher D. (1984) Engineering Psychology and Human Performance.  Merrill.
-
  }
 \seealso{ \code{\link{phi}}, \code{\link{phi2tetra}} ,\code{\link{Yule}}, \code{\link{Yule.inv}} \code{\link{Yule2phi}}, \code{\link{tetrachoric}} and \code{\link{polychoric}}, \code{\link{comorbidity}}}
 
@@ -109,11 +107,6 @@ AUC(c(140,60,100,900),col=c("grey","black"))  #Metz example 1 no colors
 AUC(c(80,120,40, 960)) #Metz example 2  Note how the accuracies are the same but d's differ
 AUC(c(49,40,79,336)) #Wiggins p 249
 AUC(BR=.05,SR=.254,Phi = .317) #Wiggins 251 extreme Base Rates
-
-
-
-
-
 }
 
 \keyword{multivariate }

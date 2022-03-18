@@ -109,9 +109,40 @@
     class(faBy) <- c("psych","faBy")
     return(faBy)
   }
+ #not used here but helpful to understand 
+factor.match <- function(f1,f2) {
+  cong <- fa.congruence(f1,f2)
+  match <- apply(cong,1,function(x) which.max(abs(x)))
+  f2 <- fa.organize(f2,o=match)
+  cong <- fa.congruence(f1,f2)
+  flip <- diag(sign(diag(cong)))
+  f2$loadings <-  f2$loadings %*% flip
+  phi <- flip %*% f2$Phi %*% flip
+  return(list(f=f2,phi=phi))
+}
   
+ faMatch <- function(f1,f2){
+  cong <- factor.congruence(f1,f2)
+  cn <- colnames(f2$loadings)
+  ord <- apply(cong,1,function(x) which.max(abs(x)))
+  if(length(unique(ord))==NCOL(cong)) { cong <- cong[,ord]} else {
+  ord <- apply(cong,2,function(x) which.max(abs(x)))
+   cong <- cong[ord,]}
   
-  "faMatch" <- function(f1,f2) {
+ flip <- diag(sign(diag(cong)))
+ 
+  f2$loadings <-  f2$loadings[,ord]  %*% flip 
+  f2$Phi <- f2$Phi[ord,ord]
+  colnames(f2$loadings)<- cn[ord]
+
+  f2$Phi <- flip %*% f2$Phi %*% flip
+  colnames(f2$Phi) <- rownames(f2$Phi) <- cn[ord]
+
+  return(f2)
+  }
+  
+  #replaced with faMatch  3/1/22
+  "oldfaMatch" <- function(f1,f2) {
   fc <- factor.congruence(f1,f2)
   ord <- 1:ncol(fc)
   for(i in 1:(ncol(fc)-1)) {

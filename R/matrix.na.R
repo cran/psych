@@ -13,7 +13,7 @@ result
 
 #an attempt to do fast matrixlike operation with missing data\
 
-matrixMult.na <- function(x,y,scale=TRUE) {
+matrix.na.z		 <- function(x,y,scale=TRUE) {
 #first get tranpose x to make multiplication work
 
 nvar <- ncol(x)
@@ -39,4 +39,15 @@ return((result))
  }
  
  
-   
+  
+score.na <- function ( keys,r,cor=TRUE,smooth=FALSE) {#score a matrix with missing correlations
+covar <- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(r*x,na.rm=TRUE))*x,na.rm=TRUE))
+count <- t(keys) %*% keys  #counts the number of items/key
+bad <- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(is.na(r)*abs(x),na.rm=TRUE))*abs(x),na.rm=TRUE)) #the number missin
+good <- apply(keys,2,function(x) colSums(apply(keys,2,function(x) colSums(!is.na(r)*abs(x),na.rm=TRUE))*abs(x),na.rm=TRUE)) #the number not missing
+
+result <- (covar - count)/(good-count) *(good-count + bad)+ count
+if(cor) result <- cov2cor(result)
+if(smooth) result<- cor.smooth(result)
+return(result) #the covariance matrix  use cov2cor
+} 

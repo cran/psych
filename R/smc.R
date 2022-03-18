@@ -21,6 +21,7 @@ wcc <- maxr <-  NULL
                                  R <- cov2cor(R)
                                  }
 tempR <- NULL
+#look  for Nan 
 if(any(is.na(R))) {
     bad <- TRUE
     tempR <- R
@@ -56,8 +57,8 @@ R.inv <- Pinv(R)
 smc <- 1 - 1/diag(R.inv)
  names(smc) <- colnames(R)
 if(!is.null(tempR)) {# R.na.inv <- try(solve(tempR),TRUE)
-       R.na.inv <- Pinv(tempR)
-       smc.na <- smc.na <- 1 -1/diag(R.na.inv)
+       if(prod(dim(tempR)) > 0) {R.na.inv <- Pinv(tempR)
+       smc.na <- smc.na <- 1 -1/diag(R.na.inv)} else {smc.na <- 1}
 # if(inherits(R.na.inv, as.character("try-error"))) {smc.na <- rep(1,p)
  #  message("Oh bother, in smc, the correlation matrix of the adjusted part was not invertible, smc's returned as 1s")} else  {smc.na <- 1 -1/diag(R.na.inv)}
    } else {smc.na <- smc}

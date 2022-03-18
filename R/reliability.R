@@ -13,23 +13,27 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
    res.name <- list()
   if(hist) raw <-TRUE 
   if(raw) split <- TRUE
+ 
   #check to see if the first parameter is a list of keys, if not, then we want to do reliability on just one scale
   
   if(!is.null(keys)){ if(NCOL(keys)==1) { n.scales <- length(keys) } else {
          items <- keys  #this is the case where the user did not specify keys but just the data
+         message("keys not specified, all items will be scored")
          n.scales  <- 1 
          keys <- list()
           keys[["All_items"]] <- colnames(items)
          }} else {n.scales <- 1
    keys[["All_items"]] <- colnames(items)
      }
+      if(isCorrelation(items)) {cors<- TRUE} else {cors<- FALSE}
 
   for (scales in 1:n.scales) {
   scale.key <- keys[[scales]]
  select <- selectFromKeys(scale.key)
  if(length(select)>1 )  {
   
-   om <- omegah(items[,select], nfactors=nfactors,plot=plot,two.ok=TRUE)
+  if(cors) {om <- omegah(items[select,select], nfactors=nfactors,plot=plot,two.ok=TRUE) } else {
+   om <- omegah(items[,select], nfactors=nfactors,plot=plot,two.ok=TRUE)}
     uni <- unidim(om$R)  #use the R object rather than redoing the factoring
     
     
@@ -38,7 +42,8 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
             sign.key[which(colnames(om$R)!= rownames(om$R))] <- "-"
              temp.keys <- paste0(sign.key,temp.keys)
                        
-     split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample, key=temp.keys))
+    # split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample, key=temp.keys))
+    split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample)) #don't use temp.keys
           best[[scales]] <- list(max=split.half$maxAB)
           worst[[scales]] <- list(min=split.half$minAB)
          

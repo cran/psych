@@ -40,8 +40,8 @@ test.all(pl,package="psych",dependencies
  levels2numeric(x) 
  char2numeric(x,flag=TRUE) 
  nchar2numeric(x,flag=TRUE)
- isCorrelation(x) #test if an object is a symmetric matrix with diagonals of 1 and 
-  # all values between -1 and 1
+ isCorrelation(x,na.rm=FALSE) #test if an object is a symmetric matrix 
+    # with diagonals of 1 and  all values between -1 and 1
  isCovariance(x)  #test if an object is a symmetric matrix   
  fromTo(data,from,to=NULL) #convert character names to locations as specified in colnames
  #of data
@@ -57,6 +57,7 @@ test.all(pl,package="psych",dependencies
   \item{digits}{round to digits}
   \item{minlength}{Abbreviate to minlength in lowerCor}
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
+  \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 
   \item{value}{the current value of some looping variable}
   \item{max}{The maximum value the loop will achieve}

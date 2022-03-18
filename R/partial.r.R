@@ -1,6 +1,21 @@
 "partial.r" <-
 function(data,x,y,use="pairwise",method="pearson")  {
  cl <- match.call()
+ #convert formula input into prior format
+ #x are the set from which y is partialled
+ 
+if(!missing(x))  { if(inherits(x,"formula")) {
+   ps <- fparse(x)
+   y <- ps$y
+   x <- ps$x
+   z <- ps$z   #do we have any variable to partial out
+   ex <- ps$ex
+   
+   #now put it into old form
+   x <- c(y,x)
+   y <- z
+}
+}
    if(!isCorrelation(data)) {n.obs <- dim(data)[1]
     if(!missing(x) & !missing(y)) {if(!is.character(x) ) x <- colnames(data)[x]
        if(!is.character(y) ) y <- colnames(data)[y]
@@ -13,7 +28,10 @@ function(data,x,y,use="pairwise",method="pearson")  {
     diag(X.resid) <- 1/(1- smc(m))    #adjust the diagonal to be 1/error
     X.resid <- cov2cor(X.resid)
     rownames(X.resid) <-colnames(X.resid) <- colnames(m)} else {
-                
+        if(missing(x)){ x <- colnames(data)
+        y <- as.character(y)
+        x <- x[!x %in% y]}
+               
         xy <- c(x,y)                     
      	X <- m[x,x]
      	Y <- m[x,y]
@@ -31,4 +49,6 @@ function(data,x,y,use="pairwise",method="pearson")  {
      #modified 03/19/19 to just choose the items to correlate instead of entire matrix
      #modified 07/25/20 to use the Pseudo Inverse so that in cases of improper matrices, we still give a partial
      #modified 06/09/21 to add the matrix class to the object.
+     #modified 12/3/21 to add formula input option
+     
      

@@ -1,13 +1,16 @@
 \name{scoreOverlap}
 \alias{cluster.cor}
 \alias{scoreOverlap}
+\alias{scoreBy}
 \title{Find correlations of composite variables (corrected for overlap) from a larger matrix.}
 \description{
- Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link[psychTools]{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations.
+ Given a  n x c cluster definition matrix of -1s, 0s, and 1s (the keys) , and a n x n correlation matrix, or an N x n data matrix, find the correlations of the composite clusters.  The keys matrix can be entered by hand, copied from the clipboard (\code{\link[psychTools]{read.clipboard}}), or taken as output from the \code{\link{factor2cluster}} or \code{\link{make.keys}} functions.  Similar functionality to \code{\link{scoreItems}} which also gives item by cluster correlations. \code{\link{scoreBy}} does this for individual subjects after a call to \code{\link{statsBy}}.
 }
 \usage{
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
      impute = TRUE,select=TRUE)
+scoreBy(keys,stats, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
+     impute = TRUE,select=TRUE,min.n=3,smooth=FALSE)
 cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 }
 
@@ -15,14 +18,17 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
   \item{keys}{A list of scale/cluster keys, or a  matrix of cluster keys }
   \item{r.mat}{A correlation matrix }
   \item{r}{Either a correlation matrix or a raw data matrix}
+  \item{stats}{The output from statsBy.  Needed for scoreBy.}
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
  \item{item.smc}{the smcs of the items may be passed into the function for speed, or calculated if SMC=TRUE }
  \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
   \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
   \item{select}{By default, just find statistics for items included in the scoring keys. This allows for finding scores from matrices with bad items if they are not included in the set of scoring keys.}
+  \item{min.n}{The minimum number of pairwise observations needed to define a correlation (in scoreBy)}
+  \item{smooth}{If the matrices used in scoreBy are not positive semi-definite, should we smooth them?}
 }
-\details{This are two of the functions used in the SAPA (\url{https://www.sapa-project.org/}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.
+\details{These  are three of the functions used in the SAPA (\url{https://www.sapa-project.org/}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.  It is important to remember with SAPA data, that scale correlations should be found from the item correlations, not the raw data.
 
 In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.  This is similar to ideas suggested by Cureton (1966) and Bashaw and Anderson (1966) but uses the smc or the average interitem correlation (default).
 
@@ -35,6 +41,10 @@ In the case of overlapping keys, (items being scored on multiple scales), \code{
  Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{scoreItems}}.  They will differ substantially only if the items differ a great deal in their variances.   
  
  \code{\link{scoreOverlap}} answers an important question when developing scales and related subscales, or when comparing alternative versions of scales.  For by removing the effect of item overlap, it gives a better estimate the relationship between the latent variables estimated by the observed sum (mean) scores.
+ 
+ \code{\link{scoreBy}} finds the within subject correlations after preprocessing with \code{\link{statsBy}}.  This is useful if doing an ESM study with multiple occasions for each subject.   It also makes it possible to find the correlations for subsets of subjects. See the example.  Note that it likely that for ESM data with a high level of missingness that the correlation matrices will not be positive-semi-definite. This can lead to composite score correlations that exceed 1.  Smoothing will resolve this problem.
+ 
+   \code{\link{scoreBy}}  is useful when examining multi-level models where we want to examine the correlations within subjects (e.g., for ESM data) or within groups of subjects (when examining the stability of correlational structures by subgroups).  For both cases the data must be processed first by \code{\link{statsBy}}.  To find the variances of the scales it is necessary to use the cor="cov" option in \code{\link{statsBy}}.  
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}
@@ -94,6 +104,14 @@ summary(adjusted.scales)
 #note that the EA and high and low EA and TA and high and low TA 
 # scale correlations are confounded
 summary(confounded.scales) 
+
+bfi.stats <- statsBy(bfi,group="education",cors=TRUE ,cor="cov")
+ #specify to find covariances
+ bfi.plus.keys <- c(bfi.keys,gender="gender",age ="age")
+bfi.by <- scoreBy(bfi.plus.keys,bfi.stats)
+bfi.by$var   #to show the variances of each scale by groupl
+round(bfi.by$cor.mat,2)  #the correlations by group
+bfi.by$alpha 
 }
 
 \keyword{ multivariate }

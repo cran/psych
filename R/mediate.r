@@ -62,7 +62,7 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
   
    if(!is.matrix(data)) data <- as.matrix(data)
   if((dim(data)[1]!=dim(data)[2]))  {n.obs=dim(data)[1]   #this does not take into account missing data
-                    if(!is.null(mod)) if(zero) data <- scale(data,scale=FALSE)  #0 center 
+                    if(!is.null(mod)) if(zero) data[,c(x,m,z,ex)] <- scale(data[,c(x,m,z,ex)],scale=FALSE)  #0 center  but not the dv
                     C <- cov(data,use=use)
                     raw <- TRUE
                     if(std) {C <- cov2cor(C)}   #use correlations rather than covariances
@@ -208,6 +208,8 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
 
  # colnames(all.ab) <- m
  # rownames(all.ab) <- x
+ 
+
    ab <- a %*% b      #are we sure that we want to do the matrix sum? 
    indirect <- c - ab
    
@@ -220,15 +222,20 @@ cprime.reg <- matReg(c("Intercept",x,m),y,C=C.int,n.obs=n.obs,z=z,means=means,st
            boot <- p.boot.mediate(data,x,y,m,z,n.iter=n.iter,std=std,use=use)   #this returns a list of vectors
 
   #the first values are the indirect (c') (directly found), the later values are c-ab from  the products
-           #we have now dropped those extra values  
+           #we have now dropped those extra values  #this is a mistake 
            if(numy==1) {colnames(boot) <- c(x,paste0(rep(m,each=length(x)),"*",x))} else {
               cn  <-  c(x,paste0(rep(m,each=length(x)),"*",x))
-              long.cn <- NULL
-              for(tem in 1:numy) {long.cn <- c(long.cn,paste0(y[tem],cn)) }
+              shorter.cn <- paste0(rep(m,each=length(x)),"*",x)
+              long.cn  <- short.cn <-  NULL
+              for(tem in 1:numy) {long.cn <- c(long.cn,paste0(y[tem],cn))        
+                short.cn <- c(short.cn,paste0(y[tem],shorter.cn))}
               colnames(boot) <- long.cn }
-    
+  
            #if(ncol(boot)== length(c(x,m) )) colnames(boot) <- c(x,m)
-           boot <- boot[, c(paste0(rep(m,each=length(x)),"*",x)),drop=FALSE]
+          # if(length(y) ==1) {boot <- boot[, c(paste0(rep(m,each=length(x)),"*",x)),drop=FALSE]} else {
+              # boot <- boot[,short.cn]}  #this picks the mediate variables   #except we actually want to keep the indirect value 
+    
+           
             mean.boot <- colMeans(boot)    
             sd.boot <- apply(boot,2,sd)
             ci.quant <- apply(boot,2, function(x) quantile(x,c(alpha/2,1-alpha/2),na.rm=TRUE)) 
@@ -678,6 +685,7 @@ if(nx >1) {
  cat("\nNo mediator specified leads to traditional regression \n") } else {    
  cat("\nDirect effect estimates (traditional regression)    (c') X + M on Y \n")}
  
+ #print the traditional regression values
      for(j in 1:ndv) {
      
     if (niv==1) { dfd <- round(data.frame(direct=x$cprime.reg$beta[,j],se = x$cprime.reg$se[,j],t=x$cprime.reg$t[,j],df=x$cprime.reg$df),digits)
@@ -706,11 +714,9 @@ if(nx >1) {
     }
    
 
-   
-    
-     
-    cat("\n 'a'  effect estimates (X on M) \n")
 
+    cat("\n 'a'  effect estimates (X on M) \n")
+for(j in 1:ndv) {
   if(niv==1) {
     for(i in 1:nmed) {
     	dfa <- round(data.frame(a = x$a.reg$beta[,i],se = x$a.reg$se[,i],t = x$a.reg$t[,i],df= x$a.reg$df),digits)
@@ -731,7 +737,7 @@ if(nx >1) {
      	print(dfa) }
      	
      	}
-     	        
+     }	        
       cat("\n 'b'  effect estimates (M on Y controlling for X) \n")
       for (j in 1:ndv) {
       if(niv==1) {
@@ -743,54 +749,79 @@ if(nx >1) {
      colnames(dfb) <-  c(dv[j],"se","t","df", "Prob")
       print(dfb)
       }
- 
-      cat("\n 'ab'  effect estimates (through mediators)\n")
+  #not clear how this is different from next section
+  #the indirect is correct, but the mediators (boot) need to be summed 
+      cat("\n 'ab'  effect estimates (through all  mediators)\n")
 
- for (j in 1:ndv) {
+
+#need to think about the number of mediators as well as ndv and niv
+ for (j in 1:ndv) {   #currently only works for ndv =1
+ if(niv > 1){
+  dfab  <- round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],
+						  sd=x$boot$sd[,j],
+                       #    lower=x$boot$ci[,((j-1)*(niv+ndv+nmed)+niv+1):((j)*(niv+ndv+nmed))],
+                        #  upper=x$boot$ci[,((j-1)*(niv+ndv+nmed)+niv+1):((j)*(niv+ndv+nmed))]),digits)}  else {
+                       lower=x$boot$ci[1,j],
+                       upper=x$boot$ci[2,j]),digits)}  else {
      
-      dfab  <-round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],sd=x$boot$sd[,j],
-                        #  lower=x$boot$ci[1,1:niv],   #was niv perhaps should be ndv?
-                         #  upper=x$boot$ci[2,1:niv]),digits)
-                           lower=x$boot$ci[1,(1:niv + niv*(j-1))],
-                           upper=x$boot$ci[2,(1:niv + niv*(j-1))]),digits)
-                         #  lower=x$boot$ci[1,(j*niv )],
-                          # upper=x$boot$ci[2,(j*niv )]),digits)
+       dfab  <-round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j]
+                            ,sd=x$boot$sd[,j],
+#                         #  lower=x$boot$ci[1,1:niv],   #was niv perhaps should be ndv?
+#                          #  upper=x$boot$ci[2,1:niv]),digits)
+                            lower=x$boot$ci[1,(1:niv + niv*(j-1))],
+                            upper=x$boot$ci[2,(1:niv + niv*(j-1))]),digits)
+#                          #  lower=x$boot$ci[1,(j*niv )],
+#                           # upper=x$boot$ci[2,(j*niv )]),digits)
+ # dfab <- round(data.frame(indirect = x$ab[,j],boot = sum(x$boot$mean[,1:(j*niv+1)])),digits)}
+    }
       rownames(dfab) <- rownames(x$ab)
       colnames(dfab)[1] <- dv[j]
       print(round(dfab,digits))
-      }
+     }
+#      }
       
     #now show the individual ab effects (just works for 1 dv)
     
 
 #rownames(x$boot$ci) <- rownames(x$boot$mean) <- rownames(x$boot$sd ) <- NULL
+
+#problem when ndv > 1
+
+
+
 for(k in 1: ndv) {
     if(nmed > 1) {
     cat("\n 'ab' effects estimates for each mediator for",colnames(x$ab)[k], "\n")
-    for (j in 1:nmed) {
-       dfab  <-round(data.frame(#indirect = x$all.ab[,j],
-             boot = as.vector(x$boot$mean),sd=as.vector(x$boot$sd),
-                           #lower=x$boot$ci[1,(j*niv*k +1):(j*niv*k +niv)],
-                           #upper=x$boot$ci[2,(j*niv*k +1):(j*niv*k +niv)]),digits)
-                            lower=x$boot$ci[1,(1:(j*niv*k ))],
-                           upper=x$boot$ci[2,(1:(j*niv*k))]),digits)
-                           }
-     rownames(dfab) <- colnames(x$boot$ci)
-     # colnames(dfab)[1] <- mv[j]
-     
-      print(round(dfab,digits))
+    #rows of x$boot$mean are IVs
+    #columns of x$boot$mean are g for each DV
+    dfab <-  round(data.frame(boot=as.vector(x$boot$mean),sd=as.vector(x$boot$sd),
+                   lower=x$boot$ci[1,],
+                    upper =x$boot$ci[2,]), digits)
     
+    
+  #   for (j in 1:nmed) { 
+#        dfab  <-round(data.frame(#indirect = x$all.ab[,j],
+#              boot = as.vector(x$boot$mean[,(k*(j-1)+1):(k*j)]),sd=as.vector(x$boot$sd[,(k*(j-1)+1):(k*j)]),
+#                            #lower=x$boot$ci[1,(j*niv*k +1):(j*niv*k +niv)],
+#                            #upper=x$boot$ci[2,(j*niv*k +1):(j*niv*k +niv)]),digits)
+#                             lower=x$boot$ci[1,(1:(j*niv*k ))],
+#                            upper=x$boot$ci[2,(1:(j*niv*k))]),digits)
+#                            
+#      #rownames(dfab) <- colnames(x$boot$ci)
+#      # colnames(dfab)[1] <- mv[j]
+#       }
+      
+     print(round(dfab,digits))
        #now, if number of mediators >1, compare them
-     
-
-     
-     }
     }
-    
-   if(nmed * niv * ndv > 1) {
-          cat("\n Compare the ab estimates for each mediator \n")
-      print(round(compare.boot(x$boot.values),digits))
-      }
+
+   
+    }
+  #not clear what this is supposed to do  
+ #   if(nmed * niv * ndv > 1) {
+#           cat("\n Compare the ab estimates for each mediator \n")
+#       print(round(compare.boot(x$boot.values),digits))
+#       }
     }
     } 
           

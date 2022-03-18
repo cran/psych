@@ -406,11 +406,12 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
   
   "item.lookup" <- 
 function (f,m, dictionary,cut=.3, digits = 2) {
-    f <- fa.sort(f)
+   # f <- fa.sort(f)
     none<- NULL   #A strange requirement of R 4.0
      if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust, none)
      value <- inherits(f, obnames, which=TRUE)
-			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}} else {value <- "none"}
+			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
+			   f <- fa.sort(f) } else {value <- "none"}
   old.names <- NULL
    switch(value,
     
@@ -650,11 +651,13 @@ pretty}
 
 #this just shows if it is a matrix is symmetric and has diagonals of 1
 #Added the unclass to  handle a problem with class partial.r  4/10/21
-"isCorrelation" <-  function(x) {value <- FALSE
+"isCorrelation" <-  function(x,na.rm=FALSE) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
-  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}}
+  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}
   value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
+  if(!value  && (na.rm) && any(is.na(diag(as.matrix(x))))) stop("Although the matrix is symmetric, one of the elements of the  diagonal is NA. Check your data.")
   value <- value && isTRUE((min(x,na.rm=TRUE)>= -1) & (max(x,na.rm=TRUE) <= 1))  
+  }
   return(value)}
   
   #this just shows if it is a symmetric matrix
@@ -715,4 +718,15 @@ flip <- function(R,key) {#reverse correlations with keys  < 0
     }
     return(scores)
   }
+
+countBad <- function(r.list) {
+n <- length(r.list)
+count <- 0
+for (i in 1:n) {
+ ev <-eigen(r.list[[i]])
+ bad <- any(ev$values < 0)
+ count <- count + bad}
+ return(count)
+ }
+
 

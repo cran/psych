@@ -37,15 +37,18 @@ if(is.list(keys) | is.character(keys)){ keys <- make.keys(items,keys)
 return(x)
 }
  
- 
+ "recode" <- function(x,where,isvalue,newvalue) {
+  if (missing(where))  where <-1:NCOL(x)
+  x[,where==isvalue] <- newvalue
+   }
  
 "scrub" <- 
  function (x, where, min, max, isvalue,newvalue,cuts=NULL) 
-{
+{  
     if (missing(min))  min <- -Inf
     if (missing(max))  max <- Inf
     if (missing(isvalue))   isvalue <- Inf
-    if (missing(where))  where <- 1:dim(x)[2]
+    if (missing(where))  where <- 1:NCOL(x)
     maxlength <- max(length(isvalue),length(min),length(max),length(where))
     if(missing(newvalue)) newvalue <- rep(NA,maxlength)
     if (length(min) == 1)   min <- rep(min, ncol(x))
@@ -53,9 +56,10 @@ return(x)
     if(length(where) == 1) where <- rep(where,maxlength)
     if(length(isvalue) ==1) isvalue <- rep(isvalue,maxlength)
     if(length(newvalue) ==1) newvalue <- rep(newvalue,maxlength)
-   # if (length(isvalue) == 1)  isvalue <- rep(isvalue, (length(where)))
+    
     if(is.null(cuts)) {for(k in 1: maxlength) {
     i <- where[k]
+     x[!is.finite(x[,i]),i] <- NA
       if(is.numeric(x[,i])) {  x[(!is.na(x[, i]) & (x[, i] < min[k])), i] <- newvalue[k]
         x[(!is.na(x[, i]) & (x[, i] > max[k])), i] <- newvalue[k] 
         }
@@ -78,6 +82,7 @@ return(x)
 #modified April 11, 2019 to handle character data
 #fixed August 9, 2019 to correctly process is.numeric
 #modified December 12th ,2020 to include the "bucketing" option
+#modified December 2nd, 2021 to make Nan and inf values NA
 
 
 

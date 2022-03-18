@@ -47,7 +47,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{sc}{The output of setCor may be used for drawing diagrams}
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
   \item{show}{Show the unweighted matrix correlation between the x and y sets?}
-  \item{zero}{zero center the data before finding the interaction terms.}
+  \item{zero}{zero center the x variables before finding the interaction terms.}
   \item{alpha}{p value of the confidence intervals for the beta coefficients}
   \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
   \item{cex}{Text size of boxes displaying the variables in the diagram}
@@ -69,7 +69,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
 \details{
  Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a matrix of correlations or covariances.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The function will find the correlations if given raw data.
  
- Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the data are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
+ Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the predictive variables are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
  
  Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the last example.)  
  
@@ -153,13 +153,15 @@ V. Daniel R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefinin
 
 In October, 2017 I added the ability to specify the input in formula mode and allow for higher level and multiple interactions. 
 
-The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621 but does match the formula on page 615, except for the typo in the estimation of F (see Cohen 1982).   The difference seems to be that they are adding in a correction factor of df 2 = df2 + df1.  
+The denominator degrees of freedom for the set correlation does not match that reported by Cohen et al., 2003 in the example on page 621 but does match the formula on page 615, except for the typo in the estimation of F (see Cohen 1982).   The difference seems to be that they are adding in a correction factor of df 2 = df2 + df1. 
+
+Following a suggestion by Keith Widaman, when zero centering for product terms, the y variables are no longer zero centered. This puts the regression in the units of the DV. (2/22/22). 
 
 
 
 }
 
-\seealso{\code{\link{mediate}} for an alternative regression model with 'mediation'  
+\seealso{\code{\link{mediate}} for an alternative regression model with 'mediation'.  \code{\link{predict}} to find predicted values given regression weights. 
 \code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package. 
 \code{\link{GSBE}} for further demonstrations of mediation and moderation. }
 \examples{
@@ -258,6 +260,8 @@ original.fit <- crossValidation(model,bfi[ss,]) #the derivation set
 cross.fit <- crossValidation(model,bfi[-ss,])  #the cross validation set
 summary(original.fit)
 summary(cross.fit)
+predicted <- predict(model,bfi[-ss,])
+cor2(predicted,bfi[-ss,26:28])
 
 }
 

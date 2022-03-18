@@ -1,5 +1,6 @@
 \name{pairwiseCount}
 \alias{pairwiseCount}
+\alias{pairwiseCountBig}
 \alias{count.pairwise}
 \alias{pairwiseDescribe}
 \alias{pairwiseZero}
@@ -18,9 +19,11 @@ pairwiseZero(x,y=NULL, min=0, short=TRUE)
 pairwiseImpute(keys,R,fix=FALSE)
 pairwiseReport(x,y=NULL,cut=0,diagonal=FALSE,...) 
 pairwiseSample(x,y=NULL,diagonal=FALSE,size=100,...)
+pairwiseCountBig(x,size=NULL)
 pairwisePlot(x,y=NULL,upper=TRUE,diagonal=TRUE,labels=TRUE,show.legend=TRUE,n.legend=10,
 colors=FALSE,gr=NULL,minlength=6,xlas=1,ylas=2,
 main="Relative Frequencies",count=TRUE,...)
+
 count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
 }
 
@@ -54,6 +57,8 @@ count.pairwise(x, y = NULL,diagonal=TRUE) #deprecated
 }
 
 \details{When using Massively Missing Completely at Random (MMCAR) designs used by the SAPA project, it is important to count the number of pairwise observations (\code{\link{pairwiseCount}}).  If there are pairs with 1 or fewer observations, these will produce NA values for correlations making subsequent factor analyses \code{\link{fa}} or reliability analsyes \code{\link{omega}} or \code{\link{scoreOverlap}} impossible.
+
+\code{\link{pairwiseCountBig}} may be used to count the cells of large data sets.  It is analogous to \code{\link{bigCor}} and returns the cell sizes for each pair of correlations.
 
 In order to identify item pairs with counts less than a certain value \code{\link{pairwiseReport}} reports the names of those pairs with fewer than 'cut' observations.  By default, it just reports the number of offending items. With short=FALSE, the print will give the items with n.obs < cut. Even more detail is available in the returned objects.
 

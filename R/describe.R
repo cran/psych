@@ -109,11 +109,13 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
    	if(fast) {skew <- FALSE
    	         }
    	numstats <- 10 + length(quant)	+ IQR 
+   	cn <- "X1"
     if ( NCOL(x) < 2)  {if(is.data.frame(x)) {      #
                 if( !is.numeric(x[,1])) {warning ("You were trying to describe a non-numeric data.frame or vector which describe converted  to numeric.")
                     x[,1] <- as.numeric(as.factor(x[,]))
                     } 
-        
+              if(!is.null(colnames(x))) {cn <- colnames(x)} else {cn  <- "X1"}
+             
                x <- x[,1] }   #getting around the problem of single column data frames       
                 #do it for vectors or 
     	    len  <- 1
@@ -136,7 +138,8 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
              Iqr <- Quart[,2] -Quart[,1] 
              stats[1,11] <- Iqr
              }
-			rownames(stats) <- "X1"
+            
+			rownames(stats) <- cn
     	} else {
    nvar <- ncol(x)	
    stats = matrix(rep(NA,nvar*numstats),ncol=numstats)    #create a temporary array

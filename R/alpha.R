@@ -232,7 +232,8 @@
        	         boot.ci <- NULL}
        	names(Unidim) <- "Unidim"
        	names(Fit.off) <- "Fit.off" 
-        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,Unidim=Unidim,var.r=var.r,Fit=Fit.off,call=cl,title=title)
+       	feldt <- alpha.ci(alpha.total[1],nsub,nvar)
+        result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,feldt=feldt,Unidim=Unidim,var.r=var.r,Fit=Fit.off,call=cl,title=title)
         class(result) <- c("psych","alpha")
         return(result) 
     }
@@ -269,12 +270,15 @@ invisible(object)
 #apply the Duhacheck and Iacobucci estimates
 #compare with Feldt's estimate
 "alpha.ci" <- function(alpha,n.obs,n.var=NULL,p.val=.05,digits=2) {
-#  Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
- CI.high <- 1- (1-alpha)* qf(p.val/2,n.obs-1,Inf)
- CI.low <- 1-  (1-alpha)* qf(1-p.val/2,n.obs-1,Inf)
+# Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C%*%C) +  (tr(C))^2) - 2 * (tr(C) * sum(C%*%C)))   #correction from Tamaki Hattori
+ CI.high <- 1- (1-alpha)* qf(p.val/2,df1=n.obs-1,df2=(n.obs-1)*(n.var-1))
+ CI.low <- 1-  (1-alpha)* qf(1-p.val/2,df1=n.obs-1,df2=(n.obs-1)*(n.var-1))  #Inf changed inf to nvar -1  3/3/22
+#CI.high <- 1- (1-alpha)* qf(p.val/2,df1=n.obs-1,df2=Inf)
+#CI.low <- 1-  (1-alpha)* qf(1-p.val/2,df1=n.obs-1,df2=Inf)
 if(!is.null(n.var)) {r.bar <- alpha/(n.var - alpha*(n.var-1)) } else {r.bar=NA}
 result <- list(lower.ci =CI.low,alpha=alpha,upper.ci=CI.high,r.bar=r.bar)
-print(result,digits=digits)
+#print(result,digits=digits)
+class(result) <- c("psych","alpha.ci")
 invisible(result)
 }
 

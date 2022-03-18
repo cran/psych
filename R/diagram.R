@@ -91,6 +91,25 @@ extend = {extension.diagram(fit ,...)}
    return(xs)
 }
 
+"dia.ellipse.fill" <-    function (x,y,e.size=.05,xlim=c(0,1),ylim=c(0,1),draw=TRUE,density=NULL,angle=NULL,...) { 
+#code adapted from John Fox
+    segments=51
+    angles <- (0:segments) * 2 * pi/segments
+    angles <- c(angles,NA)   #this allows us to draw multiple ellipses
+    unit.circle <- cbind(cos(angles), sin(angles))
+    xrange = (xlim[2] - xlim[1])
+    yrange = (ylim[2] - ylim[1])
+    xs <- e.size * xrange
+    ys <- e.size * yrange
+    ellipse <- unit.circle 
+    ellipse[,1] <- ellipse[,1]*xs + x
+    ellipse[,2] <- ellipse[,2]*ys + y  #ys?
+   if(draw) lines(ellipse, ...)
+   polygon(ellipse,density=density,angle=angle,...)
+   # return(list(xs=xs,ys=ys))
+   return(xs)
+}
+
 #added to allow for fast drawing of multiple ellipses in fa.diagram and bassAckward diagram
 dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xlim=c(0,1),ylim=c(0,1),draw=TRUE, ...) {
  segments=51

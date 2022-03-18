@@ -2,7 +2,7 @@
 \alias{scrub}
 
 \title{A utility for basic data cleaning and recoding.  Changes values outside of minimum and maximum limits to NA. }
-\description{A tedious part of data analysis is addressing the problem of miscoded data that need to be converted to NA or some other value.  For a given data.frame or matrix, scrub will set all values of columns from=from to to=to that are less than a set (vector) of min values or more than a vector of max values to NA. Can also be used to do basic recoding of data for all values=isvalue to newvalue. Will also recode continuus variables into fewer categories. 
+\description{A tedious part of data analysis is addressing the problem of miscoded data that need to be converted to NA or some other value.  For a given data.frame or matrix, scrub will set all values of columns from=from to to=to that are less than a set (vector) of min values or more than a vector of max values to NA. Can also be used to do basic recoding of data for all values=isvalue to newvalue. Will also recode continuus variables into fewer categories.  Will convert Nan, -Inf and Inf to NA
 
 The length of the where, isvalue, and newvalues must either match, or be 1.
 }
@@ -25,8 +25,7 @@ scrub(x, where, min, max,isvalue,newvalue, cuts=NULL)
 The corrected data frame.}
 
 \author{William Revelle
-}
-\note{Probably could be optimized to avoid one loop
+
 }
 
 \seealso{ \code{\link{reverse.code}}, \code{\link{rescale}} for other simple utilities.

@@ -243,7 +243,7 @@ conf.level <- alpha
    
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
-   	#this repeats what was done in factor.scores and does not take into account the options in factor.scores
+   	#this repeats what was done in factor.scores and does not take in\to account the options in factor.scores
    	
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
    	 r <- cor.smooth(r)

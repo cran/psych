@@ -44,9 +44,28 @@ alpha = {
 	print(x$call)
 	cat("\n ")
 	print(x$total,digits=digits)
-	if(!is.null(x$total$ase)){ cat("\n lower alpha upper     95% confidence boundaries\n")
-	cat(round(c(x$total$raw_alpha - 1.96* x$total$ase, x$total$raw_alpha,x$total$raw_alpha +1.96* x$total$ase),digits=digits) ,"\n")}
-	if(!is.null(x$boot.ci)) {cat("\n lower median upper bootstrapped confidence intervals\n",round(x$boot.ci,digits=digits))}
+	
+	cat("\n    95% confidence boundaries \n")
+	temp.df <- data.frame(lower=x$feldt$lower.ci, alpha= x$feldt$alpha,upper.ci =x$feldt$upper.ci)
+	 colnames(temp.df ) <- c("lower","alpha","upper")
+	 rownames(temp.df) <- "Feldt"
+	if(!is.null(x$total$ase)){ 
+		temp.df[2,] <- c(x$total$raw_alpha - 1.96* x$total$ase, x$total$raw_alpha,x$total$raw_alpha +1.96* x$total$ase)
+	#cat(round(c(x$total$raw_alpha - 1.96* x$total$ase, x$total$raw_alpha,x$total$raw_alpha +1.96* x$total$ase),digits=digits) ,"\n")}
+	#if(!is.null(x$feldt)) {cat("\n 95% confidence boundaries   (Feldt) \n")
+	
+	#temp.df <- data.frame(lower=x$feldt$lower.ci, alpha= x$feldt$alpha,upper.ci =x$feldt$upper.ci)
+	
+		 rownames(temp.df)[2]<- "Duhachek"
+		}
+	
+	if(!is.null(x$boot.ci)) { #{cat("\n lower median upper bootstrapped confidence intervals\n",round(x$boot.ci,digits=digits))}
+	  temp.df[3,] <- x$boot.ci
+	  rownames(temp.df)[3] <- "bootstrapped"}
+	print(round(temp.df,digits))
+	
+	
+	
 	cat("\n Reliability if an item is dropped:\n")
     print(x$alpha.drop,digits=digits)
 	cat("\n Item statistics \n")
@@ -54,6 +73,13 @@ alpha = {
 	 if(!is.null(x$response.freq)) {
 	 cat("\nNon missing response frequency for each item\n")
 	 print(round(x$response.freq,digits=digits))}
+},
+
+alpha.ci = { cat("\n   95% confidence boundaries (Feldt)\n")
+temp.df <- data.frame(lower=x$lower.ci, alpha= x$alpha,upper.ci =x$upper.ci)
+ colnames(temp.df ) <- c("lower","alpha","upper")
+ rownames(temp.df)<-""
+ print(round (temp.df,digits))
 },
 
 autoR = {cat("\nAutocorrelations \n")
@@ -228,6 +254,14 @@ cohen.d.by = {cat("Call: ")
              }
              cat("\nUse summary for more compact output")
             },
+            
+cohen.profile = {cat("Cohen Profile  coefficients \n")
+             print(round(unclass(x),digits=digits))},
+            
+congruence = {cat("Congruence coefficients \n")
+             print(round(unclass(x),digits=digits))},
+
+
 
 comorbid = {cat("Call: ")
             print(x$Call)
@@ -501,7 +535,7 @@ mixed= { cat("Call: ")
     if(is.null(x$rho)) {if(lower) {lowerMat(x,digits=digits)} else {print(x,digits)} } else {
     if(lower) {if(length(x$rho)>1) { lowerMat (x$rho,digits=digits)} else {print(x$rho,digits)}}
    }},
-   
+
    
 omegaDirect ={ cat("Call: ")
         print(x$Call)
@@ -779,6 +813,20 @@ scores =  {
 	
   },
   
+scoreBy = { cat("Call: ")
+    print(x$Call)
+    ngroup <- length(x$cor)
+    for(i in 1:ngroup) {
+   # cat("\n group = ",names(x$cor[i]),"\n")
+   if(!is.na(x$cor[[i]])) {
+   cat("\n Correlations for group",names(x$cor[i]),"\n")
+   lowerMat(x$cor[[i]]$cor)
+   cat("\n alpha \n")
+   print(round(x$alpha[[i]]$alpha,digits))
+   }}
+   cat("\n To see the correlations as a matrix, examine the cor.mat object ")
+    },
+
 setCor= { cat("Call: ")
                           print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
@@ -787,8 +835,8 @@ setCor= { cat("Call: ")
             ny <- NCOL(x$coefficients)
           for(i in 1:ny) {cat("\n DV = ",colnames(x$coefficients)[i], "\n")
        #   if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
-          if(!is.null(x$se)) {result.df <- data.frame( round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits))
-              colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF")        
+          if(!is.null(x$se)) {result.df <- data.frame( round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits))
+              colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF","Vy.x")        
               print(result.df) 
                cat("\nResidual Standard Error = ",round(x$SE.resid[i],digits), " with ",x$df[2], " degrees of freedom\n")     
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
@@ -796,8 +844,8 @@ setCor= { cat("Call: ")
               cat("\n Multiple Regression\n")
              print(result.df)
               } else {
-              result.df <- data.frame( round(x$coefficients[,i],digits),round(x$VIF,digits))
-              colnames(result.df) <- c("slope", "VIF")        
+              result.df <- data.frame( round(x$coefficients[,i],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits))
+              colnames(result.df) <- c("slope", "VIF","Vy.x")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw")

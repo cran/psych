@@ -87,7 +87,7 @@ For finding one polychoric correlation from a table, see the Olsson example (bel
 biserial and polyserial correlations are the inferred latent correlations equivalent to the observed point-biserial and point-polyserial correlations (which are themselves just Pearson correlations).
 
 
-The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{https://www.sapa-project.org/}) (Revelle et al. 2010, 2016, 2020)  with large amounts of missing data and no complete cases. See also the International Cognitive Ability Resource (\url{https://www.icar-project.org/}) for simiilar data.
+The polyserial function is meant to work with matrix or dataframe input and treats missing data by finding the pairwise Pearson r corrected by the overall (all observed cases) probability of response frequency.  This is particularly useful for SAPA procedures (\url{https://www.sapa-project.org/}) (Revelle et al. 2010, 2016, 2020)  with large amounts of missing data and no complete cases. See also the International Cognitive Ability Resource (\url{https://www.icar-project.org/}) for similar data.
 
 Ability tests and personality test matrices will typically have a cleaner structure when using tetrachoric or polychoric correlations than when using the normal Pearson correlation. However, if either alpha or omega is used to find the reliability, this will be an overestimate of the squared correlation of a latent variable with the observed variable.
 
@@ -113,7 +113,9 @@ If using data with a variable number of response alternatives, it is necessary t
 
 For relatively small samples with dichotomous data  if some cells are empty, or if the resampled matrices are not positive semi-definite, warnings are issued. this leads to serious problems if using multi.cores (the default if using a Mac). The solution seems to be to not use multi.cores  (e.g., options(mc.cores =1)   
 
-\code{\link{mixedCor}} which calls \code{\link{polychoric}} for the N = 4,000 with 145 items of the spi data set, on a Mac book Pro with a 2.4 GHz 8-core Intel i9,  1 core took 130 seconds, 2 cores, 68 seconds, 4 37, 8 22 and 16 22.8.  Just finding the polychoric correlations (spi[11:145]) for 4 cores took 34 and for 8 cores, 22 seconds.  
+\code{\link{mixedCor}} which calls \code{\link{polychoric}} for the N = 4,000 with 145 items of the spi data set, on a Mac book Pro with a 2.4 GHz 8-core Intel i9,  1 core took 130 seconds, 2 cores, 68 seconds, 4 37, 8 22 and 16 22.8.  Just finding the polychoric correlations (spi[11:145]) for 4 cores took 34 and for 8 cores, 22 seconds. 
+
+(Update in 2022: with an M1 max chip) mixedCor for all 145 variables: 1 core = 54, 2 cores 28, 4 core = 15.8 seconds, 8 cores= 8.9 seconds.  For just the polychorics 4 cores = 13.7, 8 cores = 7.4 .     
 
 As the number of categories increases, the computation time does as well.  For more than about 8 categories, the difference between a normal Pearson correlation and the polychoric is not very large*.  However, the number of categories (num.cat) may be set to large values if desired.  (Added for version 2.0.6).
   
@@ -166,7 +168,7 @@ Some small data sets with differing number of alternatives and missing values ca
 
 
 
-\seealso{\code{\link{mixed.cor}} to find the correlations between mixtures of continuous, polytomous, and dichtomous variables.  See also the  polychor function in the polycor package. \code{\link{irt.fa}} uses the tetrachoric function to do item analysis with the \code{\link{fa}} factor analysis function.
+\seealso{\code{\link{mixed.cor}} to find the correlations between mixtures of continuous, polytomous, and dichtomous variables. See the \code{\link{bigCor}} function for very large correlation matrices (uses Pearson correlations).  See also the  polychor function in the polycor package. \code{\link{irt.fa}} uses the tetrachoric function to do item analysis with the \code{\link{fa}} factor analysis function.
 \code{\link{draw.tetra}} shows the logic behind a tetrachoric correlation (for teaching purpuses.)
 }
 \examples{

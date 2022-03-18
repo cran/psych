@@ -51,6 +51,7 @@ for(i in 1:n.scales) {
     keys[neg] <- -1
   select <- sub("-", "", list.i)
   results[[i]] <- lookup(select[1:(min(n,length(list.i)))],dictionary)
+  
  if(!is.null(rownames(results[[i]])[keys < 0]))  rownames(results[[i]])[keys < 0] <- paste0(rownames(results[[i]])[keys<0],"-")
 
  if(!is.null(cors)) { item.cors[[i]] <- round(cors[select[1:(min(n,length(select)))],i],digits=digits)

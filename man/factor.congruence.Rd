@@ -1,12 +1,14 @@
 \name{factor.congruence}
 \alias{factor.congruence}
 \alias{fa.congruence}
+
 \title{Coefficient of factor congruence }
-\description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although first reported by Burt (1948), this is frequently known as the Tucker index of factor congruence.
+\description{Given two sets of factor loadings, report their degree of congruence (vector cosine). Although first reported by Burt (1937,1  1948), this is frequently known as the Tucker index of factor congruence. Cohen's Profile similarity may be found as well. 
 }
 \usage{
 factor.congruence(x, y=NULL,digits=2,use=NULL,structure=FALSE)
 fa.congruence(x, y=NULL,digits=2,use=NULL,structure=FALSE)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,6 +17,8 @@ fa.congruence(x, y=NULL,digits=2,use=NULL,structure=FALSE)
   \item{digits}{Round off to digits}
   \item{use}{If NULL, then no loading matrices may contain missing values.  If use="complete" then variables with any missing loadings are dropped (with a warning)}
   \item{structure}{If TRUE, find the factor congruences based upon the Structure matrix (if available), otherwise based upon the pattern matrix.}
+  
+
 }
 \details{Find the coefficient of factor congruence between two sets of factor loadings. 
 
@@ -40,12 +44,21 @@ To compare more than two solutions, x may be a list of matrices, all of which wi
 Normally, all factor loading matrices should be complete (have no missing loadings).  In the case where some loadings are missing, if the use option is specified, then variables with missing loadings are dropped.
 
 
+If the data are zero centered, this is the correlation, if the data are centered around the scale midpoint (M), this is Cohen's Similarity coefficient.  See examples. If M is not specified, it is found as the midpoint of the items in x and y.
+
+\code{\link{cohen.profile}} applies the \code{\link{congruence}} function to data centered around M.  M may be specified, or found from the data. The last example is taken from Cohen (1969). 
+
+\code{\link{distance}} finds the generalized distance as a function of r.  City block (r=1), Euclidean (r=2) or weighted towards maximimum (r >2).
 }
-\value{A matrix of factor congruences.
+\value{A matrix of factor congruences or distances.
 }
 
 \references{
+Burt, Cyril (1948) Methods of factor-analysis with and without successive approximation.  British Journal of Educational Psychology, 7 (2) 172-195.
+
 Burt, Cyril (1948) The factorial study of temperamental traits. British Journal of Statistical Psychology, 1(3) 178-203.
+
+Cohen, Jacob (1969), rc: A profile similarity coefficient invariant over variable reflection. Psychological Bulletin, 71 (4) 281-284.
 
 Lorenzo-Seva, U. and ten Berge, J. M. F. (2006). Tucker's congruence coefficient as a meaningful index of factor similarity. Methodology: European Journal of Research Methods for the Behavioral and Social Sciences, 2(2):57-64.
 
@@ -111,7 +124,6 @@ Revelle, W. (In preparation) An Introduction to Psychometric Theory with applica
 #MR3 -0.33  0.96 -0.16 -0.43
 #MR2 -0.29 -0.46  0.98 -0.21
 #MR4 -0.44 -0.30 -0.22  0.98
-
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

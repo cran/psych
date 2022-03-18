@@ -21,8 +21,8 @@ glb.fa(r,key=NULL)
 \arguments{
   \item{r}{A correlation or covariance matrix or raw data matrix.}
   \item{raw}{return a vector of split half reliabilities}
-  \item{brute}{Use brute force to try all combinations of n take n/2. }
-  \item{n.sample}{if brute is false, how many samples of split halves should be tried?}
+  \item{brute}{Use brute force to try all combinations of n take n/2. Be careful.  For e.g., n=24, this is 1,352,078 possible splits!}
+  \item{n.sample}{If brute is false, how many samples of split halves should be tried? ()}
   \item{covar}{Should the covariances or correlations be used for reliability calculations}
   \item{check.keys}{If TRUE, any item with a negative loading on the first factor will be flipped in sign}
  \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See if the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
@@ -103,7 +103,11 @@ These three procedures will produce keys vectors for assigning items to the two 
 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
-Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items.  
+Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples.
+
+Timings on a MacPro for a 24 item problem with a 2.4 GHz 8 core are .24 secs for the default 10,000 samples, .678 for 30,000 samples and 22.58 sec for all possible.  
+The values of the maximum split for these sample sizes  were .799,/.804 and .800 for three replications of the default sample size of 10000,  .805  and .806 for two sets of 30,000 and .812 for an exhaustive search.
+
 
 There are three greatest lower bound functions.  One, glb finds the greatest split half reliability, \eqn{\lambda_4}. This considers the test as set of items and examines how best to partition the items into splits. The other two, \code{\link{glb.fa}} and \code{\link{glb.algebraic}}, are alternative ways of weighting the diagonal of the matrix. 
 
@@ -121,7 +125,7 @@ Compared to \code{\link{glb.algebraic}}, \code{\link{glb.fa}} seems to have less
 \item{beta}{The worst split half reliability. This is an estimate of the general factor saturation.}
 \item{maxrb}{The maximimum split half reliability.  This is Guttman's lambda 4}
 \item{alpha}{Also known as Guttman's Lambda 3}
-\item{ci}{The 2.5\%, 50\%, and 97.5\%  values of the raw or sampled split half}
+\item{ci}{The 2.5\%, 50\%, and 97.5\%  values of the raw or sampled split half.  Note that it necessary to specify raw=TRUE to get these.}
 \item{tenberge$mu1}{tenBerge mu 1 is functionally alpha}
  \item{tenberge$mu2}{one of the sequence of estimates mu1 ... mu3}
 \item{glb}{glb found from factor analysis}
@@ -134,21 +138,28 @@ Guttman, L. (1945). A basis for analyzing test-retest reliability. Psychometrika
 
 Revelle, W. (1979). Hierarchical cluster-analysis and the internal structure of tests. Multivariate Behavioral Research, 14 (1), 57-74. 
 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. DOI: 10.1037/pas0000754.  
+\url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
+
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
 
 Ten Berge, J. M. F., & Zegers, F. E. (1978). A series of lower bounds to the reliability of a test. Psychometrika, 43 (4), 575-579. 
 
-Zinbarg, R. E., Revelle, W., Yovel, I., & Li, W. (2005). Cronbach's \eqn{\alpha} , Revelle's \eqn{\beta} , and McDonald's \eqn{\omega_h} ): Their relations with each other and two alternative conceptualizations of reliability. Psychometrika, 70 (1), 123-133.
+Zinbarg, R. E., Revelle, W., Yovel, I., & Li, W. (2005). Cronbach's \eqn{\alpha} , Revelle's \eqn{\beta} , and McDonald's \eqn{\omega_h} ): Their relations with each other and two alternative conceptualizations of reliability. \doi{10.1007/s11336-003-0974-7} Psychometrika, 70 (1), 123-133.
 
 }
 \author{ William Revelle }
 
-\seealso{ \code{\link{alpha}}, \code{\link{omega}}, \code{\link{ICLUST}}, \code{\link{glb.algebraic}}
+\seealso{  \code{\link{reliability}},\code{\link{alpha}}, \code{\link{omega}}, 
+\code{\link{ICLUST}},  \code{\link{glb.algebraic}}
 }
 \examples{
 data(attitude)
 splitHalf(attitude)
 splitHalf(attitude,covar=TRUE) #do it on the covariances
+temp <- splitHalf(attitude,raw=TRUE)
+temp$ci #to show the confidence intervals, you need to specify that raw=TRUE
+
 glb(attitude)
 glb.fa(attitude)
 if(require(Rcsdp)) {glb.algebraic(cor(attitude)) }

@@ -71,7 +71,9 @@ Scores are based upon the simple averages (or totals) of the items scored. Thus,
 
 When using raw data, standard errors for the raw alpha are calculated using equation 2 and 3 from Duhhachek and Iacobucci (2004).  This is problematic because some simulations suggest these values are too small.  It is probably better to use bootstrapped values.
 
-\code{\link{alpha.ci}} finds confidence intervals using  the Feldt et al. (1987) procedure.  This procedure does not consider the internal structure of the test the way that the Duhhachek and Iacobucci (2004) procedure does.  That is, the latter considers the variance of the covariances, while the Feldt procedure is based upon just the mean covariance.
+\code{\link{alpha.ci}} finds confidence intervals using  the Feldt et al. (1987) procedure.  This procedure does not consider the internal structure of the test the way that the Duhachek and Iacobucci (2004) procedure does.  That is, the latter considers the variance of the covariances, while the Feldt procedure is based upon just the mean covariance.  In March, 2022, alpha.ci was finally fixed to follow the Feldt procedure. The confidence intervals reported by alpha use both the Feld and the Duhaceck and Iabocucci precedures.  Note that these match for large values of N, but differ for smaller values.  
+
+Because both of these procedures use normal theory, if you really care about confidence intervals, using the boot option (n.iter > 1) is recommended.
 
 Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot object.  They may be plotted or described.  The 2.5\% and 97.5\% values are returned in the boot.ci object.
 
@@ -96,7 +98,7 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{sd}{For data matrices, the standard deviation of each item}
   \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
   \item{scores}{Scores are by default simply the average response for all items that a participant took. If cumulative=TRUE, then these are sum scores. Note, this is dangerous if there are lots of missing values.}  
-  item{boot.ci}{The lower, median, and upper ranges of the 95\% confidence interval based upon the bootstrap.}
+  \item{boot.ci}{The lower, median, and upper ranges of the 95\% confidence interval based upon the bootstrap.}
   \item{boot}{a 6 column by n.iter matrix of boot strapped resampled values}
   \item{Unidim}{An index of unidimensionality}
   \item{Fit}{The fit of the off diagonal matrix}

@@ -19,8 +19,7 @@ block.random(n, ncond = NULL)
 
 \author{William Revelle
 }
-\note{Prepared for a course on Research Methods in Psychology \url{https://personality-project.org/revelle/syllabi/205/205.syllabus.html}
-}
+\note{Prepared for a course on Research Methods in Psychology \url{https://personality-project.org/courses/205/205.syllabus.html} }
 
 
 \examples{

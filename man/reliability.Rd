@@ -104,8 +104,12 @@ William Revelle
 }
 \examples{
 reliability(psychTools::ability) #an example of finding reliability for all items
-plot(reliability(psychTools::ability.keys,psychTools::ability)) #versus all and subsets
-reliability(psychTools::bfi.keys,psychTools::bfi)
+rel <- reliability(psychTools::ability.keys,psychTools::ability)  #use keys to select scales
+R <- cor(psychTools::ability,use="pairwise") #find the correlations to test 
+rel.R <- reliability(psychTools::ability.keys,R) #this should be the same as rel
+plot(rel.R) #versus all and subsets
+all.equal(rel$result.df,rel.R$result.df ) #should be TRUE
+reliability(psychTools::bfi.keys,psychTools::bfi)  #reliability when items are keyed negative
 
 \dontrun{  
 #this takes a few seconds but shows nice graphic displays

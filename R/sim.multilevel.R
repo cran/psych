@@ -40,8 +40,8 @@ if(missing(beta.i)) { beta.i <- matrix(0,ncol=nvar,nrow=n.obs) } else {
      if(length(beta.i) < n.obs) {beta.i <- matrix(beta.i,ncol=nvar,nrow=n.obs,byrow=TRUE) } }
 if(missing(mu.i)) mu.i <- matrix(0,ncol=nvar,nrow=n.obs)
 if(missing(sigma.i)) {sigma.i <- matrix(1,ncol=nvar,nrow=n.obs)} else {
-  if(length(sigma.i) < n.obs) {sigma.i <- matrix(sigma.i,ncol =nvar,nrow=n.obs,byrow=TRUE)}
-  }
+        if(length(sigma.i) < n.obs) {sigma.i <- matrix(sigma.i,ncol =nvar,nrow=n.obs,byrow=TRUE)}
+       }
 if(missing(sin.i)) {sin.i <- matrix(0,ncol=nvar,nrow=n.obs)} else {
   if (length(sin.i) < n.obs) {sin.i <- matrix(sin.i,ncol=nvar,nrow=n.obs,byrow=
   TRUE) }
@@ -57,17 +57,23 @@ if(missing(AR1)) {AR1 <- matrix(0,ncol=nvar,nrow=n.obs) }  else {
   
   if(is.null(phi)) {phi <-diag(1,nfact) } else {phi <- matrix(phi,ncol=nfact,nrow=nfact)
               diag(phi) <- 1}
+              
+  
+    
+    
   if(!is.null(phi.i)) {if(length(phi.i) < n.obs) {phi.i <- rep(phi.i,n.obs/length(phi.i))} }  
   if(nfact > 1) {
+
   if(is.null(fact)) {     #these are the group level factor loadings
    fact <- matrix(0,nrow=nvar,ncol=nfact)
    # fact[ ] =((( col(fact)+ row(fact)) %% nfact ))  * loading
-   fact[((round(row(fact)/nvar))+1) == col(fact)] <- loading  #just works for two factors!
-   #for(j in 1:nfact) {
-  #  fact[((j-1)*nvar/nfact +1):j*nvar/nfact,j] <- loading
-  # }  
+  # fact[((round(row(fact)/nvar))+1) == col(fact)] <- loading  #just works for two factors!
+  for(j in 1:nfact) {
+    #fact[((j-1)*nvar/nfact +1):j*nvar/nfact,j] <- loading
+    fact[((j-1) * nvar/nfact +1):(j*nvar/nfact),j] <- loading
+   }  
     
-    fact<-  (fact %*% phi )}} else { fact <- matrix(loading,ncol=1,nrow=nvar) }
+    fact<-  (fact %*% phi )}} else { fact <- matrix(loading,ncol=nfact,nrow=nvar) }
  if(is.null(f.i)) { f.i <- list()
  for (i in 1:n.obs) {
    f.i[[i]] <- fact
@@ -91,8 +97,11 @@ for(j in 1:nfact) {   #first generate the factor scores that have a within subje
   
   #factor scores are the first nfact elemements of Xjk
   #now, generate item scores
+  
+
   if(is.null(phi.i)) {phi.ind <- diag(1,nfact) } else {phi.ind <- matrix(phi.i[i],nfact,nfact)
                diag(phi.ind) <- 1}
+               
   Xjk[,1:nfact] <- Xjk [,1:nfact] %*% phi.ind     #these are the factor scores for the ith subject
 
 

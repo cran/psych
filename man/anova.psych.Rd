@@ -35,11 +35,12 @@ The code has been adapted from the anova.lm function in stats and the anova.sem 
 
 }
 \examples{
-
+if(require("psychTools")) {
 m1 <- setCor(reaction ~ import, data = Tal_Or,std=FALSE)
 m2 <- setCor(reaction ~ import+pmi, data = Tal_Or,std=FALSE)
 m3 <- setCor(reaction ~ import+pmi + cond, data = Tal_Or,std=FALSE)
 anova(m1,m2,m3)
+}
 
 
 #Several interesting test cases are taken from analyses of the Spengler data set
@@ -47,6 +48,8 @@ anova(m1,m2,m3)
 #sample sizes from the last wave 
 #This data set is actually in psychTools but is copied here until we can update psychTools
 #We set the n.iter to be 50 instead of the default value of 5,000
+if(require("psychTools")) {
+
  mod1 <- mediate(Income.50 ~ IQ + Parental+ (Ed.11) ,data=Spengler,
     n.obs = 1952, n.iter=50)
  mod2 <- mediate(Income.50 ~ IQ + Parental+ (Ed.11)  + (Income.11)
@@ -54,6 +57,7 @@ anova(m1,m2,m3)
 
 #Now, compare these models
 anova(mod1,mod2)
+}
 
 f3 <- fa(Thurstone,3,n.obs=213)  #we need to specifiy the n.obs for the test to work
 f2 <- fa(Thurstone,2, n.obs=213)

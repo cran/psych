@@ -248,10 +248,10 @@ n.pch =length(pch)
     		  #now, draw the points with different line types and colors for each value of the second grouping variable
     		 #we want to adjust the line type for the fact that we have two different grouping variables 
     		
-    		  points(x.values,var.means[i,1:(n.grp1)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i) %% n.color + 1], pch=pch[i],...) 
+    		  points(x.values,var.means[i,1:(n.grp1)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i-1) %% n.color + 1], pch=pch[i],...) 
    if(n.grp2>1)  {		  
      for(grp2 in 1:(n.grp2-1)){
-    		    points(x.values,var.means[i,(n.grp1 *grp2 +1):(n.grp1*(grp2+1))],typ=typ,lty=lty[(grp2) %% 8 +1],col = colors[grp2 %% n.color + 1], pch=pch[(grp2 %% n.pch + 1)],...)
+    		    points(x.values,var.means[i,(n.grp1 *grp2 +1):(n.grp1*(grp2+1))],typ=typ,lty=lty[(grp2-1) %% 8 +1],col = colors[(grp2-1) %% n.color + 1], pch=pch[((grp2-1) %% n.pch + 1)],...)
     		# if(n.grp1 < n.group) { points(x.values1,var.means[i,(n.grp1 +1):(n.group)],typ = typ,lty=lty[((1:(n.grp1)-1) %% 8 +1)],col = colors[(1:(n.grp1)) %% n.color + 1], pch=pch[i],...) }
     		   }     # points(x.values,var.means[i,],typ = typ,lty=lty,...)
     		}
@@ -324,16 +324,19 @@ n.pch =length(pch)
     
     #### now add labels and lengeds if desirec		
       if(!is.null(add.labels)) {
-
         
                if(is.null(v2.labels)) v2.labels <- names(unlist(dimnames(group.stats)[2]))
         if(is.null(pos)) {
-        if(x.cat){text.values <- data.frame(x=rep((.5+ (add.labels == "right")* n.grp1),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)} else {
-                   text.values <- data.frame(x=rep((.5+ (add.labels == "right") * x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)}
+
+        if(x.cat) {text.values <- data.frame(x=rep(.5 + (add.labels=="right")*NCOL(var.means),NROW(var.means)),y=var.means[,(add.labels=="right")*(NCOL(var.means)-1)+1],name=v2.labels)} else {
+                   text.values <- data.frame(x=rep((.5+ (add.labels == "right") * x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)}
+        #if(x.cat){text.values <- data.frame(x=rep((.5+ (add.labels == "right")* n.grp1),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,)],name=v2.labels)} else {
+                  # text.values <- data.frame(x=rep((.5+ (add.labels == "right") * x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels)}
                    
                    text(text.values$x,text.values$y,text.values$name)
         } else {
-            text.values <- data.frame(x=rep((.5+ (add.labels == "right")* x.values[n.grp1]),n.grp2),y=var.means[seq(1+(add.labels == "right")* (n.grp1-1),n.grp2 * n.grp1,(n.grp1))],name=v2.labels,position=pos)
+            text.values <- data.frame(x=rep(.5 + (add.labels=="right")*NCOL(var.means)),y=var.means[,NCOL(var.means)],name=v2.labels ,position=pos)
+           # text.values <- data.frame(x=rep((.5+ (add.labels == "right")* x.values[n.grp1]),n.grp2),y=var.means[,1+(add.labels == "right")* (n.grp1-1) ],name=v2.labels,position=pos)
         text(text.values$x,text.values$y,text.values$name,pos=text.values$position)
                }
 

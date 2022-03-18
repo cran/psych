@@ -109,3 +109,69 @@ if(length(class(y)) > 1) {   #{ cln <- class(y)[2] } else {cln <- "other"}
   
    return(t(result))
    }
+   
+   
+   
+   
+ #find the generalized congruence coefficient 
+ #normalized cross products
+ #if zero centered data, this is the correlation
+ #if centered on the response midpoint, this is the Cohen cs 
+ 
+#handles missing data
+#find the congruence coefficient
+#handles missing data
+congruence <- function(x,y=NULL){
+if(is.null(y)) y <- x
+nvarx <- NCOL(x)
+nvary <- NCOL(y)
+if(nvarx == 1) x <- as.matrix(x)
+if(nvary ==1) y <-as.matrix(y)
+
+C <- matrix(nrow=nvary,ncol=nvarx)
+Cx <- rep(0,nvarx)
+Cy <- rep(0,nvary)
+for(i in 1:nvarx) {
+ for(j in 1:nvary) {
+ C[j,i]  <- sum(x[,i,drop=FALSE] * y[,j,drop=FALSE],na.rm=TRUE)
+  Cx[i] <- sum(x[,i,drop=FALSE]^2,na.rm=TRUE)}}
+ 
+ for(j in 1:nvary){
+   Cy[j] <- sum(y[,j,drop=FALSE]^2,na.rm=TRUE)}
+ 
+     
+ if(nvarx> 1) {dcx <- sqrt(diag(1/Cx))} else {dcx <- sqrt(1/Cx)}
+ if(nvary > 1) {dcy <- sqrt(diag(1/Cy))} else {dcy <- sqrt(1/Cy)}
+
+ C <- dcy %*% C %*% dcx
+ rownames(C) <- colnames(y)
+ colnames(C) <- colnames(x)
+ class(C) <- c("psych","congruence")
+ return(C)
+}
+
+cohen.profile <- function(x,y=NULL,M=NULL) {
+if(is.null(y)) y <- x
+if(is.null(M)) {
+min.scale<- min(x,y,na.rm=TRUE)
+max.scale <- max(x,y,na.rm=TRUE)
+M <- (max.scale + min.scale )/2}
+congruence(x=x-M,y=y-M)}
+
+distance <- function(x,y=NULL,r=2) {
+if(is.null(y)) y <- x
+nvarx <- NCOL(x)
+nvary <- NCOL(y)
+C <- matrix(nrow=nvary,ncol=nvarx)
+Cx <- rep(0,nvarx)
+Cy <- rep(0,nvary)
+for(i in 1:nvarx) {
+ for(j in 1:nvary) {
+ if(r==1) {C[j,i] <- sum(abs(x[,i,drop=FALSE] - y[,j,drop=FALSE])) } else {
+ C[j,i]  <- exp(log(sum((x[,i,drop=FALSE] - y[,j,drop=FALSE])^r,na.rm=TRUE))/r)}
+  }
+  }
+ rownames(C) <- colnames(y)
+ colnames(C) <- colnames(x)
+  C
+  }

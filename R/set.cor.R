@@ -58,7 +58,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                     x <- c("(Intercept)",x) #this adds a ones column to the data to find intercept terms 
                    if(!is.numeric(data)) stop("The data must be numeric to proceed")
                    if(!is.null(prod) | (!is.null(ex))) {#we want to find a product term
-                  if(zero) data <- scale(data,scale=FALSE)
+              
+                  if(zero) data[,x] <- scale(data[,x],scale=FALSE)
                   
      if(!is.null(prod)) {
                      prods <- matrix(NA,ncol=length(prod),nrow=nrow(data))
@@ -100,6 +101,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                     } else {
                         #   do it on the moments matrix to get intercepts
                            #if(zero) C["(Intercept)","(Intercept)"] <- 1  
+                           
                            if(zero) means[1] <- 1 
                             m <- C
                            if(length(z) < 1) { m <- C * (n.obs-1) + means %*% t(means) * n.obs} else { #this creates the moments matrix unless we are partialling
@@ -179,8 +181,10 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
    
        if(raw) {
    
-       df.fudge <- (n.obs-1) #maybe n.obs-1  
+       #df.fudge <- (n.obs-1) #maybe n.obs-1  
             if(std) { R2 <- colSums(beta * xy.matrix)/diag(y.matrix) 
+                      Vaxy <- beta * xy.matrix/diag(y.matrix)
+                      VIF <- 1/(1-smc((x.matrix )))
               SST <- 1 
               MSE <- diag(resid/df)  
                 #this is used to find the SSR  was n.obs -1
@@ -197,6 +201,14 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
               MSE <- diag(resid )/(df) 
                if(length(y) > 1) {SST <- diag( m [y,y] - means[y]^2 * n.obs)} else {SST <- ( m [y,y] - means[y]^2 * n.obs)}
      	       R2 <- (SST - diag(resid)) /SST 
+     	        #we need to find the zero order correlations instead of the moments to get Vaxy
+     	          
+     	          C[1,1] <- 1
+     	          Rxy <- cov2cor(C)
+     	          beta.std <- solve(Rxy[x,x],Rxy[x,y])
+     	          Vaxy <- beta.std * Rxy[x,y]
+                  VIF <- 1/(1-smc(Rxy[x,x]))
+     	   
      	       
      	        for (i in 1:length(y)) {
      	        se.beta[[i]] <- sqrt(MSE[i] * diag(x.inv))
@@ -206,6 +218,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                 }    else { #from correlations
   
                 R2  <- colSums(beta * xy.matrix)/diag(y.matrix) 
+                Vaxy <- beta * xy.matrix/diag(y.matrix)
+                 VIF <- 1/(1-smc((x.matrix )))
+
               SST <- 1 
               MSE <- diag( resid/(df-1 ))  #because df is inflated in normal regression because of the intercept term should this be df or df -1
               df.fudge <- n.obs-1
@@ -238,7 +253,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
     		 rownames(beta) <- x
     		# rownames(R2) <- colnames(R2) <- y
      		 }
-     	 VIF <- 1/(1-smc(x.matrix))
+#
+ #    	VIF <- 1/(1-smc((x.matrix )))
 
      	
      	#now find the unit weighted correlations  
@@ -367,8 +383,10 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
        	yhat <- t(C[x,y,drop=FALSE]) %*% x.inv %*% (C[x,y])
        	resid <- C[y,y] - yhat   #this is now in covariance units
 
-     	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,std=std,Call = cl)} else {
-     	              set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Call = cl)}
+       
+        Vaxy <- as.matrix(Vaxy)
+     	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,std=std,Vaxy=Vaxy,Call = cl)} else {
+     	              set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Call = cl)}
      	class(set.cor) <- c("psych","setCor")
      	if(plot) setCor.diagram(set.cor,main=main,show=show)
      	return(set.cor)

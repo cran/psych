@@ -76,12 +76,13 @@ Formula input allows specification of grouping variables as well.  )
 
 For plotting data for two groups, Mahalobnis differences between the groups may be shown by drawing an arrow between the two centroids.  This is a bit messy and it is useful to use pch="." in this case.
 }
+
 \author{William Revelle}
 \note{
 Originally adapted from Addicted to R example 78.  Modified following some nice suggestions from Jared Smith. Substantial revisions in 2021 to allow for a clearer demonstration of group differences.    
 }
 
-\seealso{\code{\link{pairs.panels}} for multiple plots, \code{\link{multi.hist}} for multiple histograms.
+\seealso{\code{\link{pairs.panels}} for multiple plots, \code{\link{multi.hist}} for multiple histograms.  Perhaps the best example is found in the psychTools::GERAS data set. 
 }
 \examples{
 data(sat.act)

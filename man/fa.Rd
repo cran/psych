@@ -14,12 +14,13 @@ fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression",
 residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
  alpha=.1,p=.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
- correct=.5,weight=NULL,...)
+ correct=.5,weight=NULL,n.rotations=1,hyper=.15,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, weight=NULL,...)
+oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, 
+weight=NULL,n.rotations=1,hyper=.15,...)
 
 fa.pooled(datasets,nfactors=1,rotate="oblimin",scores="regression", 
 residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001
@@ -42,6 +43,7 @@ frac=.1,...)
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
   \item{np.obs}{The pairwise number of observations. Used if using a correlation matrix and asking for a minchi solution.}
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "Promax", "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax. SPSS seems to do a Kaiser normalization before doing Promax, this is done here by the call to "promax" which does the normalization before calling Promax in GPArotation.}
+   \item{n.rotations}{Number of random starts for the rotations.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
@@ -52,6 +54,7 @@ frac=.1,...)
   \item{min.err}{Iterate until the change in communalities is less than min.err}
   \item{max.iter}{Maximum number of iterations for convergence }
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
+  \item{hyper}{Count number of (absolute) loadings less than hyper. }
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
   \item{fm}{Factoring method  fm="minres" will do a minimum residual as will fm="uls".  Both of these use a first derivative.  fm="ols" differs very slightly from "minres" in that it minimizes the entire residual matrix using an OLS procedure but uses the empirical first derivative.  This will be slower.  fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair. fm ="minrank" will do a minimum rank factor analysis. "old.min" will do minimal residual the way it was done prior to April, 2017 (see discussion below).  fm="alpha" will do alpha factor analysis as described in Kaiser and Coffey (1965)}
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
@@ -85,6 +88,8 @@ However, simulations of multiple problem sets suggest that fm="pa" tends to prod
 Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
 
 Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link[psychTools]{Schutz}} produces Heywood and super Heywood cases,   \code{\link[psychTools]{blant}} leads to very different solutions.  In particular, the minres solution produces smaller residuals than does the mle solution, and the factor.congruence coefficients show very different solutions.
+
+A very strong argument against using MLE is found in the chapter by MacCallum, Brown and Cai (2007) who show that OLS approaches produce equivalent solutions most of the time, and better solutions some of the time.  This particularly in the case of models with some unmodeled small factors.  (See \code{\link{sim.minor}} to generate such data.)
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller RMSEA) solutions.
 
@@ -123,6 +128,11 @@ Analysis of dichotomous or polytomous data may also be done by using  \code{\lin
 
 
 Of the various rotation/transformation options, varimax, Varimax, quartimax, bentlerT, geominT, and bifactor do orthogonal rotations. Promax  transforms obliquely with a target matix equal to the varimax solution. oblimin, quartimin, simplimax,  bentlerQ,  geominQ and biquartimin are oblique transformations. Most of these are just calls to  the GPArotation package. The ``cluster'' option does a targeted rotation to a structure defined by the cluster representation of a varimax solution.  With the optional "keys" parameter, the "target" option will rotate to a target supplied as a keys matrix. (See \code{\link{target.rot}}.)
+
+oblimin is implemented in GPArotation by a call to quartimin with delta=0.  This leads to confusion when people refer to quartimin solutions. 
+
+It is important to note a dirty little secret about factor rotation.  That is the problem of local minima.  Multiple restarts of the rotation algorithms are strongly encouraged (see Nguyen and Waller, N. G. 2021). 
+  
 
 Two additional target rotation options are available through calls to GPArotation.  These are the targetQ (oblique) and targetT (orthogonal) target rotations of Michael Browne.  See \code{\link{target.rot}} for more documentation. 
 
@@ -235,7 +245,11 @@ Harman, Harry and Jones, Wayne (1966) Factor analysis by minimizing residuals (m
 
 Hofmann, R. J. ( 1978 ) . Complexity and simplicity as objective indices descriptive of factor solutions. Multivariate Behavioral Research, 13, 247-250.
 
+Grieder, Silvia and Steiner, Markus. D.  (2021) Algorithmic jingle jungle: A comparison of implementations of principal axis factoring and promax rotation in R and SPSS. Behavior Research Methods. Doi: 10.3758/s13428-021-01581
+
 Kaiser, Henry F. and Caffrey, John.  Alpha factor analysis, Psychometrika, (30) 1-14.
+
+Nguyen, H. V. & Waller, N. G. (in press). Local minima and factor rotations in exploratory factor analysis. Psychological Methods. 
 
 Pettersson E, Turkheimer E. (2010) Item selection, evaluation, and simple structure in personality data. Journal of research in personality, 44(4), 407-420.
 
@@ -263,7 +277,7 @@ The print function for the fa output will return (invisibly) an object (Vaccount
 
 Correction to documentation: as of September, 2014, the oblique.scores option is correctly explained. (It had been backwards.)  The default (oblique.scores=FALSE) finds scores based upon the Structure matrix, while oblique.scores=TRUE finds them based upon the pattern matrix.  The latter case matches factanal.  This error was detected by Mark Seeto. 
 
-If the raw data are factored, factors scores are found.  By default this will be done using 'regression' but alternatives are available. Although the scores are found by multiplying the standardized data by the weights, if using regression, the resulting factor scores will not necessarily have unit variance. 
+If the raw data are factored, factors scores are estimated.  By default this will be done using 'regression' but alternatives are available. Although the scores are found by multiplying the standardized data by the weights, if using regression, the resulting factor scores will not necessarily have unit variance. 
 
 In the case of missing data for some items, the factor scores will return NA for any case where any item is missing.  Specifying missing=TRUE will return factor scores for all cases using the imputation option chosen.  
 
@@ -274,6 +288,9 @@ The minres solution has been modified (April, 2107) following suggestions by Hao
 Alpha factoring was added in August, 2017 to add to the numerous alternative models of factoring.    
 
 A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output. 
+
+For a comparison of the \code{\link{fa}} to factor analysis using SPSS, see Grieder and Steiner (2021). 
+
 
 
 

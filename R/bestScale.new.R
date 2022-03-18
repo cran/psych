@@ -136,7 +136,7 @@ result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dic
  	crit.sd <- apply(x[,criteria],2,sd,na.rm=TRUE)} else {
  	crit.mean <- mean(x[,criteria],na.rm=TRUE)
  	crit.sd <- sd(x[,criteria],na.rm=TRUE)}
- 	if(is.na(final.means)) {result$final.stats <- data.frame(r=result$r,crit.m=crit.mean,crit.sd =crit.sd)} else {
+ 	if(any(is.na(final.means))) {result$final.stats <- data.frame(r=result$r,crit.m=crit.mean,crit.sd =crit.sd)} else {
    	result$final.stats <- data.frame(mean=final.means,sd=final.sd,r=result$r,crit.m=crit.mean,crit.sd =crit.sd)}
     result$items <- NULL
     
@@ -388,8 +388,10 @@ function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,impute="med
  
  nvar <- ncol(x)
  n.item <- min(n.item,nvar-1)
- if(isCorrelation(x)) {r <- x      #  case 1
-    raw <- FALSE} else {  #case 2
+ if(isCorrelation(x) | (all(colnames(x) %in% rownames(x)))) {r <- x      #  case 1
+    raw <- FALSE
+    nvar <- NROW(r)
+        } else {  #case 2
     y <- x[,criteria]
     if(log.p) {r <- log(corr.test(x,y)$p)} else { r <- cor(x,y,use="pairwise")}
    
@@ -432,7 +434,8 @@ if(length(n.item) == 1) n.item <- rep(n.item,ny) #
  #now, drop those items from the keys that are not used
  used <- rowSums(abs(key))
  key <- key[used > 0,,drop=FALSE]  
- x <- x[,used >0,drop=FALSE]
+if(raw){ x <- x[,used >0,drop=FALSE] } else {   #this works for raw data, but not for correlations
+  x <- x[used>0,,drop=FALSE]} 
  if(NCOL(x) < 1) stop("No items met the criteria.  Try changing the cut value.")
 #now, if we have raw data, find the correlation of the composite scale with the criteria
 #if we have raw data, then we find the scales from the data 
@@ -451,20 +454,21 @@ ni <- colSums(abs(key))
 
 } else {  #case 1 (from a correlation matrix)
   score <- NULL
-  r <- r[,used > 0,drop=FALSE]
+  r <- r[used > 0,,drop=FALSE]   #drop the unused ones
 	if(any(is.na(r))) {#Are there any bad values
  		 for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
  		 k[,i] <- colSums(t((key[,i]) * t(r)),na.rm=TRUE)}    #replace matrix addition with a colSums
  		 k <- t(k)
 	} else {#otherwise, don't bother
-    C <-  t(t(key) %*% t(r[criteria,,drop=FALSE]))  #criterion covariance
-    V <-  t(key) %*%  r[ used > 0,] %*% key   #predictor variance
+	
+    C <-  t(t(key) %*% (r[,criteria,drop=FALSE]))  #criterion covariance
+    V <-  t(key) %*%  r[ ,used > 0,drop=FALSE] %*% key   #predictor variance
     
 #	k  <- t(t(key) %*% t(r[criteria,,drop=FALSE]))  #we can do the matrix multiply because there are no bad data         
  	}
 #	V <- t(k) %*% key   #this is the covariance of the criteria with criteria
 #	C <- k[criteria,] 
- if(ny < 2) {re <- r[criteria,] 
+ if(ny < 2) {re <- r[,criteria,drop=FALSE] 
            R <- C/sqrt(V)} else {
    R <- diag(C/sqrt(V))
 	#re <- diag(k[criteria,])/sqrt(diag(C))
@@ -472,7 +476,8 @@ ni <- colSums(abs(key))
 	ni <- colSums(abs(key))
 	#R <- cov2cor(C)
 	r <- t(r)
-	re <- r[,criteria]   
+	browser()
+	re <- r[criteria,,drop=FALSE]   
 }
 short.key <- list()
 value <- list()

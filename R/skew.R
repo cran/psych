@@ -99,9 +99,9 @@ small.skew <- n*k*b1p/6
 M.skew <- n*b1p/6
 M.kurt <- (b2p - p * (p+2))*sqrt(n/(8*p*(p+2)))
 #p.skew <- 1-pchisq(M.skew,chi.df)
-p.skew <-   -2 *  expm1(pchisq(M.skew,chi.df,log.p=TRUE))  
+p.skew <-   -expm1(pchisq(M.skew,chi.df,log.p=TRUE))  
 #p.small <- 1 - pchisq(small.skew,chi.df)
-p.small <-   -2 *  expm1(pchisq(small.skew,chi.df,log.p=TRUE)) 
+p.small <-   -expm1(pchisq(small.skew,chi.df,log.p=TRUE)) 
 p.kurt <- 2*(1- pnorm(abs(M.kurt)))
 d =sqrt(diag(D))
 if(plot) {qqnorm(d)

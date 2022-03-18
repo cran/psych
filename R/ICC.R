@@ -160,12 +160,13 @@ s.aov <- mod.lmer
  #first, the easy ones
  #don't divide alpha level by 2  (changed on 2/1/14)
  #fixed again? onf 5/21/19
-  F1L <- F11 / qf(1-alpha,df11n,df11d)  
- F1U <- F11 * qf(1-alpha,df11d,df11n)
+ #and fixed again to  divide alpha by 2 following Mijke Rhemtulla's thoughtful comment
+  F1L <- F11 / qf(1-alpha/2,df11n,df11d)  
+ F1U <- F11 * qf(1-alpha/2,df11d,df11n)
  L1 <- (F1L-1)/(F1L+(nj-1))
  U1 <- (F1U -1)/(F1U+nj-1)
- F3L <- F31 /qf(1-alpha,df21n,df21d)
- F3U <- F31 * qf(1-alpha,df21d,df21n)
+ F3L <- F31 /qf(1-alpha/2,df21n,df21d)
+ F3U <- F31 * qf(1-alpha/2,df21d,df21n)
  results[1,7] <- L1
  results[1,8] <- U1
  results[3,7] <- (F3L-1)/(F3L+nj-1)
@@ -180,8 +181,8 @@ s.aov <- mod.lmer
  vn <- (nj-1)*(n.obs-1)* ( (nj*ICC2*Fj+n.obs*(1+(nj-1)*ICC2) - nj*ICC2))^2
  vd <- (n.obs-1)*nj^2 * ICC2^2 * Fj^2 + (n.obs *(1 + (nj-1)*ICC2) - nj*ICC2)^2
  v <- vn/vd
- F3U <- qf(1-alpha,n.obs-1,v) 
- F3L <- qf(1-alpha,v,n.obs-1)
+ F3U <- qf(1-alpha/2,n.obs-1,v) 
+ F3L <- qf(1-alpha/2,v,n.obs-1)
  
  L3 <- n.obs *(MSB- F3U*MSE)/(F3U*(nj*MSJ+(nj*n.obs-nj-n.obs)*MSE)+ n.obs*MSB)
  results[2,7] <- L3

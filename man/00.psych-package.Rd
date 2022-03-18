@@ -3,8 +3,7 @@
 \alias{psych-package}
 \alias{00.psych-package}
 \docType{package}
-\title{A package for personality, psychometric, and psychological research
-}
+\title{A package for personality, psychometric, and psychological research}
 \description{Overview of the psych package.
 
 The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions  Three vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
@@ -95,8 +94,8 @@ Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 persona
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 2.1.9\cr
-Date: \tab 2021--September--20\cr
+Version: \tab 2.2.3\cr
+Date: \tab 2022--March--18\cr
 License: \tab GPL version 2 or newer\cr
 }
 Partial Index:

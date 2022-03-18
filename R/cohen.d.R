@@ -1,4 +1,6 @@
 "cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL) {
+#added the hedges option 2/22/22
+#corrected the nmax calculation following a request/commment by 
 cl <- match.call()
 group2 <- NULL
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
@@ -24,10 +26,10 @@ if ((length(group) ==1) && ( group %in% colnames(x) )) {group <- which(colnames(
  S <- stats$rwg
 
  if(MD) S.inv <- Pinv(S)   #the pseudo inverse because it is possible this is not PSD   added December 15, 2019, added as if statement 7/7/21
-d <- stats$mean[2,] - stats$mean[1,]
+d <- stats$mean[2,] - stats$mean[1,]   #this is a vector differerences
 sd.p <- sqrt((( (stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,])) #if we subtract 2 from n, we get Hedges g
 sd.ph <- sqrt((((stats$n[1,]-1) * stats$sd[1,]^2) + (stats$n[2,]-1) * stats$sd[2,]^2)/(stats$n[1,]+stats$n[2,]-2)) #if we subtract 2 from n, we get Hedges g
-n <- stats$n[1,]+ stats$n[2,]
+n <- stats$n[1,]+ stats$n[2,]   #this is a vector of ns taken from the statsBy function
 
 cohen.d <- d/sd.p
 
@@ -35,11 +37,11 @@ hedges.g <- d/sd.ph
 d <- cohen.d    #basically use this in the Mahalanobis distance
 names(cohen.d) <- colnames(x)
 if(!group.in) {group <- which(colnames(stats$n)=="group")}
-n <- n[-group]
+n <- n[-group]   #statsBy returns grouping variable as well, ignore it
 d <- d[-group]
 n1 <- stats$n[1,-group]
 n2 <- stats$n[2,-group]
-p1 <- n1/n
+p1 <- n1/n    #the proportion in group 1
 p2 <- n2/n
 cohen.d <- cohen.d[-group]
 hedges.g <- hedges.g[-group]
@@ -51,6 +53,7 @@ if(MD) {D <- sqrt(t(d) %*% S.inv %*% d)   #convert to D units from D2 units
      wt.d <- t(d) %*% S.inv *d    #what is this?
 D <- as.vector(D)} else {D <- NA 
    wt.d <- NA}
+  hedges.d.conf <- cohen.d.ci(hedges.g,n1=n1,n2=n2,alpha=alpha)
 cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
 
 
@@ -61,7 +64,7 @@ if(!is.null(sort)) {if(sort %in%( c("decreasing","descending","TRUE"))) {ord <- 
        dict <- dict[ord,,drop=FALSE]
       }
 se <- (cohen.d.conf[,3] - cohen.d.conf[,1])/2  #average upper - lower 
-result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.g, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,Call=cl)
+result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.d.conf, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,Call=cl)
 class(result) <- c("psych","cohen.d")
 return(result)
 }
@@ -77,22 +80,48 @@ return(result)
      d <- t * sqrt(1/n1 + 1/n2)}}
   return(d)}
    
-"d.ci" <- "cohen.d.ci" <- function(d,n=NULL,n2=NULL,n1=NULL,alpha=.05) { t <- d2t(d=d,n=n,n2=n2,n1=n1)
+# "d.ci" <- "cohen.d.ci" <- function(d,n=NULL,n2=NULL,n1=NULL,alpha=.05) { t <- d2t(d=d,n=n,n2=n2,n1=n1)
+#     tail <- 1- alpha/2 
+#     ci <- matrix(NA,ncol=3,nrow=length(d))
+#     for(i in 1:length(d)) {
+#     nmax <- pmax(c(n/2+1,n1+1,n1+n2))   #divide n/2 added 9/16/21 #changed pmax to max 2222/22 
+#  upper <- try(t2d( uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - alpha/2}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i])*10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
+#   
+#      if(inherits( upper, "try-error")) {ci[i,3] <- NA} else {ci[i,3] <- upper}
+#     ci[i,2] <- d[i]
+#   lower.ci  <- try(t2d(uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - tail}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i]) *10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
+#     if(inherits( lower.ci,"try-error")) {ci[i,1] <- NA} else {ci[i,1] <- lower.ci}
+#    }
+#    colnames(ci) <- c("lower","effect","upper")
+#    rownames(ci) <- names(d)
+#     return(ci)
+#      }
+ #note that when called from cohen.d, n is NULL    
+     "d.ci" <- "cohen.d.ci" <- function(d,n=NULL,n2=NULL,n1=NULL,alpha=.05) { t <- d2t(d=d,n=n,n2=n2,n1=n1)
     tail <- 1- alpha/2 
     ci <- matrix(NA,ncol=3,nrow=length(d))
     for(i in 1:length(d)) {
-    nmax <- pmax(c(n/2+1,n1+1,n1+n2))   #divide n/2 added 9/16/21 
- upper <- try(t2d( uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - alpha/2}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i])*10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
+    nmax <- max(c(n/2+1,n1+1,n1+n2))   #divide n/2 added 9/16/21 #changed pmax to max 2222/22 
+ upper <- try(t2d( uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax-2,ncp=x)) - alpha/2}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i])*10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
   
      if(inherits( upper, "try-error")) {ci[i,3] <- NA} else {ci[i,3] <- upper}
     ci[i,2] <- d[i]
-  lower.ci  <- try(t2d(uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax[i]-2,ncp=x)) - tail}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i]) *10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
+  lower.ci  <- try(t2d(uniroot(function(x) {suppressWarnings(pt(q=t[i],df=nmax-2,ncp=x)) - tail}, c(min(-5,-abs(t[i])*10),max(5,abs(t[i]) *10)))$root,n=n[i],n2=n2[i],n1=n1[i]),silent=TRUE)
     if(inherits( lower.ci,"try-error")) {ci[i,1] <- NA} else {ci[i,1] <- lower.ci}
    }
    colnames(ci) <- c("lower","effect","upper")
    rownames(ci) <- names(d)
     return(ci)
      }
+     
+"m2d" <- function(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE){
+    if(pooled) {if(!is.null(n1)) {vp <- ((n1-1) * s1^2 +  (n2-1)* s2^2)/(n1+n2 -2)
+     sp <- sqrt(vp)} else { 
+    sp <- sqrt((s1^2 + s2^2)/2)}} else {sp <- s1}
+    d <- (m1-m2)/sp
+    
+    return(d)
+    }
      
 "m2t" <- function(m1,m2,s1,s2,n1=NULL,n2=NULL,n=NULL,pooled=TRUE ) { 
      if(!is.null(n) ) { 
@@ -203,7 +232,8 @@ d.robust[i] <- .642 * (mean.by.grp[i,2] - mean.by.grp[i,1])/Sw[i]
 names(d.robust) <- cn
 }
 
- result <- list(means=mean.by.grp,vars=vars.by.grp,Sw,d.robust) 
+grp.loc <- which(row.names(mean.by.grp)==group)
+ result <- list(means=mean.by.grp[-grp.loc,],vars=vars.by.grp[-grp.loc,],Spooled=Sw[-grp.loc],robust.d = d.robust[-grp.loc]) 
  return(result)   
 }
 

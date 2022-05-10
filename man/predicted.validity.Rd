@@ -1,6 +1,7 @@
 \name{predicted.validity}
 \alias{predicted.validity}
 \alias{item.validity}
+\alias{validityItem}
 
 \title{Find the predicted validities of a set of scales based on item statistics}
 
@@ -11,6 +12,8 @@ The function will find (and report) scale reliabilities (using \code{\link{relia
 \usage{
 predicted.validity(x, criteria, keys, scale.rel = NULL, item.val = NULL)
 item.validity(x,criteria,keys) 
+validityItem(x,criteria,keys)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

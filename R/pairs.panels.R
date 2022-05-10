@@ -17,7 +17,7 @@ function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2
 
 "panel.hist.density" <-    
 function(x,...) {
- usr <- par("usr"); on.exit(par(usr))
+ usr <- par("usr"); on.exit(par("usr"))
   # par(usr = c(usr[1]-abs(.05*usr[1]) ,usr[2]+ abs(.05*usr[2])  , 0, 1.5) )  
      par(usr = c(usr[1] ,usr[2]  , 0, 1.5) )  
    tax <- table(x)
@@ -43,7 +43,7 @@ function(x,...) {
 "panel.cor" <-
 function(x, y, prefix="",...)  {
      
-         usr <- par("usr"); on.exit(par(usr))
+         usr <- par("usr"); on.exit(par("usr"))
          par(usr = c(0, 1, 0, 1))
         if(is.null(wt)) { r  <- cor(x, y,use="pairwise",method=method)} else {
         r <- cor.wt(data.frame(x,y),w=wt[,c(1:2)])$r[1,2]}
@@ -146,7 +146,7 @@ function (x, y,  pch = par("pch"),
 function (x, y,   pch = par("pch"), 
      col.smooth = "red", ...) 
  { segments=51
-  usr <- par("usr"); on.exit(par(usr))
+  usr <- par("usr"); on.exit(par("usr"))
   par(usr = c(usr[1]-abs(.05*usr[1]) ,usr[2]+ abs(.05*usr[2])  , 0, 1.5) ) 
  xm <- mean(x,na.rm=TRUE)
   ym <- mean(y,na.rm=TRUE)

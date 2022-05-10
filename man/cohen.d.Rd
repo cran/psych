@@ -14,6 +14,7 @@
 \alias{d2OVL2}
 \alias{d2CL}
 \alias{d2U3}
+\alias{cd.validity}
 
 
 \title{Find Cohen d and confidence intervals} 
@@ -37,6 +38,7 @@ d2OVL(d)  #Percent overlap for 1 distribtion
 d2OVL2(d)  #Percent overlap joint distribution
 d2CL(d)   #Common language effect size
 d2U3(d)   #Proportion in higher group exceedding median of lower group
+cd.validity(d, keys, abs=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +47,8 @@ d2U3(d)   #Proportion in higher group exceedding median of lower group
   \item{group2}{Apply cohen.d for each of the subgroups defined by group2 (may be specified by formula as well)}
   \item{data}{If using formula mode and specifying a particular variable (see example)}
  \item{d}{An effect size}
+ \item{keys}{A list of scoring keys (similar to scoreItems)}
+ \item{abs}{When finding average cd validities, should we take absolute values (TRUE)}
  \item{trim}{The amount of trimming used in finding the means and sds in d.robust}
  \item{n}{Total sample size (of groups 1 and 2)}
  \item{n1}{Sample size of group 1 (if only one group)}

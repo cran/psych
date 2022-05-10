@@ -4,6 +4,7 @@
 #input is the mean + standard errors, and (optionally, alpha)
 #August 12, added the ability to find (and save) the stats using describe or describeBy
 #Modified Oct, 4, 2019 to include cohen.d values
+#corrected April 27, 2022 to correctly call Item in dictionary
 "error.dots" <- 
 function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
  stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,
@@ -77,7 +78,7 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
              se <- x$se
              
              if(!is.null(x$dict)) {
-             cn <- colnames(x$dict)[which(colnames(x$dict) %in% c("Content","Items","content","item","Items"))]
+             cn <- colnames(x$dict)[which(colnames(x$dict) %in% c("Content","Items","content","item","Item"))]
             # names <- x$dict %in% c("Content","Items","content","item","Items")
              names <- x$dict[,cn]
             # names <- x$dict[,"Content"]

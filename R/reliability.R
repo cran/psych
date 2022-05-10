@@ -47,7 +47,7 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
           best[[scales]] <- list(max=split.half$maxAB)
           worst[[scales]] <- list(min=split.half$minAB)
          
-          result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],maxrb=split.half$maxrb,minrb=split.half$minrb,
+          result[[scales]] <- list(omega_h = om$omega_h, alpha = split.half$alpha, omega.tot = om$omega.tot,u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],maxrb=split.half$maxrb,minrb=split.half$minrb,
           mean.r=split.half$av.r, med.r <- split.half$med.r, n.items=length(select) ) 
           if(raw) splits[[scales]] <- split.half$raw} else {      
    result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot, u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],n.items=length(select)) }

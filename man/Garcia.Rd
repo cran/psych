@@ -42,15 +42,10 @@ Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional 
 }
 \examples{
 data(GSBE)  #alias to Garcia data set
-par(mfrow=c(2,1)) 
-#compare two models  (bootstrapping n.iter set to 50 for speed
-# 1) mean center the variables prior to taking product terms
-mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
- ,main="Moderated mediation (mean centered)")
-# 2) do not mean center
-mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,zero=FALSE, n.iter=50,   
-    main="Moderated  mediation (not centered")
-par(mfrow=c(1,1))
+
+## Just do regressions with interactions
+setCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (mean centered )")
+setCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (don't center)", zero=FALSE)
 #demonstrate interaction plots
 plot(respappr ~ sexism, pch = 23- protest, bg = c("black","red", "blue")[protest], 
 data=Garcia, main = "Response to sexism varies as type of protest")
@@ -59,6 +54,19 @@ by(Garcia,Garcia$protest, function(x) abline(lm(respappr ~ sexism,
 text(6.5,3.5,"No protest")
 text(3,3.9,"Individual")
 text(3,5.2,"Collective")
+
+ 
+#compare two models  (bootstrapping n.iter set to 50 for speed
+# 1) mean center the variables prior to taking product terms
+mod1 <- mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
+ ,main="Moderated mediation (mean centered)")
+# 2) do not mean center
+mod2 <- mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,zero=FALSE, n.iter=50,   
+    main="Moderated  mediation (not centered")
+
+summary(mod1)
+summary(mod2)
+
 
 }
 \keyword{datasets}

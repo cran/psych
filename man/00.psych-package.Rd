@@ -94,8 +94,8 @@ Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 persona
 \tabular{ll}{
 Package: \tab psych\cr
 Type: \tab Package\cr
-Version: \tab 2.2.3\cr
-Date: \tab 2022--March--18\cr
+Version: \tab 2.2.5\cr
+Date: \tab 2022--May--10\cr
 License: \tab GPL version 2 or newer\cr
 }
 Partial Index:

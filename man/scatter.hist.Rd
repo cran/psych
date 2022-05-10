@@ -82,7 +82,7 @@ For plotting data for two groups, Mahalobnis differences between the groups may 
 Originally adapted from Addicted to R example 78.  Modified following some nice suggestions from Jared Smith. Substantial revisions in 2021 to allow for a clearer demonstration of group differences.    
 }
 
-\seealso{\code{\link{pairs.panels}} for multiple plots, \code{\link{multi.hist}} for multiple histograms.  Perhaps the best example is found in the psychTools::GERAS data set. 
+\seealso{\code{\link{pairs.panels}} for multiple plots, \code{\link{multi.hist}} for multiple histograms and  \code{\link{histBy}} for single variables with multiple groups. Perhaps the best example is found in the psychTools::GERAS data set. 
 }
 \examples{
 data(sat.act)

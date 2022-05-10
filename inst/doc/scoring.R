@@ -3,11 +3,11 @@ library(psych)
 library(psychTools)
 
 ## -----------------------------------------------------------------------------
-file.name <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+file.name <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
 my.data <- read.file(file.name)
 
 ## -----------------------------------------------------------------------------
-fn <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
+fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
 my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before

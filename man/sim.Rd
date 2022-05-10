@@ -6,9 +6,11 @@
 
 
 \title{Functions to simulate psychological/psychometric data.}
-\description{A number of functions in the psych package will generate simulated data with particular structures.  These functions include
-\code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation,
-\code{\link{sim.minor}} to simulate major and minor factors,
+\description{A number of functions in the psych package will generate simulated data with particular structures. The three documented here are for basic factor analysis simulations.  These functions include
+\code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, and \code{\link{sim.minor}} to simulate major and minor factors.  
+
+Other simulations aimed at special item structures include  \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation are documented is separate help files.  They are listed here to help find them.
+
 \code{\link{sim.omega}} to test various examples of omega,
 \code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors.   See the help pages for some more simulation functions here: 
 \code{\link{sim.rasch}} to create simulated rasch data, 
@@ -46,9 +48,11 @@ sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE)
   \item{beta}{Test reliability of a STARS simplex}
   \item{fbig}{Factor loadings for the main factors.  Default is a simple structure with loadings sampled from (.8,.6) for nvar/nfact variables and 0 for the remaining.  If fbig is specified, then  each factor has loadings sampled from it.}
   \item{bipolar}{if TRUE, then positive and negative loadings are generated from fbig}
-  \item{fsmall}{nvar/2 small factors are generated with loadings sampled from (-.2,0,.2)}
+  \item{fsmall}{nvar/2 small factors are generated with loadings sampled from e.g. (-.2,0,.2)}
   
    }
+   
+
 
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
 
@@ -64,13 +68,14 @@ Two data structures that are particular challenges to exploratory factor analysi
 
 An alternative version of the simplex is the State-Trait-Auto Regressive Structure (STARS) which has both a simplex state structure, with autoregressive path alpha and a trait structure with path lambda. This simulated in  \code{\link{sim.simplex}} by specifying a non-zero lambda value.
 
-Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals. To make these simulations complete, the possibility of a general factor is considered.  For simplicity, sim.minor allows one to specify a set of loadings to be sampled from for g, fmajor and fminor.  Alternatively, it is possible to specify the complete factor matrix.
+Many simulations of factor structures assume that except for the major factors, all residuals are normally distributed around 0.  An alternative, and perhaps more realistic situation, is that the there are a few major (big) factors and many minor (small) factors.
+For a nice discussion of this situation, see Maccallum, Browne and Cai (2007).  The challenge is thus to identify the major factors. \code{\link{sim.minor}} generates such structures.  The structures generated can be thought of as havinga a major factor structure with some small correlated residuals. To make these simulations complete, the possibility of a general factor is considered.  For simplicity, sim.minor allows one to specify a set of loadings to be sampled from for g, fmajor and fminor.  Alternatively, it is possible to specify the complete factor matrix.
 
 Another structure worth considering is direct modeling of a general factor with several group factors.  This is done using \code{\link{sim.general}}.
 
 Although coefficient \eqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function with general left as NULL.  If there is a general factor, then results from \code{\link{sim.omega}} suggests that omega estimated either from EFA or from SEM does a pretty good job of identifying it but that the EFA approach using Schmid-Leiman transformation is somewhat more robust than the SEM approach. 
 
-The four irt simulations, sim.rasch, sim.irt, sim.npl and sim.npn, simulate dichotomous items following the Item Response model.  sim.irt just calls either sim.npl (for logistic models) or sim.npn (for normal models) depending upon the specification of the model. 
+The four irt simulations, \code{\link{sim.rasch}},  \code{\link{sim.irt}},  \code{\link{sim.npl}} and  \code{\link{sim.npn}} simulate dichotomous items following the Item Response model.   \code{\link{sim.irt}} just calls either  \code{\link{sim.npl}} (for logistic models) or  \code{\link{sim.npn}} (for normal models) depending upon the specification of the model. 
 
 The logistic model is \deqn{P(i,j) = \gamma + \frac{\zeta-\gamma}{1+ e^{\alpha(\delta-\theta)}}}{P(i,j) = \gamma + (\zeta-\gamma)/(1+ exp(\alpha(\delta-\theta)))} where \eqn{\gamma} is the lower asymptote or guesssing parameter, \eqn{\zeta} is the upper asymptote (normally 1), \eqn{\alpha} is item discrimination and \eqn{\delta} is item difficulty.  For the 1 Paramater Logistic (Rasch) model, gamma=0, zeta=1, alpha=1 and item difficulty is the only free parameter to specify.
 
@@ -79,7 +84,7 @@ For the 3PL or 3PN models, items also differ in their guessing parameter c =\eqn
 For the 4PL and 4PN models, the upper asymptote, z= \eqn{\zeta} is also specified.  \cr
 (Graphics of these may be seen in the demonstrations for the \code{\link{logistic}} function.)
 
-The normal model (irt.npn calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logistic model the two models are practically identical.
+The normal model (irt.npn) calculates the probability using pnorm instead of the logistic function used in irt.npl, but the meaning of the parameters are otherwise the same.  With the a = \eqn{\alpha} parameter = 1.702 in the logistic model the two models are practically identical.
 
 In parallel to the dichotomous IRT simulations are the poly versions which simulate polytomous item models.  They have the additional parameter of how many categories to simulate.  In addition, the \code{\link{sim.poly.ideal}} functions will simulate an ideal point or unfolding model in which the response probability varies by the distance from each subject's ideal point.  Some have claimed that this is a more appropriate model of the responses to personality questionnaires.  It will lead to simplex like structures which may be fit by a two factor model.  The middle items form one factor, the extreme a bipolar factor.
 
@@ -87,7 +92,7 @@ By default, the theta parameter is created in each function as normally distribu
 
 The previous functions all assume one latent trait.  Alternatively, we can simulate dichotomous or polytomous items with a particular structure using the sim.poly.mat function.  This takes as input the population correlation matrix, the population marginals, and the sample size.  It returns categorical items with the specified structure.
 
-Other simulation functions in psych are:
+Other simulation functions in psych that are documented separately includ: 
 
 \code{\link{sim.structure}}  A function to combine a measurement and structural model into one data matrix.  Useful for understanding structural equation models.  Combined with \code{\link{structure.diagram}} to see the proposed structure.  
 
@@ -114,9 +119,9 @@ where R is a P x P matrix of correlations, F is a  P x K factor loading matrix, 
 
 Such a correlation matrix will have a poor \eqn{\chi^2} value in terms of goodness of fit if just the K factors are extracted, even though for all intents and purposes, it is well fit.  
 
-sim.minor will generate such data sets with big factors with loadings of .6 to .8 and small factors with loadings of -.2 to .2.  These may both be adjusted.
+ \code{\link{sim.minor}} will generate such data sets with big factors with loadings of .6 to .8 and small factors with loadings of -.2 to .2.  These may both be adjusted.
 
-\code{\link{sim.parallel}} Create a number of simulated data sets using sim.minor to show how parallel analysis works.  The general observation is that with the presence of minor factors, parallel analysis is probably best done with component eigen values rather than factor eigen values, even when using the factor model. 
+\code{\link{sim.parallel}} Create a number of simulated data sets using  \code{\link{sim.minor}} to show how parallel analysis works.  The general observation is that with the presence of minor factors, parallel analysis is probably best done with component eigen values rather than factor eigen values, even when using the factor model. 
 
 \code{\link{sim.anova}}    Simulate a 3 way balanced ANOVA or linear model, with or without repeated measures. Useful for teaching research  methods and generating teaching examples. 
 
@@ -125,11 +130,31 @@ sim.minor will generate such data sets with big factors with loadings of .6 to .
 
 
 }
-\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}  }
+
+\value{
+\item{model}{The model based correlation matrix (FF' )} 
+\item{reliability}{Model based reliability}
+\item{r}{Observed (sample based) correlation matrix}
+\item{theta}{True scores generating the data}
+\item{N}{Sample size}
+\item{fload}{The factor model (F + S) generating the model}
+}
+
+\note{The theta values are "true scores" and may be compared to the factor analytic based factor score estimates of the data.  This is a useful way to understand factor indeterminancy.}
+
+
+\references{
+
+MacCallum, Robert C. and Browne, Michael W. and Cai, Li (2007)  Factor analysis models as approximations. Factor analysis at 100: Historical developments and future directions. (Cudeck and MacCallum Eds). Lawrence Erlbaum Associates Publishers.
+
+
+Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}  
+}
 
 \author{William Revelle}
 
 \seealso{ See above}
+
 \examples{
 simplex <- sim.simplex() #create the default simplex structure
 lowerMat(simplex) #the correlation matrix

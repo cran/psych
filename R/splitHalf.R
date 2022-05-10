@@ -25,7 +25,9 @@ minrb <- 2
 n <- ncol(r)
 n2 <- trunc(n/2)
 n.obs <- nrow(r)
-if(n.obs > n) { r <- cov(r,use=use)}
+
+#if(n.obs > n) { r <- cov(r,use=use)}    # fails if n.obs < n
+if(!isCovariance(r))  { r <- cov(r,use=use)}   
  if(!covar) r <- cov2cor(r) 
  
 if(check.keys && is.null(keys)) {

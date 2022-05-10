@@ -40,7 +40,7 @@ densityBy(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),a
   \item{vertical}{If TRUE, plot the violins vertically, otherwise, horizontonally}
   \item{dots}{if TRUE, add a stripchart with the data points}
   \item{jitter}{If doing a stripchart, then jitter the points this much}
-  \item{errors}{If TRUE, add error bars or cats eyes to the violins}\
+  \item{errors}{If TRUE, add error bars or cats eyes to the violins}
   \item{eyes}{if TRUE and errors=TRUE, then draw cats eyes}
   \item{alpha}{A degree of transparency (0=transparent ... 1 not transparent)}
   \item{adjust}{Allows smoothing of density histograms when plotting variables like height}
@@ -70,7 +70,7 @@ The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin
 }
 \note{Formula input added July 12, 2020}
 
-\seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}} \code{\link{error.bars.by}} and  \code{\link{bi.bars}} and \code{\link{scatterHist}} for other graphic displays }
+\seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}}, \code{\link{error.bars.by}} and  \code{\link{bi.bars}}, \code{\link{histBy}} and \code{\link{scatterHist}} for other graphic displays }
 \examples{
 violin(psychTools::bfi[4:8])
 violin(SATV + SATQ ~ gender, data=sat.act, grp.name =cs(MV,FV,MQ,FQ)) #formula input

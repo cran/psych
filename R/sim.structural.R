@@ -182,6 +182,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
     f <- superMatrix(fx,fy)} 
      nvar <- NROW(f)
      nfactors <- NCOL(f)
+
     if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
    if(is.null(mu)) {mu <- rep(0,NCOL(f))} 
@@ -204,7 +205,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
   
      theta <- t(et$vectors %*% diag(sqrt(et$values ))%*% t(theta))  #the correlated factors
      observed <- theta %*% t(f)
-
+     colnames(theta) <- colnames(f) 
       error <- t(U %*% matrix(rnorm(n * nvar),nrow=nvar))
       observed <- t(t(observed + error) + rep(means,n))  #observed are factors * loadings + error + means
        
@@ -268,6 +269,9 @@ colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))} el
       colnames(fload) <- paste0("F",1:nfact)
       }
 rownames(fload) <- paste0("V",1:nvar)
+sanity.check <- h2  <- apply(fload,1,function(x) sum(x^2))
+if(max(sanity.check) >  1.0) {print(cbind(fload, h2))
+                       stop("Model is impossible.  Communalities (h2) exceed 1. ")}
 Phi <- diag(ncol(fload))
 results <- sim(fload,n=n, Phi=Phi)
          results$fload <- fload

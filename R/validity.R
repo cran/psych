@@ -3,7 +3,7 @@
 # criteria is a single or vector of variables to correlate with the items
 # keys is a keys.list of scoring keys used to find the scales
 
-item.validity <- function(x,criteria,keys)  {
+validityItem <- item.validity <- function(x,criteria,keys)  {
 #first find the correlation of the items with the criteria
 
 n.keys <- length(keys)
@@ -36,7 +36,7 @@ predicted.validity <- function(x,criteria,keys,scale.rel=NULL,item.val =NULL) {
 n.keys <- length(keys)
 asymp <- predicted <- matrix(NA,ncol=NCOL(criteria),nrow=n.keys)
 #If we provide these, we don't need to find them
-if(is.null(item.val)) item.val <-  item.validity(x,criteria,keys)
+if(is.null(item.val)) item.val <-  validityItem(x,criteria,keys)
 if(is.null(scale.rel)) scale.rel <- reliability(keys,x)
 
 for(i in 1:n.keys) {
@@ -51,9 +51,11 @@ class(result) <- c("psych","validity")
 return(result)
 }
 
-validity.cd <- function(cd,keys,abs=TRUE)  {
+cd.validity<- function(d,keys,abs=TRUE)  {
+#cd must be returned from Cohen.d
+if(inherits(d, "cohen.d")) { cd <- d$cohen.d[,"effect",drop=FALSE]} else {cd <- as.matrix(d)}
 #first find the correlation of the items with the criteria
-cd <- cd[,"effect",drop=FALSE]
+#cd <- cd$cohen.d[,"effect",drop=FALSE]
 n.keys <- length(keys)
 
 key.n <- names(keys)
@@ -66,7 +68,7 @@ for(i in 1:n.keys) {
 		neg <- grep("-",list.i)
 		if(!is.null(neg)) pos [neg] <- -1
 		
- valid[i,] <- mean(cd[select[[i]],]*pos,na.rm=TRUE)   
+ if(all(select[[i]] %in% rownames(cd))) {valid[i,] <- mean(cd[select[[i]],"effect"]*pos,na.rm=TRUE) } else {valid[i] <- NA}  
  }
 rownames(valid)<- key.n
 #colnames(valid) <- colnames(criteria)

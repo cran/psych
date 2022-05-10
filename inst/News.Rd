@@ -140,12 +140,33 @@
  \item Still need to fix mediate to handle more than 1 DVs
   
   \item Possible problem with the use of try  in several functions.
- 
+ \item Need to fix omega so that alpha is correctly calculated in case of no general factor
      
       }
   }
   }
   
+   \section{Changes in psych version 2.2.5 (2022-05-08)}{ 
+     \subsection{Additions}{
+          \itemize{
+           \item = fixed violin so colnames are not necessary
+           \item reliability function returns alpha from split half rather than from omega
+           \item Added the validityItem and CD.validity functions
+           \item Minor fixes to sim.minor to supply names for theta, minor clarification to sim.minor documentation.  
+           \item rebuilt using  R CMD build psych --compact-vignettes=both   to compact vignettes
+          }
+        }
+        
+        \subsection{Bugs Fixed}{ 
+        \itemize{
+          \item minor correction to pairs.panels to work in 4.2.0 without warning
+          \item Fixed splitHalf so it will work even in case of n.obs < n.var 
+          \item Fixed error.dots to properly handle dictionary for some cases (reported by Matt Bales)
+          
+          
+          }
+          }
+  }
    \section{Changes in psych version 2.2.3 (2022-03-15)}{ 
      \subsection{Additions}{
           \itemize{
@@ -153,8 +174,8 @@
              \item Added a hyperplane count statistic to the output of fa (following Niels Waller), especially if we do multiple rotations.
           \item Added congruence (aka cohen.profile) to find profile similarities and general congrucences.
           \item Added scoreBy to find scores for multiple subjects from statsBy (requested by Lizz Dworak)
-           \item Add variance accounted for for each variable in setCor (requested by Pierre-Emmanueal Encinar)
-            \item Added a citation to grieder (2021) for a comparison of fa to SPSS
+           \item Added variance accounted for each variable in setCor (requested by Pierre-Emmanueal Encinar)
+            \item Added a citation to Grieder (2021) for a comparison of fa to SPSS
              \item Added a comment in fa help that oblimin as implemented is a quartimin solution with delta =0
              \item Added formula input to partial.r
              \item Added m2d to find Cohen.d from two means and 2 sigmas (and 2 ns if desired)
@@ -174,7 +195,7 @@
             \item Fixed reliability so that it will work from correlations as well as raw data
             \item Fixed bestScales to work from correlation matrices
             \item Fixed a bug in describe for single variables from data frames (reported by Mike Linacre)
-            \item fixed bug in cohen d reported by David Kellen (using wrong group size calculation)
+            \item Fixed bug in cohen d reported by David Kellen (using wrong group size calculation)
             \item Fixed bug in error.bars  (and error.bar.by) to match the colors of the lines with the colors of the errors (reported by Lizz Dworak)
             \item  Fixed bug in df of ci for alpha.ci (reported by Mijke Rhemtulla.)
             \item Fixed (again) the correct p values for ICC (reported by Mijke Rhemtulla.)

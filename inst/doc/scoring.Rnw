@@ -135,13 +135,13 @@ To do basic and advanced personality and psychological research using \R{} is no
 The current list of How To's includes:
 
 \begin{enumerate}
-\item An \href{http://personality-project.org/r/psych/intro.pdf}{introduction} (vignette) of the \Rpkg{psych} package 
-\item An \href{http://personality-project.org/r/psych/overview.pdf}{overview} (vignette) of the \Rpkg{psych} package 
-\item \href{http://personality-project.org/r/psych/HowTo/getting_started.pdf}{Installing} \R{}  and some useful packages
-\item Using \R{} and the \Rpkg{psych} package to find \href{http://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
-\item Using  \R{} and the \Rpkg{psych} for \href{http://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
-\item Using the \pfun{scoreItems} function to find \href{http://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}  (this document).
-\item Using \pfun{mediate} and \pfun{setCor} to do \href{http://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}
+\item An \href{https://personality-project.org/r/psych/intro.pdf}{introduction} (vignette) of the \Rpkg{psych} package 
+\item An \href{https://personality-project.org/r/psych/overview.pdf}{overview} (vignette) of the \Rpkg{psych} package 
+\item \href{https://personality-project.org/r/psych/HowTo/getting_started.pdf}{Installing} \R{}  and some useful packages
+\item Using \R{} and the \Rpkg{psych} package to find \href{https://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
+\item Using  \R{} and the \Rpkg{psych} for \href{https://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
+\item Using the \pfun{scoreItems} function to find \href{https://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}  (this document).
+\item Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}
 
 
 \end{enumerate}
@@ -205,11 +205,11 @@ my.data <- read.file()  #locate the file to read using your normal system.
 
 
 \subsection{Reading from a remote file}
-To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
+To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
 
 ~\
 <<>>=
-file.name <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+file.name <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
 my.data <- read.file(file.name)
 @
 
@@ -250,7 +250,7 @@ my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
 
 
 \subsubsection{An example data set}
-Consider the data stored at \href{http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt}{a remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
+Consider the data stored at \href{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt}{a remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
  \\
 
 \begin{Rinput}
@@ -279,7 +279,7 @@ describe(my.data)
 
 ~\
 <<>>=
-fn <- "http://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
+fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
 my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before
@@ -667,11 +667,11 @@ msq.scales.ov   #show the output
 @
 
 \section{Even more analysis: Factoring, clustering, and more tutorials}
-Far more analyses could be done with these data, but the basic scale scoring techniques is a start.  Download the  \href{http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf}{vignette} for using \Rpkg{psych} for even more guidance.  On a Mac, this is also available in the vignettes list in the help menu. 
+Far more analyses could be done with these data, but the basic scale scoring techniques is a start.  Download the  \href{https://cran.r-project.org/web/packages/psych/vignettes/overview.pdf}{vignette} for using \Rpkg{psych} for even more guidance.  On a Mac, this is also available in the vignettes list in the help menu. 
 
 In addition, look at the examples in the help for \pfun{scoreItems}. 
 
-For examples and tutorials in how to do \emph{factor analysis} or to find \emph{coefficient omega} see the \href{http://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis tutorial} or the  \href{http://personality-project.org/r/psych/HowTo/omega.pdf}{omega tutorial}. 
+For examples and tutorials in how to do \emph{factor analysis} or to find \emph{coefficient omega} see the \href{https://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis tutorial} or the  \href{:https//personality-project.org/r/psych/HowTo/omega.pdf}{omega tutorial}. 
 
 
 \section{Session Information}

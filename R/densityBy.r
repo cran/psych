@@ -28,7 +28,10 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}
      if(is.null(data))  {data <- x
        
        if(!is.null(var))  {data <- data[,var]}
-        var <-  ps$y <- colnames(data)}
+        var <-  ps$y <- colnames(data)
+        if(is.null(var))  var <- paste("V",1:NCOL(data))
+    #    colnames(x) <- colnames(data) <- ps$y  <- var}
+        colnames(data) <- ps$y  <- var}
         if(!is.null(grp)) {x <- cbind(data[,ps$y,drop=FALSE], x[,grp,drop=FALSE])} else {
      x <- data[,ps$y,drop=FALSE] }
      data <- x 

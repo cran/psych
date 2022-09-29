@@ -11,6 +11,8 @@
 
 Other simulations aimed at special item structures include  \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation are documented is separate help files.  They are listed here to help find them.
 
+\code{\link{simCor}} to generate sample correlation matrices from a target matrix.
+
 \code{\link{sim.omega}} to test various examples of omega,
 \code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors.   See the help pages for some more simulation functions here: 
 \code{\link{sim.rasch}} to create simulated rasch data, 

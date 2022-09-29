@@ -34,7 +34,7 @@ Although 3 factors are the minimum number necessary to define the solution uniqu
 
 A diagnostic tool for testing the appropriateness of a hierarchical model is p2 which is the percent of the common variance for each variable that is general factor variance.  In general, p2 should not have much variance. 
 
-
+An alternative approach is to use the \code{\link{directSl}} function to do a direct Schmid Leiman transformation (code adapted from Niels Waller).
 
 }
 \value{
@@ -49,7 +49,7 @@ A diagnostic tool for testing the appropriateness of a hierarchical model is p2 
 \references{\url{https://personality-project.org/r/r.omega.html} gives an example taken from Jensen and Weng, 1994 of a S-L transformation.}
 \author{ William Revelle}
 
-\seealso{  \code{\link{omega}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
+\seealso{  \code{\link{omega}}, \code{\link{directSl}}, \code{\link{omega.graph}}, \code{\link{fa.graph}}, \code{\link{ICLUST}},\code{\link{VSS}}}
 \examples{
 jen <- sim.hierarchical()  #create a hierarchical demo
 if(!require(GPArotation)) {

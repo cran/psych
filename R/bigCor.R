@@ -2,7 +2,7 @@
 
 bigCor <- function(x,size=NULL,use="pairwise",cor="pearson"){
   nvar <- NCOL(x)
- if (is.null(size)) size <- nvar/4
+ if (is.null(size)) size <- round(nvar/4)  #added round 6/21/22
  n.steps <- ceiling(nvar/size)
 
 small.r <- matrix(NA,size,size)

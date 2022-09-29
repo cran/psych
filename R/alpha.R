@@ -31,7 +31,7 @@
     cl <- match.call()
     if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
     if(!inherits(x[1], "data.frame")) x <- fix.dplyr(x)    #to get around a problem created by dplyr
-    if(!is.null(keys)){# 3 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
+    if(!is.null(keys)){# 4 cases  1 it is a list, 2 is a vector of character, 3 it is keys matrix  4 it is a list of items to  reverse
     if( is.list(keys)) { select <- sub("-","",unlist(keys))   #added 9/26/16 to speed up scoring one scale from many
       	x <- x[,select] 
       	keys <- make.keys(x,keys)} else {if(!is.numeric(keys)){
@@ -233,6 +233,7 @@
        	names(Unidim) <- "Unidim"
        	names(Fit.off) <- "Fit.off" 
        	feldt <- alpha.ci(alpha.total[1],nsub,nvar)
+       	keys <- keys2list(as.matrix(keys))
         result <- list(total=alpha.total,alpha.drop=by.item,item.stats=stats,response.freq=response.freq,keys=keys,scores = total,nvar=nvar,boot.ci=boot.ci,boot=boot,feldt=feldt,Unidim=Unidim,var.r=var.r,Fit=Fit.off,call=cl,title=title)
         class(result) <- c("psych","alpha")
         return(result) 
@@ -243,6 +244,7 @@
   #January 30, 2011  - added the max category parameter (max)
   #June 20, 2011 -- revised to add the check.keys option as suggested by Jeremy Miles
   #Oct 3, 2013 check for variables with no variance and drop them with a warning
+  #May 27, 2022 convert the keys output to a named list so that we can use if in other functions
   #November 22, 2013  Added the standard error as suggested by 
   #modified December 6, 2013 to add empirical confidence estimates
   #modified January 9, 2014 to add multicore capabilities to the bootstrap 
@@ -282,3 +284,7 @@ class(result) <- c("psych","alpha.ci")
 invisible(result)
 }
 
+#convert alpha the the average r
+alpha2r <- function(alpha,n.var) {
+   r.bar <- alpha/(n.var - alpha*(n.var-1))
+  r.bar}

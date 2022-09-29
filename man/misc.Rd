@@ -4,6 +4,7 @@
 \alias{tableF}
 \alias{lowerCor}
 \alias{lowerMat}
+\alias{matMult}
 \alias{progressBar}
 \alias{reflect}
 \alias{shannon}
@@ -17,6 +18,7 @@
 \alias{fromTo}
 \alias{cs}
 \alias{acs}
+\alias{SAPAfy}
 
  
 \title{Miscellaneous helper functions for the psych package}
@@ -31,6 +33,7 @@ psych.misc()
 lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5)
 cor2(x,y,digits=2,use="pairwise",method="pearson")
 lowerMat(R, digits = 2,minlength=5)
+matMult(x,y) #multiply two matrices with missing data
 tableF(x,y)
 reflect(f,flip=NULL)
 progressBar(value,max,label=NULL) 
@@ -47,6 +50,7 @@ test.all(pl,package="psych",dependencies
  #of data
  cs(...) #convert a list of text words to  character vector
  acs(...) #convert a list of text words to  a single string
+ SAPAfy(x,y)  #sample y columns from x, replace other columns with NA
 
 }
 \arguments{
@@ -132,7 +136,7 @@ f3r <- reflect(f3,2)  #reflect the second factor
 #find the complexity of the response patterns of the iqitems.
 round(shannon(psychTools::iqitems),2) 
 #test.all('BinNor')  #Does the BinNor package work when we are using other packages
-bestItems(lb,"A3",cut=.1,dictionary=psychTools::bfi.dictionary[1:2],raw=FALSE)
+bestItems(lb,"A3",cut=.1,dictionary=psychTools::bfi.dictionary[1:2])
 #to make this a latex table 
 #df2latex(bestItems(lb,2,cut=.2))
 #
@@ -154,9 +158,15 @@ vect <- cs("Here is a longish",vector, that, we ,"want to combine", into, severa
 vect
 temp <- acs("Here is a longish",vector, that, we ,"want to combine", into, one)
 temp
-lowerCor(fromTo(sat.act,cs(ACT,SATQ)))  
+lowerCor(fromTo(sat.act,cs(ACT,SATQ)))
 
-
+set.seed(42)  
+temp <- SAPAfy(bfi[1:10],3)  #30 % sample from bfi
+f2 <- fa(bfi[1:10],2)
+ f2s <- fa(temp,2)
+ fa.congruence(f2s,f2)  #the two factor structure are almost identical
+ #although the scores are not identical
+cor2(f2$scores, f2s$scores)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

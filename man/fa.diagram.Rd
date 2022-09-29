@@ -5,7 +5,7 @@
 \alias{extension.diagram}
 \alias{het.diagram}
 \title{ Graph factor loading matrices}
-\description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph. \code{\link{het.diagram}} will draw "heterarchy" diagrams of factor/scale solutions at different levels.
+\description{Factor analysis or principal components analysis results are typically interpreted in terms of the major loadings on each factor.  These structures may be represented as a table of loadings or graphically, where all loadings with an absolute value > some cut point are represented as an edge (path). \code{\link{fa.diagram}} uses the various \code{\link{diagram}} functions to draw the diagram. \code{\link{fa.graph}} generates dot code for external plotting.  \code{\link{fa.rgraph}} uses the Rgraphviz package (if available) to draw the graph. \code{\link{het.diagram}} will draw "heterarchy" diagrams of factor/scale solutions at different levels.  All of these as well as some additional functions may be called by \code{\link{diagram}} which is a wrapper to the specific functions.
 }
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
@@ -14,8 +14,8 @@ fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
         main="Heterarchy diagram",l.cex,gap.size,...) 
 extension.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
-    e.cut=.1,simple=TRUE,e.simple=FALSE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,
+    f.cut, e.cut=.1,simple=TRUE,e.simple=FALSE,errors=FALSE,g=FALSE,
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL, e.cex=NULL,
     marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...)
 
 fa.graph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
@@ -36,6 +36,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{out.file}{ If it exists, a dot representation of the graph will be stored here (fa.graph)}
   \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
+  \item{f.cut}{factor correlations > f.cut will be shown}
   \item{e.cut}{extension loadings with abs(loading) > e.cut will be shown}
   \item{simple}{Only the biggest loading per item is shown}
   \item{e.simple}{Only the biggest loading per extension item is shown }
@@ -51,6 +52,7 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{rsize}{size of rectangles}
   \item{side}{on which side should error arrows go?}
   \item{cex}{modify font size}
+  \item{e.cex}{Modify the font size for the Dependent variables, defaults to cex}
   \item{l.cex}{modify the font size in arrows, defaults to cex}
   \item{gap.size}{The gap in the arrow for the label.  Can be adjusted to compensate for variations in cex or l.cex}
   \item{marg}{sets the margins to be wider than normal, returns them to the normal size upon exit}
@@ -100,7 +102,7 @@ fa.graph: the graph instructions are saved in the dot language. }
 }
 
  
-\seealso{  \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{bassAckward.diagram}}.  \code{\link{structure.diagram}} will convert the factor diagram to sem modeling code.
+\seealso{ \code{\link{diagram}}, \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{bassAckward.diagram}}.  \code{\link{structure.diagram}} will convert the factor diagram to sem modeling code.
 }
 \examples{
 

@@ -136,8 +136,8 @@ r <- cor(x[1:(n.obs-lag)],x[(lag+1):n.obs],use=use)
 x <- as.matrix(x)
 n <- colSums(!is.na(x))
 mssd <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(n-lag)
-v1 <- apply(x[1:(n.obs-lag),],2,sd, na.rm=na.rm)^2
-v2 <- apply(x[(lag+1):n.obs,],2, sd,na.rm=na.rm)^2
+v1 <- apply(x[1:(n.obs-lag),,drop=FALSE],2,sd, na.rm=na.rm)^2
+v2 <- apply(x[(lag+1):n.obs,,drop=FALSE],2, sd,na.rm=na.rm)^2
 # r <- -(mssd - v1 - v2)/(2*sqrt(v1*v2))
 r <- diag(cor(x[1:(n.obs-lag),],x[(lag+1):n.obs,],use=use))
  result <- list(autoR = r,rssd=sqrt(mssd))
@@ -166,6 +166,8 @@ result <- list(autoR = autoR,rmssd=rmssd,Call=cl)
 }
 class(result) <- c("psych","autoR")
 return(result)}
+
+
 
 
 
@@ -279,7 +281,7 @@ return(y)}
    rownames(f) <- ord
    if(!is.null(dictionary))  { 
    contents <- lookup(rownames(f),dictionary)} else {message("fa.lookup requires a dictionary, otherwise just use fa.sort")}
-   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),com=round(com,digits=digits),h2=round(h2,digits=digits))} else {
+   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),h2=round(h2,digits=digits),com=round(com,digits=digits))} else {
    results <- data.frame(round(unclass(f),digits=digits))}
    
    results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
@@ -691,18 +693,19 @@ flip <- function(R,key) {#reverse correlations with keys  < 0
 	R[,key<0] <- -R[,key < 0]
   return(R)}
     
-
- matMult <- function(A,B) {  #matrix multiplication without matrices!  
-  nvar1 <- ncol(A)
-  nvar2 <- ncol(B)
-  M <- matrix(NA,ncol=nvar1,nrow=nrow(B))
-    if(nrow(A) != nvar2) {stop("incompatible dimensions")}
-   for(i in 1:nvar1) {
-    for (j in 1:nrow(B))  {
-    M[j,i] <-  sum(A[,i] * B[j,], na.rm=TRUE)
+#do matrix multiplication with missing values
+ matMult <- function(x,y) {  #matrix multiplication without matrices!  
+  nvar1 <- NCOL(x)
+  nvar2 <- NROW(y)
+  M <- matrix(NA,ncol =NCOL(y),nrow=NROW(x))
+    if(NCOL(x) != NROW(y)) {stop("incompatible dimensions")}
+   for(i in 1:NROW(x)) {
+    for (j in 1:NCOL(y))  {
+    M[i,j] <-  sum(x[i,] * y[,j], na.rm=TRUE)
     } 
     }
-    return(M)}
+    return(M)
+    }
      
    
    
@@ -716,6 +719,7 @@ flip <- function(R,key) {#reverse correlations with keys  < 0
            
     scores[,factors] <-t(colMeans( weights[,factors] * titem,  na.rm=TRUE))
     }
+    scores<- scale(scores)  #return standardized values
     return(scores)
   }
 
@@ -728,5 +732,18 @@ for (i in 1:n) {
  count <- count + bad}
  return(count)
  }
+
+#Create SAPA data by sampling
+SAPAfy <- function(x,y)
+{
+  n_vars <- ncol(x)
+  n_questions_unanswered <- round(n_vars - y)  #  in case someone inputs a double.
+  
+  for (xxx in 1:nrow(x)) 
+  {
+    x[xxx, sample.int(n_vars, n_questions_unanswered)  ] <- NA 
+  }
+  return(x)
+}
 
 

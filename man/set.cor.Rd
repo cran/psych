@@ -5,6 +5,7 @@
 \alias{mat.regress}
 \alias{matReg} 
 \alias{crossValidation}
+\alias{crossValidationBoot}
 \alias{matPlot}
 \title{Multiple Regression and Set Correlation from matrix or raw input}
 \description{Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets.
@@ -24,6 +25,7 @@ matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE)
 
 
 crossValidation(model,data,options=NULL,select=NULL)
+crossValidationBoot(y,x,data,n.iter=100)
 matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
       lab=NULL,pch=16,col=1:6,lty=NULL,...)
 }
@@ -36,7 +38,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{m}{The column name or numbers of the set of mediating variables (see \code{\link{mediate}}).}
   \item{z}{the column names or numbers of the set of covariates. }
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given.}
-
+  \item{n.iter}{Number of bootstrap resamples to take in crossValidationBoot}
   \item{use}{find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
   \item{part}{z is specified should part (TRUE) or partial (default) correlations be found.}
@@ -107,6 +109,8 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  The Guide and Ketokivi article is well worth reading for all who want to use various regression models. 
  
  \code{\link{crossValidation}} can be used to take the results from \code{\link{setCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
+ 
+ \code{\link{crossValidationBoot}} will bootstrap resample data and perform a setCor and then return the crossValidation R values. Although it will handle covariates (z), it will not handle product terms.  
  
  \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels). matPlot has been improved to draw legends and to allow for specifications of the line types.
  

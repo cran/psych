@@ -72,7 +72,7 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac,lo
 	            n.iter <- 1 
 	            }} else { # a correlation matrix or n.iter = 1
 		scores   <-  bScales(x,criteria=criteria,cut=cut,
-	             n.item =n.item,overlap=overlap,dictionary=dictionary,impute=impute,digits=digits,log.p=log.p)
+	             n.item =n.item, overlap=overlap, dictionary=dictionary, impute=impute, digits=digits,log.p=log.p)
 	             if(!is.null(min.item)){ multi.score <- fastValidity(items=x,criteria=criteria,r=NULL,overlap=overlap, nlow=min.item,nhigh=max.item)} else {multi.score <- NULL} 
 	             }
       
@@ -136,7 +136,7 @@ result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dic
  	crit.sd <- apply(x[,criteria],2,sd,na.rm=TRUE)} else {
  	crit.mean <- mean(x[,criteria],na.rm=TRUE)
  	crit.sd <- sd(x[,criteria],na.rm=TRUE)}
- 	if(is.na(final.means)) {result$final.stats <- data.frame(r=result$r,crit.m=crit.mean,crit.sd =crit.sd)} else {
+ 	 	if(any(is.na(final.means))) {result$final.stats <- data.frame(r=result$r,crit.m=crit.mean,crit.sd =crit.sd) } else {
    	result$final.stats <- data.frame(mean=final.means,sd=final.sd,r=result$r,crit.m=crit.mean,crit.sd =crit.sd)}
     result$items <- NULL
     
@@ -229,7 +229,7 @@ organize.results <- function(result,x=NA,n.iter=1,p.keyed=.9,dictionary=NULL,wtd
       names(Freq) <- names(rep.item)
 
 #items [[criteria[j] ]] <-  cbind(replicated.items[[j]],Freq=Freq,mean.r=means,sd.r = sds,dictionary[names(replicated.items[[j]]),])
-    items[[criteria[j]]] <-  cbind(Freq,mean.r = means,sd.r = sds,dictionary[names(rep.item),])
+    items[[criteria[j]]] <-  cbind(Freq,mean.r = means,sd.r = sds,dictionary[names(rep.item),,drop=FALSE])
 	items[[criteria[j]]] <- psychTools::dfOrder(items [[criteria[j] ]],"-mean.r",absolute=TRUE) #sort on the mean.r column
 #	items[[criteria[j]]] <- items[[criteria[j]]][items[[criteria[j]]][,"Freq"] >= n.iter * p.keyed,]
 	
@@ -388,8 +388,10 @@ function(x,criteria,cut=.1,n.item =10, overlap=FALSE,dictionary=NULL,impute="med
  
  nvar <- ncol(x)
  n.item <- min(n.item,nvar-1)
- if(isCorrelation(x)) {r <- x      #  case 1
-    raw <- FALSE} else {  #case 2
+ if(isCorrelation(x) | (all(colnames(x) %in% rownames(x)))) {r <- x      #  case 1
+    raw <- FALSE
+    nvar <- NROW(r)
+        } else {  #case 2
     y <- x[,criteria]
     if(log.p) {r <- log(corr.test(x,y)$p)} else { r <- cor(x,y,use="pairwise")}
    
@@ -452,11 +454,15 @@ ni <- colSums(abs(key))
 } else {  #case 1 (from a correlation matrix)
   score <- NULL
   r <- r[,used > 0,drop=FALSE]
+  k<- key  #get the matrix dimensions  right
+  browser()
+  ss <- rownames(key)
 	if(any(is.na(r))) {#Are there any bad values
- 		 for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
- 		 k[,i] <- colSums(t((key[,i]) * t(r)),na.rm=TRUE)}    #replace matrix addition with a colSums
+ 	 for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
+ 		 k[,i] <- colSums((key[,i]) * (r[ss,ss]),na.rm=TRUE)}    #replace matrix addition with a colSums
+ 		 
  		 k <- t(k)
-	} else {#otherwise, don't bother
+	#} else {#otherwise, don't bother
     C <-  t(t(key) %*% t(r[criteria,,drop=FALSE]))  #criterion covariance
     V <-  t(key) %*%  r[ used > 0,] %*% key   #predictor variance
     
@@ -466,7 +472,8 @@ ni <- colSums(abs(key))
 #	C <- k[criteria,] 
  if(ny < 2) {re <- r[criteria,] 
            R <- C/sqrt(V)} else {
-   R <- diag(C/sqrt(V))
+  # R <- diag(C/sqrt(V))
+       R <- C /sqrt(diag(V))
 	#re <- diag(k[criteria,])/sqrt(diag(C))
 	}
 	ni <- colSums(abs(key))

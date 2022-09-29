@@ -17,8 +17,8 @@ bestScales(x,criteria,min.item=NULL,max.item=NULL, delta = 0,
           n.iter =1, folds=1, p.keyed=.9,
           overlap=FALSE, dictionary=NULL, check=TRUE, impute="none",log.p=FALSE,digits=2)
 
-bestItems(x,criteria=1,cut=.1, n.item=10,raw=TRUE, abs=TRUE, 
-   dictionary=NULL,check=FALSE,digits=2) 
+bestItems(x,criteria=1,cut=.1, n.item=10, abs=TRUE, 
+   dictionary=NULL,check=FALSE,digits=2,use="pairwise",method="pearson") 
 }
 \arguments{
 \item{x}{A data matrix or data frame depending upon the function.}
@@ -31,7 +31,7 @@ bestItems(x,criteria=1,cut=.1, n.item=10,raw=TRUE, abs=TRUE,
     order correlations > wtd.cut}
 \item{wtd.n}{When finding the weighted scales, use the  wtd.n items that
    are > than wtd.cut}
-\item{raw}{Raw data (find the correlations) or a correlation matrix (raw=FALSE)}
+
 \item{abs}{if TRUE, sort by absolute value in bestItems}
 \item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings 
 matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple
@@ -47,6 +47,8 @@ matrix or colnames of the data matrix or correlation matrix, and entries (may be
 \item{log.p}{Select items based upon the log of the probability of the correlations.  This will only have an effect if the number of pairwise cases differs drastically from pair to pair.  }
 
 \item{digits}{round to digits when showing output.}
+\item{use}{How to handle missing data.  Defaults to "pairwise"}
+\item{method}{Which correlation to find.  Defaults to "pearson"}
   
 }
 \details{
@@ -130,7 +132,7 @@ The optimal number of items statistics:
 \item{derviation.mean}{}
  }
 
-\code{\link{bestItems}} returns a sorted list of factor loadings or correlations with the labels as provided in the dictionary.
+\code{\link{bestItems}} returns a sorted list of factor loadings or correlations with the labels as provided in the dictionary. If given raw data, then the correlations with the criteria variables are found first according to "use" and "method".
 
 The stats object can be used to create \code{\link{error.dots}} plots to show the mean estimate and the standard error of the estimates.   See  the examples.
 
@@ -166,6 +168,8 @@ Wilks, S. S. (1938), Weighting systems for linear functions of correlated variab
 \author{William Revelle}
 
 \note{Although empirical scale construction is appealing, it has the basic problem of capitalizing on chance.  Thus, be careful of over interpreting the results unless working with large samples.  Iteration and bootstrapping aggregation (bagging) gives information on the stability of the solutions.
+
+It is also important to realize that the variables that are most related to the criterion might be because of other, trivial reasons (e.g. height predicts gender)
 }
 
 \seealso{

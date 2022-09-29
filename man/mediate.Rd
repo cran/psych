@@ -91,7 +91,7 @@ J. Cohen, P. Cohen, S.G. West, and L.S. Aiken. (2003) Applied multiple regressio
 
 Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional process analysis: A regression-based approach.  Guilford Press. 
 
-Preacher, Kristopher J and Hayes, Andrew F (2004) SPSS and SAS procedures for estimating indirect effects in simple mediation models. Behavior Research Methods, Instruments, \& Computers 36, (4) 717-731.
+Preacher, Kristopher J and Hayes, Andrew F (2004) SPSS and SAS procedures for estimating indirect effects in simple mediation models. Behavior Research Methods, Instruments, & Computers 36, (4) 717-731.
 
 Thoemmes, Felix (2015) Reversing arrows in mediation models does not distinguish plausible models.  Basic and applied social psychology, 27: 226-234. 
 

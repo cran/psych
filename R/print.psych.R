@@ -342,7 +342,8 @@ cor.wt = {cat("Weighted Correlations \n")
             print(x$Call)
         lowerMat(x$r,digits=digits) },
 
-crossV = {cat("Cross Validation\n")
+crossV = {if(is.null(x$mean.fit)) {
+            cat("Cross Validation\n")
           cat("Call:")
             print(x$Call)
          cat("\nValidities from raw items and from the correlation matrix\n")
@@ -352,6 +353,13 @@ crossV = {cat("Cross Validation\n")
          lowerMat(x$item.R)
           cat("\nCorrelations based upon correlation matrix based regressions\n")
          lowerMat(x$mat.R)
+         } else {cat("Bootstrapped Cross Validation\n")
+          cat("Call:")
+            print(x$Call)
+            print(round(x$mean.fit,digits=digits))
+            cat("\n With average coefficents of \n")
+            print(round(x$mean.coeff,digits=digits))
+        }
           },
          
 
@@ -429,6 +437,14 @@ faCor = { cat("Call: ")
      cat("\n Factor congruence between the two solutions\n")     
        print(x$congruence,digits=digits)
 },
+fa.reg ={cat("Call: ")
+        print(x$Call)
+          if(!short) { cat("\n Factor analysis based regression \n")    
+        print (x$regression)} else { cat("\n Factor analysis based regression \n")
+        summary(x$regression)
+        cat("\n set short = FALSE to see the detailed statistics \n" )
+        }
+        },
     
 guttman =  {
   cat("Call: ")
@@ -731,9 +747,18 @@ overlap =  {
 	print(x$size)
 	cat("\nSignal to Noise ratio based upon average r and n \n")
 	print(x$sn,digits=digits)
+
 	
 	 cat("\nScale intercorrelations corrected for item overlap and attenuation \n adjusted for overlap correlations below the diagonal, alpha on the diagonal \n corrected correlations above the diagonal:\n")
 	 print(x$corrected,digits) 
+	 
+	 if(!is.null(x$quality) ) {cat("\n Percentage of keyed items with highest absolute correlation with scale  (scale quality)\n")
+	     print(x$quality,digits=2) }
+	 if(!is.null(x$MIMS) ) {cat("\n Average adjusted correlations within and between scales (MIMS)\n")
+	   lowerMat(x$MIMS) }
+	   
+	if(!is.null(x$MIMT) ) {cat("\n Average adjusted item x scale correlations within and between scales (MIMT)\n")
+	   lowerMat(x$MIMT) }
 	
 	 if(short) {cat("\n In order to see the item by scale loadings and frequency counts of the data\n print with the short option = FALSE") } else {
 	  if(!is.null(x$item.cor) ) {
@@ -801,6 +826,12 @@ scores =  {
 	 	if(!is.null(x$alpha.ob)) {cat("\nNote that these are the correlations of the complete scales based on the correlation matrix,\n not the observed scales based on the raw items.\n")}
 	 	
 	 print(x$corrected,digits) 
+	 
+	 if(!is.null(x$MIMS) ) {cat("\n Average adjusted correlations within and between scales (MIMS)\n")
+	   lowerMat(x$MIMS) }
+	   
+	if(!is.null(x$MIMT) ) {cat("\n Average adjusted item x scale correlations within and between scales (MIMT)\n")
+	   lowerMat(x$MIMT) }
 	 if(short) {cat("\n In order to see the item by scale loadings and frequency counts of the data\n print with the short option = FALSE") } else {
 	  if(!is.null(x$item.cor) ) {
 	   cat("\nItem by scale correlations:\n corrected for item overlap and scale reliability\n" )

@@ -9,7 +9,7 @@
 
 It is also possible to specify a measurement model for a set of x variables separately from a set of y variables.  They are then combined into one model with the correlation structure between the two sets.
 
-Finally, the general case is given a population correlation matrix, generate data that will reproduce (with sampling variability) that correlation matrix.  \code{\link{sim.correlation}}.
+Finally, the general case is given a population correlation matrix, generate data that  reproduce (with sampling variability) that correlation matrix.  \code{\link{simCor}} \code{\link{sim.correlation}}.
 }
 \usage{
 sim.structure(fx=NULL,Phi=NULL, fy=NULL, f=NULL, n=0, uniq=NULL, raw=TRUE, 
@@ -52,7 +52,7 @@ If creating a correlation matrix, (uniq=NULL) then the diagonal is set to 1, oth
 
 A special case of a structural model are one factor models such as parallel tests, tau equivalent tests, and congeneric tests.  These may be created by letting the structure matrix = 1 and then defining a vector of factor loadings. Alternatively, \code{\link{sim.congeneric}} will do the same. 
 
-The general case is to use \code{\link{simCor}} aka \code{\link{sim.correlation}} which will create data sampled from a specified correlation matrix for a particular sample size. If desired, it will just return the sample correlation matrix.  With data=TRUE, it will return the sample data as well.  It uses an eigen value decomposition of the original matrix times a matrix of random normal deviates (code adapted from the mvnorm function of Brian Ripley's MASS package).  These resulting scores may be transformed using a number of transforms (see the skew option) or made into dichotomous variables (see quant option) for all or a select set (vars option) of the variables.  
+The general case is to use \code{\link{simCor}} aka \code{\link{sim.correlation}} which will create data sampled from a specified correlation matrix for a particular sample size. This follows a procedure described by Kaiser and Dickman (1962).  If desired, it will just return the sample correlation matrix.  With data=TRUE, it will return the sample data as well.  It uses an eigen value decomposition of the original matrix times a matrix of random normal deviates (code adapted from the mvnorm function of Brian Ripley's MASS package).  These resulting scores may be transformed using a number of transforms (see the skew option) or made into dichotomous variables (see quant option) for all or a select set (vars option) of the variables.  
 
       
 }
@@ -62,7 +62,13 @@ The general case is to use \code{\link{simCor}} aka \code{\link{sim.correlation}
   \item{r}{The sample correlation or covariance matrix} 
   \item{observed}{If raw=TRUE, a sample data matrix}
 }
-\references{Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}    }
+\references{
+
+Kaiser, H.F. and Dickman, W. (1962) Sample and population score matrices and sample correlation matrices from an arbitrary population correlation matrix. Psychometrika, 27, 179-182.
+
+ Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}   
+
+ }
  
 \author{ William Revelle }
 

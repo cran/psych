@@ -46,7 +46,7 @@ if(is.null(cut)) cut <- .2
 	   
        numfactors <- dim(x$schmid$sl)[2] -3
        eigenvalues <- diag(t(x$schmid$sl[,1:numfactors]) %*% x$schmid$sl[,1:numfactors])
-       cat("\nWith eigenvalues of:\n")
+       cat("\nWith Sums of squares  of:\n")
        ev.rnd <- round(eigenvalues,digits)
        print(ev.rnd,digits=digits)
       

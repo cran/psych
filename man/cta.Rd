@@ -7,7 +7,7 @@
 \usage{
 cta (n=3,t=5000, cues = NULL, act=NULL, inhibit=NULL,expect = NULL, consume = NULL, 
 tendency = NULL,tstrength=NULL, type="both", fast=2,compare=FALSE,learn=TRUE,reward=NULL) 
-cta.15(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL, 
+cta.15(n = 3, t = 5000, cues = NULL,stim=NULL, act = NULL, inhibit = NULL, consume = NULL, 
    ten = NULL,  type = "both", fast = 2)
 
 
@@ -17,6 +17,7 @@ cta.15(n = 3, t = 5000, cues = NULL, act = NULL, inhibit = NULL, consume = NULL,
   \item{n}{number of actions to simuate }
   \item{t}{length of time to simulate}
   \item{cues}{a vector of cue strengths}
+  \item{stim}{A vector of the environmental stimuli}
   \item{act}{matrix of associations between cues and action tendencies}
   \item{inhibit}{inhibition matrix }
   \item{consume}{ Consummation matrix }

@@ -68,7 +68,7 @@ Rafaeli, E. & Revelle, W. (2006). A premature consensus: Are happiness and sadne
 Acton, G. S. and Revelle, W. (2004) Evaluation of Ten Psychometric Criteria for Circumplex Structure. Methods of Psychological Research Online, Vol. 9, No. 1 (formerly (https://www.dgps.de/fachgruppen/methoden/mpr-online/issue22/mpr110_10.pdf)  also at  \url{https://personality-project.org/revelle/publications/acton.revelle.mpr110_10.pdf} }
 \author{ William Revelle }
 
-\seealso{  See Also the implementation in this to generate numerous simulations.  \code{\link{simulation.circ}},  \code{\link{circ.tests}} as well as other simulations ( \code{\link{sim.structural}}  \code{\link{sim.hierarchical}})}
+\seealso{  See also the implementation in this series of functions to generate numerous data structures.  \code{\link{simCor}}, \code{\link{simulation.circ}},  \code{\link{circ.tests}} as well as other simulations ( \code{\link{sim.structural}}  \code{\link{sim.hierarchical}})}
 \examples{
 
 round(cor(circ.sim(nvar=8,nsub=200)),2)

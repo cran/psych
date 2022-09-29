@@ -7,12 +7,21 @@
 "scoreItems"  <-
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,n.obs=NULL,select=TRUE) {
    cl <- match.call()
-   raw.data <- TRUE
+  
+   ## First some housekeeping for various types of input
+    raw.data <- TRUE
+    
   # if(is.list(keys) & !is.data.frame(keys)) keys <- make.keys(items,keys)   #added 9/9/16  and then fixed March 4, following a suggestion by Jeromy Anglim
-    if(is.null(colnames(items))  ) select <- FALSE  #can not select items if they don't have colnames or if the keys don't have rownames
-    if(is.null(dim(keys)) &(is.null(names(keys)))) {keys <- as.matrix(keys)   #the case of unnamed keys returned from alpha
+    if(is.null(colnames(items))  ) {select <- FALSE   #can not select items if they don't have colnames or if the keys don't have rownames
+           colnames(items) <- paste0("V",1:NCOL(items)) }   #give the items some  names
+    
+     if(is.null(dim(keys)) &(is.null(names(keys)))) {keys <- as.matrix(keys)   #the case of unnamed key returned from alpha
       rownames(keys) <-colnames(items)
-      colnames(keys) <- "Scale1"} #
+      colnames(keys) <- paste0("Scale1",1:NCOL(keys))} 
+      
+    if(is.matrix(keys) & is.null(colnames(keys))) { colnames(keys) <- paste0("Scale",1:NCOL(keys))
+                        if(is.null(rownames(keys)))  rownames(keys) <- paste0("V",1:NCOL(items))}  #this handles input from GAabbreviate
+
     if (select) {if(is.list(keys) & (!is.data.frame(keys))) {
 #  select <- sub("-","",unlist(keys))  #then, replaced with select option, Apri 8, 2017
   		select <- selectFromKeyslist(colnames(items),keys)
@@ -69,7 +78,9 @@ if(any( !(select %in% colnames(items)) )) {
     
     response.freq <- response.frequencies(items)
     item.var <- apply(items,2,sd,na.rm=TRUE)
-       bad <- which((item.var==0)|is.na(item.var))
+       bad <- which((item.var==0)|is.na(item.var))   #is this a good idea? 
+       #bad <- which(is.na(item.var)) 
+ 
        if((length(bad) > 0) && delete) {
        for (baddy in 1:length(bad)) {warning( "Item= ",colnames(items)[bad][baddy]  , " had no variance and was deleted from the data and the keys.")}
        items <- items[,-bad]
@@ -123,7 +134,7 @@ if(any( !(select %in% colnames(items)) )) {
             raw.data <- FALSE
          }  #end of treating missing without imputation
 
-       }
+       }  #end of processing raw data 
                    
     slabels <- colnames(keys)
     if (is.null(slabels)) {
@@ -140,26 +151,26 @@ if(any( !(select %in% colnames(items)) )) {
     sum.item.var <- item.var %*% abskeys 
     sum.item.var2 <- item.var^2 %*% abskeys 
     item.r <- cov2cor(C) #this does not handle pairwise complete correctly because cov and cor with pairwise work differently
+  
    #find the median correlation within every scale 
-   
    med.r <- rep(NA, n.keys)
    for(k in 1:n.keys) {
   
-   temp <- keys[,k][abs(keys[,k]) > 0]
-   temp.keys <- temp
-   temp <- diag(temp,nrow=length(temp))
+		temp <- keys[,k][abs(keys[,k]) > 0]
+   		temp.keys <- temp
+   		temp <- diag(temp,nrow=length(temp))
   # temp  <- diag(keys[,k ][abs(keys[,k])>0] )
-
-  
-  
-   small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0,drop=FALSE]  #drop = FALSE for the case of 1 item scales
+	 small.r <- item.r[abs(keys[,k])>0,abs(keys[,k])>0,drop=FALSE]  #drop = FALSE for the case of 1 item scales
   # small.r <- temp %*% small.r %*% temp    #this flips, but does not work if any r is na
      small.r[temp.keys < 0,] <- -small.r[temp.keys< 0,,drop=FALSE]   #these two lines flip negatively keyed items even if some are NA (August 25, 2020)
       small.r[,temp.keys < 0] <- -small.r[,temp.keys< 0,drop=FALSE]
-    med.r[k]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
+    	med.r[k]  <- median(small.r[lower.tri(small.r)],na.rm=TRUE)  
    } 
+   
   names(med.r) <- slabels
     #but we want to do this for each scale
+   
+    
     
    #av.r <- (var.scales - sum.item.var)/(num.item*(num.item-1))  #actually, this the average covar
    alpha.scale <- (var.scales - sum.item.var)*num.item/((num.item-1)*var.scales)
@@ -191,11 +202,20 @@ if(any( !(select %in% colnames(items)) )) {
     diag(C) <- c.smc
     sum.smc <- c.smc %*% abskeys
     G6 <- (var.scales - sum.item.var + sum.smc)/var.scales
-    corrected.var <- diag(t(keys) %*%  C %*% keys)
+    corrected.cov <-  t(keys) %*%  C %*% keys
+    corrected.var <- diag(corrected.cov)
+    #corrected.var <- diag(t(keys) %*%  C %*% keys)
     if(n.keys>1) {
     item.rc <- (C %*% keys) %*% sqrt(diag(1/corrected.var))/sqrt(item.var)} else {
       item.rc <- C %*% keys /sqrt(corrected.var*item.var) }
     colnames(item.rc) <- slabels
+    
+    #put all of this much later 
+    key.var <- diag(t(keys) %*% keys)
+    # key.av.r <- key.alpha/(key.var - key.alpha*(key.var-1))  #alpha 1 = average r
+     scale.size <- outer(key.var,key.var)
+     MIMS <-  corrected.cov/scale.size
+     diag(MIMS)<- av.r   
     
   if(n.subjects > 0) {ase <- sqrt(Q/ n.subjects )} else {if(!is.null(n.obs)) {ase <- sqrt(Q/ n.obs )} else {ase=NULL}}  #only meaningful if we have raw data
   if(is.null(ilabels)) {ilabels <- colnames(items) }
@@ -218,15 +238,26 @@ if(any( !(select %in% colnames(items)) )) {
   rownames(G6) <- "Lambda.6"
   sn <-  av.r * num.item/(1-av.r)
   rownames(sn) <- "Signal/Noise"
+  
+  
+  #find the Multi-Item Multi Trait item x scale correlations   # added 9/5/22
+ MIMT <- matrix(NA,n.keys,n.keys)
+
+ for (i in 1:(n.keys)) {
+    temp <- keys[,i][abs(keys[,i]) > 0]
+    flip.item <- temp * item.cor[names(temp),,drop=FALSE]
+   if(length(names(temp)) > 1) { MIMT[i,] <- colMeans(flip.item[names(temp),,drop=FALSE])} else {MIMT[i,] <- flip.item}
+    }
+  colnames(MIMT) <- rownames(MIMT) <- colnames(keys)
  keys.list <- keys2list(keys)  #put them into a list to save them
    if (!raw.data) { 
      if(impute =="none") {
        #rownames(alpha.ob) <- "alpha.observed"
        if(!is.null(scores)) colnames(scores) <- slabels #added Sept 23, 2013
-       results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} else {
-         results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,med.r=med.r,keys=keys.list,Call=cl)}  } else {
-   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} else{  
-                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,Call=cl)} }
+       results <- list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales, corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=FALSE,alpha.ob = alpha.ob,num.ob.item =num.ob.item,ase=ase,med.r=med.r,keys=keys.list,MIMS=MIMS,MIMT=MIMT,Call=cl)} else {
+         results <- list(alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq =response.freq,raw=FALSE, ase=ase,med.r=med.r,keys=keys.list,MIMS=MIMS,MIMT=MIMT, all=cl)}  } else {
+   if(raw.data) {if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,alpha=alpha.scale, av.r=av.r, sn=sn,n.items = num.item,  item.cor = item.cor,cor = cor.scales ,corrected = scale.cor,G6=G6,item.corrected = item.rc,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,MIMS=MIMS,MIMT=MIMT,Call=cl)} else{  
+                                         results <- list(scores=scores,alpha=alpha.scale, av.r=av.r,sn=sn, n.items = num.item,  item.cor = item.cor, cor =cor.scales,corrected = scale.cor,G6=G6,item.corrected = item.rc ,response.freq=response.freq,raw=TRUE,ase=ase,med.r=med.r,keys=keys.list,MIMS=MIMS,MIMT=MIMT,Call=cl)} }
    }
    class(results) <- c("psych", "score.items")
     return(results)

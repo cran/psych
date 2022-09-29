@@ -107,6 +107,7 @@ Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika
  \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis with one general factor. 
  code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of higher order factors. 
  
+ \code{\link{faRegression}} to do multiple regression from factor analysis solutions.
 
 \code{\link{fa.sort}} will sort the factor loadings into echelon form. \code{\link{fa.organize}} will reorganize the factor pattern matrix into any arbitrary order of factors and items.  
 

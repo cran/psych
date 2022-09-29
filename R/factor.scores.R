@@ -1,4 +1,4 @@
-"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,impute="none") {
+"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,missing=FALSE,impute="none") {
 #the normal case is f is the structure matrix and Phi is not specified
 #Note that the Grice formulas distinguish between Pattern and Structure matrices
 #I need to confirm that I am doing this
@@ -24,8 +24,9 @@
       S <- f %*% Phi   #the Structure matrix 
    switch(method,   
     "Thurstone" = { w <- try(solve(r,S),silent=TRUE )  #these are the factor weights (see Grice eq. 5)
-     	if(inherits(w,"try-error")) {message("In factor.scores, the correlation matrix is singular, an approximation is used")
-               r <- cor.smooth(r)}
+     	if(inherits(w,"try-error")) {message("In factor.scores, the correlation matrix is singular, the pseudo inverse is  used")
+              # r <- cor.smooth(r)
+              w  <- Pinv(r) %*% S }
         
       w <- try(solve(r,S),silent=TRUE)
       if(inherits(w,"try-error")) {message("I was unable to calculate the factor score weights, factor loadings used instead")
@@ -108,8 +109,10 @@
       results$r.scores <- r.scores 
    	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
      } else {
-         missing <- rowSums(is.na(x))
-    if(impute !="none") {
+     
+
+         #missing <- rowSums(is.na(x))
+    if(missing && (impute !="none")) {
        x <- data.matrix(x)
         miss <- which(is.na(x),arr.ind=TRUE)
         if(impute=="mean") {
@@ -119,7 +122,9 @@
         	x[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
      }
       
-     if(method !="components") {scores <- scale(x) %*% w } else {  #standardize the data before doing the regression if using factors, 
+     if(method !="components") {if(impute!="none")  {scores <- factorScoresSapa(weights=w,  items = scale(x))} else {
+    
+     scores <- scale(x) %*% w }} else {  #standardize the data before doing the regression if using factors, 
         scores <- x %*% w}       # for components, the data have already been zero centered and, if appropriate, scaled
      results <- list(scores=scores,weights=w)
      results$r.scores <- r.scores

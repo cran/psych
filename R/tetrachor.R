@@ -428,6 +428,8 @@ function(x,y) {
 #modified November 28, 2014 to be slightly more aggressive about smoothing
 #this is more similar to cov2cor(nearPD$mat)
 "cor.smooth" <- function(x,eig.tol=10^-12) {
+if(!isCorrelation(x)) {x <- cor(x,use="pairwise")
+   message("Pearson correlations of the raw data were found")}
 eigens <- try(eigen(x),TRUE)
 if(inherits(eigens, as.character("try-error"))) {warning('I am sorry, there is something seriously wrong with the correlation matrix,\ncor.smooth failed to  smooth it because some of the eigen values are NA.  \nAre you sure you specified the data correctly?')
                                                      } else {

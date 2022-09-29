@@ -5,12 +5,12 @@
 "diagram" <- function(fit,...) {
 # figure out which psych function was called and then call the appropriate diagram
 value <- NULL
-omega <- bassAck <- extend <- lavaan <- NULL    #weird requirement to avoid being global
+omega <- bassAck <- extend <- extension <-  lavaan <- fa.reg <-  NULL    #weird requirement to avoid being global
 #if(length(class(fit)) == 1) {if (inherits(fit,"lavaan")) fn <- "lavaan" } 
 
 
  #if(length(class(fit)) > 1)  {
-    names <- cs(lavaan,fa,principal,iclust,omega,lavaan,bassAck, extend)
+    names <- cs(lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem, setCor)
     value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -23,7 +23,11 @@ iclust = {iclust.diagram(fit,...)},
 omega = {omega.diagram(fit,...)},
 lavaan =  {lavaan.diagram(fit,...)}, 
 bassAck = {bassAckward.diagram(fit,...)} ,
-extend = {extension.diagram(fit ,...)}
+extend = {extension.diagram(fit ,...)},
+extension ={extension.diagram(fit,...)},
+fa.reg ={extension.diagram(fit,...)},
+esem = {esem.diagram(fit,...)},
+setCor = {setCor.diagram(fit,...)}
 )
 }
 
@@ -444,12 +448,23 @@ text(x= textvalues[,1],y = textvalues[,2],labels=textvalues[,3])
 
 }
    
-   
-"multi.rect" <- function(rect.list,...) {
-  nvar <- length(rect.list)/7
- tv <- matrix(unlist(rect.list),nrow=nvar,byrow=TRUE)
-      all.rects.x <- as.numeric(tv[,6]) #the center of the figure
-      all.rects.y <- as.numeric(tv[,3])
-      all.rects.names <-  tv[,1]
-      dia.rect(all.rects.x, all.rects.y,all.rects.names) 
-}  
+ 
+ 
+ multi.rect <-  function (rect.list, ...) 
+{
+    nvar <- length(rect.list)/7
+    tv <- matrix(unlist(rect.list), nrow = nvar, byrow = TRUE)
+    all.rects.x <- as.numeric(tv[, 6])
+    all.rects.y <- as.numeric(tv[, 3])
+    all.rects.names <- tv[, 1]
+    dia.rect(all.rects.x, all.rects.y, all.rects.names)
+}
+  
+# "multi.rect" <- function(rect.list,...) {
+#   nvar <- length(rect.list)
+#  tv <- matrix(unlist(rect.list),nrow=nvar,byrow=TRUE)
+#       all.rects.x <- as.numeric(tv[,5]) #the center of the figure
+#       all.rects.y <- as.numeric(tv[,2])
+#       all.rects.names <-  tv[,1]    # i dont have names
+#       dia.rect(all.rects.x, all.rects.y,all.rects.names) 
+# }  

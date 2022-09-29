@@ -25,12 +25,16 @@
        } 
     }
     }
- 
+ #Roe is Horn's Re    R1 is Phi  Pc is pattern of original = fl
+ # Pe = Re Pc  solve (Pc'Pc) solve Phi
  if(!omega) fe <- t( Roe) %*% fl %*% (solve(t(fl)%*% (fl)))  #should we include Phi?
-  if(!is.null(Phi)) fe <- fe %*% solve(Phi)
+  if(!is.null(Phi)) fe <- fe %*% solve(Phi)  #horn equation 26
  
- if(!correct) {#the Gorsuch case
-     d <-diag(t(fl) %*% fo$weight)
+ if(!correct) {#the Gorsuch case -- not actually-- read Gorsuch again
+
+    # d <- diag(t(fl) %*% fo$weight)  #this is probably  wrong 
+     
+     d <- sqrt(diag(t(fl) %*% fo$weight))   #a correction of sorts for reliability
      fe <- (fe * d)
  }
  colnames(fe) <- colnames(fl)
@@ -49,8 +53,10 @@ if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- Roe - fl 
 #modified 04-09/16 to pass the Structure matrix as well
 #Added the cors and correct parameters to pass to fa 1/3/21
 "fa.extend" <- 
-function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL, ...) {
+function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...) {
  cl <- match.call()
+ if(is.numeric(ev)) ev  <- colnames(r)[ev]    #in case we are selecting variables 
+ if(is.numeric(ov)) ov  <- colnames(r)[ov]
   nv <- c(ov,ev)
  if(nrow(r) > ncol(r)){  #the case of a data matrix
      #first find the correlations
@@ -74,14 +80,15 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
        )
        
  if(omega) {fo <- omega(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
-       fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,...)}
-         
+       fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,smooth=smooth,...)}
+     
+           
     } else {  #the case of a correlation matrix  
        data <- NULL       
        R <- r[ov,ov]
        np.obs.r <- np.obs
       if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
-      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor, correct=correct,alpha=alpha,np.obs=np.obs[ov,ov],...)}
+      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor, correct=correct,alpha=alpha,np.obs=np.obs[ov,ov],smooth=smooth,...)}
      }
 Roe <- r[ov,ev,drop=FALSE]
 fe <- fa.extension(Roe,fo,correct=correct)
@@ -92,7 +99,7 @@ foe <- rbind(fo$loadings,fe$loadings)
 if(omega) oblique <- rbind(fo$schmid$oblique,fe$oblique)
 
 if(is.na(n.obs) && !is.null(np.obs)) n.obs <- max(as.vector(np.obs))
-result <- factor.stats(r[nv,nv],foe,fo$Phi,n.obs,np.obs.r,alpha=alpha)
+result <- factor.stats(r[nv,nv],foe,fo$Phi,n.obs,np.obs.r,alpha=alpha,smooth=smooth)
 if(omega) result$schmid$sl <- foe
     result$rotation <- rotate
     result$loadings <- foe

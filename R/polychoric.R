@@ -287,7 +287,7 @@ if (min(xmax) != max(xmax)) {global <- FALSE
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
-tau <- qnorm(apply(xfreq,2,cumsum))[1:(nvalues-1),]  #these are the normal values of the cuts
+tau <- qnorm(apply(xfreq,2,cumsum)[1:(nvalues-1),])  #these are the normal values of the cuts   #moved ) to after ]
 if(!is.matrix(tau)) tau <- matrix(tau,ncol=nvar)
 #rownames(tau) <- levels(as.factor(x))[1:(nvalues-1)]  #doesn't work if one response is missing
 rownames(tau) <- 1:(nvalues -1) 

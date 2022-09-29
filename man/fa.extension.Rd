@@ -1,6 +1,8 @@
 \name{fa.extension}
 \alias{fa.extension}
 \alias{fa.extend}
+\alias{faRegression}
+\alias{faReg}
 \title{Apply Dwyer's factor extension to find factor loadings for extended variables}
 
 \description{Dwyer (1937) introduced a method for finding factor loadings for variables not included in the original analysis.  This is basically finding the unattenuated correlation of the extension variables with the factor scores.  An alternative, which does not correct for factor reliability was proposed by Gorsuch (1997). Both options are an application of exploratory factor analysis with extensions to new variables. Also useful for finding the validities of variables in the factor space.  
@@ -9,16 +11,25 @@
 fa.extension(Roe,fo,correct=TRUE)
 fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",
-  alpha=.1,omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL, ...) 
+  alpha=.1,omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,
+     smooth=TRUE, ...) 
+faRegression(r,nfactors=1,ov=NULL,dv=NULL, n.obs = NA
+ , np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1,
+ omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...)
+#this is just an alias for 
+faReg(r,nfactors=1,ov=NULL,dv=NULL, n.obs = NA
+ , np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1,
+ omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...)
 }
 
 \arguments{
   \item{Roe}{The correlations of the original variables with the extended variables}
   \item{fo}{The output from the \code{\link{fa}} or \code{\link{omega}} functions applied to the original variables.}
-  \item{correct}{correct=TRUE produces Dwyer's solution, correct=FALSE produces Gorsuch's solution}
+  \item{correct}{correct=TRUE produces Dwyer's solution, correct=FALSE does not correct for factor reliability.  This is not quite the Gorsuch technique.}
 \item{r}{A correlation or data matrix with all of the variables to be analyzed by fa.extend}
 \item{ov}{The original variables to factor}
 \item{ev}{The extension variables}
+\item{dv}{The dependent variables if doing faRegression}
  \item{nfactors}{ Number of factors to extract, default is 1 }
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
 \item{np.obs}{Pairwise number of observations.  Required if using fm="minchi", suggested in other cases to estimate the empirical goodness of fit.}
@@ -34,12 +45,13 @@ fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
 \item{use}{Option for the cor function on how to handle missing data.}
 \item{cor.correct}{The correction to be passed to mixed, tet, or polycor (defaults to .5)}
 \item{weight}{Should we weight the variables? (see \code{\link{fa}})} 
+\item{smooth}{Should we smooth the correlation matrix -- smoothing produces bad output if there are NAs in the R matrix }
  \item{...}{Additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
 
 }
 \details{It is sometimes the case that factors are derived from a set of variables (the Fo factor loadings) and we want to see what the loadings of an extended set of variables (Fe) would be. Given the original correlation matrix Ro and the correlation of these original variables with the extension variables of Roe, it is a straight forward calculation to find the loadings Fe of the extended variables on the original factors.  This technique was developed by Dwyer (1937) for the case of adding new variables to a factor analysis without doing all the work over again. But, as discussed by Horn (1973) factor extension is also appropriate when one does not want to include the extension variables in the original factor analysis, but does want to see what the loadings would be anyway.
 
-This could be done by estimating the factor scores and then finding the covariances of the extension variables with the factor scores. But if the original data are not available, but just the covariance or correlation matrix is, then the use of \code{\link{fa.extension}} is most appropriate. 
+This could be done by estimating the factor scores and then finding the covariances of the extension variables with the factor scores. If raw data are available, this is done by \code{\link{faReg}}. But if the original data are not available, but just the covariance or correlation matrix is, then the use of \code{\link{fa.extension}} is most appropriate to estimate those correlations before doing the regression.  
 
 The factor analysis results from either \code{\link{fa}} or \code{\link{omega}} functions applied to the original correlation matrix is extended to the extended variables given the correlations (Roe) of the extended variables with the original variables.
 
@@ -49,7 +61,24 @@ For a very nice discussion of the relationship between factor scores, correlatio
 
 The \code{\link{fa.extend}} function may be thought of as a "seeded" factor analysis.  That is, the variables in the original set are factored, this solution is then extended to the extension set, and the resulting output is presented as if both the original and extended variables were factored together.  This may also be done for an omega analysis. 
 
-The example of  code{\link{fa.extend}} compares the extended solution to a direct solution of all of the variables using \code{\link{factor.congruence}}. 
+The example of  \code{\link{fa.extend}} compares the extended solution to a direct solution of all of the variables using \code{\link{factor.congruence}}. 
+
+Another important use of factor extension is when parts of a correlation matrix are missing.  Thus suppose you have a correlation matrix formed of variables 1 .. i, j..n  where the first i variables correlate with each other (R11) and with the  j... n (R12) variables, but the elements of of the R22 (j..n) are missing.  That is, X has a missing data structure but we can find the correlation matrix R[1..n,1..n]  =cor(X,na.rm=TRUE) 
+
+R[1..n,1..n] = \tabular{rr}{
+   R[1..i,1..i] \tab R[1..i,j..n]  \cr
+   R[j..n,1..i] \tab NA  \cr 
+}
+Factors can be found for the R11 matrix and then extended to the variables in the entire matrix. This allows for irt approaches to be applied even with significantly missing data.
+
+f <- fa.extend(R,nf=1, ov=1:i,ev=j:n)
+
+Then the loadings of n loadings of f may be found. 
+
+Combining this procedure with \code{\link{fa2irt}} allows us to find the irt based parameters of the n variables, even though we have substantially incomplete data. 
+
+
+Using the idea behind factor extension it is straightforward to apply these techniques to multiple regression, because the extended loadings are functionally beta weights.  . \code{\link{faRegression}} just organizes the extension analysis in terms  of a regression analysis.  If the raw data are available, it first finds the factor scores and then correlates these with the dependent variable in the standard regression approach.  But, if just the correlation matrix is available, it estimates the factor by dependent variable correlations by the use of \code{link{fa.extend}} before doing the regression.
 }
 \value{Factor Loadings of the exended variables on the original factors}
 
@@ -124,5 +153,11 @@ fload <- matrix(c(c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9,.8,.7,.6),rep(0,20)),c(c(.9
  class(combined.om) <-c("psych","extend")
  omega.diagram(combined.om,main="Extended Omega") 
  
+ #show how to use fa.extend to do regression analyses with the raw data
+ b5 <- faReg (bfi, nfactors = 5, ov =1:25, dv =26:28)
+ extension.diagram(b5)
+ R <-cor(bfi,use="pairwise")
+ b5.r <- faReg(R, nfactors = 5, ov =1:25, dv =26:28) # not identical to b5
+ round(b5$regression$coefficients - b5.r$regression$coefficients,2)
 }
-\keyword{ multivariate }% at least one, from doc/KEYWORDS
+\keyword{ multivariate }

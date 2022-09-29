@@ -436,10 +436,10 @@ var.list <- arrow.list <-  curve.list <- self.list<- list()
 x.scale <- top/(nx+1)
 y.scale <- top/(ny+1)
 plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
-for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i],cex=cex,draw=FALSE,...) 
+for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i],cex=cex,draw=TRUE,...) 
                var.list <- c(var.list,x.names[i],x[[i]])}
  
-for (j in 1:ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,draw=FALSE,...)
+for (j in 1:ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,draw=TRUE,...)
                   var.list <- c(var.list,y.names[j],y[[j]]) }
 for(i in 1:nx) {
   for (j in 1:ny) {

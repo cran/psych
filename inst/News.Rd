@@ -2,32 +2,67 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.1.8 (2021-08-01)}{ 
+\section{Changes in psych version 2.2.10 (2022-09-21)}{ 
   \subsection{Introduction}{
     \itemize{
-     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. 
+     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.1.4 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.1.3  The second digit reflects the year (i.e., 2020), the third set the month (i.e., 2.0.7 was released in July of 2020 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.2.10 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.2.9  The second digit reflects the year (i.e., 2022), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
-     
+  }   
  }
- }
+ 
+ \subsection{Additions}{
+          \itemize{
+           \item Modified alpha so that it returns a keys list rather than a vector
+          \item Added the smooth option to fa, fa.stats and fa.extension.  This by default had been true.  Now allows users to specify that they don't want to smooth improper correlation matrices.  Affects just the fa.stats output. 
+          \item Improved the documentation for irt.fa, and fa.extend
+          \item Change the verbiage in omega to reflect that we are finding sums of squared loadings rather than eigenvalues (Thanks to Niels Waller for this point.)
+          \item Added the percentage of items with their highest correlation on the keyed scale (as an index of scale quality)   Requested by Asghar Minaei. 
+          \item Added the MIMS and MIMT matrices to scoreOverlap and to scoreItems These matrices reflect the average item correlation within and between scales (MIMS) and the average item x scale correlation within and between scales (MIMT).  Suggested by Asghar Minaei.
+          \item Added options to the correlations in cortest and also improved the documentation.
+          \item Added alpha2r  to convert alpha to average r (a trivial, one liner, but convenient sometimes)
+          \item Added crossValidationBoot to do multiple derivations / cross validations
+          \item Modified factorScore so that it will give scores even in the case of missing data.  Scores are found from the mean of the non-missing items on a factor. To just get scores for non-missing subjects, specify impute="none"
+          \item Added faReg /faRegression to make use of fa.extend to find the regressions with dependent variables in a more understandable output.  Modified extend.diagram to draw these as well.  Although developed to use fa.extend, faReg will also do regressions based upon factor scores from the raw data.  
+          \item Added SAPAfy to "sapafy" data matrices. (a trivial but useful helper function)
+          }
+        }
+        
+        \subsection{Bugs Fixed}{ 
+        \itemize{
+        \item Fixed scoreItems  so that the delete=TRUE option actually works. (Based upon a report by Christopher Wiese )    Also improved the documentation about why this is needed.  
+        \item Fixed a typo in fa with the fm=alpha method.  Reported by Philipp Doebler.
+      \item Finally fixed a bug in bestItems so that it works with raw data.   
+      \item Fixed a very minor bug in polychoric that was throwing a warning and now is breaking.  Results do not change.  (Reported by Goran Kardum)
+      \item Fixed cor.smooth so that if it is given raw data, it will first find the correlations.
+      \item Fixed minor typo in fa.Rd (thanks to Ian Buller for pointing this out).
+      \item Fixed crossValidation to work with subsets of variables.
+      \item Fixed autoR to handle case of single variable when grouping.  Reported by Alex Smith and thanks to various suggestions on stack overflow.
+      \item Fixed scoreItems so that it will give names to unlabeled data and keys (was breaking GAabbreviate)
+          }
+          }
+  }
   
-  \subsection{To do}{
+  
+  
+  
+  \section{To do version 2.2.9}{
     \itemize{
-      \item Suggestions are welcome, but the current list includes the following(and has included for a long time, so lets be patient):
+      \item Suggestions are welcome, but the current list includes the following (and has included for a long time, so lets be patient):
       \item Add confirmatory clustering to ICLUST
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
      
       \item Add the ability to create multiple groups in sim.irt functions
-      \item Find canonical loadings in set.cor     
+      \item Find canonical loadings in setCor     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
      \item Add option to do subject density and item density plot to IRT plot.
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
-      \item add the ability to add labels to lavaan.diagram  
+      \item add the ability to add labels to lavaan.diagram
+      \item need to check the code in scoreIrt to make sure it is right.  
     
     
      \item To help those who want to simulate a bifactor model, make it explicit.  
@@ -60,8 +95,7 @@
      
       \item Add the ability to weight factor residuals to allow WLMS
      
-      \item Create a reliabilities  function to combine omega and alpha and splitHalf
-    
+     
       \item Add the Hull method for number of factors      
       \item Add an option for the correlation type in bestScales (requested by Lorien Elleman).
        \item Change help file examples so they are cleaner for people who example(fn)
@@ -72,7 +106,7 @@
      \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
      \item Need to add documentation to mediate/moderate/setCor for what dfs are used and why.
   
-   \item Add an n.iter option to pca (requested by Michael Wood) 
+   \item Add an n.iter option to pca (requested by Michael Wood, but I am not sure why) 
    \item There is a bug in bestItems for the case of no iterations and dictionary = something
    \item Fix bug in fa.lookup for omega g values that are negative
    \item Fix bug in bestScales that does not report items if not iterating
@@ -81,12 +115,12 @@
   
    \item Add just check variables specified for being numeric (instead of entire data.frame)  (suggested by Fransisco Wilheim)
   
-   \item Pretty up the output from mediate (perhaps make a mediate2latex function
+   \item Pretty up the output from mediate (perhaps make a mediate2latex function)
 
    \item Improve the print function for bassAckwards
 
       } 
-  }
+  
   \subsection{To do}{
   \itemize{
   \item Problem with scoreIrt.1pl with keys of length 2
@@ -121,7 +155,7 @@
    \item Fix bug in polychoric where it doesn't handle empty cells very well. (reported by Björn Büdenbender)
    
    \item Fix bug in mediate for multiple dependent variables (reported by Martin Zeschke)
-   \item Add option in fa to do multiple restarts of rotation (following suggestion by Niels Waller)
+   \item Add option in fa to do multiple restarts of rotation (following suggestion by Niels Waller)  (done)
   
  
   
@@ -141,9 +175,43 @@
   
   \item Possible problem with the use of try  in several functions.
  \item Need to fix omega so that alpha is correctly calculated in case of no general factor
+ \item It would be nice to add an option to display confidence intervals of correlations in error.dots
      
       }
   }
+  }
+  
+   \section{Changes in psych version 2.2.9 (2022-09-12)}{ 
+     \subsection{Additions}{
+          \itemize{
+           \item Modified alpha so that it returns a keys list rather than a vector
+          \item Added the smooth option to fa, fa.stats and fa.extension.  This by default had been true.  Now allows users to specify that they don't want to smooth improper correlation matrices.  Affects just the fa.stats output. 
+          \item Improved the documentation for irt.fa, and fa.extend
+          \item Change the verbiage in omega to reflect that we are finding sums of squared loadings rather than eigenvalues (Thanks to Niels Waller for this point.)
+          \item Added the percentage of items with their highest correlation on the keyed scale (as an index of scale quality)   Requested by Asghar Minaei. 
+          \item Added the MIMS and MIMT matrices to scoreOverlap and to scoreItems These matrices reflect the average item correlation within and between scales (MIMS) and the average item x scale correlation within and between scales (MIMT).  Suggested by Asghar Minaei.
+          \item Added options to the correlations in cortest and also improved the documentation.
+          \item Added alpha2r  to convert alpha to average r (a trivial, one liner, but convenient sometimes)
+          \item Added crossValidationBoot to do multiple derivations / cross validations
+          \item Modified factorScore so that it will give scores even in the case of missing data.  Scores are found from the mean of the non-missing items on a factor. To just get scores for non-missing subjects, specify impute="none"
+          \item Added faReg /faRegression to make use of fa.extend to find the regressions with dependent variables in a more understandable output.  Modified extend.diagram to draw these as well.  Although developed to use fa.extend, faReg will also do regressions based upon factor scores from the raw data.  
+          \item Added SAPAfy to "sapafy" data matrices. (a trivial but useful helper function)
+          }
+        }
+        
+        \subsection{Bugs Fixed}{ 
+        \itemize{
+        \item Fixed scoreItems  so that the delete=TRUE option actually works. (Based upon a report by Christopher Wiese )    Also improved the documentation about why this is needed.  
+        \item Fixed a typo in fa with the fm=alpha method.  Reported by Philipp Doebler.
+      \item Finally fixed a bug in bestItems so that it works with raw data.   
+      \item Fixed a very minor bug in polychoric that was throwing a warning and now is breaking.  Results do not change.  (Reported by Goran Kardum)
+      \item Fixed cor.smooth so that if it is given raw data, it will first find the correlations.
+      \item Fixed minor typo in fa.Rd (thansks to Ian Buller for pointing this out).
+      \item Fixed crossValidation to work with subsets of variables.
+      \item Fixed autoR to handle case of single variable when grouping.  Reported by Alex Smith and thanks to various suggestions on stack overflow.
+      \item Fixed scoreItems so that it will give names to unlabeled data and keys (was breaking GAabbreviate)
+          }
+          }
   }
   
    \section{Changes in psych version 2.2.5 (2022-05-08)}{ 

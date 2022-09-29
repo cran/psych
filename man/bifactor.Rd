@@ -7,6 +7,7 @@
 \alias{Reise}
 \alias{Thurstone}
 \alias{Thurstone.33}
+\alias{Thurstone.33G}
 \alias{Thurstone.9}
 \docType{data}
 \title{Seven data sets showing a bifactor solution.}
@@ -15,6 +16,7 @@
 \usage{
 data(Thurstone)
 data(Thurstone.33)
+data(Thurstone.33G)
 data(Thurstone.9)
 data(Holzinger)
 data(Holzinger.9)
@@ -37,9 +39,11 @@ Another data set from Holzinger (Holzinger.9) represents 9 cognitive abilities (
 
 Another classic data set is the 9 variable Thurstone problem which is discussed in detail by R. P. McDonald (1985, 1999) and and is used as example in the sem package as well as in the PROC CALIS manual for SAS.  These nine tests were grouped by Thurstone and Thurstone, 1941 (based on other data) into three factors: Verbal Comprehension, Word Fluency, and Reasoning. The original data came from Thurstone and Thurstone (1941) but were reanalyzed by Bechthold (1961) who broke the data set into two. McDonald, in turn, selected these nine variables from the larger set of 17 found in Bechtoldt.2. The sample size is 213.
 
-Another set of 9 cognitive variables attributed to Thurstone (1933) is the data set of 4,175 students reported by Professor Brigham of Princeton to the College Entrance Examination Board.  This set does not show a clear bifactor solution but is included as a demonstration of the differences between a maximimum likelihood factor analysis solution versus a principal axis factor solution.
+Another set of 9 cognitive variables attributed to Thurstone (1933) is the data set of 4,175 male students reported by Carl Brigham of Princeton to the College Entrance Examination Board. (Brigham, 1932, Table VIII p 352.) This set does not show a clear bifactor solution but is included as a demonstration of the differences between a maximimum likelihood factor analysis solution versus a principal axis factor solution.  On page 352, we are given reliability estimates of .86, .73, .83, .97,.94, .85, .92, .92, and .90.  These are based upon sampling  743 boys.
 
-Tucker (1958) uses 9 variables from Thurstone and Thburstone (1941) for his example of \code{\link{interbattery}} factor analysis.  
+A parallel set (also from Brigham) is the correlation matrix of the same 9 variables for 2899 girls. (Thurstone.33G)
+
+Tucker (1958) uses 9 variables from Thurstone and Thurstone (1941) for his example of \code{\link{interbattery}} factor analysis.  
 
 More recent applications of the bifactor model are to the measurement of psychological status. The Reise data set is a correlation matrix based upon >35,000 observations to the Consumer Assessment of Health Care Provideers and Systems survey instrument. Reise, Morizot, and Hays (2007) describe a bifactor solution based upon 1,000 cases.    
 
@@ -68,7 +72,7 @@ Another data set that is worth examining for tests of bifactor structure is the 
 
 \item Thurstone: 9 x 9 correlation matrix of ability tests, N = 213
 
-\item Thurstone.33: Another 9 x 9 correlation matrix of ability tests, N=4175
+\item Thurstone.33: Another 9 x 9 correlation matrix of ability tests, N=4175 
 
 \item Thurstone:9: And yet another 9 x 9 correlation matrix of ability tests,  N =710
 
@@ -78,9 +82,12 @@ Another data set that is worth examining for tests of bifactor structure is the 
 \source{Holzinger:  Holzinger and Swineford (1937) \cr
 Reise: Steve Reise (personal communication) \cr
 sem help page (for Thurstone) 
+Brigham (for Thurstone.33)
 }
 \references{ 
 Bechtoldt, Harold, (1961). An empirical study of the factor analysis stability hypothesis. Psychometrika, 26, 405-432.
+
+Brigham, Carl C. (1932) A study of errors.  College Entrance Examination Board. 
 
 Holzinger, Karl and Swineford, Frances (1937) The Bi-factor method.  Psychometrika, 2, 41-54
 
@@ -92,7 +99,7 @@ Mansolf, Maxwell  and   Reise, Steven P. (2016) Exploratory Bifactor Analysis: T
 
 Reise, Steven and Morizot, Julien and Hays, Ron (2007) The role of the bifactor model in resolving dimensionality issues in health outcomes measures. Quality of Life Research. 16, 19-31.
 
-Thurstone, Louis Leon (1933) The theory of multiple factors. Edwards Brothers, Inc.  Ann Arbor
+Thurstone, Louis Leon (1933) The theory of multiple factors. Edwards Brothers, Inc.  Ann Arbor.
 
 Thurstone, Louis Leon and Thurstone, Thelma (Gwinn). (1941) Factorial studies of intelligence. The University of Chicago Press. Chicago, Il.
 

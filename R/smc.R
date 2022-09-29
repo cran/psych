@@ -48,7 +48,7 @@ if(any(is.na(R))) {
       R <- R[-wcl,-wcl]
     
                }
-if(!covar) { R <- cor.smooth(R) }  
+#if(!covar) { R <- cor.smooth(R) }  #probably no longer necessary to do this, since we do P.inv
                             
 # R.inv <- try(solve(R),TRUE)
 # if(inherits(R.inv, as.character("try-error"))) {smc <- rep(1,p)

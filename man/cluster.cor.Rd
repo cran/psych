@@ -38,7 +38,9 @@ In the case of overlapping keys, (items being scored on multiple scales), \code{
  
  If some correlations are missing from the original matrix this will lead to missing values (NA) for scale intercorrelations based upon those lower level correlations. If impute=TRUE (the default), a warning is issued and the correlations are imputed based upon the average correlations of the non-missing elements of each scale. 
  
- Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{scoreItems}}.  They will differ substantially only if the items differ a great deal in their variances.   
+ Because the alpha estimate of reliability is based upon the correlations of the items rather than upon the covariances, this estimate of alpha is sometimes called ``standardized alpha".  If the raw items are available, it is useful to compare standardized alpha with the raw alpha found using \code{\link{scoreItems}}.  They will differ substantially only if the items differ a great deal in their variances.  
+ 
+ The MIMS matrix reflects the average correlations of the Multiple Items within each of the Multiple Scales.  This has been suggested as a measure of scale validity.  These correlations are adjusted for item overlap. 
  
  \code{\link{scoreOverlap}} answers an important question when developing scales and related subscales, or when comparing alternative versions of scales.  For by removing the effect of item overlap, it gives a better estimate the relationship between the latent variables estimated by the observed sum (mean) scores.
  
@@ -54,6 +56,7 @@ In the case of overlapping keys, (items being scored on multiple scales), \code{
   \item{G6}{Guttman's Lambda 6 reliability estimate is based upon the smcs for each item in a scale.  G6 uses the smc based upon the entire item domain.}
   \item{av.r}{The average inter item correlation within a scale}
  \item{size}{How many items are in each cluster?}
+ \item{MIMS}{A matrix of the average correlations, corrected for overlap, between the various scales.}
  
 }
 

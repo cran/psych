@@ -92,7 +92,9 @@ if(result !="other") {#skip to the end if we don' know what we are doing
    
    
     vars <- paste("V",1:num.var,sep="")  
-   if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
+  # if (!is.null(labels)) {vars <- paste(labels)} else{vars <- rownames(factors) }
+  #patched to actually draw the labels!  8/21/22
+    if (!is.null(labels)) {rownames(factors) <- paste(labels)} else{vars <- rownames(factors) }
    if(!is.null(flabels)) {fact <- flabels} else { if(sl)  {fact <- c("g",paste("F",1:num.factors,"*",sep="")) } else {fact <- c(paste("F",1:num.factors,sep="")) }  } # e.g.  "g"  "F'1" "F2" "F3"
  
    colnames(factors)[1:length(fact)] <- fact

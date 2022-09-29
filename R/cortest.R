@@ -1,10 +1,10 @@
 "cortest" <- 
-function(R1,R2=NULL, n1=NULL,n2=NULL,fisher=TRUE,cor=TRUE) {
+function(R1,R2=NULL, n1=NULL,n2=NULL,fisher=TRUE,cor=TRUE, method = "pearson",use="pairwise") {
 cl <- match.call()
 
 if ((dim(R1)[1] != dim(R1)[2])  & cor) {n1 <- dim(R1)[1] 
                             # message("R1 was not square, finding R from data")
-                             R1 <- cor(R1,use="pairwise")}
+                             R1 <- cor(R1,use=use,method=method)}
  
 if(!is.matrix(R1) ) R1 <- as.matrix(R1)  #converts data.frames to matrices if needed
 
@@ -27,20 +27,20 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
     } else {         #end of 1 matrix test
     if ((dim(R2)[1] != dim(R2)[2]) & cor)  {n2 <- dim(R2)[1] 
                              message("R2 was not square, finding R from data")
-                             R2 <- cor(R2,use="pairwise")}
+                             R2 <- cor(R2,use=use, method=method)}
       if(!is.matrix(R2) ) R2 <- as.matrix(R2)
 
                              
       if(fisher) { 
                   R1 <- 0.5*log((1+R1)/(1-R1)) 
-                  R2 <-  0.5*log((1+R2)/(1-R2))
+                  R2 <-  0.5*log((1+R2)/(1-R2)) 
                   if(cor) {diag(R1) <- 0
                   diag(R2) <- 0} }
-        R <-  R1 -R2   #direct difference 
+        R <-  R1 - R2   #direct difference 
         R2 <- R*R
         if(is.null(n2)) n2 <- n1
         n <- (n1*n2)/(n1+n2)  #1/2 harmonic sample size 
-        if(cor) { E <- (sum(R2*lower.tri(R2)))
+        if(cor) { E <- (sum(R2*lower.tri(R2)))  #just count the lower diagonal elements
                  chisq <- E *(n-3)
                  df <- p*(p-1)/2
                  z <- sum(R2*lower.tri(R2)) / sqrt(n-3)} else {E <- sum(R2)

@@ -42,7 +42,7 @@ Included in this set of functions are simple procedure to generate circumplex st
 \author{ William Revelle}
 \note{The simulations default values are for sample sizes of 100, 200, 400, and 800 cases, with 16, 32, 48 and 72 items.  }
 
-\seealso{See also \code{\link{circ.tests}}, \code{\link{sim.circ}}, \code{\link{sim.structural}}, \code{\link{sim.hierarchical}} }
+\seealso{See also \code{\link{circ.tests}}, \code{\link{sim.circ}}, \code{\link{sim.structural}}, \code{\link{sim.hierarchical}},  \code{\link{simCor}},  \code{\link{sim}}}
 \examples{
 #not run
 demo <- simulation.circ()

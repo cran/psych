@@ -11,16 +11,16 @@
 
 \usage{
 fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
-residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",
+residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="none",
 min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
  alpha=.1,p=.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
- correct=.5,weight=NULL,n.rotations=1,hyper=.15,...)
+ correct=.5,weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
 max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
 oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, 
-weight=NULL,n.rotations=1,hyper=.15,...)
+weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE,...)
 
 fa.pooled(datasets,nfactors=1,rotate="oblimin",scores="regression", 
 residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001
@@ -49,7 +49,7 @@ frac=.1,...)
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. If SMC is a vector of length the number of variables, then these values are used as starting values in the case of fm='pa'. }
   \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
-  \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean}
+  \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean. Specifying impute="none" will not impute data points and thus will have some missing data in the factor scores.}
   \item{impute}{"median" or "mean" values are used to replace missing values}
   \item{min.err}{Iterate until the change in communalities is less than min.err}
   \item{max.iter}{Maximum number of iterations for convergence }
@@ -67,6 +67,7 @@ frac=.1,...)
 \item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
 \item{frac}{The fraction of data to sample n.iter times if showing stability across sample sizes}
 \item{datasets}{A list of replication data sets to analyse in fa.pooled. All need to have the same number of variables.}
+\item{smooth}{By default, improper correlations matrices are smoothed.  This is not necessary for factor extraction using fm="pa" or fm="minres", but is needed to give some of the goodness of fit tests. (see notes)}
 \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
@@ -116,7 +117,7 @@ Test cases comparing the output to SPSS suggest that the PA algorithm matches wh
 
 Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{scoreItems}}) factor scores can be estimated by regression as well as several other means. There are multiple approaches that are possible (see Grice, 2001) and  one taken here was developed by tenBerge et al.
 (see \code{\link{factor.scores}}). The alternative, which will match factanal is to find the scores using regression --  Thurstone's least squares regression where the weights are found by
-   \eqn{W = R^(-1)S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
+   \eqn{W = R^{-1}S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
 
 In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix while \code{\link{factanal}} seems to do it from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = TRUE  will produce factor score estimate that match those of \code{\link{factanal}}.
 
@@ -153,9 +154,6 @@ The function \code{\link{fa}} will repeat the analysis n.iter times on a bootstr
 
 If using polytomous or dichotomous items, it is perhaps more useful  to find the Item Response Theory parameters equivalent to the factor loadings reported in fa.poly by using the \code{\link{irt.fa}} function.  
 
-Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link[psychTools]{burt}} data set.
-
-One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
 
 For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
@@ -290,6 +288,12 @@ Alpha factoring was added in August, 2017 to add to the numerous alternative mod
 A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output. 
 
 For a comparison of the \code{\link{fa}} to factor analysis using SPSS, see Grieder and Steiner (2021). 
+
+Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link[psychTools]{burt}} data set.
+
+One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
+
+Although both  fm ="pa" or fm="minres" will work with these ``improper" matrices, the goodness of fit tests do not.  Thus, by default, calls to fa.stats will pass the smooth parameter as TRUE.  This may be prevented by forcing smooth=FAlSE.  Npt smoothing does not affect the pa or minres solution, but will affect the goodness of fit statistics slightly.
 
 
 

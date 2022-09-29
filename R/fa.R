@@ -17,14 +17,14 @@
 #19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
 
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,n.rotations=1,hyper=.15, ...) {
+function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="none", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE, ...) {
  cl <- match.call()
   if(isCorrelation(r)) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                         if(length(class(r)) > 1)  { if( inherits(r,"partial.r")) class(r) <- c("matrix","array") }
                         #in case we are using partial.r of class psych and partial.r   added 4/10/21  
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC, covar=covar, missing=missing, impute=impute, min.err=min.err, max.iter=max.iter, symmetric=symmetric, warnings=warnings, fm=fm, alpha=alpha, oblique.scores=oblique.scores, np.obs=np.obs,use=use, cor=cor, correct=correct, weight=weight, n.rotations=n.rotations, hyper=hyper, ...=...) #call fa with the appropriate parameters
+ f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC, covar=covar, missing=missing, impute=impute, min.err=min.err, max.iter=max.iter, symmetric=symmetric, warnings=warnings, fm=fm, alpha=alpha, oblique.scores=oblique.scores, np.obs=np.obs,use=use, cor=cor, correct=correct, weight=weight, n.rotations=n.rotations, hyper=hyper,smooth=smooth, ...=...) #call fa with the appropriate parameters
  
  fl <- f$loadings  #this is the original
  
@@ -46,7 +46,7 @@ replicateslist <- parallel::mclapply(1:n.iter,function(x) {
                                       X <- matrix(rnorm(nvar * n.obs),n.obs)
                                       X <-  t(eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(X))
                             } else {X <- r[sample(n.obs,n.obs,replace=TRUE),]}
-  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,n.rotations=n.rotations,hyper=hyper, ...=...) #call fa with the appropriate parameters
+  fs <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,n.rotations=n.rotations,hyper=hyper,smooth=smooth, ...=...) #call fa with the appropriate parameters
   if(nfactors == 1) {replicates <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)
                 
@@ -110,7 +110,12 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,n.rotations=1,hyper=.15, ...) {
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,
+use="pairwise",cor="cor",
+correct=.5,weight=NULL,
+n.rotations=1,
+hyper=.15,
+smooth=TRUE, ...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -378,7 +383,7 @@ FA.OLS <- function(Psi,S,nf) {
      x.matrix <- r
     n <- dim(r)[2]
     if (!isCorrelation(r)  & !isCovariance(r)) {  matrix.input <- FALSE  #return the correlation matrix in this case
-                       n.obs <- dim(r)[1]       #Added the test for nono-symmetric in case we have a covariance matrix 4/10/19
+                       n.obs <- dim(r)[1]       #Added the test for none-symmetric in case we have a covariance matrix 4/10/19
      
         if(missing) { #impute values 
         x.matrix <- as.matrix(x.matrix)  #the trick for replacing missing works only on matrices
@@ -435,6 +440,8 @@ FA.OLS <- function(Psi,S,nf) {
                     #does this next line actually do anything?
     if (!residuals) { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),fit=0)} else { result <- list(values=c(rep(0,n)),rotation=rotate,n.obs=n.obs,np.obs=np.obs,communality=c(rep(0,n)),loadings=matrix(rep(0,n*n),ncol=n),residual=matrix(rep(0,n*n),ncol=n),fit=0,r=r)}
     
+    
+   
    
     if(is.null(SMC)) SMC=TRUE   #if we don't specify it, make it true
     r.mat <- r
@@ -494,7 +501,7 @@ FA.OLS <- function(Psi,S,nf) {
                      err <-0 }
      	 } #end of while loop
      	 loadings <- sqrt(H2) * loadings 
-	    eigens <- sqrt(H2) *  eigens$vaues
+	    eigens <- sqrt(H2) *  eigens$values #fixed 7/4/22 thanks to P. Doebler
 	    comm1 <- sum(H2)
 	    }  #end alpha factor analysis
 	     
@@ -560,7 +567,7 @@ FA.OLS <- function(Psi,S,nf) {
      } else { if (sum(loadings) < 0) {loadings <- -as.matrix(loadings)} else {loadings <- as.matrix(loadings)}
              colnames(loadings) <- "MR1" }
      
-    
+
 	switch(fm,
 	    alpha = {colnames(loadings) <- paste("alpha",1:nfactors,sep='')}, 
     	wls={colnames(loadings) <- paste("WLS",1:nfactors,sep='')	},
@@ -715,6 +722,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
        
    if(nfactors >1) {
    
+  
    
    if(is.null(Phi)) {ev.rotated <- diag(t(loadings) %*% loadings)} else {
                      ev.rotated <- diag(  Phi  %*% t(loadings)  %*% loadings)}  # probably should include Phi in this operation  3/10/22
@@ -726,7 +734,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     
     if(nfactors < 1) nfactors <- n
    # if(max(abs(loadings) > 1.0) && !covar) warning(' A loading greater than abs(1) was detected.  Examine the loadings carefully.') 
-    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha)   #do stats as a subroutine common to several functions
+    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,smooth=smooth)   #do stats as a subroutine common to several functions
     result$rotation <- rotate
     if(nfactors != 1) {result$hyperplane <- colSums(abs(loadings )< hyper)} else {result$hyperplane <- sum(abs(loadings) < hyper)}
     result$communality <- diag(model)
@@ -752,7 +760,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    #Some of the Grice equations use the pattern matrix, but some use the structure matrix
   #we are now dropping this oblique score option  (9/2/17)
    result$method=scores  #this is the chosen method for factor scores
-    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores) } else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores)}
+    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores, missing=missing,impute=impute) }  else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores, missing=missing, impute=impute)}  #added  missing and impute 9/5/22
    if(is.null( result$scores$R2))  result$scores$R2 <- NA
    result$R2.scores <- result$scores$R2
   

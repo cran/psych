@@ -13,6 +13,7 @@
 # the model choice matrix
 #the error (residual) matrix
 #the original choice matrix 
+#modified 5/10/22 to handle case of missing data in ranks
 
 "thurstone" <- 
 function(x, ranks = FALSE,digits=2) {     #the main routine
@@ -20,7 +21,7 @@ function(x, ranks = FALSE,digits=2) {     #the main routine
     if (ranks) {choice <- choice.mat(x)   #convert rank order information to choice matrix 
        } else {if (is.matrix(x)) choice <- x
               choice <- as.matrix(x)}
-            
+        
         scale.values <- colMeans(qnorm(choice)) - min(colMeans(qnorm(choice)))  #do the Thurstonian scaling 
         model <- pnorm(-scale.values %+% t(scale.values))
 		error <- model - choice
@@ -34,18 +35,20 @@ function(x, ranks = FALSE,digits=2) {     #the main routine
 
      
 #if we have rank order data, then convert them to a choice matrix
-#convert a rank order matrix into a choice matrix
+#convert a rank order matrix into a hoice matrix
+#needs to handle missing data  fixed 5/10/22
 orders.to.choice <- function(x,y) {      #does one subject (row) at a time
    nvar <- length(x)          #changed to length 11/8/20
    
    for (i in 1:nvar) {
       for (j in 1:nvar) {
+      if(!is.na(x[j]) & !is.na(x[i])) {
         if (x[j]< x[i] ) {y[i,j] <- y[i,j]+1
          } else if  (x[j] == x[i]) {
                        y[j,i] <- y[j,i]+.5    #take ties into account
                        y[i,j] <- y[i,j] + .5
               } else  y[j,i] <- y[j,i]+1        
-          }} 
+          }}} 
           return(y)}
           
           
@@ -92,4 +95,76 @@ item.to.choice <- function(x) {
      y[y<lower] <-lower    
      y[y>upper] <- upper
     return(y) }
+    
+
+
+#do hare ranking    
+hare <- function(x, n=1) {
+#loop over candidates
+#find the person(s) with the fewest 1 place votes
+
+while(NCOL(x) > n) {
+#for(iter in (1:(NCOL(x)-n))) {  #continue until n +1 are left
+count.first <- colSums(apply(x,2,function(x) x==1), na.rm=TRUE)
+min.count <- min(count.first)
+which.min <- which(count.first == min.count)
+which.min <- which.min[1] #just do one candidate at a time
+#reallocate their votes
+who.min <- which(x[,which.min]==1, arr.ind=TRUE)
+#the row is the person we want 
+if(NROW(who.min )> 0) {
+if(!is.null(dim(who.min))) who.min <- who.min[,1]
+
+for(i in (1:length(who.min)))  {
+ x[who.min[i],] <- x[who.min[i],] -1} 
+ }  #reallocate their votes
+x <- x[,-which.min,drop=FALSE]   #drop the lowest vote getter
+   #do it again until the NCOL = the number we want
+
+ }
+ if(NCOL(x) > 1){
+ count.first <- colSums(apply(x,2,function(x) x==1), na.rm=TRUE) 
+  
+ result <- sort(count.first,decreasing=TRUE)[1:n]} else {result <- colSums(x==1,na.rm=TRUE)
+}
+ 
+return(result)}   #show the winners
+
+
+
+#do hare ranking    a different way  
+hare2 <- function(x, n=1) {
+#loop over candidates
+#find the person(s) with the fewest 1 place votes
+
+while(NCOL(x) > n) {
+#for(iter in (1:(NCOL(x)-n))) {  #continue until n +1 are left
+
+temp <- apply(x,1,function(x) which(x==1))
+tt <- table(unlist(temp))
+min.tt <- min(tt)
+which.min <- which(tt==min.tt)
+who.min <- which(x[,which.min]==1, arr.ind=TRUE)
+
+#the row is the person we want 
+if(NROW(who.min )> 0) {
+if(!is.null(dim(who.min))) who.min <- who.min[,1]
+
+for(i in (1:length(who.min)))  {
+ x[who.min[i],] <- x[who.min[i],] -1} 
+ }  #reallocate their votes
+x <- x[,-which.min,drop=FALSE]   #drop the lowest vote getter
+   #do it again until the NCOL = the number we want
+
+ }
+ if(NCOL(x) > 1){
+ count.first <- colSums(apply(x,2,function(x) x==1), na.rm=TRUE) 
+  
+ result <- sort(count.first,decreasing=TRUE)[1:n]} else {result <- colSums(x==1,na.rm=TRUE)
+}
+ 
+return(result)}   #show the winn
+ 
+# count first place votes
+
     

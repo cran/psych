@@ -6,14 +6,15 @@
 }
 \usage{
 factor.scores(x, f, Phi = NULL, method = c("Thurstone", "tenBerge", "Anderson", 
-       "Bartlett", "Harman","components"),rho=NULL,impute="none")}
+       "Bartlett", "Harman","components"),rho=NULL,missing=FALSE,impute="none")}
 \arguments{
   \item{x}{Either a matrix of data if scores are to be found, or a correlation matrix if just the factor weights are to be found.}
   \item{f}{The output from the \code{\link{fa}} or \code{\link{irt.fa}} functions, or a factor loading matrix.}
   \item{Phi}{If a pattern matrix is provided, then what were the factor intercorrelations.  Does not need to be specified if f is the output from the  \code{\link{fa}} or \code{\link{irt.fa}} functions.}
   \item{method}{Which of four factor score estimation procedures should be used. Defaults to "Thurstone" or regression based weights.  See details below for the other four methods.}
   \item{rho}{If x is a set of data and rho is specified, then find scores based upon the fa results and the correlations reported in rho.  Used when scoring fa.poly results.}
-  \item{impute}{By default, only complete cases are scored.  But, missing data can be imputed using "median" or "mean".  The number of missing by subject is reported.
+  \item{missing}{If missing is TRUE, missing items  are imputed using either the median or mean.  If missing is FALSE, the default, scores are found based upon the mean of the available items for each subject.}
+  \item{impute}{By default, only complete cases are scored.  But, missing data can be imputed using "median" or "mean".  The number of missing by subject is reported.  If impute = "none", missing data are not scored.
 }
 }
 

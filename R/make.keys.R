@@ -1,7 +1,8 @@
 "make.keys" <-
 function(nvars,keys.list,item.labels=NULL,key.labels=NULL) {
+#use ncol rather than NCOL to return null if just numbers
 if(!is.null(ncol(nvars)))  {item.labels <- colnames(nvars)
-                         nvars <-  ncol(nvars)} else {
+                         nvars <-  NCOL(nvars)} else {
 if(!is.numeric(nvars)) {item.labels <- nvars 
                       nvars <- length(item.labels)} }
 nkeys <- length(keys.list) 

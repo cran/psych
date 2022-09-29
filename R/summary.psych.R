@@ -246,9 +246,11 @@ esem =  {
 extend = {cat("\n Factor extensions analysis with Call: ")
    print(object$Call)
  	nfactors <- dim(object$loadings)[2]
- 	cat ("\n With factor correlations of \n" )
+ 	if(!is.null(object$Phi)){cat ("\n With factor correlations of \n" )
        colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
-       print(round(object$Phi,digits))},
+       print(round(object$Phi,digits))}
+       
+       },
  	
  	
 fa =  {
@@ -288,7 +290,11 @@ faBy = {cat("\nFactor analysis within groups with Call: ")
  
  
  },
-      
+  
+fa.reg = {cat("\nFactor analysis regression Call: ")
+ print(object$Call)
+ summary(object$regression)
+ },  
 
 items= { 
     if(object=="omega") {

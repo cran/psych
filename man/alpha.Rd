@@ -2,6 +2,7 @@
 \alias{alpha}
 \alias{alpha.scale}
 \alias{alpha.ci}
+\alias{alpha2r}
 
 \title{Find two estimates of reliability: Cronbach's alpha and Guttman's Lambda 6. }
 \description{
@@ -13,6 +14,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
    n.obs=NULL,impute=NULL
    )
 alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2)
+alpha2r(alpha, n.var)
 }
 
 \arguments{
@@ -168,6 +170,8 @@ a4 <- alpha(items$observed)  #item response analysis of congeneric measures
 a4
 #summary just gives Alpha
 summary(a4)
+
+alpha2r(alpha = .74,n.var=4)
 }
 
 \keyword{ models }% at least one, from doc/KEYWORDS

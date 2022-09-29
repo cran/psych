@@ -1,10 +1,10 @@
 
 "factor.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL) {
-   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm)}
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE) {
+   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm,smooth=smooth)}
 
 "fa.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
@@ -81,7 +81,7 @@ conf.level <- alpha
   
     diag(model) <- diag(r)  
     model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
-    r <- cor.smooth(r)  #this makes sure that the correlation is positive semi-definite
+    if(smooth) {r <- cor.smooth(r) } #this makes sure that the correlation is positive semi-definite
     #although it would seem that the model should always be positive semidefinite so this is probably not necessary
     #cor.smooth approach  added August 25,2011
   
@@ -246,7 +246,7 @@ conf.level <- alpha
    	#this repeats what was done in factor.scores and does not take in\to account the options in factor.scores
    	
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
-   	 r <- cor.smooth(r)
+   	if(smooth) {r <- cor.smooth(r)}
       w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
      if(inherits(w,"try-error")) {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
@@ -263,7 +263,7 @@ conf.level <- alpha
     }}
       R2 <- diag(t(w) %*% f)   #but, we actually already found this in factor scores -- these are the Thurstone values
       if(is.null(fm)) {
-     if(prod(R2) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor score estimation method\n")
+     if(prod(R2,na.rm=TRUE) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor score estimation method\n")
                       R2[abs(R2) > 1] <- NA
                       R2[R2 <= 0] <- NA
                      }

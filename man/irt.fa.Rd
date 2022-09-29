@@ -40,7 +40,7 @@ The difficulty parameter, \eqn{\delta} is found from the \eqn{\tau} parameter of
 
 Similar analyses may be done with discrete item responses using polychoric correlations and distinct estimates of item difficulty (location)  for each item response.
 
-The results may be shown graphically using \code{link{plot.irt}} for dichotomous items or  \code{link{plot.poly}} for polytomous items.  These called by plotting the irt.fa output, see the examples).   For plotting there are three options: type = "ICC" will plot the item characteristic response function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.  Invisible output from the plot function will return tables of item information as a function of several levels of the trait, as well as the standard error of measurement and the reliability at each of those levels.
+The results may be shown graphically using \code{\link{plot.irt}} for dichotomous items or  \code{\link{plot.poly}} for polytomous items.  These are called by plotting the \code{\link{irt.fa}} output, see the examples).   For plotting there are three options: type = "ICC" will plot the item characteristic response function.  type = "IIC" will plot the item information function, and type= "test" will plot the test information function.  Invisible output from the plot function will return tables of item information as a function of several levels of the trait, as well as the standard error of measurement and the reliability at each of those levels.
 
 The normal input is just the raw data.  If, however, the correlation matrix has already been found using \code{\link{tetrachoric}}, \code{\link{polychoric}}, or a previous analysis using \code{\link{irt.fa}} then that result can be processed directly.  Because  \code{\link{irt.fa}} saves the rho and tau matrices from the analysis, subsequent analyses of the same data set are much faster if the input is the object returned on the first run.  A similar feature is available in \code{\link{omega}}. 
 
@@ -71,7 +71,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 }
 \author{William Revelle}
 \note{
-\code{link{irt.fa}} makes use of the \code{\link{tetrachoric}} or 
+\code{\link{irt.fa}} makes use of the \code{\link{tetrachoric}} or 
 \code{\link{tetrachoric}} functions. Both of these will use multiple cores if this is an option.  To set these use options("mc.cores"=x) where x is the number of cores to use. (Macs default to 2, PCs seem to default to 1).
 
 In comparing irt.fa to the ltm function in the ltm package or to the analysis reported in Kamata and Bauer (2008) the discrimination parameters are not identical, because the irt.fa reports them in units of the normal curve while ltm and Kamata and Bauer report them in logistic units.  In addition, Kamata and Bauer do their factor analysis using a logistic error model.  Their results match the irt.fa results (to the 2nd or 3rd decimal) when examining their analyses using a normal model.  (With thanks to Akihito Kamata for sharing that analysis.) 
@@ -80,9 +80,12 @@ In comparing irt.fa to the ltm function in the ltm package or to the analysis re
 
 The results of \code{\link{irt.fa}}  can be used by \code{\link{score.irt}} for irt based scoring.  First run \code{\link{irt.fa}} and then score the results using a two parameter model using \code{\link{score.irt}}.  
 
+There is also confusion in the literature of how to interpret the tau parameter.  Here I treat it the item threshold for a response, which is to say that tau reflects item difficulty.  
+
+Further note that the rho parameter in the \code{\link{fa2irt}} function is the result from a \code{\link{tetrachoric}} or \code{\link{polychoric}} analysis and reflects both the correlations and the item thresholds. 
 }
 
-\seealso{\code{\link{fa}}, \code{\link{sim.irt}}, \code{\link{tetrachoric}}, \code{\link{polychoric}} as well as \code{\link{plot.psych}} for plotting the IRT item curves.
+\seealso{\code{\link{fa}}, \code{\link{sim.irt}}, \code{\link{tetrachoric}}, \code{\link{polychoric}} as well as \code{\link{plot.psych}} for plotting the IRT item curves. The use of \code{\link{fa.extend}} is helpful for the case of an incomplete block design to find the factor solution.  
 
 See also \code{\link{score.irt}} for scoring items based upon these parameter estimates. \code{\link{irt.responses}}  will plot the empirical response curves for the alternative response choices for multiple choice items.
 
@@ -98,6 +101,15 @@ plot(test,type="ICC")
 plot(test,type="IIC")
 plot(test,type="test")
 par(op)
+
+#compare this result to first finding the correlations, then factoring them, and 
+# then applying fa2irt.
+R  <- tetrachoric(d9$items,correct=TRUE)
+f <- fa(R$rho)
+test2 <- fa2irt(f,R)
+test2
+test2$plot$sumInfo[[1]] - test$plot$sumInfo[[1]]  #identical results
+
 set.seed(17)
 items <- sim.congeneric(N=500,short=FALSE,categorical=TRUE) #500 responses to 4 discrete items
 d4 <- irt.fa(items$observed)  #item response analysis of congeneric measures

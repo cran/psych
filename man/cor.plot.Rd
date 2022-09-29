@@ -96,7 +96,7 @@ To show a factor loading matrix (or any non-symmetric matrix), set symmetric=FAL
 }
 
 \references{
-Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics \& Data Analysis. 52, 4, 2228-2237.
+Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics & Data Analysis. 52, 4, 2228-2237.
 }
 
 \seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}} \code{\link{lowerUpper}}. 

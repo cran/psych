@@ -1,15 +1,18 @@
-\name{cortest.mat}
-\alias{cortest.normal}
+\name{cortest}
 \alias{cortest.mat}
-\alias{cortest.jennrich}
+\alias{cortest.normal}
 \alias{cortest}
+\alias{cortest.jennrich}
+
 
 \title{Chi square tests of whether a single matrix is an identity matrix, or a pair of matrices are equal. }
 \description{Steiger (1980) pointed out that the sum of the squared elements of a correlation matrix, or the Fisher z score equivalents, is distributed as chi square under the null hypothesis that the values are zero (i.e., elements of the identity matrix).  This is particularly useful for examining whether correlations in a single matrix differ from zero or for comparing two matrices. Jennrich (1970) also examined tests of differences between matrices.
 }
 \usage{
-cortest.normal(R1, R2 = NULL, n1 = NULL, n2 = NULL, fisher = TRUE) #the steiger test
-cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE,cor=TRUE) #same as cortest.normal 
+cortest(R1,R2=NULL,n1=NULL,n2 = NULL, fisher = TRUE,cor=TRUE,method="pearson",
+           use ="pairwise") #same as cortest.normal this does the steiger test
+cortest.normal(R1, R2 = NULL, n1 = NULL, n2 = NULL, fisher = TRUE)      #the steiger test
+
 cortest.jennrich(R1,R2,n1=NULL, n2=NULL)  #the Jennrich test
 cortest.mat(R1,R2=NULL,n1=NULL,n2 = NULL) #an alternative test
 
@@ -22,6 +25,8 @@ cortest.mat(R1,R2=NULL,n1=NULL,n2 = NULL) #an alternative test
   \item{n2}{Sample size of R2 }
   \item{fisher}{Fisher z transform the correlations? }
   \item{cor}{By default, if the input matrices are not symmetric, they are converted to correlation matrices.  That is, they are treated as if they were the raw data.  If cor=FALSE, then the input matrices are taken to be correlation matrices.} 
+  \item{method}{Which type of correlation to find ("pearson", "spearman","kendall")}
+  \item{use}{How to handle missing data (defaults to pairwise)}
 }
 \details{There are several ways to test if a matrix is the identity matrix. The most well known is the chi square test  of Bartlett (1951) and Box (1949). A very straightforward test, discussed by Steiger (1980) is to find the sum of the squared correlations or the sum of the squared Fisher transformed correlations.  Under the null hypothesis that all the correlations are equal, this sum is distributed as chi square.  This is implemented in 
 \code{\link{cortest}} and \code{\link{cortest.normal}}
@@ -58,14 +63,21 @@ Jennrich, Robert I. (1970) An Asymptotic \eqn{\chi^2} Test for the Equality of T
 
 \seealso{\code{\link{cortest.bartlett}} }
 \examples{
+set.seed(42)
 x <- matrix(rnorm(1000),ncol=10)
 cortest.normal(x)  #just test if this matrix is an identity
+#now create two correlation matrices that should be equal
 x <- sim.congeneric(loads =c(.9,.8,.7,.6,.5),N=1000,short=FALSE)
 y <- sim.congeneric(loads =c(.9,.8,.7,.6,.5),N=1000,short=FALSE)
-cortest.normal(x$r,y$r,n1=1000,n2=1000) #The Steiger test
+
+cortest(x$r,y$r,n1=1000,n2=1000) #The Steiger test
 cortest.jennrich(x$r,y$r,n1=100,n2=1000) # The Jennrich test
+
 cortest.mat(x$r,y$r,n1=1000,n2=1000)   #twice the degrees of freedom as the Jennrich
 
+#create a new matrix that is different
+z <- sim.congeneric(loads=c(.8,.8,.7,.7, .6), N= 1000, short=FALSE)
+cortest(x$r,z$r,n1=1000)  #these should be different
 
 }
 

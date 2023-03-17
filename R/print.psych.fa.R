@@ -145,18 +145,18 @@ if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis
        objective <- x$criteria[1]
     if(!is.null(objective)) { if(!is.null(x$fn) ) { if(x$fn == "principal") {  cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "component is" else "components are", "sufficient.\n")} else { cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.\n")}}
   if(x$fn != "principal") {
-    if(!is.null(x$null.dof)) {cat("\nThe degrees of freedom for the null model are ",x$null.dof, " and the objective function was ",round(x$null.model,digits),...)}
-    if(!is.null(x$null.chisq)) {cat(" with Chi Square of " ,round(x$null.chisq,digits)) }
-    cat("\nThe degrees of freedom for the model are",x$dof," and the objective function was ",round(objective,digits),"\n",...) 
+    if(!is.null(x$null.dof)) {cat("\ndf null model = ",x$null.dof, " with the objective function = ",round(x$null.model,digits),...)}
+    if(!is.null(x$null.chisq)) {cat(" with Chi Square = " ,round(x$null.chisq,digits)) }
+    cat("\ndf of  the model are",x$dof," and the objective function was ",round(objective,digits),"\n",...) 
      }
      
     if(!is.null(x$rms)) {cat("\nThe root mean square of the residuals (RMSR) is ", round(x$rms,digits),"\n") }
     if(!is.null(x$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$crms,digits),"\n",...) }
     
-     if((!is.null(x$nh)) && (!is.na(x$nh))) {cat("\nThe harmonic number of observations is " ,round(x$nh)) }
+     if((!is.null(x$nh)) && (!is.na(x$nh))) {cat("\nThe harmonic n.obs is " ,round(x$nh)) }
      if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
    	 if(x$fn != "principal") { 
-   	 if(!is.na(x$n.obs)) {cat("The total number of observations was ",x$n.obs, " with Likelihood Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
+   	 if(!is.na(x$n.obs)) {cat("The total n.obs was ",x$n.obs, " with Likelihood Chi Square = ",round(x$STATISTIC,digits), " with prob < ", signif(x$PVAL,digits),"\n",...)}
   
      
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))}
@@ -204,3 +204,4 @@ if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1))
 #modified November 22, 2010 to get the communalities correct for sorted loadings, but does this work for covariances?
 #modified November 18, 2012 to print the empirical chi squares
 #modified October 13, 2013 to add the invisibile return of varex.
+#Modified the print statements to make the output fit one slide width

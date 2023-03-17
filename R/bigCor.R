@@ -1,9 +1,11 @@
 #Function to find very big correlation matrices by stitching together smaller ones
-
+#see the help file for various timings
 bigCor <- function(x,size=NULL,use="pairwise",cor="pearson"){
   nvar <- NCOL(x)
- if (is.null(size)) size <- round(nvar/4)  #added round 6/21/22
+ if (is.null(size)) size <- 20  #added round 6/21/22  switched to 20  2/22/23
  n.steps <- ceiling(nvar/size)
+#first makes sure the data are all numeric  
+x <- char2numeric(x)     #added 2/21/23
 
 small.r <- matrix(NA,size,size)
  
@@ -19,12 +21,13 @@ res <- list()
  upperj <- min(j * size,nvar)
  if(cor=="pearson") {
  small.r <- cor(x[,loweri:upperi],x[lowerj:upperj],use=use)} else {
-  small.r <- polychoric(x[,loweri:upperi],x[lowerj:upperj])$rho}
+  small.r <- t(polychoric(x[loweri:upperi],x[lowerj:upperj])$rho)}  #fixed for polychoric
  res[[j]] <- t(small.r)
  }
 return(res)
 
 }
+
 result <- mcmapply(short,c(1:n.steps))
 
 #now, stitch them together
@@ -32,9 +35,11 @@ R <- matrix(NA,nvar,nvar)
 k <- 1
 
 for(i in 1:NROW(result)) {
-  nx <- dim(result[[i,1]])[1]
-  
-  temp <- unlist(result[i,])
+ nx <- dim(result[[i,1]])[1]
+ 
+  #temp <- result[[i]]
+ temp <- unlist(result[i,])
+ 
   R[k:(k+ nx-1),1:(k+ nx-1) ] <- temp
   R[1:(k+nx -1),k:(k+ nx-1)] <- t( R[k:(k+ nx-1),1:(k+ nx-1) ])
   k <- k +nx 

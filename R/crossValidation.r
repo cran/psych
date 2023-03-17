@@ -42,7 +42,7 @@ if(is.null(options)){options <- "best.keys"}
     npred <-  length(predictors)
     ncrit <-length(criteria)
   if(isCorrelation(data)) {raw <- FALSE
-    R <-data[vars,vars]
+    R <- data[vars,vars]
   }  else {raw <- TRUE
      data <- data[,vars, drop=FALSE ]  #select just the variables in the model
   
@@ -77,7 +77,10 @@ if(is.null(options)){options <- "best.keys"}
      item.R <- cor(pred,data[,criteria],use="pairwise")
       colnames(Mij) <- rownames(Mij)<-colnames(item.R)
      cv.items <-diag(item.R)
-     crossValid <- data.frame(items = cv.items, mat = cv)} else {CrossValid <- cv}
+     crossValid <- data.frame(items = cv.items, mat = cv)} else {
+     crossValid <- cv
+     item.R <- NULL  #fix the print function to not show these
+     }
      nvars <- length(vars)
      result <- list(crossV = crossValid,nvars=npred,item.R = item.R,mat.R = Mij,Call =cl)
      class(result) <- c("psych","crossV")
@@ -146,7 +149,7 @@ matPlot <- function(x, type = "b", minlength=6, xlas=0,legend=NULL,lab=NULL,pch=
     
 
     coeff <- matrix(unlist(coeff), ncol=length(model$coefficients),byrow=TRUE)
-    colnames(coeff) <- rownames(model$coefficients)
+    if (length(y) > 1) {colnames(coeff) <- paste(rep(yn,each=NROW(model$coefficients)), rownames(model$coefficients))} else { colnames(coeff) <- rownames(model$coefficients)}
     result <- list(mean.fit = colMeans(summary),mean.coeff=colMeans(coeff), trials = summary, coefficients = coeff,Call=cl)
     class(result) <- c("psych","crossV")
   return(result)

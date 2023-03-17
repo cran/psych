@@ -1,7 +1,7 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
 
 "fa.parallel" <-
-function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)  { 
+function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5,sqrt=FALSE)  { 
  cl <- match.call()
 # if(!require(parallel)) {message("The parallel package needs to be installed to run mclapply")}
 	
@@ -61,7 +61,8 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
    if(SMC) {diag(rx) <- smc(rx)
    fa.valuesx <- eigen(rx)$values} else {
    fa.valuesx  <- fa(rx,nfactors=nfactors,rotate="none", fm=fm,warnings=FALSE)$values}  #these are the FA values
- 
+   if(sqrt) {valuesx <- sqrt(valuesx)
+   fa.valuesx[fa.valuesx>0] <- sqrt(fa.valuesx[fa.valuesx >0])}
   temp <- list(samp =vector("list",n.iter),samp.fa = vector("list",n.iter),sim=vector("list",n.iter),sim.fa=vector("list",n.iter))
    
 #parallel processing starts here  - the more cores the better!
@@ -125,7 +126,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
          
    values<- t(matrix(unlist(templist),ncol=n.iter))
    
-  
+    if(sqrt) {values[values >0] <- sqrt(values[values>0])}   #added 12/13/22
    values.sim.mean=colMeans(values,na.rm=TRUE)
    # if(!missing(quant)) {values.ci = apply(values,2,function(x) quantile(x,quant))} else {values.ci <- values.sim.mean} #fixed Sept 22, 2018
    values.ci = apply(values,2,function(x) quantile(x,quant)) #always apply quant
@@ -311,7 +312,7 @@ fa =  {legend("topright", c("FA  Actual Data", " FA  Simulated Data"), col = c("
    
 
 colnames(values) <- paste0("Sim",1:ncol(values))
-if(fa!= "pc" && plot) abline(h=1)
+if(fa!= "fa" && plot) abline(h=1)  #switched to fa not pc 2/27/2 
 results <- list(fa.values = fa.valuesx,pc.values=valuesx,pc.sim=sim.pc,pc.simr = sim.pcr,fa.sim=sim.fa,fa.simr = sim.far,nfact=fa.test,ncomp=pc.test, Call=cl) 
 
 

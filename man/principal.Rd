@@ -73,18 +73,19 @@ The output from the print.psych function displays the component loadings (from t
  \eqn{\chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f }{chi^2 = (n.obs - 1 - (2 * p + 5)/6 - (2 * factors)/3)) * f } }
  
  \item{PVAL}{If n.obs > 0, then what is the probability of observing a chisquare this large or larger?}
- \item{phi}{If oblique rotations (using oblimin from the GPArotation package) are requested, what is the interfactor correlation.}
+ \item{Phi}{If oblique rotations (using oblimin from the GPArotation package) are requested, what is the interfactor correlation.}
  \item{scores}{If scores=TRUE, then estimates of the factor scores are reported }
  \item{weights}{The beta weights to find the principal components from the data}
  \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001)  For components, these are of course 1.0.}
 \item{valid}{The correlations of the component score estimates with the components, if they were to be found and unit weights were used. (So called course coding).}
+\item{r.scores}{The correlation of the component scores.  (Since components are just weighted linear sums of the items, this is the same as Phi).}
 \item{rot.mat}{The rotation matrix used to produce the rotated component loadings. }
 }
 
 
 \note{By default, the accuracy of the varimax rotation function seems to be less than the Varimax function. This can be enhanced by specifying eps=1e-14 in the call to principal if using varimax rotation. Furthermore, note that Varimax by default does not apply the Kaiser normalization, but varimax does. Gottfried Helms compared these two rotations with those produced by SPSS and found identical values if using the appropriate options. (See the last two examples.)
 
-The ability to use different kinds of correlations was added in versin 1.9.12.31 to be compatible with the options in fa.
+The ability to use different kinds of correlations was added in version 1.9.12.31 to be compatible with the options in fa.
 
 }
 \author{ William Revelle}

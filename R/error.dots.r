@@ -8,7 +8,7 @@
 "error.dots" <- 
 function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
  stats=NULL, head = 12, tail = 12, sort=TRUE,decreasing=TRUE,main=NULL,
- alpha=.05,eyes=FALSE, min.n = NULL,max.labels =40, labels = NULL,
+ alpha=.05,eyes=FALSE, items=FALSE, min.n = NULL,max.labels =40, labels = NULL,
   label.width=NULL, select=NULL, 
    groups = NULL, gdata = NULL, cex = par("cex"), 
     pt.cex = cex, pch = 21, gpch = 21, 
@@ -23,7 +23,7 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
     
      if(length(class(x)) > 1)  {
      cohen.d <- fa.ci <- NULL  #strange fix to R compiler
-    names <- cs(statsBy,describe,describeBy, fa.ci,bestScales,cohen.d)
+    names <- cs(statsBy,describe,describeBy, fa.ci,bestScales,cohen.d, cor.ci,corr.test)
     value <- inherits(x,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { obj <- names[which(value > 0)]} else {obj <- "other"}
     
@@ -69,11 +69,19 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
      fa.ci ={se = x$cis$sds
               if(is.null(labels)) labels <-rownames(x$cis$means) 
               x <-x$cis$means },
-     bestScales = {se <- x$stats$se
+     bestScales = {if(!missing(items)) {
+                             se=x$items[[items]][,3,drop=FALSE]
+                             browser()
+                              rn=rownames(x$items[[items]])
+                        x <- x$items[[items]][,2,drop=FALSE]
+                        names(x) <- rn
+                        des <- NULL
+                        } else {se <- x$stats$se
          	          rn <- rownames(x$stats)
                       x <- x$stats$mean
                       names(x) <-rn
-                      des <- NULL},
+                      des <- NULL}
+                      },
     cohen.d = {des <- x$cohen.d[,"effect"]
              se <- x$se
              
@@ -98,6 +106,23 @@ function (x=NULL,var=NULL, se=NULL, group=NULL,sd=FALSE, effect=NULL,
               se <- NULL
              
              },
+  cor.ci = {des=x$means
+             se = x$sds
+             names= rownames(x$ci)
+             x <- x$means
+             names(x) <- names 
+             if(missing(main)) {main="Confidence intervals of correlations"}
+             if(missing(xlab) ) {xlab="Correlation"}
+            },
+   corr.test = {des= x$ci$r
+             if(x$sym) {se= x$se[lower.tri(x$se)]} else {
+                       se = as.vector(x$se)}
+             names= rownames(x$ci)
+             x <- x$ci$r
+             names(x) <- names 
+             if(missing(main)) {main="Confidence intervals of correlations"}
+             if(missing(xlab) ) {xlab="Correlation"}
+            },
              
   other = {}   #an empty operator 
         )#end switch

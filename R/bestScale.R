@@ -37,6 +37,10 @@ if(folds > 1) {frac = 1/folds
 if(n.iter !=folds) {n.iter <- folds
  cat('Number of iterations set to the number of folds = ',n.iter) }
  }
+ if(n.iter>1 && isCorrelation(x)) {n.iter <- 1
+    folds <- 1
+    cat("Number of iterations and number of folds set to 1 because the you are using a correlation matrix\n")
+ }
  set.seed(NULL)
  old.seed <- .Random.seed[42]   #we save this if we want to do k-fold cross validation
  
@@ -83,7 +87,7 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac,lo
  	    validity <- diag(cor(cross,x[-ss,criteria],use="pairwise"))
  	 #now, add the two new functions FastValidity and FastCrossValidity  
  	 
-   #if we just want to do the optimal number of items on the summaries, we don't nee to return the multi.scores here
+   #if we just want to do the optimal number of items on the summaries, we don't need to return the multi.scores here
   	short.result <- list(r = c(scores$r,validity),key.list=key.list,R = scores$R,multi.scores=multi.score,multi.cross=multi.cross)
   } else {short.result <- scores    # this is the list of various objects from bScales
           short.result$key.list <- key.list
@@ -109,16 +113,20 @@ if(!is.null(dim(criteria))| (length(criteria) == NROW(x)))  { x <- cbind(x,crite
  if((n.iter ==1)) { 
    first.result <- short(1,x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=1,min.item=min.item,max.item=max.item)
    first <- FALSE
+   
    result <- first.result
+
+   result$best.keys <- lapply(first.result$short.key,function(x) create.ordered.key(x))
+
    } else {first.result <- NULL}
      #the case for n.iter > 1.  We want to parallelize this because we are working pretty hard
 
  if(n.iter > 1) { 
 result <- list()
 #This does the work across n.iter and across all criteria
-#result <- mapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
+result <- mapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
 
-result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
+#result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
 
 #we have done the heavy lifting, now we need to prepare various results for output.
 if(delta >  0) { delta <- delta /sqrt(n.obs)}
@@ -127,8 +135,8 @@ result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dic
 
    
   } else {  #we just did a single pass, the simple summaries are already there
-   result$best.keys=result$key.list
-
+  #but we should organize them a little 
+  
    if(!is.null(result$scores)){final.means <-  colMeans(result$scores,na.rm=TRUE)
    final.sd <- apply(result$scores,2,sd,na.rm=TRUE)} else {final.means<- NA
       final.sd <- NA}
@@ -455,14 +463,12 @@ ni <- colSums(abs(key))
   score <- NULL
   r <- r[,used > 0,drop=FALSE]
   k<- key  #get the matrix dimensions  right
-  browser()
   ss <- rownames(key)
 	if(any(is.na(r))) {#Are there any bad values
  	 for(i in 1:ny) {#key[,i] <- findBad(key[,i],r)  #Drop the bad items from any scoring key
  		 k[,i] <- colSums((key[,i]) * (r[ss,ss]),na.rm=TRUE)}    #replace matrix addition with a colSums
- 		 
  		 k <- t(k)
-	#} else {#otherwise, don't bother
+	} else {#otherwise, don't bother
     C <-  t(t(key) %*% t(r[criteria,,drop=FALSE]))  #criterion covariance
     V <-  t(key) %*%  r[ used > 0,] %*% key   #predictor variance
     
@@ -470,6 +476,7 @@ ni <- colSums(abs(key))
  	}
 #	V <- t(k) %*% key   #this is the covariance of the criteria with criteria
 #	C <- k[criteria,] 
+
  if(ny < 2) {re <- r[criteria,] 
            R <- C/sqrt(V)} else {
   # R <- diag(C/sqrt(V))
@@ -532,6 +539,13 @@ key.value <- function(key,r) {
 	}
 
 #
+create.ordered.key <- function(x) {
+  for (i in 1: length(x)) {
+   if(sign(x[i])<0 ) rownames(x)[i] <- paste0("-",rownames(x)[i])
+   }
+   return(rownames(x))
+     }
+    
 
 
 "finalsummary" <- function(r,keys) {

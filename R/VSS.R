@@ -207,4 +207,32 @@ class(results) <- c("psych","vss")
 return(results)
 }
 
+#added 2/17/23
+#implementing an idea from an article by Larsen and Warne 2010
 
+
+"eigenCi" <- function(x,n.iter=1000, use="pairwise", alpha=.05,plot=FALSE,root=FALSE) {
+evo <- eigen(cor(x,use=use))$values
+res <- list()
+n.items <- NROW(x)
+nvar <- NCOL(x)
+for(i in 1:n.iter) {
+ss <- sample(n.items,n.items,replace=TRUE)
+R <- cor(x[ss,], use=use)
+ev <- eigen(R)$values
+
+res[[i]] <- c(ev)
+}
+res.mat <- matrix(unlist(res),ncol=nvar,byrow=TRUE)
+#sd <- qnorm(alpha/2) * apply(res.mat,2, sd)
+boot <- apply(res.mat,2,function(x) quantile(x,c(alpha/2,(1-alpha/2))))
+norm <-  qnorm(alpha/2)* sqrt((2 * evo^2)/n.items)
+ci <- data.frame(ev=evo,nlow = evo+norm,nhigh=evo-norm, blow=boot[1,],bhigh =boot[2,])
+
+if(plot) { if(root) {ci <- sqrt(ci)
+
+matplot(ci,type="l",ylab="sqrt eigen values",main="Confidence intervals of eigen values")} else {
+matplot(ci,type="l",ylab="eigen values",main="Confidence intervals of eigen values")}}
+
+return(ci)
+}

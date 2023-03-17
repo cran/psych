@@ -2,6 +2,7 @@
 \alias{vss}
 \alias{VSS}
 \alias{MAP}
+\alias{eigenCi}
 \alias{nfactors}
 
 \title{ Apply the Very Simple Structure, MAP, and other criteria to determine the appropriate number of factors.}
@@ -14,6 +15,7 @@ VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres",
 n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
 nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
              title="Number of Factors",pch=16,use="pairwise", cor="cor",...)
+eigenCi(x,n.iter=1000, use="pairwise", alpha=.05,plot=FALSE,root=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,6 +30,9 @@ nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
 \item{pch}{the plot character for the nfactors plots}
 \item{use}{If doing covariances or Pearson R, should we use "pairwise" or "complete cases"}
 \item{cor}{What kind of correlation to find, defaults to Pearson but see fa for the choices}
+\item{n.iter}{How many iterations of the bootstrap for eigenCi}
+\item{alpha}{Width of confidence intervals = 1- alpha}
+\item{root}{By default show the eigen values, if root=TRUE plot the squareroots of the eigen values.}
 \item{\dots}{parameters to pass to the factor analysis program 
       The most important of these is if using a correlation matrix is covmat= xx}
 }

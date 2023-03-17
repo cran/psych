@@ -1,5 +1,6 @@
-\name{setCor}
+\name{lmCor}
 \alias{setCor}
+\alias{lmCor}
 \alias{setCor.diagram}
 \alias{set.cor}
 \alias{mat.regress}
@@ -8,13 +9,18 @@
 \alias{crossValidationBoot}
 \alias{matPlot}
 \title{Multiple Regression and Set Correlation from matrix or raw input}
-\description{Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets.
+\description{A generalization of the lm function to correlation/covariance matrix input. Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets. Associated functions allow for cross validation of these regression models.
 }
 \usage{
+lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
+ #the prior name    
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
+    
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
-#an alias to setCor
+#an alias to setCor or lmCor
+
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
  main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)   
   
@@ -44,9 +50,9 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{part}{z is specified should part (TRUE) or partial (default) correlations be found.}
   \item{raw}{Are data from a correlation matrix or data matrix?}
   \item{means}{A vector of means for the data in matReg if giving matrix input}
-  \item{main}{The title for setCor.diagram}
+  \item{main}{The title for lmCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
-  \item{sc}{The output of setCor may be used for drawing diagrams}
+  \item{sc}{The output of lmCor or setCor may be used for drawing diagrams}
   \item{digits}{How many digits should be displayed in the setCor.diagram?}
   \item{show}{Show the unweighted matrix correlation between the x and y sets?}
   \item{zero}{zero center the x variables before finding the interaction terms.}
@@ -55,7 +61,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{cex}{Text size of boxes displaying the variables in the diagram}
   \item{l.cex}{Text size of numbers in arrows, defaults to cex}
   \item{...}{Additional graphical parameters for setCor.diagram}
-  \item{model}{The resulting object from setCor or bestScales}
+  \item{model}{The resulting object from lmCor or bestScales}
   \item{options}{If using a bestScales object, which set of keys to use ("best.key","weights","optimal.key","optimal.weights")}
   \item{select}{Not yet implemented option to crossValidation}
   \item{type}{type="b" draws both lines and points}
@@ -71,9 +77,9 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
 \details{
  Although it is more common to calculate multiple regression and canonical correlations from the raw data, it is,  of course, possible to do so from a matrix of correlations or covariances.  In this case, the input to the function is a square covariance or correlation matrix, as well as the column numbers (or names) of the x (predictor),  y (criterion) variables, and if desired z (covariates). The function will find the correlations if given raw data.
  
- Input is either the set of y variables and the set of x variables, this can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the predictive variables are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
+ Input is either conventional formula mode, or the set of y variables and the set of x variables.  Formula mode  can be written in the standard formula style of lm (see last example).  In this case, pairwise  or higher  interactions (product terms) may also be specified.  By default, when finding product terms,  the predictive variables are zero centered (Cohen, Cohen, West and Aiken, 2003), although this option can be turned off (zero=FALSE) to match the results of \code{\link{lm}} or the results discussed in Hayes (2013).  
  
- Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the last example.)  
+ Covariates to be removed are specified by a negative sign in the formula input or by using the z variable.  Note that when specifying covariates, the regressions are done as if the regressions were done on the partialled variables.  This means that the degrees of freedom and the R2 reflect the regressions of the partialled variables. (See the  examples.)  
  
  If using covariates, should they be removed from the dependent as well as the independent variables (part = FALSE, the default which means partial correlations  or just the independent variables (part=TRUE or part aka semi-partial correlations).  The difference between part correlations and partial correlations is whether the variance of the covariate is removed from both the DV and IVs (a partial correlation) or from just the IVs (a part correlation).  The slopes of the regressions remain the same, but the amount of variance in the DV (and thus the standard errors) is larger when using part correlations.  Using partial correlations for the covariates is equivalent to using the covariate in the regression when interpreting the effects of the other variables. 
   
@@ -94,7 +100,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  When finding the unweighted correlations, as is done in \code{\link{alpha}}, items are flipped so that they all are positively signed.  
  
  
-  A typical use in the SAPA project is to form item composites by clustering or factoring (see  \code{\link{fa}},\code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{setCor}}.
+  A typical use in the SAPA project is to form item composites by clustering or factoring (see  \code{\link{fa}},\code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple R procedures using \code{\link{lmCor}}.
 
  Although the overall matrix can have missing correlations, the correlations in the subset of the matrix used for prediction must exist.
  
@@ -108,9 +114,9 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  The Guide and Ketokivi article is well worth reading for all who want to use various regression models. 
  
- \code{\link{crossValidation}} can be used to take the results from \code{\link{setCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
+ \code{\link{crossValidation}} can be used to take the results from \code{\link{lmCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
  
- \code{\link{crossValidationBoot}} will bootstrap resample data and perform a setCor and then return the crossValidation R values. Although it will handle covariates (z), it will not handle product terms.  
+ \code{\link{crossValidationBoot}} will bootstrap resample data and perform a lmCor and then return the crossValidation R values. Although it will handle covariates (z), it will not handle product terms.  
  
  \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels). matPlot has been improved to draw legends and to allow for specifications of the line types.
  
@@ -153,7 +159,7 @@ V. Daniel R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefinin
 
 }
 
-\note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to setCor from mat.regress to reflect the estimation of the set correlation. 
+\note{As of April 30, 2011, the order of x and y was swapped in the call to be consistent with the general y ~ x  syntax of the lm and aov functions. In addition, the primary name of the function was switched to setCor from mat.regress to reflect the estimation of the set correlation.  This was changed to lmCor in the March, 2023 release to make the equivalence to lm more obvious.
 
 In October, 2017 I added the ability to specify the input in formula mode and allow for higher level and multiple interactions. 
 
@@ -171,22 +177,22 @@ Following a suggestion by Keith Widaman, when zero centering for product terms, 
 \examples{
 #First compare to lm using data input
 summary(lm(rating ~ complaints + privileges, data = attitude))
-setCor(rating ~ complaints + privileges, data = attitude, std=FALSE) #do not standardize
+lmCor(rating ~ complaints + privileges, data = attitude, std=FALSE) #do not standardize
 z.attitude <- data.frame(scale(attitude))  #standardize the data before doing lm
 summary(lm(rating ~ complaints + privileges, data = z.attitude))  #regressions on z scores
-setCor(rating ~ complaints + privileges, data = attitude)  #by default we standardize and 
+lmCor(rating ~ complaints + privileges, data = attitude)  #by default we standardize and 
 # the results are the same as the standardized lm
 
 
 R <- cor(attitude) #find the correlations
 #Do the regression on the correlations  
 #Note that these match the regressions on the standard scores of the data
-setCor(rating ~ complaints + privileges, data =R, n.obs=30)
+lmCor(rating ~ complaints + privileges, data =R, n.obs=30)
 
 #now, partial out learning and critical
-setCor(rating ~ complaints + privileges - learning - critical, data =R, n.obs=30)
+lmCor(rating ~ complaints + privileges - learning - critical, data =R, n.obs=30)
 #compare with the full regression:
-setCor(rating ~ complaints + privileges + learning + critical, data =R, n.obs=30)
+lmCor(rating ~ complaints + privileges + learning + critical, data =R, n.obs=30)
 
 
 
@@ -199,7 +205,7 @@ kelley1 <- structure(c(1, 0.6328, 0.2412, 0.0586, 0.6328, 1, -0.0553, 0.0655,
 "math.power"), c("reading.speed", "reading.power", "math.speed", 
 "math.power")))
 lowerMat(kelley1)
-mod1 <- setCor(y = math.speed + math.power ~ reading.speed + reading.power, 
+mod1 <- lmCor(y = math.speed + math.power ~ reading.speed + reading.power, 
     data = kelley1, n.obs=140)
 mod1$cancor
 #Hotelling reports .3945 and .0688  we get  0.39450592 0.06884787
@@ -214,30 +220,30 @@ kelley <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(
 
 lowerMat(kelley)
 
-setCor(power + speed ~ words + symbols + meaningless,data=kelley)  #formula mode
-#setCor(y= 1:2,x = 3:5,data = kelley) #order of variables input
+lmCor(power + speed ~ words + symbols + meaningless,data=kelley)  #formula mode
+#lmCor(y= 1:2,x = 3:5,data = kelley) #order of variables input
 
 #Hotelling reports canonical correlations of .3073 and .0583  or squared correlations of
 # 0.09443329 and 0.00339889 vs. our values of cancor = 0.3076 0.0593  with squared values
 #of  0.0946 0.0035,
 
-setCor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)  #easier to just list variable  
+lmCor(y=c(7:9),x=c(1:6),data=Thurstone,n.obs=213)  #easier to just list variable  
                                               #locations if we have long names
 #now try partialling out some variables
-set.cor(y=c(7:9),x=c(1:3),z=c(4:6),data=Thurstone) #compare with the previous
+lmCor(y=c(7:9),x=c(1:3),z=c(4:6),data=Thurstone) #compare with the previous
 #compare complete print out with summary printing 
-sc <- setCor(SATV + SATQ ~ gender + education,data=sat.act) # regression from raw data
+sc <- lmCor(SATV + SATQ ~ gender + education,data=sat.act) # regression from raw data
 sc
 summary(sc)
 
-setCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
+lmCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
 data=Thurstone)  #showing formula input with two covariates
 
 #Do some regressions with real data (rather than correlation matrices)
-setCor(reaction ~ cond + pmi + import, data = Tal.Or)
+lmCor(reaction ~ cond + pmi + import, data = Tal.Or)
 
 #partial out importance
-setCor(reaction ~ cond + pmi - import, data = Tal.Or, main="Partial out importance")
+lmCor(reaction ~ cond + pmi - import, data = Tal.Or, main="Partial out importance")
 
 #compare with using lm by partialling
 mod1 <- lm(reaction ~ cond + pmi + import, data = Tal.Or)
@@ -246,27 +252,35 @@ cond.import <-  lm(cond~import,data=Tal.Or)$resid
 pmi.import <-   lm(pmi~import,data=Tal.Or)$resid
 mod.partial <- lm(reaction.import ~ cond.import + pmi.import)
 summary(mod.partial)
-#lm uses raw scores, so set std = FALSE for setCor
-print(setCor(y = reaction ~ cond + pmi - import, data = Tal.Or,std = FALSE,
+#lm uses raw scores, so set std = FALSE for lmCor
+print(lmCor(y = reaction ~ cond + pmi - import, data = Tal.Or,std = FALSE,
  main = "Partial out importance"),digits=4)
-#notice that the dfs of the partial approach using lm are 1 more than the setCor dfs 
+#notice that the dfs of the partial approach using lm are 1 more than the lmCor dfs 
  
  #Show how to find quadratic terms
-sc <- setCor(reaction ~ cond + pmi + I(import^2), data = Tal.Or)
+sc <- lmCor(reaction ~ cond + pmi + I(import^2), data = Tal.Or)
 sc
 #pairs.panels(sc$data) #show the SPLOM of the data
 
 #Consider an example of a derivation and cross validation sample
 set.seed(42)
 ss <- sample(1:2800,1400)
-model <- setCor(y=26:28,x=1:25,data=bfi[ss,],plot=FALSE)
+model <- lmCor(y=26:28,x=1:25,data=bfi[ss,],plot=FALSE)
 original.fit <- crossValidation(model,bfi[ss,]) #the derivation set
 cross.fit <- crossValidation(model,bfi[-ss,])  #the cross validation set
 summary(original.fit)
 summary(cross.fit)
 predicted <- predict(model,bfi[-ss,])
-cor2(predicted,bfi[-ss,26:28])
+cor2(predicted,bfi[-ss,26:28])  #these are the correlations of the predicted with observed
 
+#now do it for the correlations matrices - these should be the same
+R1 <- lowerCor(bfi[ss,], show=FALSE)
+R2 <- lowerCor(bfi[-ss,], show=FALSE)
+mod1 <- lmCor(y=26:28,x=1:25,data=R1,plot=FALSE)
+original <-  crossValidation(model,R1) #the derivation set capitalizes on chance
+cross <- crossValidation(model,R2)  #the cross validation set -- values are lower
+summary(original)  #inflated by chance
+summary(cross)    #cross validated values are better estimates
 }
 
 \keyword{ models }% at least one, from doc/KEYWORDS

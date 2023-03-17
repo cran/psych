@@ -123,13 +123,20 @@ dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xli
     unit.circle <- cbind(cos(angles), sin(angles))
     xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
-   # xs <- e.size * xrange
+  
   
     ys <- max(strheight(labels,units="user"))  #*.55
+  
+    # xs <- e.size * xrange
+   #ys <- e.size * yrange
     ellipse <- unit.circle 
 
   
    xs  <- strwidth(labels,units="user")*.6 #this makes the ellipse closer to left and right
+
+   #xs <- xs * e.size
+   xs <- xs * cex
+   ys <- ys * cex
      ellipsex <- rep(x,each=(segments + 2)) + unit.circle[,1] * rep(xs,each=segments +2)
      ellipsey <- rep(y,each=(segments + 2))  + unit.circle[,2] *ys
      
@@ -396,7 +403,7 @@ if(side == 4)    {x <- c(location$right[1],location$right[1]+scale,location$righ
      if (shape==3) {dia.triangle(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...)}
      }
      
- "multi.curved.arrow" <- function(curved.list,...) {
+ "multi.curved.arrow" <- function(curved.list,l.cex=NULL,...) {
 
 leng  <- length(curved.list)
 if(leng > 0) {
@@ -410,7 +417,8 @@ textvalues <- matrix(unlist(curved.list[seq+5]),ncol=3,byrow=TRUE)
 
 lines(firstX,firstY)
 lines(secondX,secondY)
-text(x= textvalues[,1],y = textvalues[,2],labels=textvalues[,3])
+if(is.null(l.cex) ) l.cex=1
+text(x= textvalues[,1],y = textvalues[,2],labels=textvalues[,3],cex=l.cex,...)
  }}
  
  "multi.self" <- function(self.list,...) {

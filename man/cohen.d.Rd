@@ -63,7 +63,7 @@ cd.validity(d, keys, abs=TRUE)
  \item{s1}{Standard deviation of group 1}
  \item{s2}{Standard deviation of group 2}
  \item{sort}{Should we sort (and if so, in which direction), the results of cohen.d? 
- Directions are "decreasing" or  "increasing".}
+ Directions are "decreasing" or  "increasing".  If TRUE, sorts in a decreasing order.}
  \item{dictionary}{What are the items being described?}
  \item{MD}{Find Mahalanobis distance in cohen.d.}
 }
@@ -77,7 +77,7 @@ where Sp is the pooled standard deviation.
 
 Cohens d uses N as the divisor for the pooled sums of squares.  Hedges g uses N-2.  
 
-Confidence intervals for Cohen's d may be found by converting the d to a t, finding the confidence intervals for t, and then converting those back to ds.  This take advantage of the uniroot function and the non-centrality parameter of the t distribution.
+Confidence intervals for Cohen's d are found by converting the d to a t, finding the confidence intervals for t, and then converting those back to ds.  This take advantage of the uniroot function and the non-centrality parameter of the t distribution.
 
 
 The results of \code{\link{cohen.d}} may be displayed using the \code{\link{error.dots}} function.  This will include the labels provided in the dictionary.  
@@ -121,7 +121,7 @@ The Common Language Effect size
 \item{r}{The point biserial r equivalent of d}
 \item{n}{sample size used for each analysis}
 \item{p}{The probability of abs(t)>0}
-\item{descriptive}{The descriptive statistics for each group}
+\item{descriptive}{The descriptive statistics for each group.  This is useful to show means and then the d values.}
 \item{OVL}{etc. some of the measures of overlap discussed by DelGiudice, 2009}
 
 }
@@ -157,7 +157,10 @@ round(d.robust(sat.act,"gender")$robust.d,2)
 
 #formula input is nicer
 cohen.d(sat.act ~ gender) #formula input version
-
+#if we want to report the group means, we grab the data in descriptive
+cd <- cohen.d(sat.act ~ gender)
+cd.df <- data.frame(d = cd$cohen.d[,"effect"], male = cd$descriptive$mean[1,cd$order[-1]],
+      female = cd$descriptive$mean[2, cd$order[-1]])
 #report cohen.d by another group
 cd <- cohen.d.by(sat.act,"gender","education")
 cohen.d(SATV + SATQ ~ gender, data=sat.act) #just choose two variables

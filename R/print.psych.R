@@ -76,10 +76,11 @@ alpha = {
 },
 
 alpha.ci = { cat("\n   95% confidence boundaries (Feldt)\n")
+ if(is.na(x$r.bar)) {print("I am sorry, you need to specify the n.var to get confidence interals")} else {
 temp.df <- data.frame(lower=x$lower.ci, alpha= x$alpha,upper.ci =x$upper.ci)
  colnames(temp.df ) <- c("lower","alpha","upper")
  rownames(temp.df)<-""
- print(round (temp.df,digits))
+ print(round (temp.df,digits))}
 },
 
 autoR = {cat("\nAutocorrelations \n")
@@ -346,11 +347,11 @@ crossV = {if(is.null(x$mean.fit)) {
             cat("Cross Validation\n")
           cat("Call:")
             print(x$Call)
-         cat("\nValidities from raw items and from the correlation matrix\n")
+         cat("\nValidities from raw items or from the correlation matrix\n")
          cat("Number of unique predictors used = ",x$nvars,"\n")
         print(x$crossV,digits=digits)
-         cat("\nCorrelations based upon item based regressions \n")
-         lowerMat(x$item.R)
+         if(!is.null(x$item.R)) {cat("\nCorrelations based upon item based regressions \n")
+         lowerMat(x$item.R)}
           cat("\nCorrelations based upon correlation matrix based regressions\n")
          lowerMat(x$mat.R)
          } else {cat("Bootstrapped Cross Validation\n")

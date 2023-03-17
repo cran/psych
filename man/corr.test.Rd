@@ -36,6 +36,8 @@ Note that in the case of method=="kendall" since these are the normal theory con
 
 The probability values may be adjusted using the Holm (or other) correction.  If the matrix is symmetric (no y data), then the original p values are reported below the diagonal and the adjusted above the diagonal.  Otherwise, all probabilities are adjusted (unless adjust="none").  This is made explicit in the output. Confidence intervals are shown for raw and adjusted probabilities in the ci object.
 
+For those who like the conventional use of "magic asterisks" to show (stars) to represent conventional levels of significance, the object stars is returned (but not shown)).  See the examples.
+
 \code{\link{corr.p}} may be applied to the results of \code{\link{partial.r}} if n is set to n - s (where s is the number of variables partialed out)  Fisher, 1924. 
 }
 \value{
@@ -68,6 +70,8 @@ Other useful functions related to finding and displaying correlations include \c
 
 ct <- corr.test(attitude)  #find the correlations and give the probabilities
 ct #show the results
+
+
 cts <- corr.test(attitude[1:3],attitude[4:6]) #reports all values corrected for multiple tests
 
 #corr.test(sat.act[1:3],sat.act[4:6],adjust="none")  #don't adjust the probabilities

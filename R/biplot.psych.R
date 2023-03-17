@@ -6,7 +6,7 @@
 
 "biplot.psych" <-
 function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...) {
-if(is.null(x$scores)) stop("Biplot requires factor/component scores. \nYou need to  run fa/pca from the raw data")
+if(is.null(x$scores)) stop("I am sorry, but Biplot requires factor/component scores. \nYou need to  run fa/pca from the raw data")
 op <- par()
 old.par <- par(no.readonly = TRUE)
 on.exit(par(old.par)) 

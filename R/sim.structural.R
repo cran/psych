@@ -247,17 +247,21 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 	
 
 #simulate major and minor factors
+#modified October 18, 2022 to allow specification of g and fbig for all variables
 "sim.minor" <-
 function(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) {
-if(is.null(fbig)) {loads <- c(.8,.6) } else {loads <- fbig}
+if(is.null(fbig)) {loads <- c(.8,.6) 
+  loads <- sample(loads,nvar/nfact,replace=TRUE)
 
-loads <- sample(loads,nvar/nfact,replace=TRUE)
+
 if(nfact == 1) {fx <- matrix(loads,ncol=1)} else {fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)}
 if(bipolar) fx <- 2*((sample(2,nvar,replace=TRUE) %%2)-.5) * fx
+} else {fx <- fbig}
 if(!is.null(g)) {if (length(g) < nvar) {g <- sample(g,nvar,replace=TRUE)}
         fx <- cbind(g,fx)
         }
-if(!is.null(fsmall)) {
+ 
+if(      !is.null(fsmall)) {
 fsmall  <- c(fsmall,rep(0,nvar/4))
 fs <- matrix(sample(fsmall,nvar*floor(nvar/2),replace=TRUE),ncol=floor(nvar/2))  
 fload <- cbind(fx,fs)

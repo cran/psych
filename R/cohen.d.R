@@ -59,12 +59,17 @@ cohen.d.conf <- cohen.d.ci(cohen.d,n1=n1,n2=n2,alpha=alpha)
 
 if(!is.null(dictionary)) {dict <- dictionary[match(rownames(cohen.d.conf),rownames(dictionary)),,drop=FALSE]
    cohen.d.conf <- cbind(cohen.d.conf,dict)} else {dict=NULL}
-if(!is.null(sort)) {if(sort %in%( c("decreasing","descending","TRUE"))) {ord <- order(cohen.d.conf["effect"],decreasing=TRUE)} else {ord <- order(cohen.d.conf["effect"],decreasing=FALSE)}
+if(!is.null(sort)) {  ord <- cohen.d.conf[,"effect",drop=FALSE]
+        if(sort %in%( c("decreasing","increasing","TRUE"))) {#first convert the effect column to a vector so we can sort it
+   
+    if(sort == "increasing") {sort= FALSE} else {sort =TRUE}
+    ord <- order(ord,decreasing=sort ) 
+     #ord <- order(cohen.d.conf[,"effect",drop=FALSE,decreasing=TRUE)} else {ord <- dfOrder(cohen.d.conf["effect"],ascending=FALSE)}
        cohen.d.conf <- cohen.d.conf[ord,]
        dict <- dict[ord,,drop=FALSE]
-      }
+      }} else {ord <- 1:NCOL(x)}
 se <- (cohen.d.conf[,3] - cohen.d.conf[,1])/2  #average upper - lower 
-result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.d.conf, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,Call=cl)
+result <- list(cohen.d = cohen.d.conf,hedges.g = hedges.d.conf, M.dist = D, r=r,t=t,n=n,p=p, wt.d =wt.d,descriptive=stats,se=se,dict=dict,order=ord,Call=cl)
 class(result) <- c("psych","cohen.d")
 return(result)
 }

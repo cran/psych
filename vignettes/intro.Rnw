@@ -1331,9 +1331,9 @@ Cattell, R.~B. (1978).
 \newblock {\em The scientific use of factor analysis}.
 \newblock Plenum Press, New York.
 
-\bibitem[\protect\citeauthoryear{Coen \& Jennrich}{Coen \&
+\bibitem[\protect\citeauthoryear{Bernaards \& Jennrich}{Bernaards \&
   Jennrich}{2005}]{gpa.rotate}
-A. Bernaards Coen . \&  Robert I. Jennrich  (2005).
+Coen A. Bernaards \&  Robert I. Jennrich  (2005).
 \newblock Gradient Projection Algorithms and Software for Arbitrary 
              Rotation Criteria in Factor Analysis
 \newblock {\em Educational and Psychological Measurement}, {\em 65}, 676-696.

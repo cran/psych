@@ -120,12 +120,14 @@ weighted.obser <- w * x
 wpo <- sum(weighted.obser)
 wpc <- sum(weighted.prob)
 colw <- colSums(w*cs)
-#roww <- colSums(w*rs)
-roww <- rowSums(w*rs)   #corrected following a report by Lisa Avery
+roww <- colSums(w*rs)    #changed back following a report Ju, Yu-Jeng 
+#roww <- rowSums(w*rs)   #corrected following a report by Lisa Avery
 if((!is.null(n.obs)) & (tot==1))  tot <- n.obs
 I <- diag(1,len,len)
 Vark <-  (1/(tot*(1-pc)^4))*    (tr(x * (I * (1-pc)   - (rs %+% t(cs ))*(1-po))^2 )  + (1-po)^2 * (sum(x * (cs %+% t(rs ))^2) - tr(x * (cs %+% t(rs ))^2))  -(po*pc - 2*pc +po)^2    )  
-Varkw <-  (1/(tot*(1-wpc)^4))*  (sum(x * (w * (1-wpc)- (colw %+% t(roww ))*(1-wpo))^2 ) -(wpo*wpc - 2*wpc +wpo)^2    )   
+#Varkw <-  (1/(tot*(1-wpc)^4))*  (sum(x * (w * (1-wpc)- (colw %+% t(roww ))*(1-wpo))^2 ) -(wpo*wpc - 2*wpc +wpo)^2    )  
+
+Varkw <-  (1/(tot*(1-wpc)^4))*  (sum(x * (w * (1-wpc)- (colw %+% t(roww ))*(1-wpo))^2 ) -(wpo*wpc - 2*wpc +wpo)^2    ) 
 if(tr(w) > 0) {wkappa <- (wpo-wpc)/(1-wpc) } else { wkappa <- 1- wpo/wpc}
 if((!is.null(n.obs)) & (tot==1))  tot <- n.obs
 if(is.na(Vark) || (Vark < 0)) {bad <- TRUE

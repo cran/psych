@@ -2,34 +2,35 @@
 \Rdversion{1.1}
 \alias{cor.plot}
 \alias{corPlot}
-\alias{cor.plot.upperLowerCi}
 \alias{corPlotUpperLowerCi}
+\alias{cor.plot.upperLowerCi}
+
 \title{Create an image plot for a correlation or factor matrix}
 
 \description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
 }
 \usage{
 corPlot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
-  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
-  cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, symmetric=TRUE,stars=FALSE,
-   adjust="holm",xaxis=1, xlas=0,ylas=2,gr=NULL,alpha=.75,min.length=NULL,...)
+  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
+  digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
+  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2, gr=NULL, alpha=.75, 
+  min.length=NULL,...)
 
 corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
  
  cor.plot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
- show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL,  
-  cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
-symmetric=TRUE,stars=FALSE,adjust="holm",xaxis=1,xlas=0,ylas=2,gr=NULL,alpha=.75, 
-min.length=NULL,...)
-  #deprecated
+ show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
+  digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
+  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2, gr=NULL, alpha=.75, 
+  min.length=NULL,...)     #deprecated
            
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
       #deprecated
 }
 \arguments{
-  \item{r}{A correlation matrix or the output of  \code{\link{fa}}, \code{\link{principal}} or \code{\link{omega}}.  }
+  \item{r}{A correlation matrix or the output of  \code{\link{fa}}, \code{\link{principal}} or \code{\link{omega}}, or a raw data matrix. }
   \item{R}{The object returned from  \code{\link{cor.ci}}  }
   \item{numbers}{Display the numeric value of the correlations. (As of September, 2019)  Defaults to TRUE.}
   \item{colors}{Defaults to TRUE and colors use colors from the colorRampPalette from red through white to blue, but colors=FALSE will use a grey scale}
@@ -41,6 +42,8 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{n.legend}{How many categories should be labelled in the legend?}
   \item{keep.par}{restore the graphic parameters when exiting}
   \item{pval}{scale the numbers by their pvals, categorizing them based upon the values of cuts}
+  \item{digits}{Round off to digits.  Defaults to 2.}
+  \item{trailing}{Show trailing zeros.  }
   \item{cuts}{Scale the numbers by the categories defined by pval < cuts}
   \item{scale}{Should the size of the numbers be scaled by the significance level?}
   \item{select}{Select the subset of variables to plot}
@@ -80,7 +83,13 @@ The font size of the labels may be adjusted using cex.axis which defaults to one
 
 By default \code{\link{cor.ci}} calls corPlotUpperLowerCi and scales the correlations based upon "significance" values.  The correlations plotted are the upper and lower confidence boundaries.  To show the correlations themselves, call corPlot directly.
 
+
+
 If using the output of \code{\link{corr.test}}, the upper off diagonal will be scaled by the corrected probability, the lower off diagonal the scaling is the uncorrected probabilities.
+
+
+If given raw data or  correlation matrix, \code{\link{corPlotUpperLowerCi}} will automatically call \code{\link{corr.test}} or \code{\link{cor.ci}}.  
+
 
 If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{corPlotUpperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals.  If adjust=TRUE, these will use the Holm or Bonferroni adjusted values (depending upon corr.test). 
 
@@ -90,7 +99,9 @@ To do multiple \code{\link{corPlot}} on the same plot, specify that show.legend=
 
 Care should be taken when selecting rows and columns from a non-symmetric matrix (e.g., the corrected correlations from \code{\link{scoreItems}} or \code{\link{scoreOverlap}}).  
 
-To show a factor loading matrix (or any non-symmetric matrix), set symmetric=FALSE.  Otherwise the correlations will be found.
+To show a factor loading matrix (or any non-symmetric matrix), set symmetric=FALSE.  Otherwise the input will be treated as raw data and correlations will be found.
+
+To sort the matrix use \code{\link{mat.sort}} first.  To find correlations other than Pearson, plot the output from e.g., \code{\link{mixed.cor}}. 
 }
 \author{William Revelle
 }
@@ -130,12 +141,14 @@ corPlot(cor(simp),main="24 variables in a circumplex")
 rs <- corr.test(sat.act[1:200,] ) #find the probabilities of the correlations
 corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values") 
  #Show the upper and lower confidence intervals
-cor.plot.upperLowerCi(R=rs,numbers=TRUE) 
+corPlotUpperLowerCi(R=rs,numbers=TRUE) 
 
 #now do this again, but with lighter colors
 gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))
 corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values",gr=gr) 
-cor.plot.upperLowerCi(R=rs,numbers=TRUE,gr=gr) 
+
+corPlotUpperLowerCi(R=rs,numbers=TRUE,gr=gr) 
+
 
 
 

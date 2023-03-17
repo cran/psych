@@ -5,11 +5,13 @@
 \description{Cattell's scree test is one of most simple ways of testing the number of components or factors in  a correlation matrix. Here we plot the  eigen values of a correlation matrix as well as the eigen values of a factor analysis.
 }
 \usage{
-scree(rx,factors=TRUE,pc=TRUE,main="Scree plot",hline=NULL,add=FALSE) 
-VSS.scree(rx, main = "scree plot")
+scree(rx,factors=TRUE,pc=TRUE,main="Scree plot",hline=NULL,add=FALSE,sqrt=FALSE) 
+VSS.scree(rx, main = "scree plot",sqrt=FALSE)
 
 }
 \details{Among the many ways to choose the optimal number of factors is the scree test.  A better function to show the scree as well as compare it to randomly parallel solutions is found found in \code{\link{fa.parallel}}
+
+Following a suggestion from Marco Del Giudice, I added the sqrt option for version 2.2.12. - 
 }
 \arguments{
   \item{rx}{ a correlation matrix or a data matrix. If data, then correlations are found using pairwise deletions. }
@@ -18,6 +20,7 @@ VSS.scree(rx, main = "scree plot")
  \item{hline}{if null, draw a horizontal line at 1, otherwise draw it at hline (make negative to not draw it)}
  \item{main}{ Title }
  \item{add}{Should multiple plots be drawn?}
+ \item{sqrt}{If TRUE, take the sqrt of the eigen value before plotting}
 }
 
 \references{ \url{https://personality-project.org/r/vss.html}}

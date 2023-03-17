@@ -22,17 +22,24 @@ class(result) <- c("psych","sim")
  
  
  "sim.congeneric" <- 
-function(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short=TRUE,categorical=FALSE, low=-3,high=3,cuts=NULL) { 
+function(loads = c(0.8, 0.7, 0.6, 0.5),N = NULL,  err=NULL, short=TRUE,categorical=FALSE, low=-3,high=3,cuts=NULL, minor=FALSE,fsmall = c(-.2,.2)) { 
  n <- length(loads) 
+ fs <- 0
 loading <- matrix(loads, nrow = n) 
-error <- diag(1, nrow = n) 
+if(minor) {
+     fsmall  <- c(fsmall,rep(0,n/4))
+    fs <- matrix(sample(fsmall,n*floor(n/2),replace=TRUE),ncol=floor(n/2))  
+loading <- cbind(loading,fs)}
+error <- diag(1, nrow = n ) 
 if (!is.null(err)) {diag(error) <- err} else {
- diag(error) <- sqrt(1 - loading^2) }
+
+ diag(error) <- sqrt(1 - rowSums(loading^2)) }
 pattern <- cbind(loading, error) 
-colnames(pattern) <- c("theta", paste("e", seq(1:n), sep = "")) 
+if(minor) { colnames(pattern) <- c("theta",paste0("minor",1:NCOL(fs)), paste0("e", seq(1:n)) ) } else {colnames(pattern) <- c("theta", paste0("e", seq(1:n))) }
 rownames(pattern) <- c(paste("V", seq(1:n), sep = "")) 
 model <- pattern %*% t(pattern)
-if(!is.null(N)) {latent <- matrix(rnorm(N * (n + 1)), ncol = (n + 1)) 
+
+if(!is.null(N)) {latent <- matrix(rnorm(N * (n + 1 +minor*NCOL(fs))), ncol = (n + 1 +minor*NCOL(fs))) 
        observed <- latent %*% t(pattern) 
        if(is.null(cuts)) {
         if (categorical) {
@@ -48,7 +55,7 @@ if(!is.null(N)) {latent <- matrix(rnorm(N * (n + 1)), ncol = (n + 1))
 		      	temp[(observed >  cuts[ncuts])] <- ncuts+1 
 		      	observed <- temp-1
 		}
-       colnames(latent) <-  c("theta", paste("e", seq(1:n), sep = ""))
+       colnames(latent) <-  colnames(pattern) #c("theta", paste("e", seq(1:n), sep = ""))
        if(short) model <- cor(observed) }
 if (short) {return(model)}  else { if(!is.null(N)) {
 

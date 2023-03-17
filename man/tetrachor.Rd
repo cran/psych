@@ -98,7 +98,7 @@ As nicely discussed by MacCallum et al, 2002, if artificially dichotomizing at t
 The 'ad hoc' polyserial correlation, rps is just \eqn{r = r * sqrt(n-1)/n) \sigma y /\sum(zpi) } where zpi are the ordinates of the normal curve at the normal equivalent of the cut point boundaries between the item responses. (Olsson, 1982) 
 
 
-All of these were inspired by (and adapted from) John Fox's polychor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package.  The results from polychoric  match the polychor answers to at least 5 decimals when using correct=FALSE, and global = FALSE. 
+All of these were inspired by (and adapted from) John Fox's polycor package which should be used for precise ML estimates of the correlations.  See, in particular, the hetcor function in the polychor package.  The results from polychoric  match the polychor answers to at least 5 decimals when using correct=FALSE, and global = FALSE. 
 
 Particularly for tetrachoric correlations from sets of data with missing data, the matrix will sometimes not be positive definite.  Various smoothing alternatives are possible, the one done here is to do an eigen value decomposition of the correlation matrix, set all negative eigen values to   10 * .Machine$double.eps, normalize the positive eigen values to sum to the number of variables, and then reconstitute the correlation matrix.   A warning is issued when this is done.
 

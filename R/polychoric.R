@@ -466,7 +466,7 @@ colnames(mat)  <- colnames(d)
 #x <- x - min(x,na.rm=TRUE) +1  #this is essential to get the table function to order the data correctly
 x <- cbind(p,d)
 
-mat <- matpLower(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra paremeters   #do the multicore version
+mat <- matpLower(x,np,nd,taup,taud,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra parameters   #do the multicore version
 
  
  mat <- matrix(mat,np,nd,byrow=TRUE)

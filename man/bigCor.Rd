@@ -17,7 +17,7 @@ bigCor(x, size = NULL, use = "pairwise",cor="pearson")
 }
 \details{
 The data are divided into subsets of size=size.  Correlations are then found for each subset and pairs of subsets. 
-The basic loop loops over the subsets. When the size is a integer subset of the number of variables and is a muiltiple of the number of cores, the multiple cores will be used more.  Notice the benefit of 660/80 versus 660/100.  But this breaks down if we try 660/165.  Further notice the benefit when using a smaller subset (55) which led to the 4 cores being used more.  
+The basic loop loops over the subsets. When the size is a integer subset of the number of variables and is a multiple of the number of cores, the multiple cores will be used more.  Notice the benefit of 660/80 versus 660/100.  But this breaks down if we try 660/165.  Further notice the benefit when using a smaller subset (55) which led to the 4 cores being used more.  
 
  Timings (in seconds) for various problems with 645K subjects on an 8 core Mac Book Pro with a 2.4 GHZ Intell core i9.
 
@@ -69,13 +69,29 @@ Variables  \tab size       \tab 2 cores     \tab 4 cores    \tab compared to nor
 480   \tab   10   \tab 2.82  \tab    2.97 \tab too many splits? \cr
 
 200  \tab  50   \tab 2.18  \tab 1.39 \tab 2.47 for normal cor (1.44 with 8 cores 2.99 with 1 core) \cr
-200  \tab  25   \tab 1.2  \tab 1.17 \tab 2.47 for normal cor (1.16 with 8 cores,  1.17 with 1 core) \cr
+200  \tab  25   \tab 1.2  \tab 1.17 \tab 2.47 for normal cor \cr (1.16 with 8 cores,  1.17 with 1 core) \cr
 100  \tab 25    \tab .64  \tab .52   \tab .56 \cr
 } 
 
+
+Timings updated in 2/23 using a MacBook Pro with M1 max chip
+  10,000 subjects 953 variables  suggests that a very small size (e.g. 20) is probably optimal  
+\tabular{lllllll}{
+Variables  \tab size       \tab 2 cores     \tab 4 cores  \tab 8 cores   \tab compared to normal cor function 
+\cr
+953 \tab 20 \tab 7.92    \tab 4.55  \tab 2.88 \tab 11.04 \cr
+953 \tab 30 \tab 7.98    \tab 4.88   \tab 3.15 \tab 11.04 \cr
+953 \tab 40 \tab 8.22 \tab 5.14 \tab 3.63 \tab 11.16  \cr
+953 \tab 60 \tab 8.51 \tab 5.59 \tab 3.93 \tab 11.16  \cr
+953 \tab 80  \tab 8.31 \tab 5.59 \tab 4.14 \tab 11.16  \cr
+953 \tab 120  \tab 8.33 \tab 6.22  \4.75 \tab 11.16  \cr
+}
+I tried switching the BLAS from the default to the vecLib and this did not seem to make any meaningful difference. 
+
+ 
 Time is roughly linear with the number of cases and increases by the square of the number of variables.  The benefit of more cores is noticeable. It seems as if with 4 cores, we should use sizes to split it into 8 or 12 sets.  Otherwise we don't actually use all cores efficiently. 
 
-There is some overhead in using multicores.  So for smaller problems (e.g. the 4,000 cases of the  145 items of the psychTools::spi data set, the timings are roughly .44 seconds for bigCor (default size) and .36 for normal cor.  But, fiddling with size gets us to .37 for size = 40.   The cross over point seems to be at roughly 5K subjects.
+There is some overhead in using multicores.  So for smaller problems (e.g. the 4,000 cases of the  145 items of the psychTools::spi data set, the timings are roughly .14 seconds for bigCor (default size) and .10 for normal cor. For small problems, this actually  gets worse as we use more cores.    The cross over point seems to be at roughly 5K subjects.  (updated these timings to recognize the M1 Max chip.  An increase of 4x in speed!  They had been .44 and .36.)
 
 
 

@@ -10,7 +10,7 @@
 
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) {
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,l.cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) {
     if(length(class(fa.results)) > 1) {if(inherits(fa.results, 'principal')) {pc <- TRUE} else {pc <- FALSE}} else { pc <- FALSE}
     if(ic) pc <- TRUE
     old.par<- par(mar=marg)  #give the window some narrower margins
@@ -19,6 +19,7 @@
    if(missing(main)) if(is.null(fe.results)) {if(pc) {main <- "Components Analysis" } else {main <- "Factor Analysis" }} else {main <- "Factor analysis and extension"}
    if(!is.matrix(fa.results) && !is.null(fa.results$fa) && is.list(fa.results$fa)) fa.results <- fa.results$fa
    if(is.null(cex)) cex <- 1
+   if(is.null(l.cex)) l.cex <- 1
   #Phi <- NULL  #the default case
  if(sort) { if(g) {temp  <- fa.sort(fa.results[,-1])
                 temp2 <- fa.results[,1]
@@ -115,8 +116,10 @@
       }  #we need to remember whether to draw ellipses or boxes
      
    #now show all the loadings
+   
    tv <- matrix(unlist(text.values),byrow=TRUE,ncol=21)
-        text(tv[,1],tv[,2],tv[,3],cex=tv[,5])
+        #text(tv[,1],tv[,2],tv[,3],cex=tv[,5])
+        text(tv[,1],tv[,2],tv[,3],cex=l.cex)
         arrows(x0=tv[,6],y0=tv[,7],x1=tv[,8],y1=tv[,9],length=tv[1,10],angle=tv[1,11],code=1,col=tv[,20],lty=tv[,21])
         arrows(x0=tv[,13],y0=tv[,14],x1=tv[,15],y1=tv[,16],length=tv[1,17],angle=tv[1,18],code=2,col=tv[,20],lty=tv[,21])
 
@@ -129,11 +132,11 @@
      for (j in 1:(i-1)) {
      if(abs(Phi[i,j]) > cut) {
        # dia.curve(from=c(x.max-2+ e.size*nvar,(num.factors+1-i)*f.scale),to=c(x.max -2+ e.size*nvar,(num.factors+1-j)*f.scale),labels=round(Phi[i,j],digits),scale=(i-j),...)}
-		d.curve <- dia.curved.arrow(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),draw=FALSE,cex=cex,...)
+		d.curve <- dia.curved.arrow(from=fact.rect[[j]]$right,to=fact.rect[[i]]$right,labels=round(Phi[i,j],digits),scale=(i-j),draw=FALSE,cex=cex,l.cex=l.cex,...)
 		curve.list <- c(curve.list,d.curve)
 		} }
   															 }
-  			multi.curved.arrow(curve.list,...)												 
+  			multi.curved.arrow(curve.list,l.cex,...)												 
  
 						}
 	self.list <- list()

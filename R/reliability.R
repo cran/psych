@@ -55,6 +55,9 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
    }
   }
 
+
+
+
  best <- unlist(unlist(best,recursive=FALSE),recursive=FALSE) #Creates a list that keeps the names
  worst <- unlist(unlist(worst,recursive=FALSE),recursive=FALSE)
   # names(result) <- res.name
@@ -70,9 +73,11 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
   
  # splits.mat <- matrix(unlist(splits),ncol=length(keys))
  # colnames(splits.mat) <- names(keys)
+ 
+ 
    class(result.df) <- c("psych","reliability", "matrix")
-   names(best)<- paste(rep(res.name,each=2),names(best))
-   names(worst) <- paste(rep(res.name,each=2),names(worst))
+   names(best)<- paste(rep(rownames(result.df),each=2),names(best))
+   names(worst) <- paste(rep(rownames(result.df),each=2),names(worst))
   result <- list(result.df = result.df,splits= splits,max=best,min=worst, Call = cl)
   if(hist) {multi.hist(splits)}
   class(result) <-  c("psych","reliability")
@@ -85,4 +90,5 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
   
   #Created June 11-17, 2021
   #fixed 6/20/21 to avoid the problem of null cases
+  #fixed 1/3/23 to avoid problem with single items
                                                                                 

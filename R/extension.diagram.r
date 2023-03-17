@@ -83,7 +83,7 @@
     	 }}}
    for (f in gf:num.factors) {  #body  34
    		if (pc) {fact.rect[[f]] <- dia.rect(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,cex=e.cex,...) 
-   		} else {fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf-f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,cex=e.cex,...)}
+   		} else {fact.rect[[f]] <- dia.ellipse(left+middle,(num.factors+gf -f)*f.scale,colnames(factors)[f],xlim=limx,ylim=limy,e.size=e.size,cex=e.cex,...)}
      		for (v in 1:nvar)  {
      		
     			if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
@@ -117,9 +117,13 @@
     cut <- e.cut    #draw all extensions
     simple <- e.simple 
    
-       
+     
      for (v in 1:n.evar) { 
- 	 var.rect[[v]] <- dia.rect(x.max-middle,top - v* nvar/(n.evar+1),rownames(e.loadings)[v],xlim=limx,ylim=limy,cex=e.cex,...)
+ 	# var.rect[[v]] <- dia.rect(x.max-middle,top - v* nvar/(n.evar+1),rownames(e.loadings)[v],xlim=limx,ylim=limy,cex=e.cex,...)
+
+
+ var.rect[[v]] <- dia.rect(x.max-middle,top - (v)*(top)/(n.evar+1),rownames(e.loadings)[v],xlim=limx,ylim=limy,cex=e.cex,...)
+ 	
  	 for(f in 1:num.factors) {
  	 if(simple && (abs(e.loadings[v,f]) == max(abs(e.loadings[v,])) )  && (abs(e.loadings[v,f]) > cut) | (!simple && (abs(e.loadings[v,f]) > cut))) { 
     			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$left,labels =round(e.loadings[v,f],digits),col=((sign(e.loadings[v,f])<0) +1),lty=((sign(e.loadings[v,f])<0)+1),adj=f %% adj +1)}
@@ -143,5 +147,5 @@
       multi.curved.arrow(curve.list,...)
    }
 }  
- 
+ #11/1/22 minor tweak in drawing the extension variables to center it properly
  

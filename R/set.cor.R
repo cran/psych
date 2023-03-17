@@ -3,7 +3,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
 setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show,zero=zero,part=part)}
 
 
-"setCor" <-
+"lmCor" <- "setCor" <-
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05,part=FALSE)  {
 
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m

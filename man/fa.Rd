@@ -220,6 +220,7 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
 \item{r.scores}{The correlations of the factor score estimates using the specified model, if they were to be found.  Comparing these correlations with that of the scores themselves will show, if an alternative estimate of factor scores is used (e.g., the tenBerge method), the problem of factor indeterminacy.  For these correlations will not necessarily be the same.  }
 
 \item{weights}{The beta weights to find the factor score estimates.  These are also used by the \code{\link{predict.psych}} function to find predicted factor scores for new cases.  These weights will depend upon the scoring method requested.  }
+
 \item{scores}{The factor scores as requested.  Note that these scores reflect the choice of the way scores should be estimated (see scores in the input).  That is, simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms (see \code{\link{factor.scores}}).  The correlation between factor score estimates (r.scores) is based upon using the regression/Thurstone approach.  The actual correlation between scores will reflect the rotation algorithm chosen and may be found by correlating those scores. Although the scores are found by multiplying the standarized data by the weights matrix, this will not result in standard scores if using regression. }
 
 \item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
@@ -228,9 +229,6 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
 
 \item{rot.mat}{The rotation matrix as returned from GPArotation.}
 
-\item{scores}{Estimated scores for subjects with complete data. If missing=TRUE, then scores are based upon imputed values for those missing items.  See \code{\link{factor.scores}} for more detail on these options.
-
-}
  }
 
 

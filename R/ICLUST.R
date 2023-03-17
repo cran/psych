@@ -122,7 +122,7 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	sorted=sorted,
 	p.fit = p.fit,p.sorted = p.sorted,purified=purified,purify=purify,call=cl)
 	#if(plot && requireNamespace('Rgraphviz')) {ICLUST.rgraph(result,labels=labels,title=title,digits=digits)}
-	if(plot) iclust.diagram(result,labels=labels,main=title,digits=digits)
+	result$order <- iclust.diagram(result,labels=labels,main=title,digits=digits,plot=plot)
 	class(result) <- c("psych","iclust")
 
 	return(result)

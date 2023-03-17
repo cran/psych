@@ -32,11 +32,11 @@ function(R,digits=2,minlength=5) {
 	invisible(R[lower.tri(R,diag=FALSE)])}
 	
 "lowerCor" <- 
-function(x,digits=2,use="pairwise",method="pearson",minlength=5) {
+function(x,digits=2,use="pairwise",method="pearson",minlength=5,show=TRUE) {
 nvar <- NCOL(x)
 x <- char2numeric(x)    #added 1/2/21
    R <- cor(x,use=use,method=method)
-   lowerMat(R,digits,minlength=minlength)
+   if(show) lowerMat(R,digits,minlength=minlength)
    invisible(R)
    }
 
@@ -623,7 +623,19 @@ pretty}
 #this has a downsize that it converts numbers stored as characters to factors (see nchar2numeric)
 #added the flag option and the change the colname option 1/2/21
 
+"isAllNumeric" <- function(x){
+      nvar <- NCOL(x)
+      bad <- rep(0,nvar)
+ for(i in 1:nvar) { 
+     if(!is.numeric(x[[i]]) ){if(is.factor(unlist(x[[i]]))| is.character(unlist(x[[i]]))    
+     ) bad [i] <- 1
+     }}
+     if(prod(bad)==0) {result <- TRUE} else {result<- bad}
+     invisible(result)
+     }
+
 "char2numeric" <- function(x,flag=TRUE) {
+
  nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {

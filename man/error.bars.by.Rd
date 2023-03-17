@@ -71,6 +71,7 @@ These confidence regions are based upon normal theory and do not take into accou
 The results of describeBy are reported invisibly.
 }
 
+
 \seealso{ See Also as \code{\link{error.crosses}},  \code{\link{histBy}},  \code{\link{scatterHist}}, \code{\link{error.bars}} and \code{\link{error.dots}} }
 \examples{
 
@@ -143,3 +144,6 @@ data(bfi)   #The Big 5 data
 % R documentation directory.
 \keyword{multivariate}
 \keyword{ hplot }% __ONLY ONE__ keyword per line
+
+
+

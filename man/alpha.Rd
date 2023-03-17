@@ -13,7 +13,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
    check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,
    n.obs=NULL,impute=NULL
    )
-alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2)
+alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2) #returns an invisible object
 alpha2r(alpha, n.var)
 }
 
@@ -172,6 +172,9 @@ a4
 summary(a4)
 
 alpha2r(alpha = .74,n.var=4)
+
+#because alpha.ci returns an invisible object, you need to print it
+print(alpha.ci(.74, 100,p.val=.05,n.var=4))
 }
 
 \keyword{ models }% at least one, from doc/KEYWORDS

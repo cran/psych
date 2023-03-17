@@ -9,7 +9,7 @@
 fa.parallel(x,n.obs=NULL,fm="minres",fa="both",nfactors=1, 
 main="Parallel Analysis Scree Plots",
 n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
-sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5)
+sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5,sqrt=FALSE)
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE)   #deprecated
 \method{plot}{poly.parallel}(x,show.legend=TRUE,fa="both",...)
@@ -37,6 +37,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
  \item{global}{If doing polychoric analyses (fa.parallel.poly) and the number of alternatives differ across items, it is necessary to turn off the global option}
  \item{...}{additional plotting parameters, for plot.poly.parallel}
  \item{plot}{By default, fa.parallel draws the eigen value plots.  If FALSE, suppresses the graphic output}
+ \item{sqrt}{If TRUE, take the squareroot of the eigen values to more understandably show the scale. Note, although providing more useful graphics the results will be the same. See DelGuidice, 2022}
 }
 
 \details{
@@ -102,6 +103,7 @@ For relatively small samples with dichotomous data and  cor="tet" if some cells 
   }
 \references{
 
+Del Giudice, M. (2022, October 21). The Square-Root Scree Plot: A Simple Improvement to a Classic Display. doi: 10.31234/osf.io/axubd
 
 Floyd, Frank J.  and  Widaman, Keith. F (1995)  Factor analysis in the development and refinement of clinical assessment instruments. Psychological Assessment, 7(3):286-299, 1995.
 

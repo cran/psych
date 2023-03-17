@@ -63,7 +63,7 @@ bestScales = { cat("\nCall = ")
             print(object$Call)
          cat("\nValidities from raw items and from the correlation matrix\n")
          cat("Number of unique predictors used = ",object$nvars,"\n")
-        print(object$crossV,digits=digits)
+        if(!is.null(object$mean.fit)) {print(object$mean.fit,digits=digits)} else  {print(object$crossV,digits=digits)}
  },
  
  
@@ -446,3 +446,5 @@ none = {warning("I am sorry, I do not have a summary function for this object")}
 #invisible(result)
    }
   
+
+#

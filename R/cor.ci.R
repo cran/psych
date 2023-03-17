@@ -152,10 +152,17 @@ return(results)
  #adapted from fa.poly
  #modified May 1, 2014 to scale by pvals
  #modified August 24, 2017 to include Bonferoni corrections from cor.test
- 
- "cor.plot.upperLowerCi" <- "corPlotUpperLowerCi" <-
+ #modified January 22, 2023 to find correlations first if given raw data
+ "corPlotUpperLowerCi" <-  "cor.plot.upperLowerCi" <- 
 function(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,main="Upper and lower confidence intervals of correlations",adjust=FALSE,...) {
-
+cor.cip <- NULL
+names <- cs(corCi, cor.cip, corr.test ,cor.ci)
+    value <- inherits(R,names,which=TRUE)  # value <- class(x)[2]
+if(max(value)==0) {#find the correlations first if it is not a correlation matrix
+                   if(isCorrelation(R)) {R <- corCi(R)} else {if(NROW(R)!= NCOL(R)) {R <-corr.test(R)}
+                   # }  else { browser()
+  # stop("I am stopping because the input is incorrect \ndata must either be a raw data matrix or the output of corr.test.")} 
+               }}
 if(adjust) {lower <- R$ci.adj$lower.adj
    upper <- R$ci.adj$upper.adj} else {
    lower <- R$ci$lower
@@ -177,7 +184,7 @@ n <- floor((sqrt(1 + 8 * m) +1)/2)
 colnames(X) <- rownames(X) <- cn
 if(is.null(R$ptci))  {pval <- R$p} else {pval = 2*(1-R$ptci)}
 
-cor.plot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)  
+corPlot(X,numbers=numbers,pval=pval,cuts=cuts,select=select,main=main,...)  
 class(X) <-  c("psych","cor.cip")
 colnames(X) <- abbreviate(rownames(X,4))
 invisible(X) }

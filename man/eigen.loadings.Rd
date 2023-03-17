@@ -25,6 +25,8 @@ x$vectors[1:8,1:4]  #as they appear from eigen
 y <- princomp(covmat=Harman74.cor$cov) 
 y$loadings[1:8,1:4] #as they appear from princomp
 eigen.loadings(x)[1:8,1:4] # rescaled by the eigen values
+z <- pca(Harman74.cor$cov,4,rotate="none")
+z$loadings[1:8,1:4]  #as they appear in pca
 }
     
 \keyword{ models }% at least one, from doc/KEYWORDS

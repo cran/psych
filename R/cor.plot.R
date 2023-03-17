@@ -13,7 +13,7 @@
 #Finally changed the default to be numbers=TRUE (9/17/19)
 
 "cor.plot" <- "corPlot" <- 
-function(r,numbers=TRUE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,alpha =.75,min.length=NULL,...){
+function(r,numbers=TRUE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,labels=NULL,n.legend=10,keep.par=TRUE,select=NULL,pval=NULL,digits=2, trailing=TRUE,cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",xaxis =1, xlas=0,ylas=2,gr=NULL,alpha =.75,min.length=NULL,...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (inherits(r, "psych")))  {
@@ -34,11 +34,12 @@ switch(class(r)[2],
   )  #end switch
   }
   } else { if(symmetric & !isCorrelation(r) & (nrow(r) !=ncol(r))) {
-    cp <- corr.test(r,adjust=adjust)
+    cp <- corr.test(r,adjust=adjust)  #find the corelations
     r <- cp$r
     pval <- cp$p
-    if(is.null(main)) {main <- "Correlation plot" }}  
-   }
+    if(is.null(main)) {main <- "Correlation plot from data" }} else {scale<- FALSE 
+      if(is.null(main)) {main <- "Correlation plot"}  
+   }}
 R <- r <- as.matrix(r)
 if(!is.null(select)) r <- r[select,select]
 if(min(dim(r)) < 2) {stop ("You need at least two dimensions to make a meaningful plot")}
@@ -135,7 +136,10 @@ if(max.len >.5) {axis(2,at=at2,labels=lab2,las=ylas,...)
 if(numbers) {rx <- rep(at1,ncol(r))
             ry <-rep(at2,each=nrow(r))
 # rv <- round(r*100)
-rv <- round(r,2) 
+rv <- round(r,digits) 
+ if(trailing) {rv <- sprintf("%.2f", rv)# format with trailing 0
+              rv[rv=="NA"] <- ""     #drop the NAs  for lower Cors
+              }
  
  if(stars) {#pval <- corr.p1(r,npairs,"none")
             symp <- symnum(pval, corr = FALSE,cutpoints = c(0,  .001,.01,.05, 1),
@@ -145,7 +149,9 @@ rv <- round(r,2)
                  text(rx,ry,rv,cex=cex,...)  } else {
 
  if(missing(cex))  cex = 9/max(nrow(r),ncol(r))
-if(scale) { text(rx,ry,rv,cex=pval*cex,...) } else { text(rx,ry,rv,cex=cex,...) }}
+ 
+ 
+if(scale) { text(rx,ry,rv,cex=pval*cex,...) } else { text(rx,ry,rv,cex= 1.5*cex,...) }}
  }
 if(show.legend) {
     leg <- matrix(seq(from=zlim[1],to=zlim[2],by =(zlim[2] - zlim[1])/n),nrow=1)

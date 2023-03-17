@@ -10,7 +10,7 @@
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
      simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
-    main,cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) 
+    main,cex=NULL,l.cex=NULL, marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) 
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
         main="Heterarchy diagram",l.cex,gap.size,...) 
 extension.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,

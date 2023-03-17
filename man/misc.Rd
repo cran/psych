@@ -30,7 +30,7 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 }
 \usage{
 psych.misc()
-lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5)
+lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,show=TRUE)
 cor2(x,y,digits=2,use="pairwise",method="pearson")
 lowerMat(R, digits = 2,minlength=5)
 matMult(x,y) #multiply two matrices with missing data
@@ -60,6 +60,7 @@ test.all(pl,package="psych",dependencies
   \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
   \item{digits}{round to digits}
   \item{minlength}{Abbreviate to minlength in lowerCor}
+  \item{show}{Display the correlations from lowerCor (default is TRUE)}
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
   \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 

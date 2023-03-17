@@ -195,7 +195,7 @@ result[[group]] <- list(cor=adj.r,var=var, sd=sqrt(var),alpha=key.alpha,av.r = k
 
 
  names(alpha.list) <- names(cor.list) <- names(stats$r)
- if(!exists("adj.r.vect")) browser()                        #debugging option
+ #if(!exists("adj.r.vect")) browser()                        #debugging option
 # r.list <- r.list[!is.na(r.list)]  #this gets rid of the missing cases
  cor.mat <- matrix(unlist(r.list),ncol=length(adj.r.vect),byrow=TRUE)
  var.mat <- matrix(unlist(var.list),ncol=NCOL(keys),byrow=TRUE)

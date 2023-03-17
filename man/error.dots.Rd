@@ -3,12 +3,13 @@
 
 \title{Show a  dot.chart with error bars for different groups or variables}
 \description{Yet one more of the graphical ways of showing data with error bars for different groups.
-A dot.chart with error bars for different groups or variables is found using from \code{\link{describe}},  \code{\link{describeBy}},  \code{\link{statsBy}} or data from \code{\link{bestScales}}.
+A dot.chart with error bars for different groups or variables is found using from \code{\link{describe}},
+  \code{\link{describeBy}},  \code{\link{statsBy}}, \code{\link{corCi}}, \code{\link{corr.test}} or data from \code{\link{bestScales}}.
 }
 \usage{
 error.dots(x=NULL, var = NULL, se = NULL, group = NULL, sd = FALSE, effect=NULL,
 stats=NULL, head = 12, tail = 12, sort = TRUE, decreasing = TRUE, main = NULL,
- alpha = 0.05, eyes = FALSE, min.n = NULL, max.labels = 40, labels = NULL,
+ alpha = 0.05, eyes = FALSE,items=FALSE, min.n = NULL, max.labels = 40, labels = NULL,
  label.width=NULL, select=NULL,
  groups = NULL, gdata = NULL, cex =  par("cex"),  pt.cex = cex, pch = 21, gpch = 21, 
  bg = par("bg"), fg=par("fg"), color = par("fg"), gcolor = par("fg"), 
@@ -16,7 +17,9 @@ stats=NULL, head = 12, tail = 12, sort = TRUE, decreasing = TRUE, main = NULL,
 }
 
 \arguments{
-  \item{x}{A data frame or matrix of raw data, or the resulting object from \code{\link{describe}},  \code{\link{describeBy}},  \code{\link{statsBy}},  \code{\link{bestScales}} or \code{\link{cohen.d}}
+  \item{x}{A data frame or matrix of raw data, or the resulting object from \code{\link{describe}}, 
+   \code{\link{describeBy}},  \code{\link{statsBy}},  \code{\link{bestScales}},
+    \code{\link{corCi}}, \code{\link{corr.test}}, or \code{\link{cohen.d}}
 
 }
   \item{var}{The variable to show (particularly if doing describeBy or StatsBy plots).}
@@ -32,6 +35,7 @@ stats=NULL, head = 12, tail = 12, sort = TRUE, decreasing = TRUE, main = NULL,
   \item{main}{The caption for the figure}
   \item{alpha}{p value for confidence intervals}
   \item{eyes}{Draw catseyes for error limits}
+  \item{items}{If showing results from best scales, show the items for a specified dv}
   \item{min.n}{If using describeBy or statsBy, what should be the minimum sample size to draw}
   \item{max.labels}{Length of labels  (truncate after this value)}
   \item{labels}{Specify the labels versus find them from the row names}
@@ -85,6 +89,12 @@ temp <- error.dots(cd, select=c(1:15,21:25),head=12,tail=13,
       main="Cohen d and confidence intervals of BFI by gender")
 error.dots(cd,select=c(16:20),head=13,tail=12,col="blue",add=TRUE,fg="red" ,main="")
 abline(v=0)
+#now show cis for correlations
+R <- corCi(attitude,plot=FALSE)
+error.dots(R, sort=FALSE)
+#the asymmetric case
+R <- corr.test(attitude[,1:2],attitude[,3:7])
+error.dots(R, sort=FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

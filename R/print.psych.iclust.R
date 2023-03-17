@@ -40,7 +40,7 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
 	    print(fx,quote="FALSE")
  		
  		eigenvalues <- diag(t(x$pattern) %*% x$loadings)
-       cat("\nWith eigenvalues of:\n")
+       cat("\nWith Sums of squares of:\n")
        print(eigenvalues,digits=digits)
  		}
  	else {if(is.null(cut)) cut <- 0   #added 8/9/16
@@ -58,7 +58,7 @@ if(sort) { cat("\nItem by Cluster Structure matrix: Sorted by loading \n")
 	    print(clust.fx,quote="FALSE")
  		#print(unclass(x$loadings)) 
  		eigenvalues <- diag(t(x$pattern) %*% x$loadings)
-       cat("\nWith eigenvalues of:\n")
+       cat("\nWith Sums of squares of:\n")
        print(eigenvalues,digits=digits)
  		}
  if(!is.null(x$purified$cor)) {cat("\nPurified scale intercorrelations\n reliabilities on diagonal\n correlations corrected for attenuation above diagonal: \n")

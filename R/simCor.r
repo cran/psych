@@ -53,8 +53,7 @@
     }
     observed[observed== -999] <- 0
     }
-  
-    colnames(observed) <- colnames(R)
+    if(!is.null(colnames(R)) ) {colnames(observed) <- colnames(R)} else {colnames(R) <- paste0("V",1:nvar)}
     if(data) {result <- observed} else {
   	 result <- cor(observed)}
   	 return(result)}

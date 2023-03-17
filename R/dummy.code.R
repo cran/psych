@@ -22,3 +22,5 @@ new[i] <- xlev[i] %in% group}
  
  return(new)
 }
+
+

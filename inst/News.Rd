@@ -2,14 +2,14 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.2.10 (2022-09-21)}{ 
+\section{Changes in psych version 2.3.2 (2023-02-15)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.2.10 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.2.9  The second digit reflects the year (i.e., 2022), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.3.1 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.2.9  The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.
        
   }   
@@ -29,6 +29,14 @@
           \item Modified factorScore so that it will give scores even in the case of missing data.  Scores are found from the mean of the non-missing items on a factor. To just get scores for non-missing subjects, specify impute="none"
           \item Added faReg /faRegression to make use of fa.extend to find the regressions with dependent variables in a more understandable output.  Modified extend.diagram to draw these as well.  Although developed to use fa.extend, faReg will also do regressions based upon factor scores from the raw data.  
           \item Added SAPAfy to "sapafy" data matrices. (a trivial but useful helper function)
+          \item Improved examples for iclust.
+          \item Following a suggestion from Ethan Fosse, I have reversed the direction of the arrow in ICLUST to go from the items to the clusters.  This is now the default but the old style can still be drawn using iclust.diagram with the bottomup parameter set to FALSE.
+          \item Minor tweaks to corPlot allowing the fixing of trailing zeros and the number of digits to display.
+          \item Improved corPlotUpperLowerCi to find correlations (and Cis) if given raw data.  This improves usability, because the naive user would expect that behavior.
+           \item Added the show option to lowerCor so that it will just find but not display the correlations. Defaults to TRUE.
+      \item Added corCi and corr.test output to the objects that error.dots can display
+      \item Added eigenCi to find and plot the confidence intervals of eigen values.
+      \item Added more timings and changed the default size for bigCor
           }
         }
         
@@ -43,6 +51,18 @@
       \item Fixed crossValidation to work with subsets of variables.
       \item Fixed autoR to handle case of single variable when grouping.  Reported by Alex Smith and thanks to various suggestions on stack overflow.
       \item Fixed scoreItems so that it will give names to unlabeled data and keys (was breaking GAabbreviate)
+      \item Fixed crossValidationBoot for case of multiple DVs 
+      \item Fixed reliability for the case of single item scales 
+      \item Minor improvements to cohen.d to allow easier use of dictionary and sorting
+      \item Fixed cor.smooth to handle covariances matrices (reported by Douglas Otto as a problem in fa)
+      \item Finally fixed bug in bestScales so it will handle correlation matrices
+      \item Fixed bestScales so it will produce a keys list ordered by correlation for correlation input.
+      \item Fixed a bug in cohen.kappa for weighted Kappa.  Reported by Ju, Yu-Jeng.
+      \item Fix a bug in bigCor that was not working for polychoric correlations
+      \item changed the use of the abline(h=1) in fa.parallel to draw it for pc not for fa. Pointed out by George Harrison.  
+      \item Added lmCor as an alias to setCor.  (lmCor is much more intuitive as it is lm for correlation matrices).
+     
+      
           }
           }
   }
@@ -155,7 +175,7 @@
    \item Fix bug in polychoric where it doesn't handle empty cells very well. (reported by Björn Büdenbender)
    
    \item Fix bug in mediate for multiple dependent variables (reported by Martin Zeschke)
-   \item Add option in fa to do multiple restarts of rotation (following suggestion by Niels Waller)  (done)
+  
   
  
   
@@ -168,20 +188,22 @@
  
  \item Consider using the Jennrich approach to standard errors of rotated loadings
  
-  \item Improve the documentation for sim.minor to reflect the MacCallum paper.  Improve the code so that it screens for impossible models.
-  
+ 
  
  \item Still need to fix mediate to handle more than 1 DVs
   
   \item Possible problem with the use of try  in several functions.
  \item Need to fix omega so that alpha is correctly calculated in case of no general factor
  \item It would be nice to add an option to display confidence intervals of correlations in error.dots
+ 
+
+ 
      
       }
   }
   }
   
-   \section{Changes in psych version 2.2.9 (2022-09-12)}{ 
+   \section{Changes in psych version 2.2.12 (2022-12-14)}{ 
      \subsection{Additions}{
           \itemize{
            \item Modified alpha so that it returns a keys list rather than a vector
@@ -191,11 +213,18 @@
           \item Added the percentage of items with their highest correlation on the keyed scale (as an index of scale quality)   Requested by Asghar Minaei. 
           \item Added the MIMS and MIMT matrices to scoreOverlap and to scoreItems These matrices reflect the average item correlation within and between scales (MIMS) and the average item x scale correlation within and between scales (MIMT).  Suggested by Asghar Minaei.
           \item Added options to the correlations in cortest and also improved the documentation.
-          \item Added alpha2r  to convert alpha to average r (a trivial, one liner, but convenient sometimes)
+       
           \item Added crossValidationBoot to do multiple derivations / cross validations
           \item Modified factorScore so that it will give scores even in the case of missing data.  Scores are found from the mean of the non-missing items on a factor. To just get scores for non-missing subjects, specify impute="none"
           \item Added faReg /faRegression to make use of fa.extend to find the regressions with dependent variables in a more understandable output.  Modified extend.diagram to draw these as well.  Although developed to use fa.extend, faReg will also do regressions based upon factor scores from the raw data.  
           \item Added SAPAfy to "sapafy" data matrices. (a trivial but useful helper function)
+          \item Added minor factors as an option to sim.congeneric.
+           \item Improveds the documentation for sim.minor to reflect the MacCallum paper.  Improved  the code so that it screens for impossible models.
+   
+        \item Added/improved documentation for iclust.
+        \item Added the order object to iclust to allow for sorting matrices by cluster structure. 
+        \item Added a sqrt option to VSS.scree and fa.parallel output (thanks to Marco Del Giudice for the suggestion)
+         \item Added a coefficients object for setCor and mediate
           }
         }
         
@@ -210,6 +239,7 @@
       \item Fixed crossValidation to work with subsets of variables.
       \item Fixed autoR to handle case of single variable when grouping.  Reported by Alex Smith and thanks to various suggestions on stack overflow.
       \item Fixed scoreItems so that it will give names to unlabeled data and keys (was breaking GAabbreviate)
+        \item Added the valid object to the pca function (to match the help file.)  Reported by Tomosumi Haitani)
           }
           }
   }
@@ -254,7 +284,7 @@
            }
            }
            
-     \subsection{Bugs fixed}{
+     \subsection{Bugs Fixed}{
        \itemize{
           \item  Fixed sim.multi to generate more than two factors (reported by Lizz Dworak)
            \item Fixed reliability so that it doesn't give hopeless split halfs -- was incorrectly keying items.
@@ -329,7 +359,7 @@
         }
     
     
-    \subsection{Bugs fixed}{
+    \subsection{Bugs Fixed}{
          \itemize{
          \item The p and p.adj objects in corr.test were reversed for non-symmetric matrices (reported by wangshun)
          \item Fixed isCorrelation to handle output from partial.r (reported by Isaac Petersen)
@@ -369,7 +399,7 @@
          } 
      
      } 
-     \subsection{Bugs fixed}{
+     \subsection{Bugs Fixed}{
        \itemize{
        \item  Fixed a bug in describeBy to handle more than 2 grouping variables (reported by Nicholas Stafniak)
        \item Changed the term eigenvalue to sum of squared loadings  in omega (in response to a comment by Niels Waller)
@@ -398,7 +428,7 @@
       }
     }
   
-   \subsection{Bugs fixed}{
+   \subsection{Bugs Fixed}{
     \itemize{
       \item Fixed a bug in setCor where it was not correctly handling the case of std=FALSE, zero = TRUE (reported by Robert Stupinsky)
       \item Fixed a bug in mediate.diagram so that it properly ignores the intercept (also reported by  Robert Stupinsky )
@@ -434,7 +464,7 @@
       }
     }
   
-   \subsection{Bugs fixed}{
+   \subsection{Bugs Fixed}{
     \itemize{
     \item  Fixed a problem with crossValidation where it would not work with a single criterion
     \item Fix a problem with alpha if the number of categories differed drastically and max was not specified.  Reported by Daniel Bradford.
@@ -461,7 +491,7 @@
       }
     }
   
-   \subsection{Bugs fixed}{
+   \subsection{Bugs Fixed}{
     \itemize{
     \item Fixed a bug in iclust.diagram introduced in 2.0.7 (substitute does not work work on vectors)
     \item Finally fixed a bug in testRetest where I was flipping two of the components of variance (id x time and ID x items) Reported by  Miquel Biron=Lattes
@@ -483,7 +513,7 @@
        }
        }
   
-   \subsection{Bugs fixed}{
+   \subsection{Bugs Fixed}{
     \itemize{
       \item Modified iclust.diagram and more importantly, multi.arrow to address a problem introduced in version 2.0.7 which although it worked in R.4.0, broke in R.3.6.3.
        The problem was that the change from 3.6 to 4.0 introduced a change in the way strings are treated as factors.  This is set by default to be FALSE in 4.0, but needed to set stringsAsFactors=FALSE when forming data frames when doing multiple graphics.
@@ -522,7 +552,7 @@
     \item Commented out several tests for bestScales in order to pass the Debian timing tests on CRAN
     }
     }
-    \subsection{Bugs fixed}{
+    \subsection{Bugs Fixed}{
     \itemize{
     \item Fixed summary for setCor to properly print betas (coefficients)  Error introduced in 1.9.12.31 (reported by Hans Marius Norbom)
     \item Fixed bug in bassAckward for orthogonal rotations (reported by Eva Billen )
@@ -2188,7 +2218,7 @@
   }
 }
 \section{Changes in psych version 1.0.87 (2010-04-04)}{
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item error.bars (and error.bars.by) would not properly draw < 3 variables
     }
@@ -2212,7 +2242,7 @@
       \item Modified the sim.minor function to simulate correlation matrices with nfact major factors and nvar/2 minor factors with larger number of variables.   
     }
   }
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Fixed print.psych.fa to give correct communalities for sorted factors (had been not sorting the communalities, although it had the factor loadings).
       \item Minor change to comorbidity to clean up output (using print.psych)
@@ -2246,7 +2276,7 @@
       \item Improved documentation for fa to explain minimum correlation of factor score estimates. 
     }
   }
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Fixed a problem with printing of the principal (components) results
       \item Fixed bug in the print.psych.vss function that returned the wrong value (although identifying the correct number) for the  Velicer MAP criterion. (Reported by Maike Luhmann).
@@ -2268,7 +2298,7 @@
     }
   }
   
-\subsection{Bugs fixed}{
+\subsection{Bugs Fixed}{
     \itemize{
       \item Corrected bug to fa for case of oblique and negatively correlated factors (reported by Erich Studerus).
       \item Minor improvements to the dia.x functions 
@@ -2307,21 +2337,21 @@
       \item Modified factor.stats to allow for statistics even if the matrix is very singular (i.e., N var >> n.obs).
     }
   }
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Corrected bug to ICLUST introduced in version 74 that can, in some conditions, produce negative betas. 
     }
   }
 }
 \section{Changes in psych version 1.0.77(2009-07-21)}{
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Fixed an error in printing communalities for rotated factor solutions reported by Tamaki Hattori. Also resolved a problem of extra lines appearing in error.bars.  Minor revision to polar. 
     }
   }
 }
 \section{Changes in psych version 1.0.76 (2009-07-14)}{
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Finally resolved the problem of not passing the CRAN tests for Mac (even though developed on a Mac, the test package assumes no other packages).
     }
@@ -2359,7 +2389,7 @@
       \item Added factor stats to omega
     }
   }
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Minor fix to print.psych.omega to correct printing error introduced in .71
     }
@@ -2374,7 +2404,7 @@
       \item Omega will now give an estimate for  1  factor and a message about how there are alternatives for 2 factors.
     }
   }
-  \subsection{Bugs fixed}{
+  \subsection{Bugs Fixed}{
     \itemize{
       \item Fixed a bug in print.psych.omega so that it will now report the item numbers correctly when sorting.
       \item Fixed call in phi.demo so that it checks if the polycor package is installed.  This was causing problems in the Mac version on CRAN.

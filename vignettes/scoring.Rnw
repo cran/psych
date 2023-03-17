@@ -151,7 +151,7 @@ By following these simple guides, you soon will be able to do such things as fin
 \begin{Rinput}
 library(psych)  #necessary whenever you want to run functions in the psych package
 my.data <- read.clipboard()   
-my.keys <- make.keys(my.data,list(scale1 = c(1,4,5),scale2 = c(2,3,6))  #etec
+my.keys <- make.keys(my.data,list(scale1 = c(1,4,5),scale2 = c(2,3,6))  #etc
 my.scales <- scoreItems(my.keys,my.data)
 my.scales
 \end{Rinput}

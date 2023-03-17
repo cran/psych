@@ -50,7 +50,11 @@ Uses the generic biplot function to take the output of a factor analysis \code{\
 
 This is an extension of the generic biplot function to allow more control over plotting points in a two space and also to plot three or more factors (two at time).  
 
-This will work for objects produced by \code{\link{fa}}, \code{\link{fa.poly}} or \code{\link{principal}}  if they applied to the original data matrix.  If however, one has a correlation matrix based upon the output from \code{\link{tetrachoric}} or \code{\link{polychoric}}, and has done either \code{\link{fa}} or \code{\link{principal}} on the correlations, then obviously, we can not do a biplot.  However, both of those functions produce a weights matrix, which, in combination with the original data can be used to find the scores by using \code{\link{factor.scores}}.  Since biplot.psych is looking for two elements of the x object: x$loadings and x$scores, you can create the appropriate object to plot. See the third example.
+This will work for objects produced by \code{\link{fa}}, \code{\link{fa.poly}} or \code{\link{principal}}  if they applied to the original data matrix.  If however, one has a correlation matrix (e.g., based upon the output from \code{\link{tetrachoric}} or \code{\link{polychoric}}), and has done either \code{\link{fa}} or \code{\link{principal}} on the correlations, then obviously, we can not do a biplot.  
+
+However, both of those functions produce a weights matrix, which, in combination with the original data can be used to find the scores by using \code{\link{factor.scores}}.  Since biplot.psych is looking for two elements of the x object: x$loadings and x$scores, you can create the appropriate object to plot, or add it to the factor object See the third and 	fourth examples.
+
+In order to just plot the loadings, use \code{\link{fa.plot}}
 
  
 }
@@ -80,16 +84,29 @@ fa2$scores <- fa2$scores[1:100,]  #just take the first 100
 #now plot with different colors and shapes for males and females
 biplot(fa2,pch=c(24,21)[psychTools::bfi[1:100,"gender"]],
 group =psychTools::bfi[1:100,"gender"],
-   main="Biplot of Conscientiousness and Neuroticism by gender")
+   main="Biplot of Openness and Neuroticism by gender")
 
-
+## An example from the correlation matrix
 r <- cor(psychTools::bfi[1:200,1:10], use="pairwise") #find the correlations
 f2 <- fa(r,2) 
+#biplot(f2)  #this throws an error    (not run)
+
+#f2 does not have scores, but we can find them
+f2$scores <- factor.scores(psychTools::bfi[1:200,1:10],f2)
+
+biplot(f2,main="biplot from correlation matrix and factor scores")
+
+
+#or create a new object with the scores
+ #find the correlations for all subjects
+r <- cor(psychTools::bfi[1:10], use="pairwise") 
+f2 <- fa(r,2) 
 x <- list() 
+#find the scores for just the first 200 subjects
 x$scores <- factor.scores(psychTools::bfi[1:200,1:10],f2)
 x$loadings <- f2$loadings
 class(x) <- c('psych','fa')
-biplot(x,main="biplot from correlation matrix and factor scores")
+biplot(x,main="biplot from correlation matrix combined with factor scores")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -72,7 +72,7 @@ William Revelle
 \code{\link{fa}}, \code{\link{factor.stats}}
 }
 \examples{
-f3 <- fa(Thurstone)
+f3 <- fa(Thurstone,3 )
 f3$weights  #just the scoring weights
 f5 <- fa(psychTools::bfi,5) #this does the factor analyis
 my.scores <- factor.scores(psychTools::bfi,f5, method="tenBerge")

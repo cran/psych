@@ -122,7 +122,7 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
     }
   colnames(MIMT) <- rownames(MIMT) <- colnames(keys)
  
- good <- scale.quality(adj.r,item.cor,key.list)
+ good <- scale_quality(adj.r,item.cor,key.list)
  names(good) <- names(key.list)
  
  if (correct) {cluster.corrected <- correct.cor(adj.r,t(key.alpha))
@@ -136,7 +136,7 @@ result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.v
 #modifed 03/05/15 to do pseudo matrix multiplication in case of missing data 
 
 
-scale.quality = function(phi,r,keys) {
+scale_quality = function(phi,r,keys) { #switched from . to _ 6/20/23
 nvar <- NROW(r)
 nscale <- NCOL(r)
 good <- rep(0,length(keys))

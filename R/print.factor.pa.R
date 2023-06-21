@@ -1,4 +1,4 @@
-"print.factor.pa" <-
+"print_factor.pa" <-
 function(x,digits=2,all=FALSE,cutoff=NULL,sort=FALSE,...) { 
 
  if(is.null(cutoff)) cutoff <- .3

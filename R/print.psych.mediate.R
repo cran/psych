@@ -1,4 +1,4 @@
-"print.psych.mediate" <- function(x,digits=2,short=TRUE) {
+"print_psych.mediate" <- function(x,digits=2,short=TRUE) {
  cat("\nMediation/Moderation Analysis \nCall: ")
     print(x$Call)
     dv <- x$var.names[["DV"]]
@@ -43,7 +43,7 @@
     
     cat("\n\n Full output  \n")
     
-      summary.psych.mediate(x)
+summary_psych.mediate(x)
     
     if(FALSE) {
     cat("\nDirect effect estimates (traditional regression)    (c') \n")

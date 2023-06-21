@@ -3,7 +3,8 @@ library(psych)
 library(psychTools)
 
 ## -----------------------------------------------------------------------------
-file.name <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+file.name <-
+  "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
 my.data <- read.file(file.name)
 
 ## -----------------------------------------------------------------------------

@@ -70,7 +70,7 @@ return(pred)}
 
 
 #these next two do not standardize the prediction
-"predict.principal" <-
+"predict_principal" <-
 function(object,data) {
 wt <- object$weights
 data <- as.matrix(data)
@@ -78,7 +78,7 @@ pred <- data %*% wt
 return(pred)
 }
 
-"predict.fa" <-
+"predict_fa" <-
 function(object,data) {
 wt <- object$weights
 data <- as.matrix(data)
@@ -86,7 +86,7 @@ pred <- data %*% wt
 return(pred)
 }
 
-predict.setCor.best <- function(object,data,p=.01){
+predict_setCor.best <- function(object,data,p=.01){
  data <- as.matrix(data)
  vars <- rownames(object$coefficients)
  vars <- vars[ vars %in% colnames(data)]
@@ -123,7 +123,7 @@ return((result))
  }
  
  
- cor.na <- function(x,y=NULL,scale=TRUE) {
+ cor_na <- function(x,y=NULL,scale=TRUE) {
 nvar <- ncol(x)
 if(scale) {sx <- scale(x)} else {sx <- x}
 if(is.null(y)) y <- sx

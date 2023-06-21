@@ -101,7 +101,7 @@ class(result) <- c("psych","auc")
 return(result)
    }
    
-print.psych.auc <- function(x,digits=2) {
+print_psych.auc <- function(x,digits=2) {
 cat('Decision Theory and Area under the Curve\n')
 cat('\nThe original data implied the following 2 x 2 table\n')
 print(x$probabilities,digits=digits)

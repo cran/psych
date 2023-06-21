@@ -1,6 +1,6 @@
 "sim.item" <-
 function (nvar = 72 ,nsub = 500, 
-    circum = FALSE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
+    circum = FALSE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,threshold=NULL) 
 	{ 
 	avloading <- (xloading+yloading)/2
 	
@@ -8,6 +8,8 @@ function (nvar = 72 ,nsub = 500,
     g <- rnorm(nsub) 
 	truex <- rnorm(nsub)* xloading  +xbias #generate normal true scores for x + xbias
 	truey <- rnorm(nsub) * yloading + ybias #generate normal true scores for y + ybias
+	 if(!is.null(threshold)) {if (length(threshold) < nvar) threshold <- sample(threshold, nvar, replace=TRUE)}
+   
 
 	if (circum)  #make a vector of radians (the whole way around the circle) if circumplex
 	{radia <- seq(0,2*pi,len=nvar+1)  
@@ -21,21 +23,24 @@ function (nvar = 72 ,nsub = 500,
 
 	item<- gloading * g +  trueitem  + errorweight*error   #observed item = true score + error score 
     if (categorical) {
-        
+        if(is.null(threshold)){
     	item = round(item)       #round all items to nearest integer value
 		item[(item<= low)] <- low     
-		item[(item>high) ] <- high   
+		item[(item>high) ] <- high  } else {
+		  i <- 1:nvar
+		  item <- t(t(item [,i]) > threshold[i]) + 0  }  
 		}
-	if (truncate) {item[item < cutpoint] <- 0  }
+	#if (truncate) {item[item < cutpoint] <- 0  }  #replaced with threshold
 	colnames(item) <- paste("V",1:nvar,sep="")
 	return (item) 
 	}  
 
 "sim.spherical" <-
-function (simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55, zloading=.55, gloading=0, xbias=0,  ybias = 0, zbias=0,categorical=FALSE, low=-3,high=3,truncate=FALSE,cutpoint=0) 
+function (simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55, zloading=.55, gloading=0, xbias=0,  ybias = 0, zbias=0,categorical=FALSE, low=-3,high=3,truncate=FALSE,threshold=NULL) 
 	{ 
 
 	nvar <- nx * (ny-1)
+	 if(!is.null(threshold)) {if (length(threshold) < nvar) threshold <- sample(threshold, nvar, replace=TRUE)}
 	errorweight <- sqrt(1-(xloading^2  + yloading^2 + zloading^2+  gloading^2))  #squared errors and true score weights add to 1
     g <- rnorm(nsub) 
 	truex <- rnorm(nsub)  +xbias #generate normal true scores for x + xbias
@@ -66,12 +71,16 @@ function (simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55, 
 
 	item <- true %*% t(f) + errorweight*error   #observed item = true score + error score 
     if (categorical) {
+     if(is.null(threshold)){
         
     	item = round(item)       #round all items to nearest integer value
 		item[(item<= low)] <- low     
 		item[(item>high) ] <- high   
-		}
-	if (truncate) {item[item < cutpoint] <- 0  }
+		} else {
+		  i <- 1:nvar
+		  item <- t(t(item [,i]) > threshold[i]) + 0  }  
+		  }
+	#if (truncate) {item[item < cutpoint] <- 0  }
 	colnames(item) <- paste("V",1:nvar,sep="")
 	return (item) 
 	}  

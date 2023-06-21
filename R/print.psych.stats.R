@@ -1,4 +1,4 @@
-"print.psych.stats" <-
+"print_psych.stats" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
   cat("Call: ")

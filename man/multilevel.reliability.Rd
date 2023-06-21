@@ -14,7 +14,7 @@ mlr(x, grp = "id", Time = "time", items = c(3:5),alpha=TRUE,icc=FALSE, aov=TRUE,
         main="Lattice Plot by subjects over time")
 mlArrange(x, grp = "id", Time = "time", items = c(3:5),extra=NULL)
 mlPlot(x, grp = "id", Time = "time", items = c(3:5),extra=NULL, 
-   col=c("blue","red","black","grey"),
+   col=c("blue","red","black","grey"),type="b",
     main="Lattice Plot by subjects over time",...)
 multilevel.reliability(x, grp = "id", Time = "time", items = c(3:5),alpha=TRUE,icc=FALSE,
  aov=TRUE,lmer=FALSE,lme = TRUE,long=FALSE,values=NA,na.action="na.omit",
@@ -40,6 +40,7 @@ multilevel.reliability(x, grp = "id", Time = "time", items = c(3:5),alpha=TRUE,i
   \item{plot}{If TRUE, show a lattice plot of the data by subject}
   \item{extra}{Names or locations of extra columns to include in the long output.  These will be carried over from the wide form and duplicated for all items. See example.}
   \item{col}{Color for the lines in mlPlot.  Note that items are categorical and thus drawn in alphabetical order. Order the colors appropriately.}
+  \item{type}{The standard type for lines (p,l, b)}
   \item{main}{The main title for the plot (if drawn)}
   \item{...}{Other parameters to pass to xyplot}
 }
@@ -60,7 +61,7 @@ The generalizability of a single time point across all items (Random time effect
 (Shrout and Lane equation 7 with a correction per Sean Lane.)
 
 Generalizability of average time points across all items (Random effects). (Shrout and Lane, equation 8)
-\deqn{R_{kR} = \frac{\sigma^2_P + \sigma^2_{PI}/n.I}{\sigma^2_P + \sigma^2_{PI}/n.I + \sigma^2_T/n.T + \sigma^2_{PT}+ \sigma^2_e/n.I}}{RkR = (\sigma^2_P + \sigma^2_{PI}/n.I)/(\sigma^2_P +  \sigma^2_{PI}/n.I + \sigma^2_T/n.T + \sigma^2_{PT} \sigma^2_e/(n.I n.T))}
+\deqn{R_{kR} = \frac{\sigma^2_P + \sigma^2_{PI}/n.I}{\sigma^2_P + \sigma^2_{PI}/n.I + \sigma^2_T/n.T + \sigma^2_{PT}/n.T+ \sigma^2_e/n.I}}{RkR = (\sigma^2_P + \sigma^2_{PI}/n.I)/(\sigma^2_P +  \sigma^2_{PI}/n.I + \sigma^2_T/n.T + \sigma^2_{PT}/n.T + \sigma^2_e/(n.I n.T))}
 
 Generalizability of change scores (Shrout and Lane, equation  9)
 \deqn{R_{C} = \frac{\sigma^2_{PT}}{\sigma^2_{PT} + \sigma^2_e/n.I}}{RC = (\sigma^2_PT)/(\sigma^2_PT +  \sigma^2_e/(n.I))}.

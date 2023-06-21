@@ -100,7 +100,7 @@ pairs.panels(sat.act,pch=".")
 sb <- statsBy(sat.act,"education")
 pairs.panels(sb$mean,wt=sb$n)  #report the weighted correlations
 #compare with 
-pairs.panels(sb$mean) #unweighed correlations
+pairs.panels(sb$mean) #unweighted correlations
 }
 \keyword{multivariate} 
 \keyword{ hplot }

@@ -162,21 +162,23 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
  
  #complete rewrite to allow the true factor scores (theta) to be reported
 #rewritten March, 2021
+#added threshold option April 2023
  "sim" <-
-function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE) {
+function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL) {
  cl <- match.call()
  
 ##set up some default values 
 # 4 correlated factors growing over time
 # The four factors have a simplex structure
 
-
+  
+    
 if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    	if(is.null(Phi)) {Phi <- diag(NCOL(fx))         #create a simplex of the factors
                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
                      diag(Phi) <- max((alpha + lambda),1)
 	                Phi <- cov2cor(Phi)}
-   if(is.null(mu)) {mu <- seq(0,NCOL(fx)-1)}                  
+   if(is.null(mu)) {mu <- seq(0,NCOL(fx)-1)} else {if(length(mu)< NCOL(fx)) mu <- sample(mu,NCOL(fx),replace=TRUE)}                  
       }    #end of default
     if(is.null(fy)) {f <- fx} else {
     f <- superMatrix(fx,fy)} 
@@ -199,7 +201,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
      
  #Create factor scores and raw data       
  if((n>0) ) { 
-    
+        if(!is.null(threshold)) {if (length(threshold) < nvar) threshold <- sample(threshold, nvar, replace=TRUE)}
      theta <- matrix(rnorm(n * nfactors),ncol=nfactors)   #the orthogonal factors
      et <- eigen(Phi)
   
@@ -208,7 +210,9 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
      colnames(theta) <- colnames(f) 
       error <- t(U %*% matrix(rnorm(n * nvar),nrow=nvar))
       observed <- t(t(observed + error) + rep(means,n))  #observed are factors * loadings + error + means
-       
+       if(!is.null(threshold)) {
+        i <- 1:nvar
+		  observed <- t(t(observed [,i]) > threshold[i]) + 0 } 
        r <- cor(observed)  #will approximate the model
      }  
   	reliability <- diag(f %*% t(f))   
@@ -222,7 +226,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
  
  ###########################	
 "sim.simplex" <-
-	function(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0) {
+	function(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0,threshold=NULL) {
 	 cl <- match.call()
 	R <- matrix(0,nvar,nvar)
 	R[] <- alpha^abs(col(R)-row(R))*beta + lambda^2
@@ -231,14 +235,19 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 	colnames(R) <- rownames(R) <- paste("V",1:nvar,sep="")
 	
 	if(is.null(mu)) {mu <- rep(0,nvar)} 
+	
 	if(n>0) {
 	#observed.scores <- mvrnorm(n = n, mu, Sigma=R, tol = 1e-6, empirical = FALSE)
 	observed <- matrix(rnorm(nvar *n),n)
 	 	 eX <- eigen(R)
                 observed.scores <- matrix(rnorm(nvar * n),n)
                 observed.scores <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(observed)+mu)
+    if(!is.null(threshold)) {if (length(threshold) < nvar) threshold <- sample(threshold, nvar, replace=TRUE)
+             i <- 1:nvar
+		  observed.scores <- t(t(observed.scores [,i]) > threshold[i]) + 0 } 
+    colnames(observed.scores)<- paste0("V",1:nvar)           
 	observed <- cor(observed.scores)
-	results <- list(model=R,r=observed,observed=observed.scores)
+	results <- list(model=R,r=observed,observed=observed.scores) 
 	results$Call <- cl
 	class(results) <- c("psych", "sim")} else {results <- R}
 	  
@@ -249,25 +258,29 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 #simulate major and minor factors
 #modified October 18, 2022 to allow specification of g and fbig for all variables
 "sim.minor" <-
-function(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE) {
+function(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL, bipolar=TRUE, threshold=NULL) {
 if(is.null(fbig)) {loads <- c(.8,.6) 
   loads <- sample(loads,nvar/nfact,replace=TRUE)
 
 
 if(nfact == 1) {fx <- matrix(loads,ncol=1)} else {fx <- matrix(c(rep(c(loads,rep(0,nvar)),(nfact-1)),loads),ncol=nfact)}
 if(bipolar) fx <- 2*((sample(2,nvar,replace=TRUE) %%2)-.5) * fx
-} else {fx <- fbig}
+} else {fx <- fbig
+     nvar <- NROW(fx)
+     nfact <- NCOL(fx)}
 if(!is.null(g)) {if (length(g) < nvar) {g <- sample(g,nvar,replace=TRUE)}
         fx <- cbind(g,fx)
         }
  
-if(      !is.null(fsmall)) {
-fsmall  <- c(fsmall,rep(0,nvar/4))
-fs <- matrix(sample(fsmall,nvar*floor(nvar/2),replace=TRUE),ncol=floor(nvar/2))  
+if( !is.null(fsmall)) {
+if(is.null(n.small)) n.small=nvar/4
+fsmall  <- c(fsmall,rep(0,n.small))
+fs <- matrix(sample(fsmall,nvar*floor(n.small),replace=TRUE),ncol=floor((n.small)))  
 fload <- cbind(fx,fs)
+
 if(is.null(g)) {
-colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))} else {
-    colnames(fload) <- c("g",paste("F",1:nfact,sep=""),paste("m",1:(nvar/2),sep=""))}
+colnames(fload) <- c(paste("F",1:nfact,sep=""),paste("m",1:(n.small),sep=""))} else {
+    colnames(fload) <- c("g",paste("F",1:nfact,sep=""),paste("m",1:(n.small),sep=""))}
     } else {
      fload <- fx
       colnames(fload) <- paste0("F",1:nfact)
@@ -277,7 +290,7 @@ sanity.check <- h2  <- apply(fload,1,function(x) sum(x^2))
 if(max(sanity.check) >  1.0) {print(cbind(fload, h2))
                        stop("Model is impossible.  Communalities (h2) exceed 1. ")}
 Phi <- diag(ncol(fload))
-results <- sim(fload,n=n, Phi=Phi)
+results <- sim(fload,n=n, Phi=Phi,threshold=threshold)
          results$fload <- fload
  class(results) <- c("psych", "sim")
  return(results)
@@ -286,14 +299,14 @@ results <- sim(fload,n=n, Phi=Phi)
 
 #simulate various structures and summarize them
 "sim.omega" <-
-function(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10) {
+function(nvar=12,nfact=3,n=500,g=NULL,sem=FALSE,fbig=NULL,fsmall = c(-.2,.2),bipolar=TRUE,om.fact=3,flip=TRUE,option="equal",ntrials=10,threshold=NULL) {
 results <- matrix(NaN,nrow=ntrials,ncol=12)
 colnames(results) <- c("n","om.model","omega","ev.N","e.f1","omega.f1","Beta","omegaCFA","omegaSem","rms","RMSEA","coeff.v")
 
 #iterate the entire process n.trials times
 for (i in 1:ntrials) {
 #make up some data using the Tucker notion of big and small factors
-x <- try(sim.minor(nvar=nvar,nfact=nfact,n=n,g=g,fbig=fbig,fsmall=fsmall,bipolar=bipolar))
+x <- try(sim.minor(nvar=nvar,nfact=nfact,n=n,g=g,fbig=fbig,fsmall=fsmall,bipolar=bipolar,threshold=threshold))
 if(is.null(g)) {omega.model <- 0} else {gsum <- colSums(x$fload)[1]
     omega.model <- gsum^2/sum(x$model)}
 results[i,"om.model"] <- omega.model
@@ -382,7 +395,7 @@ return(result)
 
 "sim.general" <- 
 function(nvar=9,nfact=3, g=.3,r=.3,n=0) {
-#require(MASS)
+
   r1 <- matrix(r,nvar/nfact,nvar/nfact)
   R <- matrix(g,nvar,nvar)
   rf <- superMatrix(r1,r1)

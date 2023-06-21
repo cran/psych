@@ -339,7 +339,7 @@ return(invisible(results))
 
 
 #a cut down plotting function
-"plot.fa.parallel" <- 
+"plot_fa.parallel" <- 
 function(x,n.obs,fa,show.legend,error.bars=FALSE,main="Parallel Analysis Scree Plots",...) {
 if(missing(n.obs)) n.obs <- NULL
 if(missing(fa)) fa <- "both"
@@ -424,7 +424,7 @@ fp[[13]] <- fa.parallel(x,quant=.95,n.obs=n.obs)
 return(fp)
 }
 
-print.psych.parallel <- function(x,digits=2) {
+print_psych.parallel <- function(x,digits=2) {
 cat("Call: ")
               print(x$Call) 
               if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {

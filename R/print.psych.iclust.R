@@ -1,4 +1,4 @@
-"print.psych.iclust" <- 
+"print_psych.iclust" <- 
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
    cat("ICLUST (Item Cluster Analysis)")

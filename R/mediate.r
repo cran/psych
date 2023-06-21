@@ -667,7 +667,7 @@ if(nx >1) {
      		 
   #finally got the print to work on multiple dvs    11/24/19 	
   
-"summary.psych.mediate" <- function(x,digits=2,short=FALSE) {
+"summary_psych.mediate" <- function(x,digits=2,short=FALSE) {
  cat("Call: ")
     print(x$Call)
     dv <- x$var.names[["DV"]]

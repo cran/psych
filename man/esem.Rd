@@ -9,9 +9,10 @@
 }
 \usage{
 esem(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL, fm = "minres", 
-      rotate = "oblimin", plot = TRUE, cor = "cor", use = "pairwise",weight=NULL, ...)
+      rotate = "oblimin", rotateY="oblimin", plot = TRUE, cor = "cor",
+       use = "pairwise",weight=NULL, ...)
 esem.diagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
-regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
+	regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
      main="Exploratory Structural Model", ...)
 interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor", 
        use = "pairwise",weight=NULL)
@@ -25,6 +26,7 @@ interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor",
   \item{n.obs}{Number of observations (needed for eBIC and chi square), can be ignored.}
   \item{fm}{The factor  method to use, e.g., "minres", "mle" etc.  (see fa for details)}
   \item{rotate}{Which rotation to use. (see fa for details)}
+  \item{rotateY}{Which rotatation to use for the Y variables.}
   \item{plot}{If TRUE, draw the esem.diagram}
   \item{cor}{What options for to use for correlations (see fa for details)}
   \item{use}{"pairwise" for pairwise complete data, for other options see cor}
@@ -54,7 +56,8 @@ The difference between the esem and the interbattery approach is that the first 
 \value{
 \item{communality}{The amount of variance in each of the X and Y variables accounted for by the total model.}
 \item{sumsq}{The amount of variance accounted for by each factor -- independent of the other factors.}
-\item{dof}{Degrees of freedom of the model}
+\item{dof}{Degrees of freedom of the model.  }
+\item{esem.dof}{Alternatively consider the df1 for the X model and df2 for the Y model.  esem.dof = df1 + df2}
 \item{null.dof}{Degrees of freedom of the null  model (the correlation matrix)}
 \item{ENull}{chi square of the null model}
 \item{chi}{chi square of the model.  This is found by examining the size of the residuals compared to their standard error.}
@@ -93,6 +96,8 @@ Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika
 \author{William Revelle}
 
 \note{Developed September, 2016, revised December, 2018 to produce code for lavaan and sem.  the \code{\link{esem}} and \code{\link{esem.diagram}} functions. Suggestions or comments are most welcome. 
+
+This is clearly an exploratory approach and the degrees of freedom for the model are unclear.  
 }
 
 

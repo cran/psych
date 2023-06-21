@@ -1,7 +1,7 @@
 #reorganized May 25, 2009 to call several print functions (psych.print.x where x = {fa, omega, stats, vss}
 #reorganized, January 18, 2009 to make some what clearer
 #added the switch capability, August 25, 2011 following suggestions by Joshua Wiley
-
+#changed from print.psych.x to print_psych.x because of change to R development not liking print.x.y format
 "print.psych" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,short=TRUE,lower=TRUE,signif=NULL,...) { 
 #probably need to fix this with inherits but trying to avoid doing that now.
@@ -16,23 +16,23 @@ if(value =="set.cor") value <- "setCor"
 switch(value,
 
 ## the following functions have their own print function
-esem  = {print.psych.esem(x,digits=digits,short=short,cut=cut,...)},
- extension = { print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- extend = {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- fa =  {print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- fa.ci = { print.psych.fa.ci(x,digits=digits,all=all,... )},
- iclust= { print.psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- omega = { print.psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)},
- omegaSem=  {print.psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)},
-  principal ={print.psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
-  schmid = { print.psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)},
-  stats = { print.psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
-  vss= { print.psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
-  cta = {print.psych.cta(x,digits=digits,all=all,...)},
-  mediate = {print.psych.mediate(x,digits=digits,short=short,...)},
-  multilevel = {print.psych.multilevel(x,digits=digits,short=short,...)},
-  testRetest = {print.psych.testRetest(x,digits=digits,short=short,...)},
-  bestScales = {print.psych.bestScales(x,digits=digits,short=short,...)},
+esem  = {print_psych.esem(x,digits=digits,short=short,cut=cut,...)},
+ extension = { print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ extend = {print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ fa =  {print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ fa.ci = { print_psych.fa.ci(x,digits=digits,all=all,... )},
+ iclust= { print_psych.iclust(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ omega = { print_psych.omega(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+ omegaSem=  {print_psych.omegaSem(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  principal ={print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  schmid = { print_psych.schmid(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  stats = { print_psych.stats(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  vss= { print_psych.vss(x,digits=digits,all=all,cut=cut,sort=sort,...)},
+  cta = {print_psych.cta(x,digits=digits,all=all,...)},
+  mediate = {print_psych.mediate(x,digits=digits,short=short,...)},
+  multilevel = {print_psych.multilevel(x,digits=digits,short=short,...)},
+  testRetest = {print_psych.testRetest(x,digits=digits,short=short,...)},
+  bestScales = {print_psych.bestScales(x,digits=digits,short=short,...)},
 
 ##Now, for the smaller print jobs, just do it here.
 all=  {class(x) <- "list"
@@ -557,7 +557,7 @@ mixed= { cat("Call: ")
 omegaDirect ={ cat("Call: ")
         print(x$Call)
         cat("\nOmega from direct Schmid Leiman = ", round(x$omega.g,digits=digits),"\n")
-        print.psych.fa(x)
+        print_psych.fa(x)
         
        eigenvalues <- diag(t(x$loadings) %*% x$loadings)
        cat("\nWith eigenvalues of:\n")
@@ -790,7 +790,14 @@ reliability ={cat("Measures of reliability \n")
          
 residuals = { if(NCOL(x) == NROW(x)) {
    if (lower) {lowerMat (x,digits=digits)}} else {print(round(unclass(x),digits))}  #tweaked 1/30/18
-	},   
+	}, 
+	
+rmsea ={cat("RMSEA:  Root Mean Square Error of Approximation\n")
+       #"RMSEA=",round(x[[1]],digits=digits), "with lower bound = " ,round(x[[3]],digits=digits), "upper bound = ",round(x[[2]],digits=digits))
+     if(!is.null(x) ){cat("\nRMSEA and the ",1-x[[4]]  ,"confidence intervals are ",round(x[[1]],digits+1),round(x[[2]],digits+1),round(x[[3]],digits+1))
+       } },
+          
+
 	
 	
 scree = {

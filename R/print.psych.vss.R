@@ -1,4 +1,4 @@
-"print.psych.vss" <-
+"print_psych.vss" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...)  {
 if(!is.null(x$cfit.1)) {
  if(x$title!="Very Simple Structure") {

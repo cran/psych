@@ -21,7 +21,7 @@ quickView(x,top=8,bottom=8,from=1,to=NULL)
   \item{digits}{Round off the data to digits}
   \item{ellipsis}{Separate the head and tail with dots (ellipsis)}
   \item{from}{The first column to show (defaults to 1)}
-  \item{to}{The last column to show (defaults to the number of columns}
+  \item{to}{The last column to show (defaults to the number of columns)}
   \item{hlength}{The number of lines at the beginning to show (an alias for top)}
    \item{tlength}{The number of lines at the end to show (an alias for bottom)}
   

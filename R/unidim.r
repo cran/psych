@@ -82,7 +82,7 @@ uni <- f1$fit.off * (1-alpha.res)
   return(results)
   }
   
-  print.psych.unidim <- function(x,digits=2) {
+  print_psych.unidim <- function(x,digits=2) {
   cat("\nA measure of unidimensionality \n Call: ")
   print(x$Call)
   

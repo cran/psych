@@ -538,11 +538,12 @@ key.value <- function(key,r) {
 	 return(result)
 	}
 
-#
+#added the test for length>1 for the null case   4/16/23
 create.ordered.key <- function(x) {
+  if(length(x)>1 ){
   for (i in 1: length(x)) {
    if(sign(x[i])<0 ) rownames(x)[i] <- paste0("-",rownames(x)[i])
-   }
+   }}
    return(rownames(x))
      }
     
@@ -570,7 +571,7 @@ create.ordered.key <- function(x) {
      return(item.nums)
          }     
     
-predict.bestScales <- function(object,data,new.data) 
+predict_bestScales <- function(object,data,new.data) 
 {keys <- object$keys
 if (is.null(keys)){ keys<- object$key.list
  keys <- make.keys(data,keys) }  
@@ -585,7 +586,7 @@ return(predicted)
 
 
 #does not do what I want
-predict.wtdScales <- function(object,data,new.data) 
+predict_wtdScales <- function(object,data,new.data) 
 {weights <- object$weights
   
 stats <- describe(data,fast=TRUE,ranges=FALSE)
@@ -599,7 +600,7 @@ return(predicted)
 #####
 #print.psych.bestscales is called from the psych.print function
 
-print.psych.bestScales <- function(x,digits=2,short=NULL,...) {
+print_psych.bestScales <- function(x,digits=2,short=NULL,...) {
    cat("\nCall = ")
    print(x$Call)
 if(!is.null(x$items)) {

@@ -1,11 +1,14 @@
-"violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL, xlab=NULL, ylab=NULL,main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,
+"violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL, xlab=NULL, ylab=NULL,main="Density plot",vertical=TRUE,
+   dots=FALSE, rain=FALSE,jitter=.05,
 alpha=1,errors=FALSE,eyes=TRUE,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
 
-violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,xlab=xlab,ylab=ylab,main=main,vertical=vertical,dots=dots,jitter=jitter,alpha=alpha,errors=errors,eyes=eyes,adjust=adjust,restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale,...)
+violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,xlab=xlab,ylab=ylab,main=main,vertical=vertical,
+      dots=dots, rain=rain, jitter=jitter,alpha=alpha,errors=errors,eyes=eyes,adjust=adjust,restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale,...)
 }
 
 #switched from density = 50 to alpha =.5  to speed up the plotting 
-"violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,xlab=NULL, ylab=NULL, main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,alpha= 1,errors=FALSE,eyes=TRUE,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+"violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,xlab=NULL, ylab=NULL, main="Density plot",vertical=TRUE,
+    dots=FALSE,rain=FALSE, jitter=.05,alpha= 1,errors=FALSE,eyes=TRUE,adjust=1,restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
 SCALE=.3  #how wide are the plots?
 
 count.valid <- function(x) {sum(!is.na(x)) }
@@ -83,7 +86,6 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}
 tot.n.obs <- nrow(x)
 
                                                         
-
 names <- grp.name  
 if(is.null(grp.name) & !is.null(grp)) { grp.name <- paste(ps$x[1],stats[,"group1"])
 names <- grp.name  } else {if(length(grp.name) != NROW(stats)) names <- rownames(stats)}
@@ -116,21 +118,28 @@ rev <- (length(d[[1]]$y):1) #this prevents a line down the middle
 for(i in 1:nvarg) {
 if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
 #polygon(width*c(-d[[i]]$y,d[[i]]$y[rev])+i,c(d[[i]]$x,d[[i]]$x[rev]),density=density,col=col[i],...)
-if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]),col=col[i ],...)} else {
-         polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}
+#if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]),col=col[i ],...)} else {
+ #        polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}
+zero <- rep(0,length(d[[i]]$x))
+
+if(rain) {if(vertical) {polygon(width*c(d[[i]]$y,  zero)+i,c( d[[i]]$x,d[[i]]$x[rev]  ),col=col[i ],...)} else {
+         polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(d[[i]]$y,  zero)+i,col=col[i],...)}} else {
+         #not rain
+   if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]+i),col=col[i ],...)} else {
+         polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}}
          
-        
+#draw the quartiles and  medians        
 dmd <- max(which(d[[i]]$x <= medx[i]))
 d25 <- max(which(d[[i]]$x <= Q25[i]))
 d75 <- max(which(d[[i]]$x <= Q75[i]))
 if(vertical) {
-segments(x0=width*d[[i]]$y[dmd] +i ,y0=d[[i]]$x[dmd],x1=-width*d[[i]]$y[dmd]+i,y1=d[[i]]$x[dmd],lwd=2)
-segments(x0=width*d[[i]]$y[d25] +i ,y0=d[[i]]$x[d25],x1=-width*d[[i]]$y[d25]+i,y1=d[[i]]$x[d25])
-segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-width*d[[i]]$y[d75]+i,y1=d[[i]]$x[d75])
+segments(x0=width*d[[i]]$y[dmd] +i ,y0=d[[i]]$x[dmd],x1=-(rain-1)*width*d[[i]]$y[dmd]+i,y1=d[[i]]$x[dmd],lwd=2)
+segments(x0=width*d[[i]]$y[d25] +i ,y0=d[[i]]$x[d25],x1=-(rain-1)*width*d[[i]]$y[d25]+i,y1=d[[i]]$x[d25])
+segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-(rain-1)*width*d[[i]]$y[d75]+i,y1=d[[i]]$x[d75])
   } else {
-  segments(y0=width*d[[i]]$y[dmd] +i ,x0=d[[i]]$x[dmd],y1=-width*d[[i]]$y[dmd]+i,x1=d[[i]]$x[dmd],lwd=2)
-segments(y0=width*d[[i]]$y[d25] +i ,x0=d[[i]]$x[d25],y1=-width*d[[i]]$y[d25]+i,x1=d[[i]]$x[d25])
-segments(y0=width*d[[i]]$y[d75] +i ,x0=d[[i]]$x[d75],y1=-width*d[[i]]$y[d75]+i,x1=d[[i]]$x[d75])
+  segments(y0=width*d[[i]]$y[dmd] +i ,x0=d[[i]]$x[dmd],y1=(rain-1)*width*d[[i]]$y[dmd]+i,x1=d[[i]]$x[dmd],lwd=2)
+segments(y0=width*d[[i]]$y[d25] +i ,x0=d[[i]]$x[d25],y1=(rain-1)*width*d[[i]]$y[d25]+i,x1=d[[i]]$x[d25])
+segments(y0=width*d[[i]]$y[d75] +i ,x0=d[[i]]$x[d75],y1=(rain-1)*width*d[[i]]$y[d75]+i,x1=d[[i]]$x[d75])
   }
  } 
 
@@ -147,6 +156,21 @@ segments(y0=width*d[[i]]$y[d75] +i ,x0=d[[i]]$x[d75],y1=-width*d[[i]]$y[d75]+i,x
 if(dots) { if(!is.null(grp)) {
 if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
         stripchart(x[,ps$y]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} else {
+  if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1]]+ grp[,ps$x[,2]],vertical=vertical,add=TRUE,pch=pch,...)} else {
+       {stripchart(x[,ps$y]~ grp[,ps$x[1]],vertical=vertical,add=TRUE,pch=pch,...)} 
+       }}
+       } else {
+       if(jitter >0) {stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
+        stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} 
+ 
+                   }
+                   
+if(rain)  { if(!is.null(grp)) {
+ 
+ tempat <- 1:length(table(grp)) -.1
+if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch, at=tempat,...)} else {
+      
+        stripchart(x[,ps$y]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,at=tempat, ...) }} else {
   if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1]]+ grp[,ps$x[,2]],vertical=vertical,add=TRUE,pch=pch,...)} else {
        {stripchart(x[,ps$y]~ grp[,ps$x[1]],vertical=vertical,add=TRUE,pch=pch,...)} 
        }}
@@ -252,8 +276,7 @@ if(!is.null(var)) x <- x[,c(var,grp),drop=FALSE]
  }
  if(!missing(legend)) {
  location <- c("topleft","topright","top","left","right")
- 
- grp.names <- paste(names(grp),names(table(grp)))
+  grp.names <- paste(names(grp),names(table(grp)))
  leg.text <- grp.names
  legend(location[legend],legend=leg.text,col=c(1:n.grp),fill=c(1:n.grp), lty=c(1:n.grp))
 

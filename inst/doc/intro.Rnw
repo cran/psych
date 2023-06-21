@@ -24,7 +24,7 @@
 \usepackage{makeidx}        % allows index generation
 \usepackage[authoryear,round]{natbib} 
 %\usepackage{gensymb}
-\usepackage{longtable}
+%\usepackage{longtable}
 %\usepackage{geometry}   
 \usepackage{amssymb}    
 \usepackage{amsmath}
@@ -209,18 +209,18 @@ corr.test(myData)
 
 \item Apply various regression models.  
 
-Several functions are meant to do multiple regressions, either from the raw data or from a variance/covariance matrix, or a correlation matrix.  This is discussed in more detail in the ``How To use  \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
+Several functions are meant to do multiple regressions, either from the raw data or from a variance/covariance matrix, or a correlation matrix.  This is discussed in more detail in the ``How To use  \pfun{mediate} and \pfun{lmCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
 
 
 \begin{itemize}
-\item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.  If we have the raw data, we can also find the interaction term (x1 * x2).  Although we can find the regressions from just a correlation matrix, we can not find the interaction (moderation effect) unless given raw data.
+\item \pfun{lmCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.  If we have the raw data, we can also find the interaction term (x1 * x2).  Although we can find the regressions from just a correlation matrix, we can not find the interaction (moderation effect) unless given raw data.
 
 \begin{scriptsize}
 %%\begin{Schunk}
 \begin{Sinput}
 myData <- sat.act
 colnames(myData) <- c("mod1","med1","x1","x2","y1","y2")
-setCor(y1 + y2 ~  x1 + x2 + x1*x2, data = myData)
+lmCor(y1 + y2 ~  x1 + x2 + x1*x2, data = myData)
 \end{Sinput}
 %\end{Schunk}
 \end{scriptsize}
@@ -257,15 +257,17 @@ Many additional functions, particularly designed for basic and advanced psychome
 
 \begin{itemize}
 
-\item Test for the number of factors in your data using parallel analysis (\pfun{fa.parallel}) or Very Simple Structure (\pfun{vss}) .
+\item Test for the number of factors in your data using parallel analysis (\pfun{fa.parallel}) or Very Simple Structure (\pfun{vss}).  Perhaps even easier to use is the \pfun{nfactors} function.
 \begin{scriptsize}
 %%\begin{Schunk}
 \begin{Sinput}
 fa.parallel(myData)
 vss(myData)
+nfactors(myData)
 \end{Sinput}
 %\end{Schunk}
 \end{scriptsize}
+
 
 \item Factor analyze (see section 4.1)  the data with a specified number of factors (the default is 1), the default method is minimum residual, the default rotation for more than one factor is oblimin. There are many more possibilities such as minres (section 4.1.1), alpha factoring, and wls. Compare the solution to a hierarchical cluster analysis using the ICLUST algorithm \citep{revelle:iclust} (see section 4.1.6).  Also consider a hierarchical factor solution to find coefficient $\omega$).
 \begin{scriptsize}
@@ -312,7 +314,7 @@ The \Rpkg{psych} package \citep{psych} has been developed at Northwestern Univer
 
 Some of the functions (e.g., \pfun{read.file},  \pfun{read.clipboard}, \pfun{describe},  \pfun{pairs.panels},  \pfun{scatter.hist}, \pfun{error.bars}, \pfun{multi.hist}, \pfun{bi.bars}) are useful for basic data entry and descriptive analyses.
 
-Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions.  Rotations and transformations of these solutions are done by calling the many rotations available in the \Rpkg{GPArotation} package \citep{gpa.rotation}.
+Psychometric applications emphasize techniques for dimension reduction including factor analysis, cluster analysis, and principal components analysis.  The \pfun{fa} function includes six methods  of \iemph{factor analysis} (\iemph{minimum residual},  \iemph{principal axis}, \iemph{alpha factoring},  \iemph{weighted least squares}, \iemph{generalized least squares} and \iemph{maximum likelihood} factor analysis).  Principal Components Analysis (PCA) is also available through the use of the \pfun{principal} or \pfun{pca} functions.  Rotations and transformations of these solutions are done by calling the many rotations available in the \Rpkg{GPArotation} package \citep{gpa.rotate}.
 
  Determining the number of factors or components to extract may be done by using the Very Simple Structure \citep{revelle:vss} (\pfun{vss}), Minimum Average Partial correlation \citep{velicer:76} (\pfun{MAP}) or parallel analysis (\pfun{fa.parallel}) criteria.   These and several other criteria are included in the \pfun{nfactors} function.  Two parameter Item Response Theory  (IRT) models for dichotomous or polytomous items may be found by factoring \pfun{tetrachoric} or \pfun{polychoric} correlation matrices and expressing the resulting parameters in terms of location and discrimination  using  \pfun{irt.fa}.
 
@@ -339,7 +341,7 @@ In addition, there are a growing number of ``HowTo"s at the personality project.
 \item Using \R{} and the \Rpkg{psych} package to find \href{https://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
 \item Using  \R{} and the \Rpkg{psych} for \href{https://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
 \item Using the \pfun{scoreItems} function to find \href{https://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}.
-\item Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
+\item Using \pfun{mediate} and \pfun{lmCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
 
 
 \end{enumerate}
@@ -511,6 +513,8 @@ headTail(sa.mat)
 @
 \end{scriptsize}
 
+If some of the data are in character mode, \pfun{describe} and \pfun{describeBy} will automatically call \pfun{char2numeric} which will convert all fields to numeric.  Note that this will cause problems if the character order is not meaningful. In that case, the \pfun{recode} function should be used to   make the \pfun{char2numeric} coding make sense. 
+
 \subsubsection{Outlier detection using \pfun{outlier}}
 One way to detect unusual data is to consider how far each data point is from the multivariate centroid of the data.  That is, find the squared Mahalanobis distance  for each data point and then compare these to the expected values of $\chi^{2}$.  This produces a Q-Q (quantle-quantile) plot with the n most extreme data points labeled (Figure~\ref{fig:outlier}). The outlier values are in the vector d2.   
 
@@ -552,6 +556,28 @@ Sometimes categorical variables (e.g., college major, occupation, ethnicity) are
 
 Alternatively, sometimes data were coded originally as categorical (Male/Female, High School, some College, in college, etc.) and you want to convert these columns of data to numeric.  This is done by \pfun{char2numeric}.
 
+Values can be recoded into a different order, or converted to character form by  using the \pfun{recode} function, 
+
+\subsubsection{Joining data sets using \pfun{vJoin}}
+
+The \pfun{vJoin} function can be used to combine sets that might or might not  have overlapping subjects or overlapping items.   Unlike \pfun{cbind} or \pfun{rbind} which require the same number of rows ( \pfun{cbind}) or columns (\pfun{rbind}), \pfun{vJoin} will work with any two matrices or data frames of arbitrary dimensions.  Not matching cases are assigned values of NA.
+
+\begin{scriptsize}
+<<echo=TRUE>>=
+x <- matrix(1:40,ncol=10,byrow=TRUE)
+y <- matrix(1:20,ncol=4)
+xy <- vJoin(x,y)
+xy
+
+XY <-  vJoin(x,y,cnames=FALSE)
+XY
+#match on ids and columns
+x <- bfi[1:5,1:10]
+y <- bfi[3:8,2:6] 
+xy <- vJoin(x,y)
+xy #the merged data 
+@
+\end{scriptsize}
 
 \subsection{Simple descriptive graphics}
 Graphic descriptions of data are very helpful both for understanding the data as well as communicating important results.  Scatter Plot Matrices (SPLOMS) using the \pfun{pairs.panels} function  are useful ways to look for strange effects involving outliers and non-linearities.  \pfun{error.bars.by} will show group means with 95\% confidence boundaries.  By default,  \pfun{error.bars.by}  and  \pfun{error.bars} will show ``cats eyes'' to graphically show the confidence limits (Figure~\ref{fig:error.bars})  This may be turned off by specifying eyes=FALSE.    \pfun{densityBy} or  \pfun{violinBy} may be used to show the distribution of the data in ``violin'' plots (Figure~\ref{fig:violin}). (These are sometimes called ``lava-lamp" plots.)  
@@ -642,7 +668,8 @@ Graphical presentation of data may be shown using box plots to show the median a
 <<violin>>=
 png('violin.png')
 data(sat.act)
-violinBy(SATV+SATQ ~ gender, data=sat.act,grp.name=cs(Verbal.M,Verbal.F, Quan.M,Quant.F),  main="Density Plot by gender for SAT V and Q")
+violinBy(SATV+SATQ ~ gender, data=sat.act,grp.name=cs(Verbal.M,Verbal.F, Quan.M,Quant.F), 
+     main="Density Plot by gender for SAT V and Q")
 dev.off()
 @
 \end{scriptsize}
@@ -751,8 +778,10 @@ The \pfun{bi.bars} function summarize the characteristics of two groups (e.g., m
 \begin{center}
 \begin{scriptsize}
    %  <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-data(bfi)  
+
+ 
 <<bibars>>=
+data(bfi) 
 png( 'bibars.png' )
 bi.bars(bfi,"age","gender",ylab="Age",main="Age by males and females")
 dev.off()
@@ -769,7 +798,6 @@ dev.off()
 \begin{scriptsize}
 <<histo>>=
 png('histo.png')
-data(sat.act)
 densityBy(bfi,"age",grp="gender")
 dev.off()
 @
@@ -788,8 +816,9 @@ The \pfun{scatterHist} function shows scatter plots for two variables and includ
 \begin{center}
 \begin{scriptsize}
    %  <<print=FALSE,echo=TRUE, fig=TRUE,eps=FALSE>>=
-data(GERAS)
 <<scatterhist>>=
+data(GERAS)
+
 png( 'scatterHist.png' )
 psych::scatterHist(F ~ M + gender, data=GERAS.scales, cex.point=.3,smooth=FALSE, 
 xlab="Masculine Scale",ylab="Feminine Scale",correl=FALSE, 
@@ -846,12 +875,13 @@ Perhaps a better way to see the structure in a correlation matrix is to display 
 \begin{scriptsize}
 <<corplot.png>>=
 png('corplot.png')
-corPlot(Thurstone,numbers=TRUE,upper=FALSE,diag=FALSE,main="9 cognitive variables from Thurstone")
+corPlot(Thurstone,numbers=TRUE,upper=FALSE,diag=FALSE,cex=.7,
+     main="9 cognitive variables from Thurstone")
 dev.off()
 @
 \end{scriptsize}
 \includegraphics{corplot.png}
-\caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color.  By using the 'numbers' option, the values are displayed as well. By default, the complete matrix is shown.  Setting upper=FALSE and diag=FALSE shows a cleaner figure. }
+\caption{The structure of correlation matrix can be seen more clearly if the variables are grouped by factor and then the correlations are shown by color.  By using the 'numbers' option, the values are displayed as well. By default, the complete matrix is shown.  Setting upper=FALSE and diag=FALSE shows a cleaner figure.  The cex parameter specifies the character size.   }
 \label{fig:cor.plot}
 \end{center}
 \end{figure}
@@ -959,9 +989,13 @@ The Pearson correlation of dichotomous data is also known as the $\phi$ coeffici
 \begin{center}
 \begin{scriptsize}
 <<echo=TRUE>>=
+<<tetrar.png>>=
+png('tetrar.png')
 draw.tetra()
+dev.off()
 @
 \end{scriptsize}
+\includegraphics{tetrar.png}
 \caption{The tetrachoric correlation estimates what a Pearson correlation would be given a two by two table of observed values assumed to be sampled from a bivariate normal distribution.  The $\phi$ correlation is just a Pearson r performed on the observed values.}
 \label{fig:tetra}
 \end{center}
@@ -1023,15 +1057,15 @@ faBy(sb,nfactors=5)  #find the 5 factor solution for each education level
 
 \section{ Multiple Regression, mediation, moderation, and set correlations}
 
-The typical application of the \fun{lm} function is to do a linear model of one Y variable as a function of multiple X variables.  Because  \fun{lm} is designed to analyze complex interactions, it requires raw data as input.  It is, however, sometimes convenient to do \iemph{multiple regression} from a correlation or covariance matrix.  This is done using the  \pfun{setCor} which will work with either raw data, covariance matrices, or correlation matrices. 
+The typical application of the \fun{lm} function is to do a linear model of one Y variable as a function of multiple X variables.  Because  \fun{lm} is designed to analyze complex interactions, it requires raw data as input.  It is, however, sometimes convenient to do \iemph{multiple regression} from a correlation or covariance matrix.  This is done using the  \pfun{lmCor} which will work with either raw data, covariance matrices, or correlation matrices. 
 
 \subsection{Multiple regression from data or correlation matrices}
 
-The \pfun{setCor} function will take a set of y variables predicted from a set of x variables, perhaps with a set of z covariates removed from both x and y.  Consider the \iemph{Thurstone} correlation matrix and find the multiple correlation of the last five variables as a function of the first 4.  
+The \pfun{lmCor} function will take a set of y variables predicted from a set of x variables, perhaps with a set of z covariates removed from both x and y.  Consider the \iemph{Thurstone} correlation matrix and find the multiple correlation of the last five variables as a function of the first 4.  
 
 \begin{scriptsize}
 <<echo=TRUE>>=
-setCor(y = 5:9,x=1:4,data=Thurstone)
+lmCor(y = 5:9,x=1:4,data=Thurstone)
 @
 \end{scriptsize}
 
@@ -1039,14 +1073,14 @@ By specifying the number of subjects in correlation matrix, appropriate estimate
 
 \begin{scriptsize}
 <<echo=TRUE>>=
-sc <- setCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
+sc <- lmCor(y = 5:9,x=3:4,data=Thurstone,z=1:2)
 round(sc$residual,2)
 @
 \end{scriptsize}
 
 \subsection{Mediation and Moderation analysis}
 
-Although multiple regression is a straightforward method for determining the effect of multiple predictors ($x_{1, 2, ... i}$) on a criterion variable, y, some prefer to think of the effect of one predictor, x, as mediated by another variable, m \citep{preacher:04}.  Thus, we we may find  the indirect path  from x to m, and then from m to y as well as the direct path from x to y.  Call these paths a, b, and c, respectively.  Then the indirect effect of x on y through m is just ab and the direct effect is c. Statistical tests of the ab effect are best done by bootstrapping.  This is discussed in detail in the ``How To use  \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
+Although multiple regression is a straightforward method for determining the effect of multiple predictors ($x_{1, 2, ... i}$) on a criterion variable, y, some prefer to think of the effect of one predictor, x, as mediated by another variable, m \citep{preacher:04}.  Thus, we we may find  the indirect path  from x to m, and then from m to y as well as the direct path from x to y.  Call these paths a, b, and c, respectively.  Then the indirect effect of x on y through m is just ab and the direct effect is c. Statistical tests of the ab effect are best done by bootstrapping.  This is discussed in detail in the ``How To use  \pfun{mediate} and \pfun{lmCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis} tutorial. 
 
 
 Consider the example from \cite{preacher:04} as analyzed using the \pfun{mediate} function and the subsequent graphic from \pfun{mediate.diagram}.  The data are found in the example for \pfun{mediate}.
@@ -1077,11 +1111,15 @@ preacher <- mediate(SATIS ~ THERAPY + (ATTRIB),data=sobel)  #The example in Prea
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<echo=TRUE>>=
+
+<<mediate.png>>=
+png('mediate.png')
 mediate.diagram(preacher)
+dev.off()
 @
 \end{scriptsize}
-\caption{A mediated model taken from Preacher and Hayes, 2004 and solved using the \pfun{mediate} function. The direct path from Therapy to Satisfaction has a an effect of .76, while the indirect path through Attribution has an effect of .33. Compare this to the normal regression graphic created by setCor.diagram.}
+\includegraphics{mediate.png}
+\caption{A mediated model taken from Preacher and Hayes, 2004 and solved using the \pfun{mediate} function. The direct path from Therapy to Satisfaction has a an effect of .76, while the indirect path through Attribution has an effect of .33. Compare this to the normal regression graphic created by lmDiagram.}
 \label{fig:mediate}
 \end{center}
 \end{figure}
@@ -1089,12 +1127,18 @@ mediate.diagram(preacher)
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<echo=TRUE>>=
-preacher <- setCor(SATIS ~ THERAPY + ATTRIB,data =sobel,std=FALSE)
-setCor.diagram(preacher)
+<<echo=FALSE>>=
+preacher.lm <- lmCor(SATIS ~ THERAPY + ATTRIB,  data=sobel)  #The example in Preacher and Hayes
+@
+
+<<preacherlm.png>>=
+png('preacherlm.png')
+diagram(preacher.lm)
+dev.off()
 @
 \end{scriptsize}
-\caption{The conventional regression model for the Preacher and Hayes, 2004 data set  solved using the \pfun{sector} function. Compare this to the previous figure.}
+\includegraphics{preacherlm.png}
+\caption{The conventional regression model for the Preacher and Hayes, 2004 data set  solved using the \pfun{lmCor} function. Compare this to the previous figure.}
 \label{fig:mediate}
 \end{center}
 \end{figure}
@@ -1105,12 +1149,12 @@ setCor.diagram(preacher)
 
 
 \begin{itemize}
-\item \pfun{setCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.
+\item \pfun{lmCor} will take raw data or a correlation matrix and find (and graph the path diagram) for multiple y variables depending upon multiple x variables.
 
 \begin{scriptsize}
 %\begin{Schunk}
 \begin{Sinput}
-setCor(SATV +      SATQ ~ education + age, data = sat.act, std=TRUE)
+lmCor(SATV +      SATQ ~ education + age, data = sat.act, std=TRUE)
 \end{Sinput}
 %\end{Schunk}
 \end{scriptsize}
@@ -1127,17 +1171,20 @@ mediate( SATV ~ education+ age + (ACT), data =sat.act,std=TRUE,n.iter=50)
 \end{scriptsize}
 
 
- \item \pfun{mediate}  will also  take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It will form the product term either from the mean centered data or from the raw data. It then tests the mediation effect using a boot strap.   The data set is taken from \cite{garcia:10}.  The number of iterations for the boot strap was set to 50 for speed.  The default number of boot straps is 5000.  See the help page for the \pfun{mediate} function for more details.  For a much longer discussion of how to use the \pfun{mediate} function, see the ``HowTo" Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
+ \item \pfun{mediate}  will also  take raw data and find  (and graph the path diagram) a moderated multiple regression model  for multiple y variables depending upon multiple x variables mediated through a mediation variable. It will form the product term either from the mean centered data or from the raw data. It then tests the mediation effect using a boot strap.   The data set is taken from \cite{garcia:10}.  The number of iterations for the boot strap was set to 50 for speed.  The default number of boot straps is 5000.  See the help page for the \pfun{mediate} function for more details.  For a much longer discussion of how to use the \pfun{mediate} function, see the ``HowTo" Using \pfun{mediate} and \pfun{lmCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}.
 
 
 \begin{figure}[htbp]
 \begin{center}
 \begin{scriptsize}
-<<echo=FALSE>>=
+<<garcia.png>>=
+png('garcia.png')
 mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
+  dev.off()
 @
 \end{scriptsize}
+\includegraphics{garcia.png}
 \caption{Moderated multiple regression requires the raw data. By default, the data are mean centered before find the product term.  }
 \label{default}
 \end{center}
@@ -1147,14 +1194,14 @@ mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
 \end{itemize}
 
 
-\subsection{Set Correlation}
+\subsection{Set Correlation using \pfun{lmCor}}
 
 
-An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{setCor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
+An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{lmCor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
 
- \pfun{setCor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
+ \pfun{lmCor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
 
-Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{setCor}. Two things to notice.  \pfun{setCor} works on the \emph{correlation} or  \emph{covariance}  or \emph{raw data} matrix, and thus if using the correlation matrix, will report standardized or raw $\hat{\beta}$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, or if the analysis is done on raw data, statistical tests of significance are applied.
+Consider the correlations of the 6 variables in the \pfun{sat.act} data set.  First do the normal multiple regression, and then compare it with the results using \pfun{lmCor}. Two things to notice.  \pfun{lmCor} works on the \emph{correlation} or  \emph{covariance}  or \emph{raw data} matrix, and thus if using the correlation matrix, will report standardized or raw $\hat{\beta}$ weights.  Secondly, it is possible to do several multiple regressions simultaneously.  If the number of observations is specified, or if the analysis is done on raw data, statistical tests of significance are applied.
 
 For this example, the analysis is done on the correlation matrix rather than the raw data.
 
@@ -1165,7 +1212,7 @@ C <- cov(sat.act,use="pairwise")
 model1 <- lm(ACT~ gender + education + age, data=sat.act)
 summary(model1)
 @
-Compare this with the output from \pfun{setCor}.
+Compare this with the output from \pfun{lmCor}.
 <<echo=TRUE>>=
 #compare with sector
 setCor(c(4:6),c(1:3),C, n.obs=700)
@@ -1273,7 +1320,7 @@ News and a history of changes are available in the NEWS and CHANGES files in the
 
 %\begin{Schunk}
 \begin{Sinput}
-> news(Version >= "2.1.1",package="psych")
+news(Version >= "2.3.5",package="psych")
 \end{Sinput}
 %\end{Schunk}
 
@@ -1375,10 +1422,10 @@ Dwyer, P.~S. (1937).
 \newblock {\em Psychometrika}, 2(3):173--178.
 
 
-\bibitem[\protect\astroncite{Eagly and Revelle}{2021}]{eagly:revelle}
-Eagly and Revelle (2021).
+\bibitem[\protect\astroncite{Eagly and Revelle}{2022}]{eagly:revelle}
+Eagly and Revelle (2022).
 \newblock Understanding the Magnitude of Psychological Differences Between Women and Men Requires Seeing the Forest and the Trees (in press)
-\newblock {\em Perspectives in Psychological Science},(in press)
+\newblock {\em Perspectives in Psychological Science})
 
 \bibitem[\protect\astroncite{Everitt}{1974}]{everitt:74}
 Everitt, B. (1974).
@@ -1461,6 +1508,9 @@ Jennrich, R. and Bentler, P. (2011).
 \newblock {\em Psychometrika}, pages 1--13.
 \newblock 10.1007/s11336-011-9218-4.
 
+
+
+
 \bibitem[\protect\astroncite{Jensen and Weng}{1994}]{jensen:weng}
 Jensen, A.~R. and Weng, L.-J. (1994).
 \newblock What is a good g?
@@ -1524,12 +1574,11 @@ Revelle, W. (1979).
 \newblock Hierarchical cluster-analysis and the internal structure of tests.
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
-\bibitem[\protect\astroncite{Revelle}{2021}]{psych}
+\bibitem[\protect\astroncite{Revelle}{2023}]{psych}
 Revelle, W. (2032).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 2.1.9
-
+\newblock R package version 2.3.5
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).
 \newblock {\em An introduction to psychometric theory with applications in

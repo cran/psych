@@ -10,29 +10,29 @@
 \description{Among the many ways to do latent variable exploratory factor analysis (EFA), one of the better is to use Ordinary Least Squares (OLS) to find the minimum residual (minres) solution. This produces solutions very similar to maximum likelihood even for badly behaved matrices. A variation on minres is to do weighted least squares (WLS). Perhaps the most conventional technique is principal axes (PAF).  An eigen value decomposition of a correlation matrix is done and then the communalities for each variable are estimated by the first n factors. These communalities are entered onto the diagonal and the procedure is repeated until the sum(diag(r)) does not vary.   Yet another estimate procedure is maximum likelihood. For well behaved matrices, maximum likelihood factor analysis (either in the fa or in the factanal function) is probably preferred.  Bootstrapped confidence intervals of the loadings and interfactor correlations are found by fa  with n.iter > 1. }
 
 \usage{
-fa(r,nfactors=1,n.obs = NA,n.iter=1, rotate="oblimin", scores="regression", 
-residuals=FALSE, SMC=TRUE, covar=FALSE,missing=FALSE,impute="none",
-min.err = 0.001,  max.iter = 50,symmetric=TRUE, warnings=TRUE, fm="minres",
- alpha=.1,p=.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
- correct=.5,weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE,...)
+fa(r, nfactors=1, n.obs = NA, n.iter=1, rotate="oblimin", scores="regression", 
+	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE,	impute="none",
+	min.err = 0.001,  max.iter = 50, symmetric=TRUE, warnings=TRUE, fm="minres",
+ 	alpha=.1, p=.05, oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor",
+ 	correct=.5, weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
- SMC=TRUE, covar=FALSE,missing=FALSE,impute="median",min.err = 0.001, 
-max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,
-oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5, 
-weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE,...)
+ 	SMC=TRUE, covar=FALSE, missing=FALSE, impute="median", min.err = 0.001, 
+	max.iter=50, symmetric=TRUE, warnings=TRUE, fm="minres", alpha=.1,
+	oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor", correct=.5, 
+	weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,...)
 
-fa.pooled(datasets,nfactors=1,rotate="oblimin",scores="regression", 
-residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001
-,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, 
-p =.05, oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",
-correct=.5,weight=NULL,...) 
+fa.pooled(datasets,nfactors=1,rotate="oblimin", scores="regression", 
+	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE,impute="median", min.err = 
+	.001, max.iter=50,symmetric=TRUE, warnings=TRUE, fm="minres", alpha=.1, 
+	p =.05, oblique.scores=FALSE,np.obs=NULL, use="pairwise", cor="cor",
+	correct=.5,	weight=NULL,...) 
 
-fa.sapa(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
-residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,
-max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05, 
-oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,
-frac=.1,...) 
+fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
+	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE, impute="median", 
+	min.err = .001, max.iter=50,symmetric=TRUE,warnings=TRUE, fm="minres", alpha=.1, 
+	p =.05, oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor", correct=.5, 
+	weight=NULL, frac=.1,...) 
 
 
 }
@@ -74,7 +74,7 @@ frac=.1,...)
  
 \details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most commonly preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}). If variables are thought to represent a ``true" or latent part then factor analysis provides an estimate of the correlations with the latent factor(s) representing the data.  If variables are thought to be measured without error, then principal components provides the most parsimonious description of the data.  
 
-Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller)  that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.  
+Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller) than that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.  
 
 The fa function will do factor analyses using one of six different algorithms: minimum residual (minres, aka ols, uls), principal axes,  alpha factoring, weighted least squares, minimum rank, or maximum likelihood.
 
@@ -291,7 +291,7 @@ Some correlation matrices that arise from using pairwise deletion or from tetrac
 
 One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
 
-Although both  fm ="pa" or fm="minres" will work with these ``improper" matrices, the goodness of fit tests do not.  Thus, by default, calls to fa.stats will pass the smooth parameter as TRUE.  This may be prevented by forcing smooth=FAlSE.  Npt smoothing does not affect the pa or minres solution, but will affect the goodness of fit statistics slightly.
+Although both  fm ="pa" or fm="minres" will work with these ``improper" matrices, the goodness of fit tests do not.  Thus, by default, calls to fa.stats will pass the smooth parameter as TRUE.  This may be prevented by forcing smooth=FALSE.  Npt smoothing does not affect the pa or minres solution, but will affect the goodness of fit statistics slightly.
 
 
 

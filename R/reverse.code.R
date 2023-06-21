@@ -37,10 +37,6 @@ if(is.list(keys) | is.character(keys)){ keys <- make.keys(items,keys)
 return(x)
 }
  
- "recode" <- function(x,where,isvalue,newvalue) {
-  if (missing(where))  where <-1:NCOL(x)
-  x[,where==isvalue] <- newvalue
-   }
  
 "scrub" <- 
  function (x, where, min, max, isvalue,newvalue,cuts=NULL) 
@@ -83,6 +79,7 @@ return(x)
 #fixed August 9, 2019 to correctly process is.numeric
 #modified December 12th ,2020 to include the "bucketing" option
 #modified December 2nd, 2021 to make Nan and inf values NA
+
 
 
 

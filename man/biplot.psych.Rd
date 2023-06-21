@@ -54,7 +54,7 @@ This will work for objects produced by \code{\link{fa}}, \code{\link{fa.poly}} o
 
 However, both of those functions produce a weights matrix, which, in combination with the original data can be used to find the scores by using \code{\link{factor.scores}}.  Since biplot.psych is looking for two elements of the x object: x$loadings and x$scores, you can create the appropriate object to plot, or add it to the factor object See the third and 	fourth examples.
 
-In order to just plot the loadings, use \code{\link{fa.plot}}
+In order to just plot the loadings, use \code{\link{fa.plot}}.  Or, if we want to show the loadings as vectors, use pch = "". 
 
  
 }

@@ -34,6 +34,8 @@ function(x, top=4,bottom=4,from=1,to=NULL,digits=2, hlength=4,tlength=4,ellipsis
   dots  <- rep("...",nvar)
    h <- data.frame(head(x[from:to],hlength))
    t <- data.frame(tail(x[from:to],tlength))
+   nvar <- NCOL(h)
+   dots  <- rep("...",nvar)
  for (i in 1:nvar) {
     if(is.numeric(h[1,i])) {h[i] <- round(h[i],digits)
                          t[i] <- round(t[i],digits)

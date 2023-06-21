@@ -6,15 +6,15 @@
 # figure out which psych function was called and then call the appropriate diagram
 value <- NULL
 omega <- bassAck <- extend <- extension <-  lavaan <- fa.reg <-  NULL    #weird requirement to avoid being global
-#if(length(class(fit)) == 1) {if (inherits(fit,"lavaan")) fn <- "lavaan" } 
+if(length(class(fit)) == 1) {if (inherits(fit,"lm")) value <- "lm" } 
 
 
- #if(length(class(fit)) > 1)  {
-    names <- cs(lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem, setCor)
+if(length(class(fit)) > 1)  {
+    names <- cs(lm, lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor)
     value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
-#     } else {value <- "other"}
+     } 
 
 switch(value,  #replaced a series of if statements to switch  12/23/18
 fa  = {fa.diagram(fit,...) },
@@ -27,7 +27,9 @@ extend = {extension.diagram(fit ,...)},
 extension ={extension.diagram(fit,...)},
 fa.reg ={extension.diagram(fit,...)},
 esem = {esem.diagram(fit,...)},
-setCor = {setCor.diagram(fit,...)}
+setCor = {lmDiagram(fit,...)},
+lm = {lmDiagram(fit, ...)},
+mediate ={mediate.diagram(fit,...)}
 )
 }
 

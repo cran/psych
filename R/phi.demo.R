@@ -37,7 +37,7 @@ for (i in 4:length(d.mat)) {
   return(result)
 }
 
-print.psych.phi <- function(x,digits=2) {
+print_psych.phi <- function(x,digits=2) {
 print(x$tetrachoric)
 cat("\nPearson (phi) below the diagonal, phi2tetras above the diagonal\n")
 print(round(x$phis,digits))

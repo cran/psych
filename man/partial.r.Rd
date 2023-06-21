@@ -39,7 +39,7 @@ In the case of non-positive definite matrices, find the Pinv (pseudo inverse) of
 }
 \author{ William Revelle }
 
-\seealso{ \code{\link{setCor}} for a similar application for regression. \code{\link{lowerMat}} to neatly show a correlation matrix, and \code{\link{corr.p}} to find the confidence intervals of a correlation. }
+\seealso{ \code{\link{lmCor}} for a similar application for regression. \code{\link{lowerMat}} to neatly show a correlation matrix, and \code{\link{corr.p}} to find the confidence intervals of a correlation. }
 
 \examples{
 jen <- make.hierarchical()    #make up a correlation matrix 

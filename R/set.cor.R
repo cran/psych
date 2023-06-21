@@ -19,6 +19,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #modified July 4, 2018 to add intercepts and confidence intervals (requested by Franz Strich)
   #Modified September 25, 2019 to add the confidence intervals of the intercepts 
   #This was a substantial rewrite of the code to include the moments matrix
+  #modified June 5, 2023 to allow the complete cases option to work.
   
    cl <- match.call()
     #convert names to locations 
@@ -50,7 +51,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
   if(!isCorrelation(data))  {  # We have a data matrix rather than a correlation matrix 
 
  
-                  data <- data[,c(y,x,z,ex)] 
+                 if(use=="complete") {cc <- complete.cases(data[,c(y,x,z,ex)]) 
+                                      data <- data[cc,c(y,x,z,ex)] } else { data <- data[,c(y,x,z,ex)] }
                    data <- char2numeric(data)              
                    if(!is.matrix(data)) data <- as.matrix(data)  
                     data <- cbind(Intercept=1,data) 
@@ -86,7 +88,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                     }
 
                     }
-                   n.obs <- max(pairwiseCount(data),na.rm=TRUE)  #this overestimates the number of observations for missing data 
+                   if(use=="complete") {n.obs <- min(pairwiseCount(data), na.rm=TRUE) } else {n.obs <- max(pairwiseCount(data),na.rm=TRUE)}  #this overestimates the number of observations for missing data 
                    df <- n.obs - length(x) -length(z)  #we have the intercept as one degree of freedom, partialed variables count as well
                     means <- colMeans(data,na.rm=TRUE)   #use these later to find the intercept
                     sds <- apply(data,2,sd, na.rm=TRUE)
@@ -125,7 +127,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
     #We do all the calculations on the Covariance or correlation matrix (m)
    #convert names to locations                 
 
-        nm <- dim(data)[1]
+        if(use=="complete") {nm <- n.obs} else {nm <- dim(data)[1]}
         xy <- c(x,y)
         numx <- length(x)
      	numy <- length(y)
@@ -388,7 +390,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,std=std,Vaxy=Vaxy,Call = cl)} else {
      	              set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Call = cl)}
      	class(set.cor) <- c("psych","setCor")
-     	if(plot) setCor.diagram(set.cor,main=main,show=show)
+     	if(plot) lmDiagram(set.cor,main=main,show=show)
      	return(set.cor)
      	
      	}
@@ -409,20 +411,37 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 #mdified Sept 22, 2018 to allow cex and l.cex to be set
 
 #mdified November, 2017 to allow an override of which way to draw the arrows  
-setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...) { 
-if(missing(l.cex)) l.cex <- cex  
-beta <- round(sc$coefficients,digits)
+#modifed May 1, 2023 to allow for drawing lm output as well.
 
-if(rownames(beta)[1] %in% c("(Intercept)", "intercept*", "(Intercept)*")) {intercept <- TRUE} else {intercept <- FALSE}
+lmDiagram <- setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...) { 
+if(missing(l.cex)) l.cex <- cex  
+
+beta <- round(sc$coefficients,digits)
+#two cases
+#the normal case, the model comes from lmCor
+#the 2nd case, the model comes from lm
+if(length(class(sc)) ==1) {lm<- TRUE} else { lm <- FALSE}
+if(!lm) {#case 1
+if(rownames(beta)[1] %in% c("(Intercept)", "intercept*")) {intercept <- TRUE} else {intercept <- FALSE}
+   
 x.matrix <- round(sc$x.matrix,digits)
 
 y.matrix <- round(sc$y.matrix,digits)
 y.resid <- round(sc$resid,digits)
 x.names <- rownames(beta)
+
 if(intercept){ x.matrix <- x.matrix[-intercept,-intercept]
  x.names <- x.names[-intercept] 
-beta <- beta[-intercept,,drop=FALSE]}
+ 
+beta <- beta[-intercept,,drop=FALSE]
+}
 y.names <- colnames(beta)
+} else { x.matrix <- round(cov(sc$model[-1]), digits=digits)  #case 2  from lmkl
+       x.names <- colnames(sc$model)[-1]
+       beta <- as.matrix(beta[-1]) #make the vector into a matrix
+      y.names <-  colnames(sc$model)[1]
+      }
+      
 nx <- length(x.names)
 ny <- length(y.names) 
 top <- max(nx,ny)
@@ -431,7 +450,6 @@ ylim=c(0,top)
 top <- max(nx,ny)
 x <- list()
 y <- list()
-
 var.list <- arrow.list <-  curve.list <- self.list<- list()
 x.scale <- top/(nx+1)
 y.scale <- top/(ny+1)
@@ -469,11 +487,9 @@ if(nx >1) {
  multi.curved.arrow(curve.list,...)
  multi.self(self.list,...)
 }
-		 
- 
 
-     	
-print.psych.setCor <- function(x,digits=2) {
+
+print_psych.setCor <- function(x,digits=2) {
 
 cat("Call: ")
               print(x$Call)

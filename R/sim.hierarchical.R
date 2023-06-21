@@ -5,7 +5,6 @@
 # "sim.hierarchical" <-
 # function (gload=NULL,fload=NULL,n=0,raw=FALSE,mu = NULL) {
 # cl <- match.call()
-# require(MASS)
 #  if(is.null(gload)) gload=matrix(c(.9,.8,.7),nrow=3)
 #  if(is.null(fload)) {fload <-matrix(c(.8,.7,.6,rep(0,9),.7,.6,.5,rep(0,9),.6,.5,.4),   ncol=3)}
 # 
@@ -66,7 +65,7 @@ for(i in (nvar+1):NROW(f)) {
 #modified May 16 to be able to return "items" rather than continuous scales
 
 "sim.hierarchical" <-
-function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL,categorical=FALSE, low=-3,high=3) {
+function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL,categorical=FALSE, low=-3,high=3,threshold=NULL) {
 
 cl <- match.call()
 #first, prepare the jensen defaults
@@ -93,6 +92,7 @@ cl <- match.call()
      nvar <- nrow(fload)
     colnames(model) <- rownames(model)<- paste0("V",1:nvar) 
     n.groups <- NCOL(gfstar )
+    if(!is.null(threshold)) {if (length(threshold) < nvar) threshold <- sample(threshold, nvar, replace=TRUE)}
     
   if(n>0) { #make up the data
     
@@ -108,10 +108,13 @@ cl <- match.call()
      observed <-  theta + error %*% (U)  #weight the error by uniqueness of the variables
      
      if(categorical) {#convert from continuous to categorical
-        
+         if(is.null(threshold)) {
     	observed = round(observed)       #round all items to nearest integer value
 		observed[(observed <= low)] <- low     
-		observed[(observed > high) ] <- high   
+		observed[(observed > high) ] <- high 
+		} else {
+		 i <- 1:nvar
+		  observed <- t(t(observed [,i]) > threshold[i]) + 0 }  
 		}
 
      colnames(observed) <- paste0("V",1:nvar)

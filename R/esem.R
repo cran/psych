@@ -2,7 +2,8 @@
 #and then linking the two sets
 #slightly improved December 15, 2018 to label the factors better
 
-"esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",plot=TRUE,cor="cor",use="pairwise",weight=NULL,...) {
+"esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",
+rotateY="oblimin",plot=TRUE, cor="cor", use="pairwise",weight=NULL,...) {
 if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
 
 #vars <- order(c(vars1,vars2))
@@ -35,7 +36,7 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
  nX <- length(varsX)
  nY <-length(varsY)
  df1 <- nX *(nX-1)/2 - nfX * nX + nfX * (nfX-1)/2
-  df2 <- nY *( nY-1)/2 - nfY * nY + nfY * (nfY-1)/2 
+ df2 <- nY *( nY-1)/2 - nfY * nY + nfY * (nfY-1)/2 
 
   f1 <- fa.extend(R,nfX,ov=varsX,ev=varsY,fm=fm,rotate=rotate,...)
  
@@ -45,7 +46,7 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
   S1 <- f1$Structure[varnames,,drop=FALSE]
  if(!is.null(ncol(S1)))  colnames(loads1) <- colnames(S1) <- paste0("X",1:ncol(loads1))
   Phi1 <- f1$Phi
-  f2 <- fa.extend(R,nfY,ov=varsY,ev=varsX,fm=fm,rotate=rotate,...)
+  f2 <- fa.extend(R,nfY,ov=varsY,ev=varsX,fm=fm,rotate=rotateY,...)
 
   loads2  <- f2$loadings[varnames,,drop=FALSE]
   S2 <- f2$Structure[varnames,,drop=FALSE]
@@ -76,7 +77,9 @@ if(!is.null(Phi2))  Phi[(nfX+1):(nfX+nfY),(nfX+1):(nfX+nfY)] <- Phi2
   result$loadsY <- loadsY
   result$PhiX <- Phi1
   result$PhiY <- Phi2
-   result$esem.dof <- df1 + df2
+  result$esem.dof <- df1 + df2
+  result$df1 <- df1
+  result$df2 <- df2
   result$fm <- fm
   result$fx <- f1$fo
  result$fy <- f2$fo
@@ -139,10 +142,12 @@ result$objective <- rstar2   #because the normal way doesn't work
   result$chi <- rstar.off * n.obs  #this is the empirical chi square
   result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea                      
   result$nh <- n.obs
-                             if (result$dof > 0) {result$EPVAL <- pchisq(result$chi,        result$dof, lower.tail = FALSE)
+if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
 result$crms <- sqrt(rstar.off/(2*result$dof) )
  result$EBIC <- result$chi - result$dof * log(n.obs) 
- result$ESABIC <- result$chi - result$dof * log((n.obs+2)/24) } else {result$EPVAL <- NA
+ result$ESABIC <- result$chi - result$dof * log((n.obs+2)/24)
+  result$RMSEA <- RMSEA(result$chi,result$dof,n.obs) } else {result$EPVAL <- NA
+
  result$crms <- NA
 result$EBIC <- NA
  result$ESABIC <- NA}
@@ -159,7 +164,7 @@ result$EBIC <- NA
  }
    
   
-  "print.psych.esem" <-function(x,digits=2,short=TRUE,cut=NULL, suppress.warnings=TRUE,...)  {
+  "print_psych.esem" <-function(x,digits=2,short=TRUE,cut=NULL, suppress.warnings=TRUE,...)  {
 
  cat("Exploratory Structural Equation Modeling  Analysis using method = ",x$fm )
    cat("\nCall: ")
@@ -218,7 +223,7 @@ result$EBIC <- NA
      
      
     if(!is.null(x$rms)) {cat("\nThe root mean square of the residuals (RMSR) is ", round(x$rms,digits),"\n") }
-    if(!is.null(x$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$crms,digits),"\n",...) }
+    if(!is.null(x$crms)) {cat("The   corrected root mean square of the residuals is ", round(x$crms,digits),"\n",...) }
     
   
      if((!is.null(x$chi)) && (!is.na(x$chi))) {cat(" with the empirical chi square ", round(x$chi,digits), " with prob < ", signif(x$EPVAL,digits),"\n" ,...)  }
@@ -227,7 +232,7 @@ result$EBIC <- NA
   
      
    	if(!is.null(x$TLI)) cat("\nTucker Lewis Index of factoring reliability = ",round(x$TLI,digits+1))
-   	if(!is.null(x$RMSEA)) {cat("\nRMSEA index = ",round(x$RMSEA[1],digits+1), " and the", (1- x$RMSEA[4])*100,"% confidence intervals are ",round(x$RMSEA[2:3],digits+1),...)  }
+   	if(!is.null(x$RMSEA)) {cat("\nRMSEA index = ",round(x$RMSEA[[2]],digits+1), " and the", (1- x$RMSEA[[4]])*100,"% confidence intervals are ",round(x$RMSEA[[1]],digits+1),round(x$RMSEA[[3]],digits+1),...)  }
 if(!is.null(x$EBIC)) {cat("\nEmpirical BIC = ",round(x$EBIC,digits))}
 if(!is.null(x$ESABIC)) {cat("\nESABIC = ",round(x$ESABIC,digits))}
 

@@ -1,4 +1,4 @@
-"print.psych.schmid" <-
+"print_psych.schmid" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 
 if(is.null(cut)) cut <- .2

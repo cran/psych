@@ -2,6 +2,7 @@
 \alias{setCor}
 \alias{lmCor}
 \alias{setCor.diagram}
+\alias{lmDiagram}
 \alias{set.cor}
 \alias{mat.regress}
 \alias{matReg} 
@@ -9,7 +10,7 @@
 \alias{crossValidationBoot}
 \alias{matPlot}
 \title{Multiple Regression and Set Correlation from matrix or raw input}
-\description{A generalization of the lm function to correlation/covariance matrix input. Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.   Model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data may be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets. Associated functions allow for cross validation of these regression models.
+\description{A generalization of the lm function to correlation/covariance matrix input. Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.  The model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data will be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets. Associated functions allow for cross validation of these regression models.
 }
 \usage{
 lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
@@ -17,7 +18,8 @@ lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
  #the prior name    
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
-    
+lmDiagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)    
+
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
 #an alias to setCor or lmCor
 
@@ -45,7 +47,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{z}{the column names or numbers of the set of covariates. }
   \item{n.obs}{If specified, then confidence intervals, etc. are calculated, not needed if raw data are given.}
   \item{n.iter}{Number of bootstrap resamples to take in crossValidationBoot}
-  \item{use}{find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
+  \item{use}{Find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
   \item{part}{z is specified should part (TRUE) or partial (default) correlations be found.}
   \item{raw}{Are data from a correlation matrix or data matrix?}

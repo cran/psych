@@ -585,7 +585,7 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
                }               
      
       scores <- scores$theta
-  }
+      return(scores)}
    #use mapply for debugging, mcmapply for parallel processing
    #items is global and not passed to save memory
    scoresList <- mcmapply(smallFunction,c(1:nvar),MoreArgs=list(selection=itemLists,correct=correct,cut=cut,bounds=bounds,mod=mod))

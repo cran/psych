@@ -13,7 +13,7 @@
 \usage{
 sim.item(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, 
  gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, 
- truncate = FALSE, cutpoint = 0)
+ truncate = FALSE, threshold=NULL)
 sim.circ(nvar = 72, nsub = 500, circum = TRUE, xloading = 0.6, yloading = 0.6, 
   gloading = 0, xbias = 0, ybias = 0, categorical = FALSE, low = -3, high = 3, 
   truncate = FALSE, cutpoint = 0)
@@ -23,7 +23,7 @@ item.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.
   gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
 sim.spherical(simple=FALSE, nx=7,ny=12 ,nsub = 500,  xloading =.55, yloading = .55,
    zloading=.55, gloading=0, xbias=0,  ybias = 0, zbias=0,categorical=FALSE, 
-   low=-3,high=3,truncate=FALSE,cutpoint=0) 
+   low=-3,high=3,truncate=FALSE, threshold=NULL) 
 con2cat(old,cuts=c(0,1,2,3),where)
 }
 	
@@ -43,15 +43,17 @@ con2cat(old,cuts=c(0,1,2,3),where)
   \item{categorical}{ continuous or categorical variables.  }
   \item{low}{ values less than low are forced to low (or 0 in item.dichot)}
   \item{high}{ values greater than high are forced to high (or 1 in item.dichot) }
+  \item{cutpoint}{cut items at cutpoint (see threshold)}
   \item{truncate}{Change all values less than cutpoint to cutpoint. }
-  \item{cutpoint}{What is the cutpoint }
-  \item{nx}{number of variables for the first factor in sim.spherical}
-  \item{ny}{number of variables for the second and third factors in sim.spherical}
+  \item{threshold}{A vector of cutpoints to conver continuous items to binary }
+  \item{nx}{number of variables for the first factor in sim.spherical}y  \item{ny}{number of variables for the second and third factors in sim.spherical}
   \item{old}{a matrix or data frame}
   \item{cuts}{Values of old to be used as cut points when converting continuous values to categorical values}
   \item{where}{Which columns of old should be converted to categorical variables.  If missing, then all columns are converted.}
 }
-\details{This simulation was originally developed to compare the effect of skew on the measurement of affect (see Rafaeli and Revelle, 2005).  It has been extended to allow for a general simulation of affect or personality items with either a simple structure or a circumplex structure.  Items can be continuous normally distributed, or broken down into n categories (e.g, -2, -1, 0, 1, 2).  Items can be distorted by limiting them to these ranges, even though the items have a mean of (e.g., 1).  
+\details{This simulation was originally developed to compare the effect of skew on the measurement of affect (see Rafaeli and Revelle, 2005).  It has been extended to allow for a general simulation of affect or personality items with either a simple structure or a circumplex structure.  Items can be continuous normally distributed, or broken down into n categories (e.g, -2, -1, 0, 1, 2).  Items can be distorted by limiting them to these ranges, even though the items have a mean of (e.g., 1). 
+
+With the addition of a threshold parameter (replacing the previous cut parameter), each item will converted to a binary (0/1) value if the theta exceeds the threshold.  If threshold is a vector with length less than nvar, then it will be filled out to length nvar by sampling with replacement. 
 
 The addition of item.dichot allows for testing structures with dichotomous items of different difficulty (endorsement) levels.  Two factor data with either simple structure or circumplex structure are generated for two sets of items, one giving a score of 1 for all items greater than the low (easy) value, one giving a 1 for all items greater than the high (hard) value. The default values for low and high are 0.  That is, all items are assumed to have a 50 percent endorsement rate.  To examine the effect of item difficulty, low could be   -1, high  1. This will lead to item endorsements of .84 for the easy and .16 for the hard.  Within each set of difficulties, the first 1/4 are assigned to the first factor factor, the second to the second factor, the third to the first factor (but with negative loadings) and the fourth to the second factor (but with negative loadings). 
 

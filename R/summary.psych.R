@@ -401,7 +401,7 @@ rownames(effect.df) <- names(object)
 print(effect.df,digits=digits)
     }, 
 
-mediate = {summary.psych.mediate(object,digits=digits)
+mediate = {summary_psych.mediate(object,digits=digits)
         },
 
 describeData = {   cat('n.obs = ', object$n.obs, "of which ", object$complete.cases," are complete cases. Number of variables = ",object$nvar," of which all are numeric is ",object$all.numeric,"\n")},

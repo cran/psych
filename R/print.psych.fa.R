@@ -1,4 +1,4 @@
-"print.psych.fa" <-
+"print_psych.fa" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,suppress.warnings=TRUE,...)  {
 if(!is.matrix(x) && !is.null(x$fa) && is.list(x$fa)) x <-x$fa   #handles the output from fa.poly
 if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis") } else {

@@ -199,7 +199,7 @@ class(result) <- c("psych","multilevel")
 return(result)
 }
 
-"print.psych.multilevel" <- function(x,digits=2,all=FALSE,short=TRUE) {
+"print_psych.multilevel" <- function(x,digits=2,all=FALSE,short=TRUE) {
 cat("\nMultilevel Generalizability analysis ",x$title," \n")
 	cat("Call: ")
 	print(x$Call)
@@ -317,14 +317,14 @@ results <- long
 return(long)
 }
 
-"mlPlot" <- function(x,grp="id",Time="time",items=c(3:5),extra=NULL,col=c("blue","red","black","grey"), main="Lattice Plot by subjects over time",...) {
+"mlPlot" <- function(x,grp="id",Time="time",items=c(3:5),extra=NULL,col=c("blue","red","black","grey"),type="b",main="Lattice Plot by subjects over time",...) {
 long <- mlArrange(x =x,grp=grp,Time=Time,items=items,extra=extra)
- plot1<- xyplot(values ~ time | id, group=items, data=long, type = "b",as.table=TRUE,strip=strip.custom(strip.names=TRUE,strip.levels=TRUE),col=col,main=main,...)
+ plot1<- xyplot(values ~ time | id, group=items, data=long, type = type,as.table=TRUE,strip=strip.custom(strip.names=TRUE,strip.levels=TRUE),col=col,main=main,...)
 print(plot1)
 invisible(long)
 }
 
-"print.psych.multilevel.mat" <- function(x,digits=2,all=FALSE,short=TRUE) {
+"print_psych.multilevel.mat" <- function(x,digits=2,all=FALSE,short=TRUE) {
 cat("\nMultilevel Generalizability analysis ",x$title," \n")
 if(length(x) < 21 ) items <- length(x)
 

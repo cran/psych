@@ -1,8 +1,10 @@
 "error.bars.by" <-
-function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,ylim= NULL, 
-xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, v.labels=NULL,v2.labels=NULL,add.labels=NULL,
- pos=NULL,arrow.len=.05,min.size=1, add=FALSE,bars=FALSE,within=FALSE,colors=c("black","blue","red"),
- lty,lines=TRUE, legend=0,pch=16,density=-10,stats=NULL,...)  # x   data frame with 
+function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NULL,
+	ylim= NULL, xlim=NULL, eyes=TRUE,alpha=.05,sd=FALSE,labels=NULL, 
+	v.labels=NULL,v2.labels=NULL,add.labels=NULL,
+ 	pos=NULL,arrow.len=.05,min.size=1, add=FALSE,bars=FALSE, within=FALSE,
+ 	colors=c("black","blue","red"),lty,lines=TRUE, legend=0, pch=16,
+ 	density=-10,stats=NULL,...)  # x   data frame with 
     {
 
     if(!lines) {typ <- "p"} else {typ <- "b"}

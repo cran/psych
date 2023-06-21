@@ -104,7 +104,9 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{levels2numeric}}converts character data with levels to numeric data.  Used in the SAPA analyses where we code some variables, (e.g., gender, education) with character codes to help in the documentation of files, but want to do analyses of correlations with other categorical variables. 
 
-\code{\link{char2numeric}}converts character data with levels to numeric data.  Used for cases when data from questionnaires include the response categories rathere than numeric data.  Unless the levels of the data are in meaningful order, the numeric results are not useful.  Most useful if doing polychoric analyses.  Note this is not suitable for recoding numeric data stored as characters, for it will force them to levels first.  See \code{\link{nchar2numeric}}.  
+\code{\link{char2numeric}}converts character data with levels to numeric data.  Used for cases when data from questionnaires include the response categories rathere than numeric data.  Unless the levels of the data are in meaningful order, the numeric results are not useful.  Most useful if doing polychoric analyses.  Note this is not suitable for recoding numeric data stored as characters, for it will force them to levels first.  See \code{\link{nchar2numeric}}.  Note that for very small data sets, because the recoding done by char2numeric is column wise, it might result in different numerical results for the same characters in different columns.   
+
+Problems with \code{\link{char2numeric}} can be solved by using the \code{psychTools::recode} function.
 
 \code{\link{nchar2numeric}}converts numbers coded as characters (quoted) to numeric without forcing them to factors first.  
 

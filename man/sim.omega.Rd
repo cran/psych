@@ -25,7 +25,7 @@
 \usage{
 sim.omega(nvar = 12, nfact = 3, n = 500, g = NULL, sem = FALSE, fbig = NULL, 
      fsmall = c(-0.2, 0.2),bipolar = TRUE, om.fact = 3, flip = TRUE,
-      option = "equal", ntrials = 10)
+      option = "equal", ntrials = 10,threshold=NULL)
 sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
             n = c(200,400)) 
 }
@@ -42,11 +42,12 @@ sim.parallel(ntrials=10,nvar = c(12,24,36,48),nfact = c(1,2,3,4,6),
  \item{om.fact}{Number of  factors to extract in omega}
  \item{flip}{In omega, should item signs be flipped if negative}
    \item{option}{In omega, for the case of two factors, how to weight them?}
+   \item{threshold}{If raw=TRUE (n >0) and threshold is not NULL, convert the data to binary values, cut at threshold.}
  \item{ntrials}{Number of replications per level}
 }
 \details{Simulation of data structures is a very useful tool in psychometric research and teaching.  By knowing ``truth" it is possible to see how well various algorithms can capture it.  For a much longer discussion of the use of simulation in psychometrics, see the accompany vignettes.  
 
-The simulations documented here are a miscellaneous set of functions that will be documented in other help files eventually.
+There are a number of simulation functions included in psych. sim.omega is just one of them.  
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 

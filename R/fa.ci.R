@@ -1,5 +1,5 @@
 #revised 11/5/14 to handle sorted fa data with bootstrapped confidence intervals 
-"print.psych.fa.ci" <-
+"print_psych.fa.ci" <-
 function(x,digits=2,all=FALSE,...)  {
 cat("Factor Analysis with confidence intervals using method = ",x$f$fm )
   # cat("\nCall: ")

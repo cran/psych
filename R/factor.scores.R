@@ -28,9 +28,9 @@
               # r <- cor.smooth(r)
               w  <- Pinv(r) %*% S }
         
-      w <- try(solve(r,S),silent=TRUE)
-      if(inherits(w,"try-error")) {message("I was unable to calculate the factor score weights, factor loadings used instead")
-               w <- f}
+     # w <- try(solve(r,S),silent=TRUE)    #redudant,  this will fail again   (pointed out by Chanlder McClellan 4/4/23)
+     # if(inherits(w,"try-error")) {message("I was unable to calculate the factor score weights, factor loadings used instead")
+     #          w <- f}
       colnames(w) <- colnames(f)
       rownames(w) <- rownames(f)
        }, 

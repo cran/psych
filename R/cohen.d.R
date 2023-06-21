@@ -178,7 +178,7 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
 }
     
     
-    "print.cohen.d" <- function(x,digits=2) {cat("Call: ")
+    "print_cohen.d" <- function(x,digits=2) {cat("Call: ")
            print(x$Call)
             cat("Cohen d statistic of difference between two means\n")
             if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),x$cohen.d[4:NCOL(x$cohen.d)]))}
@@ -189,7 +189,7 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
             print(round(x$r,digits=digits))
             }
  
-    "print.cohen.d.by" <- function(x,digits=2) {cat("Call: ")
+    "print_cohen.d.by" <- function(x,digits=2) {cat("Call: ")
             print(x$Call)
             ncases <- length(x)
             for (i in (1:ncases)) {cat("\n Group levels = ",names(x[i]),"\n")

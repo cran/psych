@@ -95,6 +95,7 @@ if (nc > 2 ) {
  
  
 set.cor ={ plot(x$cancor2,typ="b",ylab="Squared Canonical Correlation",xlab="Canonical variate",main="Scree of canonical correlations" ,ylim=c(0,1),...)},
+lmCor ={ plot(x$cancor2,typ="b",ylab="Squared Canonical Correlation",xlab="Canonical variate",main="Scree of canonical correlations" ,ylim=c(0,1),...)},
 irt.fa =  {result <- plot.irt(x,labels=labels,...)},
 
 irt.poly = { result <-  plot.poly(x,labels=labels,...)},
@@ -103,7 +104,7 @@ fa =  {fa.plot(x,labels=labels,...)},
 
 principal = {fa.plot(x,labels=labels,...)},
 
-parallel = {plot.fa.parallel(x,...)},
+parallel = {plot_fa.parallel(x,...)},
 
 reliability = {plot.reliability(x,...)},
 

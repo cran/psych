@@ -26,7 +26,7 @@
 \usepackage{makeidx}        % allows index generation
 \usepackage[authoryear,round]{natbib} 
 \usepackage{gensymb}
-\usepackage{longtable}
+%\usepackage{longtable}
 %\usepackage{geometry}   
 \usepackage{amssymb}    
 \usepackage{amsmath}
@@ -141,7 +141,7 @@ The current list of How To's includes:
 \item Using \R{} and the \Rpkg{psych} package to find \href{https://personality-project.org/r/psych/HowTo/omega.pdf}{$omega_h$} and $\omega_t$.
 \item Using  \R{} and the \Rpkg{psych} for \href{https://personality-project.org/r/psych/HowTo/factor.pdf}{factor analysis} and principal components analysis.
 \item Using the \pfun{scoreItems} function to find \href{https://personality-project.org/r/psych/HowTo/scoring.pdf}{scale scores and scale statistics}  (this document).
-\item Using \pfun{mediate} and \pfun{setCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}
+\item Using \pfun{mediate} and \pfun{lmCor} to do \href{https://personality-project.org/r/psych/HowTo/mediation.pdf}{mediation, moderation and regression analysis}
 
 
 \end{enumerate}
@@ -209,7 +209,8 @@ To read from a file saved on a remote server, you just need to specify the file 
 
 ~\
 <<>>=
-file.name <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+file.name <-
+  "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
 my.data <- read.file(file.name)
 @
 
@@ -694,8 +695,8 @@ Cureton, E. (1966).
 \newblock Corrected item-test correlations.
 \newblock {\em Psychometrika}, 31(1):93--96.
 
-\bibitem[\protect\astroncite{{R Core Team}}{2020}]{R}
-{R Core Team} (2020).
+\bibitem[\protect\astroncite{{R Core Team}}{2023}]{R}
+{R Core Team} (2023).
 \newblock {\em R: A Language and Environment for Statistical Computing}.
 \newblock R Foundation for Statistical Computing, Vienna, Austria.
 
@@ -705,12 +706,12 @@ Rafaeli, E. and Revelle, W. (2006).
   affects?
 \newblock {\em Motivation and Emotion}, 30(1):1--12.
 
-\bibitem[\protect\astroncite{Revelle}{2020}]{psych}
-Revelle, W. (2020).
+\bibitem[\protect\astroncite{Revelle}{2023}]{psych}
+Revelle, W. (2023).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston,
   https://CRAN.r-project.org/package=psych.
-\newblock R package version 2.0.8.
+\newblock R package version 2.3.5.
 
 \bibitem[\protect\astroncite{Revelle and Anderson}{1997}]{ari:97}
 Revelle, W. and Anderson, K.~J. (1997).

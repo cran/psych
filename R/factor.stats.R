@@ -247,7 +247,9 @@ conf.level <- alpha
    	
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
    	if(smooth) {r <- cor.smooth(r)}
-      w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
+     # w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
+     w <- Pinv(r)%*%f  #use the Pseudo inverse    #added 4/22/23
+    
      if(inherits(w,"try-error")) {message("In factor.stats, the correlation matrix is singular, an approximation is used")
      ev <- eigen(r)
      if(is.complex(ev$values)) {warning("complex eigen values detected by factor stats, results are suspect")
@@ -256,7 +258,9 @@ conf.level <- alpha
      ev$values[ev$values < .Machine$double.eps] <- 100 * .Machine$double.eps
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
        diag(r)  <- 1
-     w <- try(solve(r,f) ,silent=TRUE)  #these are the factor weights
+    # w <- try(solve(r,f) ,silent=TRUE) 
+      w <- Pinv(r)%*% r  #use the Pseudo inverse  #these are the factor weights
+
      if(inherits(w,"try-error")) {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
      w <- diag(1,dim(r)[1])
      }   #these are the beta weights 

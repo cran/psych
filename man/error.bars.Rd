@@ -2,14 +2,15 @@
 \alias{error.bars}
 \alias{error.bars.tab}
 \title{Plot means and confidence intervals}
-\description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
+\description{One of the many functions in R to plot means and confidence intervals. Can be done using barplots if desired.  Can also be combined with such functions as boxplot or violin to summarize distributions.  Means and standard errors are calculated from the raw data using \code{\link{describe}}. Alternatively, plots of means +/- one standard deviation may be drawn.
 }
 \usage{
 error.bars(x,stats=NULL,data=NULL,group=NULL, ylab = "Dependent Variable",
-xlab="Independent Variable", main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,alpha=.05, 
-sd=FALSE, labels = NULL, pos = NULL,  arrow.len = 0.05,arrow.col="black",
- add = FALSE,bars=FALSE,within=FALSE, col=c("black","blue","red"),density=-10,
- ...)
+	xlab="Independent Variable", main=NULL,eyes=TRUE, ylim = NULL, xlim=NULL,
+	alpha=.05, sd=FALSE, labels = NULL, pos = NULL,  arrow.len = 0.05,
+	arrow.col="black",add = FALSE,bars=FALSE, within=FALSE, 
+	col=c("black","blue","red"), density=-10,...)
+
 error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 }
 
@@ -45,7 +46,7 @@ error.bars.tab(t,way="columns",raw=FALSE,col=c('blue','red'),...)
 
 If within=TRUE, the error bars are corrected for the correlation with the other variables by reducing the variance by a factor of (1-smc).  This allows for comparisons between variables.
 
-The error bars are normally calculated from the data using the describe function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).  If n is included in the matrix of statistics, then the distribution is drawn for a t distribution for n-1 df.  If n is omitted (NULL) or is NA, then the distribution will be a normal distribution.  
+The error bars are normally calculated from the data using the \code{\link{describe}} function.  If, alternatively, a matrix of statistics is provided with column headings of values, means, and se, then those values will be used for the plot (using the stats option).  If n is included in the matrix of statistics, then the distribution is drawn for a t distribution for n-1 df.  If n is omitted (NULL) or is NA, then the distribution will be a normal distribution.  
 
 
 If sd is TRUE, then the error bars will represent one standard deviation from the mean rather than be a function of alpha and the standard errors.

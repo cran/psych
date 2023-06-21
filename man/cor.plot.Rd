@@ -1,4 +1,4 @@
-\name{cor.plot}
+\name{corPlot}
 \Rdversion{1.1}
 \alias{cor.plot}
 \alias{corPlot}
@@ -7,14 +7,14 @@
 
 \title{Create an image plot for a correlation or factor matrix}
 
-\description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques.
+\description{Correlation matrices may be shown graphically by using the image function to emphasize structure.  This is a particularly useful tool for showing the structure of  correlation matrices with a clear structure.  Partially meant for the pedagogical value of the graphic for teaching or discussing factor analysis and other multivariate techniques. The sort option uses iclust to sort the matrix before plotting. 
 }
 \usage{
 corPlot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
   digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
-  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2, gr=NULL, alpha=.75, 
-  min.length=NULL,...)
+  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2,ysrt=0,xsrt=0, 
+   gr=NULL, alpha=.75,  min.length=NULL,sort=FALSE, ...)
 
 corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
@@ -22,8 +22,8 @@ corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
  cor.plot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
   digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
-  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2, gr=NULL, alpha=.75, 
-  min.length=NULL,...)     #deprecated
+  symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2,ysrt=0,xsrt=0,
+     gr=NULL, alpha=.75, min.length=NULL, sort=FALSE, ...)     #deprecated
            
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
@@ -40,6 +40,7 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{show.legend}{A legend (key) to the colors is shown on the right hand side}
   \item{labels}{if NULL, use column and row names, otherwise use labels}
   \item{n.legend}{How many categories should be labelled in the legend?}
+  \item{sort}{If true, then sort the variables using the iclust algorithm}
   \item{keep.par}{restore the graphic parameters when exiting}
   \item{pval}{scale the numbers by their pvals, categorizing them based upon the values of cuts}
   \item{digits}{Round off to digits.  Defaults to 2.}
@@ -48,7 +49,7 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{scale}{Should the size of the numbers be scaled by the significance level?}
   \item{select}{Select the subset of variables to plot}
   \item{cex}{Character size.  Should be reduced a bit for large numbers of variables.}
-  \item{MAR}{Allows for adjustment of the margins if using really long labels or big fonts}
+  \item{MAR}{Allows for adjustment .of the margins if using really long labels or big fonts}
   \item{upper}{Should the upper off diagonal matrix be drawn, or left blank?}
   \item{diag}{Should we show the diagonal?}
   \item{symmetric}{By default, if given a non-symmetric matrix, we find the correlations using pair.wise complete and then show them.  If wanting to display a non-symmetric matrix, then specify that symmetric is FALSE}
@@ -57,6 +58,8 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   adjust is also used in corPlotUpperLowerCI to show the nominal alpha confidence intervals (adjust =FALSE) or the Bonferonni adjusted confidence intervals (adjust=TRUE).}
   \item{xlas}{Orientation of the x axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
   \item{ylas}{Orientation of the y axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}
+  \item{ysrt}{Rotation of y labels in degrees}
+  \item{xsrt}{Rotation of x labels in degrees}
   \item{xaxis}{By default, draw this below the figure.  If xaxis=3, then it wil be drawn above the figure}
   \item{gr}{A color gradient: e.g.,  gr <- colorRampPalette(c("#B52127", "white", "#2171B5"))  will produce slightly more pleasing (to some) colors. See next to last example.}
   \item{alpha}{The degree of transparency (0 = completely, 1= not). Default value of .75 makes somewhat moreor pleasing plots when using numbers.}
@@ -101,7 +104,7 @@ Care should be taken when selecting rows and columns from a non-symmetric matrix
 
 To show a factor loading matrix (or any non-symmetric matrix), set symmetric=FALSE.  Otherwise the input will be treated as raw data and correlations will be found.
 
-To sort the matrix use \code{\link{mat.sort}} first.  To find correlations other than Pearson, plot the output from e.g., \code{\link{mixed.cor}}. 
+The sort option will sort the matrix using the output from \code{\link{iclust}}. To sort the matrix use another order, use  \code{\link{mat.sort}} first.  To find correlations other than Pearson, plot the output from e.g., \code{\link{mixed.cor}}. 
 }
 \author{William Revelle
 }

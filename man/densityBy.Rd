@@ -7,23 +7,23 @@
 
 \description{Among the many ways to describe a data set, one is a density plot for each value of a grouping variable and another is violin plot of multiple variables.  A density plot shows the density for different groups to show effect sizes. A violin plot is similar 
 to a box plot but shows the actual distribution.
-Median and 25th and 75th percentile lines are added to the display. If a grouping variable is specified, violinBy will draw violin plots for each variable and for each group. Data points may be drawn as well.
+Median and 25th and 75th percentile lines are added to the display. If a grouping variable is specified, violinBy will draw violin plots for each variable and for each group. Data points may be drawn as well in what is known as a "raincloud plot".
  }
 \usage{
 
-violin(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL,xlab=NULL,ylab=NULL,
-main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,alpha=1,
-errors=FALSE,eyes=TRUE,adjust=1, restrict=TRUE,xlim=NULL, add=FALSE, 
-col=NULL,pch=20,scale=NULL,...) 
+violin(x,data=NULL, var=NULL, grp=NULL, grp.name=NULL, xlab=NULL, ylab=NULL,
+	main="Density plot", vertical=TRUE, dots=FALSE, rain=FALSE, jitter=.05, alpha=1,
+	errors=FALSE, eyes=TRUE, adjust=1, restrict=TRUE, xlim=NULL, add=FALSE, 
+	col=NULL, pch=20, scale=NULL,...) 
  
-violinBy(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,xlab=NULL,ylab=NULL,
-main="Density plot",vertical=TRUE,dots=FALSE,jitter=.05,alpha= 1,
-errors=FALSE,eyes=TRUE,adjust=1, restrict=TRUE,xlim=NULL, add=FALSE, 
-col=NULL,pch=20,scale=NULL,...) 
+violinBy(x, var=NULL, grp=NULL, data=NULL, grp.name=NULL, xlab=NULL, ylab=NULL,
+	main="Density plot", vertical=TRUE, dots=FALSE, rain=FALSE, jitter=.05, alpha= 1,
+	errors=FALSE, eyes=TRUE, adjust=1, restrict=TRUE, xlim=NULL, add=FALSE, 
+	col=NULL, pch=20, scale=NULL,...) 
  
-densityBy(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5, 
- adjust=1,ylim=NULL,xlim=NULL,xlab="Variable", ylab="Density",
-       main="Density Plot",legend=NULL)
+densityBy(x, var=NULL, grp=NULL,data=NULL, freq=FALSE, col=c("blue","red","black"), 
+	alpha=.5, adjust=1, ylim=NULL, xlim=NULL, xlab="Variable", ylab="Density",
+     main="Density Plot",legend=NULL)
 
 }
 
@@ -39,6 +39,7 @@ densityBy(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),a
   \item{main}{Figure title}
   \item{vertical}{If TRUE, plot the violins vertically, otherwise, horizontonally}
   \item{dots}{if TRUE, add a stripchart with the data points}
+  \item{rain}{If TRUE, draw a half violin with rain drops}
   \item{jitter}{If doing a stripchart, then jitter the points this much}
   \item{errors}{If TRUE, add error bars or cats eyes to the violins}
   \item{eyes}{if TRUE and errors=TRUE, then draw cats eyes}
@@ -62,6 +63,8 @@ Describe the data using a violin plot. Change alpha to modify the shading.
 The grp variable may be used to draw separate violin plots for each of multiple groups.
 
 For relatively smallish data sets (< 500-1000), it is informative to also show the actual data points. This done with the dots=TRUE option. The jitter value is arbitrarily set to .05, but making it larger (say .1 or .2) will display more points.
+
+Perhaps even prettier, is draw "raincloud" plots (half violins with rain drops)
 }
 \value{
 The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin plot for each variable (perhaps broken down by groups)
@@ -75,7 +78,11 @@ The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin
 violin(psychTools::bfi[4:8])
 violin(SATV + SATQ ~ gender, data=sat.act, grp.name =cs(MV,FV,MQ,FQ)) #formula input
 violinBy(psychTools::bfi,var=4:7,grp ="gender",grp.name=c("M","F"))
+#rain does not work for multiple DVS, just up to 2 IVs 
+violinBy(SATV  ~ education,data =sat.act, rain=TRUE, pch=".", vertical=FALSE)  #rain 
+
 densityBy(SATV  ~ gender,data =sat.act,legend=1)  #formula input 
+
   
 }
 \keyword{ multivariate }

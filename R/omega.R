@@ -107,7 +107,17 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
 
      }   #moved after tge bext line (6/21/18)
   #we should standardize the raw.data before doing the next step
-     if(!is.null(raw.data)) {scores <- raw.data %*%  omega.stats$weights} else {scores<- NULL} 
+  #change this to call factor.scores
+  if(!is.null(raw.data)) {   #added mean imputation 4/22/23
+       
+        miss <- which(is.na(raw.data),arr.ind=TRUE)
+    
+       		item.means <- colMeans(raw.data,na.rm=TRUE)   #replace missing values with means
+       		raw.data[miss]<- item.means[miss[,2]]
+       		z.data <- scale(raw.data)
+       		scores <- z.data %*% omega.stats$weights
+       		} else {scores<- NULL} 
+    # if(!is.null(raw.data)) {scores <- raw.data %*%  omega.stats$weights} else {scores<- NULL} 
     # }
      omega <- list(omega_h= gsq/Vt,omega.lim = om.limit,alpha=alpha,omega.tot=om.tot,G6=lambda.6,schmid=gf,key=key,stats = omega.stats,ECV=ECV,gstats = general.stats,call=cl,title=title,R = m,model=omega.model,omega.group=om.group,scores=scores,Call=cl)
 

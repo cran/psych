@@ -199,7 +199,7 @@ if(!just.test) {
     
 
     
-print.psych.testRetest<- function(x,digits=2,short=FALSE,...) {
+print_psych.testRetest<- function(x,digits=2,short=FALSE,...) {
 cat("\nTest Retest reliability ")
 cat("\nCall: ")
 	print(x$Call)

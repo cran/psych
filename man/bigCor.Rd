@@ -9,7 +9,7 @@ bigCor(x, size = NULL, use = "pairwise",cor="pearson")
 
 \arguments{
   \item{x}{A data set of numeric variables}
-  \item{size}{What should the size of the subsets be? Defaults to NCOL (x)/4  
+  \item{size}{What should the size of the subsets be? Defaults to NCOL (x)/20  
 }
   \item{use}{The standard correlation option.  "pairwise" allows for missing data
 }

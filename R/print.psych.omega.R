@@ -1,4 +1,4 @@
-"print.psych.omega" <- 
+"print_psych.omega" <- 
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 xx <- x
 if(!is.null(x$ci)) {
@@ -112,14 +112,14 @@ if(is.null(cut)) cut <- .2
    
    
    
-   "print.psych.omegaSem" <- 
+   "print_psych.omegaSem" <- 
    function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
      if(is.null(cut)) cut <- .2
 	 cat( x$title,"\n") 
 	 if(!is.null(x$Call)) {# we have run this from omegaSem so we should print omega results first
 	 cat("Call: ")
      print(x$Call)
-   print.psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
+   print_psych.omega(x$omegaSem,digits=digits,all=all,cut=cut,sort=sort,...)
    x <- x$omega.efa
    } 
    loads <- x$cfa.loads

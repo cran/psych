@@ -127,7 +127,7 @@ if(plot) bassAckward.diagram(result,cut=cut,...)
 return(result)
 }
 
-print.psych.back<- function(x,digits=2 ,short=TRUE) {
+print_psych.back<- function(x,digits=2 ,short=TRUE) {
 
    cat("\nCall: ")
    print(x$Call)
@@ -143,7 +143,7 @@ print(round(x$bass.ack[[f]],digits=digits))}
 }
 }
 
-summary.psych.back <- function(x,digits=2) {
+summary_psych.back <- function(x,digits=2) {
 cat("\nCall: ")
    print(x$Call)
 nf <- length(x$bass.ack)-1

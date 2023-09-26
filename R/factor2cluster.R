@@ -11,6 +11,7 @@ function (loads,cut=.0,aslist=FALSE)
     m1 <- matrix(apply(t(apply(l, 1, abs)), 1, which.max), 
         ncol = 1)}
     id <- matrix(c(1:nrows, m1), ncol = 2)  #index row and column
+    id[is.na(id)] <- NA   #actually looking for NAN 
    factor2cluster <- matrix(rep(0, ncols * nrows), ncol = ncols)
    factor2cluster[id] <- sign(l[id])*( (abs(l[id]) >cut)+0)  #only loadings > cut
   rownames(factor2cluster) <- rownames(l)

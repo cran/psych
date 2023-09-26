@@ -14,7 +14,7 @@ corPlot(r,numbers=TRUE,colors=TRUE,n=51,main=NULL,zlim=c(-1,1),
   show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
   digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
   symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2,ysrt=0,xsrt=0, 
-   gr=NULL, alpha=.75,  min.length=NULL,sort=FALSE, ...)
+   gr=NULL, alpha=.75,  min.length=NULL,sort=FALSE,n.obs=NULL, ...)
 
 corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
@@ -23,7 +23,7 @@ corPlotUpperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
  show.legend=TRUE, labels=NULL,n.legend=10,keep.par=TRUE,select=NULL, pval=NULL, 
   digits=2, trailing=TRUE, cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,diag=TRUE, 
   symmetric=TRUE,stars=FALSE, adjust="holm",xaxis=1, xlas=0, ylas=2,ysrt=0,xsrt=0,
-     gr=NULL, alpha=.75, min.length=NULL, sort=FALSE, ...)     #deprecated
+     gr=NULL, alpha=.75, min.length=NULL, sort=FALSE, n.obs=NULL,...)     #deprecated
            
 cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
       main="Upper and lower confidence intervals of correlations",adjust=FALSE,...)
@@ -54,6 +54,7 @@ cor.plot.upperLowerCi(R,numbers=TRUE,cuts=c(.001,.01,.05),select=NULL,
   \item{diag}{Should we show the diagonal?}
   \item{symmetric}{By default, if given a non-symmetric matrix, we find the correlations using pair.wise complete and then show them.  If wanting to display a non-symmetric matrix, then specify that symmetric is FALSE}
   \item{stars}{For those people who like to show the 'significance' of correlations by using magic astricks, set stars=TRUE}
+  \item{n.obs}{If you want to show "stars" for symmetric input matrices (i.e. correlations), specify the number of observations}
   \item{adjust}{If showing significance, should we adjust for multiple tests?  The default is to show zero order probabilities below the diagonal and adjust these using the 'holm' correction above the diagonal. Use adjust = "none" if no adjustment is desired.
   adjust is also used in corPlotUpperLowerCI to show the nominal alpha confidence intervals (adjust =FALSE) or the Bonferonni adjusted confidence intervals (adjust=TRUE).}
   \item{xlas}{Orientation of the x axis labels (1 = horizontal, 0, parallel to axis, 2 perpendicular to axis)}

@@ -52,6 +52,8 @@ if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- Roe - fl 
 #modified 31/5/14 to allow for omega extension as well 
 #modified 04-09/16 to pass the Structure matrix as well
 #Added the cors and correct parameters to pass to fa 1/3/21
+
+
 "fa.extend" <- 
 function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...) {
  cl <- match.call()
@@ -64,7 +66,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
          np.obs.r <- pairwiseCount(r)[nv,nv]
          np.obs <- np.obs.r[ov,ov]
          data <- r  #if we want to find factor scores
-       # r <- cor(r,use='pairwise') 
+  # r <- cor(r,use='pairwise') 
        switch(cor, 
        cor = {r <- cor(r,use=use) },   #does not include the weight option from fa 
        cov = {r <- cov(r,use=use) 
@@ -99,7 +101,7 @@ foe <- rbind(fo$loadings,fe$loadings)
 if(omega) oblique <- rbind(fo$schmid$oblique,fe$oblique)
 
 if(is.na(n.obs) && !is.null(np.obs)) n.obs <- max(as.vector(np.obs))
-result <- factor.stats(r[nv,nv],foe,fo$Phi,n.obs,np.obs.r,alpha=alpha,smooth=smooth)
+result <- factor.stats(r[nv,nv],foe,fo$Phi,n.obs,np.obs.r,alpha=alpha,smooth=smooth,coarse=FALSE)  #this is the second call to factor.stats
 if(omega) result$schmid$sl <- foe
     result$rotation <- rotate
     result$loadings <- foe
@@ -125,8 +127,4 @@ return(result)
 }
 
 
-#adapted from fa.diagram but treats the extension variables as y variables
-#draw the standard fa.diagram for the original variables and then regressions to the fe variables
-#basically for the case of extension to criterion variables with lower path strengths 
-#offers a bit more control in the e.cut and e.simple options
 

@@ -13,8 +13,8 @@ fa.multi(r, nfactors = 3, nfact2 = 1, n.obs = NA, n.iter = 1, rotate = "oblimin"
  =TRUE, fm = "minres", alpha = 0.1, p = 0.05, oblique.scores = FALSE, np.obs = NULL, 
  use ="pairwise", cor = "cor", ...)
 
-fa.multi.diagram(multi.results,sort=TRUE,labels=NULL,flabels=NULL,cut=.2,gcut=.2,
-    simple=TRUE,errors=FALSE,
+fa.multi.diagram(multi.results,sort=TRUE,labels=NULL,flabels=NULL,f2labels=NULL,cut=.2,
+	gcut=.2, simple=TRUE,errors=FALSE,
     digits=1,e.size=.1,rsize=.15,side=3,main=NULL,cex=NULL,color.lines=TRUE
     ,marg=c(.5,.5,1.5,.5),adj=2, ...) 
 
@@ -54,6 +54,7 @@ A correlation matrix or raw data matrix
   \item{multi.results}{The results from fa.multi}
   \item{labels}{ variable labels }
   \item{flabels}{Labels for the factors (not counting g)}
+  \item{f2labels}{The labels for the second order factors}
   \item{size}{size of graphics window }
   
   \item{digits}{ Precision of labels }

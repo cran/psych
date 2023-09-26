@@ -1,7 +1,6 @@
 \name{00.psych}
 \alias{psych}
 \alias{psych-package}
-\alias{00.psych-package}
 \docType{package}
 \title{A package for personality, psychometric, and psychological research}
 \description{Overview of the psych package.
@@ -97,15 +96,8 @@ Additional functions for testing the difference between two independent or depen
 Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link[psychTools]{ability}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link[psychTools]{galton} }  Galton's data set of the heights of parents and their children. \code{\link[psychTools]{peas}} recreates the original Galton data set of the genetics of sweet peas.  \code{\link[psychTools]{heights}} and
 \code{\link[psychTools]{cubits}} provide even more Galton data, \code{\link[psychTools]{vegetables}} provides the Guilford preference matrix of vegetables.  \code{\link[psychTools]{cities}} provides airline miles between 11 US cities (demo data for multidimensional scaling).
 
-\tabular{ll}{
-Package: \tab psych\cr
-Type: \tab Package\cr
-Version: \tab 2.2.3 \cr
-Date: \tab 2023--March--12\cr
-License: \tab GPL version 2 or newer\cr
-}
-Partial Index:
 
+Partial Index (to see the entire index, see the link at the bottom of every help page)
 
 
 \link{psych}      A package for personality, psychometric, and psychological research.\cr
@@ -361,16 +353,8 @@ function  \tab     requires\cr
 
 }
 
-\author{William Revelle \cr
-        Department of Psychology \cr
-        Northwestern University \cr
-        Evanston, Illiniois \cr
-        \url{https://personality-project.org/revelle.html}\cr
+\author{William Revelle}
 
-
-Maintainer: William Revelle <revelle@northwestern.edu>
-
-}
 \references{A general guide to personality theory and research may be found at the personality-project \url{https://personality-project.org/}. See also the short guide to R at \url{https://personality-project.org/r/}.
 In addition, see 
 
@@ -385,7 +369,7 @@ Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.
 
 
 \examples{
-#See the separate man pages 
+#See the separate man pages and the complete index.
 #to test most of the psych package run the following
 #test.psych()   
 }

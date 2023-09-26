@@ -12,7 +12,7 @@ anova.psych <- function(object,...) {
     
      } else {value <- "other"}
 
-#this does the work for setCor and mediate or any model that returns SSR and dfs
+#this does the work for lmCors and mediate or any model that returns SSR and dfs
 small.function <- function(models,dfs,SSR,nvar=1) {
   #this next section is adapted  from anova.lm and anova.lmlist
 

@@ -93,6 +93,7 @@ matPlot <- function(x, type = "b", minlength=6, xlas=0,legend=NULL,lab=NULL,pch=
      rownames(x)<- abbreviate(rownames(x),minlength=minlength)
       nvar <- NCOL(x)
        if(missing(pch)) pch <- seq(15,(15+nvar))
+       if(missing(lty)) lty <- 1:8
     matplot(x,type=type,xaxt="n",pch=pch,col=col,lty=lty,...)
     #now add the labels 
      at1 <- (1:nrow(x))
@@ -102,7 +103,7 @@ matPlot <- function(x, type = "b", minlength=6, xlas=0,legend=NULL,lab=NULL,pch=
     
      lab <- colnames(x)
     
-    if(missing(lty)) lty <- 1:8
+    
       legend.location <- c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right",  "center","none")
       legend(legend.location[legend],legend=lab,lty=lty,pch = pch,col=col)}
      }

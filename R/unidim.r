@@ -2,19 +2,24 @@
 #A number of estimates of unidimensionality
 #Developed March 9. 2017
 #Modified August 3 to consider two more estimates
+#cleaned up Sept 18, 2023 to match ms
+#reversed keys and x to be consistent with other functions
 
-"unidim" <- function(x,keys.list =NULL,cor="cor",correct=.5, check.keys=TRUE) {
+"unidim" <- function(keys=NULL,x=NULL,cor="cor",correct=.5, check.keys=TRUE) {
    cl <- match.call()
+     
    use <- "pairwise"
-   n.keys <- 1
+    if(!is.null(x)) {n.keys <- length(keys)
+    } else {x <- keys
+          keys <- NULL 
+           n.keys <- 1}
     all.x <- x
    results <- list()
-   if(!is.null(keys.list)) {n.keys <- length(keys.list)
-    } else {keys.list <- NULL }
+
    
-   for(keys in 1:n.keys) { if(!is.null(keys.list)) {
+   for(scale in 1:n.keys) { if(!is.null(keys)) {
      
-   select <- keys.list[[keys]]
+   select <- keys[[scale]]
         flipper <- rep(1,length(select))
          flipper[grep("-",select)] <- -1
          if(is.numeric(select)) {select <- abs(select) } else {
@@ -30,15 +35,15 @@
        spearman = {x <- cor(x,use=use,method="spearman")},
        kendall = {x <- cor(x,use=use,method="kendall")},
        tet = {x <- tetrachoric(x,correct=correct)$rho},
-       poly = {x <- polychoric(x,correct=correct)$rho},
        tetrachoric = {x <- tetrachoric(x,correct=correct)$rho},
+        poly = {x <- polychoric(x,correct=correct)$rho},
        polychoric = {x <- polychoric(x,correct=correct)$rho},
        mixed = {x <- mixedCor(x,use=use,correct=correct)$rho}
        
        )}
- 
+ #X is now a correlation matrix  
 
-  f1 <- fa(x)
+  f1 <- fa(x)  # a one factor solution  
   g <- sum(f1$model)  # sum(f1$loadings %*% t(f1$loadings))
   n <- NCOL(x)
   Vt <- sum(x)
@@ -53,7 +58,7 @@
  flipper[sign(f1$loadings ) < 0] <- -1 }
   x <- diag(flipper) %*% x %*% diag(flipper)
   Vt <- sum(x)
- median.r <- median(x[lower.tri(x)])
+ median.r <- median(x[lower.tri(x)])   #lower tri does not count diagonal
  alpha.std <-  (1- n/Vt)*(n/(n-1))
   av.r <- (Vt-n)/(n*(n-1))
   omega.flip <- sum(diag(flipper) %*% f1$model %*% diag(flipper))/Vt
@@ -63,17 +68,20 @@
   uni.flipper <- g.flipperped/(Vt - sum(f1$uniqueness))
   
 # How well does the alpha model predict the correlation matrix?
-alpha.res <- sum(lower.tri(x)* (x-av.r)^2)/sum(lower.tri(x) * x^2)
+alpha.res <- sum(lower.tri(x)* (x-av.r)^2)/sum(lower.tri(x) * x^2)   #squared residual /squared original
 # uni <- uni.flipper * (1-alpha.res)
 uni <- f1$fit.off * (1-alpha.res)
  
 
-  stats <- list(u=uni,alpha.res=1-alpha.res,fit.off= f1$fit.off,alpha=alpha.std,av.r = av.r,median.r = median.r,uni.flipper = uni.flipper, uni=uni.orig,om.g=om.g, omega.pos = omega.flip,om.t=om.t,om.total.flip= omega.total.flip)
-  if(!is.null(keys.list)) {results[[names(keys.list[keys])]]<- stats } else {results <- stats}
+  stats <- list(u=uni,alpha.res=1-alpha.res, fit.off= f1$fit.off, 
+           alpha=alpha.std,av.r = av.r,median.r = median.r,
+           uni.flipper = uni.flipper, uni=uni.orig,om.g=om.g, omega.pos = omega.flip,om.t=om.t,
+         om.total.flip= omega.total.flip)
+  if(!is.null(keys)) {results[[names(keys[scale])]]<- stats } else {results <- stats}
   }
   temp <- matrix(unlist(results),ncol=12,byrow=TRUE)
-  colnames(temp) <- c("u","av.r fit","fa.fit","alpha","av.r","median.r","Unidim.A","Unidim","model","model.A", "total", "total.A")
-  rownames(temp) <- names(keys.list)
+  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","Unidim.A","Unidim","model","model.A", "total", "total.A")
+  rownames(temp) <- names(keys)
   if(check.keys) {
   results <- list(uni=temp[,1:7])} else {results <- list(uni=temp)}
   results$Call <- cl

@@ -1,10 +1,10 @@
-
+#added the coarse option (defaulting to TRUE)  8/25/23
 "factor.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE) {
-   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm,smooth=smooth)}
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE, coarse=TRUE) {
+   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm,smooth=smooth,coarse=coarse)}
 
 "fa.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE,coarse=TRUE) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
@@ -281,7 +281,7 @@ conf.level <- alpha
    	 # result$R2.total <- R2.cor$R2
    	 # result$beta.total <- R2.cor$beta.total
    	  #coarse coding
-   	  keys <- factor2cluster(f) 
+   if(coarse){	  keys <- factor2cluster(f)      #added the not coarse option 8/25/23 
    	  covar <- t(keys) %*% r %*% keys 
  
    	  if((nfactors >1) && (dim(covar)[2] >1  )) {
@@ -300,6 +300,9 @@ conf.level <- alpha
    	                                           if(dim(sd.inv)[1] == 1) sd.inv <- diag(sd.inv)
    	                                           valid <- try(t(f) %*% keys * sd.inv)
    	                                           result$valid <- valid}
+   	 } else {
+   	   result$score.cor <-NULL
+   	   result$valid <- NULL}                                          
    	 result$weights <- w  #the beta weights for factor scores
    	class(result) <- c("psych","stats")
    	return(result)	

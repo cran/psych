@@ -8,8 +8,10 @@
 \description{Chi square and other goodness of fit statistics are found based upon the fit of a factor or components model to a correlation matrix.  Although these statistics are normally associated with a maximum likelihood solution, they can be found for minimal residual (OLS), principal axis, or principal component solutions as well.  Primarily called from within these functions, factor.stats can be used by itself. Measures of factorial adequacy and validity follow the paper by Grice, 2001.
 }
 \usage{
-fa.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE) 
-factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE) 
+fa.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,
+     smooth=TRUE, coarse=TRUE) 
+factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,
+      smooth=TRUE, coarse=TRUE) 
 }
 
 \arguments{
@@ -21,7 +23,7 @@ factor.stats(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE
   \item{alpha}{alpha level of confidence intervals for RMSEA (twice the confidence at each tail)}
   \item{fm}{flag if components are being given statistics}
   \item{smooth}{Should the corelation matrix be smoothed before finding the stats}
-  }
+ \item{coarse}{By default, find the coarse coded statistics.} }
 \details{Combines the goodness of fit tests used in \code{\link{fa}} and principal into one function.  If the matrix is singular, will smooth the correlation matrix before finding the fit functions. Now will find the RMSEA (root mean square error of approximation) and the alpha confidence intervals similar to a SEM function.  Also reports the root mean square residual.
 
 Chi square is found two ways.  The first (STATISTIC) applies the goodness of fit test from Maximum Likelihood objective function (see below).  This assumes multivariate normality.  The second is the empirical chi square based upon the observed residual correlation matrix and the observed sample size for each correlation.  This is found by summing the squared residual correlations time the sample size.  
@@ -55,9 +57,9 @@ Chi square is found two ways.  The first (STATISTIC) applies the goodness of fit
 
 \item{weights}{The beta weights to find the factor score estimates}
 
-\item{valid}{The validity coffiecient of course coded (unit weighted) factor score estimates (From Grice, 2001)}
+\item{valid}{The validity coffiecient of coarse coded (unit weighted) factor score estimates (From Grice, 2001)}
 
-\item{score.cor}{The correlation matrix of course coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix.}
+\item{score.cor}{The correlation matrix of coarse coded (unit weighted) factor score estimates, if they were to be found, based upon the loadings matrix.  Note that these are not the same as the correlation of the factor score estimates r.scores}
 
 \item{RMSEA}{The Root Mean Square Error of Approximation and the alpha confidence intervals. Based upon the chi square non-centrality parameter.
 This is found as \eqn{\sqrt{f/dof - 1(/-1)}}{sqrt((f/df - 1(N-1))} }
@@ -71,6 +73,8 @@ This is found as \eqn{\sqrt{f/dof - 1(/-1)}}{sqrt((f/df - 1(N-1))} }
 Grice, James W.,2001, Computing and evaluating factor scores,  Psychological Methods, 6,4, 430-450.
 
  } 
+ 
+ \note{The problem of factor and factor score estimates leads to multiple different estimates of the correlations between the factors.  Phi is the factor intercorrelation matrix from the rotations, r.scores is the correlation of the factor score estimates (if they were to be found from the data), score.cor is the correlation of the coarse coded factor score estimates, (if they were to be found). and of course the correlation of the factor score estimates  themselves.  By default, the first three of these are found.  }
  
 \seealso{
 \code{\link{fa}} with fm="pa" for principal axis factor analysis, \code{\link{fa}} with fm="minres" for minimum residual factor analysis (default).  \code{\link{factor.pa}} also does principal axis factor analysis, but is deprecated, as is \code{\link{factor.minres}} for minimum residual factor analysis. See \code{\link{principal}} for principal components.

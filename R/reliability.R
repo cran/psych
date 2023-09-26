@@ -5,8 +5,8 @@
 #Modified 7/10/21 to allow it to function with just a set of items, no keys specified
 #Modified 7/11/21 to include the unidimensional estimates from unidim  and to use the R object for speed
 reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALSE,hist=FALSE,
-   n.sample=10000) {
- cl <- match.call()
+   n.sample=10000,brute=FALSE,check.keys=TRUE)  {
+   cl <- match.call()
   result <- list()
   splits <- list()
   best <- worst <- list()
@@ -43,14 +43,14 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
              temp.keys <- paste0(sign.key,temp.keys)
                        
     # split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample, key=temp.keys))
-    split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample)) #don't use temp.keys
+    split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=brute,n.sample=n.sample,check.keys=check.keys)) #don't use temp.keys
           best[[scales]] <- list(max=split.half$maxAB)
           worst[[scales]] <- list(min=split.half$minAB)
          
-          result[[scales]] <- list(omega_h = om$omega_h, alpha = split.half$alpha, omega.tot = om$omega.tot,u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],maxrb=split.half$maxrb,minrb=split.half$minrb,
+          result[[scales]] <- list(omega_h = om$omega_h, alpha = split.half$alpha, omega.tot = om$omega.tot, u=uni$u[1],tau=uni$u[2],cong=uni$u[3],maxrb=split.half$maxrb,minrb=split.half$minrb,
           mean.r=split.half$av.r, med.r <- split.half$med.r, n.items=length(select) ) 
           if(raw) splits[[scales]] <- split.half$raw} else {      
-   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot, u=uni$u[1],av.r.fit=uni$u[2],fa.fit=uni$u[3],n.items=length(select)) }
+   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,u=uni$u[1],tau=uni$u[2],cong=uni$u[3],n.items=length(select)) }
   res.name[scales] <- names(keys)[scales]
    }
   }
@@ -63,8 +63,8 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
   # names(result) <- res.name
   if(split) {ncol <- 11} else {ncol <- 7}
    result.df <- matrix(unlist(result[!is.null(result)]), ncol=ncol,byrow=TRUE)
-  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot", "Uni","r.fit","fa.fit","max.split","min.split","mean.r", "med.r", "n.items") } else {
-  colnames(result.df) <- c("omega.h", "alpha", "omega.tot", "Uni","r.fit","fa.fit","n.items")}
+  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot", "Uni","tau","cong","max.split","min.split","mean.r", "med.r", "n.items") } else {
+  colnames(result.df) <- c("omega.h", "alpha", "omega.tot","Uni","tau","cong","n.items")}
   rownames(result.df) <- unlist(res.name)
   if(raw) {
   lx <- unlist(lapply(splits,length))

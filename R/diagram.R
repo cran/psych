@@ -10,7 +10,7 @@ if(length(class(fit)) == 1) {if (inherits(fit,"lm")) value <- "lm" }
 
 
 if(length(class(fit)) > 1)  {
-    names <- cs(lm, lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor)
+    names <- cs(lm, lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi)
     value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -29,7 +29,8 @@ fa.reg ={extension.diagram(fit,...)},
 esem = {esem.diagram(fit,...)},
 setCor = {lmDiagram(fit,...)},
 lm = {lmDiagram(fit, ...)},
-mediate ={mediate.diagram(fit,...)}
+mediate ={mediate.diagram(fit,...)},
+fa.multi ={fa.multi.diagram(fit,...)}
 )
 }
 
@@ -169,70 +170,8 @@ dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xli
     dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
      }
      
-     
-"dia.arrow" <- 
-function(from,to,labels=NULL,scale=1,cex=1,adj=2, both=FALSE,pos=NULL,l.cex,gap.size=NULL,draw=TRUE,col="black",lty="solid",...) {
-    if(missing(gap.size)) gap.size <- .2
-    if(missing(l.cex)) l.cex <- cex
-    text.values <- NULL
-    radius1 <- radius2 <- 0
-   if(!is.list(to)) {tocenter <- to} else {tocenter <- to$center}
- 	if(is.list(from)) {if(!is.null(from$radius)) {radius1 <- from$radius
- 	        radius2 <- 0}
- 	      #  if((tocenter[2] < from$center[2]) & ((tocenter[1] == from$center[1]))  ) {from <- from$bottom} else {
- 	        if(!is.null(from$center)) from <- from$center}
-    		
-    		
-       if(is.list(to)) {if(!is.null(to$radius)) {radius2 <- to$radius 
-       			to <- to$center}}
-       theta <- atan((from[2] - to[2])/(from[1] - to[1]))
-       costheta <- cos(theta)
-       sintheta <- sin(theta) 
-       dist <- sqrt((to[1] - from[1])^2 + (to[2] - from[2])^2)
-        if((adj  > 3 ) || (adj < 1)) {
-                   x <- (to[1] + from[1])/2
-                   y <- (to[2] + from[2])/2
-                   } else {
-        
-       x <- from[1] - sign(from[1] -to[1]+.001) *(4-adj) * costheta * dist/4
-      
-       y <- from[2] -  sign(from[1]-to[1] +.001)* (4-adj)  *  sintheta * dist/4}  #this is the problem when line is vertical
-      #x <- from[1] - sign(from[1]-to[1]) *adj *  cos(theta) * dist/6
-      #y <- from[2] -  sign(from[1]-to[1])* adj *  sin (theta)* dist/6}
-       
-     #   if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*.15}
-      #  if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .1}
-        
-       if(is.null(labels)) {h.size <- 0 } else{ h.size <- nchar(labels)*cex*gap.size}
-       if(is.null(labels)) {v.size <- 0 } else{ v.size <- cex * .7 * gap.size}
-     
-        if(from[1] <  to[1] ) {h.size <- -h.size
-                               radius1 <- -radius1
-                               radius2 <- -radius2}
-        x0 <- from[1] -costheta * radius1
-        xr <- x + h.size * costheta* v.size
 
-        y0 <- from[2] - sintheta * radius1  ##
-       
-        xl <- x - h.size * costheta* v.size
-        yr <- y + v.size * sintheta * h.size 
-        yl <- y - v.size * sintheta  *h.size
-        xe <- to[1] +costheta * radius2
-        ye <- to[2] + sintheta * radius2
-      if(!is.null(labels))  {  if(draw){ text(x,y,labels,cex=l.cex,pos=pos,...)
-                           text.values <- NULL } else {
-                           if(is.null(pos)) pos <- 0
-                           text.values <- c(x,y,labels,pos=pos,cex=l.cex) } }
-      
-       if(draw) {arrows(x0,y0,xr,yr, length = (both+0) * .1*scale, angle = 30, code = 1, ...)
-            arrows(xl,yl,xe,ye, length = 0.1*scale, angle = 30, code = 2,...)
-            arrow.values <- NULL
-            } else {
-        
-        arrow.values <- list(x0,y0,xr,yr,  length = (both+0) * .1*scale, angle = 30, code = 1, xl,yl,xe,ye, length2 = 0.1*scale, angle2 = 30, code2 = 2,col=col,lty=lty)
-        }
-        invisible(list(text.values=text.values,arrow.values=arrow.values))
-       }       
+     
 
        
        

@@ -2,14 +2,14 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.3.6 (2023-06-21)}{ 
+\section{Changes in psych version 2.3.8 (2023-08-18)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.3.7 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.3.6  (Added June 21, 2023). The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.3.9 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.3.6  (Added June 21, 2023). The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).  
        
   }   
@@ -133,6 +133,33 @@
       }
   }
  } 
+ 
+ \section{Changes in psych version 2.3.9 (2023-09-10)}{ 
+   \subsection{Additions}{
+          \itemize{
+          \item Added the n.obs parameter to corPlot to allow showing stars for correlation matrices
+          \item Added the ability to label higher order factors 
+          \item added the coarse=TRUE option to factor.stats to solve obscure problem in simulating sapa data.
+          \item Fixed error.bars.by to allow drawing of v.labels for both by.var=TRUE and FALSE
+          \item Revised and improved unidim and the associated documentation. Unidim provides three estimates of the unidimensionality of a scale.  
+          
+          }
+    }
+    
+  \subsection{Bugs Fixed}{
+      \itemize{
+      \item Fixed a bug in fa.diagram so that it will properly label the extension variables.  This was actually a problem in dia.arrow for the draw=TRUE option
+   \item Fixed a bug (reported by Nadine Kaul and Maria Bobrowski) in corPlot where my ability to have slanted x lables messed up the xlas=2 paramter.
+   \item Also fixed a bug in corTest that was giving stars above the diagonal for the case of just lower diagonal output (also reported by Nadine Kaul and Maria Bobrowski
+ )
+ \item Fixed bug in fa.multi.diagram to report variable labels correctly.  (reported by Rémi Thériault)
+ \item Fixed a very obscure bug in describe where it would not return variable labels for vectors if asking for quantiles.
+  \item Fixed violin/violinBy to draw allow rain drops for ungrouped data
+       }
+       }
+}
+ 
+
   
 \section{Changes in psych version 2.3.6 (2023-06-21)}{ 
    \subsection{Additions}{

@@ -18,6 +18,7 @@ lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
  #the prior name    
 setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
+       
 lmDiagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)    
 
 setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
@@ -31,9 +32,10 @@ mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) #the old f
 #does not handle formula input
 matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE) 
 
-
+#useful helper functions
 crossValidation(model,data,options=NULL,select=NULL)
 crossValidationBoot(y,x,data,n.iter=100)
+
 matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
       lab=NULL,pch=16,col=1:6,lty=NULL,...)
 }
@@ -70,7 +72,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{xlas}{Orientation of the x labels (3 to make vertical)}
   \item{minlength}{When abbreviating x labels how many characters as a minimum}
   \item{legend}{If not NULL, the draw a legend at the appropriate location}
-  \item{pch}{What plot character(s) to use in matPlot}
+  \item{pch}{What plot character(s) to use in matPlot (defaults to 18.  should be less than 26 -nvar)}
   \item{col}{colors to use in matPlot}
   \item{lty}{line types to use in matPlot}
   \item{lab}{What labels should be supplied to the lines in matPlot.  (Defaults to colnames of the variables.)}

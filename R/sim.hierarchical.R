@@ -37,8 +37,8 @@
 #simulate the Thomson Bond'd model to produce a positive manifold without a g factor
 #Developed Sept 14, 2019
 
-"sim.bonds" <- function(nvar=9,loads=c(0,0,.5,.6),validity=.8) {
-nf <- length(loads)
+"sim.bonds" <- function(nvar=9,nf=NULL,loads=c(0,0,.5,.6),validity=.8) {
+if(is.null(nf)) nf <- length(loads)
 f <- matrix(0,nrow=(nvar+ nf),ncol=nf)
 for (i in 1:nvar) {
    f[i,] <- sample(loads,nf)

@@ -159,7 +159,8 @@ n.pch =length(pch)
     if (is.null(ylab)) ylab <- "Dependent Variable"
      
      if(!by.var) {
-        
+     
+        if(is.null(v.labels)) v.labels <- names(group.stats)   #use the values of the grouping variable
       	if (is.null(xlab)) xlab <- "Independent Variable"
     	for (g in 1:n.group) {
    	 	x.stats <- group.stats[[g]]   
@@ -168,7 +169,8 @@ n.pch =length(pch)
     	               }
         if (missing(xlim)) xlim <- c(.5,n.var+.5)
     	if(!add) {plot(x.stats$mean,ylim=ylim,xlim=xlim, xlab=xlab,ylab=ylab,main=main,typ=typ,lty=(lty[((g-1) %% 8 +1)]),axes=FALSE,col = colors[(g-1) %% n.color +1], pch=pch[g],...)
-    	axis(1,1:z,colnames(x),...)
+    	#axis(1,1:z,colnames(x),...)
+    	axis(1,1:z,v.labels,...)
     	axis(2,...)
     	box()
     	} else {points(x.stats$mean,typ = typ,lty=lty[((g-1) %% 8 +1)],col = colors[(g-1) %% n.color +1],  pch=pch[g]) 
@@ -200,7 +202,18 @@ n.pch =length(pch)
        text.col = "green4", lty = lty[1:8],
        merge = TRUE, bg = 'gray90')
    }
-    }    else  { # end of not by var loop
+   #    #now, if v2.labels, get the var.means, etc 
+#        n.vars <- dim(x)[2]
+#     if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
+#      var.means <- matrix(NA,nrow=n.vars,ncol=n.group)
+#      var.n <- var.se <- ci <- matrix(0,nrow=n.vars,ncol=n.group)
+#      for (g in 1:n.group) {
+#    	 	var.means[,g] <- as.numeric (group.stats[[g]]$mean)    #problem with dimensionality -- if some grouping variables are empty
+#    	 	if(sd) {var.se[,g] <- as.numeric(group.stats[[g]]$sd)}  else {var.se[,g] <- as.numeric(group.stats[[g]]$se) }
+#    	 	var.n [,g] <-as.numeric( group.stats[[g]]$n)
+#    	 	}
+
+   } else  { # end of not by var loop
     
     #alternatively, do it by variables rather than by groups, or if we have two grouping variables, treat them as two variables
      if (is.null(xlab)) xlab <- "Grouping Variable"
@@ -323,8 +336,22 @@ n.pch =length(pch)
     		axis(2,...)
     		box() 
     		}   #end of i loop 
+    }  #end of by var is true loop
     
-    #### now add labels and lengeds if desirec		
+   
+    #### now add labels and lengeds if desired	
+    
+      #now, if v2.labels, get the var.means, etc 
+       n.vars <- dim(x)[2]
+    if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
+     var.means <- matrix(NA,nrow=n.vars,ncol=n.group)
+     var.n <- var.se <- ci <- matrix(0,nrow=n.vars,ncol=n.group)
+     for (g in 1:n.group) {
+   	 	var.means[,g] <- as.numeric (group.stats[[g]]$mean)    #problem with dimensionality -- if some grouping variables are empty
+   	 	if(sd) {var.se[,g] <- as.numeric(group.stats[[g]]$sd)}  else {var.se[,g] <- as.numeric(group.stats[[g]]$se) }
+   	 	var.n [,g] <-as.numeric( group.stats[[g]]$n)
+   	 	}
+    if(!by.var) var.means <- t(var.means)	
       if(!is.null(add.labels)) {
         
                if(is.null(v2.labels)) v2.labels <- names(unlist(dimnames(group.stats)[2]))
@@ -354,9 +381,9 @@ n.pch =length(pch)
        merge = TRUE, bg = 'gray90') }   
                         }
      
-    }  #end of by var is true loop
+    }  
    
-    } # end of if not bars condition
+    
   invisible(group.stats) }
    
    #corrected Feb 2, 2011 to plot alpha/2 rather than alpha 
@@ -367,4 +394,4 @@ n.pch =length(pch)
    #modified Novemember, 2020 to  handle NULL sample sizes
    #further modified November 2020 to properly label the lines and fix the pch to match the legend
    #And yet some more, December 31st to better handle non-=categorial variables
-   
+   #8/27/23  added the ability to plot v.labels for both by.var=TRUE and by.var=FALSE

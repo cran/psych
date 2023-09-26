@@ -1,9 +1,9 @@
 #November 30, 2013
 #parts adapted from combn
-#modified 6/20/21 to just do the unique splits if < 10,000
+#modified 6/20/21 to just do the unique splits if < 15,000 *i.e. a 16 variable problem
 #modified 9/7/21 to handle keys as lists of variable names with negative signs
 "splitHalf"<- 
-function(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,key=NULL,ci=.05,use="pairwise") {
+function(r,raw=FALSE,brute=FALSE,n.sample=15000,covar=FALSE,check.keys=TRUE,key=NULL,ci=.05,use="pairwise") {
 cl <- match.call()
 
 split <- function(o,n) {
@@ -80,7 +80,8 @@ brute <- TRUE
  #first do the original order
         o <- a
         sp <- split(o,n)
-        if(raw) result[1] <- sp$rab
+        if(raw) result[1] <- abs(sp$rab)
+        sp$rab <- abs(sp$rab)
         maxrb <- sp$rab
         maxAB <- sp$AB
         minrb <- sp$rab
@@ -101,8 +102,9 @@ i <- 2 #now, do the rest
              a[m - h + j] <- e + j 
             o <-  x[a]
             sp <- split(o,n)
-         if(raw) result[i] <- sp$rab
-          sumr <- sumr+ sp$rab
+         if(raw) result[i] <- abs(sp$rab )
+           sp$rab <- abs(sp$rab)  #conrolling for a rare case
+            sumr <- sumr+ sp$rab  # summing all of the split halfs to eventually report mean splithalf
           if(sp$rab > maxrb) {maxrb  <- sp$rab
                               maxAB <- sp$AB}
         if(sp$rab < minrb) {minrb <- sp$rab
@@ -129,6 +131,7 @@ for (i in 1:n.sample) {
  }
  #now 
 if(brute) {meanr <- sumr/count } else {meanr <- sumr/n.sample }
+
 
 kd <- diag(key.d)    #reverse them so we can use the keys
 maxAB =maxAB * kd

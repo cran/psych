@@ -103,6 +103,19 @@
     			 }
    }
    }
+   
+#    if(!is.null(fe.results)) {    #this messes up the multidraw functions 
+#      e.loadings <- fe.results$loadings
+#      
+#      for (v in 1:n.evar) { 
+#  	 var.rect[[v]] <- dia.rect(x.max,top-v-max(0,nvar-n.evar)/2,rownames(e.loadings)[v],xlim=limx,ylim=limy,cex=cex,draw=FALSE,...)
+#  	 for(f in 1:num.factors) {
+#  	 if(simple && (abs(e.loadings[v,f]) == max(abs(e.loadings[v,])) )  && (abs(e.loadings[v,f]) > cut) | (!simple && (abs(e.loadings[v,f]) > cut))) { 
+#     			dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$left,labels =round(e.loadings[v,f],digits),col=((sign(e.loadings[v,f])<0) +1),lty=((sign(e.loadings[v,f])<0)+1),adj=f %% adj +1, draw=FALSE)}
+#     			}
+#              }
+#    
+#    }
     #now draw all the factors/components and their associated loadings
     #first, just the factors and their labels
     

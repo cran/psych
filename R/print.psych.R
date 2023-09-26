@@ -466,6 +466,28 @@ guttman =  {
             cat("\nSee the help file for a discussion of the other 4 McGraw and Wong estimates,")
    },
    
+glb = {
+cat("Call: ") 
+    print(x$Call)
+cat("\nEstimates of the Greatest Lower Bound for reliability, based on factor and cluster models")
+
+ cat("\nGLB estimated from factor based communalities = ", round(x$glb.fa$glb,digits) ,"with ",x$nf, " factors.")
+ cat("\nUse glb.fa to see more details \n")
+ 
+ cat("\n Various estimates based upon splitting the scale into two (see keys for the various splits)")
+ cat("\nBeta = ", round(x$beta,digits) , "\nBeta fa",round(x$beta.fa,digits), " This is an estimate of the worst split half reliability")  
+ cat("\nKmeans clusters for best split ",round(x$glb.Km,digits=2))
+cat("\nCluster based estimates \nglb.IC = ",round(x$glb.IC,digits))
+cat("\nglb.max ", round(x$glb.max,digits),"Is the maximum of these estimates")
+cat("\n alpha-PC = ", round(x$alpha.pc,digits),"An estimate of alpha based on eignvalues")   #\nglb.IC) = " ,round(x$glb.IC,digits)) #"\nL5 = ", round(x$lambda.5,digits), "\nL6 (smc) = " ,round(x$lambda.6,digits), "\n")
+ cat("\nTenBerge bounds \nmu0 = ",round(x$tenberge$mu0,digits), "mu1 = ", round(x$tenberge$mu1,digits), "mu2 = " ,round(x$tenberge$mu2,digits), "mu3 = ",round(x$tenberge$mu3,digits) , "\n")
+ cat("\nestimated greatest lower bound based upon splitHalf = ", round(x$glb.Fa,digits),"\n")
+
+if(!short) {cat("\n Various ways of keying the results\n")
+    x$keys} else {cat("\nUse short = FALSE to see the various ways of splitting the scale")}
+    
+},
+   
 iclust.sort = {
      nvar <- ncol(x$sort) 
      x$sort[4:nvar] <- round(x$sort[4:nvar],digits)

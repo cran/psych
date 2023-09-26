@@ -227,7 +227,8 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
     if (numstats > (10+ IQR)) {if(nvar > 1 ) {answer <- data.frame(answer, stats[,(IQR+11):numstats])   #add the quantile information
                                      } else { 
 
-                                       answer <- data.frame(answer, t(stats[,(IQR+11):numstats])) }
+                                       answer <- data.frame(answer, t(stats[,(IQR+11):numstats])) 
+                                       rownames(answer) <- cn}
                         }     
                          
     
@@ -256,3 +257,4 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
     return(answer)
     }
 }
+#minor patch on 9/10/23 for case of single variables with quants

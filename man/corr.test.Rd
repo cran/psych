@@ -62,7 +62,7 @@ Also see \code{\link{cor.ci}} for bootstrapped confidence intervals of Pearson, 
 
 In particular, see \code{\link{p.adjust}} for a discussion of p values associated with multiple tests.
 
-Other useful functions related to finding and displaying correlations include \code{\link{lowerCor}} for finding the correlations and then displaying the lower off diagonal using the \code{\link{lowerMat}} function. \code{\link{lowerUpper}} to compare two correlation matrices.
+Other useful functions related to finding and displaying correlations include \code{link{corPlot}} to graphically display the correlation matrix,  and \code{\link{lowerCor}} for finding the correlations and then displaying the lower off diagonal using the \code{\link{lowerMat}} function. \code{\link{lowerUpper}} to compare two correlation matrices.  Also see \code{\link{pairs.panels}} to show the correlations and scatter plots.  
 
 
 }

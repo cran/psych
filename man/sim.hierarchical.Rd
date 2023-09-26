@@ -8,7 +8,7 @@
 \usage{
 sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = TRUE,mu = NULL,
     categorical=FALSE, low=-3,high=3,threshold=NULL)
-sim.bonds(nvar=9,loads=c(0,0,.5,.6),validity=.8)
+sim.bonds(nvar=9,nf=NULL, loads=c(0,0,.5,.6),validity=.8)
 
 make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
 
@@ -27,6 +27,7 @@ make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
   \item{nvar}{Number of variables to simulate}
   \item{loads}{A vector of loadings that will be sampled (rowwise) to define the factors}
   \item{validity}{The factor loadings of `pure' measures of the factor.}
+  \item{nf}{Number of factors to generate in sim.bonds}
 }
 \details{Many personality and cognitive tests have a hierarchical factor structure.  For demonstration purposes, it is useful to be able to create such matrices, either with population values, or sample values. 
 

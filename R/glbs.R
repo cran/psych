@@ -16,10 +16,10 @@ r <- cov2cor(r)}  #make sure it is a correlation matrix not a covariance or data
    f1 <- fa(r) #factor it  #first find the eigen values of the factor model
    nf <-length(which(f1$values > 0))  #how many are real 
    df <- nv * (nv-1)/2  - nf*nv + nf*(nf-1)/2  #check for degrees of freedom   
-   if (df <0 ) nf <- nf-1
+   if (df < 0 ) nf <- nf-1
    fn <- fa(r,nf,rotate="none")
    rr <- r
-   diag(rr) <- fn$communality
+   diag(rr) <- fn$communality  #based upon nf factors
    glb <- sum(rr)/sum(r)
    return(list(glb=glb,communality = fn$communality,numf = nf,Call=cl))
    }

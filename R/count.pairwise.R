@@ -1,5 +1,6 @@
 #drastically simplified, March 14, 2009 from two loops to 1 matrix operation
 #modified July 2, 2013 to allow not counting the diagonal
+#modified 08/31/23 to not use the lower.tri but rather the complete matrix
  "count.pairwise" <-
 function (x, y=NULL,diagonal=TRUE) 
 { .Deprecated("pairwiseCount",msg="count.pairwise is deprecated.  Please use the pairwiseCount function.")
@@ -9,7 +10,8 @@ function (x, y=NULL,diagonal=TRUE)
     
 pairwiseDescribe <- function(x,y=NULL,diagonal=FALSE,...) {
 cp <- pairwiseCount(x,y=y,diagonal=diagonal)
-cp <- as.vector(cp[lower.tri(cp,diag=diagonal)])
+#cp <- as.vector(cp[lower.tri(cp,diag=diagonal)])   #this overestimates the and also gives the wrong answer if diagonal=TRUE 
+cp <- as.vector(cp)
 describe(cp,...)
 } 
 # replaces count.pairwise 

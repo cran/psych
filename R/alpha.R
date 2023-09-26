@@ -71,11 +71,11 @@
          #if(check.keys && is.null(keys)) {
             p1 <- principal(x,scores=FALSE)
 
-               if(any(p1$loadings < 0)) {if (check.keys) {if(warnings) warning("Some items were negatively correlated with total scale and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
+               if(any(p1$loadings < 0)) {if (check.keys) {if(warnings) warning("Some items were negatively correlated with the first principal component and were automatically reversed.\n This is indicated by a negative sign for the variable name.") 
                     keys <- 1- 2* (p1$loadings < 0)
                       } else {
-                       if(is.null(keys) && warnings ) {warning("Some items were negatively correlated with the total scale and probably \nshould be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
-                       if(warnings) cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the total scale and \nprobably should be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
+                       if(is.null(keys) && warnings ) {warning("Some items were negatively correlated with the first principal component and probably \nshould be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
+                       if(warnings) cat("Some items (",rownames(p1$loadings)[(p1$loadings < 0)],") were negatively correlated with the first principal component and \nprobably should be reversed.  \nTo do this, run the function again with the 'check.keys=TRUE' option")
                         keys <- rep(1,nvar)
                          } 
                    
@@ -253,7 +253,7 @@
   #added item.c  (raw correlation) 1/10/15
   #corrected 1/16/16 corrected the formula for Q following a suggestion by Tamaki Hattori
   #added the n.obs option to allow us to find standard errors even from correlation matrices
-  
+  #7/4/23 changed the reference to total score to be first principal component
   
 #a kludge to get around a problem introduced by dplyr which changes the class structure of data frames.
 #created in response to a problem raised by Adam Liter   (February, 2017) 

@@ -10,7 +10,7 @@
 \description{Eight alternative estimates of test reliability include the six discussed by Guttman (1945), four discussed by ten Berge and Zergers (1978) (\eqn{\mu_0 \dots \mu_3)} as well as \eqn{\beta} (the worst split half, Revelle, 1979),  the glb (greatest lowest bound) discussed by Bentler and Woodward (1980), and \eqn{\omega_h} and \eqn{\omega_t} (McDonald, 1999; Zinbarg et al., 2005). Greatest and lowest split-half values are found by brute force or sampling. 
 }
 \usage{
-splitHalf(r,raw=FALSE,brute=FALSE,n.sample=10000,covar=FALSE,check.keys=TRUE,
+splitHalf(r,raw=FALSE,brute=FALSE,n.sample=15000,covar=FALSE,check.keys=TRUE,
            key=NULL,ci=.05,use="pairwise")
 guttman(r,key=NULL) 
 tenberge(r)
@@ -22,10 +22,10 @@ glb.fa(r,key=NULL)
   \item{r}{A correlation or covariance matrix or raw data matrix.}
   \item{raw}{return a vector of split half reliabilities}
   \item{brute}{Use brute force to try all combinations of n take n/2. Be careful.  For e.g., n=24, this is 1,352,078 possible splits!}
-  \item{n.sample}{If brute is false, how many samples of split halves should be tried? ()}
+  \item{n.sample}{If brute is false, how many samples of split halves should be tried? (16 items takes 12,780)}
   \item{covar}{Should the covariances or correlations be used for reliability calculations}
   \item{check.keys}{If TRUE, any item with a negative loading on the first factor will be flipped in sign}
- \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See if the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
+ \item{key}{a vector of -1, 0, 1 to select or reverse key items.  See \code{\link{scoreItems}} for an example of keying. If the key vector is less than the number of variables, then item numbers to be reverse can be specified.}
  \item{use}{Should we find the correlations using "pairwise" or "complete" (see ?cor)}
  \item{ci}{The alpha level to use for the confidence intervals of the split half estimates}
 }
@@ -103,7 +103,7 @@ These three procedures will produce keys vectors for assigning items to the two 
 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
-Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 10,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples.
+Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 15,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples. For a 24 item problem with exactly 2 factors (by simulation), the worst split half is much lower than just random sampling would indicate.  s
 
 Timings on a MacPro for a 24 item problem with a 2.4 GHz 8 core are .24 secs for the default 10,000 samples, .678 for 30,000 samples and 22.58 sec for all possible.  
 The values of the maximum split for these sample sizes  were .799,/.804 and .800 for three replications of the default sample size of 10000,  .805  and .806 for two sets of 30,000 and .812 for an exhaustive search.
@@ -150,8 +150,8 @@ Zinbarg, R. E., Revelle, W., Yovel, I., & Li, W. (2005). Cronbach's \eqn{\alpha}
 }
 \author{ William Revelle }
 
-\seealso{  \code{\link{reliability}},\code{\link{alpha}}, \code{\link{omega}}, 
-\code{\link{ICLUST}},  \code{\link{glb.algebraic}}
+\seealso{  \code{\link{reliability}},  \code{\link{alpha}},  \code{\link{omega}}, 
+\code{\link{ICLUST}},  \code{\link{unidim}},  \code{\link{glb.algebraic}}
 }
 \examples{
 data(attitude)

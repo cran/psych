@@ -12,6 +12,10 @@
 #modified November 29th, 2017 to allow for semi-transparency by adjusting alpha
 #Finally changed the default to be numbers=TRUE (9/17/19)
 #Added the sort option 6/13/23
+#Added the ability to rotate x labels xsrt  if xlas =0
+#fixed the stars option for the case of lower diagonal so that it works
+#Added the n.obs paramter for people who like stars for correlation input  8/6/23
+
 
 "cor.plot" <- "corPlot" <- 
 function(r,numbers=TRUE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRUE,
@@ -21,7 +25,7 @@ function(r,numbers=TRUE,colors=TRUE, n=51,main=NULL,zlim=c(-1,1),show.legend=TRU
     cuts=c(.001,.01),scale=TRUE,cex,MAR,upper=TRUE,
     diag=TRUE,symmetric=TRUE,stars=FALSE,adjust="holm",
     xaxis =1, xlas=0,ylas=2,ysrt=0, xsrt=0, gr=NULL,alpha =.75,
-    min.length=NULL, sort=FALSE, ...){
+    min.length=NULL, sort=FALSE, n.obs=NULL, ...){
 if(keep.par) op <- par(no.readonly=TRUE)
 if(missing(MAR)) MAR <- 5
 if(!is.matrix(r) & (!is.data.frame(r))) {if((length(class(r)) > 1) & (inherits(r, "psych")))  {
@@ -45,9 +49,12 @@ switch(class(r)[2],
     cp <- corr.test(r,adjust=adjust)  #find the corelations
     r <- cp$r
     pval <- cp$p
-    if(is.null(main)) {main <- "Correlation plot from data" }} else {scale<- FALSE 
+    if(is.null(main)) {main <- "Correlation plot from data" }
+    } else {scale<- FALSE 
       if(is.null(main)) {main <- "Correlation plot"}  
-   }}
+   } 
+    if(isCorrelation(r)& !is.null(n.obs) )  pval <- corr.p(r,n.obs)$p 
+     }
 R <- r <- as.matrix(r)
 if(!is.null(select)) r <- r[select,select]
 if(sort) {ord <- iclust(r,plot=FALSE)$ord
@@ -139,13 +146,13 @@ if(xaxis == 3) {line <- -.5
  tick <- TRUE}
 
 if(max.len >.5) {axis(2,at=at2,labels=lab2,las=ylas,...)
-             # axis(xaxis,at=at1,labels=lab1,las=xlas,line=line,tick=tick,...)
-             axis(xaxis,at=at1,labels=FALSE,las=xlas,line=line,tick=tick,...)
-            text(at1, par("usr")[3]*3, labels = lab1, srt = xsrt, xpd=TRUE,...) } else {
+          if(xsrt==0)  {  axis(xaxis,at=at1,labels=lab1,las=xlas,line=line,tick=tick,...)} else {
+            axis(xaxis,at=at1,labels=FALSE,las=xlas,line=line,tick=tick,...)
+          text(at1, par("usr")[3]*3, labels = lab1, srt = xsrt, xpd=TRUE,...) }} else {
               axis(2,at=at2,labels=lab2,las=ylas,...)
-             # axis(xaxis,at=at1,labels=lab1,las=xlas,line=line,tick=tick,...)
+           if(xsrt==0)  { axis(xaxis,at=at1,labels=lab1,las=xlas,line=line,tick=tick,...)} else {
                axis(xaxis,at=at1,labels=FALSE,las=xlas,line=line,tick=tick,...)
-              text(at1, par("usr")[3]*3, labels = lab1, srt = xsrt, xpd=TRUE,...) 
+              text(at1, par("usr")[3]*3, labels = lab1, srt = xsrt, xpd=TRUE,...) }
               }
 #at1 <- (0:(nf-1))/(nf-1)
 
@@ -153,14 +160,17 @@ if(numbers) {rx <- rep(at1,ncol(r))
             ry <-rep(at2,each=nrow(r))
 # rv <- round(r*100)
 rv <- round(r,digits) 
- if(trailing) {rv <- sprintf("%.2f", rv)# format with trailing 0
+ if(trailing) {rv <- sprintf("%.2f", rv)# format with trailing 0rv
               rv[rv=="NA"] <- ""     #drop the NAs  for lower Cors
               }
- 
- if(stars) {#pval <- corr.p1(r,npairs,"none")
+
+ if(stars) {#pval <- corr.p1(r,npairs,"none"
+           
             symp <- symnum(pval, corr = FALSE,cutpoints = c(0,  .001,.01,.05, 1),
                 symbols = c("***","**","*"," "),legend=FALSE)
-                rv[!is.na(rv)] <- paste0(rv[!is.na(rv)],symp[!is.na(rv)])
+                rv[(!is.na(rv))] <- paste0(rv[(!is.na(rv))],symp[!is.na(rv)])
+                rv <- matrix(rv,ncol=ncol(pval))
+                if(!upper) rv[ncol(rv)+diag - row(rv) < col(rv)] <- ""
                  if(missing(cex))  cex = 9/max(nrow(r),ncol(r))
                  text(rx,ry,rv,cex=cex,...)  } else {
 

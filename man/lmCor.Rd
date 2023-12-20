@@ -1,7 +1,7 @@
 \name{lmCor}
 \alias{setCor}
 \alias{lmCor}
-\alias{setCor.diagram}
+\alias{lmCor.diagram}
 \alias{lmDiagram}
 \alias{set.cor}
 \alias{mat.regress}
@@ -9,7 +9,7 @@
 \alias{crossValidation}
 \alias{crossValidationBoot}
 \alias{matPlot}
-\title{Multiple Regression and Set Correlation from matrix or raw input}
+\title{Multiple Regression, Canonical and Set Correlation from matrix or raw input}
 \description{A generalization of the lm function to correlation/covariance matrix input. Given a correlation matrix or a  matrix or dataframe of raw data, find the multiple regressions and draw a path diagram relating a set of y variables as a function of a set of x variables.  A set of covariates (z) can be partialled from the x and y sets. Regression diagrams are automatically included.  The model can be specified in conventional formula form, or in terms of x variables and y variables.  Multiplicative models (interactions) and quadratic terms may be specified in the formula mode if using raw data. By default, the data will be  zero centered before finding the interactions.  Will also find Cohen's Set Correlation between a predictor set of variables (x) and a criterion set (y). Also finds the canonical correlations between the x and y sets. Associated functions allow for cross validation of these regression models.
 }
 \usage{
@@ -21,7 +21,7 @@ setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        
 lmDiagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)    
 
-setCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
+lmCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
 #an alias to setCor or lmCor
 
 set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
@@ -43,7 +43,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
 \arguments{
   \item{y}{Three options: 'formula' form (similar to lm) or either  the column numbers of the y set  (e.g., c(2,4,6) or the column names of the y set (e.g., c("Flags","Addition"). See notes and examples for each.}
   \item{x}{ either the column numbers of the x set (e.g., c(1,3,5) or the column names of the x set (e.g. c("Cubes","PaperFormBoard").  x and y may also be set by use of the formula style of lm.}
-  \item{data}{A matrix or data.frame of correlations or, if not square, of raw data}
+  \item{data}{A matrix or data.frame of correlations or, if not square, of raw data. Missing values are allowed (see use)}
   \item{C}{A variance/covariance matrix, or a correlation matrix}
   \item{m}{The column name or numbers of the set of mediating variables (see \code{\link{mediate}}).}
   \item{z}{the column names or numbers of the set of covariates. }
@@ -57,14 +57,14 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{main}{The title for lmCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
   \item{sc}{The output of lmCor or setCor may be used for drawing diagrams}
-  \item{digits}{How many digits should be displayed in the setCor.diagram?}
+  \item{digits}{How many digits should be displayed in the lmCor.diagram?}
   \item{show}{Show the unweighted matrix correlation between the x and y sets?}
   \item{zero}{zero center the x variables before finding the interaction terms.}
   \item{alpha}{p value of the confidence intervals for the beta coefficients}
-  \item{plot}{By default, setCor makes a plot of the results, set to FALSE to suppress the plot}
+  \item{plot}{By default, lmCor makes a plot of the results, set to FALSE to suppress the plot}
   \item{cex}{Text size of boxes displaying the variables in the diagram}
   \item{l.cex}{Text size of numbers in arrows, defaults to cex}
-  \item{...}{Additional graphical parameters for setCor.diagram}
+  \item{...}{Additional graphical parameters for lmCor.diagram}
   \item{model}{The resulting object from lmCor or bestScales}
   \item{options}{If using a bestScales object, which set of keys to use ("best.key","weights","optimal.key","optimal.weights")}
   \item{select}{Not yet implemented option to crossValidation}
@@ -87,11 +87,11 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
  
  If using covariates, should they be removed from the dependent as well as the independent variables (part = FALSE, the default which means partial correlations  or just the independent variables (part=TRUE or part aka semi-partial correlations).  The difference between part correlations and partial correlations is whether the variance of the covariate is removed from both the DV and IVs (a partial correlation) or from just the IVs (a part correlation).  The slopes of the regressions remain the same, but the amount of variance in the DV (and thus the standard errors) is larger when using part correlations.  Using partial correlations for the covariates is equivalent to using the covariate in the regression when interpreting the effects of the other variables. 
   
-  The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.
+  The output is a set of multiple correlations, one for each dependent variable in the y set, as well as the set of canonical correlations.  Since 2.3.12, the canonical loadings for the X and Y variables are returned (Xmat,YMat).
   
 An additional output is the R2 found using Cohen's set correlation (Cohen, 1982).  This is a measure of how much variance and the x and y set share.
   
- Cohen (1982) introduced the set correlation, a multivariate generalization of the multiple correlation to measure the overall relationship between two sets of variables. It is an application of canoncial correlation (Hotelling, 1936) and \eqn{1 - \prod(1-\rho_i^2)} where \eqn{\rho_i^2} is the squared canonical correlation.  Set correlation is the amount of shared variance (R2) between two sets of variables.  With the addition of a third, covariate set, set correlation will find multivariate R2, as well as partial and semi partial R2.  (The semi and bipartial options are not yet implemented.) Details on set correlation may be found in Cohen (1982), Cohen (1988) and  Cohen, Cohen, Aiken and West (2003). 
+ Cohen (1982) introduced the set correlation, a multivariate generalization of the multiple correlation to measure the overall relationship between two sets of variables. It is an application of canonicial correlation (Hotelling, 1936) and \eqn{1 - \prod(1-\rho_i^2)} where \eqn{\rho_i^2} is the squared canonical correlation.  Set correlation is the amount of shared variance (R2) between two sets of variables.  With the addition of a third, covariate set, set correlation will find multivariate R2, as well as partial and semi partial R2.  (The semi and bipartial options are not yet implemented.) Details on set correlation may be found in Cohen (1982), Cohen (1988) and  Cohen, Cohen, Aiken and West (2003). 
  
  R2 between two sets is just \deqn{R^2 = 1- \frac{\left | R_{yx} \right |}{\left | R_y \right | \left |R_x\right |}  =  1 - \prod(1-\rho_i^2)   }{R2 = 1- |R| /(|Ry| * |Rx|)} where R is the  complete correlation matrix of the x and y variables and Rx and Ry are the two sets involved.
 
@@ -110,7 +110,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  If the number of observations is entered, then the conventional confidence intervals, statistical significance, and shrinkage estimates are  reported.
  
- If the input is rectangular (not square), correlations or covariances are found from the data.
+ If the input is rectangular (not square), correlations or covariances are found from the data. By default, these are pairwise complete correlations. This may be specified in the 'use' option.
  
  The print function reports t and p values for the beta weights, the summary function just reports the beta weights.
  
@@ -118,13 +118,16 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
  
  The Guide and Ketokivi article is well worth reading for all who want to use various regression models. 
  
+ \code{\link{anova.psych}} allows for comparisons between alternative models. 
+ 
  \code{\link{crossValidation}} can be used to take the results from \code{\link{lmCor}} or \code{\link{bestScales}} and apply the weights to a different data set.
  
  \code{\link{crossValidationBoot}} will bootstrap resample data and perform a lmCor and then return the crossValidation R values. Although it will handle covariates (z), it will not handle product terms.  
  
  \code{\link{matPlot}} can be used to plot the crossValidation values (just a call to matplot with the xaxis given labels). matPlot has been improved to draw legends and to allow for specifications of the line types.
  
- \code{\link{setCorLookup}} will sort the beta weights and report them with item contents if given a dictionary. 
+ \code{\link{lmCorLookup}} will sort the beta weights and report them with item contents if given a dictionary. 
+ 
  \code{\link{matReg}} is primarily a helper function for \code{\link{mediate}} but is a general multiple regression function given a covariance matrix and the specified x,  y and z variables. Its output includes betas, se, t, p and R2.  The call includes m for mediation variables, but these are only used to adjust the degrees of freedom.
  \code{\link{matReg}} does not work on data matrices, nor does it take formula input.  It is really just a helper function for  \code{\link{mediate}}
 }
@@ -139,10 +142,12 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
   \item{Probability}{Probability of beta = 0 (if n.obs is specified)}
   \item{shrunkenR2}{Estimated shrunken R2 (if n.obs is specified)}
   \item{setR2}{The multiple R2 of the set correlation between the x and y sets}
-  item{residual}{The residual correlation matrix of Y with x and z removed}
+  \item{residual}{The residual correlation matrix of Y with x and z removed}
   \item{ruw}{The unit weighted multiple correlation for each dependent variable}
-  \item{Ruw}{The unit weighted set correlation} 
-
+  \item{Ruw}{The unit weighted set correlation}
+  \item{cancor}{The canonical correlations between the X and Y set.} 
+  \item{Xmat}{The path coefficients from the X variables to the canonical variables.}
+   \item{Ymat}{The path coefficients from the Y variables to the canonical variables.}
 }
 
 \author{William Revelle \cr
@@ -156,10 +161,11 @@ J. Cohen, P. Cohen, S.G. West, and L.S. Aiken. (2003) Applied multiple regressio
 
 H. Hotelling. (1936) Relations between two sets of variates. Biometrika 28(3/4):321-377.
 
-
 E.Cramer and W. A. Nicewander (1979) Some symmetric, invariant measures of multivariate association. Psychometrika, 44:43-54.
 
 V. Daniel R. Guide Jr. and M. Ketokivim (2015) Notes from the Editors: Redefining some methodological criteria for the journal.  Journal of Operations Management. 37. v-viii.
+
+B.G. Tabacnick and L.S. Fidell (2007) Using Multivariate Statistics. Allyn and Bacon.
 
 }
 
@@ -171,11 +177,14 @@ The denominator degrees of freedom for the set correlation does not match that r
 
 Following a suggestion by Keith Widaman, when zero centering for product terms, the y variables are no longer zero centered. This puts the regression in the units of the DV. (2/22/22). 
 
+In December, 2023 I added the Xmat and Ymat coefficients for those who want to examine canonical correlations. This follows the example in Tabachnick and Fidell.  Also added \code{\link{cancorDiagram}} to show the canonical path coefficients. 
+
 
 
 }
 
 \seealso{\code{\link{mediate}} for an alternative regression model with 'mediation'.  \code{\link{predict}} to find predicted values given regression weights. 
+\code{\link{partial.r}} for partial and  part correlations. 
 \code{\link{cluster.cor}}, \code{\link{factor2cluster}},\code{\link{principal}},\code{\link{ICLUST}}, \code{link{cancor}} and cca in the yacca package. 
 \code{\link{GSBE}} for further demonstrations of mediation and moderation. }
 \examples{
@@ -224,9 +233,9 @@ kelley <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(
 
 lowerMat(kelley)
 
-lmCor(power + speed ~ words + symbols + meaningless,data=kelley)  #formula mode
+mod2 <- lmCor(power + speed ~ words + symbols + meaningless,data=kelley)  #formula mode
 #lmCor(y= 1:2,x = 3:5,data = kelley) #order of variables input
-
+cancorDiagram(mod2, cut=.05)
 #Hotelling reports canonical correlations of .3073 and .0583  or squared correlations of
 # 0.09443329 and 0.00339889 vs. our values of cancor = 0.3076 0.0593  with squared values
 #of  0.0946 0.0035,
@@ -238,7 +247,7 @@ lmCor(y=c(7:9),x=c(1:3),z=c(4:6),data=Thurstone) #compare with the previous
 #compare complete print out with summary printing 
 sc <- lmCor(SATV + SATQ ~ gender + education,data=sat.act) # regression from raw data
 sc
-summary(sc)
+summary(sc) 
 
 lmCor(Pedigrees ~ Sentences + Vocabulary - First.Letters - Four.Letter.Words ,
 data=Thurstone)  #showing formula input with two covariates

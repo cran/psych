@@ -36,9 +36,9 @@ The code has been adapted from the anova.lm function in stats and the anova.sem 
 }
 \examples{
 if(require("psychTools")) {
-m1 <- setCor(reaction ~ import, data = Tal_Or,std=FALSE)
-m2 <- setCor(reaction ~ import+pmi, data = Tal_Or,std=FALSE)
-m3 <- setCor(reaction ~ import+pmi + cond, data = Tal_Or,std=FALSE)
+m1 <- lmCor(reaction ~ import, data = Tal_Or,std=FALSE)
+m2 <- lmCor(reaction ~ import+pmi, data = Tal_Or,std=FALSE)
+m3 <- lmCor(reaction ~ import+pmi + cond, data = Tal_Or,std=FALSE)
 anova(m1,m2,m3)
 }
 

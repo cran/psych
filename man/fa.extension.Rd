@@ -12,7 +12,7 @@ fa.extension(Roe,fo,correct=TRUE)
 fa.extend(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,
   correct=TRUE,rotate="oblimin",SMC=TRUE,   warnings=TRUE, fm="minres",
   alpha=.1,omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,
-     smooth=TRUE, ...) 
+    missing=FALSE, smooth=TRUE, ...) 
 faRegression(r,nfactors=1,ov=NULL,dv=NULL, n.obs = NA
  , np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1,
  omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...)
@@ -45,6 +45,7 @@ faReg(r,nfactors=1,ov=NULL,dv=NULL, n.obs = NA
 \item{use}{Option for the cor function on how to handle missing data.}
 \item{cor.correct}{The correction to be passed to mixed, tet, or polycor (defaults to .5)}
 \item{weight}{Should we weight the variables? (see \code{\link{fa}})} 
+\item{missing}{When finding factor scores, are missing data allowed?}
 \item{smooth}{Should we smooth the correlation matrix -- smoothing produces bad output if there are NAs in the R matrix }
  \item{...}{Additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
 

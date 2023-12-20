@@ -114,7 +114,7 @@ The current version will not correctly handle more than one DV.
 }
 
 
-\seealso{\code{\link{setCor}} and \code{\link{setCor.diagram}} for regression and moderation, \code{\link{Garcia}} for further demonstrations of mediation and moderation.
+\seealso{\code{\link{lmCor}} and \code{\link{lmCor.diagram}} for regression and moderation, \code{\link{Garcia}} for further demonstrations of mediation and moderation.
 }
 
 

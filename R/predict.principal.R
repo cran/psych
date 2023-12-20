@@ -3,7 +3,7 @@
 #revised October 30, 2019 to include bestScales options
 "predict.psych" <-
 function(object,data,old.data,options=NULL,missing=FALSE,impute="none",...) {
-  obnames <- cs(fa,bestScales,setCor,pca, principal )
+  obnames <- cs(fa,bestScales,setCor,pca, lmCor,principal )
      value <- inherits(object, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
 
@@ -49,16 +49,29 @@ pred <-  t(bwt *(t(scores) - xmean) + ymean )
 },
 
 #added January 5, 2020
-setCor = {
+#revised December 7 , 2023 to allow for prediction of unstandardsized scores
+lmCor = {
    data <- as.matrix(data)
    if(ncol(data) ==1) data <- t(data)
    vars <- rownames(object$coefficients)
-   vars <- vars[ vars %in% colnames(data)]
-   data <- data[,vars,drop=FALSE]  
-	if(missing(old.data)) {data <- scale(data)} else {
-	stats <- describe(old.data)
-	data <- scale(data,center=stats$mean,scale=stats$sd)}
-	wt <- object$coefficients[vars,]  #don't use the intercept
+   old.vars <-  vars <- vars[ vars %in% colnames(data)]
+   data <- data[,vars,drop=FALSE]
+   if(object$std)data <- scale(data) 
+   unity <- rep(1,NROW(data))
+      data <- cbind(unity,data)
+      colnames(data)[1]<- rownames(object$coefficients)[1] 
+      vars <- rownames(data)
+   if(!object$std)  {
+      wt <- object$coefficients} else {
+	if(!missing(old.data)) {
+	      old.data <- old.data[,old.vars]
+	      old.data <- cbind(unity,old.data)
+	       colnames(old.data)[1]<- rownames(object$coefficients)[1] 
+	      stats <- describe(old.data)
+	      data <- scale(data,center=stats$mean,scale=stats$sd)
+	      data[,1] <- unity
+	      }
+	wt <- object$coefficients}  
 	if(impute !="none") data <- impute.na(data,impute)
 	if(missing) {pred <- matrixMult.na(data,wt,scale=FALSE)} else {
 	pred <- data %*% wt}
@@ -86,7 +99,7 @@ pred <- data %*% wt
 return(pred)
 }
 
-predict_setCor.best <- function(object,data,p=.01){
+predict_lmCor.best <- function(object,data,p=.01){
  data <- as.matrix(data)
  vars <- rownames(object$coefficients)
  vars <- vars[ vars %in% colnames(data)]

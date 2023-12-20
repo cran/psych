@@ -20,9 +20,9 @@ suggested that KMO > .9 were marvelous, in the .80s, mertitourious, in the .70s,
 	}
 \value{
 \itemize{
-\item{MSA}{ The overall Measure of Sampling Adequacy}
-\item{MSAi}{ The measure of sampling adequacy for each item}
-item{Image}{ The Image correlation matrix (Q)}
+\item MSA: The overall Measure of Sampling Adequacy
+\item MSAi:  The measure of sampling adequacy for each item
+\item Image: The Image correlation matrix (Q)
 }
 }
 \references{

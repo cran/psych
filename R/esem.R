@@ -1,9 +1,12 @@
 #created Sept 4, 2017 to try to do exploratory sem by factoring sets 1 and 2
 #and then linking the two sets
 #slightly improved December 15, 2018 to label the factors better
+#added cancorDiagram which is functionally just a call to esemDiagram
 
 "esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",
 rotateY="oblimin",plot=TRUE, cor="cor", use="pairwise",weight=NULL,...) {
+
+
 if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
 
 #vars <- order(c(vars1,vars2))

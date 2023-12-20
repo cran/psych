@@ -1,5 +1,5 @@
 #modified 9/18/21 to find Kendall and Spearman probabilities
-"corr.test" <-
+"corr.test" <- "corTest" <- 
 function(x,y=NULL,use="pairwise",method="pearson",adjust="holm",alpha=.05,ci=TRUE,minlength=5, normal=TRUE){
 cl <- match.call()
 

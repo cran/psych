@@ -2,7 +2,7 @@
 \alias{scoreWtd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Score items using regression or correlation based weights}
-\description{Item weights from \code{\link{bestScales}} or \code{\link{setCor}} are used to find weighted scale scores. In contrast to the unit weights used in \code{\link{scoreItems}}, \code{\link{scoreWtd}} will multiply the data by a set of weights to find scale scores.  These weight may come from a regression (e.g., \code{\link{lm}} or \code{\link{setCor}}) or may be the zero order correlation weights from \code{\link{bestScales}}.
+\description{Item weights from \code{\link{bestScales}} or \code{\link{lmCor}} are used to find weighted scale scores. In contrast to the unit weights used in \code{\link{scoreItems}}, \code{\link{scoreWtd}} will multiply the data by a set of weights to find scale scores.  These weight may come from a regression (e.g., \code{\link{lm}} or \code{\link{lmCor}}) or may be the zero order correlation weights from \code{\link{bestScales}}.
 }
 \usage{
 scoreWtd(weights, items, std = TRUE, sums = FALSE, impute = "none")
@@ -23,15 +23,15 @@ A data frame of scores.}
 \author{William Revelle}
 
 \seealso{
- \code{\link{bestScales}} and  \code{\link{setCor}}
+ \code{\link{bestScales}} and  \code{\link{lmCor}}
 }
 \examples{
   
 #find the weights from a regression model and then apply them to a new set
 #derivation of weights from the first 20 cases 
 model.lm <- lm(rating ~ complaints + privileges + learning,data=attitude[1:20,])
-#or use setCor to find the coefficents
-model <- setCor(rating ~ complaints + privileges +learning,data=attitude[1:20,],std=FALSE)
+#or use lmCor to find the coefficents
+model <- lmCor(rating ~ complaints + privileges +learning,data=attitude[1:20,],std=FALSE)
  
  #Apply these to a different set of data (the last 10 cases)
   #note that the regression coefficients need to be a matrix

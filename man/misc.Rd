@@ -30,8 +30,8 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 }
 \usage{
 psych.misc()
-lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,show=TRUE)
-cor2(x,y,digits=2,use="pairwise",method="pearson")
+lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE)
+cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor")
 lowerMat(R, digits = 2,minlength=5)
 matMult(x,y) #multiply two matrices with missing data
 tableF(x,y)
@@ -64,6 +64,7 @@ test.all(pl,package="psych",dependencies
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
   \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 
+  \item{cor}{defaults to the normal cor function, but can also do tetrachoric, polychoric or covariances (cov)}
   \item{value}{the current value of some looping variable}
   \item{max}{The maximum value the loop will achieve}
   \item{label}{what function is looping}
@@ -88,7 +89,7 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{tableF}} is fast alternative to the table function for creating two way tables of numeric variables.  It does not have any of the elegant checks of the table function and thus is much faster.  Used in the \code{\link{tetrachoric}} and \code{\link{polychoric}} functions to maximize speed.
 
-\code{\link{lowerCor}} Finds and prints (using \code{\link{lowerMat}}) the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use and method parameters. The default values are for pairwise deletion of variables, and to print to 2 decimal places.  By default, it will change character variables to numeric and flag them. 
+\code{\link{lowerCor}} Finds and prints (using \code{\link{lowerMat}}) the lower diagonal correlation matrix but returns (invisibly) the full correlation matrix found with the use, method and  cor  parameters. The default values are for pairwise deletion of variables, "pearson" correlations.  Specify cor="tetrachoric", "polychoric", or "mixed" for alternatives. By default, digits is set to print to 2 decimal places.  By default, it will change character variables to numeric and flag them. 
 
 \code{\link{lowerMat}}Shows the lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3
 
@@ -110,7 +111,7 @@ Problems with \code{\link{char2numeric}} can be solved by using the \code{psychT
 
 \code{\link{nchar2numeric}}converts numbers coded as characters (quoted) to numeric without forcing them to factors first.  
 
-\code{\link{fromTo}} selects the columns in data from to 
+\code{\link{fromTo}} selects the columns in data from to (see the examples)
 
 \code{\link{cs}} concatenates strings without the need to identify variables by " ".
 }
@@ -132,6 +133,8 @@ It is important to remember to not call \code{\link{lowerCor}} when all you need
 lowerMat(Thurstone)
 lb <- lowerCor(psychTools::bfi[1:10])  #finds and prints the lower correlation matrix, 
   # returns the square matrix.
+lowerCor(psychTools::ability[,1:5]) #the Pearson correlations, compare with
+lowerCor(psychTools::ability[,1:5],cor="tetra")
 #fiml <- corFiml(psychTools::bfi[1:10])     #FIML correlations require lavaan package
 #lowerMat(fiml)  #to get pretty output
 f3 <- fa(Thurstone,3)
@@ -162,6 +165,9 @@ vect
 temp <- acs("Here is a longish",vector, that, we ,"want to combine", into, one)
 temp
 lowerCor(fromTo(sat.act,cs(ACT,SATQ)))
+lowerCor(fromTo(bfi,cs(A3,C4)),cor="poly") #compare with
+lowerCor(fromTo(bfi,cs(A3,C4)))
+
 
 set.seed(42)  
 temp <- SAPAfy(bfi[1:10],3)  #30 % sample from bfi

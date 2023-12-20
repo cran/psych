@@ -61,7 +61,7 @@ Jennrich, Robert I. (1970) An Asymptotic \eqn{\chi^2} Test for the Equality of T
 \note{ Both the  cortest.jennrich  and cortest.normal  are probably overly stringent.  The ChiSquare values for pairs of random samples from the same population are larger than would be expected.  This is a good test for rejecting the null of no differences. 
 }
 
-\seealso{\code{\link{cortest.bartlett}} }
+\seealso{\code{\link{cortest.bartlett}}  \code{\link{corr.test}}}
 \examples{
 set.seed(42)
 x <- matrix(rnorm(1000),ncol=10)

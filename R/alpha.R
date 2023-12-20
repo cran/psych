@@ -1,5 +1,5 @@
 "alpha" <- 
-    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL,impute=NULL) {  #find coefficient alpha given a data frame or a matrix
+    function(x,keys=NULL,cumulative=FALSE,title=NULL,max=10,na.rm=TRUE,check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,n.obs=NULL,impute=NULL,discrete=TRUE) {  #find coefficient alpha given a data frame or a matrix
     
  alpha.1 <- function(C,R) {
     n <- dim(C)[2]
@@ -63,7 +63,7 @@
             x <- x[,-bad] 
             nvar <- nvar - n.bad
              }
-         response.freq <- response.frequencies(x,max=max)
+        if(discrete) {response.freq <- response.frequencies(x,max=max) } else {response.freq=NULL} #added 12/4/23
          C <- cov(x,use=use)} else {C <- x}  #to find average R, we need to find R, not C  cov2cor(C) != R  !
         
         if(is.null(colnames(x)))  colnames(x) <- paste0("V",1:nvar)

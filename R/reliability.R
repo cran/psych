@@ -4,8 +4,11 @@
 #Fixed 6/20/21 to avoid the problem of scales of one item or too many to find splits
 #Modified 7/10/21 to allow it to function with just a set of items, no keys specified
 #Modified 7/11/21 to include the unidimensional estimates from unidim  and to use the R object for speed
+
+#Further modified 9/30/23 to force 1 factor solution length(keys < 4)
+#added the covar option 10/23/23
 reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALSE,hist=FALSE,
-   n.sample=10000,brute=FALSE,check.keys=TRUE)  {
+   n.sample=10000,brute=FALSE,check.keys=TRUE,covar=FALSE)  {
    cl <- match.call()
   result <- list()
   splits <- list()
@@ -13,6 +16,7 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
    res.name <- list()
   if(hist) raw <-TRUE 
   if(raw) split <- TRUE
+  NFACTORS <- nfactors
  
   #check to see if the first parameter is a list of keys, if not, then we want to do reliability on just one scale
   
@@ -31,11 +35,11 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
   scale.key <- keys[[scales]]
  select <- selectFromKeys(scale.key)
  if(length(select)>1 )  {
-  
+  if (length(select)< 4) {nfactors <- 1} else {nfactors <- NFACTORS}   #omegah with 2 factors is not defined for nvar<=5
   if(cors) {om <- omegah(items[select,select], nfactors=nfactors,plot=plot,two.ok=TRUE) } else {
-   om <- omegah(items[,select], nfactors=nfactors,plot=plot,two.ok=TRUE)}
+   om <- omegah(items[,select], nfactors=nfactors,plot=plot,two.ok=TRUE,covar=covar)}
     uni <- unidim(om$R)  #use the R object rather than redoing the factoring
-    
+
     
   if(split){temp.keys <- colnames(om$R) <-  gsub("-","",colnames(om$R))
             sign.key <- rep("",length(select))
@@ -43,7 +47,7 @@ reliability <- function(keys=NULL,items,nfactors=2,split=TRUE,raw=TRUE,plot=FALS
              temp.keys <- paste0(sign.key,temp.keys)
                        
     # split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=FALSE,n.sample=n.sample, key=temp.keys))
-    split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=brute,n.sample=n.sample,check.keys=check.keys)) #don't use temp.keys
+    split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=brute,n.sample=n.sample,check.keys=check.keys,covar=covar)) #don't use temp.keys
           best[[scales]] <- list(max=split.half$maxAB)
           worst[[scales]] <- list(min=split.half$minAB)
          

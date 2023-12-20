@@ -179,7 +179,7 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 Revelle, W. (1979).  Hierarchical cluster analysis and the internal structure of tests. Multivariate Behavioral Research, 14, 57-74. (\url{https://personality-project.org/revelle/publications/iclust.pdf})
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma.  Psychometrika, 74, 1, 145-154. (\url{https://personality-project.org/revelle/publications/rz09.pdf}
 

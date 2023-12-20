@@ -7,7 +7,7 @@
 
 "unidim" <- function(keys=NULL,x=NULL,cor="cor",correct=.5, check.keys=TRUE) {
    cl <- match.call()
-     
+    covar <- FALSE   
    use <- "pairwise"
     if(!is.null(x)) {n.keys <- length(keys)
     } else {x <- keys
@@ -28,7 +28,8 @@
 }  else {flipper <- rep(1,ncol(x))} #this allows us to handle multiple scales 
    
  if(!isCorrelation(x) ) { switch(cor, 
-       cor = { x <- cor(x,use=use)},
+       cor = { x <- cor(x,use=use)
+              covar=FALSE},
        cov = {x <- cov(x,use=use) 
               covar <- TRUE},
       
@@ -41,9 +42,9 @@
        mixed = {x <- mixedCor(x,use=use,correct=correct)$rho}
        
        )}
- #X is now a correlation matrix  
-
-  f1 <- fa(x)  # a one factor solution  
+ #X is now a correlation matrix    or a covariance matrix 
+  
+  f1 <- fa(x,covar=covar)  # a one factor solution  
   g <- sum(f1$model)  # sum(f1$loadings %*% t(f1$loadings))
   n <- NCOL(x)
   Vt <- sum(x)
@@ -59,8 +60,8 @@
   x <- diag(flipper) %*% x %*% diag(flipper)
   Vt <- sum(x)
  median.r <- median(x[lower.tri(x)])   #lower tri does not count diagonal
- alpha.std <-  (1- n/Vt)*(n/(n-1))
-  av.r <- (Vt-n)/(n*(n-1))
+ alpha.std <-  (1- tr(x)/Vt)*(n/(n-1))
+  av.r <- (Vt-tr(x))/(n*(n-1))
   omega.flip <- sum(diag(flipper) %*% f1$model %*% diag(flipper))/Vt
   omega.total.flip <-  (Vt - sum(f1$uniqueness))/Vt
   flipperped.loadings <- flipper * f1$loadings

@@ -2,6 +2,7 @@
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)  {
 setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show,zero=zero,part=part)}
 
+#lmCor become the common name for what was setCor
 
 "lmCor" <- "setCor" <-
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05,part=FALSE)  {
@@ -221,7 +222,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
   
                 R2  <- colSums(beta * xy.matrix)/diag(y.matrix) 
                 Vaxy <- beta * xy.matrix/diag(y.matrix)
-                 VIF <- 1/(1-smc((x.matrix )))
+                VIF <- 1/(1-smc((x.matrix )))
 
               SST <- 1 
               MSE <- diag( resid/(df-1 ))  #because df is inflated in normal regression because of the intercept term should this be df or df -1
@@ -290,21 +291,76 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 
  #Now do the Set correlation from Cohen 
   
-       
-     	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(x.matrix) )
-     	             Myx <- solve(x.matrix) %*% xy.matrix  %*% t(xy.matrix)
+        Lmat <- Mmat <- Dmat <- NULL    #give them NULL values in case we don't need to find them
+        if("(Intercept)" %in% colnames(x.matrix)) {X.matrix <- x.matrix[-1,-1,drop=FALSE]    #get rid of the intercepts for the next operations
+                                                     XY.matrix <- xy.matrix[-1,,drop=FALSE]
+                                           }	 else {X.matrix <- x.matrix
+                                                      XY.matrix <- xy.matrix
+                                            }	
+     	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(X.matrix) )
+     	             Myx <- solve(X.matrix) %*% XY.matrix  %*% t(XY.matrix)
      	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
-     	            Myx <-  xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)
-     	            cc2 <- cc <- T <- NULL} else {Rset <- 1 - det(m.matrix)/(det(x.matrix) * det(y.matrix))
+     	            Myx <-  XY.matrix %*% solve(y.matrix) %*% t(XY.matrix)
+     	            cc2 <- cc <- T <- NULL} else {Rset <- 1 - det(m.matrix)/(det(X.matrix) * det(y.matrix))
+     	           
      	            if(numy > numx) {
-     	            Myx <- solve(x.matrix) %*% xy.matrix %*% solve(y.matrix) %*% t(xy.matrix)} else { Myx <- solve(y.matrix) %*% t(xy.matrix )%*% solve(x.matrix) %*% (xy.matrix)}
+     	            Myx <- solve(X.matrix) %*% XY.matrix %*% solve(y.matrix) %*% t(XY.matrix)    #productes of two beta weights  this is A from Bernstein
+     	             
+     	              Beta.y.x <-solve(X.matrix) %*% (XY.matrix)
+     	              Beta.x.y <- solve(y.matrix) %*% t(XY.matrix ) 
+     	              } else { Myx <- solve(y.matrix) %*% t(XY.matrix )%*% solve(X.matrix) %*% (XY.matrix)
+     	              Beta.y.x <-solve(X.matrix) %*% (XY.matrix)
+     	              Beta.x.y <- solve(y.matrix) %*% t(XY.matrix ) }
      	           }
+     	           
+
+     	           #Myx is the canoncial correlation matrix of x ans y (see eq 12.1 in T & F)
+     	           #and is the product of Beta.x.y with Beta.y.x 
+     	           #the following is taken from the geigen function in the fda package
+     	            #see the geigen function in the fda package
+     	            #now, we get rid of the 
+     	            xfac <- chol(X.matrix)
+    				yfac <- chol(y.matrix)
+    				xfacinv <- solve(xfac)
+    				yfacinv <- solve(yfac)
+   	 Dmat <- t(xfacinv) %*% XY.matrix %*% yfacinv #almost the same as Mxy?  No
+    p <- dim(x.matrix)[1]
+    q <- dim(y.matrix)[1]
+    
+
+    if (p >= q) {   #I am not sure we need to make this choice
+        result <- svd(Dmat)
+        values <- result$d
+        Lmat <- X.matrix %*% xfacinv %*% result$u
+        Mmat <- y.matrix %*% yfacinv %*% result$v
+        } else { 
+        result <- svd(t(Dmat))
+        values <- result$d
+        Lmat <- X.matrix %*% xfacinv %*% result$v    #these are the values returned from Geigen   
+        Mmat <- y.matrix%*% yfacinv %*% result$u}
+         colnames(Lmat)<- paste0("Cx",1:NCOL(Lmat))
+	     colnames(Mmat) <- paste0("Cy",1:NCOL(Mmat))
+        
+     	            gei <- svd(Myx)  
+     	            cc2 <-gei$d  #this actually matches result
+     	            cc <- sqrt(cc2)
+     	            
+ 	            
+     	            
+     	            
      	            cc2 <- eigen(Myx)$values
      	            cc <- sqrt(cc2)
      	            T <- sum(cc2)/length(cc2)             
      	            }
 	     k <- NA 
+	    
+	  #browser()
+	  #it would be nice to find the canonical loadings, but this is not done yet.
+	  #Although, I think that the Lmat and Mmat are the loadings  but only for the two x two case of T and F
      	if(!is.null(n.obs)) {k<- length(x)-raw  #because we include the intercept in x
+     
+
+     
      	   
   ## Find the confidence intervals of the regressions   	   
                     
@@ -387,9 +443,17 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 
        
         Vaxy <- as.matrix(Vaxy)
-     	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,std=std,Vaxy=Vaxy,Call = cl)} else {
-     	              set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Call = cl)}
-     	class(set.cor) <- c("psych","setCor")
+     	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,
+     	         raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],
+     	          VIF=VIF,z=z,std=std,Vaxy=Vaxy,Xmat=Lmat, Ymat=Mmat, Call = cl)
+     	           } else {
+     	    set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,
+     	               R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),
+     	               SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,
+     	                Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,
+     	                Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Xmat=Lmat, Ymat=Mmat,Call = cl)
+     	                }
+     	class(set.cor) <- c("psych","lmCor")
      	if(plot) lmDiagram(set.cor,main=main,show=show)
      	return(set.cor)
      	
@@ -413,7 +477,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 #mdified November, 2017 to allow an override of which way to draw the arrows  
 #modifed May 1, 2023 to allow for drawing lm output as well.
 
-lmDiagram <- setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...) { 
+lmDiagram <- lmCor.diagram <- setCor.diagram <- function(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...) { 
 if(missing(l.cex)) l.cex <- cex  
 
 beta <- round(sc$coefficients,digits)
@@ -489,7 +553,7 @@ if(nx >1) {
 }
 
 
-print_psych.setCor <- function(x,digits=2) {
+print_psych.lmCor <- function(x,digits=2) {
 
 cat("Call: ")
               print(x$Call)

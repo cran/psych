@@ -11,7 +11,7 @@
 \usage{
 alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
    check.keys=FALSE,n.iter=1,delete=TRUE,use="pairwise",warnings=TRUE,
-   n.obs=NULL,impute=NULL
+   n.obs=NULL,impute=NULL, discrete=TRUE
    )
 alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2) #returns an invisible object
 alpha2r(alpha, n.var)
@@ -32,6 +32,7 @@ alpha2r(alpha, n.var)
   \item{alpha}{The value to use for confidence intervals}
   \item{n.obs}{If using correlation matrices as input, by specify the number of observations, we can find confidence intervals}
   \item{impute}{How should we impute missing data? Not at all, medians, or means}
+  \item{discrete}{If TRUE, then report frequencies by categories.}
   \item{n.var}{Number of items in the scale (to find r.bar)}
   \item{p.val}{width of confidence interval (pval/2 to 1-p.val/2) }
   \item{digits}{How many digits to use for alpha.ci}
@@ -98,7 +99,7 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{r.drop}{Item whole correlation for this item against the scale without this item}
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
-  \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)}
+  \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)  May be suppressed by specifying discretet=FALSE.}
   \item{scores}{Scores are by default simply the average response for all items that a participant took. If cumulative=TRUE, then these are sum scores. Note, this is dangerous if there are lots of missing values.}  
   \item{boot.ci}{The lower, median, and upper ranges of the 95\% confidence interval based upon the bootstrap.}
   \item{boot}{a 6 column by n.iter matrix of boot strapped resampled values}
@@ -123,7 +124,7 @@ Revelle, W.  (in preparation) An introduction to psychometric theory with applic
 
 Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
 
 Revelle, W. and Condon, D.M. (2018) Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing: A multidisciplinary reference on survey, scale, and test development.
 

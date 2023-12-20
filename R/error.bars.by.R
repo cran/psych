@@ -127,8 +127,9 @@ n.pch =length(pch)
           axis(2,...)
           box()
             if(legend >0  ){
+        
        if(!is.null(v.labels)) {lab <- v.labels} else {lab <- paste("V",1:n.var,sep="")} 
-       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.var],
+       legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.var],
        text.col = "green4", lty = lty[1:n.var],
        merge = TRUE, bg = 'gray90')}
                
@@ -197,8 +198,10 @@ n.pch =length(pch)
      }   #end of g loop 
      
        if(legend >0  ){
+     
+       
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:n.group,sep="")} 
-       legend(legend.location[legend], lab, col = colors[(1: n.color)],pch=pch[1: n.group],
+       legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.group],
        text.col = "green4", lty = lty[1:8],
        merge = TRUE, bg = 'gray90')
    }
@@ -373,10 +376,10 @@ n.pch =length(pch)
       if(legend > 0  ){
   
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.grp2,sep="")} 
-   if ((nvar > 1) & (n.grp2 ==1)) { legend(legend.location[legend], lab, col = colors[(0: nvar)%% n.color + 1],pch=pch[1: n.grp2],
+   if ((nvar > 1) & (n.grp2 ==1)) { legend(legend.location[legend], legend=lab, col = colors[(0: nvar)%% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:nvar],
        merge = TRUE, bg = 'gray90')} else {
-        legend(legend.location[legend], lab, col = colors[(0: n.grp2) %% n.color + 1],pch=pch[1: n.grp2],
+        legend(legend.location[legend],legend= lab, col = colors[(0: n.grp2) %% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:n.grp2],
        merge = TRUE, bg = 'gray90') }   
                         }

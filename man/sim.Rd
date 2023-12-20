@@ -29,10 +29,11 @@ Other simulations aimed at special item structures include  \code{\link{sim.circ
 \code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
 }
 \usage{
-sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL)
+sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL,
+       items = FALSE, low=-2,high=2,cat=5)
 sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0,threshold=NULL)
 sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL, 
-bipolar=TRUE, threshold=NULL) 
+    Phi=NULL, bipolar=TRUE, threshold=NULL) 
 
 }
 \arguments{
@@ -43,6 +44,10 @@ bipolar=TRUE, threshold=NULL)
   \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
   \item{raw}{if raw=TRUE, raw data are returned as well.}
   \item{threshold}{If raw=TRUE (n >0) and threshold is not NULL, convert the data to binary values, cut at threshold.}
+  \item{items}{TRUE if simulating items, FALSE if simulating scales}
+  \item{low}{Restrict the item difficulties to range from low to high}
+  \item{high}{Restrict the item difficulties to range from low to high}
+  \item{cat}{Number of categories when creating binary (2) or polytomous items}
   \item{nvar}{Number of variables for a simplex structure}
   \item{nfact}{Number of large factors to simulate in sim.minor,number of group factors in sim.general,sim.omega}
   \item{g}{General factor correlations in sim.general and general factor loadings in sim.omega and sim.minor}
@@ -65,9 +70,13 @@ The simulations documented here are the core set of functions.  Others are docum
 
 \code{\link{sim}} simulates one (fx) or two (fx and fy) factor structures where both fx and fy respresent factor loadings of variables.  The use of fy is particularly appropriate for simulating sem models.  This is better documentated in the help for \code{\link{sim.structural}}.
 
+The code for \code{\link{sim}} has been enhanced (10/21/23) to simulate items as well as continuous variables.  This matches the code in \code{\link{sim.structural}}. 
+
 Perhaps the easist simulation to understand is just \code{\link{sim}}.  A factor model (fx) and perhaps fy with intercorrelations between the two factor sets of Phi.  This will produce a correlation matrix R = fx' phi fy.  Factors can differ in their mean values by specifying mu. 
 
-With the addition of the treshold parameter, \code{\link{sim}} will generate dichotomous items where values < threshold become 0, greater become 1.  If threshold is a vector less than nvar, then values are sampled from threshold.  If the length of threshold = nvar, then each item is dichotomized at threshold.   
+With the addition of the treshold parameter, \code{\link{sim}} will generate dichotomous items where values < threshold become 0, greater become 1.  If threshold is a vector less than nvar, then values are sampled from threshold.  If the length of threshold = nvar, then each item is dichotomized at threshold. 
+
+ With the adddition of the items=TRUE option, continuous observed variables are transformed into discrete categories. 
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 

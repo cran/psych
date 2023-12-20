@@ -236,7 +236,7 @@ dev.off()
 ###################################################
 ### code chunk number 25: intro.Rnw:933-934
 ###################################################
-corr.test(sat.act)
+corTest(sat.act)
 
 
 ###################################################
@@ -347,13 +347,46 @@ dev.off()
 ### code chunk number 40: garcia.png
 ###################################################
 png('garcia.png')
-mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
+model <- mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
+  summary(model)
   dev.off()
 
 
 ###################################################
-### code chunk number 41: intro.Rnw:1209-1213
+### code chunk number 41: intro.Rnw:1204-1215
+###################################################
+
+dancer  <- structure(list(TS = c(1, 7, 4.6, 1, 7, 7, 7, 7), TC = c(1, 1, 
+5.6, 6.6, 4.9, 7, 1, 1), BS = c(1, 7, 7, 1, 7, 6.4, 7, 2.4), 
+    BC = c(1, 1, 7, 5.9, 2.9, 3.8, 1, 1)), class = "data.frame", row.names = c(NA, 
+-8L))
+dancer   #show the data
+
+model <- lmCor(TC + TS ~ BC + BS, data = dancer)
+summary(model)  #show the summary statistics
+cancorDiagram(model) #and the associated canonical figure
+
+
+
+###################################################
+### code chunk number 42: dancer
+###################################################
+png('dancerlm.png')
+model <- lmCor(TC + TS ~ BC + BS, data = dancer)
+  dev.off()
+
+
+###################################################
+### code chunk number 43: dancer
+###################################################
+png('dancer.png')
+cancorDiagram(model)
+  dev.off()
+
+
+###################################################
+### code chunk number 44: intro.Rnw:1264-1268
 ###################################################
 
 C <- cov(sat.act,use="pairwise")
@@ -362,14 +395,14 @@ summary(model1)
 
 
 ###################################################
-### code chunk number 42: intro.Rnw:1216-1218
+### code chunk number 45: intro.Rnw:1271-1273
 ###################################################
-#compare with sector
-setCor(c(4:6),c(1:3),C, n.obs=700)
+#compare with lmCor
+lmCor(c(4:6),c(1:3),C, n.obs=700)
 
 
 ###################################################
-### code chunk number 43: intro.Rnw:1339-1340
+### code chunk number 46: intro.Rnw:1394-1395
 ###################################################
 sessionInfo()
 

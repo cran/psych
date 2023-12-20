@@ -50,7 +50,7 @@ omega.graph(om.results, out.file = NULL,  sl = TRUE, labels = NULL, size = c(8, 
   \item{errors}{show the error estimates}
   \item{rsize}{size of the rectangles}
 }
-\details{While omega.graph requires the Rgraphviz package, omega.diagram does not.  code{\link{omega}} requires the GPArotation package.
+\details{While omega.graph requires the Rgraphviz package, omega.diagram does not.  \code{\link{omega}} requires the GPArotation package.
 
  
 }

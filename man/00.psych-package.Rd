@@ -168,7 +168,7 @@ residual,  weighted least squares, \cr
 \link{scoreItems}       \tab        Combine items into multiple scales and find alpha\cr
 \link{score.multiple.choice}  \tab   Combine items into multiple scales and find alpha and basic scale statistics\cr
 \link{scoreOverlap} \tab   Find item and scale statistics (similar to \link{score.items}) but correct for item overlap \cr
-\link{setCor}             \tab       Find Cohen's set correlation between two sets of variables (see also \link{lmCor} for the latest version)\cr
+\link{lmCor}             \tab       Find Cohen's set correlation between two sets of variables (see also \link{lmCor} for the latest version)\cr
 \link{smc}             \tab          Find the Squared Multiple Correlation (used for initial communality estimates)\cr
 \link{tetrachoric}            \tab    Find tetrachoric correlations and item thresholds \cr
 \link{polyserial}            \tab    Find polyserial and biserial correlations for item validity studies \cr
@@ -360,7 +360,7 @@ In addition, see
 
 Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}   
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv  }
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.   \url{https://osf.io/preprints/psyarxiv/2y3w9/} Preprint available from PsyArxiv  }
 
 \keyword{package}% __ONLY ONE__ keyword per line
 \keyword{multivariate}% at least one, from doc/KEYWORDS

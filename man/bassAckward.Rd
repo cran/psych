@@ -63,14 +63,14 @@ Although not particularly pretty, it is possible to do Schmid-Leiman rotations a
 \value{
 \item{Call}{Echo the call}
 \item{fm}{Echos the factor method used}
-item{fa}{A list of the factor loadings at each level}
+\item{fa}{A list of the factor loadings at each level}
 \item{bass.ack}{A list of the factor correlations at each level}
 \item{summary}{The factors at each level}
 \item{sumnames}{Summary of the factor names}
 \item{labels}{Factor labels including items for each level}
 \item{r}{The correlation matrix analyzed}
 \item{Phi}{The factor correlations at each level}
-\item{fa}{The factor analysis loadings at each level, now includes Phi values }
+\item{fa}{The factor analysis loadings at each level, now includes Phi values}
 \item{fa.vac}{The variance accounted for by each factor at each level}
 }
 \references{

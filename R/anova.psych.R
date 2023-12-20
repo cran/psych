@@ -6,7 +6,7 @@ anova.psych <- function(object,...) {
 #if(length(class(object)) > 1)  { value <- class(object)[2] } else {value <- NA}
 
  if(length(class(object)) > 1)  {
-    names <- cs(omega,fa, setCor,mediate)
+    names <- cs(omega,fa, lmCor,mediate)
     value <- inherits(object,names,which=TRUE)   # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -83,7 +83,7 @@ mediate ={
 	 }
 },
 
-setCor ={
+lmCor ={
  if (length(list(object, ...)) > 1L)  {
  	 objects <- list(object,...)	
  	 dfs <- lapply(objects, function(x) x$df[2])

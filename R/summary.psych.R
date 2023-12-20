@@ -12,7 +12,7 @@ function(object,digits=2,items=FALSE,...) {
 
 if(length(class(object)) > 1)  { 
 mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- crossV <- NA    #to let it compile in R4.0
- obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, mat.reg, bassAck, bestScales,crossV,iclust,omega,omegaSem,omegaDirect,overlap,
+ obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, lmCor, mat.reg, bassAck, bestScales,crossV,iclust,omega,omegaSem,omegaDirect,overlap,
      scores,testRetest, vss,cluster.cor, esem,fa,faBy,extend,extension,items,alpha,setCor,irt.fa,cohen.d,cohen.d.by,mediate,describeData,none)
      value <- inherits(object, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
@@ -23,8 +23,8 @@ mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- cross
  if(value=="score.items") value <- "scores"
  if(value=="cluster.loadings") value <- "cluster.cor"
   if(value=="mat.regress") value <- "mat.reg"
-   if(value=="set.cor") value <- "setCor"
-    if(value=="mat.reg") value <- "setCor"
+   if(value=="set.cor") value <- "lmCor"
+    if(value=="mat.reg") value <- "lmCor"
  } else {value <- "none"}
  
 switch(value, 
@@ -336,7 +336,7 @@ cat("\nReliability analysis ",object$title," \n")
 print(object$total,digits=digits)
 },
  
-setCor = {
+lmCor = {
    if(object$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}
 

@@ -21,7 +21,7 @@ Although the \code{\link{alpha}} and \code{\link{omega}} functions will find rel
 }
 \usage{
 reliability(keys=NULL, items, nfactors = 2, split = TRUE, raw=TRUE, plot=FALSE,hist=FALSE,
-  n.sample=10000,brute=FALSE, check.keys=TRUE)
+  n.sample=10000,brute=FALSE, check.keys=TRUE, covar=FALSE)
 \method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,uni=TRUE,add=FALSE,
 xlim=NULL, main=NULL,...)
 }
@@ -47,6 +47,7 @@ xlim=NULL, main=NULL,...)
   \item{n.sample}{Normally defaults to 10,000.  This means that for up to 16 item tests, all possible splits are found.  choose(n,n/2)/2 explodes above that, eg. for all splits of the epi E scale requires 1,352,078 splits or 23.4 seconds on a MacBook Pro with a 2.4GHZ 8 core Intel Core I9.  Can be done, but do you want to do so?  }
   \item{brute}{Do all possible splits rather than sampling. (see \code{\link{splitHalf}} for details)}
   \item{check.keys}{By default, check that the keys are signe in the direction of the loadings on the first PCA.  }
+ \item{covar}{Should we use covariances rather than correlations?}
   \item{x}{The object returned from reliability}
   \item{omega}{Add in the values of omega_h and omega_t}
   \item{uni}{Show the unidimensionality value from \code{\link{unidim}}.  }
@@ -88,7 +89,7 @@ Following a suggestion, the ability to not bother with keys and just do omega an
 
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://psyarxiv.com/2y3w9/} Preprint available from PsyArxiv 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
 
 Revelle, W. and Condon, D.M (2023) Using undim rather than omega in estimating undimensionality.  Working draft available at  \url{https://personality-project.org/revelle/publications/rc.23.pdf} 
 }

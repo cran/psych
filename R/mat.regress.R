@@ -6,8 +6,8 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)  {
   #minor additons, October, 20, 2009 to allow for print and summary function
   #major addition in April, 2011 to allow for set correlation
   
-  message("mat.regress has been replaced by setCor, please change your call") 
-  setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)} 
+  message("mat.regress has been replaced by lmCor, please change your call") 
+  lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",square=FALSE)} 
 
 #modified July 12,2007 to allow for NA in the overall matrix
 #modified July 9, 2008 to give statistical tests

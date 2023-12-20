@@ -2,10 +2,10 @@
 \alias{partial.r}
 
 \title{ Find the partial correlations for a set (x) of variables with set (y) removed. }
-\description{A straightforward application of matrix algebra to remove the effect of the variables in the y set from the x set. Input may be either a data matrix or a correlation matrix.  Variables in x and y are specified by location.  If x and y are not specified, then the effect of all variables are partialled from all the other correlations.  May also be done using formula input which is more convenient when comparing results to regression models
+\description{A straightforward application of matrix algebra to remove the effect of the variables in the y set from the x set. Input may be either a data matrix or a correlation matrix.  Variables in x and y are specified by location.  If x and y are not specified, then the effect of all variables are partialled from all the other correlations.  May also be done using formula input which is more convenient when comparing results to regression models.  Also has the option to find part (aka semi-partial) correlations.
 }
 \usage{
-partial.r(data, x, y, use="pairwise",method="pearson")
+partial.r(data, x, y, use="pairwise",method="pearson",part=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +14,7 @@ partial.r(data, x, y, use="pairwise",method="pearson")
   \item{y}{The variable  names or locations associated with the Y set to be partialled from the X set}
   \item{use}{How should we treat missing data? The default is pairwise complete.}
   \item{method}{Which method of correlation should we use, the default is pearson.}
-  
+  \item{part}{Find the part correlation (aka semi-partial) , defaults to finding partial correlations}
 }
 \details{There are two ways to use \code{\link{partial.r}}.  One is to find the complete partial correlation matrix (that is, partial all the other variables out of each variable).  This may be done by simply specifying the raw data or correlation matrix.  (In the case of raw data, correlations will be found according to use and method.)  In this case, just specify the data matrix. 
 
@@ -24,7 +24,7 @@ partial.r(data, x, y, use="pairwise",method="pearson")
 To find the confidence intervals and "significance" of the correlations, use the \code{\link{corr.p}} function with n = n - s where s is the number of covariates. 
 
  
-A perhaps easier format is to use formula input compatible with that used in \code{\link{setCor}}. If using formula input,we specify X and Y with the partialled variables specified by subtraction.    That is X ~ Y - z,
+A perhaps easier format is to use formula input compatible with that used in \code{\link{lmCor}}. If using formula input,we specify X and Y with the partialled variables specified by subtraction.    That is X ~ Y - z,
 This is useful in the case of multiple regression using  which uses this notation.
 
 
@@ -67,6 +67,8 @@ round(partial.r(Tal.Or[1:4])[4,1:3],2) #The partial correlations with the criter
 if(require("psychTools")) {
 data(eminence)
 partial.r(reputation ~ works + citations - birth.year, data=eminence)
+#now do a part correlation
+partial.r(reputation ~ works + citations - birth.year, data=eminence, part=TRUE) 
 }
 
 

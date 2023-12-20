@@ -1,7 +1,9 @@
 \name{esem}
 \alias{esem}
+\alias{esemDiagram}
 \alias{esem.diagram}
 \alias{interbattery}
+\alias{cancorDiagram}
 
 \title{Perform and Exploratory Structural Equation Model (ESEM) by using factor extension techniques}
 
@@ -11,9 +13,14 @@
 esem(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL, fm = "minres", 
       rotate = "oblimin", rotateY="oblimin", plot = TRUE, cor = "cor",
        use = "pairwise",weight=NULL, ...)
-esem.diagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
+esemDiagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
 	regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
      main="Exploratory Structural Model", ...)
+esem.diagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
+	regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
+     main="Exploratory Structural Model", ...) #deprecated
+cancorDiagram(fit, cut=.1,digits=2, nfX = NULL, nfY = NULL,simple=FALSE,e.size=.1,
+     main="Canonical Correlation",...)    
 interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor", 
        use = "pairwise",weight=NULL)
 }
@@ -27,12 +34,13 @@ interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor",
   \item{fm}{The factor  method to use, e.g., "minres", "mle" etc.  (see fa for details)}
   \item{rotate}{Which rotation to use. (see fa for details)}
   \item{rotateY}{Which rotatation to use for the Y variables.}
-  \item{plot}{If TRUE, draw the esem.diagram}
+  \item{plot}{If TRUE, draw the esemDiagram}
   \item{cor}{What options for to use for correlations (see fa for details)}
   \item{use}{"pairwise" for pairwise complete data, for other options see cor}
   \item{weight}{Weights to apply to cases when finding wt.cov}
- \item{\dots}{other parameters to pass to fa or to esem.diagram functions.}
- \item{esem}{The object returned from esem and passed to esem.diagram}
+ \item{\dots}{other parameters to pass to fa or to esemDiagram functions.}
+ \item{esem}{The object returned from esem and passed to esemDiagram}
+ \item{fit}{The object returned by lmCor with canonical variates}
    \item{labels}{ Variable labels }
   \item{cut}{ Loadings with abs(loading) > cut will be shown }
   \item{simple}{Only the biggest loading per item is shown}
@@ -95,14 +103,18 @@ Tucker, Ledyard (1958) An inter-battery method of factor analysis, Psychometrika
 }
 \author{William Revelle}
 
-\note{Developed September, 2016, revised December, 2018 to produce code for lavaan and sem.  the \code{\link{esem}} and \code{\link{esem.diagram}} functions. Suggestions or comments are most welcome. 
+\note{Developed September, 2016, revised December, 2018 to produce code for lavaan and sem from the \code{\link{esem}} and \code{\link{esemDiagram}} functions. Suggestions or comments are most welcome. 
 
 This is clearly an exploratory approach and the degrees of freedom for the model are unclear.  
+
+In December 2023, I added the canCorDiagram function to help understand canonical correlations. 
 }
 
 
 \seealso{ \code{\link{principal}} for principal components analysis (PCA).  PCA will give very similar solutions to factor analysis when there are many variables.  The differences become more salient as the number variables decrease.  The PCA and FA models are actually very different and should not be confused.  One is a model of the observed variables, the other is a model of latent variables.  
-
+ 
+ \code{\link{lmCor}} which does a canonical correlation between the X and Y sets of variables.
+ 
 \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, using the two parameter IRT equivalent of loadings and difficulties.
 
 \code{\link{VSS}} will produce the Very Simple Structure (VSS) and MAP criteria for the number of factors, \code{\link{nfactors}} to compare many different factor criteria.
@@ -110,7 +122,7 @@ This is clearly an exploratory approach and the degrees of freedom for the model
 \code{\link{ICLUST}} will do a hierarchical cluster analysis alternative to factor analysis or principal components analysis.
 
  \code{\link{predict.psych}} to find predicted scores based upon new data, \code{\link{fa.extension}} to extend the factor solution to new variables, \code{\link{omega}} for hierarchical factor analysis with one general factor. 
- code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of higher order factors. 
+ \code{\link{fa.multi}} for hierarchical factor analysis with an arbitrary number of higher order factors. 
  
  \code{\link{faRegression}} to do multiple regression from factor analysis solutions.
 
@@ -138,8 +150,10 @@ print(gre.gpa)
 #now esem it:
 example <- esem(gre.gpa$model,varsX=1:5,varsY=6:8,nfX=2,nfY=1,n.obs=1000,plot=FALSE)
 example
-esem.diagram(example,simple=FALSE)
-
+esemDiagram(example,simple=FALSE)
+#compare this to the canonical solution
+mod <- lmCor(y=6:8, x =1:5, data=gre.gpa$model, plot=FALSE)
+cancorDiagram(mod)  #does not work because of imaginary roots
 #compare two alternative solutions to the first 2 factors of the neo.
 #solution 1 is the normal 2 factor solution.
 #solution 2 is an esem with 1 factor for the first 6 variables, and 1 for the second 6.

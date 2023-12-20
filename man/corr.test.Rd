@@ -1,10 +1,13 @@
-\name{corr.test}
+\name{corTest}
+\alias{corTest}
 \alias{corr.test}
 \alias{corr.p}
 \title{Find the correlations, sample sizes, and probability values between elements of a matrix or data.frame.   }
 \description{Although the cor function finds the correlations for a matrix,  it does not report probability values.  cor.test does, but for only one pair of variables at a time.  corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests. Both corr.test and corr.p return raw and adjusted confidence intervals for each correlation. 
 }
 \usage{
+corTest(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
+    alpha=.05,ci=TRUE,minlength=5,normal=TRUE)
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
     alpha=.05,ci=TRUE,minlength=5,normal=TRUE)
 corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
@@ -67,8 +70,8 @@ Other useful functions related to finding and displaying correlations include \c
 
 }
 \examples{
-
-ct <- corr.test(attitude)  #find the correlations and give the probabilities
+ct  <- corTest(attitude)
+#ct <- corr.test(attitude)  #find the correlations and give the probabilities
 ct #show the results
 
 

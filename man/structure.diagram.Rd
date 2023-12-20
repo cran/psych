@@ -126,7 +126,7 @@ fx <- matrix(c(.6,.5,0,.4),ncol=2)
 mimic <- structure.diagram(fx,fy=fy,simple=FALSE,errors=TRUE, main="A mimic diagram")
 
 fy <- matrix(c(rep(.9,8),rep(0,16),rep(.8,8)),ncol=2)
-structure.diagram(fx,fy=fy)
+structure.diagram(fx,fy=fy, e.size=.05)
 
 #symbolic input
 X2 <- matrix(c("a",0,0,"b","e1",0,0,"e2"),ncol=4)
@@ -160,12 +160,24 @@ mod.1 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C =~ C1 + C2 + C3 + C4 + C5
          E =~ E1 +E2 + E3 + E4 +E5'
 fit.1 <- sem(mod.1,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
-lavaan.diagram(fit.1)
+lavaan.diagram(fit.1)   #a normal cfa
 
 #compare with
 f3 <- fa(psychTools::bfi[complete.cases(psychTools::bfi),1:15],3)
 fa.diagram(f3)
-         
+
+
+#a sem model
+mod.2 <- 'A =~ A1 + A2 + A3 + A4 + A5
+         C =~ C1 + C2 + C3 + C4 + C5
+         E =~ E1 +E2 + E3 + E4 +E5
+         E ~ A + C '        
+  
+fit.2 <- sem(mod.2,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
+lavaan.diagram(fit.2, cut=0,simple=FALSE,main="sem  model")  # A SEM Model 
+
+
+#a mimic model         
 mod.3 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C =~ C1 + C2 + C3 + C4 + C5
          E =~ E1 +E2 + E3 + E4 +E5
@@ -174,7 +186,11 @@ mod.3 <- 'A =~ A1 + A2 + A3 + A4 + A5
          E ~ age + gender'
 
 fit.3 <- sem(mod.3,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
-lavaan.diagram(fit.3, cut=0,simple=FALSE,main="mimic model")
+lavaan.diagram(fit.3, cut=0,simple=FALSE,main="mimic model", e.size=.03)
+
+
+
+
 }
 # and finally, a regression model
 X7 <- matrix(c("a","b","c","d","e","f"),nrow=6)

@@ -42,7 +42,7 @@ if(is.numeric(dv)) dv   <- colnames(r)[dv]
 rownames(R) <-  colnames(R) <- c(colnames(Phi) , dv)
  
  diag(R) <- 1
- set <- setCor(y=dv, x = colnames(fdv), data=R ,n.obs=n.obs, plot=FALSE)
+ set <- lmCor(y=dv, x = colnames(fdv), data=R ,n.obs=n.obs, plot=FALSE)
  result <- list(regression=set,fa.extend =fe, dv.cor =rdv, R= R, Call=cl)
  class(result) <- c("psych", "fa.reg")
  return(result)

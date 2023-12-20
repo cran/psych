@@ -1,6 +1,11 @@
 "sim.structure" <- "sim.structural" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0) {
  cl <- match.call()
+ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
+             colnames(fx) <- paste0("F",1:4)
+             rownames(fx) <- paste0("V",1:12)
+            }  #added default 10/21/23
+            
  if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
     f <- superMatrix(fx,fy)} }
   f <- as.matrix(f)
@@ -25,14 +30,18 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
     mu <- rep(mu,nvar)
   	#observed <- mvrnorm(n = n, mu, Sigma=model, tol = 1e-6, empirical = FALSE)
   	 eX <- eigen(model)
-                                      theta <- matrix(rnorm(nvar * n),n)
-                                      observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(theta) + mu)   #this way theta and observed not identical
-                                      theta <- observed
-  	if(items) {#observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar)    #this is not useful
+                 theta <- matrix(rnorm(nvar * n),n)   #random values
+                observed <- t( eX$vectors %*% diag(sqrt(pmax(eX$values, 0)), nvar) %*%  t(theta) + mu)   #this way theta and observed not identical
+                 theta <- observed   #but seems to make them identical
+  	if(items) { #the next 2 lines were dropped in 2021 because it was adding noise twice
+  	         #observedp <- matrix(t(pnorm(a*t(observed)- d)),n,nvar)    #this is not useful
   	         #observed[] <- rbinom(n*nvar, cat, observedp) #this puts in error again
+  	         #put in the low and high values again --dropped in 2021
+  	         observed[observed <low] <- low
+  	         observed[observed > high] <- high
   	         range.ob <- range(observed)
-  	         observed <- (observed - range.ob[1])/(range.ob[2]- range.ob[1])
-  	         observed<- round(cat * observed)}
+  	         observed <- (observed - range.ob[1])/(range.ob[2]- range.ob[1]) 
+  	         observed<- round((cat-1) * observed) + 1}
   	  colnames(observed) <- colnames(model)
   r <- cor(observed) 
   } 
@@ -163,8 +172,9 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
  #complete rewrite to allow the true factor scores (theta) to be reported
 #rewritten March, 2021
 #added threshold option April 2023
+#added the items and low, cat options to make a more general simulation function 10/20/23 
  "sim" <-
-function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL) {
+function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL,items = FALSE, low=-2,high=2,cat=5) {
  cl <- match.call()
  
 ##set up some default values 
@@ -210,6 +220,13 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
      colnames(theta) <- colnames(f) 
       error <- t(U %*% matrix(rnorm(n * nvar),nrow=nvar))
       observed <- t(t(observed + error) + rep(means,n))  #observed are factors * loadings + error + means
+      	if(items) { 
+  	         observed[observed <low] <- low
+  	         observed[observed > high] <- high
+  	         range.ob <- range(observed)
+  	         observed <- (observed - range.ob[1])/(range.ob[2]- range.ob[1]) 
+  	         observed<- round((cat-1) * observed) + 1}
+      
        if(!is.null(threshold)) {
         i <- 1:nvar
 		  observed <- t(t(observed [,i]) > threshold[i]) + 0 } 
@@ -257,8 +274,9 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 
 #simulate major and minor factors
 #modified October 18, 2022 to allow specification of g and fbig for all variables
+#further modified December 4, 2023 to allow specificaton of Ph
 "sim.minor" <-
-function(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL, bipolar=TRUE, threshold=NULL) {
+function(nvar=12, nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL,Phi=NULL, bipolar=TRUE, threshold=NULL) {
 if(is.null(fbig)) {loads <- c(.8,.6) 
   loads <- sample(loads,nvar/nfact,replace=TRUE)
 
@@ -289,7 +307,7 @@ rownames(fload) <- paste0("V",1:nvar)
 sanity.check <- h2  <- apply(fload,1,function(x) sum(x^2))
 if(max(sanity.check) >  1.0) {print(cbind(fload, h2))
                        stop("Model is impossible.  Communalities (h2) exceed 1. ")}
-Phi <- diag(ncol(fload))
+if(!is.null(Phi)) {Phi <- superMatrix(Phi,diag(n.small))}  #added 12/3/23
 results <- sim(fload,n=n, Phi=Phi,threshold=threshold)
          results$fload <- fload
  class(results) <- c("psych", "sim")

@@ -925,13 +925,13 @@ dev.off()
 
 \subsection{Testing correlations}
 \label{sect:corr.test}
-Correlations are wonderful descriptive statistics of the data but some people like to test whether these correlations differ from zero, or differ from each other. The \fun{cor.test} function (in the \Rpkg{stats} package)  will test the significance of a single correlation, and the \fun{rcorr} function in the \Rpkg{Hmisc} package will do this for many correlations.  In the \Rpkg{psych} package, the \pfun{corr.test} function reports the correlation (Pearson, Spearman, or Kendall) between all variables in either one or two data frames or matrices, as well as the number of observations for each case, and the (two-tailed) probability for each correlation.  Unfortunately, these probability values have not been corrected for multiple comparisons and so should be taken with a great deal of salt.  Thus, in \pfun{corr.test} and \pfun{corr.p} the  raw probabilities are reported below the diagonal and the probabilities adjusted for multiple comparisons using (by default) the Holm correction are reported above  the diagonal (Table~\ref{tab:corr.test}).  (See the \fun{p.adjust} function for a discussion of \cite{holm:79} and other corrections.)
+Correlations are wonderful descriptive statistics of the data but some people like to test whether these correlations differ from zero, or differ from each other. The \fun{cor.test} function (in the \Rpkg{stats} package)  will test the significance of a single correlation, and the \fun{rcorr} function in the \Rpkg{Hmisc} package will do this for many correlations.  In the \Rpkg{psych} package, the \pfun{corTest} function reports the correlation (Pearson, Spearman, or Kendall) between all variables in either one or two data frames or matrices, as well as the number of observations for each case, and the (two-tailed) probability for each correlation.  Unfortunately, these probability values have not been corrected for multiple comparisons and so should be taken with a great deal of salt.  Thus, in \pfun{corTest} and \pfun{corr.p} the  raw probabilities are reported below the diagonal and the probabilities adjusted for multiple comparisons using (by default) the Holm correction are reported above  the diagonal (Table~\ref{tab:corr.test}).  (See the \fun{p.adjust} function for a discussion of \cite{holm:79} and other corrections.)
 
 \begin{table}[htpb]
-\caption{The \pfun{corr.test} function reports correlations,  cell sizes, and raw and adjusted probability values.  \pfun{corr.p} reports the probability values for a correlation matrix.  By default, the adjustment used is that of \cite{holm:79}.}
+\caption{The \pfun{corTest} function reports correlations,  cell sizes, and raw and adjusted probability values.  \pfun{corr.p} reports the probability values for a correlation matrix.  By default, the adjustment used is that of \cite{holm:79}.}
 \begin{scriptsize}
 <<echo=TRUE>>=
-corr.test(sat.act)
+corTest(sat.act)
 @
 \end{scriptsize}
 \label{tab:corr.test}
@@ -1179,8 +1179,9 @@ mediate( SATV ~ education+ age + (ACT), data =sat.act,std=TRUE,n.iter=50)
 \begin{scriptsize}
 <<garcia.png>>=
 png('garcia.png')
-mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
+model <- mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
   ,main="Moderated mediation (mean centered)")
+  summary(model)
   dev.off()
 @
 \end{scriptsize}
@@ -1194,10 +1195,64 @@ mediate(respappr ~ prot2 * sexism +(sexism),data=Garcia,n.iter=50
 \end{itemize}
 
 
+
+\subsection{Canonical Correlation using \pfun{lmCor}}
+
+A  generalization of multiple regression to multiple predictors and multiple criteria is \iemph{canonical correlation} \citep{hotelling:36}. Given a partitioning of a correlation matrix, R, into Rxx, Ryy and Rxy, canonical correlation  finds orthogonal components of the correlations between the Rx and Ry sets (the Rxy correlations).    Consider the Kelley data set discussed by \cite{hotelling:36} who introduced the canonical correlation.  This analysis is shown in help menu for \pfun{lmCor}.  Another data set is the  ``Belly Dancer" data set discussed by \cite{Tabachnick:01} (Chapter 12).   Here I show the data, the correlations, the regressions, and the canonical correlations. 
+
+\begin{scriptsize}
+<<echo=TRUE>>=
+
+dancer  <- structure(list(TS = c(1, 7, 4.6, 1, 7, 7, 7, 7), TC = c(1, 1, 
+5.6, 6.6, 4.9, 7, 1, 1), BS = c(1, 7, 7, 1, 7, 6.4, 7, 2.4), 
+    BC = c(1, 1, 7, 5.9, 2.9, 3.8, 1, 1)), class = "data.frame", row.names = c(NA, 
+-8L))
+dancer   #show the data
+
+model <- lmCor(TC + TS ~ BC + BS, data = dancer)
+summary(model)  #show the summary statistics
+cancorDiagram(model) #and the associated canonical figure
+
+@
+\end{scriptsize}
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<dancer>>=
+png('dancerlm.png')
+model <- lmCor(TC + TS ~ BC + BS, data = dancer)
+  dev.off()
+@
+\end{scriptsize}
+\includegraphics{dancerlm.png}
+\caption{Multiple regression of the Belly Dancer data set.  Compare with the canonical correlation figure \ref{fig:cancor}  }
+\label{fig:lm}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{scriptsize}
+<<dancer>>=
+png('dancer.png')
+cancorDiagram(model)
+  dev.off()
+@
+\end{scriptsize}
+\includegraphics{dancer.png}
+\caption{Canonical Correlation of the  Belly Dancer data set.  Compare with the linear regression figure  \ref{fig:lm}   }
+\label{fig:cancor}
+\end{center}
+\end{figure}
+
+
+
+
 \subsection{Set Correlation using \pfun{lmCor}}
 
 
-An important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{lmCor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
+Another important generalization of multiple regression and multiple correlation is \iemph{set correlation} developed by \cite{cohen:set} and discussed by \cite{cohen:03}.     Set correlation is a multivariate generalization of multiple regression and estimates the amount of variance shared between two sets of variables.  Set correlation also allows for examining the relationship between two sets when controlling for a third set.  This is implemented in the \pfun{lmCor} function.  Set correlation is $$R^{2} = 1 - \prod_{i=1}^n(1-\lambda_{i})$$ where $\lambda_{i}$ is the ith eigen value of the eigen value decomposition of the matrix $$R = R_{xx}^{-1}R_{xy}R_{xx}^{-1}R_{xy}^{-1}.$$  Unfortunately, there are several cases where set correlation will give results that are much too high.  This will happen if some variables from the first set are highly related to those in the second set, even though most are not.  In this case, although the set correlation can be very high, the degree of relationship between the sets is not as high.  In this case, an alternative statistic, based upon the average canonical correlation might be more appropriate.  
 
  \pfun{lmCor} has the additional feature that it will calculate multiple and partial correlations from the correlation or covariance matrix rather than the original data.
 
@@ -1214,11 +1269,11 @@ summary(model1)
 @
 Compare this with the output from \pfun{lmCor}.
 <<echo=TRUE>>=
-#compare with sector
-setCor(c(4:6),c(1:3),C, n.obs=700)
+#compare with lmCor
+lmCor(c(4:6),c(1:3),C, n.obs=700)
 @
 \end{scriptsize}
-Note that the \pfun{setCor} analysis also  reports the amount of shared variance between the predictor set and the criterion (dependent) set.  This set correlation is symmetric. That is, the $R^{2}$ is the same independent of the direction of the relationship.
+Note that the \pfun{lmCor} analysis also  reports the amount of shared variance between the predictor set and the criterion (dependent) set.  This set correlation is symmetric. That is, the $R^{2}$ is the same independent of the direction of the relationship.
 
 
 
@@ -1288,7 +1343,7 @@ A number of data sets for demonstrating psychometric techniques are included in 
 \begin{description}
 \item[Thurstone] Holzinger-Swineford (1937) introduced the bifactor model of a general factor and uncorrelated group factors. The Holzinger correlation matrix is a 14 * 14 matrix from their paper. The Thurstone correlation matrix is a 9 * 9 matrix of correlations of ability items. The Reise data set is 16 * 16 correlation matrix of mental health items. The Bechtholdt data sets are both 17 x 17 correlation matrices of ability tests.
 \item [bfi]  25 personality self report items taken from the International Personality Item Pool (ipip.ori.org) were included as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. The data from 2800 subjects are included here as a demonstration set for scale construction, factor analysis and Item Response Theory analyses.
-\item [spi] 135 personality items and 10 demographic items for 4,000 subjects are taken from the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project \cite{sapa:16}. These 135 items form part of the SAPA Personality Inventory \cite{condon:spi}.
+\item [spi] 135 personality items and 10 demographic items for 4,000 subjects are taken from the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project \citep{sapa:16}. These 135 items form part of the SAPA Personality Inventory \citep{condon:spi}.
 \item [sat.act] Self reported scores on the SAT Verbal, SAT Quantitative and ACT were collected as part of the Synthetic Aperture Personality Assessment (\iemph{SAPA}) web based personality assessment project. Age, gender, and education are also reported. The data from 700 subjects are included here as a demonstration set for correlation and analysis.
 \item [epi.bfi] A small data set of 5 scales from the Eysenck Personality Inventory, 5 from a Big 5 inventory, a Beck Depression Inventory, and State and Trait Anxiety measures. Used for demonstrations of correlations, regressions, graphic displays.
 
@@ -1396,6 +1451,11 @@ Cohen, J., Cohen, P., West, S.~G., and Aiken, L.~S. (2003).
   behavioral sciences}.
 \newblock L. Erlbaum Associates, Mahwah, N.J., 3rd ed edition.
 
+\bibitem[\protect\astroncite{Condon}{2018}]{condon:spi}
+Condon, D. (2018)
+\newblock  {\em The SAPA Personality Inventory: An empirically-derived, hierarchically-organized self-report personality assessment model}
+\newblock {\em PsyArXiv}, 
+
 \bibitem[\protect\citeauthoryear{Condon \& Revelle}{Condon \&
   Revelle}{2014}]{condon:icar:14}
 Condon, D.~M. \& Revelle, W. (2014).
@@ -1498,9 +1558,16 @@ Horn, J. (1965).
 
 \bibitem[\protect\astroncite{Horn and Engstrom}{1979}]{horn:79}
 Horn, J.~L. and Engstrom, R. (1979).
-\newblock Cattell's scree test in relation to bartlett's chi-square test and
+\newblock Cattell's scree test in relation to Bartlett's chi-square test and
   other observations on the number of factors problem.
 \newblock {\em Multivariate Behavioral Research}, 14(3):283--300.
+
+\bibitem[\protect\astroncite{Hotelling}{1936}]{hotelling:36}
+Hotelling, H (1936).
+\newblock Relations between two sets of variates.
+\newblock {\em Biometrika}, 28, (3/4):321--377.
+
+
 
 \bibitem[\protect\astroncite{Jennrich and Bentler}{2011}]{jennrich:11}
 Jennrich, R. and Bentler, P. (2011).
@@ -1575,10 +1642,11 @@ Revelle, W. (1979).
 \newblock {\em Multivariate Behavioral Research}, 14(1):57--74.
 
 \bibitem[\protect\astroncite{Revelle}{2023}]{psych}
-Revelle, W. (2032).
+Revelle, W. (2023).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston.
-\newblock R package version 2.3.5
+\newblock R package version 2.3.12
+
 \bibitem[\protect\astroncite{Revelle}{prep}]{revelle:intro}
 Revelle, W. ({in prep}).
 \newblock {\em An introduction to psychometric theory with applications in
@@ -1674,6 +1742,11 @@ Tal-Or, N., Cohen, J., Tsfati, Y., and Gunther, A.~C. (2010).
 \newblock Testing causal direction in the influence of presumed media
   influence.
 \newblock {\em Communication Research}, 37(6):801--824.
+
+\bibitem[\protect\astroncite{Tabachnick and Fidell}{2001}]{Tabachnick:01}
+Tabacnik, B.G and Fidell, L.S. (2001)
+\newblock Using multivariate statistics.
+\newblock  Allyn and Bacon.
 
 
 \bibitem[\protect\astroncite{Thorburn}{1918}]{thornburn:1918}

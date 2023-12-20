@@ -6,13 +6,16 @@
 # figure out which psych function was called and then call the appropriate diagram
 value <- NULL
 omega <- bassAck <- extend <- extension <-  lavaan <- fa.reg <-  NULL    #weird requirement to avoid being global
-if(length(class(fit)) == 1) {if (inherits(fit,"lm")) value <- "lm" } 
-
+ names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm)
+if(length(class(fit)) == 1) {
+   value <- inherits(fit,names,which=TRUE) #if (inherits(fit,"lm")) value <- "lm" } 
+   if(any(value > 0) ) { value <- names[which(value > 0)]} else {value <- "other"}
+  }
 
 if(length(class(fit)) > 1)  {
-    names <- cs(lm, lavaan,fa,principal,iclust,omega,lavaan,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi)
+    names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm)
     value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
-    if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
+    if(any(value > 0) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
      } 
 
@@ -28,6 +31,7 @@ extension ={extension.diagram(fit,...)},
 fa.reg ={extension.diagram(fit,...)},
 esem = {esem.diagram(fit,...)},
 setCor = {lmDiagram(fit,...)},
+lmCor = {lmDiagram(fit,...)},
 lm = {lmDiagram(fit, ...)},
 mediate ={mediate.diagram(fit,...)},
 fa.multi ={fa.multi.diagram(fit,...)}
@@ -43,8 +47,8 @@ fa.multi ={fa.multi.diagram(fit,...)}
     yrange = (ylim[2] - ylim[1])
     xs <- .10 * xrange
     ys <- .10 * yrange
-     #len <- max(nchar(labels)*cex*.2/2,cex*.25)*xs
-     len <- pmax(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user",cex=cex,...)) /1.8
+     #len <- max(nchar(labes)*cex*.2/2,cex*.25)*xs
+     len <- pmax(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user",cex=cex,...)) /1.8   #was 1.8
      vert <- pmax(strheight(labels,units="user",cex=cex,...),strheight("ABC",units="user",cex=cex,...))/1.
     # vert <- min(cex*.3 * ys,.3)
     if(draw) rect(x-len,y-vert,x+len,y+vert)

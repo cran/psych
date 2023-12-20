@@ -32,7 +32,7 @@ scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
   \item{correl}{TRUE: Show the correlation}
   \item{data}{if using formula input, the data must be specified}
    \item{density}{TRUE: Show the estimated densities}
-   \item{means}{TRUE}{If TRUE, show the means for the distributions. }
+   \item{means}{TRUE: If TRUE, show the means for the distributions. }
   \item{ellipse}{TRUE: draw 1 and 2 sigma ellipses and smooth}
   \item{digits}{How many digits to use if showing the correlation}
   \item{method}{Which method to use for correlation ("pearson","spearman","kendall") 

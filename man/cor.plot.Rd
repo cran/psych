@@ -80,7 +80,7 @@ The default shows a legend for the color coding on the right hand side of the fi
 
 Inspired, in part, by a paper by S. Dray (2008)  on the number of components problem. 
 
-Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1). Further modified to allow for color choices using the gr option (suggested by Lorien Elleman). Further modified to include the numerical value of the correlation.  (Inspired by the corrplot package).  These values may be scaled according the the probability values found in \code{\link{cor.ci}} or \code{\link{corr.test}}.
+Modified following suggestions by David Condon and Josh Wilt to use a more meaningful color choice ranging from dark red (-1) through white (0) to dark blue (1). Further modified to allow for color choices using the gr option (suggested by Lorien Elleman). Further modified to include the numerical value of the correlation.  (Inspired by the corrplot package).  These values may be scaled according the the probability values found in \code{\link{cor.ci}} or \code{\link{corTest}}.
 
 Unless specified, the font size is dynamically scaled to have a cex =  10/max(nrow(r),ncol(r).  This can produce fairly small fonts for large problems.  
 The font size of the labels may be adjusted using cex.axis which defaults to one.  
@@ -89,13 +89,13 @@ By default \code{\link{cor.ci}} calls corPlotUpperLowerCi and scales the correla
 
 
 
-If using the output of \code{\link{corr.test}}, the upper off diagonal will be scaled by the corrected probability, the lower off diagonal the scaling is the uncorrected probabilities.
+If using the output of \code{\link{corTest}}, the upper off diagonal will be scaled by the corrected probability, the lower off diagonal the scaling is the uncorrected probabilities.
 
 
-If given raw data or  correlation matrix, \code{\link{corPlotUpperLowerCi}} will automatically call \code{\link{corr.test}} or \code{\link{cor.ci}}.  
+If given raw data or  correlation matrix, \code{\link{corPlotUpperLowerCi}} will automatically call \code{\link{corTest}} or \code{\link{cor.ci}}.  
 
 
-If using the output of \code{\link{corr.test}} or \code{\link{cor.ci}} as input to \code{\link{corPlotUpperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals.  If adjust=TRUE, these will use the Holm or Bonferroni adjusted values (depending upon corr.test). 
+If using the output of \code{\link{corTest}} or \code{\link{cor.ci}} as input to \code{\link{corPlotUpperLowerCi}}, the upper off diagonal will be the upper bounds and the lower off diagonal the lower bounds of the confidence intervals.  If adjust=TRUE, these will use the Holm or Bonferroni adjusted values (depending upon corTest). 
 
 To compare the elements of two correlation matrices, \code{\link{corPlot}} the results from \code{\link{lowerUpper}}.  
 
@@ -114,7 +114,7 @@ The sort option will sort the matrix using the output from \code{\link{iclust}}.
 Dray, Stephane (2008) On the number of principal components: A test of dimensionality based on measurements of similarity between matrices. Computational Statistics & Data Analysis. 52, 4, 2228-2237.
 }
 
-\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corr.test}} \code{\link{lowerUpper}}. 
+\seealso{ \code{\link{fa}}, \code{\link{mat.sort}}, \code{\link{cor.ci}}, \code{\link{corTest}} \code{\link{lowerUpper}}. 
 }
 \examples{
 corPlot(Thurstone,main="9 cognitive variables from Thurstone") 
@@ -129,7 +129,7 @@ corPlot(Thurstone[4:9,1:3], zlim=c(0,1),main="9 cognitive variables
 #From the raw data
 corPlot(sat.act,numbers=TRUE,stars=TRUE)
 #from a correlation matrix with pvals
-cp <- corr.test(sat.act)  #find the correlations and pvals
+cp <- corTest(sat.act)  #find the correlations and pvals
 r<- cp$r
 p <- cp$p
 corPlot(r,numbers=TRUE,diag=FALSE,stars=TRUE, pval = p,main="Correlation plot
@@ -142,7 +142,7 @@ simp <- sim.circ(24)
 corPlot(cor(simp),main="24 variables in a circumplex")
 
 #scale by raw and adjusted probabilities
-rs <- corr.test(sat.act[1:200,] ) #find the probabilities of the correlations
+rs <- corTest(sat.act[1:200,] ) #find the probabilities of the correlations
 corPlot(r=rs$r,numbers=TRUE,pval=rs$p,main="Correlations scaled by probability values") 
  #Show the upper and lower confidence intervals
 corPlotUpperLowerCi(R=rs,numbers=TRUE) 

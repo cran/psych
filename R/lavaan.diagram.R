@@ -6,16 +6,41 @@ if(missing(main)) {if(model =="cfa") { main="Confirmatory structure" } else {mai
         mimic <- fit@Model@fixed.x
         
        if(!mimic) {#the normal case, either a cfa or a sem
-        fx=fit@Model@GLIST$lambda
+        fx=fit@Model@GLIST$lambda           #the x and y loadings 
+       #but,  if it is a sem, we need to find the y variables
+       
        # colnames(fx) <- fit@Model@dimNames$lambda[[2]]
        colnames(fx) <- fit@Model@dimNames[[1]][[2]]
        rownames(fx) <- fit@Model@dimNames[[1]][[1]]
-        if(model=="sem") { fit@Model@GLIST$beta} else {  Phi <-  fit@Model@GLIST$psi}
+        if(model=="sem") {Phi <-  fit@Model@GLIST$beta} else {  Phi <-  fit@Model@GLIST$psi}
                   Rx <- fit@Model@GLIST$theta
                   v.labels <-fit@Model@dimNames[[1]][[1]]
+              
+        #either a sem or a cfa
+        
+        if(model == "sem" ) {
+        x.f <- unique(fit@ParTable$rhs[fit @ParTable$op == "~"])
+        y.f <- unique(fit@ParTable$lhs[fit @ParTable$op == "~"])
+        x.f <- x.f[!x.f %in% y.f]
+
+        #now, since this is a sem or   we need to shrink fx and create fy
+       # temp <- fx
+        x.vars <- fit@ParTable$lhs[fit @ParTable$op == "=~"] %in% x.f
+        y.vars <- !fit@ParTable$lhs[fit @ParTable$op == "=~"] %in% x.f
+        fy <- fx[y.vars,!colnames(fx) %in% x.f,drop=FALSE]
+        fx <- fx[x.vars,x.f,drop=FALSE]
+        Ry <- Rx[y.vars,y.vars]
+        }
         } else {
-         #mimic
-        y.vars <- fit@Model@x.user.idx[[1]]
+         model <- "mimic"
+         }
+       
+
+switch(model,
+ # if(model=="cfa") {                
+	cfa= {structure.diagram(fx=fx,Phi=Phi, Rx=Rx,labels=v.labels,main=main,e.size=e.size,...)},
+	mimic = {#multiple indicators, multiple causes
+	    y.vars <- fit@Model@x.user.idx[[1]]   #these are all the variables as numbers
 
         nx  <- fit@Model@ov.x.dummy.lv.idx[[1]]
         fy <- as.matrix(fit@Model@GLIST$lambda[y.vars,-nx],drop=FALSE)
@@ -28,23 +53,32 @@ if(missing(main)) {if(model =="cfa") { main="Confirmatory structure" } else {mai
         v.labels <- c(rownames(fx),rownames(fy))
          Rx <- fit@Model@GLIST$theta
          Phi <- fit@Model@GLIST$beta
-        }
+		fx <- t(fx)
+		structure.diagram(fx=fx,fy=fy,Rx=Rx,main=main,e.size=e.size,...)},
+		
+		
+	sem = { #a sem model
+		Phi <-  (fit@Model@GLIST$beta)
 
-  if(model=="cfa") {                
-structure.diagram(fx=fx,Phi=Phi,Rx=Rx,labels=v.labels,main=main,e.size=e.size,...)}
-else {
-if(mimic) {
-fx <- t(fx)
-structure.diagram(fx=fx,fy=fy,Rx=Rx,main=main,e.size=e.size,...)} else {
-#a cfa model
-#Phi <-  t(fit@Model@GLIST$beta) 
-Phi <-  (fit@Model@GLIST$beta) 
 
-structure.diagram(fx=fx,Phi=Phi,Rx=Rx,labels=v.labels,main=main,e.size=e.size,...) }
-}
-}
+#now draw the sem diagram
+	structure.diagram(fx=fx,Phi=Phi,fy=fy, Rx=Rx,Ry=Ry,
+	labels=v.labels,main=main,e.size=e.size,...) }
+)   #end switch
+}  #end lavaan diagram
+
 #modified 11/6/14 to draw the regression paths
 #modified 11/14/18 to properly do mimic models
+#modified 11/11/23 to draw sem diagrams 
+#how to figure out the lavaan object
+#   fit@ParTable$op == "~"   
+#   fit@ParTable$rhs     
+#    fit@ParTable$lhs
+#  fit@ParTable$lhs[fit @ParTable$op == "~"]   #the y factors
+#  fit@ParTable$rhs[fit @ParTable$op == "~"]    #the regression predictors
+#fit@ParTable$rhs[fit@ParTable$op == "=~"]     #the variables
+#fit@ParTable$lhs[fit @ParTable$op == "=~"]     #the factors
+
 
 #created August 17, 2017 to allow sem.diagrams and graphs from sem output 
 "sem.diagram" <- function(fit,main="A SEM from the sem package",...) {

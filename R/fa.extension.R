@@ -1,5 +1,6 @@
 
-#modified 7/25/21 to report factor scores so that we can use biplot on the exensions.\
+#modified 7/25/21 to report factor scores so that we can use biplot on the exensions.
+#modified again 12/03/23 to report scores as scores rather than with all the extra baggage
 "fa.extension" <-
   function(Roe,fo,correct=TRUE) {
  cl <- match.call()
@@ -55,12 +56,13 @@ if(!is.null(Phi)) {resid <- Roe - fl %*% Phi %*% t(fe)} else {resid <- Roe - fl 
 
 
 "fa.extend" <- 
-function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,smooth=TRUE, ...) {
+function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotate="oblimin",SMC=TRUE,warnings=TRUE, fm="minres",alpha=.1, omega=FALSE,cor="cor",use="pairwise",cor.correct=.5,weight=NULL,missing=FALSE,smooth=TRUE, ...) {
  cl <- match.call()
  if(is.numeric(ev)) ev  <- colnames(r)[ev]    #in case we are selecting variables 
  if(is.numeric(ov)) ov  <- colnames(r)[ov]
   nv <- c(ov,ev)
- if(nrow(r) > ncol(r)){  #the case of a data matrix
+ #if(nrow(r) > ncol(r)){  #the case of a data matrix
+ if(!isCorrelation(r)){
      #first find the correlations
       n.obs <- nrow(r)
          np.obs.r <- pairwiseCount(r)[nv,nv]
@@ -82,7 +84,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
        )
        
  if(omega) {fo <- omega(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,alpha=alpha,...)} else {
-       fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,smooth=smooth,...)}
+       fo <- fa(r[ov,ov],nfactors=nfactors,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha, missing=missing,impute="mean", smooth=smooth,...)}
      
            
     } else {  #the case of a correlation matrix  
@@ -90,7 +92,7 @@ function(r,nfactors=1,ov=NULL,ev=NULL,n.obs = NA, np.obs=NULL,correct=TRUE,rotat
        R <- r[ov,ov]
        np.obs.r <- np.obs
       if(omega) {fo <- omega(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor,alpha=alpha,np.obs=np.obs[ov,ov],...)} else { 
-      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor, correct=correct,alpha=alpha,np.obs=np.obs[ov,ov],smooth=smooth,...)}
+      fo <- fa(R,nfactors=nfactors,n.obs=n.obs,rotate=rotate,SMC=SMC,warnings=warnings,fm=fm,cor=cor, correct=correct,alpha=alpha,np.obs=np.obs[ov,ov],missing=missing,impute="mean",smooth=smooth,...)}
      }
 Roe <- r[ov,ev,drop=FALSE]
 fe <- fa.extension(Roe,fo,correct=correct)
@@ -110,7 +112,7 @@ if(omega) result$schmid$sl <- foe
     result$fm <- fm  #remember what kind of analysis we did
     
     result$fo=fo
-    if(!is.null(data)) result$scores <- factor.scores(data[,ov],fo)
+    if(!is.null(data)) result$scores <- factor.scores(data[,ov],fo,missing=missing,impute="mean")$scores
     if(omega) {result$schmid$sl <- foe
               result$schmid$gloading <- fo$schmid$gloading
               result$schmid$oblique <- oblique

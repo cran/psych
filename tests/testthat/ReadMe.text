@@ -1,0 +1,17 @@
+#Read me for psych tests
+
+#Developed October, 2023 following help and request from Coen Bernard
+
+Some tests are based upon published models
+
+e.g. test_ICC tests matches with Shrout and Fleiss
+omega creates data to match Jensen and Weng, and then factors the resulting data 
+
+see https://www.r-bloggers.com/2019/11/automated-testing-with-testthat-in-practice/ for help
+
+dn <- "/Users/WR/Library/CloudStorage/Dropbox/psych/tests/testthat"
+test_dir(dn)
+
+fn <- "/Users/WR/Library/CloudStorage/Dropbox/psych/tests/testthat/test_splitHalf.r"
+test_file(fn)
+

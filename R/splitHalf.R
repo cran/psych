@@ -17,7 +17,7 @@ Rab <- R[1,2]/sqrt(R[1,1]*R[2,2])
 rab <- 4*R[1,2]/sum(R)
 result <- list(rab=rab,AB=AB)}
 
-#if(!is.null(key)) {r <- r[,selectFromKeys(key)]}
+#if(!is.null(key)) {r <- r[,selectFromKeys(key)]}  #made this acgain 12/23/23
 v.names <- colnames(r)
 keys <- key   
 maxrb <- -9999
@@ -72,8 +72,8 @@ sumr <- 0
 x <- seq_len(n)
 a <- seq_len(m)
 #count <- as.integer(round(choose(n, m)))/2 #doesn't work for very large values of n.
-count <- round(choose(n, m))/2
-
+#count <- round(choose(n, m))/2
+count <- round(choose(n, m))  #do all splits because there is a problem with odd values    10/21/23
 if(brute || ((count <= n.sample))) {    #brute force -- try all combinations
 brute <- TRUE 
  if(raw) result <- rep(NA,count)  #keep the results if raw

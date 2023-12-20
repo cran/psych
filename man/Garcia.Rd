@@ -44,8 +44,8 @@ Hayes, Andrew F. (2013)  Introduction to mediation, moderation, and conditional 
 data(GSBE)  #alias to Garcia data set
 
 ## Just do regressions with interactions
-setCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (mean centered )")
-setCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (don't center)", zero=FALSE)
+lmCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (mean centered )")
+lmCor(respappr ~ prot2 * sexism,std=FALSE,data=Garcia,main="Moderated (don't center)", zero=FALSE)
 #demonstrate interaction plots
 plot(respappr ~ sexism, pch = 23- protest, bg = c("black","red", "blue")[protest], 
 data=Garcia, main = "Response to sexism varies as type of protest")

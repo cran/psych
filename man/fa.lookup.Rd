@@ -5,7 +5,7 @@
 \alias{item.lookup}
 \alias{keys.lookup}
 \alias{lookupFromKeys}
-\alias{setCorLookup}
+\alias{lmCorLookup}
 \title{A set of functions for factorial and empirical scale construction} 
 
 \description{ When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items) , or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading or criteria correlations and display the item content. 
@@ -18,7 +18,7 @@ item.lookup(f,m, dictionary,cut=.3, digits = 2)
 keys.lookup(keys.list,dictionary)
 lookupFromKeys(keys.list,dictionary,n=20,cors=NULL,sort=TRUE,suppress.names=FALSE,
       digits=2)
-setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05) 
+lmCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05) 
 }
 \arguments{
 \item{x}{A data matrix or data frame depending upon the function.}
@@ -36,7 +36,7 @@ setCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{digits}{round to digits}
 \item{sort}{Should the factors be sorted first?}
 \item{suppress.names}{In lookupFromKeys, should we suppress the column labels}
-\item{p}{Show setCor regressions with probability < p}
+\item{p}{Show lmCor regressions with probability < p}
   
 }
 \details{

@@ -1,7 +1,7 @@
 \name{biplot.psych}
 \alias{biplot.psych}
 \title{Draw biplots of factor or component scores by factor or component loadings}
-\description{Extends the biplot function to the output of \code{\link{fa}}, \code{\link{fa.poly}}  or \code{\link{principal}}. Will plot factor scores and factor loadings in the same graph.  If the number of factors > 2, then all pairs of factors are plotted. Factor score histograms are plotted on the diagonal. The input is the resulting object from \code{\link{fa}}, \code{\link{principal}}, or \}{code\{link{fa.poly}} with the scores=TRUE option. Points may be colored according to other criteria.
+\description{Extends the biplot function to the output of \code{\link{fa}}, \code{\link{fa.poly}}  or \code{\link{principal}}. Will plot factor scores and factor loadings in the same graph.  If the number of factors > 2, then all pairs of factors are plotted. Factor score histograms are plotted on the diagonal. The input is the resulting object from \code{\link{fa}}, \code{\link{principal}}, or \code{\link{fa.poly}} with the scores=TRUE option. Points may be colored according to other criteria.
 }
 \usage{
 \method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",

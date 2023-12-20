@@ -32,10 +32,24 @@ function(R,digits=2,minlength=5) {
 	invisible(R[lower.tri(R,diag=FALSE)])}
 	
 "lowerCor" <- 
-function(x,digits=2,use="pairwise",method="pearson",minlength=5,show=TRUE) {
+function(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE) {
 nvar <- NCOL(x)
 x <- char2numeric(x)    #added 1/2/21
-   R <- cor(x,use=use,method=method)
+if(cor %in% c("tetrachoric","tetra","binary")) cor<- "tetrachoric"
+if(cor %in% c("polychoric","poly")) cor<- "polychoric"
+switch(cor, cor = {
+            R <- cor(x, use = use, method = method)
+        }, tetrachoric = {
+            R <- tetrachoric(x)$rho
+        }, polychoric = {
+            R <- polychoric(x)$rho
+        }, cov = {
+            R <- cov(x, use = use)
+        }, mixed = {
+            R <- mixedCor(x)$rho
+        })
+
+  # R <- cor(x,use=use,method=method)
    if(show) lowerMat(R,digits,minlength=minlength)
    invisible(R)
    }
@@ -473,7 +487,7 @@ function (f,m, dictionary,cut=.3, digits = 2) {
     return(res)
 }
 
-setCorLookup<- function(x,dictionary=NULL,cut=0,digits=2,p=.05) {
+lmCorLookup <- setCorLookup <- function(x,dictionary=NULL,cut=0,digits=2,p=.05) {
 coef <- x$coefficients
 probs <- x$Probability
 labels <- dictionary[rownames(coef),,drop=FALSE]
@@ -585,17 +599,35 @@ text(x,y-2,"Unreliable but Valid")
 
 #finally added the char2numeric so it will not choke on character variables   1/3/21
 
-"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson") {
+#added the cor option 11/18/23
+"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor") {
 multi <- FALSE
 if(is.list(x) && is.null(y)) {multi <- TRUE
  n <- length(x)
 xi <- x[[1]]
  for (i in 2:n) {xi <- cbind(xi,x[[i]])}
-  
-R <- cor(xi,use=use,method=method) }else {
+
+switch(cor,
+cor= {R <- cor(xi,use=use,method=method) },
+tetrachoric = {R <- tetrachoric(xi)$rho},
+polychoric= {R <- polychoric(xi)$rho},
+cov = {R <- cov(xi, use=use)},
+mixed = {R <- mixedCor(xi)$rho}
+)
+}else {
 x <- char2numeric(x)
 y <- char2numeric(y)
-R <- cor(x,y,use=use,method=method)}
+
+switch(cor,
+
+cor= {R <- cor(x,y,use=use,method=method)},
+tetrachoric = {R <- tetrachoric(x,y)$rho},
+polychoric= {R <- polychoric(x,y)$rho},
+cov = {R <- cov(x,y, use=use)},
+mixed = {R <- mixedCor(cbind(x,y))$rho}
+
+)
+}
 if(multi) {lowerMat(R,digits) } else {print(round(R,digits))}
 invisible(R)}
 

@@ -2,32 +2,33 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.3.8 (2023-08-18)}{ 
+\section{Changes in psych version 2.4.1 (2023-12-21)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.3.9 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.3.6  (Added June 21, 2023). The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.4.1 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.3.12  (Added December  21, 2023). The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).  
        
   }   
  }
  }
  
- \section{To do version 2.3.7}{
+ \section{To do version 2.4.1}{
     \itemize{
       \item Suggestions are welcome, but the current list includes the following (and has included for a long time, so lets be patient):
+   
       \item Add confirmatory clustering to ICLUST
       \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
      
       \item Add the ability to create multiple groups in sim.irt functions
-      \item Find canonical loadings in lmCor     
+     
       \item Add omega factor extension figure option (requested by Sylia Wilson)     
      \item Add option to do subject density and item density plot to IRT plot.
       \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
-      \item add the ability to add labels to lavaan.diagram
+      \item add the ability to add labels to lavaan.diagram -- in some sense, this is already there in lavaan.  
       
  
      \item To help those who want to simulate a bifactor model, make it explicit.  
@@ -38,7 +39,7 @@
      \item Add an analysis of DIF to the irt functions  (requested by David Condon)
      \item Add some power functions.
      
-     \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman
+     \item Add CIs for means and skews as an option (for describe as well as describeBy)  Requested by Aaron Wichman -- but I already report se so that ci for mean is trivial for user to find.
     
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
      
@@ -63,7 +64,8 @@
       \item Add an option for the correlation type in bestScales (requested by Lorien Elleman).
        \item Change help file examples so they are cleaner for people who example(fn)
     \item Make the main functions more "tidy" in terms of their output
-    \item Add testthat functionality
+    \item Add testthat functionality   -finally started 10/15/23
+    
     \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.  Partially done (not yet for spider)
   
      \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
@@ -89,7 +91,7 @@
 \subsection{Still to do}{
   \itemize{
   
-  \item Change examples to dontrun rather than commented out 
+  \item Change examples to dontrun rather than commented out ## mostly done
  
    \item Need to fix bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
   \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn). Partly done in omega, but there are problems associated with the entire problem of factor scores. 
@@ -98,11 +100,10 @@
    
     \item Add weight option to statsBy (but the question is how to handle missing data)
    
-    \item Modify lavaan.diagram so that it handles cfa output better
+   
    
     \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
    
-    \item Give model fit in lmCor?  -- what would this be?
   
      \item Improve documentation for thurstone.  Would help if we had an example of scaling.
       \item scoreIrt.2pl needs to be able to adjust for group differences correctly
@@ -134,7 +135,36 @@
   }
  } 
  
- \section{Changes in psych version 2.3.9 (2023-09-10)}{ 
+  \section{Changes in psych version 2.3.12 (2023-12-12}{ 
+   \subsection{Additions}{
+          \itemize{
+          \item Started adding test.that calls to various functions (requested by Coen Bernards)  Slow but useful progress.
+          \item Seriously improved lavaan.diagram (and diagram) to be able to draw SEM diagrams correctly. 
+           \item Modify lavaan.diagram so that it handles cfa output better   (done)
+          \item The sim function was modified to allow for items as an option.  This matches the parameters in sim.structure.  
+          \item Changed the splitHalf function to do all comparisons, not just 1/2 (This was leading to a problem with small and odd nvar.) Discovered by Eunseong Cho.
+          \item Added the ability to specify type of correlation to cor2 and lowerCor
+          \item Renamed  corr.test to corTest 
+         \item Modified fa.extend so that it reports factor scores in a more reasonable manner.
+         \item Added part correlation (aka semi.partial) as an option to partial.r.
+         \item Added a discrete option to alpha to not complain about lots of categories.
+        \item Finally added the X and Y loadings for the canonical correlations in lmCor.
+         \item Added cancorDiagram to draw these canonical correlations.
+        \item Added canonical coeffiecients to lmCor  (done 12/12/23)
+         \item Find canonical loadings in lmCor - done 12/12/23    
+          }
+          }
+  \subsection{Bugs Fixed}{
+      \itemize{
+      \item Fixed reliability to find omega_h for 3 variables by defaulting to 1 factor
+      \item Fixed sim.structure so that it would treat low and high option correctly again.  (Reported by  Kubra Atalay Kabasakal). This option seems to have been dropped by accident in 2021.
+      \item The call in diagram to call lavaan.diagram now works (reported by Zhang Yaohua)
+      \item Fixed predict.psych for the lm case to allow correct prediction of unstandardized data
+       }
+       }
+}
+ 
+ \section{Changes in psych version 2.3.9 (2023-09-22)}{ 
    \subsection{Additions}{
           \itemize{
           \item Added the n.obs parameter to corPlot to allow showing stars for correlation matrices

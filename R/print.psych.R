@@ -888,7 +888,7 @@ scoreBy = { cat("Call: ")
    cat("\n To see the correlations as a matrix, examine the cor.mat object ")
     },
 
-setCor= { cat("Call: ")
+lmCor= { cat("Call: ")
                           print(x$Call)
             if(x$raw) {cat("\nMultiple Regression from raw data \n")} else {
             cat("\nMultiple Regression from matrix input \n")}

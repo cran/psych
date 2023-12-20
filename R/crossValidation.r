@@ -1,12 +1,12 @@
 "crossValidation" <- function(model,data, options=NULL,select=NULL) {
  cl <- match.call()
-obnames <- cs(setCor,bestScales )
+obnames <- cs(lmCor,bestScales )
      value <- inherits(model, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
 
 
 switch(value, 
-setCor = {wt <- model$coefficients
+lmCor = {wt <- model$coefficients
     if(rownames(wt)[1] =="(Intercept)") wt <- wt[-1,,drop=FALSE] },
     
 bestScales ={#the default
@@ -32,7 +32,7 @@ if(is.null(options)){options <- "best.keys"}
 
    }, 
     
- none = {wt<- model} #from setCor
+ none = {wt<- model} #from lmCof
     )
     
    nvar <- nrow(wt)
@@ -136,7 +136,7 @@ matPlot <- function(x, type = "b", minlength=6, xlas=0,legend=NULL,lab=NULL,pch=
  n.obs <- NROW(data)
  for (i in 1:n.iter) {ss <-  sample(n.obs,n.obs,replace=TRUE)  #the bootstrap sample
    if(!is.null(orig.y)) {y <- orig.y}
-     model <- setCor(y=y,x=x,data=data[ss,],  plot=FALSE)
+     model <- lmCor(y=y,x=x,data=data[ss,],  plot=FALSE)
      if(!is.null(z)) {
      
          rownames(model$coefficients) <- gsub("\\*","",rownames(model$coefficients))

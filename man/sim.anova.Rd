@@ -56,21 +56,29 @@ To demonstrate the effect of centered versus non-centering, make factors = cente
 }
 \examples{
 set.seed(42)
-data.df <- sim.anova(es1=1,es2=.5,es13=1)  # one main effect and one interaction
-describe(data.df)
+data.df <- sim.anova(es1=1,es2=-.5,es13=1)  # two main effect and one interaction
+psych::describe(data.df)
 pairs.panels(data.df)   #show how the design variables are orthogonal
 #
+data.df <- char2numeric(data.df,flag=FALSE)
+
 summary(lm(DV~IV1*IV2*IV3,data=data.df))
+
 summary(aov(DV~IV1*IV2*IV3,data=data.df))
+lmCor(DV~IV1*IV2*IV3,data=data.df, std=FALSE)
 set.seed(42)
  #demonstrate the effect of not centering the data on the regression
 data.df <- sim.anova(es1=1,es2=.5,es13=1,center=FALSE)  #
-describe(data.df)
+psych::describe(data.df)
 #
 #this one is incorrect, because the IVs are not centered
+data.df <- char2numeric(data.df,flag=FALSE)
 summary(lm(DV~IV1*IV2*IV3,data=data.df)) 
+data.df <- char2numeric(data.df,flag=FALSE)
 
 summary(aov(DV~IV1*IV2*IV3,data=data.df)) #compare with the lm model
+#but lmCor by default zero centers which works
+lmCor(DV~IV1*IV2*IV3,data=data.df)
 #now examine multiple levels and quadratic terms
 set.seed(42)
 data.df <- sim.anova(es1=1,es13=1,n2=3,n3=4,es22=1)

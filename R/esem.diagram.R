@@ -1,9 +1,12 @@
 #adapted from my structure.diagram function to draw the output from esem
 #August 4, 2016
+"esemDiagram" <- 
 "esem.diagram" <-
 function(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,lr=TRUE,
   digits=1,e.size=.1,adj=2,main="Exploratory Structural Model", ...){
 
+cancor <- FALSE
+ 
 #a helper function
  sort.f <- function(x) {
    nvar <- ncol(x)
@@ -19,6 +22,13 @@ function(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,regression=FALSE,
 
 #first some default values
 
+if(length(class(esem)) > 1)  {
+    names <- cs(lm, lavaan,fa,principal, esem,mediate, lmCor, setCor, fa.multi,lm)
+    value <- inherits(esem,names,which=TRUE)  # value <- class(x)[2]
+    if(any(value > 0) ) { value <- names[which(value > 0)]} else {value <- "other"}
+ if(value=="lmCor" ) {cancor<- TRUE}   else {cancor<- FALSE} 
+ }
+ 
  xmodel <- sort.f(esem$loadsX)
  ymodel <- sort.f(esem$loadsY)
  Phi       <-  esem$Phi
@@ -113,8 +123,9 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
    	
      		for (v in 1:num.xvar)  {
      		    if(is.numeric(factors[v,f])) {
-     		    if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { if (!regression) {if(lr){dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1),adj=f %% adj +1) 
-    			} else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1)) 
+     		    if(simple && (abs(factors[v,f]) == max(abs(factors[v,])) )  && (abs(factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) { 
+     		             if (!regression) {if(lr){dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1),adj=f %% adj +1) 
+    			             } else {dia.arrow(from=fact.rect[[f]],to=var.rect[[v]]$top,labels =factors[v,f],col=((sign(factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1)) 
     			}
     		} else {dia.arrow(to=fact.rect[[f]]$left,from=var.rect[[v]]$right,labels =factors[v,f],col=((sign(factors[v,f])<0) +1))} }
                                     }  else {
@@ -185,12 +196,12 @@ if(lr) {plot(0,type="n",xlim=limx,ylim=limy,frame.plot=FALSE,axes=FALSE,ylab="",
    		  
      		for (v in 1:num.yvar) {if(is.numeric(y.factors[v,f])) {
      		{if(simple && (abs(y.factors[v,f]) == max(abs(y.factors[v,])) )  && (abs(y.factors[v,f]) > cut) | (!simple && (abs(factors[v,f]) > cut))) {
-     		     if(lr) { dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1),adj = f %% adj +1)} else {
-     		               dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1))}
+     		     if(lr) { dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1),adj = f %% adj +1)} else {
+     		               dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],col=((sign(y.factors[v,f])<0) +1),lty=((sign(factors[v,f])<0) +1))}
      		     }
                                     }
-                   } else {if(factors[v,f] !="0")  {if(lr) {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f]) } else {
-                                                            dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f])
+                   } else {if(factors[v,f] !="0")  {if(lr) {dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$left,labels =y.factors[v,f] ,lty=((sign(factors[v,f])<0) +1))} else {
+                                                            dia.arrow(from=fact.rect[[f+num.xfactors]],to=var.rect[[v+num.xvar]]$bottom,labels =y.factors[v,f],lty=((sign(factors[v,f])< 0) +1))
                    }
                    }
              }}
@@ -298,10 +309,12 @@ if(!regression) {
                             }
                             }  #end of correlations within the fx set
       if(!is.null(ymodel)) {
-                  for (i in 1:num.xfactors) { 
+
+    	if(!cancor) {
+                        for (i in 1:num.xfactors) { 
                       for (j in 1:num.yfactors) {
-                      		if((!is.numeric(Phi[j+num.xfactors,i] ) && (Phi[j+num.xfactors,i] !="0"))||  ((is.numeric(Phi[j+num.xfactors,i]) && abs(Phi[j+num.xfactors,i]) > cut ))) {
-                      
+                      	if((!is.numeric(Phi[j+num.xfactors,i] ) && (Phi[j+num.xfactors,i] !="0"))||  ((is.numeric(Phi[j+num.xfactors,i]) && abs(Phi[j+num.xfactors,i]) > cut ))) {
+                           
                        dia.arrow(from=fact.rect[[i]],to=fact.rect[[j+num.xfactors]],Phi[j+num.xfactors,i],adj=i %% adj +1)
                        sem[k,1]  <- paste(fact[i],"->",fact[j+num.xfactors],sep="")
                        lavaan[[num.xfactors +num.yfactors +k]] <- paste(fact[j+num.xfactors], "~", fact[i]) } else {
@@ -310,8 +323,16 @@ if(!regression) {
                        
                         if (is.numeric(Phi[j+num.xfactors,i])) {sem[k,2] <-  paste("rX",i,"Y",j,sep="")} else {sem[k,2] <- Phi[j+num.xfactors,i] } 
                        k <- k + 1 }
-                        } }
-               } }  
+                        }} else {
+                        
+                #we just plot the canoncial correlations which are just between the factors
+                for(i in 1:num.xfactors) {
+                 for (j in 1:num.yfactors) {
+                    if(Phi[j,i] > cut) dia.arrow(to=fact.rect[[i]],from=fact.rect[[j+num.xfactors]],Phi[j,i],both=TRUE)
+                    }} }
+               } } }
+               
+              
      if(num.factors > 0 ) { 
           
      for(f in 1:num.factors) {
@@ -328,3 +349,15 @@ invisible(result) }
    }
    
  
+#use the esemDiagram function to draw a canonical correlation diagram
+ cancorDiagram <- function(fit, cut=.1,digits=2, nfX = NULL, nfY =NULL,simple=FALSE,e.size=.1,main="Canonical Correlation",...) {
+  esem <- list()
+  if(is.null(nfX)) nfX <- NCOL(fit$Xmat )
+  if(is.null(nfY)) nfY <- NCOL(fit$Ymat )
+  esem$loadsX <- fit$Xmat[,1:nfX,drop=FALSE]
+  esem$loadsY <- fit$Ymat[,1:nfY,drop=FALSE]
+  esem$Phi <- diag(fit$cancor)
+  if(is.complex(esem$Phi)) esem$Phi <- Re(esem$Phi)
+  class(esem) <- class(fit)
+  esemDiagram(esem, cut=cut,digits=digits,simple=simple,e.size=e.size, main=main,...) 
+       }

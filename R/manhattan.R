@@ -46,8 +46,8 @@ if(raw) {n.obs <- nrow(x)
      if(!is.null(keys) ) {key.ord <- selectFromKeys(keys)
  num.keys <- length(keys)
  for (i in 1:num.keys) {
- select <- sub("-", "", unlist(keys[i]))
- keys[[i]]<- select}
+ 	select <- sub("-", "", unlist(keys[i]))
+ 	keys[[i]]<- select}
  if(is.null(labels)) {labels <- names(keys)} else {if(labels=="none") {labels =rep("",num.keys)}}
 } else {key.ord <- rownames(x)[1:nvar] }
      } else {  #case 2

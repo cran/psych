@@ -1,5 +1,5 @@
 "partial.r" <-
-function(data,x,y,use="pairwise",method="pearson")  {
+function(data,x,y,use="pairwise",method="pearson",part=FALSE)  {
  cl <- match.call()
  #convert formula input into prior format
  #x are the set from which y is partialled
@@ -13,7 +13,8 @@ if(!missing(x))  { if(inherits(x,"formula")) {
    
    #now put it into old form
    x <- c(y,x)
-   y <- z
+   yy <- y  #we need to keep the name(s) of the dependent variables
+   y <- z   #we partial these from x 
 }
 }
    if(!isCorrelation(data)) {n.obs <- dim(data)[1]
@@ -39,6 +40,9 @@ if(!missing(x))  { if(inherits(x,"formula")) {
        # phi.inv <- solve(phi)
        phi.inv <- Pinv(phi)
         X.resid <- X - Y %*% phi.inv %*% t(Y)
+        
+      
+        if(part) if(length(yy) >1) {diag(X.resid[yy,yy]) <- 1} else {X.resid[yy,yy] <- 1}
         X.resid <- cov2cor(X.resid) 
         class(X.resid)  <- c("psych","partial.r", "matrix") }
        
@@ -50,5 +54,6 @@ if(!missing(x))  { if(inherits(x,"formula")) {
      #modified 07/25/20 to use the Pseudo Inverse so that in cases of improper matrices, we still give a partial
      #modified 06/09/21 to add the matrix class to the object.
      #modified 12/3/21 to add formula input option
+     #modified 12/5/23 to add the ability to do part correlations (suggested by Rick Zinbarg)
      
      

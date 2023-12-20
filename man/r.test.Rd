@@ -89,7 +89,7 @@ One of the beautiful features of R is what works on single value works on vector
 
 By default, the probabilities are reported to 2 decimal places.  This will, of course, sometimes lead to statements such as p < .1  when in fact p < .1001 or even more precisely p < .1000759.  To achieve the higher precision, use a print statement with the preferred number of digits.  See the next to last set of examples (courtesy of Julia Rohrer).
 }
-\seealso{ See also  \code{\link{corr.test}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
+\seealso{ See also  \code{\link{corTest}} which tests all the elements of a  correlation matrix, and \code{\link{cortest.mat}} to compare two matrices of correlations.  r.test  extends the tests in \code{\link{paired.r}},\code{\link{r.con}}}
 \examples{
 
 n <- 30 

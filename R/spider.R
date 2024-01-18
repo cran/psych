@@ -2,8 +2,9 @@
 #added the ability to rotate the entire figure 02/24/20 and to use keys
 #Added label.pos to give better control of the figures
 "radar" <- function(x,labels=NULL,keys=NULL,center=FALSE,connect=FALSE,scale=1,ncolors=31,fill=FALSE,add=FALSE,linetyp="solid", 
-       main="Radar Plot",angle=0,absolute=FALSE,show=TRUE,digits=2,cut=.2,circles=TRUE,shape=FALSE, clockwise=FALSE,delta = NULL,label.pos=NULL,position=NULL,xlim=c(-1,1),ylim=c(-1, 1),
-        ...) {
+       main="Radar Plot",angle=0,absolute=FALSE,show=TRUE,digits=2,cut=.2,circles=TRUE,shape=FALSE, clockwise=FALSE,delta = NULL,label.pos=NULL,
+       position=NULL ,xlim=c(-1,1),ylim=c(-1,1), ...) {
+           #hard coded because something is wrong with call
 nvar <- length(x)
 lty="solid"
  if(!is.null(keys) ) {key.ord <- selectFromKeys(keys)
@@ -35,7 +36,7 @@ if (clockwise) { position <- position[key.ord]
                  
                 }
 
-SEGMENTS <- max(48,nvar)
+SEGMENTS <- max(153,nvar)  #increased from 48 to improve resolution
 if(ncolors < 2) {colors <- FALSE} else {colors <- TRUE}
  angles <- (0:SEGMENTS) * 2 * pi/SEGMENTS
  unit.circle <- cbind(cos(angles), sin(angles))
@@ -69,8 +70,8 @@ if(center) {x0 <- unit.circle[nx,1] * .5
  y1 <- unit.circle[nx,2] 
  Lx <- c(x0,x1)*scaler
  Ly <- c(y0,y1) *scaler
- if(c==1) {	Oldx <- unit.circle[(nvar-1)*SEGMENTS/nvar + 1,1]*(x[nvar]*scale/2 +.5)
- 	        Oldy <- unit.circle[(nvar-1)*SEGMENTS/nvar + 1,2]*(x[nvar]*scale/2+.5)}
+ if(c==1) {	Oldx <- unit.circle[(nvar)*SEGMENTS/nvar + 1,1]*(x[nvar]*scale/2 +.5)   #had been nvar-1  until 01/09/24
+ 	        Oldy <- unit.circle[(nvar)*SEGMENTS/nvar + 1,2]*(x[nvar]*scale/2+.5)}
  
   if(colors) {   
    if(absolute) {
@@ -96,21 +97,32 @@ if(center) {x0 <- unit.circle[nx,1] * .5
     Oldx <- x1*scaler
  	Oldy <- y1* scaler
  
- 
 
-if(!show.keys) { if(position[c] ==0) {pos=NULL} else { pos=position[c]}
+if(!show.keys) { if(position[c] ==0) {pos=NULL} else { pos=position[c]}    #it is not at all clear what I am trying to do here
           text(x1*label.pos[c],y1*label.pos[c],labels[c],pos=pos,...)} 
- if(show.keys) {for(c in 1:num.keys) {
-    nx <- (((c-1 + angle) %% num.keys) +1 )* SEGMENTS/num.keys +1 
+ if(show.keys) {for(cc in 1:length(labels)) {
+    nx <- (((cc-1 + angle) %% num.keys) +1 )* SEGMENTS/num.keys +1 
     x1 <- unit.circle[nx,1]
     y1 <- unit.circle[nx,2] 
-    text(x1*label.pos[nx] ,y1*label.pos[nx],labels[c],...)
+    text(x1*label.pos[nx] ,y1*label.pos[nx],labels[cc],...)
      }
  }
- }
+ }  #end of 1:nvar loop
  }
  
 "spider" <- function(y,x,data,labels=NULL,rescale = FALSE,center=FALSE,connect=TRUE,overlay=FALSE,scale=1,ncolors=31,fill=FALSE,main=NULL,...) {
+  if(inherits(y,"formula")) { #taken from lm  -- allows formula input if desired
+   ps <- fparse(y)
+   y <- ps$y
+   x <- ps$x
+   med <- ps$m #but, mediation is not done here, so we just add this to x
+  # if(!is.null(med)) x <- c(x,med)   #not  necessary, because we automatically put this in
+   prod <- ps$prod
+   z <- ps$z   #do we have any variable to partial out
+   ex <- ps$ex
+}
+     
+
 if(is.null(labels))  labels <- colnames(data)[x]
 if(rescale)  {
   data <- scale(data)/3 }   #rescales to -1 to 1

@@ -6,7 +6,7 @@
 %\VignetteDepends{psych}
 %\documentclass[doc]{apa}
 
-%\VignetteEngine{knitr::knitr}
+%% \VignetteEngine{knitr::knitr}
 %\VignetteEncoding{UTF-8}
 
 \documentclass[11pt]{article}

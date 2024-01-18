@@ -356,8 +356,9 @@ invisible(result) }
   if(is.null(nfY)) nfY <- NCOL(fit$Ymat )
   esem$loadsX <- fit$Xmat[,1:nfX,drop=FALSE]
   esem$loadsY <- fit$Ymat[,1:nfY,drop=FALSE]
+  if(is.complex(fit$cancor)) fit$cancor <- Re(fit$cancor)  #don't work with imaginary roots
   esem$Phi <- diag(fit$cancor)
-  if(is.complex(esem$Phi)) esem$Phi <- Re(esem$Phi)
+ # if(is.complex(esem$Phi)) esem$Phi <- Re(esem$Phi)
   class(esem) <- class(fit)
   esemDiagram(esem, cut=cut,digits=digits,simple=simple,e.size=e.size, main=main,...) 
        }

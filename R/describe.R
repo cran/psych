@@ -1,4 +1,5 @@
 "describeFast" <- function(x) {
+ if(!inherits(x[1], "data.frame")) x <- fix.dplyr(x)    #to get around a problem created by dplyr
 nvar <- NCOL(x)
 nobs <- NROW(x)
 valid <- colSums(!is.na(x))

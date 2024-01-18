@@ -1,6 +1,6 @@
 "scoreOverlap" <-
-function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select=TRUE) { #function to score clusters according to the key matrix, correcting for item overlap
-				
+function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select=TRUE,scores=FALSE,  min=NULL,max=NULL) { #function to score clusters according to the key matrix, correcting for item overlap
+#minor fix on 01/11/24 to handle the case of one key  				
  tol=sqrt(.Machine$double.eps)    #machine accuracy
  cl <- match.call()
  bad <- FALSE
@@ -10,8 +10,9 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
  # select <- sub("-","",unlist(keys))   #added April 7, 2017
       select <- select[!duplicated(select)]
       }  else {select <- 1:ncol(r) } 
-      
- if (!isCorrelation(r,na.rm=TRUE)) {r <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
+ 
+ if (!isCorrelation(r,na.rm=TRUE)) {if(scores) {items <- r[,select]} else {items <- NULL}  #save the data for scoring
+ r  <- cor(r[,select],use="pairwise")} else {r <- r[select,select]}
  keys <- make.keys(r,keys)}  #added 9/9/16    (and then modified March 4, 2017
  if(!is.matrix(keys)) keys <- as.matrix(keys)  #keys are sometimes a data frame - must be a matrix
  if ((dim(r)[1] != dim(r)[2]) ) {r <- cor(r,use="pairwise")}
@@ -103,33 +104,81 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
          item.cov <- t(apply(keys,2,function(x) colMeans(r*x,na.rm=TRUE)) *NROW(keys))  #some correlations are NA
          }
 
+ 
  if(n.keys > 1) {
     item.cor <-   sqrt(diag(1/(key.lambda6*scale.var))) %*% (item.cov)  # %*% diag(1/sqrt(item.var))
     rownames(item.cor) <- colnames(keys)
+     colnames(item.cor) <- colnames(r)
     } else {
-      item.cor <- r %*% keys /sqrt(key.lambda6*scale.var) }
-   colnames(item.cor) <- colnames(r)
-   item.cor <- t(item.cor)
+        item.cor <- r %*% keys /sqrt(key.lambda6*scale.var) }
+    
+     item.cor <- t(item.cor)
    names(med.r) <- colnames(keys)
 
 
 #find the Multi-Item Multi Trait item x scale correlations
+#this only makes sense if n.keys > 1
+
  MIMT <- matrix(NA,n.keys,n.keys)
  for (i in 1:(n.keys)) {
     temp <- keys[,i][abs(keys[,i]) > 0]
-    flip.item <- temp * item.cor[names(temp),]
-   if(length(names(temp)) > 1) { MIMT[i,] <- colMeans(flip.item[names(temp),])} else {MIMT[i,] <- flip.item}
+   if(n.keys > 1){ flip.item <- temp * item.cor[names(temp),,drop=FALSE]} else {flip.item <- temp * item.cor[names(temp)]}
+   if(length(names(temp)) > 1) { if(n.keys >1) {MIMT[i,] <- colMeans(item.cor[names(temp),])}} else {MIMT[i,] <- flip.item}
     }
   colnames(MIMT) <- rownames(MIMT) <- colnames(keys)
  
  good <- scale_quality(adj.r,item.cor,key.list)
  names(good) <- names(key.list)
- 
+
+
+if(scores) {
+      abskeys <- abs(keys)
+    num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
+    num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
+    n.subjects <- dim(items)[1]
+     item.means <- colMeans(items,na.rm=TRUE)
+    if (is.null(min)) {min <- min(items,na.rm=TRUE)}
+    if (is.null(max)) {max <- max(items,na.rm=TRUE)}
+if(impute !="none") {
+        miss <- which(is.na(items),arr.ind=TRUE)
+        if(impute=="mean") {
+       		item.means <- colMeans(items,na.rm=TRUE)   #replace missing values with means
+       		items[miss]<- item.means[miss[,2]]} else { 
+       		item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
+        	items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
+        	 scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
+        	C <- cov(items,use="pairwise")
+          cov.scales  <- cov(scores,use="pairwise")    #and total scale variance
+          cov.scales2 <- diag(t(abskeys) %*% C^2 %*% abskeys)   # sum(C^2)  for finding ase
+        }  else { #handle the case of missing data without imputation
+           scores <- matrix(NaN,ncol=n.keys,nrow=n.subjects)
+          
+           #we could try to parallelize this next loop
+           for (scale in 1:n.keys) {
+           	pos.item <- items[,which(keys[,scale] > 0)]
+          	neg.item <- items[,which(keys[,scale] < 0)]
+          	 neg.item <- max + min - neg.item
+           	sub.item <- cbind(pos.item,neg.item)
+           	scores[,scale] <- rowMeans(sub.item,na.rm=TRUE)
+          	 rs <- rowSums(!is.na(sub.item))
+          	
+           num.ob.item[scale] <- mean(rs[rs>0])  #added Sept 15, 2011
+          # num.ob.item[scale] <- mean(rowSums(!is.na(sub.item))) # dropped 
+           		} # end of scale loop
+       	
+           # we now need to treat the data as if we had done correlations at input
+		}
+		
+		colnames(scores)<- names(key.list)
+}  #end of if scores loop
+
+
  if (correct) {cluster.corrected <- correct.cor(adj.r,t(key.alpha))
- result <- list(cor=adj.r,sd=sqrt(var),corrected= cluster.corrected,alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,med.r=med.r,quality=good,MIMS=MIMS,MIMT=MIMT,Call=cl)
+ result <- list(cor=adj.r,sd=sqrt(var),corrected= cluster.corrected,alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6, item.cor=item.cor, med.r=med.r,quality=good,  MIMS=MIMS,MIMT=MIMT,scores=scores,Call=cl)
  }  #correct for attenuation
  else {
-result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha,av.r = key.av.r,size=key.var,sn=sn,G6 =key.lambda6,item.cor=item.cor,med.r=med.r,Call=cl)}
+result <- list(cor=adj.r,sd=sqrt(var),alpha=key.alpha, av.r = key.av.r,
+	size=key.var,sn=sn,G6 =key.lambda6, item.cor=item.cor, med.r=med.r, scores=scores,   Call=cl)}
  class(result) <- c ("psych", "overlap")
  return(result)}
  #modified 01/11/15 to find r if not a square matrix

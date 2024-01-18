@@ -1,4 +1,4 @@
-#last modified March, 2019  by William Revelle 
+#last modified January, 2024 by William Revelle 
 #added the various imports from stats, graphics, etc.
 importFrom(mnormt,rmnorm,sadmvn,dmnorm)
 importFrom(parallel,mclapply,mcmapply)
@@ -255,6 +255,7 @@ irt.tau,
 item.dichot,
 item.sim,
 item.lookup,
+itemSort,
 item.validity,
 #irt2latex,
 isCorrelation,

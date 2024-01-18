@@ -1,4 +1,4 @@
-#developed July 4, 2012
+c#developed July 4, 2012
 #modified July 9, 2014 to allow polychorics within groups
 #modified June 2, 2015 to include covariance, pearson, spearman, poly ,etc. in correlations
 #Fixed March 3, 2017 to not weight empty cells in finding ICCs
@@ -7,6 +7,9 @@
 #corrected January 1, 2019 to allow for grouping variables that are characters
 #March, 2020 Added the ability to weight groups with external weights 
 #Jan 2022, Added the nWg object to count cell sizes within groups 
+#Dec 2023  Added the within group slope object as output
+#Dec 2023  Added the ability to specify the min.n (minimum group size)
+#Jan 2024 Added the check for being a tibble 	
 "statsBy" <-
    function (data,
             group,
@@ -18,18 +21,22 @@
              na.rm=TRUE,
              alpha=.05,
              minlength=5,
-             weights=NULL) { #  
+             weights=NULL,
+             min.n= 1) { #  min size added 12/29/23
  cl <- match.call()
     
 valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
     }
+valid1 <- function(x) { #count the number of valid cases 
+        sum(!is.na(x[,1,drop=FALSE] ) ) }
     
 #define a function to count pairwise observations
  pairwise <- function(x) {n <- t(!is.na(x)) %*% (!is.na(x))
               n}
               
 #get the grouping information
+if(inherits(data[1], "data.frame",which=TRUE) >1) data <- fix.dplyr(data)    #to get around a problem created by dplyr  (being a tibble)
 
 if(length(group) < NROW(data) ){   #added 01/01/19 to handle the case of non-numeric grouping data
 if(is.character(group) ) {
@@ -38,17 +45,23 @@ gr <- which(colnames(data) %in% group) } else {gr <- group}
     group <- "group"
     gr <- which(colnames(data) %in% group)}   
 z1 <- data[,group]
-       z <- z1
+     z <- z1
        cnames <- colnames(data)
        for (i in 1:ncol(data)) {if(is.factor(data[,i]) || is.logical(data[,i]) ) {
              data[,i] <- as.numeric(data[,i])}
              if (is.character(data[,i])) data[,i] <- as.numeric(as.factor(data[,i])) 
             # colnames(data)[i] <- paste(cnames[i],"*",sep="")
              }
-             
-             
+                    
        xvals <- list()
+    
+   
        #find the statistics by group
+               tempcount<- by(data,z,valid1)   #this identifies the number of cases per z
+              if(NCOL(tempcount)==1) {tempz <- tempcount[tempcount >= min.n] #but works only for one criteria
+               tt <- z1 %in% names(tempz)
+               data <- data[tt,]
+               z <- z[tt]}
                temp <- by(data,z,colMeans,na.rm=na.rm)
                rowname <- dimnames(temp)[[1]]
                if(length(dimnames(temp))> 1){            #if we have multiple criteria, we need to name them
@@ -59,6 +72,9 @@ z1 <- data[,group]
                rownn <- lapply(temp,is.null)     #drop rows without values
                if(sum(as.integer(rownn)) > 0) {
               	 rowname <-  rowname[-which(rownn==TRUE)] }  # look for missing criteria           
+               
+              
+               
                xvals$mean <- t(matrix(unlist(temp),nrow=ncol(data)))              
                xvals$sd <-t(matrix(unlist(by(data,z,function(x) sapply(x,sd,na.rm=na.rm))),nrow=ncol(data)))
                xvals$n <- t(matrix(unlist(by(data,z,function(x) sapply(x,valid))),nrow=ncol(data)))
@@ -108,19 +124,21 @@ z1 <- data[,group]
                
       #added 02/06/15
        if(cors) {if (poly) {cor <- "poly"}
+       			 
+
        switch(cor, 
        cor = {r <- by(data,z,function(x) cor(x[-gr],use=use,method=method))},
-       cov = {r <- by(data,z,function(x) cov(x[-gr],use=use))
+      	cov = {r <- by(data,z,function(x) cov(x[-gr],use=use))
               covar <- TRUE},
        tet = {r <- by(data,z,function(x) tetrachoric(x[-gr])$rho)},
        poly = {r <- by(data,z,function(x) polychoric(x[-gr])$rho)},
        mixed = {r <- by(data,z,function(x) mixedCor(x[-gr])$rho)}
        )         
 
+
              nWg <- by(data,z,function(x) pairwise(x[-gr]))   #drop the group 
               nvars <-  ncol(r[[1]])
-              
-              
+
               xvals$r <- r   #store them as square matrices
            
               length.r <- length(r)
@@ -201,8 +219,9 @@ z1 <- data[,group]
             switch(cor, 
       			 cor = {xvals$rwg  <- cor(diffs,use=use,method=method)},
       			 cov = {xvals$rwg  <- cov(diffs,use=use) 
-              covar <- TRUE}
-       )
+              			covar <- TRUE
+             			 }
+       				) #end of switch
        
                xvals$nw <- pairwise(diffs)
                rwg <- cov2cor(xvals$rwg)
@@ -221,8 +240,13 @@ z1 <- data[,group]
             xvals$nWg <- nWg   #this is the pairwise number of subjects
             xvals$nwg <- N - nG  #why do we report this?  Am I making a mistake
             xvals$nG <- nG  #number of groups
-            
-            xvals$Call <- cl
+            if(!is.null(xvals$r)) {xvals$slope <- lapply(xvals$r, function(x) x/diag(x))
+            ncors <- NCOL(xvals$r[[1]]) * (NCOL(xvals$r[[1]])-1)/2 
+           
+             xvals$slope <- matrix(unlist(lapply(xvals$slope, function(x) x[lower.tri(x), drop=FALSE])),byrow=TRUE,ncol=ncors)
+             colnames(xvals$slope) <- colnames(xvals$within) } else {
+             xvals$slope <- NULL}          
+             xvals$Call <- cl
     statsBy <- xvals
     class(statsBy) <- c("psych","statsBy")
     return(statsBy)

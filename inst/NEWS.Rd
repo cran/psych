@@ -2,21 +2,21 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.4.1 (2023-12-21)}{ 
+\section{Changes in psych version 2.4.1 (2024-01-15)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.4.1 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.3.12  (Added December  21, 2023). The second digit reflects the year (i.e., 2023), the third set the month (i.e., 2.2.5 was released in May of 2022) the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).  
+      \item Version 2.4.2 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.1 (Added January 15, 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
        
   }   
  }
  }
  
- \section{To do version 2.4.1}{
+ \section{Still to do version 2.4.1 (e.g., a wish list)}{
     \itemize{
       \item Suggestions are welcome, but the current list includes the following (and has included for a long time, so lets be patient):
    
@@ -64,7 +64,7 @@
       \item Add an option for the correlation type in bestScales (requested by Lorien Elleman).
        \item Change help file examples so they are cleaner for people who example(fn)
     \item Make the main functions more "tidy" in terms of their output
-    \item Add testthat functionality   -finally started 10/15/23
+    \item Add testthat functionality   - finally started 10/15/23  Making slow progress
     
     \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.  Partially done (not yet for spider)
   
@@ -73,7 +73,7 @@
   
    \item Add an n.iter option to pca (requested by Michael Wood, but I am not sure why) 
    \item There is a bug in bestItems for the case of no iterations and dictionary = something
-   \item Fix bug in fa.lookup for omega g values that are negative
+   \item Fix bug in fa.lookup for omega g values that are negative (but when does this happen?)
    \item Fix bug in bestScales that does not report items if not iterating
    \item Adjust stats in fa.extend to report the raw and then the extended values
    \item Improve documentation for extension diagram to clarify that it works with fa.results
@@ -83,7 +83,8 @@
    \item Pretty up the output from mediate (perhaps make a mediate2latex function)
 
    \item Improve the print function for bassAckwards
-   	
+   \item Speed up fa.parallel for large number of variables (requested by Matt Zefferman)
+   	\item Add df2word to parallel df2latex for those poor people who need to use proprietary word processors to submit journal articles. 
 
       } 
       
@@ -93,7 +94,7 @@
   
   \item Change examples to dontrun rather than commented out ## mostly done
  
-   \item Need to fix bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
+  
   \item Add the ability to get factor scores for higher order factors (requested by Brandon Vaughn). Partly done in omega, but there are problems associated with the entire problem of factor scores. 
  
    \item Fix a bug in alpha when finding average R  (need to use cor rather than cov2cor when treating missing data)
@@ -133,7 +134,26 @@
 \item allow omega style hierarchical structure for x (and y) in esem     
       }
   }
- } 
+ 
+ 
+ \subsection{Additions}{
+          \itemize{
+          \item Added the score option to scoreOverlap so that if given raw data, it will find the scale scores as well as the corrected for overlap statistics.  Note that the scale scores are not corrected for overlap. 
+          \item Minor tweaks to scoreIrt.2pl to check for bad data (missing cells ).  This was leading to the function hanging forever in the case of pairwise counts of 0.
+          \item Added fix.dlpyr (as a local function) to statsBy and describeBy to not choke on Tibbles. Had added this to alpha several years ago.
+          \item Added itemSort to combine item means and item content and then sort them.
+           
+          
+          }}
+          
+          \subsection{Bugs fixed}{
+          \itemize{
+           \item changed the number of elements in the unit.Circle in spider/radar to get more precision
+             \item Added a conversion to numeric in mediate to get around a problem with variables that are factors. (Problem reported by Lynn Bueeler )
+              \item Finally fixed  bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
+            \item  Fixed item.lookup so that it will report item means as well as factor loadings.
+           }}
+           }
  
   \section{Changes in psych version 2.3.12 (2023-12-12}{ 
    \subsection{Additions}{

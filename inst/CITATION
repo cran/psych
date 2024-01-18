@@ -4,7 +4,7 @@
     author = person("William Revelle"),
     organization = "Northwestern University",
     address = "Evanston, Illinois",
-    year = 2023,
-    note = "R package version 2.3.12",
+    year = 2024,
+    note = "R package version 2.4.1",
     url = "https://CRAN.R-project.org/package=psych"
  )

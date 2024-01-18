@@ -8,24 +8,31 @@
 }
 \usage{
 statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
-poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5,weights=NULL)
+	poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5,weights=NULL, min.n=1)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
    min.n = 12,quant=.1, ...)
 }
 \arguments{
-  \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  One of these columns should be the values of a grouping variable.}
+  \item{data}{A matrix or dataframe with rows for subjects, columns for variables.  
+  	One of these columns should be the values of a grouping variable.}
   \item{group}{The names or numbers of the variable in data to use as the grouping variables.}
   \item{cors}{Should the results include the correlation matrix within each group?  Default is FALSE.}
-  \item{cor}{Type of correlation/covariance to find within groups and between groups.  The default is Pearson correlation.  To find within and between covariances, set cor="cov".  Although polychoric, tetrachoric, and mixed correlations can be found within groups, this does not make sense for the between groups or the pooled within groups.  In this case, correlations for each group will be as specified, but the between groups and pooled within will be Pearson. See the discussion below.}
+  \item{cor}{Type of correlation/covariance to find within groups and between groups.  
+  	The default is Pearson correlation.  To find within and between covariances, set cor="cov". 
+  	 Although polychoric, tetrachoric, and mixed correlations can be found within groups, 
+  	 this does not make sense for the between groups or the pooled within groups.  
+  	 In this case, correlations for each group will be as specified, but the between groups 
+  	 and pooled within will be Pearson. See the discussion below.}
 \item{method}{What kind of correlations should be found (default is Pearson product moment)}
 \item{use}{How to treat missing data.  use="pairwise" is the default}
 \item{poly}{Find polychoric.tetrachoric correlations within groups if requested.}
-\item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data clean?}
+\item{na.rm}{Should missing values be deleted (na.rm=TRUE) or should we assume the data are clean?}
 \item{alpha}{The alpha level for the confidence intervals for the ICC1 and ICC2, and rwg, rbg}
 \item{minlength}{The minimum length to use when abbreviating the labels for confidence intervals}
-\item{weights}{If specified, weight the groups by weights when finding the pooled within group correlation.  Otherwise weight by sample size.}
+\item{weights}{If specified, weight the groups by weights when finding the pooled within group correlation.
+	  Otherwise weight by sample size.}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}
@@ -36,7 +43,7 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{fm}{The factor method (see \code{\link{fa}} for details)}
 \item{free}{Allow the factor solution to be freely estimated for each individual (see note).}
 \item{all}{Report individual factor analyses for each group as well as the summary table}
-\item{min.n}{The minimum number of within subject cases before we factor analyze it.}
+\item{min.n}{The minimum number of within subject cases before we factor analyze it or find group statistics. Only works for one grouping variable.}
 \item{quant}{Show the upper and lower quant quantile of the factor loadings in faBy}
 \item{...}{Other parameters to pass to the fa function}
 }
@@ -99,7 +106,7 @@ Consider the case of the relationship between various tests of ability when the 
 \item{r}{In the case that we want the correlations in each group, r is a list of the within group correlations for every group. Set cors=TRUE}
 \item{within}{is just another way of displaying these correlations.  within is a matrix which reports the lower off diagonal correlations as one row for each group.}
 \item{pooled}{The sample size weighted correlations.  This is just within weighted by the sample sizes. The cors option must be set to TRUE to get this. See the note. }
-
+\item{slope}{The within group slopes --  if using cor="cov" these will be the b weights}
 
 }
 \references{ Pedhazur, E.J. (1997) Multiple regression in behavioral research: explanation and prediction.  Harcourt Brace.

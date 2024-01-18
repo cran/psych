@@ -64,7 +64,10 @@
             nvar <- nvar - n.bad
              }
         if(discrete) {response.freq <- response.frequencies(x,max=max) } else {response.freq=NULL} #added 12/4/23
-         C <- cov(x,use=use)} else {C <- x}  #to find average R, we need to find R, not C  cov2cor(C) != R  !
+        
+         C <- cov(x,use=use)
+         R <- cor(x,use=use)} else {C <- x
+                                    R <- cov2cor(C)}  #to find average R, we need to find R, not C  cov2cor(C) != R  !  added 1/15/24
         
         if(is.null(colnames(x)))  colnames(x) <- paste0("V",1:nvar)
          #flip items if needed and wanted
@@ -128,7 +131,7 @@
                  totals <- TRUE
                  }
           
-         R <- cov2cor(C)
+       #  R <- cov2cor(C)   #need to actually find correlations to treat missing values correctly  
          drop.item <- vector("list",nvar)
          alpha.total <- alpha.1(C,R)
          if(nvar > 2) {

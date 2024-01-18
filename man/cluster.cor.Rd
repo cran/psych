@@ -8,7 +8,7 @@
 }
 \usage{
 scoreOverlap(keys, r, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
-     impute = TRUE,select=TRUE)
+     impute = TRUE,select=TRUE, scores=FALSE,  min=NULL,max=NULL)
 scoreBy(keys,stats, correct = TRUE, SMC = TRUE, av.r = TRUE, item.smc = NULL, 
      impute = TRUE,select=TRUE,min.n=3,smooth=FALSE)
 cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
@@ -22,11 +22,14 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
   \item{correct}{ TRUE shows both raw and corrected for attenuation correlations}
  \item{SMC}{Should squared multiple correlations be used as communality estimates for the correlation matrix? }
  \item{item.smc}{the smcs of the items may be passed into the function for speed, or calculated if SMC=TRUE }
- \item{impute}{if TRUE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA.}
+ \item{impute}{if TRUE and scores=FALSE, impute missing scale correlations based upon the average interitem correlation, otherwise return NA. If scores=TRUE, impute missing data by means, medians, or none.}
   \item{av.r}{Should the average r be used in correcting for overlap? smcs otherwise.}
   \item{select}{By default, just find statistics for items included in the scoring keys. This allows for finding scores from matrices with bad items if they are not included in the set of scoring keys.}
   \item{min.n}{The minimum number of pairwise observations needed to define a correlation (in scoreBy)}
   \item{smooth}{If the matrices used in scoreBy are not positive semi-definite, should we smooth them?}
+  \item{scores}{Find the raw average scores for each subject.  Same functionality as \code{\link{scoreItems}}}
+  \item{min}{May be specified as minimum item score allowed, else will be calculated from data. min and max should be specified if items differ in their possible minima or maxima. See notes for details.}
+  \item{max}{May be specified as maximum item score allowed, else will be calculated from data. }
 }
 \details{These  are three of the functions used in the SAPA (\url{https://www.sapa-project.org/}) procedures to form synthetic correlation matrices.  Given any correlation matrix of items, it is easy to find the correlation matrix of scales made up of those items. This can also be done from the original data matrix or from the correlation matrix using \code{\link{scoreItems}} which is probably preferred unless the keys are overlapping.  It is important to remember with SAPA data, that scale correlations should be found from the item correlations, not the raw data.
 
@@ -46,7 +49,9 @@ In the case of overlapping keys, (items being scored on multiple scales), \code{
  
  \code{\link{scoreBy}} finds the within subject correlations after preprocessing with \code{\link{statsBy}}.  This is useful if doing an ESM study with multiple occasions for each subject.   It also makes it possible to find the correlations for subsets of subjects. See the example.  Note that it likely that for ESM data with a high level of missingness that the correlation matrices will not be positive-semi-definite. This can lead to composite score correlations that exceed 1.  Smoothing will resolve this problem.
  
-   \code{\link{scoreBy}}  is useful when examining multi-level models where we want to examine the correlations within subjects (e.g., for ESM data) or within groups of subjects (when examining the stability of correlational structures by subgroups).  For both cases the data must be processed first by \code{\link{statsBy}}.  To find the variances of the scales it is necessary to use the cor="cov" option in \code{\link{statsBy}}.  
+   \code{\link{scoreBy}}  is useful when examining multi-level models where we want to examine the correlations within subjects (e.g., for ESM data) or within groups of subjects (when examining the stability of correlational structures by subgroups).  For both cases the data must be processed first by \code{\link{statsBy}}.  To find the variances of the scales it is necessary to use the cor="cov" option in \code{\link{statsBy}}. 
+   
+   Starting in version 2.4.1, the scores option has been added. This will score the data (as does \code{\link{scoreItems}}) if it is not a correlation matrix but does not have all the options of  \code{\link{scoreItems}}.  Obviously, while the correlations can be corrected for item ovelap, the raw scores can not be so corrected.   
 }
 \value{
   \item{cor }{the (raw) correlation matrix of the clusters}

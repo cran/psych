@@ -44,7 +44,7 @@ By default, will try to make a square plot with equal number of rows and columns
 
 \author{ William Revelle }
 
-\seealso{ \code{\link{bi.bars}} for drawing pairwise histograms and  \code{\link{scatterHist}} for bivariate scatter and histograms}
+\seealso{ \code{\link{bi.bars}} for drawing pairwise histograms and  \code{\link{scatterHist}} for bivariate scatter and histograms. \code{\link{densityBy}}, \code{\link{violinBy}} and \code{\link{violin}} for density plots.}
 \examples{
 multi.hist(sat.act) 
 multi.hist(sat.act,bcol="red")

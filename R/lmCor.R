@@ -16,7 +16,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #added option to allow square data matrices
   #modified December, 2014  to allow for covariances as well as to fix a bug with single x variable
   #modified April, 2015 to handle data with non-numeric values in the data, which are not part of the analysis
-  #Modified November, 2107 to handle "lm" style input using my parse function.
+  #Modified November, 2017 to handle "lm" style input using my parse function.
   #modified July 4, 2018 to add intercepts and confidence intervals (requested by Franz Strich)
   #Modified September 25, 2019 to add the confidence intervals of the intercepts 
   #This was a substantial rewrite of the code to include the moments matrix
@@ -344,12 +344,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	            gei <- svd(Myx)  
      	            cc2 <-gei$d  #this actually matches result
      	            cc <- sqrt(cc2)
-     	            
- 	            
-     	            
-     	            
-     	            cc2 <- eigen(Myx)$values
-     	            cc <- sqrt(cc2)
+     	           
+     	           # cc2 <- eigen(Myx)$values
+     	           # cc <- sqrt(cc2)
      	            T <- sum(cc2)/length(cc2)             
      	            }
 	     k <- NA 

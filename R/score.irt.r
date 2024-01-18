@@ -13,6 +13,7 @@
 #the irt.2 function (dichotomous items) iis much slower than the polytomous solution
 #probably because we took parallelization one step too far
 #I have not removed that extra level
+#Added a check for cells with zero entries  01/10/24
 
 ####  The scoring of dichotomous data 
 #the function to do 2  parameter dichotomous IRT\
@@ -564,8 +565,12 @@ scoreIrt.2pl <- function(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds
    select <- sub("-","",unlist(itemLists)) #select just the items that will be scored
     select <- select[!duplicated(select)]
    items <- items[,select]  #this should reduce memory load
+   #make sure all correlations  will exist
+   cp <- pairwiseDescribe(items)
+   if(cp$min< 3) {stop("Some cells do not have enough data to continue. Please examine the pairwise structure of your data.")}
    #we turn off the sorting option in irt.fa so that the item discriminations match the scoring order
    #small function is called using parallel processing
+   
    smallFunction <- function(i,selection,correct,cut=cut,bounds=bounds,mod=mod) {
         direction <- rep(1,length(selection[[i]]))
         neg <- grep("-", selection[[i]])

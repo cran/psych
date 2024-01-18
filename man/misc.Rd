@@ -31,7 +31,7 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 \usage{
 psych.misc()
 lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE)
-cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor")
+cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE)
 lowerMat(R, digits = 2,minlength=5)
 matMult(x,y) #multiply two matrices with missing data
 tableF(x,y)
@@ -60,7 +60,7 @@ test.all(pl,package="psych",dependencies
   \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
   \item{digits}{round to digits}
   \item{minlength}{Abbreviate to minlength in lowerCor}
-  \item{show}{Display the correlations from lowerCor (default is TRUE)}
+  \item{show}{Display the correlations from lowerCor or cor2 (default is TRUE)}
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
   \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 
@@ -69,7 +69,7 @@ test.all(pl,package="psych",dependencies
   \item{max}{The maximum value the loop will achieve}
   \item{label}{what function is looping}
   \item{flip}{The factor or components to be reversed keyed (by factor number)}
-  \item{flag}{flag=TRUE in char2numeric will flag those variables that had been numeric}
+  \item{flag}{flag=TRUE in char2numeric will flag (with *) those variables that had been numeric. This changes the variable name. flag = FALSE does not mark those variables.}
   \item{correct}{Correct for the maximum possible information in this item}
   \item{base}{What is the base for the log function (default=2, e implies base = exp(1))}
   \item{pl}{The name of a package (or list of packages) to be activated and then have all      

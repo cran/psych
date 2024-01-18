@@ -59,7 +59,10 @@ function(y,x,m=NULL, data, mod=NULL, z=NULL, n.obs=NULL,use="pairwise",n.iter=50
      nmod <- length(mod) 
   }
   
+  #first make sure the data are all numeric
+  #otherwise we choke on factor data
   
+  data <- char2numeric(data, flag=FALSE)  #added 01/14/24 
    if(!is.matrix(data)) data <- as.matrix(data)
   if((dim(data)[1]!=dim(data)[2]))  {n.obs=dim(data)[1]   #this does not take into account missing data
                     if(!is.null(mod)) if(zero) data[,c(x,m,z,ex)] <- scale(data[,c(x,m,z,ex)],scale=FALSE)  #0 center  but not the dv

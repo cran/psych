@@ -3,18 +3,20 @@
 \alias{lookupItems}
 \alias{fa.lookup}
 \alias{item.lookup}
+\alias{itemSort}
 \alias{keys.lookup}
 \alias{lookupFromKeys}
 \alias{lmCorLookup}
 \title{A set of functions for factorial and empirical scale construction} 
 
-\description{ When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items) , or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading or criteria correlations and display the item content. 
+\description{ When constructing scales through rational, factorial, or empirical means, it is useful to examine the content of the items that relate most highly to each other (e.g., the factor loadings of \code{\link{fa.lookup}} of a set of items), or to some specific set of criteria  (e.g., \code{\link{bestScales}}). Given a dictionary of item content, these routines will sort by factor loading, item means,  or criteria correlations and display the item content. 
 }
 \usage{
 lookup(x,y,criteria=NULL)
 lookupItems(content=NULL,dictionary=NULL,search=c("Item","Content","item"))
 fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
+itemSort(m, dictionary, ascending=TRUE, digits = 2)
 keys.lookup(keys.list,dictionary)
 lookupFromKeys(keys.list,dictionary,n=20,cors=NULL,sort=TRUE,suppress.names=FALSE,
       digits=2)
@@ -30,13 +32,14 @@ lmCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{cut}{Return all values in abs(x[,c1]) > cut.}
 \item{n}{Return the n best items per factor (as long as they have their highest loading on that factor)}
 \item{cors}{If provided (e.g. from scoreItems) will be added to the lookupFromKeys output}
-\item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content.}
+\item{dictionary}{a data.frame with rownames corresponding to rownames in the f$loadings matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple columns) of item content. See Notes for how to construct a dictionary.}
 \item{search}{Column names of dictionary to search, defaults to "Item" or "Content" (dictionaries have different labels for this column), can search any column specified by search.}
 \item{m}{A data frame of item means}
 \item{digits}{round to digits}
 \item{sort}{Should the factors be sorted first?}
 \item{suppress.names}{In lookupFromKeys, should we suppress the column labels}
 \item{p}{Show lmCor regressions with probability < p}
+\item{ascending}{order to sort the means in itemSort -- see dfOrder}
   
 }
 \details{
@@ -52,7 +55,9 @@ Suppose that you have a "dictionary" of the many variables in a study but you wa
 
 Similarly, given a correlation matrix, r, of the x variables, if you want to find the items that most correlate with another item or scale, and then show the contents of that item from the dictionary, bestItems(r,c1=column number or name of x, contents = y)
 
-\code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements. 
+\code{\link{item.lookup}} combines the output from a factor analysis \code{\link{fa}} with simple descriptive statistics (a data frame of means) with a dictionary.  Items are grouped by factor loadings > cut, and then sorted by item mean.  This allows a better understanding of how a scale works, in terms of the meaning of the item endorsements.  Note the means must be a one column matrix (with row names), not a vector (without rownames.) 
+
+\code{\link{itemSort}} Combine item means and item content and then sort them by the item means.
 
 \code{\link{lookupItems}} searches a dictionary for all items that have a certain content.  The rownames of the returned object are the item numbers which can then be used in other functions to find statistics (e.g. omega) of a scale with those items.   If an scales by items correlation matrix is given, then the item correlation with that scale are also shown. 
 }
@@ -71,7 +76,7 @@ Revelle, W.  (in preparation) An introduction to psychometric theory with applic
 \author{William Revelle}
 \note{Although empirical scale construction is appealing, it has the basic problem of capitalizing on chance.  Thus, be careful of over interpreting the results unless working with large samples.  Iteration and bootstrapping aggregation (bagging) gives information on the stability of the solutions. See \code{\link{bestScales}}
 
-To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the \code{link{bfi.dictionary}} as an example.  The bfi.dictionary was constructed from a spreadsheet with multiple columns, the first of which was the column names of the bfi. See the first (not run) example. 
+To create a dictionary, create an object with row names as the item numbers, and the columns as the item content.  See the bfi.dictionary in the psychTools package as an example.  The bfi.dictionary was constructed from a spreadsheet with multiple columns, the first of which was the column names of the bfi. See the first (not run) example. 
 
 }
 
@@ -81,6 +86,13 @@ To create a dictionary, create an object with row names as the item numbers, and
 \examples{
 #Tne following shows how to create a dictionary
 #first, copy the spreadsheet to the clipboard
+#the spreadsheet should have multiple columns
+#col 1         col 2     col 3
+#item	       content   label 
+#A1           Am indifferent to the feelings of others.     (q_146)
+#A2 	      Inquire about others' well-being. (q_1162
+#...
+
 # bfi.dictionary <- read.clipboard.tab()  #read from the clipboard
 # rownames(bfi.dictionary) <- bfi.dictionary[1] #the first column had the names
 # bfi.dictionary <- bfi.dictionary[-1]  #these are redundant, drop them
@@ -90,6 +102,10 @@ m <- colMeans(psychTools::bfi,na.rm=TRUE)
 item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2,drop=FALSE])
  #just show the item content, not the source of the items
 fa.lookup(f5,dictionary=psychTools::bfi.dictionary[2]) 
+
+#just show the means and the items
+#use the m vector we found above
+itemSort(as.matrix(m),dictionary=psychTools::bfi.dictionary[,2:3,drop=FALSE])
 
 
 #show how to use lookupFromKeys 
@@ -101,6 +117,8 @@ bfi.over <- scoreOverlap(bfi.keys,bfi) #returns the corrected for overlap values
 lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5, cors=bfi.over$item.cor)
  #show the keying information
 lookupItems("life",psychTools::spi.dictionary) #find those items with "life" in the item
+
+
 }
 
 \keyword{ models }

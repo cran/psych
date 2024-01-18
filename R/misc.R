@@ -420,7 +420,19 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
      return(contents)
     }
   
-  "item.lookup" <- 
+  #created 1/15/24
+"itemSort" <- function(m, dictionary, ascending=TRUE, digits = 2) {
+ contents <- lookup(rownames(m), y=dictionary)
+ results <- data.frame(means=round(m,digits=digits),contents)
+ results <- psychTools::dfOrder(results,ascending=ascending)
+ return(results)
+}
+ 
+
+
+   
+ #patched   1/15/24 to give means  
+  "item.lookup" <-             
 function (f,m, dictionary,cut=.3, digits = 2) {
    # f <- fa.sort(f)
     none<- NULL   #A strange requirement of R 4.0
@@ -461,7 +473,9 @@ function (f,m, dictionary,cut=.3, digits = 2) {
         ord <- rownames(f)
         nfact <- ncol(f)
     }
-    means <- m[ord]   #incorrectly added a comma to allow it sort dataframes 6/22/21
+   if(!is.null(dim(m))) {
+    means <- m[ord,,drop=FALSE]   #fixed 1/15/24  
+    } else {means <- m}
     f <- data.frame(unclass(f),means=means)
 
     contents <- lookup(rownames(f), y=dictionary)
@@ -600,7 +614,7 @@ text(x,y-2,"Unreliable but Valid")
 #finally added the char2numeric so it will not choke on character variables   1/3/21
 
 #added the cor option 11/18/23
-"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor") {
+"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE) {
 multi <- FALSE
 if(is.list(x) && is.null(y)) {multi <- TRUE
  n <- length(x)
@@ -628,7 +642,9 @@ mixed = {R <- mixedCor(cbind(x,y))$rho}
 
 )
 }
+if(show) {
 if(multi) {lowerMat(R,digits) } else {print(round(R,digits))}
+}
 invisible(R)}
 
 levels2numeric <- function(x) {

@@ -8,7 +8,8 @@
 }
 \usage{
 statsBy(data, group, cors = FALSE, cor="cor", method="pearson", use="pairwise", 
-	poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5,weights=NULL, min.n=1)
+	poly=FALSE, na.rm=TRUE,alpha=.05,minlength=5,
+	weights=NULL,mean.weights=NULL, min.n=1)
 statsBy.boot(data,group,ntrials=10,cors=FALSE,replace=TRUE,method="pearson")
 statsBy.boot.summary(res.list,var="ICC2")
 faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FALSE,
@@ -33,6 +34,7 @@ faBy(stats, nfactors = 1, rotate = "oblimin", fm = "minres", free = TRUE, all=FA
 \item{minlength}{The minimum length to use when abbreviating the labels for confidence intervals}
 \item{weights}{If specified, weight the groups by weights when finding the pooled within group correlation.
 	  Otherwise weight by sample size.}
+\item{mean.weights}{If not NULL, what weights should be use we wait the withingroup variables by some weights vector?}
 \item{ntrials}{The number of trials to run when bootstrapping statistics}
 \item{replace}{Should the bootstrap be done by permuting the data (replace=FALSE) or sampling with replacement (replace=TRUE)}
 \item{res.list}{The results from statsBy.boot may be summarized using boot.stats}

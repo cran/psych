@@ -16,7 +16,7 @@
 \method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
      digits = 2,method="pearson", pch = 20, lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2, 
      hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL,
-     smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05, ...)
+     smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,hist.border="black" ,...)
 
 }
 \arguments{
@@ -42,6 +42,7 @@
   \item{stars}{For those people who like to show the significance of correlations by using magic astricks, set stars=TRUE}
   \item{ci}{Draw confidence intervals for the linear model or for the loess fit, defaults to ci=FALSE. If confidence intervals are not drawn, the fitting function is lowess.}
   \item{alpha}{The alpha level for the confidence regions, defaults to .05}
+  \item{hist.border}{Set to "NA" to not have lines between the histogram values}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 

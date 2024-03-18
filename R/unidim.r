@@ -5,29 +5,35 @@
 #cleaned up Sept 18, 2023 to match ms
 #reversed keys and x to be consistent with other functions
 
-"unidim" <- function(keys=NULL,x=NULL,cor="cor",correct=.5, check.keys=TRUE) {
+"unidim" <- function(keys=NULL,x=NULL,cor="cor",use="pairwise",fm="minres", correct=.5, check.keys=TRUE,n.obs=NA) {
    cl <- match.call()
-    covar <- FALSE   
-   use <- "pairwise"
+    covar <- FALSE 
+   if(is.null(n.obs)) {
+   
+    n.obs <- NROW(x)  
+   use <- "pairwise"}
     if(!is.null(x)) {n.keys <- length(keys)
     } else {x <- keys
           keys <- NULL 
            n.keys <- 1}
     all.x <- x
    results <- list()
+   fits <- list()
 
    
    for(scale in 1:n.keys) { if(!is.null(keys)) {
-     
-   select <- keys[[scale]]
-        flipper <- rep(1,length(select))
-         flipper[grep("-",select)] <- -1
-         if(is.numeric(select)) {select <- abs(select) } else {
-         select <- sub("-","",unlist(select)) }
+    select <- selectFromKeys(keys[scale]) 
+# select <- keys[[scale]]
+ #     flipper <- rep(1,length(select))
+#          flipper[grep("-",select)] <- -1
+#          if(is.numeric(select)) {select <- abs(select) } else {
+#          select <- sub("-","",unlist(select)) }
    if(isCorrelation(all.x)) {x <- all.x[select,select] } else {x <- all.x[,select]}
 }  else {flipper <- rep(1,ncol(x))} #this allows us to handle multiple scales 
    
- if(!isCorrelation(x) ) { switch(cor, 
+ if(!isCorrelation(x) ) {
+     if(is.na(n.obs)) n.obs <- NROW(x)
+        switch(cor, 
        cor = { x <- cor(x,use=use)
               covar=FALSE},
        cov = {x <- cov(x,use=use) 
@@ -44,7 +50,19 @@
        )}
  #X is now a correlation matrix    or a covariance matrix 
   
-  f1 <- fa(x,covar=covar)  # a one factor solution  
+  
+    f1 <- fa(x,n.obs=n.obs,covar=covar,fm=fm)  # a one factor solution
+  #But to get a reasonable estimate of ECV we need more factors
+  nvar <- NCOL(x)
+  fn <- fa(x,3 ,n.obs=n.obs,covar=covar,fm=fm,rotate="none") 
+  if(f1$dof < 1 ) f1$RMSEA <- NA
+  if(is.null(f1$BIC)) f1$BIC <- NA
+  if(is.null(f1$CFI)) f1$CFI <- NA
+  if(is.null(f1$TLI)) f1$TLI <- NA
+  if(is.null(f1$RMSEA)) f1$RMSEA <- NA
+  fa.stats <- list(dof=f1$dof, chi=f1$chi,RMSEA = f1$RMSEA[1],Vaccounted=f1$Vaccounted[2,1],
+         TLI = f1$TLI, BIC = f1$BIC, R2=f1$R2, CFI = f1$CFI, ECV=fn$ECV[1]) 
+
   g <- sum(f1$model)  # sum(f1$loadings %*% t(f1$loadings))
   n <- NCOL(x)
   Vt <- sum(x)
@@ -75,16 +93,23 @@ uni <- f1$fit.off * (1-alpha.res)
  
 
   stats <- list(u=uni,alpha.res=1-alpha.res, fit.off= f1$fit.off, 
-           alpha=alpha.std,av.r = av.r,median.r = median.r,
+           alpha=alpha.std,av.r = av.r,median.r = median.r,cfi=f1$CFI,ECV=fn$ECV[1],
            uni.flipper = uni.flipper, uni=uni.orig,om.g=om.g, omega.pos = omega.flip,om.t=om.t,
          om.total.flip= omega.total.flip)
-  if(!is.null(keys)) {results[[names(keys[scale])]]<- stats } else {results <- stats}
+  if(!is.null(keys)) {results[[names(keys[scale])]]<- stats 
+                      fits[[names(keys[scale])]] <- fa.stats} else {results <- stats
+                      fits <- fa.stats}
   }
-  temp <- matrix(unlist(results),ncol=12,byrow=TRUE)
-  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","Unidim.A","Unidim","model","model.A", "total", "total.A")
+
+  temp <- matrix(unlist(results),ncol=14,byrow=TRUE)
+  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","CFI","ECV","Unidim.A","Unidim","model","model.A", "total", "total.A")
   rownames(temp) <- names(keys)
+
+  fits <- matrix(unlist(fits),ncol=9,byrow=TRUE)
+  colnames(fits) <- c("dof" , "chisq" , "RMSEA" ,"Vaccounted","TLI","BIC", "R2","CFI","ECV")
+  rownames(fits) <- names(keys)
   if(check.keys) {
-  results <- list(uni=temp[,1:7])} else {results <- list(uni=temp)}
+  results <- list(uni=temp[,1:8],fa.stats=fits)} else {results <- list(uni=temp,fa.stats=fits)}
   results$Call <- cl
   class(results) <- c("psych","unidim")
   

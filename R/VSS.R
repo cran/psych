@@ -236,3 +236,20 @@ matplot(ci,type="l",ylab="eigen values",main="Confidence intervals of eigen valu
 
 return(ci)
 }
+
+
+vssSelect <- function(keys,x,cor="cor", fm="minres",plot=FALSE) {
+temp <- list()
+for (i in 1:length(keys)) {
+   select <- selectFromKeys(keys[[i]])
+  VS <- vss(x[,select],cor=cor,fm=fm,plot=plot)
+   temp[[i]] <- list(first.max(VS$cfit.1),first.max(VS$cfit.2))
+   }
+result <- as.data.frame(matrix(unlist(temp),ncol=2,byrow=TRUE))
+
+colnames(result) <- c("VSS.1", "VSS.2")
+
+rownames(result) <- names(keys)
+return(result)
+}
+

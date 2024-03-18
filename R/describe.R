@@ -1,3 +1,65 @@
+	#Added 2/10/24
+	#This is a parellel version of describe  --much faster
+	#just calls the old describe and parallelizes it
+	
+	describe <- function(x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,
+    IQR=FALSE,omit=FALSE,data=NULL,size=50)  {
+    if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
+	if(missing(data)) { 
+	 x <- get(ps$y)
+	group <- x[,ps$x]} else {x <- data[ps$y]
+	group <- data[ps$x]
+	}
+	describeBy(x,group=group,na.rm=na.rm,interp=interp,skew=skew,ranges=ranges,trim=trim,type=type,check=check,fast=fast,quant=quant,IQR=IQR,omit=omit,data=data)
+  } else {                   
+ cl <- match.call()
+#first, define a local function
+    valid <- function(x) {sum(!is.na(x))}
+    if(!na.rm) x <- na.omit(x)   #just complete cases
+   	 if(is.null(fast)) {   #don't reset fast inside describe.1 loop
+   	   if (prod(dim(x)) > 10^7) {fast <- TRUE } else {fast <- FALSE}
+   	   } 
+nvar <- NCOL(x)
+v.names <- colnames(x)
+if(nvar <  size) {result <- describe.1(x=x,na.rm=na.rm, interp=interp, skew=skew, ranges=ranges,
+                             trim=trim, type=type,check=check,fast=fast,quant=quant,
+                             IQR = IQR, omit=omit, data=data)} else {
+                             
+    n.steps <- ceiling(nvar/size)
+   
+   short <- function(i) {
+   	loweri <- (i-1) * size + 1
+   	upperi <- min(i * size,nvar)
+     res <- describe.1(x=x[,loweri:upperi],na.rm=na.rm, interp=interp, skew=skew, ranges=ranges,
+                             trim=trim, type=type,check=check,fast=fast,quant=quant,
+                             IQR = IQR, omit=omit, data=data)   
+                   return(res)                 
+                             } 
+
+        result <- mcmapply(short,c(1:n.steps))
+        n.result <- NROW(result)   
+                                   
+       names.result <- rownames(result)
+         
+        temp <- NULL
+       for( i in 1:NCOL(result)) {tt <- matrix(unlist(result[,i]),ncol=n.result)  #fix to be dynamic
+           # tt <- result[[i]]
+           temp <- rbind(temp,tt)}
+        
+        # rownames(temp) <- colnames(x) 
+        # colnames(temp) <-  c("vars" ,   "n" ,  "mean",     "sd", "median",  "min" ,   "max", "range" ,    "se") #fix to be dynamic
+        colnames(temp) <- names.result
+         temp[,1 ] <-1:nvar
+         rownames(temp )  <- v.names
+      result <- as.data.frame(temp)}
+      
+      class(result) <- c("psych","Pdescribe","data.frame")
+      return(result)
+} 
+}
+
+
+
 "describeFast" <- function(x) {
  if(!inherits(x[1], "data.frame")) x <- fix.dplyr(x)    #to get around a problem created by dplyr
 nvar <- NCOL(x)
@@ -88,8 +150,10 @@ function (x, head = 4, tail = 4)
 #Added the as.factor  to the convert to numeric for non-numeric data
 #Improved July 9, 2020 to allow formula input for grouping variables
 #Further improved Sept 02, 2020 to allow formula input with data specified to match other formula features
-"describe" <-
-function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)   #basic stats after dropping non-numeric data
+#include median with fast output (has a very small slowing effect)
+"describe.1" <-
+function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,
+        quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)   #basic stats after dropping non-numeric data
                              #slightly faster if we don't do skews
 { 
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
@@ -105,10 +169,10 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
     valid <- function(x) {sum(!is.na(x))}
     if(!na.rm) x <- na.omit(x)   #just complete cases
    	
-   	if(is.null(fast)) {
-   	    if (prod(dim(x)) > 10^7) {fast <- TRUE } else {fast <- FALSE}}  #the default is to use fast for large data sets
-   	if(fast) {skew <- FALSE
-   	         }
+   	#if(is.null(fast)) {   #don't reset fast inside describe.1 loop
+   	 #   if (prod(dim(x)) > 10^7) {fast <- TRUE } else {fast <- FALSE}}  #the default is to use fast for large data sets
+   #	if(fast) {skew <- FALSE
+   	#         }
    	numstats <- 10 + length(quant)	+ IQR 
    	cn <- "X1"
     if ( NCOL(x) < 2)  {if(is.data.frame(x)) {      #
@@ -190,12 +254,13 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
             if(fast) {
           stats[,4] <- apply(x,2,min,na.rm=na.rm)
           stats[,5] <- apply(x,2,max,na.rm = na.rm)
+          if(interp) {stats[, 3] <- apply(x,2,interp.median,na.rm=na.rm  ) }  else {stats[,3] <- apply(x,2,median,na.rm=na.rm) } 
           } else {
      			stats[, 4] <-  apply(x,2,min, na.rm=na.rm )
 			    stats[, 5] <-  apply(x,2,max, na.rm=na.rm )
     		    stats[,7] <-   apply(x,2,mad, na.rm=na.rm)
 			    stats[,9]  <- apply(x,2, mean,na.rm=na.rm,trim=trim)
-		if(interp) {stats[, 3] <- apply(x,2,interp.median,na.rm=na.rm  ) }  else {stats[,3] <- apply(x,2,median,na.rm=na.rm) } 
+			if(interp) {stats[, 3] <- apply(x,2,interp.median,na.rm=na.rm  ) }  else {stats[,3] <- apply(x,2,median,na.rm=na.rm) } 
 		}} 
 		
     if(!is.null(quant)) { Qnt <- apply(x,2,quantile,prob=quant,na.rm=TRUE)
@@ -213,14 +278,19 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
     #the following output was cleaned up on June 22, 2016 added the quantile information.
     
     #the various options are ranges, skew, fast, numstats > 10
-    if(fast) { answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1])) }  #minimal case
+    if(fast) { answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],median=stats[,3],se=stats[,10]/sqrt(stats[,1])) }  #minimal case
     
     #if((!skew) && ranges) {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1])) }
     if(skew) {
-        if(ranges) { answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
+        if(ranges) {if(fast) { answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3], min= stats[,4],max=stats[,5],
     				 range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) } else {
-            		 answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) }
-             } else {if(ranges) {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1])) } else {
+    				  answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10], median = stats[, 3],trimmed =stats[,9], mad = stats[,7], min= stats[,4],max=stats[,5],
+    				 range=stats[,5]-stats[,4],skew = stats[, 6], kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) }
+    			   } else {
+            		 answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],skew = stats[, 6], 
+            		        kurtosis = stats[,8],se=stats[,10]/sqrt(stats[,1])) }
+             } else {if(ranges) {answer <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],median=stats[,3],
+             min= stats[,4],max=stats[,5], range=stats[,5]-stats[,4],se=stats[,10]/sqrt(stats[,1])) } else {
              answer  <-  data.frame(vars=vars,n = stats[,1],mean=stats[,2], sd = stats[,10],se=stats[,10]/sqrt(stats[,1]))   }
             }
     if(IQR) answer <- data.frame(answer,IQR=stats[,11])
@@ -254,7 +324,7 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
 #      }         
 # answer <-data.frame(var=vars,temp, se = temp$sd/sqrt(temp$n))  #replaced with forming the answer in the if statements  10/1/2014 to improve memory management
 
-    class(answer) <- c("psych","describe","data.frame")
+    class(answer) <- c("psych","Pdescribe","data.frame")
     return(answer)
     }
 }

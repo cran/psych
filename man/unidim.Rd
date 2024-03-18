@@ -6,15 +6,19 @@
 
 }
 \usage{
-unidim(keys=NULL,x=NULL,cor="cor",correct=.5, check.keys=TRUE)
+unidim(keys=NULL,x=NULL,cor="cor",use="pairwise", fm="minres", correct=.5, 
+       check.keys=TRUE,n.obs=NA)
 }
 
 \arguments{
   \item{x}{An input matrix or data frame.  If x is not a correlation matrix, then the correlations are found.}
   \item{keys}{If specified,  then a number of scales can be tested at once. (See \code{\link{scoreItems}} for a similar procedure.)}
 \item{cor}{By default, find the Pearson correlation, other options are "spearman","kendall","tet"(for tetrachoric), "poly" (for polychoric), or  "mixed"}
+\item{use}{pairwise complete cases is the default}
+\item{fm}{factor extraction method defaults to "minres" but could be "mle" or "minrank"}
 \item{correct}{If using "tetrachoric" or "polychoric" correlations, should we correct empty cells for continuity, and if so, by how much.  (See \code{\link{tetrachoric}} for a discussion of this correction)}
   \item{check.keys}{If TRUE, then items will be keyed based upon their loadings on the first factor.  Automatically done if key.list is NULL.}
+  \item{n.obs}{Number of observartions.  If given a correlation matrix as input, n.obs is required for some of the goodness of fit estimates.}
 
 }
 \details{
@@ -26,7 +30,7 @@ This works well, but when some of the loadings are very small, even though 1 fac
 
 The product of rho_c and Tau is the measure of unidimensionality, u That is, congeneric fit x tau equivalent fit as a measure of unidimensionality.
  
- All of the results are reported in the uni list.
+ The main unidim estimates of the results are reported in the uni object. Conventional factor goodness of fit are in the fa.stats object.
 }
 \value{ 
 \item{u}{The estimate of unidimensionality which is just the product of}
@@ -43,6 +47,8 @@ The product of rho_c and Tau is the measure of unidimensionality, u That is, con
 \item{adj.model}{The ratio of the FF' model to the sum(R) when items are flipped.}
 \item{Total}{The ratio of the sum(R - uniqueness)/sum(R)}
 \item{Total.A}{Same ratio with flipped items}
+\item{CFI}{Comparative Fit Index}
+\item{ECV}{Explained Common Variance}
 
 
 }
@@ -69,11 +75,12 @@ unidim(psychTools::ability.keys,psychTools::ability)
 #Try a known 3 factor structure
 x <- sim.minor(nfact=3,bipolar=FALSE)   #this makes all the items positive
 unidim(x$model) 
-keys.list <- list(first =c(1:4),second = 5:8,third=9:12,all=1:12)
+keys.list <- list(first =paste0("V",1:4) ,second = paste0("V",5:8),
+   third=paste0("V",9:12),all= paste0("V",1:12))
 unidim(keys.list, x$model)
 
 x <- sim.minor(nfact=3)
-unidim(keys.list,x$mode)   #we flip the negative items 
+unidim(keys.list,x$model)   #we flip the negative items 
 
 #what about a hierarchical model?
 H <- sim.hierarchical()  # by default, a nice hierarchical model

@@ -14,8 +14,18 @@
      }   else {stop("key must have as many elements as columns of 'data' ")}
  
 if (score) {
-  if(skew) {item.stats <- describe(items,ranges=FALSE,skew=skew,fast=FALSE)[,2:7] } else {  #added the fast=FALSE on 2/25/16 in response to problem with large data sets reported by Rodrigo Travitzki 
-            item.stats <- describe(items,ranges=FALSE,skew=skew,fast=TRUE)[,2:4] }
+  if(skew) {  #item.stats <- describe(items,ranges=FALSE,skew=skew,fast=FALSE)[,2:7] 
+             #} else {  #added the fast=FALSE on 2/25/16 in response to problem with large data sets reported by Rodrigo Travitzki 
+            #item.stats <- describe(items,ranges=FALSE,skew=skew,fast=TRUE)[,2:4] }
+            #modified 2/25/24 to fix problem with qgraph 
+            item.stats <- describe(items,ranges=FALSE,skew=skew,fast=FALSE)
+            class(item.stats) <- "data.frame"
+            item.stats <- item.stats[,2:7]} else {
+            item.stats <- describe(items,ranges=FALSE,skew=skew,fast=FALSE)
+             class(item.stats) <- "data.frame"
+             item.stats <- item.stats[,2:4]}
+            
+            
             miss.rep <- rowSums(is.na(items))
     if(missing) {
         miss <- which(is.na(items),arr.ind=TRUE)
@@ -48,9 +58,13 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
     item.stats <- cbind(key,response.freq,item.cor,item.stats)
     colnames(item.stats)[alternatives+2] <- "r"
    
-   if(short) {results <- list(item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)} else 
-   if (sum(miss.rep) >0) {results <-list(scores=scores,missing = miss.rep,item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits))} else{  
-    results <- list(scores=scores,item.stats=item.stats,alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)}  
+   if(short) {results <- list(item.stats=round(item.stats,digits),alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)} else {
+   if (sum(miss.rep) > 0) {results <-list(scores=scores,missing = miss.rep,item.stats=round(item.stats,digits),
+         alpha=round(alpha.scale,digits), av.r=round(av.r,digits))} else {  
+    results <- list(scores=scores,item.stats=item.stats,alpha=round(alpha.scale,digits), av.r=round(av.r,digits),Call=cl)
+    }  
+    }
+    
 
  class(results) <- c("psych","mchoice")
  return(results) } else {return (items)}  

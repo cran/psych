@@ -33,7 +33,8 @@ sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=
        items = FALSE, low=-2,high=2,cat=5)
 sim.simplex(nvar =12, alpha=.8,lambda=0,beta=1,mu=NULL, n=0,threshold=NULL)
 sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL, 
-    Phi=NULL, bipolar=TRUE, threshold=NULL) 
+    Phi=NULL, bipolar=TRUE, threshold=NULL, 
+     items = FALSE, low=-2,high=2,cat=5) 
 
 }
 \arguments{

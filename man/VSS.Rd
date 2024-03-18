@@ -4,17 +4,19 @@
 \alias{MAP}
 \alias{eigenCi}
 \alias{nfactors}
+\alias{vssSelect}
 
 \title{ Apply the Very Simple Structure, MAP, and other criteria to determine the appropriate number of factors.}
 \description{There are multiple ways to determine the appropriate number of factors in exploratory factor analysis. Routines for the Very Simple Structure (VSS) criterion allow one to compare solutions of varying complexity and for different number of factors. Graphic output indicates the "optimal" number of factors for different levels of complexity.  The Velicer MAP criterion is another good choice. \code{\link{nfactors}} finds and plots several of these alternative estimates.
 }
 \usage{
 vss(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
-n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
+	n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
 VSS(x, n = 8, rotate = "varimax", diagonal = FALSE, fm = "minres", 
-n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
-nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
+	n.obs=NULL,plot=TRUE,title="Very Simple Structure",use="pairwise",cor="cor",...)
+	nfactors(x,n=20,rotate="varimax",diagonal=FALSE,fm="minres",n.obs=NULL,
              title="Number of Factors",pch=16,use="pairwise", cor="cor",...)
+vssSelect(keys,x,cor="cor", fm="minres",plot=FALSE)             
 eigenCi(x,n.iter=1000, use="pairwise", alpha=.05,plot=FALSE,root=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -26,6 +28,7 @@ eigenCi(x,n.iter=1000, use="pairwise", alpha=.05,plot=FALSE,root=FALSE)
   \item{fm}{factoring method -- fm="pa"  Principal Axis Factor Analysis, fm = "minres" minimum residual (OLS) factoring fm="mle"  Maximum Likelihood FA, fm="pc" Principal Components" }
   \item{n.obs}{Number of observations if doing a factor analysis of correlation matrix.  This value is ignored by VSS but is necessary for the ML factor analysis package.}
   \item{plot}{plot=TRUE  Automatically call VSS.plot with the VSS output, otherwise don't plot}
+  \item{keys}{A keys list specifying the subsets of items to analyze}
 \item{title}{a title to be passed on to VSS.plot}
 \item{pch}{the plot character for the nfactors plots}
 \item{use}{If doing covariances or Pearson R, should we use "pairwise" or "complete cases"}
@@ -80,6 +83,10 @@ The nfactors function will do a VSS, find MAP, and report a number of other crit
 
 
 A variety of rotation options are available. These include varimax, promax, and oblimin. Others can be added.  Suggestions are welcome.
+
+vssSelect will perform a VSS analysis on subsets of the data where the subsets are specified by a keys list.
+
+
 }
 \value{ A data.frame with entries:
  map:  Velicer's MAP values (lower values are better) \cr
@@ -126,6 +133,8 @@ Velicer, W. (1976) Determining the number of components from the matrix of parti
 #now, some simulated data with two factors
 #VSS(sim.circ(nvar=24),fm="minres" ,title="VSS of 24 circumplex variables")
 VSS(sim.item(nvar=24),fm="minres" ,title="VSS of 24 simple structure variables")
+
+#vssSelect(bfi.keys, bfi) 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

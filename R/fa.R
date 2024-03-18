@@ -785,14 +785,17 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
              names(vx) <- colnames(loadings)
           varex <- rbind("SS loadings" =   vx)
           varex <- rbind(varex, "Proportion Var" =  vx/vtotal)
+          ECV <- varex[2]  #by default the common variance for a 1 factor is all of the explained variance  so we report the value actually explained
          if (nfactors > 1) {
                       varex <- rbind(varex, "Cumulative Var"=  cumsum(vx/vtotal))
                        varex <- rbind(varex, "Proportion Explained"=  vx/sum(vx))
                       varex <- rbind(varex, "Cumulative Proportion"=  cumsum(vx/sum(vx))) 
+                      ECV <- varex[5,]
                       }
           
     result$rotated <- rotated$rotation.stats
     result$Vaccounted <- varex
+    result$ECV <- ECV
     result$Call <- cl
     class(result) <- c("psych", "fa")
     return(result) }

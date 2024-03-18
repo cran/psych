@@ -22,6 +22,7 @@ c#developed July 4, 2012
              alpha=.05,
              minlength=5,
              weights=NULL,
+             mean.weights=NULL,
              min.n= 1) { #  min size added 12/29/23
  cl <- match.call()
     
@@ -55,14 +56,34 @@ z1 <- data[,group]
                     
        xvals <- list()
     
-   
+
        #find the statistics by group
                tempcount<- by(data,z,valid1)   #this identifies the number of cases per z
               if(NCOL(tempcount)==1) {tempz <- tempcount[tempcount >= min.n] #but works only for one criteria
                tt <- z1 %in% names(tempz)
                data <- data[tt,]
                z <- z[tt]}
-               temp <- by(data,z,colMeans,na.rm=na.rm)
+               
+                if(is.null(mean.weights)){ temp <- by(data,z,colMeans,na.rm=na.rm)} else {
+           #do something clever   
+                
+  		 temp <- list() 
+   		mean.weights <- mean.weights[tt]
+   		temp.data <- cbind(data,mean.weights)
+   		loc.mean.weights <- ncol(temp.data)
+   		tab.z <- table(z)     
+  		for(i in 1:length(tab.z)) {
+   		 temp.data_i <- temp.data[z==i,]
+    		temp[[i]] <- apply(temp.data_i,2,weighted.mean,w=temp.data_i[,"mean.weights"],na.rm=TRUE)
+    		temp[[i]] <- temp[[i]][-loc.mean.weights] 
+    		}
+     }
+     
+     
+              # if(is.null(mean.weights)){ temp <- by(data,z,colMeans,na.rm=na.rm)} else {
+               #    #do something clever   
+               #    temp <- by(data,z, FUN,apply(x,weighted.mean(w=mean.weights)))}
+               
                rowname <- dimnames(temp)[[1]]
                if(length(dimnames(temp))> 1){            #if we have multiple criteria, we need to name them
                for (i in 2:length(dimnames(temp))) {

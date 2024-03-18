@@ -6,13 +6,15 @@
 \description{
 There are many summary statistics available in R; this function
   provides the ones most useful for scale construction and item analysis in classic psychometrics. 
-  Range is most useful for the first pass in a data set, to check for coding errors.  
+  Range is most useful for the first pass in a data set, to check for coding errors. Parallelizes if multiple cores are available. 
 }
 \usage{
 describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1,
-              type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)
+              type=3,check=TRUE,fast=NULL,quant=NULL,IQR=FALSE,omit=FALSE,data=NULL,
+              size=50)
 describeData(x,head=4,tail=4)
-describeFast(x)  
+describeFast(x) 
+  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -34,6 +36,7 @@ describeFast(x)
   \item{head}{show the first 1:head cases for each variable in describeData}
   \item{tail}{Show the last nobs-tail cases for each variable in describeData}
   \item{data}{Allows formula input for specific grouping variables}
+  \item{size}{For very big problems (in terms of nvar) set size to some reasonable value.}
 }
 \details{In basic data analysis it is vital to get basic descriptive statistics. 
 Procedures such as \code{\link{summary}} and Hmisc::describe do so.  The describe function in the \code{\link{psych}} package is meant to produce the most frequently requested stats in psychometric and psychology studies, and to produce them in an easy to read data.frame. If a grouping variable is called for in formula mode, it will also call \code{\link{describeBy}} to the processing. The results from describe can be used in graphics functions (e.g., \code{\link{error.crosses}}).
@@ -135,7 +138,6 @@ print(describeFast(sat.act),short=FALSE)  #even faster is just counts  (just les
  des  #show the normal output, which is rounded to 2 decimals
  print(des,digits=3)  #show the output, but round to 3 (trailing) digits
  print(des, signif=3) #round all numbers to the 3 significant digits 
-
 
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS

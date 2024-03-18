@@ -454,6 +454,22 @@ cat("Call: ")
 }
 
 
+# run fa.parallel over set of keys
+
+paSelect <- function(keys,x,cor="cor", fm="minres",plot=FALSE) {
+temp <- list()
+for (i in 1:length(keys)) {
+   select <- selectFromKeys(keys[[i]])
+   pa  <- fa.parallel(x[,select],cor=cor,fm=fm,plot=plot)
+   temp[[i]] <- list(pa$nfact,pa$ncomp)
+   }
+result <- as.data.frame(matrix(unlist(temp),ncol=2,byrow=TRUE))
+
+colnames(result) <- c("N.factors", "N.components")
+
+rownames(result) <- names(keys)
+return(result)
+}
 
 
  

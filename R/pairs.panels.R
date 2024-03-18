@@ -7,9 +7,13 @@
 #this should allow for somewhat cleaner code for the other functions
 #modified March 15, 2015 to add the ability to control the size of the correlation separately from the cex variable in the points
 #also added the ability to set the number of breaks in the histograms
+#added the hist.border parameter as suggested by Jordan Adamson  (2/11/24)
 
 "pairs.panels" <-
-function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", cex.cor = 1 ,wt=NULL,smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,...)   #combines a splom, histograms, and correlations
+function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,
+    lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", 
+    cex.cor = 1 ,wt=NULL,smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,
+    hist.border="black",...)   #combines a splom, histograms, and correlations
 {
 
 #First define all the "little functions" that are internal to pairs.panels.  This allows easier coding later
@@ -24,13 +28,13 @@ function(x,...) {
    if(length(tax) < 11) {breaks <- as.numeric(names(tax))
     y <- tax/max(tax)
     interbreak <- min(diff(breaks))*(length(tax)-1)/41
-    rect(breaks-interbreak,0,breaks + interbreak,y,col=hist.col)
+    rect(breaks-interbreak,0,breaks + interbreak,y,col=hist.col,border=hist.border)
     } else {
    
     h <- hist(x,breaks=breaks, plot = FALSE)
     breaks <- h$breaks; nB <- length(breaks)
   y <- h$counts; y <- y/max(y)
-    rect(breaks[-nB], 0, breaks[-1], y,col=hist.col)
+    rect(breaks[-nB], 0, breaks[-1], y,col=hist.col,border=hist.border)
     }
  if(density) { tryd <- try( d <- density(x,na.rm=TRUE,bw="nrd",adjust=1.2),silent=TRUE)
   if(!inherits(tryd,"try-error")) {

@@ -8,7 +8,7 @@
 weighted.kappa is (probability of observed matches - probability of expected matches)/(1 - probability of expected matches).  Kappa just considers the matches on the main diagonal.  Weighted kappa considers off diagonal elements as well.
 }
 \usage{
-cohen.kappa(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL)  
+cohen.kappa(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL,w.exp=2)  
 wkappa(x, w = NULL)    #deprectated
 }
 
@@ -18,6 +18,7 @@ wkappa(x, w = NULL)    #deprectated
   \item{n.obs}{Number of observations (if input is a square matrix.}
   \item{alpha}{Probability level for confidence intervals}
   \item{levels}{Specify the levels if some levels of x or y are completely missing.  See Examples}
+  \item{w.exp}{Exponent to apply to weights matrix -- see examples}
   
 }
 \details{When cateogorical judgments are made with two cateories, a measure of relationship is the phi coefficient.  However, some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis) or to categorize the stages of a disease.  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
@@ -34,7 +35,9 @@ The confidence intervals are based upon the variance estimates discussed by Flei
 
 Some data sets will include data with numeric categories with some category values missing completely.  In the sense that kappa is a measure of category relationship, this should not matter.  But when finding weighted kappa, the number of categories weighted will be less than the number of categories potentially in the data.  This can be remedied by specifying the levels parameter.  This is a vector of the levels potentially in the data (even if some are missing).   See the examples.
 
-If there are more than 2 raters, then the average of all raters is known as Light's kappa. (Conger, 1980).  
+If there are more than 2 raters, then the average of all raters is known as Light's kappa. (Conger, 1980). 
+
+Following a request from Julius Pfadt, the weights matrix may be formed by squared distances (the default) or linear distances (w.exp=1)
 }
 
 \value{
@@ -82,7 +85,7 @@ It is also possible to have more than 2 raters.  In this case, cohen.kappa is re
 
 #rating data (with thanks to Tim Bates)
 rater1 = c(1,2,3,4,5,6,7,8,9) # rater one's ratings
-rater2 = c(1,3,1,6,1,5,5,6,7) # rater one's ratings
+rater2 = c(1,3,1,6,1,5,5,6,7) # rater two's ratings
 cohen.kappa(x=cbind(rater1,rater2))
 
 #data matrix taken from Cohen

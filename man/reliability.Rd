@@ -20,8 +20,16 @@ Although the \code{\link{alpha}} and \code{\link{omega}} functions will find rel
 \code{\link{plot.reliability}} takes the output of  \code{\link{reliability}} and displays it as a dot chart showing the values of both omegas as well as alpha and the distributions of split half reliabilities.
 }
 \usage{
-reliability(keys=NULL, items, nfactors = 2, split = TRUE, raw=TRUE, plot=FALSE,hist=FALSE,
-  n.sample=10000,brute=FALSE, check.keys=TRUE, covar=FALSE)
+reliability(keys=NULL, items, nfactors = 2,n.obs=NA, 
+   split = TRUE, 
+   raw=TRUE, 
+    plot=FALSE,
+    hist=FALSE,
+    n.sample=10000,
+    brute=FALSE, 
+    check.keys=TRUE, 
+    covar=FALSE, 
+    fm="minres")
 \method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,uni=TRUE,add=FALSE,
 xlim=NULL, main=NULL,...)
 }
@@ -34,6 +42,7 @@ xlim=NULL, main=NULL,...)
 }
   \item{nfactors}{Omega is not well defined for two factors, but for small sets of items, two is the better choice. For larger number of items per scale, 3 is probably preferable.
 }
+\item{n.obs}{Number of observations, if given a correlation matrix.  Needed for CFI}
   \item{split}{By default, find splitHalf reliabilities as well as the omega statistics. When plotting, split implies that raw was called in reliability.}
   
   \item{plot}{By default, suppress the omega plots for each scale.}
@@ -48,6 +57,7 @@ xlim=NULL, main=NULL,...)
   \item{brute}{Do all possible splits rather than sampling. (see \code{\link{splitHalf}} for details)}
   \item{check.keys}{By default, check that the keys are signe in the direction of the loadings on the first PCA.  }
  \item{covar}{Should we use covariances rather than correlations?}
+ \item{fm}{The factor extraction method to use.  By default this is minres but could be "minrank" or "mle".}
   \item{x}{The object returned from reliability}
   \item{omega}{Add in the values of omega_h and omega_t}
   \item{uni}{Show the unidimensionality value from \code{\link{unidim}}.  }

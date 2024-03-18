@@ -1,5 +1,6 @@
 \name{fa.parallel}
 \alias{fa.parallel}
+\alias{paSelect}
 \alias{fa.parallel.poly}
 \alias{plot.poly.parallel}
 \title{Scree plots of data or correlation matrix compared to random ``parallel" matrices }
@@ -10,6 +11,7 @@ fa.parallel(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,
 	main="Parallel Analysis Scree Plots",
 	n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,
 	sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5,sqrt=FALSE)
+paSelect(keys,x,cor="cor", fm="minres",plot=FALSE)
 	
 fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
        fa="both",global=TRUE)   #deprecated
@@ -27,7 +29,7 @@ fa.parallel.poly(x ,n.iter=10,SMC=TRUE,  fm = "minres",correct=TRUE,sim=FALSE,
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
   \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate.  This matches the call to \code{\link{fa}}.  }
-  
+ \item{keys}{A list of scoring keys to allow fa.parallel on multiple subsets of the data } 
  \item{correct}{For tetrachoric correlations, should a correction for continuity be applied. (See \code{\link{tetrachoric}}.)  If set to 0, then no correction is applied, otherwise, the default is to add .5 observations to the cell.}
  
  \item{sim}{For continuous data, the default is to resample as well as to generate random normal data.  If sim=FALSE, then just show the resampled results. These two results are very similar. This does not make sense in the case of  correlation matrix, in which case resampling is impossible. In the case of polychoric or tetrachoric data, in addition to randomizing the real data, should we compare the solution to random simulated data.  This will double the processing time, but will basically show the same result.}
@@ -147,6 +149,8 @@ fa.parallel(Thurstone,n.obs=213)   #the 9 variable Thurstone problem
 #apply(fp$values,2,function(x) quantile(x,.95))  #look at the 95th percentile of values
 #apply(fpt$values,2,function(x) quantile(x,.95))  #look at the 95th percentile of values
 #describe(fpt$values)  #look at all the statistics of the simulated values
+#paSelect(bfi.keys,bfi)#do 5 different runs, once for each subscale
+#paSelect(ability.keys,ability,cor="poly",fm="minrank")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -31,12 +31,12 @@ wkappa <- (wpo-wpc)/(1-wpc)
 return(list(kappa=kappa,weighted.kappa = wkappa))
 }
 
-"cohen.kappa" <- function(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL) {
+"cohen.kappa" <- function(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL,w.exp =2) {
 cl <- match.call()
 p <- dim(x)[1]
 len <- p
 bad <- FALSE
-if ((dim(x)[2] == p) ||(dim(x)[2]  < 3))   {result <- cohen.kappa1(x, w=w,n.obs=n.obs,alpha=alpha,levels=levels) } else {
+if ((dim(x)[2] == p) ||(dim(x)[2]  < 3))   {result <- cohen.kappa1(x, w=w,n.obs=n.obs,alpha=alpha,levels=levels,w.exp=w.exp) } else {
 nvar <- dim(x)[2]
 ck <- matrix(NA,nvar,nvar)
 if(!is.null(colnames(x)) ){colnames(ck) <- rownames(ck) <- colnames(x)} else {colnames(ck) <- rownames(ck) <- paste("R",1:nvar,sep="") }
@@ -48,7 +48,7 @@ for (i in 2:nvar ) {
    for (j in 1:(i-1) ) {
    x1 <- data.frame(x[,i],x[,j])
    x1 <- na.omit(x1)
-   ck1 <- cohen.kappa1(x1, w=w,n.obs=n.obs,alpha=alpha,levels=levels)
+   ck1 <- cohen.kappa1(x1, w=w,n.obs=n.obs,alpha=alpha,levels=levels,w.exp=w.exp)
     result[[paste(colnames(ck)[j],rownames(ck)[i])]] <- ck1
     if(ck1$bad) {warning("No variance detected in cells " ,i,"  ",j)
     bad <- TRUE}
@@ -70,7 +70,7 @@ for (i in 2:nvar ) {
  }
    
 
-"cohen.kappa1" <- function(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL) {
+"cohen.kappa1" <- function(x, w=NULL,n.obs=NULL,alpha=.05,levels=NULL,w.exp=2) {
 cl <- match.call()
 p <- dim(x)[1]
 len <- p
@@ -112,8 +112,8 @@ if(prod(dim(x))==1) {message("Your data seem to have no variance and in complete
 kappa <- (po-pc)/(1-pc)}  #(model - data)/(1-model) 
  
 if(is.null(w)) { w <- matrix(0,ncol=len,nrow=len) 
-                 w[] <- abs((col(w) - row(w)))^2 #squared weights
-                 w <- 1 - w/(len-1)^2}   #1 - squared weights/k
+                 w[] <- abs((col(w) - row(w)))^w.exp #squared weights is the default
+                 w <- 1 - w/(len-1)^w.exp}   #1 - squared weights/k
 colnames(w) <- rownames(w) <- colnames(x)             
 weighted.prob <- w * prob
 weighted.obser <- w * x

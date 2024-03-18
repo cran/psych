@@ -683,19 +683,19 @@ pretty}
      }
 
 "char2numeric" <- function(x,flag=TRUE) {
-
+#convert non numeric (factors, characters, logical) to numeric
  nvar <- NCOL(x)
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
-                          } else {x[[i]] <- NA}
+                          } else {if(is.logical(x[[i]])) {x[[i]] <- x[[i] ] +0 } else { x[[i]] <- NA}
+                          }
                          if(flag) colnames(x)[i] <- paste0(colnames(x)[i],"*")
-                          } 
-                          
+                          }                     
               } 
               invisible(x)} 
               
-              
+# added the is.logical test  23/06/24
 #added June 25, 2020 to handle the case of numeric data stored as characters  
 #added flag and colnames option  1/2/21             
 "nchar2numeric" <- function(x,flag=TRUE) {

@@ -119,10 +119,15 @@ conf.level <- alpha
        nm <- ((n.obs-1) -(2 * n + 5)/6 -(2*nfactors)/3) #
    	result$null.model <- F0
    	result$null.dof <- n * (n-1) /2
+  
    	if (!is.na(n.obs)) {result$null.chisq <-  F0 * ((n.obs-1) -(2 * n + 5)/6 )
                   	result$TLI <- (M0 - Mm)/(M0 - 1/nm)        #NNFI in Fox's sem
                   	if(is.numeric(result$TLI) & !is.nan(result$TLI) & (result$TLI >1)) result$F0 <-1 
-    
+       #the comparative fit index    added 2/12/24         	
+                  #	CFI <- 1 - Fm/F0 
+                  
+                  	result$CFI <- (max(result$null.chisq - result$null.dof,0 ) - max(chisq - result$dof,0))/max(result$null.chisq - result$null.dof,0 )
+     
      #The estimatation of RMSEA and the upper and lower bounds are taken from John Fox's summary.sem with minor modifications
       if(!is.null(result$objective) && (result$dof >0) &&(!is.na(result$objective))) {
      # RMSEA <- sqrt(max(result$objective/result$dof - 1/(n.obs-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #put back 4/21/17
@@ -273,9 +278,14 @@ conf.level <- alpha
                      }
      if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {warning("The estimated weights for the factor scores are probably incorrect.  Try a different factor score estimation method.")}
      }
+     
+    #Hancock#
+    #  H <- t(f)  %*% solve(r) % f #just the same as R2 of factor scores with factors if f is the Structure coeffient
       r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 
    	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors
+   	 
+   	 
    	  
    	 # result$R2.corrected <- factor.indeterm(r,f)
    	 # result$R2.total <- R2.cor$R2

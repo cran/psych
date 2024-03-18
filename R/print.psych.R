@@ -375,6 +375,18 @@ describe= {if(!is.null(x$signif)) {
                    if(!missing(signif)) x <- signifNum(x,digits=signif)
             print(round(x,digits=digits)) }
          },
+         
+Pdescribe= {if(!is.null(x$signif)) {
+        if( missing(signif) ) signif <-x$signif
+          x$signif <- NULL }
+         if  (length(dim(x))==1) {class(x) <- "list"
+              attr(x,"call") <- NULL
+              if(!missing(signif)) x <- signifNum(x,digits=signif)
+              print(round(x,digits=digits))
+                  } else  {class(x) <- "data.frame" 
+                   if(!missing(signif)) x <- signifNum(x,digits=signif)
+            print(round(x,digits=digits)) }
+         },
 describeBy = {cat("\n Descriptive statistics by group \n")
               if(!is.null(x$Call)){ cat("Call: " )
               print(x$Call) }
@@ -636,7 +648,8 @@ parallel= {
 cat("Call: ")
               print(x$Call) 
               if(!is.null(x$fa.values) & !is.null(x$pc.values) ) {
-                  parallel.df <- data.frame(fa=x$fa.values,fa.sam =x$fa.simr,fa.sim=x$fa.sim,pc= x$pc.values,pc.sam =x$pc.simr,pc.sim=x$pc.sim)
+                  parallel.df <- data.frame(fa=x$fa.values,fa.sam =x$fa.simr,fa.sim=x$fa.sim,
+                  pc= x$pc.values,pc.sam =x$pc.simr,pc.sim=x$pc.sim)
 		fa.test <- x$nfact
 		pc.test <- x$ncomp
 		
@@ -1066,3 +1079,4 @@ Yule = {cat("Yule and Generalized Yule coefficients")
 }
   )   #end of switch 
 }  #end function
+

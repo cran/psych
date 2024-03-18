@@ -1,12 +1,15 @@
 #Function to find very big correlation matrices by stitching together smaller ones
 #see the help file for various timings
-bigCor <- function(x,size=NULL,use="pairwise",cor="pearson"){
+bigCor <- function(x,size=NULL,use="pairwise",cor="pearson",correct=.5){
   nvar <- NCOL(x)
- if (is.null(size)) size <- 20  #added round 6/21/22  switched to 20  2/22/23
+ if (is.null(size)) size <- 30  #added round 6/21/22 switched to 30  2/10/23
  n.steps <- ceiling(nvar/size)
 #first makes sure the data are all numeric  
-x <- char2numeric(x)     #added 2/21/23
+ if(!is.matrix(x) && !is.data.frame(x)) stop('Data must either be a data frame or a matrix')
+    if(!inherits(x[1], "data.frame"))  stop("Data must be a data.frame")
 
+x <- char2numeric(x,flag=FALSE)     #added 2/21/23
+if(cor=="polychoric") cor <- "poly"
 small.r <- matrix(NA,size,size)
  
 short <- function(i) {
@@ -19,9 +22,12 @@ res <- list()
  for (j in i:n.steps) {
  lowerj <- min((j-1) * size + 1,nvar)
  upperj <- min(j * size,nvar)
- if(cor=="pearson") {
- small.r <- cor(x[,loweri:upperi],x[lowerj:upperj],use=use)} else {
-  small.r <- t(polychoric(x[loweri:upperi],x[lowerj:upperj])$rho)}  #fixed for polychoric
+ 
+ switch(cor,
+   pearson = {small.r <- cor(x[,loweri:upperi],x[lowerj:upperj],use=use)},
+   spearman =  {small.r <- cor(x[,loweri:upperi],x[lowerj:upperj],use=use,method="spearman")},
+   poly= {  small.r <- t(polychoric(x[loweri:upperi],x[lowerj:upperj], correct=correct)$rho)}
+ )   
  res[[j]] <- t(small.r)
  }
 return(res)

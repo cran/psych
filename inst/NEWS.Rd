@@ -2,21 +2,21 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.4.1 (2024-01-15)}{ 
+\section{Changes in psych version 2.4.3 (2024-03-10)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.4.2 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.1 (Added January 15, 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install this development version, use the command: install.packages("psych", repos="https://personality-project.org/r", type="source"). Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
+      \item Version 2.4.3 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.1 (Added January 15, 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install this development version, use the command:  install.pa ie. Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
        
   }   
  }
  }
  
- \section{Still to do version 2.4.1 (e.g., a wish list)}{
+ \section{Still to do version 2.4.4 (e.g., a wish list)}{
     \itemize{
       \item Suggestions are welcome, but the current list includes the following (and has included for a long time, so lets be patient):
    
@@ -142,16 +142,29 @@
           \item Minor tweaks to scoreIrt.2pl to check for bad data (missing cells ).  This was leading to the function hanging forever in the case of pairwise counts of 0.
           \item Added fix.dlpyr (as a local function) to statsBy and describeBy to not choke on Tibbles. Had added this to alpha several years ago.
           \item Added itemSort to combine item means and item content and then sort them.
-           
+          \item Added the median option to describe with the fast=TRUE option (requested by David Condon) 
+          \item Parallelized describe.  Now will describe 644K subjects with 6633 variables in 64 seconds (with fast=TRUE option).  Improvement in speed varies by numbers of cores.
+          \item Parallelized bigCor for very significant savings. 
+          \item Added the hist.border option to pairs.panels following a request by Jordan Adamson. 
           
-          }}
-          
+          \item Added the w.exp (weighting exponent to cohen.kappa following a request from Julius Pfadt)
+          \item Added n.obs to unidim to properly find statistics from correlation matrices
+          \item Added a number of fit statistics to unidim
+          \item Added the ability to find Spearman correlations to bigCor.  Added a check that the data are a data.frame rather than a data.table for bigCor.
+         \item Changed the class of describe output to be c("psych", "Pdescribe" ,"data.frame") to avoid choking if Hmisc is in use
+         \item Added the ability to use mean.weights in statsBy (still under testing)
+         \item Added paSelect to allow parallel analyses of subsets of items using a keys list.  
+         \item Added vssSelect to allow VSS analyses of subsets of items using a kes list.
+         }
+          }
           \subsection{Bugs fixed}{
           \itemize{
+        
            \item changed the number of elements in the unit.Circle in spider/radar to get more precision
              \item Added a conversion to numeric in mediate to get around a problem with variables that are factors. (Problem reported by Lynn Bueeler )
               \item Finally fixed  bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
             \item  Fixed item.lookup so that it will report item means as well as factor loadings.
+            \item Strange bug introduced into score.multiple.choice by qgraph reported by Michael Truong.  Fixed by changing class of describe object used in score.multiple.choice to just be a data.frame.
            }}
            }
  

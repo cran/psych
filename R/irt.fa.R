@@ -13,7 +13,7 @@ if (is.matrix(x) | is.data.frame(x)) {
 	 
 	tx <- table(as.matrix(x))
 	if(dim(tx)[1] ==2) {tet <- tetrachoric(x,correct=correct)
-	    typ = "tet"} else {tet <- polychoric(x)
+	    typ = "tet"} else {tet <- polychoric(x,correct=correct) #fixed 5/21/24
 	    typ = "poly"}
 
 	r <- tet$rho

@@ -35,13 +35,15 @@ William Revelle
 }
 \examples{
 round(Pinv(Thurstone) \%*\% Thurstone,2)  #an identity matrix
-sl <- schmid(Thurstone,3)  #The schmid-leiman solution is less than full rank
-F <- sl$sl[,1:4]    #the SL solution is general + 3 gropus
+if(!require(GPArotation)) {
+   message("I am sorry, you must have GPArotation installed to use schmid.")} else  {
+        sl <- schmid(Thurstone,3)  #The schmid-leiman solution is less than full rank
+F <- sl$sl[,1:4]    #the SL solution is general + 3 groups
 R <- Thurstone      #
 diag(R) <- sl$sl[,5]  #the reproduced matrix (R - U2)
 S <- t(Pinv(t(F) \%*\% F) \%*\% t(F) \%*\% R)  #the structure matrix
 Phi <- t(S) \%*\%  F \%*\% Pinv(t(F) \%*\% F)  #the factor covariances
-
+}
 }
 
 \keyword{multivariate}

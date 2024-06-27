@@ -1,8 +1,12 @@
 "print_psych.fa" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,suppress.warnings=TRUE,...)  {
 if(!is.matrix(x) && !is.null(x$fa) && is.list(x$fa)) x <-x$fa   #handles the output from fa.poly
-if(!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis") } else {
- cat("Factor Analysis using method = ",x$fm )}}
+if(!is.matrix(x))  {if (!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis") } else {
+ cat("Factor Analysis using method = ",x$fm )}  }} else {load <- x
+                                                         class(x)<- NULL
+                                                         print(round(x,digits))
+                                                         
+                                                         return()} 
    cat("\nCall: ")
    print(x$Call)
      

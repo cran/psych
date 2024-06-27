@@ -29,19 +29,19 @@ For size=3, the three items with the greatest sum of variances and covariances w
 
 }
 \references{
-Cattell, R. B.	(1956).	Validation and intensification of the sixteen personality factor	questionnaire.	Journal	of	Clinical	Psychology ,	12 (3),	205	-214.
+Cattell, R. B.	(1956).	Validation and intensification of the sixteen personality factor questionnaire.	Journal	of	Clinical	Psychology ,	12 (3),	205	-214.
 }
 \author{William Revelle}
 
 
 
 
-\seealso{ \code{\link{score.items}} to score the parcels or  \code{\link{iclust}} for an alternative way of forming item clusters.
+\seealso{ \code{\link{scoreItems}} to score the parcels or  \code{\link{iclust}} for an alternative way of forming item clusters.
 }
 \examples{
 parcels(Thurstone)
-keys <- parcels(psychTools::bfi)
+keys <- parcels(bfi)
 keys <- keysort(keys)
-score.items(keys,psychTools::bfi)
+scoreItems(keys,bfi)
 }
 \keyword{ multivariate }

@@ -1,7 +1,9 @@
 #August 12, 2020  dropped the calls to the sem package.  Just use lavaan for the processing
 
 "omegaSem" <-
-function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",lavaan=TRUE,...) {
+function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",
+		sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",
+		Phi = NULL,option="equal",lavaan=TRUE,...) {
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
@@ -11,7 +13,9 @@ if (!sl) {warning("OmegaSem only works for Bifactor models, sl set to TRUE ")
     sl <- TRUE}
 
     cl <- match.call() 
-om <- omega(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi=Phi,option=option,...)
+om <- omega(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,
+	title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,
+	rotate=rotate,Phi=Phi,option=option,...)
       #m is a correlation matrix, or if not, the correlation matrix is found
       #nfactors is the number of factors to extract
       #key allows items to be reversed scored  if desired
@@ -38,7 +42,7 @@ if(lavaan) {if(!requireNamespace('lavaan')) stop("You must have the lavaan packa
 #if(!requireNamespace('sem')) {stop("You must have the sem package installed to use omegaSem")
   
  if(lavaan) {sem.om <- lavaan::cfa(sem.model,sample.cov=m,sample.nobs=n.obs,orthogonal=TRUE,std.lv=TRUE) } #else {sem.om <- sem::sem(sem.model,m, n.obs) }
-omega.efa <- omegaFromSem(sem.om,m,flip=flip)
+omega.efa <- omegaFromSem(sem.om,m,flip=flip,plot=plot)
 results <- list(omegaSem=om,omega.efa=omega.efa,sem=sem.om,Call=cl)
 class(results) <- c("psych", "omegaSem")
 return(results)

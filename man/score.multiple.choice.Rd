@@ -47,13 +47,14 @@ The example data set is taken from the Synthetic Aperture Personality Assessment
 
 \seealso{  \code{\link{score.items}}, \code{\link{omega}}}
 \examples{
+if(require(psychTools)) {
 data(psychTools::iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
 score.multiple.choice(iq.keys,psychTools::iqitems)
 #just convert the items to true or false 
 iq.tf <- score.multiple.choice(iq.keys,psychTools::iqitems,score=FALSE)
 describe(iq.tf)  #compare to previous results
-
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

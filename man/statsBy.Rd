@@ -151,7 +151,7 @@ lowerMat(sat.stats$pbg)  #get the probability values
 round(sat.stats$mean)
 
 #Do separate factor analyses for each group
-sb.bfi <- statsBy(psychTools::bfi[1:10], group=psychTools::bfi$gender,cors=TRUE)
+sb.bfi <- statsBy(bfi[1:10], group=bfi$gender,cors=TRUE)
 faBy(sb.bfi,1)  #one factor per group 
 faBy(sb.bfi,2) #two factors per group
 

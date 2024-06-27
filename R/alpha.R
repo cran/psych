@@ -102,7 +102,8 @@
          			           
          			           
         			 key.d <- diag(keys)
-                     C <- key.d %*% C %*% key.d
+        			 R <- key.d %*% R %*% key.d   #added 5/17/24 following report of a bug
+        		     C <- key.d %*% C %*% key.d
                      signkey <- strtrim(keys,1)
             		 signkey[signkey=="1"] <- ""
                      colnames(x) <- paste(colnames(x),signkey,sep="")

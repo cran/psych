@@ -25,6 +25,7 @@ This function may also be used to convert an item response pattern table into a 
 
 \seealso{  \code{\link[psychTools]{cubits}} and  \code{\link{bock}} data sets}
 \examples{
+if(require(psychTools)) {
 data(cubits)
 cubit <- table2matrix(psychTools::cubits,labs=c("height","cubit"))
 describe(cubit)
@@ -32,6 +33,7 @@ ellipses(cubit,n=1)
 data(bock)
 responses <- table2df(bock.table[,2:6],count=bock.table[,7],labs= paste("lsat6.",1:5,sep=""))
 describe(responses)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

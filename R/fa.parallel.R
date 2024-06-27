@@ -1,4 +1,5 @@
 #1/2/14  switched the n.iter loop to a mclapply loop to allow for multicore parallel processing
+#05/111/24  Added  suppressWarnings for the poly and tet options when running in parallel
 
 "fa.parallel" <-
 function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis Scree Plots",n.iter=20,error.bars=FALSE,se.bars=FALSE,SMC=FALSE,ylabel=NULL,show.legend=TRUE,sim=TRUE,quant=.95,cor="cor",use="pairwise",plot=TRUE,correct=.5,sqrt=FALSE)  { 
@@ -80,9 +81,9 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
        cor = {C <- cor(sampledata,use=use)},
        cov = {C <- cov(sampledata,use=use) 
               covar <- TRUE},
-       tet = {C <- tetrachoric(sampledata,correct=correct)$rho},
-       poly = {C <- polychoric(sampledata,correct=correct)$rho},
-       mixed = {C <- mixedCor(sampledata,use=use,correct=correct)$rho},
+       tet = {C <- suppressWarnings(tetrachoric(sampledata,correct=correct)$rho)},
+       poly = {C <- suppressWarnings(polychoric(sampledata,correct=correct)$rho)},
+       mixed = {C <- suppressWarnings(mixedCor(sampledata,use=use,correct=correct)$rho)},
        Yuleb = {C <- YuleCor(sampledata,,bonett=TRUE)$rho},
        YuleQ = {C <- YuleCor(sampledata,1)$rho},
        YuleY = {C <- YuleCor(sampledata,.5)$rho } 
@@ -123,7 +124,7 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
          both =  "eigenvalues of principal components and factor analysis")
     }
         
-         
+      
    values<- t(matrix(unlist(templist),ncol=n.iter))
    
     if(sqrt) {values[values >0] <- sqrt(values[values>0])}   #added 12/13/22

@@ -97,15 +97,15 @@ To create a dictionary, create an object with row names as the item numbers, and
 # rownames(bfi.dictionary) <- bfi.dictionary[1] #the first column had the names
 # bfi.dictionary <- bfi.dictionary[-1]  #these are redundant, drop them
 
-f5 <- fa(psychTools::bfi,5)
-m <- colMeans(psychTools::bfi,na.rm=TRUE)
-item.lookup(f5,m,dictionary=psychTools::bfi.dictionary[2,drop=FALSE])
+f5 <- fa(bfi,5)
+m <- colMeans(bfi,na.rm=TRUE)
+item.lookup(f5,m,dictionary=bfi.dictionary[2,drop=FALSE])
  #just show the item content, not the source of the items
-fa.lookup(f5,dictionary=psychTools::bfi.dictionary[2]) 
+fa.lookup(f5,dictionary=bfi.dictionary[2]) 
 
 #just show the means and the items
 #use the m vector we found above
-itemSort(as.matrix(m),dictionary=psychTools::bfi.dictionary[,2:3,drop=FALSE])
+itemSort(as.matrix(m),dictionary=bfi.dictionary[,2:3,drop=FALSE])
 
 
 #show how to use lookupFromKeys 
@@ -114,10 +114,11 @@ list(agree=c("-A1","A2","A3","A4","A5"),conscientiousness=c("C1","C2","C3","-C4"
 extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
 openness = c("O1","-O2","O3","O4","-O5")) 
 bfi.over <- scoreOverlap(bfi.keys,bfi) #returns the corrected for overlap values
-lookupFromKeys(bfi.keys,psychTools::bfi.dictionary,n=5, cors=bfi.over$item.cor)
+lookupFromKeys(bfi.keys,bfi.dictionary,n=5, cors=bfi.over$item.cor)
  #show the keying information
+ if(require(psychTools)){
 lookupItems("life",psychTools::spi.dictionary) #find those items with "life" in the item
-
+}
 
 }
 

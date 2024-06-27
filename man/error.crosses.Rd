@@ -51,8 +51,8 @@ y <- desc[2,]
 error.crosses(x,y,xlab=rownames(x),ylab=rownames(y))   
 
 #now for a bit more complicated plotting 
-data(psychTools::bfi)
-desc <- describeBy(psychTools::bfi[1:25],psychTools::bfi$gender) #select a high and low group
+data(bfi)
+desc <- describeBy(bfi[1:25],bfi$gender) #select a high and low group
 error.crosses(desc$'1',desc$'2',ylab="female scores",
    xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
@@ -70,6 +70,8 @@ error.crosses(g1.stats,g2.stats,sd=TRUE)
 #and seem even fancy plotting: This is taken from a study of mood
 #four films were given (sad, horror, neutral, happy)
 #with a pre and post test
+if(require(psychTools)){
+
 data(psychTools::affect)
 colors <- c("black","red","green","blue")
 films <- c("Sad","Horror","Neutral","Happy")
@@ -78,7 +80,7 @@ affect.mat <- describeBy(psychTools::affect[10:17],psychTools::affect$Film,mat=T
     labels=films[affect.mat$group1],xlab="Energetic Arousal",
      ylab="Tense Arousal",colors = 
      colors[affect.mat$group1],pch=16,cex=2)
-
+}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

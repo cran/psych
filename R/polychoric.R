@@ -76,9 +76,16 @@ ans
    # diag(R) <- 1
     for (i in 1:(nr-1)) {
         for (j in 1:(nc-1)) {
-            P[i, j] <- mnormt::sadmvn(lower = c(row.cuts[i], col.cuts[j]), 
+        #debugging code removed
+         temp <- mnormt::sadmvn(lower = c(row.cuts[i], col.cuts[j]), 
                 upper = c(row.cuts[i + 1], col.cuts[j + 1]), mean=rep(0,2),
-                varcov = R)   #should we specify the algorithm to TVPACK or Miwa
+                varcov = R) 
+                  #should we specify the algorithm to TVPACK or Miwa
+                  #if(inherits(temp,"try-error")) {temp<- NA
+                  #browser() }
+                  
+             P[i,j] <- temp     
+            #P[i, j] <- mnormt::sadmvn(lower = c(row.cuts[i], col.cuts[j]), upper = c(row.cuts[i + 1], col.cuts[j + 1]), mean=rep(0,2), varcov = R)   #should we specify the algorithm to TVPACK or Miwa
         }}
     P[1,nc] <- pnorm(rc[1]) - sum(P[1,1:(nc-1)] )
     P[nr,1] <- pnorm(cc[1]) - sum(P[1:(nr-1),1] )
@@ -95,6 +102,8 @@ ans
 #        
 #revised 16/6/18 to cover the problem of 0 values in cells
 polyF <- function(rho,rc,cc,tab) {  #doesn't blow up in the case of 0 cell entries  added 16/6/18
+     # if(any(is.nan(cc))) {warning("something is wrong with cc") 
+      #              browser()}
       P <- polyBinBvn(rho, rc, cc) 
      P[P <=0] <- NA   #added 18/2/9
      lP <- log(P)
@@ -171,9 +180,10 @@ if(ML) message("The ML option has been removed from the polychoric function in t
 if(std.err) message("The std.error option has been removed from the polychoric function in the psych package.  Please fix the call.")
 
 
-
-myfun <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
-myfuny <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy,tauy) {polyc(x[,i],y[,j],tau[,i],tauy[,j],global=global,weight=weight,correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
+myfun <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy) {polyc(x[,i],x[,j],tau[,i],tau[,j],global=global,weight=weight,
+                correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
+myfuny <- function(x,y,i,j,gminx,gmaxx,gminy,gmaxy,tauy) {polyc(x[,i],y[,j],tau[,i],tauy[,j],global=global,weight=weight,
+               correct=correct,gminx=gminx,gmaxx=gmaxx,gminy=gminy,gmaxy=gmaxy) }
 
 matpLower <- function(x,nvar,gminx,gmaxx,gminy,gmaxy) {
 k <- 1
@@ -202,7 +212,7 @@ fixed <- sum(fixed)
 if((fixed > 0) && ( correct > 0)) { warning(fixed ," cells were adjusted for 0 values using the correction for continuity. Examine your data carefully.")}
 
 return(mat)} else {
-warning("Something is wrong in polycor ")
+warning("Something is wrong in polycor  -- Try setting correct=0 ")
 return(poly)
 #never actually gets here
 stop("we need to quit because something was seriously wrong.  Please look at the results")} 
@@ -287,7 +297,12 @@ if (min(xmax) != max(xmax)) {global <- FALSE
 xfreq <- apply(x,2,tabulate,nbins=nvalues)
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
-tau <- qnorm(apply(xfreq,2,cumsum)[1:(nvalues-1),])  #these are the normal values of the cuts   #moved ) to after ]
+#the next 3 lines get around a problem with precision of cumsum
+pre.tau <- (apply(xfreq,2,cumsum)[1:(nvalues-1),])
+pre.tau[pre.tau > 1] <- 1      #added 5/12/24 to get around precision problem 
+tau <- qnorm(pre.tau)
+
+  #these are the normal values of the cuts   #moved ) to after ]
 if(!is.matrix(tau)) tau <- matrix(tau,ncol=nvar)
 #rownames(tau) <- levels(as.factor(x))[1:(nvalues-1)]  #doesn't work if one response is missing
 rownames(tau) <- 1:(nvalues -1) 
@@ -322,7 +337,12 @@ mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra 
    yfreq <- apply(y,2,tabulate,nbins=nvaluesy)
  	n.obs.y <- colSums(yfreq)
 	yfreq <- t(t(yfreq)/n.obs.y)
-	tauy <- qnorm(apply(yfreq,2,cumsum))[1:(nvalues-1),]
+	
+	pre.tauy <- apply(yfreq,2,cumsum)[1:(nvalues-1),]    #added 5/12/24 to cope with precision problem
+	pre.tauy[pre.tauy > 1] <- 1
+	tauy <- qnorm(pre.tauy)
+	
+	#tauy <- qnorm(apply(yfreq,2,cumsum))[1:(nvalues-1),]
 	if(!is.matrix(tauy)) tauy <- matrix(tauy,ncol=nvar.y) 
 	rownames(tauy) <- 1:(nvalues-1)
 	colnames(tauy) <- colnames(y)

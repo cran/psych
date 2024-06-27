@@ -77,14 +77,14 @@ Returns (invisibily) either a describeBy or describe object as well as the order
  \code{\link{describe}},  \code{\link{describeBy}}, or  \code{\link{statsBy}} as well as  \code{\link{error.bars}},  \code{\link{error.bars.by}},  \code{\link{statsBy}}, \code{\link{bestScales}} or \code{\link{cohen.d}}
 }
 \examples{
-temp <- error.dots(psychTools::bfi[1:25],sort=TRUE, 
+temp <- error.dots(bfi[1:25],sort=TRUE, 
 xlab="Mean score for the item, sorted by difficulty")
-error.dots(psychTools::bfi[1:25],sort=TRUE, order=temp$order,
+error.dots(bfi[1:25],sort=TRUE, order=temp$order,
  add=TRUE, eyes=TRUE) #over plot with eyes
 
-error.dots(psychTools::ability,eyes=TRUE, xlab="Mean score for the item")
+#error.dots(psychTools::ability,eyes=TRUE, xlab="Mean score for the item")
 
-cd <- cohen.d(psychTools::bfi[1:26],"gender")
+cd <- cohen.d(bfi[1:26],"gender")
 temp <- error.dots(cd, select=c(1:15,21:25),head=12,tail=13,
       main="Cohen d and confidence intervals of BFI by gender")
 error.dots(cd,select=c(16:20),head=13,tail=12,col="blue",add=TRUE,fg="red" ,main="")

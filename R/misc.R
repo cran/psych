@@ -241,14 +241,13 @@ for(i in 1:n.look){
 return(possible)
 }
   
-  
   #lookup which x's are found in y[c1],return matches for y[]
 "lookup" <- 
 function(x,y,criteria=NULL) {
 if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
      temp <- match(x,y[,criteria])}
      if(any(!is.na(temp))) {
- y <- (y[temp[!is.na(temp)],,drop=FALSE]) } else {y <- NA}
+ y <- format(y[temp[!is.na(temp)],,drop=FALSE],justify="left") } else {y <- NA}
 return(y)}
  
  #use lookup to take fa/ic output and show the results 
@@ -295,6 +294,7 @@ return(y)}
    rownames(f) <- ord
    if(!is.null(dictionary))  { 
    contents <- lookup(rownames(f),dictionary)} else {message("fa.lookup requires a dictionary, otherwise just use fa.sort")}
+   contents <- format(contents, justify="left")
    if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),h2=round(h2,digits=digits),com=round(com,digits=digits))} else {
    results <- data.frame(round(unclass(f),digits=digits))}
    
@@ -416,6 +416,7 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
    f <- make.keys(items,keys.list)}
     keys.list <- fa.sort(f)
      contents <- lookup(rownames(f), y=dictionary)
+     contents <- format(contents,format="left")
     rownames(contents)[rowSums(f) <0 ] <- paste0(rownames(contents)[rowSums(f)<0],"-")
      return(contents)
     }
@@ -424,7 +425,7 @@ if(is.null(names(fa.results)) )  {temp <- fa.results   #the matrix form
 "itemSort" <- function(m, dictionary, ascending=TRUE, digits = 2) {
  contents <- lookup(rownames(m), y=dictionary)
  results <- data.frame(means=round(m,digits=digits),contents)
- results <- psychTools::dfOrder(results,ascending=ascending)
+ results <- dfOrder(results,ascending=ascending)
  return(results)
 }
  
@@ -478,7 +479,7 @@ function (f,m, dictionary,cut=.3, digits = 2) {
     } else {means <- m}
     f <- data.frame(unclass(f),means=means)
 
-    contents <- lookup(rownames(f), y=dictionary)
+    contents <- format(lookup(rownames(f), y=dictionary),justify="left")
     if (!is.null(h2)) {
         results <- data.frame(round(f, digits = digits), 
             com = round(com, digits = digits), h2 = round(h2, 
@@ -614,7 +615,7 @@ text(x,y-2,"Unreliable but Valid")
 #finally added the char2numeric so it will not choke on character variables   1/3/21
 
 #added the cor option 11/18/23
-"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE) {
+"cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE,pval=FALSE) {
 multi <- FALSE
 if(is.list(x) && is.null(y)) {multi <- TRUE
  n <- length(x)
@@ -645,7 +646,15 @@ mixed = {R <- mixedCor(cbind(x,y))$rho}
 if(show) {
 if(multi) {lowerMat(R,digits) } else {print(round(R,digits))}
 }
+if(pval) {n <- nrow(x)
+   pval <- r2p(R,n)
+    R <-list(r=R,pval=pval)
+    class(R) <- c("psych","cor2")}
 invisible(R)}
+
+r2p <- function(rho,n) {rast <- r2t(rho,n)
+   p <- 1-pt(abs(rast),df=n)
+   return(p)}
 
 levels2numeric <- function(x) {
 n.var <- ncol(x)
@@ -806,4 +815,72 @@ SAPAfy <- function(x,y)
   return(x)
 }
 
+
+
+#not exported, just local to psych   -- the public version is in psychTools
+ #Completely rewritten 1/20/18 to follow  the help pages for order more closely
+#sort a data frame according to one or multiple columns 
+#will only work for data.frames (not matrices)
+#needs to not quit if there is nothing to do
+#Then rewritten again 01/02/22 to allow sorting correlation matrices as well
+#Minor tweak 2/21/22 for the case of a single column
+#There are actually two cases; for data.frames (select=null) and for correlations (select = column names)
+dfOrder <- function(object,columns=NULL,absolute=FALSE,ascending=TRUE) {
+  if(is.matrix(object)) {mat<- TRUE
+             object <- as.data.frame(object)} else {mat<-FALSE}
+    if(is.null(ncol(object))| NROW(object) ==1) {return(object)} else {
+   
+   if(is.null(columns)) columns <- colnames(object)
+    if(psych::isCorrelation(object)) {select <- columns} else {select<- NULL}
+	 nc <- length(columns)
+	 cn <- colnames(object)
+	 if(is.null(select)) {
+	 #this allows us to sort columns independently of each other 
+ 	 if(ascending) {temp <- rep(1,nc)} else {temp <- rep(-1,nc)}    
+ 	  if(is.character(columns)) {  #treat character strings 
+   		 temp [strtrim(columns,1)=="-"] <- -1
+    	 if(any(temp < 0  ) )  {columns <- sub("-","",columns) }
+    	 
+    	} else {temp[columns < 0] <- -1
+    	        columns <- abs(columns) }
+    
+   if(is.character(columns) ) {  for (i in 1:length(columns)) {columns[i] <- (which(colnames(object) == columns[i]))
+       }
+       columns <- as.numeric(columns)
+       }
+   
+   
+    if(absolute) {  temp.object<- t(t(abs(psych::char2numeric(object[columns]))) * temp)  } else {
+    	  temp.object<- t(t(psych::char2numeric(object[columns])) * temp)}
+   #   if(absolute) {temp.object <-  psych::char2numeric(object[columns])} else {
+    #  temp.object <- psych::char2numeric(object[columns])}
+   	  temp.object <- data.frame(temp.object)
+
+}  else { #the correlation case
+if(!is.numeric(select)) {if (!all(select %in% cn)) stop ('Variable names are incorrect')}
+   # if(absolute) object <- abs(object)
+  temp.ord <- apply(abs(object[,select,drop=FALSE]),1,which.max)
+  if(!ascending) temp.ord <- length(select)- temp.ord
+if(absolute) { t.m <- apply(abs(object[,select,drop=FALSE]) ,1,max)} else {
+  temp.max <- apply(object[,select,drop=FALSE] ,1,max)
+  temp.min <- apply(object[,select,drop=FALSE],1,min) 
+  abs.max <- apply(abs(object[,select,drop=FALSE]),1,max)
+  t.m <- abs.max 
+  t.m[abs.max > temp.max] <- temp.min[abs.max > temp.max]}
+  temp.max <- t.m + 3*(length(select)-1+ temp.ord)
+  # else {temp.ord <- apply(object[,select],1,which.min)
+#  temp.max <- apply(object[,select],1,min)}
+# temp.max <- temp.max + 3 * (length(select) + 1 +temp.ord) #this takes into account the possibility of signed values
+  ord <- order(temp.max,decreasing=!ascending)
+
+  if(NCOL(object) == NROW(object)) {return(object[ord,ord])} else {return(object[ord,])}
+ }
+   	 ord <- do.call(order,temp.object) 
+   	 if(mat) object <- as.matrix(object)
+   	 
+     if(length(ord) > 1) {
+   	   return(object[ord,]) } else {return(object)}   #added length test 4/26/18
+       }
+       }
+       
 

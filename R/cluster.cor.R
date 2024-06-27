@@ -1,5 +1,5 @@
 "cluster.cor" <-
-
+#fixed 6/14/24 to allow the use of a keys list
 #added  smc.items   30.12/13 to reduce the number of calls to SMC to once
 function(keys,r.mat,correct=TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE) { #function to extract clusters according to the key vector
 				#default is to correct for attenuation and show this above the diagonal

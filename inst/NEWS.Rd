@@ -2,40 +2,37 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.4.3 (2024-03-10)}{ 
+\section{Changes in psych version 2.4.7 (2024-06-09)}{ 
   \subsection{Introduction}{
     \itemize{
-     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R. The functions are also written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University.
+     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.4.3 is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.1 (Added January 15, 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install this development version, use the command:  install.pa ie. Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
+      \item Version 2.4.7  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.6 (Added June , 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
+    
+     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
        
   }   
  }
  }
  
- \section{Still to do version 2.4.4 (e.g., a wish list)}{
+ \section{Still to do version 2.4.7 (e.g., a wish list)}{
     \itemize{
-      \item Suggestions are welcome, but the current list includes the following (and has included for a long time, so lets be patient):
+      \item Suggestions are welcome, but the current list includes the following (and has included some for a long time, so lets be patient):
    
       \item Add confirmatory clustering to ICLUST
-      \item Get cluster scores in ICLUST -- analogous to factor scores (requested by Ben Shalet)
      
       \item Add the ability to create multiple groups in sim.irt functions
      
-      \item Add omega factor extension figure option (requested by Sylia Wilson)     
+      \item Add omega factor extension figure option (requested by Sylia Wilson). Partly done.     
      \item Add option to do subject density and item density plot to IRT plot.
-      \item add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
-      \item add the ability to add labels to lavaan.diagram -- in some sense, this is already there in lavaan.  
-      
- 
-     \item To help those who want to simulate a bifactor model, make it explicit.  
-     
+      \item Add the ability to scale radar plots of raw data from min to max, and add a scale to radar and spider plots (e.g. circular histograms)
+        
      \item Check the bias in bootstrap resampling using cor.ci  
      
-     \item add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
+     \item Add symmetric=TRUE to eigen calls, think about only.values=TRUE for some cases 
      \item Add an analysis of DIF to the irt functions  (requested by David Condon)
      \item Add some power functions.
      
@@ -43,7 +40,7 @@
     
      \item Add a function for the Meng, Rosenthal, Rubin tests for multiple comparisons of correlations.
      
-     \item Add complexity  to omega solution
+     
      \item Add statistic to fa to report max fa. (partly done with fm = minrank)
      \item Parallize iterations for confidence intervals in omega 
      \item Probably should drop much of the stats when doing iterations with fa or omega
@@ -51,44 +48,80 @@
     
      \item Allow  the choice between regression vs. correlation in esem between X and Y sets.
     
-     \item Improve documentation for esem and cosinor
+     \item Improve documentation for esem
 
       \item Add interbattery diagram to the structure diagram function.    
     
-      \item Add Krippendorf's alpha?
+      \item Add Krippendorf's alpha?  -- probably not worth it
      
       \item Add the ability to weight factor residuals to allow WLMS
-     
-     
-      \item Add the Hull method for number of factors      
+          
+      \item Add the Hull method for number of factors. Probably not worth it in that it would give the solution too much importance.  Number of factors is at best an estimate.
+          
       \item Add an option for the correlation type in bestScales (requested by Lorien Elleman).
        \item Change help file examples so they are cleaner for people who example(fn)
-    \item Make the main functions more "tidy" in terms of their output
+    
     \item Add testthat functionality   - finally started 10/15/23  Making slow progress
     
-    \item Add parse capabilities to error.bars, error.dots, spider, etc. so that grouping variables can be specified in formula mode.  Partially done (not yet for spider)
+     
+     \item Need to add documentation to mediate/moderate/lmCor for what dfs are used and why.
   
-     \item Possible bug in cohen.kappa confidence intervals (reported by Marco Fornili)
-     \item Need to add documentation to mediate/moderate/setCor for what dfs are used and why.
   
-   \item Add an n.iter option to pca (requested by Michael Wood, but I am not sure why) 
-   \item There is a bug in bestItems for the case of no iterations and dictionary = something
    \item Fix bug in fa.lookup for omega g values that are negative (but when does this happen?)
-   \item Fix bug in bestScales that does not report items if not iterating
+
    \item Adjust stats in fa.extend to report the raw and then the extended values
-   \item Improve documentation for extension diagram to clarify that it works with fa.results
   
+
    \item Add just check variables specified for being numeric (instead of entire data.frame)  (suggested by Fransisco Wilheim)
   
    \item Pretty up the output from mediate (perhaps make a mediate2latex function)
 
    \item Improve the print function for bassAckwards
    \item Speed up fa.parallel for large number of variables (requested by Matt Zefferman)
-   	\item Add df2word to parallel df2latex for those poor people who need to use proprietary word processors to submit journal articles. 
+ \item Add VM correlation to lmCor
 
       } 
+   \subsection{Additions}{
+     \itemize{
+      \item At long last. added the ability to get  cluster scores in ICLUST -- analogous to factor scores (requested years ago by Ben Shalet). See help page for an example.  ICLUST now returns the keys.list to be use for scoring.
       
-       
+      
+     \item Finally added Left justification to dictionary content in lookupItems and in bestScales 
+          \item Added the ability to show probability stars in corPlot.
+          \item Added a short function (r2p) to convert r to p values.
+          \item Added the pval option to cor2
+          \item Added a somewhat more useful error message when polychoric fails.  It now suggests setting correct=FALSE. 
+          \item Added complexity  to omega solution
+          \item Added an example of simulating a bifactor model to the sim help page.
+          \item Added RV to find the RV correlation between two matrices. Works with raw data as well as correlation/covariance matrices.  
+          
+        \item Added the min option to iclust when finding beta.  
+        \item Added the ability to call reliability directly from ICLUST to get several alternative estimates of the general factor saturation. 
+        \item Added the ability to process data without column names to reliability and splitHalf.  
+        \item Improved the documentation to iclust discussing original versus purified scores.  
+        \item Modfified iclust.diagram to have the ability to draw just alpha or  just beta. '
+        \item A number of changes to ICLUST including various patches to make the summaries work. 
+        \item Added the goodness of fit statistics from fa.stats to iclust output. 
+        \item Added Iclust beta values to reliability function.
+        \item Dropped the link to lme and xyplot in the help menu for mlr because this was causing problems for CRAN.
+        \item Made GPArotation depends rather than suggested to get around the no-suggests check on CRAN.      
+     }
+     }  
+ \subsection{Bugs Fixed}{
+ \itemize{
+  \item Strange bug introduced into score.multiple.choice by qgraph reported by Michael Truong.  Fixed by changing class of describe object used in score.multiple.choice to just be a data.frame.
+            \item Fixed df2latex for short names not labeling h2 (reported by Alex Weiss )
+            \item Fixed a problem in polychoric which was leading to NaN values in rare cases due to a precision problem in cumsum of frequencies.  Partly due to the correction for continuity. (Reported by Esmerala Ruiz Pujada with a nice data set that led to the problem.)
+            \item Fixed a minor problem in print_psych.bestScales for dictionaries with mislabeled columns.
+            \item Fixed alpha to properly report std.alpha in case of a keys vector (reported by Benjamin Bui)
+   \item Fixed problem in irt.fa that was not passing correct to the polychoric function 
+   \item Corrected formula for BIC in the fa help page (reported by Jannick Orzek)
+   \item Fixed lmCor to properly calculate unweighted R between sets.  (Was not correct for negative correlations)
+   \item Various patches to omega.sem related functions to allow them to work with improved omeaga
+   \item Fixed a bug in ICLUST where the final summary correlation matrix was wrong. Does not affect the cluster results. }} .
+      
+ }     
+\section{Changes in psych version 2.4.4 (2024-04-01)}{        
 \subsection{Still to do}{
   \itemize{
   
@@ -100,18 +133,13 @@
    \item Fix a bug in alpha when finding average R  (need to use cor rather than cov2cor when treating missing data)
    
     \item Add weight option to statsBy (but the question is how to handle missing data)
-   
-   
-   
+  
     \item Adjust the se for correlations (in bestScales) to take into account the pairwise count, rather than the n.obs
    
-  
      \item Improve documentation for thurstone.  Would help if we had an example of scaling.
       \item scoreIrt.2pl needs to be able to adjust for group differences correctly
      
    
-     
-  
   \item Possible problem in pooled correlations for statsBy
    \item Think about improvements in itemLookup to show means if desired
    \item Fix bug in polychoric where it doesn't handle empty cells very well. (reported by Björn Büdenbender).  Or at least improve the documentation about why this is a problem.
@@ -122,7 +150,7 @@
    \item  create a scoreFastBy  
    \item improve the help menu for sim.multi  and return the latent values 
  \item think about linking person scores to item difficulty scores in IRT
- \item Left justify content in lookupItems  (not sure how to do this)
+ 
  
  \item Consider using the Jennrich approach to standard errors of rotated loadings
  
@@ -130,7 +158,7 @@
   
   \item Possible problem with the use of try  in several functions.
  \item Need to fix omega so that alpha is correctly calculated in case of no general factor
- \item It would be nice to add an option to display confidence intervals of correlations in error.dots 
+ 
 \item allow omega style hierarchical structure for x (and y) in esem     
       }
   }
@@ -138,6 +166,8 @@
  
  \subsection{Additions}{
           \itemize{
+          
+          \item Modified fa.sort to include cor2 output 
           \item Added the score option to scoreOverlap so that if given raw data, it will find the scale scores as well as the corrected for overlap statistics.  Note that the scale scores are not corrected for overlap. 
           \item Minor tweaks to scoreIrt.2pl to check for bad data (missing cells ).  This was leading to the function hanging forever in the case of pairwise counts of 0.
           \item Added fix.dlpyr (as a local function) to statsBy and describeBy to not choke on Tibbles. Had added this to alpha several years ago.
@@ -154,17 +184,17 @@
          \item Changed the class of describe output to be c("psych", "Pdescribe" ,"data.frame") to avoid choking if Hmisc is in use
          \item Added the ability to use mean.weights in statsBy (still under testing)
          \item Added paSelect to allow parallel analyses of subsets of items using a keys list.  
-         \item Added vssSelect to allow VSS analyses of subsets of items using a kes list.
+         \item Added vssSelect to allow VSS analyses of subsets of items using a keys list.
          }
           }
-          \subsection{Bugs fixed}{
+  \subsection{Bugs fixed}{
           \itemize{
         
            \item changed the number of elements in the unit.Circle in spider/radar to get more precision
              \item Added a conversion to numeric in mediate to get around a problem with variables that are factors. (Problem reported by Lynn Bueeler )
               \item Finally fixed  bug in alpha where it finds R from cov2cor instead of directly (reported by Karl Ove Hufthammer )
             \item  Fixed item.lookup so that it will report item means as well as factor loadings.
-            \item Strange bug introduced into score.multiple.choice by qgraph reported by Michael Truong.  Fixed by changing class of describe object used in score.multiple.choice to just be a data.frame.
+           
            }}
            }
  
@@ -855,6 +885,7 @@
     		\item Fixed a problem in mediate  when doing just regressions with no mediation and just the correlation matrix.
     		\item Fixed biplot.psych so that it keeps the correct frame of reference so that abline(h=0) will work.  (Reported by Fabio Daniel Trinco.)
     		\item Minor tweak to setCor to properly print unweighted multiple R
+    		\item Investigated possible  bug in cohen.kappa confidence intervals (reported by Marco Fornili). Output agrees with CohenKappa of DescTools nd ci.kappa of statpsych.
     		}
   	}
   }

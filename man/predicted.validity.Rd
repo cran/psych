@@ -50,8 +50,7 @@ Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.
 \seealso{ \code{\link{reliability}}, \code{\link{scoreItems}}, \code{\link{scoreFast}}
 }
 \examples{
-pred.bfi <- predicted.validity(psychTools::bfi[,1:25], psychTools::bfi[,26:28],
-     psychTools::bfi.keys)
+pred.bfi <- predicted.validity(bfi[,1:25], bfi[,26:28], bfi.keys)
 pred.bfi
 }
 \keyword{ multivariate }

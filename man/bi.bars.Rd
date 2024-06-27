@@ -24,8 +24,8 @@
 
 \examples{
 #data(bfi)
-bi.bars(psychTools::bfi,"age","gender" ,ylab="Age",main="Age by males and females")
- bi.bars(psychTools::bfi,"education","gender",xlab="Education",
+bi.bars(bfi,"age","gender" ,ylab="Age",main="Age by males and females")
+ bi.bars(bfi,"education","gender",xlab="Education",
      main="Education by gender",horiz=FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

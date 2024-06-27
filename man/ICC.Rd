@@ -144,11 +144,12 @@ sf  #example from Shrout and Fleiss (1979)
 ICC(sf,lmer=FALSE)  #just use the aov procedure
    
 #data(sai)
-sai <- psychTools::sai
+if(require(psychTools)) {sai <- psychTools::sai
 sai.xray <- subset(sai,(sai$study=="XRAY") & (sai$time==1))
 xray.icc <- ICC(sai.xray[-c(1:3)],lmer=TRUE,check.keys=TRUE)
 xray.icc
 xray.icc$lme  #show the variance components as well
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

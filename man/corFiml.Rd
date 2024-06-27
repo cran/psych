@@ -34,10 +34,10 @@ The functions used in lavaan are not exported and so have been copied (and simpl
 \seealso{ To use the resulting correlations, see \code{\link{fa}}.  To see the pairwise pattern of missingness, see \code{\link{count.pairwise}}. 
 }
 \examples{ 
-rML <- corFiml(psychTools::bfi[20:27])
-rpw <- cor(psychTools::bfi[20:27],use="pairwise") 
+rML <- corFiml(bfi[20:27])
+rpw <- cor(bfi[20:27],use="pairwise") 
 round(rML - rpw,3)
-mp <- corFiml(psychTools::bfi[20:27],show=TRUE)
+mp <- corFiml(bfi[20:27],show=TRUE)
 mp
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

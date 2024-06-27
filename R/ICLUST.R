@@ -16,12 +16,17 @@
 #ICLUST is the main function and calls other routines
 "ICLUST" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE, 
- correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {
-iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,digits,labels,cut,n.iterations,title,plot,weighted,cor.gen,SMC,purify,diagonal)}
+ correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,
+  n.iterations=0,title="ICLUST",cor="cor",plot=TRUE,weighted=TRUE,cor.gen =TRUE,
+  SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs= NA, reliability=FALSE ) {
+iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,
+        digits,labels,cut,n.iterations,title,cor, plot,weighted,cor.gen,SMC,purify,diagonal,n.obs,reliability)}
 
 
 "iclust" <- 
- function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE ) {#should allow for raw data, correlation or covariances
+ function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,
+      beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",
+      cor="cor", plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs=NA, reliability=FALSE ) {#should allow for raw data, correlation or covariances
 
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,cor.gen=TRUE) 
  cl <- match.call()
@@ -29,9 +34,27 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
  
  ICLUST.debug <- FALSE
  
-	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,correct=correct,correct.cluster=correct.cluster,reverse=reverse,beta.min=beta.min,output=output,digits=digits,weighted=weighted,cor.gen=cor.gen,SMC=SMC) 
+	ICLUST.options <- list(n.clus=nclusters,alpha=alpha,beta=beta,beta.size=beta.size,alpha.size=alpha.size,
+	correct=correct,correct.cluster=correct.cluster,reverse=reverse,beta.min=beta.min,output=output,
+	 digits=digits,weighted=weighted,cor.gen=cor.gen,SMC=SMC) 
 	
-	if(dim(r.mat)[1]!=dim(r.mat)[2]) {r.mat <- cor(r.mat,use="pairwise") } else {r.mat <- cov2cor(r.mat)}    #cluster correlation matrices, find correlations if not square matrix -- added the conversion from covariances to correlations, March, 2012
+	
+	if(dim(r.mat)[1]!=dim(r.mat)[2]) {     #added 6/12/24 to allow flexibility in correlations
+	  n.obs <- NROW(r.mat)
+	switch(cor,
+	 cor = {r.mat <- cor(r.mat, use="pairwise")},
+	 
+       spearman = {r.mat <- cor(r.mat,use=use,method="spearman")},
+       kendall = {r.mat <- cor(r.mat,use=use,method="kendall")},
+       tet = {r.mat<- tetrachoric(r.mat,correct=0)$rho},
+       poly = {r.mat <- polychoric(r.mat,correct=0)$rho},
+       tetrachoric = {r.mat <- tetrachoric(r.mat,correct=0)$rho},
+       polychoric = {r.mat <- polychoric(r.mat,correct=0)$rho},
+       mixed = {r.mat <- mixedCor(r.mat,use=use,correct=0)$rho}  
+	   ) 
+	    
+	   
+	          } else {r.mat <- cov2cor(r.mat)}    #cluster correlation matrices, find correlations if not square matrix -- added the conversion from covariances to correlations, March, 2012
 	if(!is.matrix(r.mat)) {r.mat <- as.matrix(r.mat)}    # for the case where we read in a correlation matrix as a data.frame
 	nvar <- dim(r.mat)[2] 
 	if(nvar < 3 ) {message("Cluster analysis of items is only meaningful for more than 2 variables. Otherwise, you will find one cluster that is just the composite of the two.  Beta = Alpha = 2*r/(1+r).  Have you made a mistake? \n Try calling the alpha function to give some trivial statistics.")
@@ -66,7 +89,7 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	if(is.matrix(iclust.results$clusters) ) {
 		eigenvalue <- diag(t(loads$pattern) %*% loads$loading)
 		sorted.cluster.keys.ord <- order(eigenvalue,decreasing=TRUE)
-		sorted.cluster.keys <- iclust.results$clusters[,sorted.cluster.keys.ord]
+		sorted.cluster.keys <- iclust.results$clusters[,sorted.cluster.keys.ord,drop=FALSE]  #added drop=FALSE 5/24/24
 	loads <- cluster.loadings(sorted.cluster.keys,r.mat,SMC=SMC)  #these are the original cluster loadings with clusters sorted by eigenvalues   
 	iclust.results$clusters <- sorted.cluster.keys
 	cluster.beta <- iclust.results$results[colnames(sorted.cluster.keys),"beta"]
@@ -115,12 +138,28 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
    
 	p.fit <- cluster.fit(r.mat,as.matrix(loads$loadings),clusters,diagonal)
 	p.sorted <- ICLUST.sort(ic.load=loads,labels=labels,cut=cut,keys=TRUE)   #at this point, the clusters have been cleaned up, but are not in a sorted order.  Sort them
+		keys <- keys2list(p.sorted$clusters)
+	    unsorted.keys <- make.keys(NROW(r.mat),keys,rownames(r.mat))   #this gets us ready for cluster.cor
 	
-	purified <- cluster.cor(p.sorted$clusters,r.mat,SMC=SMC,item.smc=smc.items)
+	purified <- cluster.cor(unsorted.keys,r.mat,SMC=SMC,item.smc=smc.items)    #fixed 6/14/24 
 	class(loads$loadings) <- "loading"
-	result <- list(title=title,clusters=iclust.results$clusters,corrected=loads$corrected,loadings=loads$loadings,pattern=loads$pattern,G6 = loads$G6,fit=fits,results=iclust.results$results,cor=loads$cor,Phi=loads$cor,alpha=loads$alpha,beta=cluster.beta,av.r = loads$av.r,size=loads$size,
-	sorted=sorted,
-	p.fit = p.fit,p.sorted = p.sorted,purified=purified,purify=purify,call=cl)
+
+	original.keys <- keys2list(iclust.results$clusters)#these are as defined in the diagram
+	if(reliability) {rel <- suppressWarnings(reliability(keys,r.mat, n.obs=n.obs))} else {rel = NA}   #if called from reliability don't return the favor
+	
+	ic.stats<- factor.stats(r.mat,f = loads$pattern,phi = loads$cor, n.obs=n.obs)
+	
+	result <- list(title=title,clusters=iclust.results$clusters,
+	 	corrected=loads$corrected,
+	  loadings=loads$loadings,pattern=loads$pattern,
+	  G6 = loads$G6,fit=fits,
+	  results=iclust.results$results,
+	  cor=loads$cor,Phi=loads$cor,alpha=loads$alpha,beta=cluster.beta,
+	  av.r = loads$av.r,size=loads$size,
+	   sorted=sorted,keys=keys, keys.org =original.keys, reliability=rel, 
+	p.fit = p.fit,p.sorted = p.sorted,
+	 purified=purified,purify=purify,
+	 stats = ic.stats, call=cl)
 	#if(plot && requireNamespace('Rgraphviz')) {ICLUST.rgraph(result,labels=labels,title=title,digits=digits)}
 	result$order <- iclust.diagram(result,labels=labels,main=title,digits=digits,plot=plot)
 	class(result) <- c("psych","iclust")

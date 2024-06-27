@@ -140,7 +140,7 @@ cat("\n Test of fa.extension \n")
 #not run by default for official testing
 if(fapc) {
 cat("\n Test of various factor solutions\n") 
-   data1 <- psychTools::bfi
+   data1 <- psych::bfi[,1:25]
  
    f3 <- fa(data1[1:15],3,n.iter=5)
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="Varimax")
@@ -173,12 +173,14 @@ cat("\n Test of various factor solutions\n")
    f3 <- fa(data1[1:15],3,n.iter=5,rotate="bentlerQ")
    
    cat("\n Test of factoring and principal components \n") 
-     data2 <- as.data.frame(psychTools::ability)
-    f1 <- fa(data2)
+   
+   if(fapc) {
+     #data2 <- psychTools::ability  
+   # f1 <- fa(data2)
     
-    fpoly <- fa(data2[1:10],2,n.iter=5,cor="poly")
-    f1 <- fa(data2,n.iter=4)
-    f1p <- fa(data2,n.iter=4,cor="tet")
+    #fpoly <- fa(data2[1:10],2,n.iter=5,cor="poly")
+    #f1 <- fa(data2,n.iter=4)
+    #f1p <- fa(data2,n.iter=4,cor="tet")
      cat("\n Test of principal components \n") 
    p3 <- principal(data1[1:15],3)
    p3 <- principal(data1[1:15],3,rotate="Varimax")
@@ -216,12 +218,15 @@ cat("\n Test of various factor solutions\n")
    
       cat("\n Test of principal components of polychorics \n") 
 	
-	R <- polychoric(data2[1:10])$rho
-    fpoly <- principal(R,2)  #cor is not an option in principal
+	
+    pc.poly <- principal(data1,2, cor="poly")  
     
-    f1 <- principal(data2)
-    R <- tetrachoric(data2)$rho
-    f1p <- principal(R)
+    # data2 <- as.data.frame(psychTools::ability)
+    
+  #  f1 <- principal(data2)
+  #  R <- tetrachoric(data2)$rho
+   # f1p <- principal(R)
+    }
 }
  
 

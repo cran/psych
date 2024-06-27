@@ -469,5 +469,14 @@ for (i in 1:ngroups) {
       if(is.numeric(keys[[key]])) {select <- c(select,itemname[abs(unlist(keys[[key]]))]) } else {select <- c(select,sub("-", "", unlist(keys[[key]]))) }    
     }}
     return(select)}
-      
-  
+    
+    
+#Added 5/23/24 in response to a request from  David Eagle     
+ "removeMissing" <- function(x,max.miss=0) {
+    temp <- x$scores
+    missing <- x$missing
+    for(i in 1:NCOL(temp)){
+ 	temp[missing[,i] >  max.miss,i]  <- NA
+    }
+    return(temp)
+    }

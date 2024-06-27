@@ -127,9 +127,9 @@ Examples of large data sets with massively missing data are taken from the SAPA 
 
 
 \examples{
-R <- bigCor(psychTools::bfi,10)
+R <- bigCor(bfi,10)
 #compare the results with 
-r.bfi <- cor(psychTools::bfi,use="pairwise")
+r.bfi <- cor(bfi,use="pairwise")
 all.equal(R,r.bfi)
 }
 

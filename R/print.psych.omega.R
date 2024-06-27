@@ -40,8 +40,9 @@ if(is.null(cut)) cut <- .2
             p2 <- loads[,"p2"]
          	mp2 <- mean(p2)
          	vp2 <- var(p2)
+         	com <- loads[,"com"]
          	p2 <- round(p2,digits)
-	    	print(cbind(fx[,1:(nfactor+sort)],h2,u2,p2),quote="FALSE")
+	    	print(cbind(fx[,1:(nfactor+sort)],h2,u2,p2,com),quote="FALSE")
 	    	
 	   
        numfactors <- dim(x$schmid$sl)[2] -3

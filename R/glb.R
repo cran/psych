@@ -19,10 +19,10 @@ if(dim(r)[1] != dim(r)[2]) {r <- cor(r,use="pairwise")} else {r <- cov2cor(r)}  
              signkey[signkey=="1"] <- ""
              m.names <- paste(m.names,signkey,sep="")
              colnames(m) <- rownames(m) <- m.names             
- worst <- ICLUST(r,2,plot=FALSE)
-  keys <- worst$p.sorted$cluster
+ worst <- ICLUST(r,2,plot=FALSE,reliability=FALSE)
+   keys <- worst$p.sorted$cluster
  
- best <- ICLUST(m,2,plot=FALSE,SMC=FALSE)
+ best <- ICLUST(m,2,plot=FALSE,SMC=FALSE,reliability=FALSE)
  keys <- matrix(rep(0,nvar*2),ncol=2)
  keys <- best$p.sorted$cluster
  

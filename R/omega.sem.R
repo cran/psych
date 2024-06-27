@@ -10,7 +10,9 @@ if(is.list(om.results)) {
   #first some basic setup parameters 
   
    num.var <- dim(factors)[1]   #how many variables?
-  if (sl) {num.factors <- dim(factors)[2] -4 } else {num.factors <- dim(factors)[2]}  #g, h2,u2,p2
+   num.factors <- NCOL(factors)#this is the default, but if we have h2 values, then adjust it
+  
+  if (sl) {if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -2 }} else {if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2")-1} } #g, h2,u2,p2
  # if(num.factors ==1) {warning("giving lavaan code for a 1 factor omega doesn't really make sense.")}
   # return(list(sem=NULL,lavaan=NULL))}
    gloading <- om.results$schmid$gloading
@@ -33,7 +35,7 @@ if(is.list(om.results)) {
             sem <- matrix(rep(NA,6*(num.var + num.factors)+3),ncol=3)  #used for sem diagram
             
                        }
-            
+
   #show the cluster structure with ellipses
    if (sl) {
    l <- matrix(factors[,2:(num.factors+1)],ncol=num.factors) } else { l <- factors }

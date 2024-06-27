@@ -119,8 +119,8 @@ print(r.test(n =  5105 , r12 =  r12, r23 = r23 , r13 =  r13 ),digits=8) #p< <0.1
 
 
 #an example of how to compare the elements of two matrices 
-R1 <- lowerCor(psychTools::bfi[1:200,1:5])  #find one set of Correlations
-R2 <- lowerCor(psychTools::bfi[201:400,1:5]) #and now another set sampled 
+R1 <- lowerCor(bfi[1:200,1:5])  #find one set of Correlations
+R2 <- lowerCor(bfi[201:400,1:5]) #and now another set sampled 
 #from the same population
 test <- r.test(n=200, r12 = R1, r34 = R2)
 round(lowerUpper(R1,R2,diff=TRUE),digits=2)  #show the differences between correlations

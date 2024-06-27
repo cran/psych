@@ -273,6 +273,7 @@ comorbid = {cat("Call: ")
           
    },
 
+cor2= {      print(round(x$r,digits=digits))},
 
 corCi = {#cat("Call:")
         # print(x$Call)
@@ -832,7 +833,9 @@ rmsea ={cat("RMSEA:  Root Mean Square Error of Approximation\n")
      if(!is.null(x) ){cat("\nRMSEA and the ",1-x[[4]]  ,"confidence intervals are ",round(x[[1]],digits+1),round(x[[2]],digits+1),round(x[[3]],digits+1))
        } },
           
-
+RV = {cat("Correlations beween two sets\nCall: ")
+       print(x$Call)
+        cat("RV",round(x$RV,digits),  "Cohen Set Correlation",round(x$Rset,digits), "R unweighted",round(x$Ru,digits)) },
 	
 	
 scree = {

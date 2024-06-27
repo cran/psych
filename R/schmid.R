@@ -194,11 +194,11 @@ switch(rotate,
     #the next two lines are actually not needed because the factors are orthogonal
     Structure  <- t( Pinv(t(F) %*% F) %*% t(F) %*% orth.load %*% t(orth.load))
     Phi.S <- t(Structure) %*% F %*% Pinv(t(F) %*% F)  #this is the pseudo inverse Phi which is not the identity
-   
+    complexity <- (apply(F,1,function(x) sum(x^2)))^2/apply(F,1,function(x)sum(x^4))   #added  05/25/24
     colnames(sm) <- paste0("F",1:nfactors,"*")
     if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,S.Phi = Phi.S,Call=cl)} else{
-    result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent), orthog = orth.load, oblique=fload,
+    result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent, com=complexity), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,scores=fact$scores,S.Phi = Phi.S,Call=cl )}
     class(result) <- c("psych" ,"schmid")
     return(result)

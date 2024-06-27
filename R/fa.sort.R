@@ -2,13 +2,14 @@
 "fa.sort" <- 
 function(fa.results,polar=FALSE) {
   omega <- FALSE
+  cor2 <- FALSE
   con.i <- FALSE
   fa.ci <- extension <-extend <- NA  #put in to avoid being identified as not defined.  Seems nuts
   Structure <- NULL  #in case we are not doing fa
 #  if(length(class(fa.results)) > 1)  { value <- class(fa.results)[2] } else {value="other"}
  #This next section was added December 7, 2019 to change from class(x)[2] to inherits(x, ...)
  if(length(class(fa.results)) > 1)  {
-    names <- cs(omega,omegaSem, fa.ci, iclust, fa, principal, extension, extend)
+    names <- cs(omega,omegaSem, fa.ci, iclust, fa, principal, extension, extend, cor2)
     value <- inherits(fa.results,names,which=TRUE)   # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -50,6 +51,11 @@ extension = {factors <- as.matrix(fa.results$loadings)
 extend = {factors <- as.matrix(fa.results$loadings)
                if(!is.null(fa.results$Structure)) Structure <- fa.results$Structure
              if(!is.null(fa.results$Phi))  {Phi <- fa.results$Phi}},
+             
+cor2 ={ factors <- as.matrix(fa.results$r)
+        pval <- as.matrix(fa.results$pval) 
+        cor2 <- TRUE
+        },
              
 other = {factors <- fa.results})
 
@@ -107,12 +113,19 @@ loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
           		}  
  
  }
+ 
+ if(cor2) {
+          fa.results$r <- factors
+           fa.results$pval <-  pval[total.ord,]
+           }
          
  if(omega) {if(!omegaSem) fa.results$schmid$oblique <- factors
  
          #if the input was from omega, then sort the schmid leiman solution as well
          loads <- data.frame(item=seq(1:nitems),cluster=rep(0,nitems))
-         nfactors <- dim(sl)[2]-4  #g, h2, u2, p2
+         #nfactors <- dim(sl)[2]-4  #g, h2, u2, p2
+       
+        if("h2" %in% colnames(factors)) nfactors <- which(colnames(sl)=="h2") -1 
          if(omegaSem) nfactors <- NCOL(sl) -1
          if(nfactors > 1) {
          loads$cluster <- apply(abs(sl[,2:(nfactors+1)]),1,which.max) +1} else {loads$cluster <- rep(1,nitems) }

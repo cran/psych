@@ -29,7 +29,8 @@ reliability(keys=NULL, items, nfactors = 2,n.obs=NA,
     brute=FALSE, 
     check.keys=TRUE, 
     covar=FALSE, 
-    fm="minres")
+    fm="minres",
+    weighted="min")
 \method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,uni=TRUE,add=FALSE,
 xlim=NULL, main=NULL,...)
 }
@@ -58,6 +59,7 @@ xlim=NULL, main=NULL,...)
   \item{check.keys}{By default, check that the keys are signe in the direction of the loadings on the first PCA.  }
  \item{covar}{Should we use covariances rather than correlations?}
  \item{fm}{The factor extraction method to use.  By default this is minres but could be "minrank" or "mle".}
+ \item{weighted}{The weight parameter in iclust.  Defaults to "min"}
   \item{x}{The object returned from reliability}
   \item{omega}{Add in the values of omega_h and omega_t}
   \item{uni}{Show the unidimensionality value from \code{\link{unidim}}.  }
@@ -88,11 +90,12 @@ Following a suggestion, the ability to not bother with keys and just do omega an
   \item{Uni}{An experimental estimate of unidimensionality (from unidim)}
   \item{r.fit}{How well does the average r of the correlations reproduce the matrix?}
   \item{f.fit}{How well does a single factor reproduce the correlation matrix}
-  \item{max.split}{The greatest split half reliability of the scale.  Found by finding all possible splits (if this is < 10,000) or sampled from 10,000 possible splits.}
+  \item{max.split}{The greatest split half reliability of the scale.  Found by finding all possible splits (if this is < 15,000) or sampled from 15,000 possible splits.}
   \item{min.split}{The lowest split half reliability of the scale.  An estimate of beta (see \code{\link{iclust}}). }
   \item{mean.r}{The average correlation of the items in the scale}
   \item{med.r}{The median correlation of the items.  If this differs from the mean, that is a sign of poor scale.}
   \item{splits}{A list of the split half values for all possible splits.}
+  \item{beta}{The beta statistic from ICLUST -- forced to a one cluster solution.  }
 
 }
 \references{
@@ -119,17 +122,19 @@ For some rare cases in some simulations, check.keys=FALSE gets a better minimum 
 
 }
 \examples{
+if(require(psychTools)) {
 reliability(psychTools::ability) #an example of finding reliability for all items
 rel <- reliability(psychTools::ability.keys,psychTools::ability)  #use keys to select scales
 R <- cor(psychTools::ability,use="pairwise") #find the correlations to test 
 rel.R <- reliability(psychTools::ability.keys,R) #this should be the same as rel
 plot(rel.R) #versus all and subsets
-all.equal(rel$result.df,rel.R$result.df ) #should be TRUE
-reliability(psychTools::bfi.keys,psychTools::bfi)  #reliability when items are keyed negative
+all.equal(rel.R$result.df,rel.R$result.df ) #should be TRUE
+}
+reliability(bfi.keys,bfi)  #reliability when some items are keyed negatively
 
 \dontrun{  
 #this takes a few seconds but shows nice graphic displays
-
+if(require(psychTools)) {
 spi.rel <- reliability(psychTools::spi.keys,psychTools::spi,hist=TRUE) #graph them
 spi.rel #show them
 
@@ -157,7 +162,7 @@ error.dots(spi.rel$result.df[,5],sort=FALSE,pch=5,xlim=c(.3,1),head=16,tail=16,
 error.dots(spi.rel$result.df[,2],sort=FALSE,pch=2,xlim=c(.3,1),head=16,tail=16,
        main="",labels="",add=TRUE)#add the alpha values
        
-
+}
 } 
 }
 \keyword{ multivariate }

@@ -73,37 +73,37 @@ biplot(fa2,labels=rownames(USArrests))
 
 # plot the 3 factor solution
 #data(bfi)
-fa3 <- fa(psychTools::bfi[1:200,1:15],3,scores=TRUE)
+fa3 <- fa(bfi[1:200,1:15],3,scores=TRUE)
 biplot(fa3)
 #just plot factors 1 and 3 from that solution
 biplot(fa3,choose=c(1,3))
 
 #
-fa2 <- fa(psychTools::bfi[16:25],2)  #factor analysis
+fa2 <- fa(bfi[16:25],2)  #factor analysis
 fa2$scores <- fa2$scores[1:100,]  #just take the first 100
 #now plot with different colors and shapes for males and females
-biplot(fa2,pch=c(24,21)[psychTools::bfi[1:100,"gender"]],
-group =psychTools::bfi[1:100,"gender"],
+biplot(fa2,pch=c(24,21)[bfi[1:100,"gender"]],
+group =bfi[1:100,"gender"],
    main="Biplot of Openness and Neuroticism by gender")
 
 ## An example from the correlation matrix
-r <- cor(psychTools::bfi[1:200,1:10], use="pairwise") #find the correlations
+r <- cor(bfi[1:200,1:10], use="pairwise") #find the correlations
 f2 <- fa(r,2) 
 #biplot(f2)  #this throws an error    (not run)
 
 #f2 does not have scores, but we can find them
-f2$scores <- factor.scores(psychTools::bfi[1:200,1:10],f2)
+f2$scores <- factor.scores(bfi[1:200,1:10],f2)
 
 biplot(f2,main="biplot from correlation matrix and factor scores")
 
 
 #or create a new object with the scores
  #find the correlations for all subjects
-r <- cor(psychTools::bfi[1:10], use="pairwise") 
+r <- cor(bfi[1:10], use="pairwise") 
 f2 <- fa(r,2) 
 x <- list() 
 #find the scores for just the first 200 subjects
-x$scores <- factor.scores(psychTools::bfi[1:200,1:10],f2)
+x$scores <- factor.scores(bfi[1:200,1:10],f2)
 x$loadings <- f2$loadings
 class(x) <- c('psych','fa')
 biplot(x,main="biplot from correlation matrix combined with factor scores")

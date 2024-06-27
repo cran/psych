@@ -178,13 +178,13 @@ It is also important to realize that the variables that are most related to the 
 \examples{
 #This is an example of 'bagging' (bootstrap aggregation)
 #not run in order to pass the timing tests for Debian at CRAN
-#bestboot <- bestScales(psychTools::bfi,criteria=cs(gender,age,education), 
-# n.iter=10,dictionary=psychTools::bfi.dictionary[1:3])
+#bestboot <- bestScales(bfi,criteria=cs(gender,age,education), 
+# n.iter=10,dictionary=bfi.dictionary[1:3])
 #bestboot
 #compare with 10 fold cross validation 
 \donttest{#don't test for purposes of speed in installation to pass the debian CRAN test
-tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
-           dictionary= psychTools::bfi.dictionary[1:3])
+tenfold <- bestScales(bfi,criteria=cs(gender,age,education),fold=10,
+           dictionary= bfi.dictionary[1:3])
 tenfold
 
 #Then, to display the results graphically
@@ -193,8 +193,8 @@ tenfold
  error.dots(tenfold,eyes=TRUE,pch=16,xlim=c(0,.4))
  # error.dots(bestboot,add=TRUE,xlim=c(0,.4))
 #do this again, but this time display the scale fits from 1 to 15 Items
-# tenfold <- bestScales(psychTools::bfi,criteria=cs(gender,age,education),fold=10,
-# dictionary= psychTools::bfi.dictionary[1:3],min.item=1,max.item=15)
+# tenfold <- bestScales(bfi,criteria=cs(gender,age,education),fold=10,
+# dictionary= bfi.dictionary[1:3],min.item=1,max.item=15)
 # matplot(tenfold$multi.validities$wtd.deriv,typ="b",
 # xlab="Number of Items",main="Fit as a function of number of items")   #the wtd weights
 # matpoints(tenfold$multi.validities$unit.deriv,typ="b",lwd=2) #the unit weights 

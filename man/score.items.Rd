@@ -5,6 +5,8 @@
 \alias{score.items}
 \alias{response.frequencies}
 \alias{responseFrequency}
+\alias{removeMissing}
+
 \title{ Score item composite scales and find Cronbach's alpha, Guttman lambda 6 and item whole correlations }
 \description{Given a data.frame or matrix of n items and N observations and a list of the direction to score them (a keys.list with k keys)  find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, Guttman's Lambda 6,  the average r, the scale intercorrelations, and the item by scale correlations (raw and corrected for item overlap).  Replace missing values with the item median or mean if desired. Items may be keyed 1 (score it), -1 ) (reverse score it), or 0 (do not score it). Negatively keyed items will be reverse scored.  Although prior versions used a keys matrix, it is now recommended to just use a list of scoring keys. See \code{\link{make.keys}} for a convenient way to make the keys file.  If the input is a square matrix, then it is assumed that the input is a covariance or correlation matix and scores are not found, but the item statistics are reported. (Similar functionality to \code{\link{cluster.cor}}). \code{\link{response.frequencies}} reports the frequency of item endorsements fore each response category for polytomous or multiple choice items. \code{\link{scoreFast}} and   \code{\link{scoreVeryFast}} just find sums/mean scores and do not report reliabilities.  Much faster for large data sets.
 }
@@ -18,6 +20,7 @@ scoreFast(keys, items, totals = FALSE, ilabels = NULL,missing=TRUE, impute="none
 scoreVeryFast(keys,items,totals=FALSE, min=NULL,max=NULL,count.responses=FALSE)
 response.frequencies(items,max=10,uniqueitems=NULL)
 responseFrequency(items,max=10,uniqueitems=NULL)
+removeMissing(x,max.miss =0)
 }
 
 \arguments{
@@ -35,6 +38,8 @@ responseFrequency(items,max=10,uniqueitems=NULL)
   \item{n.obs}{If scoring from a correlation matrix, specify the number of subjects allows for the calculation of the confidence intervals for alpha.}
   \item{select}{By default, just find the statistics of those items that are included in scoring keys.  This allows scoring of data sets that have bad data for some items that are not included in the scoring keys. This also speeds up the scoring of small subsets of item from larger data sets.}
 \item{count.responses}{If TRUE, report the number of items/scale answered for each subject.}
+\item{x}{The object returned by scoreItems}
+\item{max.miss}{Replace all scales with missing > max.miss with NA}
 
   
 }
@@ -62,9 +67,9 @@ The squared multiple correlation is a lower bound for the item communality and a
 
 G6 is also sensitive to lumpyness in the test and should not be taken as a measure of unifactorial structure.  For lumpy tests, it will be greater than alpha.  For tests with equal item loadings, alpha > G6, but if the loadings are unequal or if there is a general factor, G6 > alpha. Although it is normal when scoring just a single scale to calculate G6 from just those items within the scale, logically it is appropriate to estimate an item reliability from all items available.  This is done here and is labeled as G6* to identify the subtle difference.
 
-Alpha and G6* are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep; Revelle and Condon, in press.).
+Alpha and G6* are both positive functions of the number of items in a test as well as the average intercorrelation of the items in the test.  When calculated from the item variances and total test variance, as is done here, raw alpha is sensitive to differences in the item variances. Standardized alpha is based upon the correlations rather than the covariances.  alpha is a generalization of an earlier estimate of reliability for tests with dichotomous items developed by Kuder and Richardson, known as KR20, and a shortcut approximation, KR21. (See Revelle, in prep; Revelle and Condon, 2018, 2019).
 
-A useful index is the ratio of reliable variance to unreliable variance and is known as the Signal/Noise ratio.  This is just \deqn{s/n = \frac{n \bar{r}}{1-n \bar{r}}}{s/n = n r/(1-nr)}  (Cronbach and Gleser, 1964; Revelle and Condon (in press)).
+A useful index is the ratio of reliable variance to unreliable variance and is known as the Signal/Noise ratio.  This is just \deqn{s/n = \frac{n \bar{r}}{1-n \bar{r}}}{s/n = n r/(1-nr)}  (Cronbach and Gleser, 1964; Revelle and Condon (2019)).
 
 Standard errors for unstandardized alpha are reported using the formula from Duhachek and Iacobucci (2005).
 
@@ -83,6 +88,8 @@ Using the impute="none" option as well as asking for totals (totals="TRUE") will
 The number of missing responses for each person for each scale is reported in the missing object.  One possibility is to drop scores just for those scales with missing responses.  This may be done adding the code:
 
 scores$scores[scores$missing >0] <- NA 
+
+Or by calling the removeMissing function which does the same thing.
 
 This is shown in the last example.
 
@@ -141,7 +148,9 @@ McDonald, R. P. (1999). Test theory: A unified treatment. L. Erlbaum Associates,
 
 Revelle, W. (in preparation) An introduction to psychometric theory with applications in R.  \url{https://personality-project.org/r/book/}
 
-Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (in press).
+Revelle, W. and Condon, D.C. Reliability.  In Irwing, P., Booth, T. and Hughes, D. (Eds). the Wiley-Blackwell Handbook of Psychometric Testing (2018).
+
+Revelle, W. and Condon, D.C. (2019) Reliability: from alpha to omega.  Psychological Assessment, 31, 1395-1411.
 
 Revelle W. and R.E. Zinbarg. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 74(1):145-154.
 
@@ -167,16 +176,16 @@ In addition, the \code{\link{irt.fa}} function provides an alternative way of ex
 \examples{
 
 #see  the example including the bfi data set
-data(psychTools::bfi)
+data(bfi)
 keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   conscientious=c("C1","C2","C3","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
   neuroticism=c("N1","N2","N3","N4","N5"), openness = c("O1","-O2","O3","O4","-O5")) 
-  keys <- make.keys(psychTools::bfi,keys.list)  #no longer necessary
- scores <- scoreItems(keys,psychTools::bfi,min=1,max=6)  #using a keys matrix 
- scores <- scoreItems(keys.list,psychTools::bfi,min=1,max=6)  # or just use the keys.list
+  keys <- make.keys(bfi,keys.list)  #no longer necessary
+ scores <- scoreItems(keys,bfi,min=1,max=6)  #using a keys matrix 
+ scores <- scoreItems(keys.list,bfi,min=1,max=6)  # or just use the keys.list
  summary(scores)
  #to get the response frequencies, we need to not use the age variable
- scores <- scoreItems(keys[1:25,],psychTools::bfi[1:25]) #we do not need to specify min or 
+ scores <- scoreItems(keys[1:25,],bfi[1:25]) #we do not need to specify min or 
  #max if  there are no values (such as age) outside the normal item range.
  scores
  #The scores themselves are available in the scores$scores object.  I.e.,
@@ -185,7 +194,7 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
  
  #compare this output to that for the impute="none" option for SAPA type data
  #first make many of the items missing in a missing pattern way
- missing.bfi <- psychTools::bfi
+ missing.bfi <- bfi
  missing.bfi[1:1000,3:8] <- NA
  missing.bfi[1001:2000,c(1:2,9:10)] <- NA
  scores <- scoreItems(keys.list,missing.bfi,impute="none",min=1,max=6)
@@ -199,7 +208,10 @@ keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
   describe(scores$scores) #note that missing data were replaced with median for the item
   scores$scores[scores$missing > 0] <- NA  #get rid of cases with missing data
   describe(scores$scores)
-
+  
+  #or
+  fixed <- removeMissing(scores)   #does the same thing
+describe(fixed)
 
 }
 \keyword{ multivariate }

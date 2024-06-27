@@ -18,12 +18,12 @@
  if(is.null(y)) {n.times <- table(x[time])    
   #sort the data by id and time
   if(id %in% colnames(x)) {
- if(sort) x <- psychTools::dfOrder(x,c(time,id),) }   #don't sort if we don't have ids
+ if(sort) x <- dfOrder(x,c(time,id),) }   #don't sort if we don't have ids
  y <- x[x[,time] == names(n.times)[2],]
  x <- x[x[,time] == names(n.times)[1],]
  }  else {
- if(sort) {x <- psychTools::dfOrder(x,c(time,id),) 
-           y <- psychTools::dfOrder(y,c(time,id),)
+ if(sort) {x <- dfOrder(x,c(time,id),) 
+           y <- dfOrder(y,c(time,id),)
           }} 
  
   #only take matching cases   

@@ -17,8 +17,9 @@ Rab <- R[1,2]/sqrt(R[1,1]*R[2,2])
 rab <- 4*R[1,2]/sum(R)
 result <- list(rab=rab,AB=AB)}
 
-#if(!is.null(key)) {r <- r[,selectFromKeys(key)]}  #made this acgain 12/23/23
-v.names <- colnames(r)
+#if(!is.null(key)) {r <- r[,selectFromKeys(key)]}  #made this again 12/23/23
+if(!is.null(colnames(r))) {v.names <- colnames(r)} else {v.names <- colnames(r)<- paste0("V",1:NCOL(r))}
+
 keys <- key   
 maxrb <- -9999
 minrb <- 2

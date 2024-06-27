@@ -103,18 +103,18 @@ bassAckward(Thurstone,4,main="Thurstone data set")
 f.labels <- list(level1=cs(Approach,Avoid),level2=cs(PosAffect,NegAffect,Constraint), 
 level3 = cs(Extraversion,Agreeableness,Neuroticism,Conscientiousness,Openness))
 
-ba <- bassAckward(psychTools::bfi[1:25],c(2,3,5),labels=f.labels,
+ba <- bassAckward(bfi[1:25],c(2,3,5),labels=f.labels,
         main="bfi data set from psychTools", values=TRUE)
 print(ba,short=FALSE)
 #show the items associated with the 5 level solution
-fa.lookup(ba,dictionary=psychTools::bfi.dictionary)
+fa.lookup(ba,dictionary=bfi.dictionary)
 #now show the items associated with the 3 level solution
-fa.lookup(ba$fa[[2]],dictionary=psychTools::bfi.dictionary)
+fa.lookup(ba$fa[[2]],dictionary=bfi.dictionary)
 # compare the 3 factor solution to what get by extracting 3 factors directly
-f3 <- fa(psychTools::bfi[1:25],3)
+f3 <- fa(bfi[1:25],3)
 f3$loadings - ba$fa[[2]]$loadings   # these are the same
  #do pca instead of factors  just summarize, don't plot
-summary(bassAckward(psychTools::bfi[1:25],c(1,3,5,7),fm="pca",
+summary(bassAckward(bfi[1:25],c(1,3,5,7),fm="pca",
        main="Components",plot=FALSE))
 ##not run, but useful example
 \donttest{  
@@ -124,9 +124,9 @@ level3 = cs(attnseeking,sociability,impulsivity,
    emotstab,irritability,wellbeing,industry,order,author,honesty,perfect,easygoing,
    selfcontrol,conservatism,creativity,introspect,art,
    intellect,conform,adaptability,compassion,trust))
- 
+if(require("psychTools") ) {
 sp5 <- bassAckward(psychTools::spi[11:145], c(3,5,27),labels=f.labels,
-           main="spi data set from psychTools")
+           main="spi data set from psychTools")}
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

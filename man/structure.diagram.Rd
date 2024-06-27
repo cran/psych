@@ -159,11 +159,11 @@ library(lavaan)
 mod.1 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C =~ C1 + C2 + C3 + C4 + C5
          E =~ E1 +E2 + E3 + E4 +E5'
-fit.1 <- sem(mod.1,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
+fit.1 <- sem(mod.1,bfi[complete.cases(bfi),],std.lv=TRUE)
 lavaan.diagram(fit.1)   #a normal cfa
 
 #compare with
-f3 <- fa(psychTools::bfi[complete.cases(psychTools::bfi),1:15],3)
+f3 <- fa(bfi[complete.cases(bfi),1:15],3)
 fa.diagram(f3)
 
 
@@ -173,7 +173,7 @@ mod.2 <- 'A =~ A1 + A2 + A3 + A4 + A5
          E =~ E1 +E2 + E3 + E4 +E5
          E ~ A + C '        
   
-fit.2 <- sem(mod.2,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
+fit.2 <- sem(mod.2,bfi[complete.cases(bfi),],std.lv=TRUE)
 lavaan.diagram(fit.2, cut=0,simple=FALSE,main="sem  model")  # A SEM Model 
 
 
@@ -185,7 +185,7 @@ mod.3 <- 'A =~ A1 + A2 + A3 + A4 + A5
          C ~ age + gender
          E ~ age + gender'
 
-fit.3 <- sem(mod.3,psychTools::bfi[complete.cases(psychTools::bfi),],std.lv=TRUE)
+fit.3 <- sem(mod.3,bfi[complete.cases(bfi),],std.lv=TRUE)
 lavaan.diagram(fit.3, cut=0,simple=FALSE,main="mimic model", e.size=.03)
 
 

@@ -155,7 +155,7 @@ corPlotUpperLowerCi(R=rs,numbers=TRUE,gr=gr)
 
 
 
-
+if(require(psychTools)) {
 #do multiple plots 
 #Also show the xaxis option
 op <- par(mfrow=c(2,2))
@@ -168,7 +168,7 @@ par(op)
 
 
 corPlotUpperLowerCi(rs,adjust=TRUE,main="Holm adjusted confidence intervals",gr=gr)
-
+}
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ hplot }% __ONLY ONE__ keyword per line

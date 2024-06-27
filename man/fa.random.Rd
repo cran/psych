@@ -125,11 +125,12 @@ To see what this does if there is a general factor, consider the unrotated solut
  \code{\link{fa}}
 }
 \examples{
+if(require(psychTools)) {
 fa.ab <- fa(psychTools::ability,4,rotate="none")  #normal factor analysis
 fa.ab.ip <- fa.random(psychTools::ability,3,rotate="none") 
 fa.congruence(list(fa.ab,fa.ab.ip,fa.ab.ip$within.r))
 
-
+}
   }
 
 \keyword{ multivariate }

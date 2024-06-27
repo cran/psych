@@ -74,27 +74,27 @@ select <- selectFromKeys(key.list)
  #scores <- score.items(keys,attitude)
  #scores
  
-# data(psychTools::bfi)
+# data(bfi)
  #first create the keys by location (the conventional way)
  keys.list <- list(agree=c(-1,2:5),conscientious=c(6:8,-9,-10),
  extraversion=c(-11,-12,13:15),neuroticism=c(16:20),openness = c(21,-22,23,24,-25))   
- keys <- make.keys(25,keys.list,item.labels=colnames(psychTools::bfi)[1:25])
+ keys <- make.keys(25,keys.list,item.labels=colnames(bfi)[1:25])
  new.keys.list <- keys2list(keys)  #these will be in the form of variable names
  
  #alternatively, create by a mixture of names and locations 
  keys.list <- list(agree=c("-A1","A2","A3","A4","A5"),
 conscientious=c("C1","C2","C2","-C4","-C5"),extraversion=c("-E1","-E2","E3","E4","E5"),
 neuroticism=c(16:20),openness = c(21,-22,23,24,-25)) 
-keys <- make.keys(psychTools::bfi, keys.list) #specify the data file to be scored (bfi)
+keys <- make.keys(bfi, keys.list) #specify the data file to be scored (bfi)
 #or
-keys <- make.keys(colnames(psychTools::bfi),keys.list) #specify the names of the variables 
+keys <- make.keys(colnames(bfi),keys.list) #specify the names of the variables 
 #to be used
 #or
 #specify the number of variables to be scored and their names in all cases
-keys <- make.keys(28,keys.list,colnames(psychTools::bfi)) 
+keys <- make.keys(28,keys.list,colnames(bfi)) 
 
 
- scores <- scoreItems(keys,psychTools::bfi)
+ scores <- scoreItems(keys,bfi)
  summary(scores)
 
 }

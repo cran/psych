@@ -8,6 +8,7 @@
 \alias{chi2r}
 \alias{r2chi}
 \alias{cor2cov}
+\alias{r2p}
 
 \title{Transformations of r, d, and t  including Fisher r to z and z to r and confidence intervals}
 \description{Convert a correlation to a z or t, or d, or chi or covariance matrix
@@ -24,6 +25,7 @@ chi2r(chi2,n)
 r2chi(rho,n)
 r2c(rho,sigma)
 cor2cov(rho,sigma)
+r2p(rho,n)
 
 
 

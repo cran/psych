@@ -43,12 +43,14 @@ minkowski(r=2,add=FALSE,main=NULL,xl=1,yl=1)
 }
 \seealso{  \code{\link{pairs.panels}}  }
 \examples{
+if(require(psychTools)) {
 data(psychTools::galton)
 galton <- psychTools::galton
 ellipses(galton,lm=TRUE)
 
 ellipses(galton$parent,galton$child,xlab="Mid Parent Height",
                   ylab="Child Height") #input are two vectors
+}
 data(sat.act)
 ellipses(sat.act)  #shows the pairs.panels ellipses
 minkowski(2,main="Minkowski circles")

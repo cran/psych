@@ -56,13 +56,14 @@ The diameter of the enclosing circle (ellipse) scales as 1/sqrt(N) * the maximum
 \seealso{\code{\link{statsBy}}, \code{\link{describeBy}}, \code{\link{error.crosses}}}
 \examples{
 #BFI scores for males and females
-errorCircles(1:25,1:25,data=psychTools::bfi,group="gender",paired=TRUE,ylab="female scores",
+errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,ylab="female scores",
       xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
 #drop the circles since all samples are the same sizes
-errorCircles(1:25,1:25,data=psychTools::bfi,group="gender",paired=TRUE,circles=FALSE,
+errorCircles(1:25,1:25,data=bfi,group="gender",paired=TRUE,circles=FALSE,
      ylab="female scores",xlab="male scores",main="BFI scores by gender")
  abline(a=0,b=1)
+ if(require(psychTools)) {
  
  data(psychTools::affect)
 colors <- c("black","red","white","blue")
@@ -74,6 +75,7 @@ group="Film",labels=films,
 #now, use the stats from the prior run 
 errorCircles("EA1","TA1",data=affect.stats,labels=films,pch=16,cex=2,colors=colors,add=TRUE)
 
+}
 #show sample size with the size of the circles
 errorCircles("SATV","SATQ",sat.act,group="education")
 

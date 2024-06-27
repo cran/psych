@@ -37,6 +37,7 @@ Revelle, W. An introduction to psychometric theory with applications in R. (in p
 \author{William Revelle}
 
 \examples{
+if(require(psychTools)) {
 data(psychTools::vegetables)
 thurstone(psychTools::veg)
 #But consider the case of 100 random orders
@@ -47,7 +48,7 @@ for(i in 1:100) ranks[i,] <- sample(5,5)
  t   #show the fits
  t$hoice #show the choice matrix
 
-
+}
 
 }
 

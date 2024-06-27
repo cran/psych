@@ -7,7 +7,7 @@
 }
 \usage{
 unidim(keys=NULL,x=NULL,cor="cor",use="pairwise", fm="minres", correct=.5, 
-       check.keys=TRUE,n.obs=NA)
+       check.keys=TRUE,n.obs=NA,nfactors=3)
 }
 
 \arguments{
@@ -18,7 +18,8 @@ unidim(keys=NULL,x=NULL,cor="cor",use="pairwise", fm="minres", correct=.5,
 \item{fm}{factor extraction method defaults to "minres" but could be "mle" or "minrank"}
 \item{correct}{If using "tetrachoric" or "polychoric" correlations, should we correct empty cells for continuity, and if so, by how much.  (See \code{\link{tetrachoric}} for a discussion of this correction)}
   \item{check.keys}{If TRUE, then items will be keyed based upon their loadings on the first factor.  Automatically done if key.list is NULL.}
-  \item{n.obs}{Number of observartions.  If given a correlation matrix as input, n.obs is required for some of the goodness of fit estimates.}
+  \item{n.obs}{Number of observations.  If given a correlation matrix as input, n.obs is required for some of the goodness of fit estimates.}
+  \item{nfactors}{The number of factors used (if possible) to estimate omega_t}
 
 }
 \details{
@@ -70,8 +71,13 @@ Revelle, W. and Condon, D.M (2023) Using undim rather than omega in estimating u
 #test the unidimensionality of the five factors of the bfi data set.
 
 
-unidim(psychTools::bfi.keys,psychTools::bfi) 
+unidim(bfi.keys,bfi) 
+
+if(require(psychTools)) {
+
 unidim(psychTools::ability.keys,psychTools::ability)
+}
+
 #Try a known 3 factor structure
 x <- sim.minor(nfact=3,bipolar=FALSE)   #this makes all the items positive
 unidim(x$model) 
@@ -79,6 +85,7 @@ keys.list <- list(first =paste0("V",1:4) ,second = paste0("V",5:8),
    third=paste0("V",9:12),all= paste0("V",1:12))
 unidim(keys.list, x$model)
 
+ 
 x <- sim.minor(nfact=3)
 unidim(keys.list,x$model)   #we flip the negative items 
 

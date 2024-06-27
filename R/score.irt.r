@@ -699,11 +699,11 @@ x.irt <- irt.fa(x.sim$items[,1:nvar],sort=FALSE,plot=FALSE)
 #	ltm.responses <- table2df(x.ltm.sc$score.dat,x.ltm.sc$score.dat[,nvar+1])
 #	ltm.responses <- data.frame(ltm.responses[,c(1:nvar,nvar+3)])
 #	colnames(ltm.responses) <- c(colnames(x.sim$items),"ltm")
-#	ltm.responses  <- psychTools::dfOrder(ltm.responses,c(1:nvar)) 
+#	ltm.responses  <- dfOrder(ltm.responses,c(1:nvar)) 
 
 
 xnvart <- data.frame(x.sim$items,theta = x.sim$theta)
-xnvart <- psychTools::dfOrder(xnvart,c(1:nvar))
+xnvart <- dfOrder(xnvart,c(1:nvar))
 
 x.fsall <- psych::factor.scores(xnvart[1:nvar],x.irt$fa,method="regression")$scores
 x.df <- data.frame(xnvart, fs=x.fsall)

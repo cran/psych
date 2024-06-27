@@ -168,16 +168,17 @@ pairs.panels(scores.df,pch=".",main="Comparing IRT and classical with missing da
  #of the generating theta than using the empirically derived factor loading weights
 
 #now show the ability to score multiple scales using keys
+if(require(psychTools)) {
 ab.tau <- irt.tau(psychTools::ability)  #first find the tau values
 ab.keys <- make.keys(psychTools::ability,list(g=1:16,reason=1:4,
 letter=5:8,matrix=9:12,rotate=13:16))
 #ab.scores <- scoreIrt(stats=ab.tau, items = psychTools::ability, keys = ab.keys)
-
+}
 #and now do it for polytomous items using 2pl
 bfi.scores <- scoreIrt.2pl(bfi.keys,bfi[1:25])
 #compare with classical unit weighting by using scoreItems
 #not run in the interests of time
-#bfi.unit <- scoreItems(psychTools::bfi.keys,psychTools::bfi[1:25])
+#bfi.unit <- scoreItems(bfi.keys,bfi[1:25])
 #bfi.df <- data.frame(bfi.scores,bfi.unit$scores)
 #pairs.panels(bfi.df,pch=".")
 

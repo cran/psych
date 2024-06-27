@@ -72,7 +72,7 @@ for(i in 1:nvar) {temp[i,1] <- is.numeric(x[1,i])
                 temp[i,4] <- is.character(x[1,i]) }
 ttt <- which(temp[,1:4] == TRUE,arr.ind=TRUE)
 if(nvar > 1) {
-ttt <- psychTools::dfOrder(ttt,"row")}
+ttt <- dfOrder(ttt,"row")}
 temp <- cbind(temp,ttt["col"])
 colnames(temp) <- c("numeric","factor","logical","character","type")
 

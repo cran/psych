@@ -42,7 +42,10 @@ switch(class(r)[2],
        if(is.null(main)) {main <- "PCA Loadings plot" }
             },
   principal = {r <- r$loadings
-        if(is.null(main)) {main <- "PCA Loadings plot" }}    
+        if(is.null(main)) {main <- "PCA Loadings plot" }} ,
+  cor2 = {pval <- t(r$pval)
+          r <- r$r
+          }   
   )  #end switch
   }
   } else { if(symmetric & !isCorrelation(r) & (nrow(r) !=ncol(r))) {
@@ -106,7 +109,8 @@ if(colors) {
       } else {
     colramp <- grey((n:0)/n)}
  colramp <- adjustcolor(colramp,alpha.f =alpha)   
-if(nvar != nf) {  r <- t(r) }
+if(nvar != nf) {  r <- t(r) 
+    }
 #if(!is.null(select)) {r <- r[select,select]
 #                      pval <- pval[select,select]
 #                      nvar <- length(select)
@@ -122,7 +126,7 @@ if(nf == nvar) {r <- r[,ord1]
 par(mar = c(MAR +max.len,MAR+max.len, 4, .5))
 
 if(show.legend) {   #set it up to do two plots
-     layout(matrix(c(1,2),nrow=1),widths=c(.9,.1),heights=c(1,1))
+     layout(matrix(c(1,2),nrow=1),widths=c(.9,.1),heights=c(1,1)) 
     }
 
 image(r,col=colramp,axes=FALSE,main=main,zlim=zlim)
@@ -130,7 +134,7 @@ box()
 #if(nf < nvar) {
  			at1 <- (0:(nf-1))/(nf-1)
                at2 <- (0:(nvar-1)) /(nvar-1)
-               lab1 <- rownames(r)
+               lab1 <- format(rownames(r),justify="left")
                lab2 <- colnames(r)
 # } else {
 #              at1 <- (0:(nf-1)) /(nf-1)

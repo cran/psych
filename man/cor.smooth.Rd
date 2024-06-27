@@ -40,6 +40,8 @@ See also nearcor and posdefify in the sfsmisc package and nearPD in the Matrix p
 
 }
 \examples{
+if(require(psychTools)) {
+
 burt <- psychTools::burt
 bs <- cor.smooth(psychTools::burt)  #burt data set is not positive definite
 plot(burt[lower.tri(burt)],bs[lower.tri(bs)],ylab="smoothed values",xlab="original values")
@@ -50,6 +52,7 @@ fa(burt,2) #this throws a warning that the matrix yields an improper solution
 #Smoothing first throws a warning that the matrix was improper, 
 #but produces a better solution 
 fa(cor.smooth(burt),2)  
+}
 
 #this next example is a correlation matrix from DeLeuw used as an example 
 #in Knol and ten Berge.  

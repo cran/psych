@@ -130,7 +130,8 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
 
 
 "omega" <- 
-function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, digits=2,title="Omega",sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) {
+function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, digits=2,title="Omega",
+	sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) {
  cl <- match.call()
   if(is.data.frame(m) || is.matrix(m)) {if((isCorrelation(m)) | (isCovariance(m) && covar)) {if(is.na(n.obs) && (n.iter > 1)) stop("You must specify the number of subjects if giving a correlation matrix")
                                 # if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
@@ -148,7 +149,8 @@ function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, 
           if(poly) { pol <- polychoric(m)
                      m <- pol$rho
                      n.obs <- pol$n.obs}  }       
-            om <- omegah(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi = Phi,option=option,covar=covar,...) #call omega with the appropriate parameters
+            om <- omegah(m=m,nfactors=nfactors,fm=fm,key=key,flip=flip, digits=digits,
+            title=title,sl=sl,labels=labels, plot=plot,n.obs=n.obs,rotate=rotate,Phi = Phi,option=option,covar=covar,...) #call omega with the appropriate parameters
     
 
        

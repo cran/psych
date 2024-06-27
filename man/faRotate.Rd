@@ -44,7 +44,7 @@ Nguyen, H. V., & Waller, N. G. (2022, January 6). Local Minima and Factor Rotati
 \seealso{\code{\link{fa}} 
 }
 \examples{
-f5 <- fa(psychTools::bfi[,1:25],5,rotate="none")
+f5 <- fa(bfi[,1:25],5,rotate="none")
 faRotations(f5,n.rotations=10)   #note that the factor analysis needs to not do the rotation
 faRotations(f5$loadings)  #matrix input
 geo <- faRotations(f5,rotate="geominQ",n.rotation=10)

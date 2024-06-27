@@ -12,7 +12,7 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL,
      e.size =1,
      colors=c("black","blue"), 
      main = "ICLUST diagram",
-     cluster.names=NULL,marg=c(.5,.5,1.5,.5),plot=TRUE, bottomup=TRUE)
+     cluster.names=NULL,marg=c(.5,.5,1.5,.5),plot=TRUE, bottomup=TRUE,both=TRUE)
 } 
 \arguments{
   \item{ic}{Output from ICLUST}
@@ -28,6 +28,7 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL,
   \item{marg}{Sets the margins to be narrower than the default values. Resets them upon return}
   \item{plot}{If plot is TRUE, then draw the diagram,  if FALSE, then just return the veriable order from the plot}
   \item{bottomup}{Which way to draw the arrows.  TRUE means from the items to the clusters.  See note. }
+  \item{both}{if TRUE report alpha and beta.  if "alpha", just report the alpha, or if "beta" just report beta.}
  
 }
 \details{iclust.diagram provides most of the power of \code{\link{ICLUST.rgraph}} without the difficulties involved in installing Rgraphviz.  It is called automatically from ICLUST. 
@@ -36,7 +37,7 @@ Following a request by Michael Kubovy, cluster.names may be specified to replace
 
 If access to a dot language graphics program is available, it is probably better to use the iclust.graph function to get dot output for offline editing.
 
-Until 3/11/2 arrows went from clusters to items.  The default value for bottomup has been changed to draw from items to clusters.  To draw the old way, set bottomup=TRUE.}
+Until 3/11/23 arrows went from clusters to items.  The default value for bottomup has been changed to draw from items to clusters.  To draw the old way, set bottomup=TRUE.}
 \value{
 Graphical output summarizing the hierarchical cluster structure.  The graph is drawn using the diagram functions (e.g., \code{\link{dia.curve}},  \code{\link{dia.arrow}}, \code{\link{dia.rect}}, \code{\link{dia.ellipse}} ) created as a work around to Rgraphviz.
 
@@ -46,7 +47,7 @@ Also returned (invisibly) is a vector of variable names ordered by their locatio
 }
 \author{William Revelle
 }
-\note{Suggestions for improving the graphic output are welcome.   
+\note{Suggestions for improving the graphic output are welcome. Thus, the request from Steven Reise to just display alpha and not beta was added in June, 2024.   
 }
 
 
@@ -60,7 +61,7 @@ v9c <- ICLUST(v9)
 test.data <- Harman74.cor$cov
 ic.out <- ICLUST(test.data)
 #now show how to relabel clusters
-ic.bfi <- iclust(psychTools::bfi[1:25],beta=3) #find the clusters
+ic.bfi <- iclust(bfi[1:25],beta=3) #find the clusters
 cluster.names <- rownames(ic.bfi$results) #get the old names
 #change the names to the desired ones
 cluster.names[c(16,19,18,15,20)] <- c("Neuroticism","Extra-Open","Agreeableness",

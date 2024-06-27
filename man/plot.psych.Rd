@@ -77,7 +77,7 @@ test.data <- Harman74.cor$cov
 f4 <- fa(test.data,4)
 plot(f4)
 plot(resid(f4))
-plot(resid(f4),main="Residuals from a 4 factor solution",qq=FALSE)
+plot(resid(f4),main="Residuals from a 4 factor solution")
 #not run
 #data(bfi)
 #e.irt <- irt.fa(bfi[11:15])  #just the extraversion items

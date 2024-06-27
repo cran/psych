@@ -9,7 +9,7 @@
 #added the covar option 10/23/23
 #added fm option  2/29/24
 reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,plot=FALSE,hist=FALSE,
-   n.sample=10000,brute=FALSE,check.keys=TRUE,covar=FALSE,fm="minres")  {
+   n.sample=10000,brute=FALSE,check.keys=TRUE,covar=FALSE,fm="minres", weighted="min")  {
    cl <- match.call()
   result <- list()
   splits <- list()
@@ -26,6 +26,8 @@ reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,
          message("keys not specified, all items will be scored")
          n.scales  <- 1 
          keys <- list()
+         if(is.null(colnames(items))){ colnames(items) <- paste0("V",1:NCOL(items))
+                     if(is.matrix(items)) rownames(items) <- colnames(items)}
           keys[["All_items"]] <- colnames(items)
          }} else {n.scales <- 1
    keys[["All_items"]] <- colnames(items)
@@ -39,11 +41,13 @@ reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,
  select <- selectFromKeys(scale.key)
  if(length(select)>1 )  {
   if (length(select)< 4) {nfactors <- 1} else {nfactors <- NFACTORS}   #omegah with 2 factors is not defined for nvar<=5
-  if(cors) {om <- omegah(items[select,select], nfactors=nfactors,plot=plot,two.ok=TRUE,fm=fm) } else {
-   om <- omegah(items[,select], nfactors=nfactors,n.obs=n.obs,plot=plot,two.ok=TRUE,covar=covar,fm=fm)}
+  if(cors) {om <- omegah(items[select,select], nfactors=nfactors,plot=plot,two.ok=TRUE,fm=fm)
+           } else {
+   om <- omegah(items[,select], nfactors=nfactors,n.obs=n.obs,plot=plot,two.ok=TRUE,covar=covar,fm=fm)
+     }
  	uni <- unidim(om$R, n.obs=n.obs)  #use the R object rather than redoing the factoring
+   
 
- 
   if(split){temp.keys <- colnames(om$R) <-  gsub("-","",colnames(om$R))
             sign.key <- rep("",length(select))
             sign.key[which(colnames(om$R)!= rownames(om$R))] <- "-"
@@ -53,16 +57,27 @@ reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,
     split.half <- suppressWarnings(splitHalf(om$R,raw=raw,brute=brute,n.sample=n.sample,check.keys=check.keys,covar=covar)) #don't use temp.keys
           best[[scales]] <- list(max=split.half$maxAB)
           worst[[scales]] <- list(min=split.half$minAB)
-         
+           rownames(om$R) <- colnames(om$R) <-  gsub("-","",colnames(om$R))
+               ic <- suppressWarnings(iclust(om$R,1,n.obs=n.obs, plot=plot, reliability=FALSE,weighted=weighted))
           result[[scales]] <- list(omega_h = om$omega_h, alpha = split.half$alpha, omega.tot = om$omega.tot,
                     u=uni$u[1],tau=uni$u[2],cong=uni$u[3],
                 maxrb=split.half$maxrb,minrb=split.half$minrb,
                 mean.r=split.half$av.r, med.r <- split.half$med.r, n.items=length(select),
-                 CFI <- uni$uni[7], ECV = uni$uni[8])  
-          if(raw) {splits[[scales]] <- split.half$raw}} else {      
-   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,u=uni$u[1],tau=uni$u[2],
+                 CFI <- uni$uni[7], ECV = uni$uni[8], beta=ic$beta, f1f2 =uni$uni[9])  
+          if(raw) {splits[[scales]] <- split.half$raw}
+           } else { 
+               rownames(om$R) <- colnames(om$R) <-  gsub("-","",colnames(om$R))
+               ic <- suppressWarnings(iclust(om$R,1,n.obs=n.obs, plot=FALSE,reliability=FALSE))    
+   result[[scales]] <- list(omega_h = om$omega_h, alpha = om$alpha, omega.tot = om$omega.tot,
+                     u=uni$u[1],tau=uni$u[2],
                      cong=uni$u[3],n.items=length(select),
-                     CFI <- uni$uni[7], ECV = uni$uni[8])}
+                     CFI <- uni$uni[7], 
+                     ECV = uni$uni[8],
+                     beta =ic$beta)
+                     f1f2 = uni$uni[9]
+                     }
+                     
+                  
   res.name[scales] <- names(keys)[scales]
    }
   }
@@ -71,10 +86,11 @@ reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,
  best <- unlist(unlist(best,recursive=FALSE),recursive=FALSE) #Creates a list that keeps the names
  worst <- unlist(unlist(worst,recursive=FALSE),recursive=FALSE)
   # names(result) <- res.name
-  if(split) {ncol <- 13} else {ncol <- 11}
+  #if(split) {ncol <- 14} else {ncol <- 12}
+  ncol <- length(result[[1]])
    result.df <- matrix(unlist(result[!is.null(result)]), ncol=ncol,byrow=TRUE)
-  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot", "Uni","tau","cong","max.split","min.split","mean.r", "med.r", "n.items","CFI","ECV")} else {
-  colnames(result.df) <- c("omega.h", "alpha", "omega.tot","Uni","tau","cong","n.items","CFI","ECV")}
+  if(split) {   colnames(result.df) <- c("omega_h", "alpha", "omega.tot", "Uni","tau","cong","max.split","min.split","mean.r", "med.r", "n.items","CFI","ECV","Beta", "EVR")} else {
+  colnames(result.df) <- c("omega.h", "alpha", "omega.tot","Uni","tau","cong","n.items","CFI","ECV","Beta", "EVR")}
   rownames(result.df) <- unlist(res.name)
   if(raw) {
   lx <- unlist(lapply(splits,length))

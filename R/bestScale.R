@@ -238,7 +238,7 @@ organize.results <- function(result,x=NA,n.iter=1,p.keyed=.9,dictionary=NULL,wtd
 
 #items [[criteria[j] ]] <-  cbind(replicated.items[[j]],Freq=Freq,mean.r=means,sd.r = sds,dictionary[names(replicated.items[[j]]),])
     items[[criteria[j]]] <-  cbind(Freq,mean.r = means,sd.r = sds,dictionary[names(rep.item),,drop=FALSE])
-	items[[criteria[j]]] <- psychTools::dfOrder(items [[criteria[j] ]],"-mean.r",absolute=TRUE) #sort on the mean.r column
+	items[[criteria[j]]] <- dfOrder(items [[criteria[j] ]],"-mean.r",absolute=TRUE) #sort on the mean.r column
 #	items[[criteria[j]]] <- items[[criteria[j]]][items[[criteria[j]]][,"Freq"] >= n.iter * p.keyed,]
 	
 	#now prepare the best.keys list
@@ -617,10 +617,19 @@ if(!is.null(x$items)) {
    cat("\n Best items on each scale with counts of replications\n")    
  for(i in 1:nvar) {
  cat("\n Criterion = ",names(items[i]),"\n")
+ 
+ 
   if(length(items[[i]]) > 3) {
  temp <- data.frame(items[[i]])
-   temp[2:3] <- round(temp[2:3],digits)} else{temp <- items[[i]]
+ if("item" %in% colnames(temp)) {item.loc <- which(colnames(temp)=="item")
+                                colnames(temp)[item.loc] <- "Item" } #added 5/13/24
    temp[2:3] <- round(temp[2:3],digits)
+   temp["Item"]  <- format(temp["Item"], justify="left")
+   } else{temp <- items[[i]]
+     if("item" %in% colnames(temp)) {item.loc <- which(colnames(temp)=="item")
+                                colnames(temp)[item.loc] <- "Item" } #added 5/13/24
+   temp[2:3] <- round(temp[2:3],digits)
+   temp["Item"]  <- format(temp["Item"], justify="left")
   }
    print(temp)  
  }} else {
@@ -629,10 +638,14 @@ if(!is.null(x$items)) {
  for(i in 1:nvar) {
  cat("\n Criterion = ",names(items[i]),"\n")
   temp <- data.frame(items[[i]])
+   if("item" %in% colnames(temp)) colnames(temp)["item"] <- "Item"  #added 5/13/24
   temp <- temp[-1]
   if(length(items[[i]]) > 3) {
-   temp[1:3] <- round(temp[1:3],digits)} else{temp <- items[[i]]
    temp[1:3] <- round(temp[1:3],digits)
+   temp["Item"] <- format(temp["Item"],justify="left")
+    } else{temp <- items[[i]]
+   temp[1:3] <- round(temp[1:3],digits)
+   temp["Item"] <- format(temp["Item"],justify="left")
   }
    print(temp)  
  }}

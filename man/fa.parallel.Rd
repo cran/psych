@@ -84,7 +84,7 @@ Yet another option (suggested by Florian Scharf) is to estimate the eigen values
  
  When simulating dichotomous data in fa.parallel.poly, the simulated data have the same difficulties as the original data.  This functionally means that the simulated and the resampled results will be very similar.  Note that fa.parallel.poly has functionally been replaced with fa.parallel with the cor="poly" option.
  
- As with many psych functions, fa.parallel has been changed to allow for multicore processing.  For running a large number of iterations, it is obviously faster to increase the number of cores to the maximum possible (using the options("mc.cores=n) command where n is determined from detectCores(). 
+ As with many psych functions, fa.parallel has been changed to allow for multicore processing.  For running a large number of iterations, it is obviously faster to increase the number of cores to the maximum possible (using the options("mc.cores"=n) command where n is determined from detectCores(). 
 
 }
 \value{
@@ -106,8 +106,10 @@ Yet another option (suggested by Florian Scharf) is to estimate the eigen values
 \note{Although by default the test is applied to the 95th percentile eigen values, this can be modified by setting the quant parameter to any particular quantile. The actual simulated data are also returned (invisibly) in the value object.  Thus, it is possible to do descriptive statistics on those to choose a preferred comparison.  See the last example (not run)
    The simulated and resampled data tend to be very similar, so for a slightly cleaner figure, set sim=FALSE.  
    
-For relatively small samples with dichotomous data and  cor="tet" if some cells are empty, or if the resampled matrices are not positive semi-definite, warnings are issued. this leads to serious problems if using multi.cores (the default if using a Mac). The solution seems to be to not use multi.cores  (e.g., options(mc.cores =1)    )
+For relatively small samples with dichotomous data and  cor="tet" or cor="poly" if some cells are empty, or if the resampled matrices are not positive semi-definite, warnings are issued. this leads to serious problems if using multi.cores (the default if using a Mac). This is due to the correction for continuity.  Setting correct=0 seems to solve the problem.
 
+Final Note:  
+It is important to realize that there is no one right to determine the number of factors.  Although parallell analysis is useful, the results should be taken for what they are:  model fits.  No model is correct but some models are useful.
   }
 \references{
 
@@ -137,6 +139,7 @@ Velicer, Wayne. (1976) Determining the number of components from the matrix of p
 #fa.parallel(test.data,n.obs=145)
 fa.parallel(Thurstone,n.obs=213)   #the 9 variable Thurstone problem
 
+if(require(psychTools)) {
 #set.seed(123)
 #minor <- sim.minor(24,4,400) #4 large and 12 minor factors
 #ffa.parallel(minor$observed) #shows 5 factors and 4 components -- compare with 
@@ -151,7 +154,7 @@ fa.parallel(Thurstone,n.obs=213)   #the 9 variable Thurstone problem
 #describe(fpt$values)  #look at all the statistics of the simulated values
 #paSelect(bfi.keys,bfi)#do 5 different runs, once for each subscale
 #paSelect(ability.keys,ability,cor="poly",fm="minrank")
-
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

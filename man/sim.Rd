@@ -3,30 +3,54 @@
 \alias{sim.simplex}
 \alias{sim.minor}
 
-
-
 \title{Functions to simulate psychological/psychometric data.}
 \description{A number of functions in the psych package will generate simulated data with particular structures. The three documented here are for basic factor analysis simulations.  These functions include
-\code{\link{sim}} for a factor simplex, and \code{\link{sim.simplex}} for a data simplex, and \code{\link{sim.minor}} to simulate major and minor factors.  
 
-Other simulations aimed at special item structures include  \code{\link{sim.circ}} for a circumplex structure, \code{\link{sim.congeneric}} for a one factor factor congeneric model, \code{\link{sim.dichot}} to simulate dichotomous items, \code{\link{sim.hierarchical}} to create a hierarchical factor model, \code{\link{sim.item}} a more general item simulation are documented is separate help files.  They are listed here to help find them.
+\code{\link{sim}} for a factor simplex   \cr
+\code{\link{sim.simplex}} for a data simplex  \cr
+\code{\link{sim.minor}} to simulate major and minor factors. \cr
+
+All three of these, and most of the remaining simulation functions return the simulated model, the true scores that generate the data, and the observed data.
+
+Other simulations aimed at special item structures include the following which are are listed here in order to help find them.
+
+Factor based models:
+
+\code{\link{sim.structural}} a general simulation of structural models. \cr 
+
+ \code{\link{sim.circ}} for a circumplex or simple  structure for two factors \cr 
+\code{\link{sim.congeneric}} for a one factor factor congeneric model.\cr
+\code{\link{sim.dichot}} to simulate dichotomous items \cr
+ \code{\link{sim.hierarchical}} to create a hierarchical factor model \cr 
+ \code{\link{sim.omega}} to test various examples of omega, \cr
+ \code{\link{sim.item}} a more general item simulation (including the ability to simulate dichototomous or polytommous items).  \cr
 
 \code{\link{simCor}} to generate sample correlation matrices from a target matrix.
 
-\code{\link{sim.omega}} to test various examples of omega,
-\code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors.   See the help pages for some more simulation functions here: 
-\code{\link{sim.rasch}} to create simulated rasch data, 
-\code{\link{sim.irt}} to create general 1 to 4 parameter IRT data by calling 
-\code{\link{sim.npl}} 1 to 4 parameter logistic IRT or 
-\code{\link{sim.npn}} 1 to 4 paramater normal IRT,
-\code{\link{sim.poly}} to create polytomous ideas by calling
-\code{\link{sim.poly.npn}} 1-4 parameter polytomous normal theory items or
-\code{\link{sim.poly.npl}} 1-4 parameter polytomous logistic items, and 
-\code{\link{sim.poly.ideal}} which creates data following an ideal point or unfolding model by calling 
-\code{\link{sim.poly.ideal.npn}} 1-4 parameter polytomous normal theory ideal point model or 
+\code{\link{sim.parallel}} to compare the efficiency of various ways of deterimining the number of factors.  
+ 
+ Item Response Theory based models
+ 
+\code{\link{sim.rasch}} to create simulated rasch data  \cr 
+\code{\link{sim.irt}} to create general 1 to 4 parameter IRT data by calling one of the following: \cr
+\code{\link{sim.npl}} 1 to 4 parameter logistic IRT \cr
+\code{\link{sim.npn}} 1 to 4 paramater normal IRT \cr
+\code{\link{sim.poly}} to create polytomous ideas by calling \cr
+\code{\link{sim.poly.npn}} 1-4 parameter polytomous normal theory items \cr
+\code{\link{sim.poly.npl}} 1-4 parameter polytomous logistic items \cr
+\code{\link{sim.poly.ideal}} which creates data following an ideal point or unfolding model by calling  \cr
+\code{\link{sim.poly.ideal.npn}} 1-4 parameter polytomous normal theory ideal point model or  \cr
 \code{\link{sim.poly.ideal.npl}} 1-4 parameter polytomous logistic ideal point model.
 
-\code{\link{sim.structural}} a general simulation of structural models,  and \code{\link{sim.anova}} for ANOVA and lm simulations, and \code{\link{sim.VSS}}. Some of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
+
+
+
+\code{\link{sim.anova}} for ANOVA and lm simulations
+
+\code{\link{sim.VSS}}. 
+
+Most of these functions are separately documented and are listed here for ease of the help function.  See each function for more detailed help.
+
 }
 \usage{
 sim(fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL,
@@ -42,7 +66,7 @@ sim.minor(nvar=12,nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL,
   \item{Phi}{The structure matrix of the latent variables}
   \item{fy}{The measurement model for y}
   \item{mu}{The means structure for the fx factors, defaults to 0,1,... 3. Set to 0 if using thresholds.}
-  \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned.}
+  \item{n}{ Number of cases to simulate.  If n=0 or NULL, the population matrix is returned. If n > 0, the latent and observed data are returned.}
   \item{raw}{if raw=TRUE, raw data are returned as well.}
   \item{threshold}{If raw=TRUE (n >0) and threshold is not NULL, convert the data to binary values, cut at threshold.}
   \item{items}{TRUE if simulating items, FALSE if simulating scales}
@@ -81,7 +105,7 @@ With the addition of the treshold parameter, \code{\link{sim}} will generate dic
 
 The default values for \code{\link{sim.structure}} is to generate a 4 factor, 12 variable data set with a simplex structure between the factors. This, and the simplex of items (\code{\link{sim.simplex}}) can also be converted in a STARS model with an autoregressive component (alpha) and a stable trait component (lambda). 
 
-Two data structures that are particular challenges to exploratory factor analysis are the simplex structure and the presence of minor factors.  Simplex structures \code{\link{sim.simplex}} will typically occur in developmental or learning contexts and have a correlation structure of r between adjacent variables and r^n for variables n apart.  Although just one latent variable (r) needs to be estimated, the structure will have nvar-1 factors.  
+Two data structures that are particular challenges to exploratory factor analysis are the simplex structure and the presence of minor factors.  Simplex structures, \code{\link{sim.simplex}}, will typically occur in developmental or learning contexts and have a correlation structure of r between adjacent variables and r^n for variables n apart.  Although just one latent variable (r) needs to be estimated, the structure will have nvar-1 factors.  
 
 An alternative version of the simplex is the State-Trait-Auto Regressive Structure (STARS) which has both a simplex state structure, with autoregressive path alpha and a trait structure with path lambda. This simulated in  \code{\link{sim.simplex}} by specifying a non-zero lambda value.
 
@@ -90,7 +114,7 @@ For a nice discussion of this situation, see Maccallum, Browne and Cai (2007).  
 
 Another structure worth considering is direct modeling of a general factor with several group factors.  This is done using \code{\link{sim.general}}.
 
-Although coefficient \eqn{\omega}{\omega} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function with general left as NULL.  If there is a general factor, then results from \code{\link{sim.omega}} suggests that omega estimated either from EFA or from SEM does a pretty good job of identifying it but that the EFA approach using Schmid-Leiman transformation is somewhat more robust than the SEM approach. 
+Although coefficient \eqn{\omega_h}{\omega_h} is a very useful indicator of the general factor saturation of a unifactorial test (one with perhaps several sub factors), it has problems with the case of multiple, independent factors.  In this situation, one of the factors is labelled as ``general'' and  the omega estimate is too large.  This situation may be explored using the \code{\link{sim.omega}} function with general left as NULL.  If there is a general factor, then results from \code{\link{sim.omega}} suggests that omega estimated either from EFA or from SEM does a pretty good job of identifying it but that the EFA approach using Schmid-Leiman transformation is somewhat more robust than the SEM approach. 
 
 The four irt simulations, \code{\link{sim.rasch}},  \code{\link{sim.irt}},  \code{\link{sim.npl}} and  \code{\link{sim.npn}} simulate dichotomous items following the Item Response model.   \code{\link{sim.irt}} just calls either  \code{\link{sim.npl}} (for logistic models) or  \code{\link{sim.npn}} (for normal models) depending upon the specification of the model. 
 
@@ -116,7 +140,7 @@ Other simulation functions in psych that are documented separately includ:
 
 \code{\link{sim.congeneric}}   A function to create congeneric items/tests for demonstrating classical test theory. This is just a special case of sim.structure.
  
-\code{\link{sim.hierarchical}}  A function to create data with a hierarchical (bifactor) structure.  
+\code{\link{sim.hierarchical}}  A function to create data with a hierarchical (bifactor) structure.    Compare this with directly simulating a bifactor model  
 
 \code{\link{sim.item}}      A function to create items that either have a simple structure or a circumplex structure.
 
@@ -204,7 +228,13 @@ cor.plot(simp,colors=TRUE,main="State Trait Auto Regressive Simplex" )
 dichot.sim <- sim.irt()  #simulate 5 dichotomous items
 poly.sim <- sim.poly(theta=dichot.sim$theta)  #simulate 5 polytomous items that correlate 
   #with the dichotomous items
+  
+  #simulate a bifactor model (compare with sim.hierarchical)
 
+fx <- matrix(c(rep(.5,9),.8,.7,.6,rep(0,9),.8,.7,.6,rep(0,9),.8,.7,.6), ncol=4)
+fx   #show the structure
+bi <- sim(fx=fx,n=1000)
+lowerMat(bi$model)
 }
 
 

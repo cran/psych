@@ -86,6 +86,7 @@ hours <- 24/trials.day
 time <- seq(hours,days * trials.day*hours,hours)
 t.radian <- time * pi /12
 
+
 for (i in 1:n.obs)  {
   xij <- rnorm((nvar + nfact),mu,sigma)   #between subjects 
 for(j in 1:nfact) {   #first generate the factor scores that have a within subject model

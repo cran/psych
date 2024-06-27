@@ -8,7 +8,7 @@ importFrom(graphics,plot,pairs,points,abline,arrows,axis,barplot,box,curve,hist,
 
 importFrom(stats,aov,cov,cor,cor.test,var,sd,median,mad,cov2cor,biplot,loess,predict,predict.lm,rnorm,dnorm,rbinom,rlnorm,density, kmeans, lm,lm.fit,loadings,complete.cases, na.omit,na.fail,nlminb,optim, quantile,qnorm, pnorm,qqnorm,qqline,qqplot,pchisq,qchisq,qt,pt,dt,pf,qf,ppoints,p.adjust,optimize,residuals,spline,symnum,terms,weighted.mean,promax,varimax,uniroot)
 
-#importFrom(datasets,USArrests,attitude,Harman23.cor,Harman74.cov,ability.cov,iris)
+#importFrom(datasets,USArrests,attitude,Harman23.cor,Harman74.cor,ability.cov,iris)
 importFrom(utils,head,tail,read.table,write.table,read.fwf,stack,example,download.file,getFromNamespace,untar,unzip,View)
 
 importFrom(grDevices,colorRampPalette,topo.colors,devAskNewPage,dev.flush,dev.hold, palette, grey,rainbow,rgb,col2rgb,trans3d,adjustcolor)
@@ -16,7 +16,7 @@ importFrom(grDevices,colorRampPalette,topo.colors,devAskNewPage,dev.flush,dev.ho
 importFrom(methods,new)
 
 importFrom(tools,file_ext)
-#importFrom(psychTools,read.file,read.file.csv,read.clipboard,read.clipboard.tab,read.clipboard.csv,read.clipoard.fwf,read.clipboard.lower,read.clipboard.upper,write.file,write.file.csv)
+#importFrom(psychTools,read.file,read.file.csv,read.clipboard,read.clipboard.tab,read.clipboard.csv,read.clipboard.lower,read.clipboard.upper,write.file,write.file.csv,dfOrder)
 
 #importFrom(foreign,read.spss,read.xport,read.systat) #these are imported in psychTools
 
@@ -121,6 +121,7 @@ d.ci,
 d2r,
 d2t,
 d2OVL,d2OVL2,d2CL,d2U3,
+#dfOrder,
 d.robust,
 distance,
 #df2latex,
@@ -275,6 +276,7 @@ lavaan.diagram,
 levels2numeric,
 lmCor,
 lmDiagram,
+lmCorLookup,
 lmCor.diagram,
 logit,
 logistic,
@@ -383,6 +385,7 @@ rangeCorrection,
 reliability,
 residuals.psych,
 reflect,
+removeMissing,
 resid.psych,
 rescale,
 response.frequencies,
@@ -394,8 +397,10 @@ r2c,
 r2d,
 r2t,
 r2chi,
+r2p,
 rmssd,
 RMSEA,
+RV,
 SAPAfy,
 scaling.fits,
 scatterHist,

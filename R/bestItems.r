@@ -113,5 +113,5 @@ function(x,y,criteria=NULL,keep.na=FALSE) {
 if (is.null(criteria)) {temp <- match(x,rownames(y))} else {
      temp <- match(x,y[,criteria])}
      if(any(!is.na(temp))) {	
- y <- (y[temp[!is.na(temp)],,drop=FALSE]) } else {y <- NA}
+ y <- format(y[temp[!is.na(temp)],,drop=FALSE],justify="left") } else {y <- NA}
 return(y)}

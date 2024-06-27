@@ -1,7 +1,7 @@
 \name{anova.psych}
 \alias{anova.psych}
 
-\title{Model comparison for regression, mediation, and factor analysis}
+\title{Model comparison for regression, mediation, cluster and  factor analysis}
 \description{
 When doing regressions from the data or from a correlation matrix using \code{\link{setCor}} or doing a mediation analysis using \code{link{mediate}}, it is useful to compare alternative models.  Since these are both regression models, the appropriate test is an Analysis of Variance.  Similar tests, using Chi Square may be done for factor analytic models. 
 }
@@ -9,15 +9,16 @@ When doing regressions from the data or from a correlation matrix using \code{\l
 \method{anova}{psych}(object,...)
 }
 
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{An object from \code{\link{setCor}},  \code{\link{mediate}}, \code{\link{omega}}, or \code{\link{fa}}.
+  \item{object}{An object from \code{\link{setCor}},  \code{\link{mediate}}, \code{\link{omega}},  \code{\link{fa}}, or \code{\link{iclust}}.
 }
   \item{\dots}{More objects of the same type may be supplied here}
 
 }
 \details{
-\code{\link{setCor}} returns the SE.residual and degrees of freedom.  These are converted to SSR and then an analysis of variance is used to compare two (or more) models. For \code{\link{omega}} or \code{\link{fa}} the change in the ML chisquare statistic as a function of change in df is reported.
+\code{\link{setCor}} returns the SE.residual and degrees of freedom. 
+ These are converted to SSR and then an analysis of variance is used to compare two (or more) models.
+  For \code{\link{omega}} or \code{\link{fa}} the change in the ML chisquare statistic as a function of change in df is reported.
 }
 \value{An ANOVA table comparing the models.}
 
@@ -31,7 +32,7 @@ The code has been adapted from the anova.lm function in stats and the anova.sem 
 }
 
 
-\seealso{\code{\link{setCor}}, \code{\link{mediate}}, \code{\link{omega}}, \code{\link{fa}}
+\seealso{\code{\link{setCor}}, \code{\link{mediate}}, \code{\link{omega}}, \code{\link{fa}}, \code{\link{iclust}}
 
 }
 \examples{

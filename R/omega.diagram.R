@@ -35,13 +35,16 @@
 #dispatch to the right option
     switch(result,
 extend = {extend <- TRUE
-               #class(om.results)[2] <- "omega"
+               class(om.results)[2] <- "omega"
                factors <- om.results
                nvar <- num.var <- nrow(factors)
-               num.factors <- ncol(factors) -1
-                if(sort) {temp  <- fa.sort(factors[,-1])
-                   temp2 <- factors[,1,drop=FALSE]     #added the drop option November 4, 2018
-          factors <- cbind(g=temp2[rownames(temp),1],temp)}  #added column 1
+               if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -1} else {
+                  num.factors <- NCOL(factors)}
+                 #  temp2 <- factors[,1,drop=FALSE]     #added the drop option November 4, 2018
+          #factors <- cbind(g=temp2[rownames(temp),1],temp)  #added column 1
+           gloading <- factors[,1]
+            factors <- factors[,1:num.factors]
+            num.factors <- num.factors -1   #we are doing a general + group
             }, 
 omegaSem = {
     #did we do an omegaSem or just an omegaFromSem?
@@ -52,40 +55,41 @@ omegaSem = {
       factors <- as.matrix(cfa.loads)
         gloading <- cfa.loads[,1,drop=FALSE]
         nvar <- num.var <- nrow(gloading)
-        num.factors <- ncol(factors) -1
+       if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -1} else {
+                  num.factors <- NCOL(factors)-1}
         sl=TRUE
         main <- "Omega from SEM" 
     },
     
  omegaDirect = {factors <- om.results$loadings
      nvar <- num.var <- nrow(factors)
-     num.factors <- ncol(factors) -1
+      if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -1} else {
+                  num.factors <- NCOL(factors)}
+                  if("g" %in% colnames(factors)) num.factors <- num.factors -1
                   if(sort) {temp  <- fa.sort(factors[,-1])
                    temp2 <- factors[,1]
           factors <- cbind(g=temp2[rownames(temp)],temp)} },
     
-omega ={
+omega =   {
         if(extend) class(om.results) <- c("psych","omega")
  if(sort) om.results <- fa.sort(om.results)   #usually sort, but sometimes it is better not to do so
-          
+        
  if (sl) {factors <- as.matrix(om.results$schmid$sl) 
-         
          if(is.null(main)) {main <- "Omega with Schmid Leiman Transformation" }
          } else {factors <- as.matrix(om.results$schmid$oblique)
           if(is.null(main)) {main <- "Hierarchical (multilevel) Structure" }
          }
        gloading <- om.results$schmid$gloading
         nvar <- num.var <- dim(factors)[1]   #how many variables?
-   if (sl ) {num.factors <- dim(factors)[2] - 1 - (!extend) *3 } else {num.factors <- dim(factors)[2]
-       }
+   if (sl ) { if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -2} else {
+                  num.factors <- NCOL(factors)-1}} else {num.factors <- NCOL(factors)}      
  },
  other ={warning("I am sorry, I don't know how to diagram this input")}
       
     )
 if(result !="other") {#skip to the end if we don' know what we are doing
  
-#now draw the figure
-   
+#now draw the figure 
    e.size <- e.size * 10/ nvar   #this is an arbitrary setting that seems to work
 #first some basic setup parameters 
   

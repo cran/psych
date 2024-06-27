@@ -60,9 +60,9 @@ round(cor(fp2$scores,pf2.n))
 \donttest{
 #predictions from bestScales
 #the derivation sample
-bs <- bestScales(psychTools::bfi[1:1400,], cs(gender,education,age),folds=10,p.keyed=.5) 
-pred <- predict(bs,psychTools::bfi[1401:2800,]) #The prediction sample
-cor2(pred,psychTools::bfi[1401:2800,26:28] ) #the validity of the prediction
+bs <- bestScales(bfi[1:1400,], cs(gender,education,age),folds=10,p.keyed=.5) 
+pred <- predict(bs,bfi[1401:2800,]) #The prediction sample
+cor2(pred,bfi[1401:2800,26:28] ) #the validity of the prediction
 summary(bs) #compare with bestScales cross validations
 }
 }

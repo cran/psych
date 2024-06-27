@@ -238,11 +238,12 @@ lines(dhigh$y*5-4,dhigh$x,typ="l")
 }
 
 #show non-symmeteric results
+if(require(psychTools)) {
 test1 <- tetrachoric(psychTools::ability[,1:4],psychTools::ability[,5:10])
 test2 <-  polychoric(psychTools::ability[,1:4],psychTools::ability[,5:10])
 all <- tetrachoric(psychTools::ability[,1:10])
 
-
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -86,7 +86,7 @@ In addition, fm="mle" produces even better solutions for this example.  Both the
 
 However, simulations of multiple problem sets suggest that fm="pa" tends to produce slightly smaller residuals while having slightly larger RMSEAs than does fm="minres" or fm="mle".    That is, the sum of squared residuals for fm="pa" seem to be slightly smaller than those found using fm="minres" but the RMSEAs are slightly worse when using fm="pa".  That is to say, the "true" minimal residual is probably found by fm="pa". 
 
-Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
+Following extensive correspondence with Hao Wu and Mikko Ronkko, in April, 2017 the derivative of the minres  (and uls) fitting was modified.  This leads to slightly smaller residuals (appropriately enough for a method claiming to minimize them) than the prior procedure.  For  consistency with prior analyses, "old.min" was added to give these slightly larger residuals.  The differences between old.min and the newer "minres" and "ols" solutions are at the third to fourth decimal, but none the less, are worth noting. For comparison purposes, the fm="ols" uses empirical first derivatives, while uls and minres use equation based first derivatives.  The results seem to be identical, but the minres and uls solutions require fewer iterations for larger problems and are faster. Thanks to Hao Wu for some very thoughtful help.  
 
 Although usually these various algorithms produce equivalent results, there are several data sets included that show large differences between the methods. \code{\link[psychTools]{Schutz}} produces Heywood and super Heywood cases,   \code{\link[psychTools]{blant}} leads to very different solutions.  In particular, the minres solution produces smaller residuals than does the mle solution, and the factor.congruence coefficients show very different solutions.
 
@@ -94,7 +94,7 @@ A very strong argument against using MLE is found in the chapter by MacCallum, B
 
 Principal axes may be used in cases when maximum likelihood solutions fail to converge, although fm="minres" will also do that and tends to produce better (smaller RMSEA) solutions.
 
-The fm="minchi" option is a variation on the "minres" (ols) solution and minimizes the sample size weighted residuals rather than just the residuals. This was developed to handle the problem of data that Massively Missing Completely at Random (MMCAR) which a condition that happens in the SAPA project.
+The fm="minchi" option is a variation on the "minres" (ols) solution and minimizes the sample size weighted residuals rather than just the residuals. This was developed to handle the problem of data with large variations in the number of observations in pairwise correlations produced by  using the Massively Missing Completely at Random (MMCAR) data collection method.  (This is the procedure used in the SAPA project.)
 
 
 A traditional problem in factor analysis was to find the best estimate of the original communalities in order to speed up convergence.  Using the Squared Multiple Correlation (SMC) for each variable will underestimate the original communalities, using 1s will over estimate.  By default, the SMC estimate is used.  Note that in the case of non-invertible matrices, the pseudo-inverse is found so smcs are still estimated. In either case, iterative techniques will tend to converge on a stable solution. If, however, a solution fails to be achieved, it is useful to try again using ones (SMC =FALSE).  Alternatively, a vector of starting values for the communalities may be specified by the SMC option.
@@ -109,7 +109,7 @@ The generalized least squares (gls) solution weights the residual matrix by the 
 
 The maximum likelihood solution takes yet another approach and finds those communality values that minimize the chi square goodness of fit test.  The fm="ml" option provides a maximum likelihood solution following the procedures used in \code{\link{factanal}} but does not provide all the extra features of that function.  It does, however, produce more expansive output.
 
-The minimum rank factor model (MRFA) roughly follows ideas by Shapiro and Ten Berge (2002) and Ten Berge and Kiers (1991).  It makes use of the glb.algebraic procedure contributed by Andreas Moltner.  MRFA attempts to extract factors such that the residual matrix is still positive semi-definite.  This version is still being tested and feedback is most welcome.
+The minimum rank factor model (MRFA) roughly follows ideas by Shapiro and Ten Berge (2002) and Ten Berge and Kiers (1991).  It makes use of the glb.algebraic procedure contributed by Andreas Moltner.  MRFA attempts to extract factors such that the residual matrix is still positive semi-definite. 
 
 Alpha factor analysis finds solutions based upon a correlation matrix corrected for communalities and then rescales these to the original correlation matrix.  This procedure is described by Kaiser and Coffey, 1965.  
 
@@ -210,10 +210,10 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
  
 \item{TLI}{The Tucker Lewis Index of factoring reliability which is also known as the non-normed fit index.  }
 
-\item{BIC}{Based upon \eqn{\chi^2}{chi^2} with the assumption of normal theory and using the \eqn{\chi^2}{chi^2} found using the objective function defined above. This is just \eqn{\chi^2 - 2 df}{chi^2 - 2 df}}
+\item{BIC}{Based upon \eqn{\chi^2}{chi^2} with the assumption of normal theory and using the \eqn{\chi^2}{chi^2} found using the objective function defined above. This is just \eqn{\chi^2 -  df * log(N)}{chi^2 -  df * log(N)}}
 
 
-\item{eBIC}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived eBIC based upon the empirical \eqn{\chi^2}{chi^2} - 2 df. }
+\item{eBIC}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived eBIC based upon the empirical \eqn{\chi^2}{chi^2} -  df *log(N). }
 
 \item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
 
@@ -293,7 +293,7 @@ One reason for this problem when using tetrachorics or polychorics seems to be t
 
 Although both  fm ="pa" or fm="minres" will work with these ``improper" matrices, the goodness of fit tests do not.  Thus, by default, calls to fa.stats will pass the smooth parameter as TRUE.  This may be prevented by forcing smooth=FALSE.  Npt smoothing does not affect the pa or minres solution, but will affect the goodness of fit statistics slightly.
 
-
+Problems in factor polychoric matrices:  If getting error messages when factoring polychoric matrices, try turning off the correction for continuity (correct=0).
 
 
 }
@@ -366,7 +366,7 @@ mr2 <- fa(Thurstone.33,2,rotate="none")
 mr3 <- fa(Thurstone.33,3,rotate="none")
 factor.congruence(list(mle2,mr2,pa2,mle3,pa3,mr3))
 
-#f5 <- fa(psychTools::bfi[1:25],5)
+#f5 <- fa(bfi[1:25],5)
 #f5  #names are not in ascending numerical order (see note)
 #colnames(f5$loadings) <- paste("F",1:5,sep="")
 #f5

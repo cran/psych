@@ -103,7 +103,9 @@ These three procedures will produce keys vectors for assigning items to the two 
 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
-Yet another procedure, implemented in \code{\link{splitHalf}} is actually form all possible (for n items <= 16) or sample 15,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples. For a 24 item problem with exactly 2 factors (by simulation), the worst split half is much lower than just random sampling would indicate.  s
+Yet another procedure, implemented in \code{\link{splitHalf}} is actually to form all possible (for n items <= 16) or sample 15,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples. For a 24 item problem with exactly 2 factors (by simulation), the worst split half is much lower than just random sampling would indicate.  
+
+When consider split halfs, it is important to remember these are of roughly equal size.  So a correlation matrix of 3 unrelated factors (sharing no general factor) will have a "worst" split which is not 0.  See the examples.
 
 Timings on a MacPro for a 24 item problem with a 2.4 GHz 8 core are .24 secs for the default 10,000 samples, .678 for 30,000 samples and 22.58 sec for all possible.  
 The values of the maximum split for these sample sizes  were .799,/.804 and .800 for three replications of the default sample size of 10000,  .805  and .806 for two sets of 30,000 and .812 for an exhaustive search.
@@ -169,7 +171,22 @@ guttman(attitude)
 #sp <- splitHalf(psychTools::ability,raw=TRUE)  #this saves the results
 #hist(sp$raw,breaks=101,ylab="SplitHalf reliability",main="SplitHalf 
 #    reliabilities of a test with 16 ability items")
-sp <- splitHalf(psychTools::bfi[1:10],key=c(1,9,10))
+sp <- splitHalf(bfi[1:10],key=c(1,9,10))
+
+
+#An example of how split half does not estimate the amount of general factor variance
+#When the 
+
+F <- matrix(c(rep(.8,3),rep(0,9),rep(.8,3),rep(0,9),rep(.8,3)),ncol=3)
+R <- F %*% t(F)
+diag(R) <- 1
+sp <- splitHalf(R)   #shows a worst split half of .25 
+ #    which is clearly not the amount of general variance
+sp
+sp$minAB      #these equal size splits
+
+#but  ICLUST gets it right
+iclust(R,plot=FALSE)$reliability
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

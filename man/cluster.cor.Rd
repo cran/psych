@@ -84,6 +84,7 @@ The second example uses the \code{\link[psychTools]{msq}} data set of 72 measure
 }
 
 \examples{
+if(require(psychTools)) {
 #use the msq data set that shows the structure of energetic and tense arousal
 small.msq <- psychTools::msq[ c("active", "energetic", "vigorous", "wakeful", 
 "wide.awake", "full.of.pep", "lively", "sleepy", "tired", "drowsy","intense", 
@@ -112,7 +113,7 @@ summary(adjusted.scales)
 #note that the EA and high and low EA and TA and high and low TA 
 # scale correlations are confounded
 summary(confounded.scales) 
-
+}
 bfi.stats <- statsBy(bfi,group="education",cors=TRUE ,cor="cov")
  #specify to find covariances
  bfi.plus.keys <- c(bfi.keys,gender="gender",age ="age")

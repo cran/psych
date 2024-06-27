@@ -122,6 +122,7 @@ plot(d4,type="ICC")
 par(op)
 
 
+if(require(psychTools)) {
 #using the iq data set for an example of real items
 #first need to convert the responses to tf
 data(iqitems)
@@ -180,7 +181,7 @@ ls <- irt.fa(lsat6)
 #5   0.657    2.053
  
  
-
+}
  
 
 

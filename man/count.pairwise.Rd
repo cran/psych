@@ -99,6 +99,7 @@ pairwiseCount(x,diagonal=FALSE)
 pairwiseDescribe(x,quant=c(.1,.25,.5,.75,.9))
 
 #examine the structure of the ability data set
+if(require(psychTools)) {
 keys <- list(ICAR16=colnames(psychTools::ability),reasoning =  
   cs(reason.4,reason.16,reason.17,reason.19),
   letters=cs(letter.7, letter.33,letter.34,letter.58, letter.7), 
@@ -106,7 +107,7 @@ keys <- list(ICAR16=colnames(psychTools::ability),reasoning =
   rotate=cs(rotate.3,rotate.4,rotate.6,rotate.8))
  pairwiseImpute(keys,psychTools::ability)
 
-    
+ }   
 }
 \keyword{ models }% at least one, from doc/KEYWORDS
 \keyword{ multivariate }% __ONLY ONE__ keyword per line

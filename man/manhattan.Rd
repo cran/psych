@@ -45,31 +45,32 @@ William Revelle
 \seealso{ \code{\link{bestScales}}, \code{\link{error.dots}}
 }
 \examples{
+
 op <- par(mfrow=(c(2,3))) #we want to compare two different sets of plots
-manhattan(psychTools::bfi[1:25],psychTools::bfi[26:28]
-,labels=colnames(psychTools::bfi)[1:25], dictionary=psychTools::bfi.dictionary)
-manhattan(psychTools::bfi[1:25],psychTools::bfi[26:28],log.p=TRUE,
-    dictionary=psychTools::bfi.dictionary)
+manhattan(bfi[1:25],bfi[26:28]
+,labels=colnames(bfi)[1:25], dictionary=bfi.dictionary)
+manhattan(bfi[1:25],bfi[26:28],log.p=TRUE,
+    dictionary=bfi.dictionary)
 
 #Do it again, but now show items by the keys.list
 bfi.keys <-
   list(agree=c("-A1","A2","A3","A4","A5"),conscientious=c("C1","C2","C3","-C4","-C5"),
  extraversion=c("-E1","-E2","E3","E4","E5"),neuroticism=c("N1","N2","N3","N4","N5"),
  openness = c("O1","-O2","O3","O4","-O5"))
-man <-  manhattan(psychTools::bfi[1:25],psychTools::bfi[26:28],keys=bfi.keys,
-     dictionary=psychTools::bfi.dictionary[1:2])
-manhattan(psychTools::bfi[1:25],psychTools::bfi[26:28],keys=bfi.keys,log.p=TRUE,
-dictionary=psychTools::bfi.dictionary[1:2]) 
+man <-  manhattan(bfi[1:25],bfi[26:28],keys=bfi.keys,
+     dictionary=bfi.dictionary[1:2])
+manhattan(bfi[1:25],bfi[26:28],keys=bfi.keys,log.p=TRUE,
+dictionary=bfi.dictionary[1:2]) 
 
 #Alternatively, use a matrix as input
-R <-cor(psychTools::bfi[1:25],psychTools::bfi[26:28],use="pairwise")
+R <-cor(bfi[1:25],bfi[26:28],use="pairwise")
 manhattan(R,cs(gender,education,age),keys=bfi.keys,
-      dictionary=psychTools::bfi.dictionary[1:2], raw=FALSE,abs=FALSE)
+      dictionary=bfi.dictionary[1:2], raw=FALSE,abs=FALSE)
 par <- op
 
 
 
-psychTools::dfOrder(man,1,ascending=FALSE)  #print out the items sorted on gender
+psych:::dfOrder(man,1,ascending=FALSE)  #print out the items sorted on gender
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

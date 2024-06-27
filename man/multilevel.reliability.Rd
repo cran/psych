@@ -69,7 +69,7 @@ Generalizability of change scores (Shrout and Lane, equation  9)
 
 If the design may be thought of as fully crossed, then either aov or lmer can be used to estimate the components of variance.  With no missing data and a balanced design, these will give identical answers. However aov breaks down with missing data and seems to be very slow and very memory intensive for large problems ( 5,919  seconds for 209 cases with with 88 time points and three items on a Mac Powerbook with a 2.8 GHZ Intel Core I7). The slowdown probably is memory related, as the memory demands increased to 22.62 GB of compressed memory.   lmer will handle this design but is not nearly as slow  (242 seconds for the 209 cases with 88 time points and three items) as the aov approach.   
  
-If the design is thought of as nested, rather than crossed, the components of variance are found using the \code{\link{lme}} function from nlme. This is very fast (114 cases with 88 time points and three items took 3.5 seconds). 
+If the design is thought of as nested, rather than crossed, the components of variance are found using the lme function from nlme. This is very fast (114 cases with 88 time points and three items took 3.5 seconds). 
 
 
 The nested design leads to the generalizability of K random effects Nested (Shrout and Lane, equation 10):
@@ -80,12 +80,12 @@ And, finally, to the reliability of between person differences, averaged over it
 
 \deqn{R_{CN} = \frac{\sigma^2_{T(P)} }{\sigma^2_{T(P)} + \sigma^2_e/(n.I}}{RCN = (\sigma^2_T(P)/(\sigma^2_T(P) + \sigma^2_e/(n.I))} 
 
-Unfortunately, when doing the nested analysis, \code{\link{lme}} will sometimes issue an obnoxious error about failing to converge.  To fix this, turning off \code{\link{lme}}  and just using lmer seems to solve the problem (i.e., set lme=FALSE and lmer=TRUE).  (\code{\link{lme}} is part of core R and its namespace is automatically attached when loading \code{\link{psych}}). For many problems, lmer is not necessary and is thus not loaded.  However sometimes it is useful.  To use lmer it is necessary to have the lme4 package installed.  It will be automatically loaded if it is installed and requested. In the interests of making a 'thin' package, lmer is suggested,not required.
+Unfortunately, when doing the nested analysis, lme will sometimes issue an obnoxious error about failing to converge.  To fix this, turning off lme  and just using lmer seems to solve the problem (i.e., set lme=FALSE and lmer=TRUE).  (lme is part of core R and its namespace is automatically attached when loading \code{\link{psych}}). For many problems, lmer is not necessary and is thus not loaded.  However sometimes it is useful.  To use lmer it is necessary to have the lme4 package installed.  It will be automatically loaded if it is installed and requested. In the interests of making a 'thin' package, lmer is suggested,not required.
 
 The input can either be in 'wide' or 'long' form.  If in wide form, then specify the grouping variable, the 'time' variable, and the the column numbers or names of the items. (See the first example).  If in  long format, then what is the column (name or number) of the dependent variable.  (See the second example.)
 
 
-\code{\link{mlArrange}} takes a wide data.frame and organizes it into a `long' data.frame suitable for a lattice \code{\link{xyplot}}.  This is a convenient alternative to \code{\link{stack}}, particularly for unbalanced designs.  The wide data frame is reorganized into a long data frame organized by grp (typically a subject id), by Time (typically a time varying variable, but can be anything, and then stacks the items within each person and time.  Extra variables are carried over and matched to the appropriate grp  and Time. 
+\code{\link{mlArrange}} takes a wide data.frame and organizes it into a `long' data.frame suitable for a lattice xyplot.  This is a convenient alternative to \code{\link{stack}}, particularly for unbalanced designs.  The wide data frame is reorganized into a long data frame organized by grp (typically a subject id), by Time (typically a time varying variable, but can be anything, and then stacks the items within each person and time.  Extra variables are carried over and matched to the appropriate grp  and Time. 
 
 Thus, if we have N subjects over t time points for k items, in wide format for N * t rows where each row has k items and e extra pieces of information, we get a N x t * k row by 4 + e column dataframe.  The first four columns in the long output are id, time, values, and item names, the remaining columns are the extra values.  These  could be something such as a trait measure for each subject, or the situation in which the items are given.
 
@@ -120,7 +120,7 @@ Bolger, Niall and Laurenceau, Jean-Phillippe, (2013) Intensive longitudinal mode
 
 Cranford, J. A., Shrout, P. E., Iida, M., Rafaeli, E., Yip, T., & Bolger, N. (2006). A procedure for evaluating sensitivity to within-person change: Can mood measures in diary studies detect change reliably? Personality and Social Psychology Bulletin, 32(7), 917-929.
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://personality-project.org/revelle/publications/rc.pa.19.pdf} Preprint available from personality-proejct. 
 
 Revelle, W. and Wilt, J. (2017) Analyzing dynamic data: a tutorial. Personality and Individual Differences. DOI: 10.1016/j.paid.2017.08.020
 

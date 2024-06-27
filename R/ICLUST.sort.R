@@ -43,7 +43,9 @@
     first <- first + items[i]}
     }
     if (first < nitems) loads[first:nitems,"cluster"] <- 0   #assign items less than cut to 0
-      if(keys) {result <- list(sorted=loads,clusters=factor2cluster(loadings))} else  result <- list(sorted=loads)
+    
+
+      if(keys) {result <- list(sorted=loads,clusters=factor2cluster(loadings[rownames(loads),,drop=FALSE],aslist=FALSE))} else  {result <- list(sorted=loads)}
    class(result) <- c("psych","iclust.sort")   #need to clean up print to make this work
    return(result)
 }

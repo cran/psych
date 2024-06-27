@@ -31,9 +31,10 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 \usage{
 psych.misc()
 lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE)
-cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE)
+cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE,pval=FALSE)
 lowerMat(R, digits = 2,minlength=5)
 matMult(x,y) #multiply two matrices with missing data
+
 tableF(x,y)
 reflect(f,flip=NULL)
 progressBar(value,max,label=NULL) 
@@ -57,10 +58,12 @@ test.all(pl,package="psych",dependencies
   \item{R}{A rectangular matrix or data frame (probably a correlation matrix)}
   \item{x}{A data matrix or data frame or a vector depending upon the function.}
   \item{y}{A data matrix or data frame or a vector}
+  
   \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
   \item{digits}{round to digits}
   \item{minlength}{Abbreviate to minlength in lowerCor}
   \item{show}{Display the correlations from lowerCor or cor2 (default is TRUE)}
+  \item{pval}{Calculate the probability values associated with the correlations.}
   \item{use}{Should pairwise deletion be done, or one of the other options to cor}
   \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 
@@ -93,6 +96,7 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{lowerMat}}Shows the lower triangle of a matrix, rounded to digits with titles abbreviated to digits + 3
 
+
 \code{\link{progressBar}} Display a series of dots as we progress through a slow loop (removed from anything  using multicores). 
 
 \code{\link{tableF}} (for tableFast) is a cut down version of table that does no error checking, nor returns pretty output, but is significantly faster than table.  It will just work on two integer vectors.  This is used in polychoric an tetrachoric for about a 50\% speed improvement for large problems.  
@@ -101,7 +105,7 @@ test.all(pl,package="psych",dependencies
 
 \code{\link{test.all}} allows one to test all the examples in specified package.  This allows us to make sure that those examples work when other packages (e.g., psych) are also loaded.  This is used when developing revisions to the psych package to make sure the the other packages work.  Some packages will not work and/or crash the system (e.g., DeducerPlugInScaling requires Java and even with Java, crashes when loaded, even if psych is not there!).  Alternatively, if testing a long list of dependencies, you can skip the first part by specifying them by name.
 
-\code{\link{cor2}} will find and display the correlations between two sets of variables, rounded to digits, using the other options. If x is a list of multiple sets (two or more), then all sets are correlated.  
+\code{\link{cor2}} will find and display the correlations between two sets of variables, rounded to digits, using the other options. If x is a list of multiple sets (two or more), then all sets are correlated.  If pval is TRUE, will return the probability values (which can then be displayed by calling \code{\link{corPlot}}.)
 
 \code{\link{levels2numeric}}converts character data with levels to numeric data.  Used in the SAPA analyses where we code some variables, (e.g., gender, education) with character codes to help in the documentation of files, but want to do analyses of correlations with other categorical variables. 
 
@@ -126,29 +130,32 @@ It is important to remember to not call \code{\link{lowerCor}} when all you need
 
 \code{\link{cs}} is a direct copy of the Cs function in the Hmisc package by Frank Harrell.  Added to psych to avoid the overhead of the Hmisc package.
 
+
 }
 
 \seealso{\code{\link{corr.test}} to find correlations, count the pairwise occurrences, and to give significance tests for each correlation.  \code{\link{r.test}} for a number of tests of correlations, including tests of the difference between correlations.  \code{\link{lowerUpper}} will display the differences between two matrices.}
 \examples{
+if(require(psychTools)) {
+
 lowerMat(Thurstone)
-lb <- lowerCor(psychTools::bfi[1:10])  #finds and prints the lower correlation matrix, 
+lb <- lowerCor(bfi[1:10])  #finds and prints the lower correlation matrix, 
   # returns the square matrix.
 lowerCor(psychTools::ability[,1:5]) #the Pearson correlations, compare with
 lowerCor(psychTools::ability[,1:5],cor="tetra")
-#fiml <- corFiml(psychTools::bfi[1:10])     #FIML correlations require lavaan package
+#fiml <- corFiml(bfi[1:10])     #FIML correlations require lavaan package
 #lowerMat(fiml)  #to get pretty output
 f3 <- fa(Thurstone,3)
 f3r <- reflect(f3,2)  #reflect the second factor
 #find the complexity of the response patterns of the iqitems.
 round(shannon(psychTools::iqitems),2) 
 #test.all('BinNor')  #Does the BinNor package work when we are using other packages
-bestItems(lb,"A3",cut=.1,dictionary=psychTools::bfi.dictionary[1:2])
+bestItems(lb,"A3",cut=.1,dictionary=bfi.dictionary[1:2])
 #to make this a latex table 
 #df2latex(bestItems(lb,2,cut=.2))
-#
-data(psychTools::bfi.dictionary)
-f2 <- fa(psychTools::bfi[1:10],2)
-fa.lookup(f2,psychTools::bfi.dictionary)
+}
+data(bfi.dictionary)
+f2 <- fa(bfi[1:10],2)
+fa.lookup(f2,bfi.dictionary)
 
 sa1 <-sat.act[1:2]
 sa2 <- sat.act[3:4]
@@ -170,9 +177,9 @@ lowerCor(fromTo(bfi,cs(A3,C4)))
 
 
 set.seed(42)  
-temp <- SAPAfy(bfi[1:10],3)  #30 % sample from bfi
+temp <- SAPAfy(bfi[1:10],3)  #30 percent sample   from bfi
 f2 <- fa(bfi[1:10],2)
- f2s <- fa(temp,2)
+ f2s <- fa(temp,2,missing=TRUE)
  fa.congruence(f2s,f2)  #the two factor structure are almost identical
  #although the scores are not identical
 cor2(f2$scores, f2s$scores)

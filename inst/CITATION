@@ -5,6 +5,6 @@
     organization = "Northwestern University",
     address = "Evanston, Illinois",
     year = 2024,
-    note = "R package version 2.4.3",
+    note = "R package version 2.4.6",
     url = "https://CRAN.R-project.org/package=psych"
  )

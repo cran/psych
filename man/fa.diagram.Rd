@@ -118,12 +118,16 @@ fa.diagram(f3l,Phi=Phi,main="Input from a matrix")
 fa.diagram(ICLUST(Thurstone,2,title="Two cluster solution of Thurstone"),main="Input from ICLUST")
 het.diagram(Thurstone,levels=list(1:4,5:8,3:7))
 
+
+#this example shows how to use the ic parameter 
 #show how caffiene increases arousal and tension
 select <- c("active" , "alert" ,  "aroused", "sleepy",  "tired" , 
           "drowsy" , "anxious", "jittery" ,"nervous",
  "calm" ,   "relaxed" ,"at.ease" ,"gender",  "drug")
- msq.small <- psychTools::msqR[select]
-fe <- fa.extend(msq.small, 2,1:12,14)
+ #msq.small <- msqR[select]  requires psychTools
+ 
+ msq.small<- small.msq   #a small data set in psych
+fe <- fa.extend(msq.small, 2,1:12,14) #caffeine effects on mood
 extension.diagram(fe, ic=TRUE) #drug causes arousal
 }
 \keyword{ multivariate }

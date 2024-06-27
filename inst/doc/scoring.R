@@ -1,15 +1,14 @@
 ## ----echo=TRUE----------------------------------------------------------------
 library(psych)
-library(psychTools)
 
 ## -----------------------------------------------------------------------------
 file.name <-
   "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
-my.data <- read.file(file.name)
+if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq}
 
 ## -----------------------------------------------------------------------------
 fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
-my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard one, we need to specify the file type
+if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq}  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before
  describe(my.data)
@@ -17,11 +16,11 @@ my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard 
 ## ----echo=TRUE----------------------------------------------------------------
  
 my.keys <-  list(EA= c("active","alert","aroused", "-sleepy","-tired", "-drowsy"),
-                            TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),
-                            EAp = c("active","alert","aroused"),
-                            EAn = c("sleepy","tired", "drowsy"),
-                            TAp = c("anxious","jittery","nervous"),
-                            TAn = c("calm", "relaxed", "at.ease")
+            TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),
+            EAp = c("active","alert","aroused"),
+            EAn = c("sleepy","tired", "drowsy"),
+            TAp = c("anxious","jittery","nervous"),
+            TAn = c("calm", "relaxed", "at.ease")
                             )
         
  another.keys.list <- list(EA=c(1:3,-4,-5,-6),TA=c(7:9,-10,-11,-12),
@@ -52,10 +51,11 @@ dev.off()
 ## ----echo=TRUE----------------------------------------------------------------
 select <- colnames(my.data) 
 #or
-select <- selectFromKeys(my.keys)
 
-small.msq <- msq[select]
-describe(small.msq)  
+select <- selectFromKeys(my.keys)
+if(require(psychTools)) {small.msq <- psychTools::msq[select]} else {small.msq <- my.data}
+describe(small.msq) #note that if psychTools is not available this is just 200 cases
+
 
 ## ----echo=TRUE----------------------------------------------------------------
 msq.scales <- scoreItems(my.keys,small.msq)

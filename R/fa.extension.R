@@ -17,7 +17,7 @@
          w <- fo$stats$weights
          fl <- fo$schmid$sl
          Phi <- NULL
-         fl <- fl[,1:(dim(fl)[2]-3)]
+         fl <- fl[,1:(dim(fl)[2]-4)]    #just the loadings
          nfactors <- dim(fl)[2]
          fe <- t(t(w) %*% Roe)
          foblique <- fo$schmid$oblique

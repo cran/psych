@@ -54,7 +54,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
  
                  if(use=="complete") {cc <- complete.cases(data[,c(y,x,z,ex)]) 
                                       data <- data[cc,c(y,x,z,ex)] } else { data <- data[,c(y,x,z,ex)] }
-                   data <- char2numeric(data)              
+                   data <- char2numeric(data,flag=FALSE) #added 4/21/24              
                    if(!is.matrix(data)) data <- as.matrix(data)  
                     data <- cbind(Intercept=1,data) 
                     colnames(data)[1] <- "(Intercept)"
@@ -282,27 +282,45 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	if(!std) C[1,1]<- 1
      	Cu <- cov2cor(C)
      	keys.x <- sign(xy.matrix)  #this converts zero order correlations into -1, 0, 1 weights for each y
-        Vx <-  t(keys.x) %*% Cu[x,x,drop=FALSE] %*% (keys.x) #diag are scale variances
+     	# As of 6/4/24U Changed the matrix  multiply to be just multiply
+       # Vx <-  t(keys.x) %*% Cu[x,x,drop=FALSE] %*% (keys.x) #diag are scale variances
         #Vy <- t(keys.x) %*% Cu[y,x,drop=FALSE] %*% keys.x #diag are y variances ?
-        Vy <-  Cu[y,y,drop=FALSE ] #(y.matrix)
-        uCxy <- t(keys.x) %*% Cu[x,y,drop=FALSE]  #xy.matrix 
-         ruw <- diag(uCxy)/sqrt(diag(Vx))  #these are the individual multiple Rs
-         Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))  #what are these?
+        #these are the standardized variances and correlations
+    
+        Vx <- Cu[x,x,drop=FALSE]
+       		 if("(Intercept)" %in% colnames(Vx)) Vx <- Vx[-1,-1,drop=FALSE]
+        Vy <-  Cu[y,y,drop=FALSE ] #(y.matrix
+       
+         uCxy <- Cu[x,y,drop=FALSE]
+         if("(Intercept)" %in% rownames(uCxy)) uCxy <- uCxy[-1,,drop=FALSE]
+       #  ruw <- diag(uCxy)/sqrt(diag(Vx))  #these are the individual multiple Rs  but only works for square matrix
+         ruw <-  colSums(uCxy)/sqrt(sum(Vx))
 
+         Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))  #The unweighted correlation
+         
+         x.matrix <- Cu [x,x]
+         y.matrix <- Cu[y,y]
+         xy.matrix <- Cu[x,y]
+         m.matrix <- Cu
+         
  #Now do the Set correlation from Cohen 
-  
+ #do it from the correlation matrix, not the momements matrix
+ 
+
         Lmat <- Mmat <- Dmat <- NULL    #give them NULL values in case we don't need to find them
         if("(Intercept)" %in% colnames(x.matrix)) {X.matrix <- x.matrix[-1,-1,drop=FALSE]    #get rid of the intercepts for the next operations
-                                                     XY.matrix <- xy.matrix[-1,,drop=FALSE]
+                                                   if(is.matrix(xy.matrix))  {XY.matrix <- xy.matrix[-1,,drop=FALSE]} else {XY.matrix<- xy.matrix[-1,drop=FALSE]}
                                            }	 else {X.matrix <- x.matrix
                                                       XY.matrix <- xy.matrix
                                             }	
+       if("(Intercept)" %in% colnames(m.matrix)) m.matrix <- m.matrix[-1,-1,drop=FALSE]
      	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(X.matrix) )
      	             Myx <- solve(X.matrix) %*% XY.matrix  %*% t(XY.matrix)
      	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
      	            Myx <-  XY.matrix %*% solve(y.matrix) %*% t(XY.matrix)
-     	            cc2 <- cc <- T <- NULL} else {Rset <- 1 - det(m.matrix)/(det(X.matrix) * det(y.matrix))
-     	           
+     	            cc2 <- cc <- T <- NULL
+     	                 } else {Rset <- 1 - det(m.matrix)/(det(X.matrix) * det(y.matrix))    #the general case both nx and ny > 1
+     	        
      	            if(numy > numx) {
      	            Myx <- solve(X.matrix) %*% XY.matrix %*% solve(y.matrix) %*% t(XY.matrix)    #productes of two beta weights  this is A from Bernstein
      	             
@@ -314,7 +332,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	           }
      	           
 
-     	           #Myx is the canoncial correlation matrix of x ans y (see eq 12.1 in T & F)
+     	           #Myx is the canonical correlation matrix of x ans y (see eq 12.1 in T & F)
      	           #and is the product of Beta.x.y with Beta.y.x 
      	           #the following is taken from the geigen function in the fda package
      	            #see the geigen function in the fda package

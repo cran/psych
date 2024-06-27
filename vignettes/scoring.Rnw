@@ -2,7 +2,6 @@
 % \VignettePackage{psych}
 % \VignetteKeywords{multivariate}
 % \VignetteKeyword{models}
-% \VignetteKeyword{Hplot}
 %\VignetteDepends{psych}
 %\documentclass[doc]{apa}
 
@@ -163,12 +162,11 @@ This guide helps the naive \R{} user to issue those three lines.  Be careful, fo
 Suppose you have given a questionnaire with some items (n) to some participants (N).  You would like to create scale scores for each person on k different scales.  This may be done using the \Rpkg{psych} package in \R{}.  The following assumes that you have installed \R{} and downloaded the \Rpkg{psych} package.
 
 \section{Overview for the impatient}
-Remember, before using \Rpkg{psych} and the \Rpkg{psychTools} packages  you must make them active:\\
+Remember, before using \Rpkg{psych} and the \Rpkg{psychTools} packages  you must make them active:  Here I just make  \Rpkg{psych} active.   \\
 
 
 <<echo=TRUE>>=
 library(psych)
-library(psychTools)
 @
 
 
@@ -177,7 +175,7 @@ Then
 \item Enter the data into a spreadsheet (Excel or Numbers) or  a text file using a text editor (Word, Pages, BBEdit). The first line of the file should include names for the variables (e.g., Q1, Q2, ... Qn).  
 \item Copy the data to the clipboard (using the normal copy command for your spreadsheet or word processor) or save it as .txt or .csv file.
 \item Read the data into \R{} using the read.clipboard command.  (Depending upon your data file, this might need to be read.clipboard.csv (for comma separated data fields) or read.clipboard.tab  (for tab separated data fields).
-\item Or, if you have a data file already that end in .sav, .text, .txt, .csv, .xpt, .rds, .Rds, .rda, or .RDATA, then just read it in directly using \pfun{read.file} (from \Rpkg{psychTools})..  
+\item Or, if you have a data file already that end in .sav, .text, .txt, .csv, .xpt, .rds, .Rds, .rda, or .RDATA, then just read it in directly using \pfun{read.file} (from \Rpkg{psychTools}).  
 
 \item Construct a set of scoring keys for the scales you want to score using the \pfun{make.keys} function.  This is simply the item names or numbers that go into each scale.  A negative sign implies that the item will be reverse scored.
 \item Use the \pfun{scoreItems} function to score the scales.
@@ -205,13 +203,14 @@ my.data <- read.file()  #locate the file to read using your normal system.
 
 
 \subsection{Reading from a remote file}
-To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function, you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
+To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function (in the psychTools package), you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
+
 
 ~\
 <<>>=
 file.name <-
   "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
-my.data <- read.file(file.name)
+if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq}
 @
 
 \subsubsection{Read from the clipboard}
@@ -219,12 +218,12 @@ my.data <- read.file(file.name)
 Many users find it more convenient to enter their data in a text editor or spreadsheet program and then just copy and paste into \R{}. The  \pfun{read.clipboard} set of functions are perhaps more user friendly.  These functions are included in the \Rpkg{psychTools} package:
 
  \begin{description}
- \item [\pfun{read.clipboard}] is the base function for reading data from the clipboard.
- \item [\pfun{read.clipboard.csv}] for reading text that is comma delimited. 
-  \item [\pfun{read.clipboard.tab}] for reading text  that is tab delimited (e.g., copied directly from an Excel file). 
- \item [\pfun{read.clipboard.lower}] for reading input of a lower triangular matrix with or without a diagonal.  The resulting object is a square matrix.
- \item [\pfun{read.clipboard.upper}] for reading input of an upper triangular matrix.
- \item[\pfun{read.clipboard.fwf}] for reading in fixed width fields (some very old data sets)
+ \item [read.clipboard] is the base function for reading data from the clipboard.
+ \item [read.clipboard.csv] for reading text that is comma delimited. 
+  \item [read.clipboard.tab] for reading text  that is tab delimited (e.g., copied directly from an Excel file). 
+ \item [read.clipboard.lower] for reading input of a lower triangular matrix with or without a diagonal.  The resulting object is a square matrix.
+ \item [read.clipboard.upper] for reading input of an upper triangular matrix.
+ \item[read.clipboard.fwf] for reading in fixed width fields (some very old data sets)
  \end{description}
  
  For example, given a data set copied to the clipboard from a spreadsheet, just enter the command.\\
@@ -234,16 +233,17 @@ my.data <- read.clipboard()   #note the parentheses
 \end{Rinput}
 
 
-This will work if every data field has a value and even missing data are given some values (e.g., NA or -999). If the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
+This will work if every data field has a value and even missing data are given some values (e.g., NA or -999).
 
 
+However, iff the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
 
 
 \begin{Rinput}
  my.tab.data <- read.clipboard.tab()   #This is for data from a spreadsheet
 \end{Rinput}
 
-For the case of data in fixed width fields (some old data sets tend to have this format), copy to the clipboard and then specify the width of each field (in the example below, the first variable is 5 columns, the second is 2 columns, the next 5 are 1 column the last 4 are 3 columns). 
+For the case of data in fixed width fields (some very old data sets tend to have this format), copy to the clipboard and then specify the width of each field (in the example below, the first variable is 5 columns, the second is 2 columns, the next 5 are 1 column the last 4 are 3 columns). 
 
 \begin{Rinput}
 my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
@@ -281,7 +281,7 @@ describe(my.data)
 ~\
 <<>>=
 fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
-my.data <- read.file(fn, filetype="txt")  #because the suffix is not a standard one, we need to specify the file type
+if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq}  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before
  describe(my.data)
@@ -298,11 +298,11 @@ If you have used Qualtrics to collect your data, you can export the data as a cs
 <<echo=TRUE>>=
  
 my.keys <-  list(EA= c("active","alert","aroused", "-sleepy","-tired", "-drowsy"),
-                            TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),
-                            EAp = c("active","alert","aroused"),
-                            EAn = c("sleepy","tired", "drowsy"),
-                            TAp = c("anxious","jittery","nervous"),
-                            TAn = c("calm", "relaxed", "at.ease")
+            TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),
+            EAp = c("active","alert","aroused"),
+            EAn = c("sleepy","tired", "drowsy"),
+            TAp = c("anxious","jittery","nervous"),
+            TAn = c("calm", "relaxed", "at.ease")
                             )
         
  another.keys.list <- list(EA=c(1:3,-4,-5,-6),TA=c(7:9,-10,-11,-12),
@@ -493,6 +493,7 @@ print(my.scales,short=FALSE)
  \subsection{Correcting for overlapping items across scales}
  The \pfun{scoreOverlap} function will correct for item overlap. In the case of overlapping keys, (items being scored on multiple scales), scoreOverlap will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item. This parallels the operation done when finding alpha reliability. This is similar to ideas suggested by \cite{cureton:66} and \cite{bashaw:anderson:67} but uses the smc or the average interitem correlation (default).
  
+ ~~~\
  \begin{Rinput}
  scales.ov <- scoreOverlap(my.keys,my.data)
  scales.ov
@@ -582,7 +583,7 @@ dev.off()
 
 
 \section{Exploring a real data set}
- The 12 mood items for 200 subjects were taken from the much larger data set, \pfun{msq}  in the \Rpkg{psych} package.  That data set has 92 variables for 3896 subjects.  We can repeat our analysis of EA and TA on that data set.  This is a data set collected over about 10 years at the Personality, Motivation and Cognition laboratory at Northwestern and described by \cite{ari:97} and \cite{rafaeli:rev:06}.
+ The 12 mood items for 200 subjects were taken from the much larger data set, \pfun{msq}  in the \Rpkg{psychTools} package.  That data set has 92 variables for 3896 subjects.  We can repeat our analysis of EA and TA on that data set.  This is a data set collected over about 10 years at the Personality, Motivation and Cognition laboratory at Northwestern and described by \cite{ari:97} and \cite{rafaeli:rev:06}.
 
 
 
@@ -590,13 +591,16 @@ dev.off()
 
 First we get the data for the items that match our small example.  Then we describe the data, and finally, find the 6 scales as we did before.  Note that the colnames of our small sample are the items we want to pick from the larger set.  Another way to choose some items is to use  the \pfun{selectFromKeys} function.\\
 
+Note, that the example runs on the complete data only if the \Rpkg{psychTools} package is available.  Otherwise, it just runs on the 200 cases previously downloaded.
+
 <<echo=TRUE>>=
 select <- colnames(my.data) 
 #or
-select <- selectFromKeys(my.keys)
 
-small.msq <- msq[select]
-describe(small.msq)  
+select <- selectFromKeys(my.keys)
+if(require(psychTools)) {small.msq <- psychTools::msq[select]} else {small.msq <- my.data}
+describe(small.msq) #note that if psychTools is not available this is just 200 cases
+
 @
 ~\
 <<echo=TRUE>>=
@@ -707,11 +711,11 @@ Rafaeli, E. and Revelle, W. (2006).
 \newblock {\em Motivation and Emotion}, 30(1):1--12.
 
 \bibitem[\protect\astroncite{Revelle}{2023}]{psych}
-Revelle, W. (2023).
+Revelle, W. (2024).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston,
   https://CRAN.r-project.org/package=psych.
-\newblock R package version 2.3.5.
+\newblock R package version 2.4.6
 
 \bibitem[\protect\astroncite{Revelle and Anderson}{1997}]{ari:97}
 Revelle, W. and Anderson, K.~J. (1997).

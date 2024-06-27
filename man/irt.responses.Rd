@@ -37,6 +37,7 @@ Revelle, W. An introduction to psychometric theory with applications in R (in pr
 \code{\link{score.multiple.choice}}, \code{\link{score.irt}}
 }
 \examples{
+if(require(psychTools) ) {
 data(psychTools::iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
 scores <- score.multiple.choice(iq.keys,psychTools::iqitems,score=TRUE,short=FALSE)
@@ -45,6 +46,7 @@ scores <- score.multiple.choice(iq.keys,psychTools::iqitems,score=TRUE,short=FAL
 op <- par(mfrow=c(2,2))  #set this to see the output for multiple items
 irt.responses(scores$scores,psychTools::iqitems[1:4],breaks=11)
 op <-  par(op)
+}
 }
 \keyword{multivariate }
 \keyword{models}

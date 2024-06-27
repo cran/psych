@@ -75,9 +75,9 @@ The density (y axis) by value (x axis)  of the data  (for densityBy) or a violin
 
 \seealso{  \code{\link{describe}}, \code{\link{describeBy}} and  \code{\link{statsBy}} for descriptive statistics and \code{\link{error.bars}}, \code{\link{error.bars.by}} and  \code{\link{bi.bars}}, \code{\link{histBy}} and \code{\link{scatterHist}} for other graphic displays }
 \examples{
-violin(psychTools::bfi[4:8])
+violin(bfi[4:8])
 violin(SATV + SATQ ~ gender, data=sat.act, grp.name =cs(MV,FV,MQ,FQ)) #formula input
-violinBy(psychTools::bfi,var=4:7,grp ="gender",grp.name=c("M","F"))
+violinBy(bfi,var=4:7,grp ="gender",grp.name=c("M","F"))
 #rain does not work for multiple DVS, just up to 2 IVs 
 violinBy(SATV  ~ education,data =sat.act, rain=TRUE, pch=".", vertical=FALSE)  #rain 
 

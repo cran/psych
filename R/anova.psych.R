@@ -1,12 +1,12 @@
 #A function to report the difference between two factor models
 #adapted from John Fox's sem anova 
 #modified November 29, 2019 to include anovas for setCor and mediate models 
-
+#modified June,16, 2024 to include iclust models
 anova.psych <- function(object,...) {
 #if(length(class(object)) > 1)  { value <- class(object)[2] } else {value <- NA}
 
  if(length(class(object)) > 1)  {
-    names <- cs(omega,fa, lmCor,mediate)
+    names <- cs(omega,fa, lmCor,mediate, iclust)
     value <- inherits(object,names,which=TRUE)   # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -42,7 +42,7 @@ if(nvar==1) { n.mod <- length(models)
    return(table)}
    
 #and this does the work for fa and omega
-another.function <- function(models,dfs,echis,chi,BICS) {
+another.function <- function(models,dfs,echis,chi,BICS, RMSEA, rms) {
    mods <- unlist(models)
     n.mod <- length(models)
  mods <- unlist(models)
@@ -51,18 +51,31 @@ another.function <- function(models,dfs,echis,chi,BICS) {
    cat("Model",i, "= ")
    print(temp,rownames=FALSE)
     }
+    
+    
   delta.df <- -diff(unlist(dfs))
-  delta.chi <- -diff(unlist(chi))
+  if(!is.null(chi[[1]])){delta.chi <- -diff(unlist(chi))} else {delta.chi <- NA
+              chi[1:length(chi) ] <- NA
+}
  if(!is.null(echis) ) {delta.echi <- -diff(unlist(echis))} else {delta.echi <- NA}
-  delta.bic <- diff(unlist(BICS))
+  if(!is.null(BICS[[1]])){delta.bic <- diff(unlist(chi))} else {delta.bic <- NA
+              BICS[1:length(BICS) ] <- NA
+}
+  #delta.bic <- diff(unlist(BICS))
   test.chi <- delta.chi/delta.df
 test.echi <- delta.echi/delta.df
  p.delta <- pchisq(delta.chi, delta.df, lower.tail=FALSE)
- if(!is.null(echis) ){
+ 
+ if(is.null(RMSEA[[1]])) RMSEA[1:length(RMSEA)] <- NA
+  if(!is.null(echis) ){
   table <- data.frame(df=unlist(dfs),d.df=c(NA,delta.df),chiSq=unlist(chi), d.chiSq=c(NA,delta.chi),
-  PR=c(NA,p.delta),test=c(NA,test.chi), empirical = unlist(echis),d.empirical=c(NA,delta.echi),test.echi=c(NA,test.echi),BIC=unlist(BICS),d.BIC = c(NA,delta.bic))} else {
+  PR=c(NA,p.delta),test=c(NA,test.chi), empirical = unlist(echis),
+  d.empirical=c(NA,delta.echi),test.echi=c(NA,test.echi),BIC=unlist(BICS),
+  d.BIC = c(NA,delta.bic),RMSEA=unlist(RMSEA), rms =unlist(rms))
+   } else {
   table <- data.frame(df=unlist(dfs),d.df=c(NA,delta.df),chiSq=unlist(chi), d.chiSq=c(NA,delta.chi),
-  PR=c(NA,p.delta),test=c(NA,test.chi),BIC=unlist(BICS),d.BIC = c(NA,delta.bic))}
+  PR=c(NA,p.delta),test=c(NA,test.chi),BIC=unlist(BICS),d.BIC = c(NA,delta.bic),
+  RMSEA=unlist(RMSEA), rms =unlist(rms))}
 
  table <- round(table,2)
 return(table)
@@ -108,7 +121,8 @@ fa = {
  if (length(list(object, ...)) > 1L)  {
  	 objects <- list(object,...)
  	 n.models <- length(objects)
- 	 
+ 	 rms <- lapply(objects,function(x) x$rms)
+ 	 RMSEA <- lapply(objects,function(x) x$RMSEA[1])
  	 echis <- lapply(objects,function(x) x$chi)	
  	 BICS <-  lapply(objects,function(x) x$BIC)	
      dofs <-   lapply(objects,function(x) x$dof)
@@ -120,9 +134,31 @@ fa = {
      
      if(nechi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
       if(nchi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
-     table <- another.function(models,dfs=dofs,echis=echis,chi = chi,BICS = BICS)	
+     table <- another.function(models,dfs=dofs,echis=echis,chi = chi,BICS = BICS,RMSEA=RMSEA,rms=rms)	
 }
 },
+
+iclust = {
+ if (length(list(object, ...)) > 1L)  {
+ 	 objects <- list(object,...)
+ 	 n.models <- length(objects)
+ 	  rms <- lapply(objects,function(x) x$stats$rms)
+ 	 RMSEA <- lapply(objects,function(x) x$stats$RMSEA[1])
+ 	 echis <- lapply(objects,function(x) x$stats$chi)	
+ 	 BICS <-  lapply(objects,function(x) x$stats$BIC)	
+     dofs <-   lapply(objects,function(x) x$stats$dof)
+     chi <-  lapply(objects,function(x) x$stats$STATISTIC)
+     models <- lapply(objects, function(x) x$call)
+     nechi <- length (echis)
+     nBics <- length(BICS)
+     nchi <- length(chi)
+     
+     if(nechi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
+      if(nchi != n.models)  {stop("You do not seem to have chi square values for one of the models ")}
+     table <- another.function(models,dfs=dofs,echis=echis,chi = chi,BICS = BICS, RMSEA=RMSEA,rms=rms)	
+}
+},
+
 
 omega = {   #should change this to include more than 2 models (see above )
  if (length(list(object, ...)) > 1L)  {

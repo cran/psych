@@ -13,7 +13,7 @@
 \alias{circular.mean}
 \alias{circular.cor} 
 \title{Functions for analysis of circadian or diurnal data}
-\description{Circadian data are periodic with a phase of 24 hours. These functions  find the best fitting phase angle (cosinor), the circular mean,  circular correlation with circadian data, and the linear by circular correlation} 
+\description{Circadian data are periodic with a phase of 24 hours. These functions  find the best fitting phase angle (cosinor), the circular mean,  circular correlation with circadian data, and the linear by circular correlation.  These functions are useful for demonstrating diurnal variation and simple ways of analyzing the data.} 
 
 \usage{
 cosinor(angle,x=NULL,code=NULL,data=NULL,hours=TRUE,period=24,

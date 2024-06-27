@@ -86,6 +86,7 @@ Although typically, there are as many subjects at time 1 as time 2, testRetest w
 \donttest{  #for faster compiling, dont test 
 #lmer set to FALSE for speed.
 #set lmer to TRUE to get variance components
+if(require(psychTools)){
 sai.xray <- subset(psychTools::sai,psychTools::sai$study=="XRAY")
 #The case where the two measures are identified by time
 #automatically reverses items but throws a warning
@@ -105,7 +106,7 @@ dependability  #show the results
 
 #now examine the Impulsivity subscale of the EPI
 #use the epiR data set which includes epi.keys
-data("epiR",package="psychTools")
+
 #Imp <- selectFromKeys(epi.keys$Imp)   #fixed temporarily with 
 Imp <- c("V1", "V3", "V8", "V10","V13" ,"V22", "V39" , "V5" , "V41")
 imp.analysis <- testRetest(psychTools::epiR,select=Imp) #test-retest = .7, alpha=.51,.51 
@@ -120,6 +121,8 @@ temp.epi <-char2numeric(temp.epi)  #make the study numeric
 temp.epi$id <- temp.epi$id + 300*temp.epi$study
 random.epi <- temp.epi[ss,]
 random.imp.analysis <- testRetest(random.epi,select=Imp)
+}
+
 }
 }
 \keyword{ multivariate }% use one of  RShowDoc("KEYWORDS")

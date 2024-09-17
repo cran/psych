@@ -21,7 +21,7 @@ wkappa(x, w = NULL)    #deprectated
   \item{w.exp}{Exponent to apply to weights matrix -- see examples}
   
 }
-\details{When cateogorical judgments are made with two cateories, a measure of relationship is the phi coefficient.  However, some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis) or to categorize the stages of a disease.  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
+\details{When categorical judgments are made with two categories, a measure of relationship is the phi coefficient.  However, some categorical judgments are made using more than two outcomes.  For example, two diagnosticians might be asked to categorize patients three ways (e.g., Personality disorder, Neurosis, Psychosis) or to categorize the stages of a disease.  Just as base rates affect observed cell frequencies in a two by two table, they need to be considered in the n-way table (Cohen, 1960). 
 
 Kappa considers the matches on the main diagonal.  A penalty function (weight) may be applied to the off diagonal matches.  If the weights increase by the square of the distance from the diagonal, weighted kappa is similar to an Intra Class Correlation (\code{\link{ICC}}).
 

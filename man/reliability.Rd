@@ -30,6 +30,7 @@ reliability(keys=NULL, items, nfactors = 2,n.obs=NA,
     check.keys=TRUE, 
     covar=FALSE, 
     fm="minres",
+    rotate="oblimin",
     weighted="min")
 \method{plot}{reliability}(x,omega=TRUE,alpha=TRUE,split=TRUE,uni=TRUE,add=FALSE,
 xlim=NULL, main=NULL,...)
@@ -59,6 +60,7 @@ xlim=NULL, main=NULL,...)
   \item{check.keys}{By default, check that the keys are signe in the direction of the loadings on the first PCA.  }
  \item{covar}{Should we use covariances rather than correlations?}
  \item{fm}{The factor extraction method to use.  By default this is minres but could be "minrank" or "mle".}
+  \item{rotate}{How should the factors be rotated.  Defaults to oblimin, however cluster might be better.}
  \item{weighted}{The weight parameter in iclust.  Defaults to "min"}
   \item{x}{The object returned from reliability}
   \item{omega}{Add in the values of omega_h and omega_t}
@@ -88,14 +90,17 @@ Following a suggestion, the ability to not bother with keys and just do omega an
   \item{alpha}{The conventional alpha statistic (which is not model based)}
   \item{omega.tot}{A model based estimate of the total reliability of a scale}
   \item{Uni}{An experimental estimate of unidimensionality (from unidim)}
-  \item{r.fit}{How well does the average r of the correlations reproduce the matrix?}
-  \item{f.fit}{How well does a single factor reproduce the correlation matrix}
+  \item{cong}{How well does the average r of the correlations reproduce the matrix?  A measure of congeneric fit}
+  \item{tau}{How well does a single factor reproduce the correlation matrix. A measure of tau equivalance. }
   \item{max.split}{The greatest split half reliability of the scale.  Found by finding all possible splits (if this is < 15,000) or sampled from 15,000 possible splits.}
   \item{min.split}{The lowest split half reliability of the scale.  An estimate of beta (see \code{\link{iclust}}). }
   \item{mean.r}{The average correlation of the items in the scale}
   \item{med.r}{The median correlation of the items.  If this differs from the mean, that is a sign of poor scale.}
   \item{splits}{A list of the split half values for all possible splits.}
-  \item{beta}{The beta statistic from ICLUST -- forced to a one cluster solution.  }
+  \item{Beta}{The beta statistic from ICLUST -- forced to a one cluster solution.  }
+  \item{CFI}{The comparative fit index}
+  \item{EVR}{The ratio of the first to second factor eigen value}
+  \item{MAP}{The Minimum Average partial }
 
 }
 \references{
@@ -104,19 +109,19 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 
 Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
 
-Revelle, W. and Condon, D.M (2023) Using undim rather than omega in estimating undimensionality.  Working draft available at  \url{https://personality-project.org/revelle/publications/rc.23.pdf} 
+Revelle, W. and Condon, D.M (2024) Using undim rather than omega in estimating undimensionality.  Working draft available at  \url{https://personality-project.org/revelle/publications/unidim.pdf} 
 }
 \author{
 William Revelle
 }
-\note{For much more information on reliability, see the help pages for \code{\link{omega}}  as well as the Revelle and Condon (2019) tutorial or the Revelle (in prep) chapter on reliability. 
+\note{For much more information on reliability, see the help pages for \code{\link{omega}}, \code{\link{unidim}},  as well as the Revelle and Condon (2019) tutorial or the Revelle (in prep) chapter on reliability. 
 
 For some rare cases in some simulations, check.keys=FALSE gets a better minimum split half.
 
 }
 
 
-\seealso{See Also \code{\link{omega}} to find more complete output for the various omega analyses,\code{\link{splitHalf}} to show more detail on split half estimates, \code{\link{scoreItems}} to find scores on multiple scales using unit weights, \code{\link{testRetest}} to find test retest reliabilities, \code{\link{mlr}} to find multilevel reliabilities.  
+\seealso{\code{\link{omega}} to find more complete output for the various omega analyses, \code{\link{splitHalf}} to show more detail on split half estimates, \code{\link{scoreItems}} to find scores on multiple scales using unit weights, \code{\link{testRetest}} to find test retest reliabilities, \code{\link{mlr}} to find multilevel reliabilities.  
 
 \code{\link{predicted.validity}} will call \code{\link{reliability}} and \code{\link{item.validity}} to use the average r information to find the asymptotic validity of a set of scales for a set of criteria.
 

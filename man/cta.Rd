@@ -70,8 +70,7 @@ Revelle, William (1986)  Motivation and efficiency of cognitive performance  in 
 
 Revelle, W. (2008)  Cues, Tendencies and Actions. The Dynamics of Action revisted. \url{https://personality-project.org/revelle/publications/cta.pdf} 
 
-Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality \url{https://www.sciencedirect.com/science/article/pii/S0092656615000318} 
-
+Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality, <doi:10.1016/j.jrp.2014.12.006>
 }
 \author{ William Revelle }
 

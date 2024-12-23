@@ -4,6 +4,7 @@
 #Modified August 3 to consider two more estimates
 #cleaned up Sept 18, 2023 to match ms
 #reversed keys and x to be consistent with other functions
+#Added MAP per reviewers request  7/18/24
 
 "unidim" <- function(keys=NULL,x=NULL,cor="cor",use="pairwise",fm="minres", correct=.5,
      check.keys=TRUE,n.obs=NA, nfactors=3) {
@@ -51,6 +52,16 @@
        )}
  #X is now a correlation matrix    or a covariance matrix 
   
+  #find the MAP for a one factor solution
+  nvar <- NCOL(x)
+  e <- eigen(x)
+  evect1 <- e$vector[,1] 
+  comp1 <- evect1 *sqrt(e$values[1])  #first PC
+  c11.star <- x - comp1 %*% t(comp1)
+  d <- diag(1/sqrt(diag(c11.star)))
+  rstar <- d %*% c11.star %*% d
+  diag(rstar) <- 0
+  mean.part <- sum(rstar * rstar)/(nvar *(nvar-1))
   
     f1 <- fa(x,n.obs=n.obs,covar=covar,fm=fm)  # a one factor solution
   #But to get a reasonable estimate of ECV we need more factors
@@ -98,7 +109,7 @@ uni <- f1$fit.off * (1-alpha.res)
   stats <- list(u=uni,alpha.res=1-alpha.res, fit.off= f1$fit.off, 
            alpha=alpha.std,av.r = av.r,median.r = median.r,cfi=f1$CFI,ECV=fn$ECV[1], f1f2,
            uni.flipper = uni.flipper, uni=uni.orig,om.g=om.g, omega.pos = omega.flip,om.t=om.t,
-         om.total.flip= omega.total.flip)
+         om.total.flip= omega.total.flip, MAP = mean.part)
   if(!is.null(keys)) {results[[names(keys[scale])]]<- stats 
                       fits[[names(keys[scale])]] <- fa.stats} else {results <- stats
                       fits <- fa.stats}
@@ -107,14 +118,18 @@ uni <- f1$fit.off * (1-alpha.res)
   
   temp <- matrix(unlist(results),ncol=ncol1,byrow=TRUE)
  
-  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","CFI","ECV","F1/F2","Unidim.A","Unidim","model","model.A", "total", "total.A")
+
+  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","CFI","ECV","F1/F2","Unidim.A","Unidim","model","model.A", "total", "total.A", "MAP")
   rownames(temp) <- names(keys)
+  
+
+  
  if(scale==1) {ncol1 <- length(fits) } else {ncol1 <- length(fits[[1]])}
   fits <- matrix(unlist(fits),ncol=ncol1,byrow=TRUE)
   colnames(fits) <- c("dof" , "chisq" , "RMSEA" ,"Vaccounted","TLI","BIC", "R2","CFI","ECV","F1/F2")
   rownames(fits) <- names(keys)
   if(check.keys) {
-  results <- list(uni=temp[,1:9],fa.stats=fits)} else {results <- list(uni=temp,fa.stats=fits)}
+  results <- list(uni=temp[,c(1:9,16)],fa.stats=fits)} else {results <- list(uni=temp,fa.stats=fits)}
   results$Call <- cl
   class(results) <- c("psych","unidim")
   

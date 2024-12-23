@@ -9,7 +9,7 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
 
     if(!lines) {typ <- "p"} else {typ <- "b"}
     n.color <- length(colors)
-n.pch =length(pch)
+	n.pch =length(pch)
       #first, see if they are in formula mode   added August 18, 2018
   formula <- FALSE
    if(inherits(x, "formula")) {  ps <- fparse(x) 
@@ -34,6 +34,7 @@ n.pch =length(pch)
      n.grp2 <- dim(table(group))[2] }
   
     nvar <- NCOL(x)
+   
    # if(is.null(nvar)) nvar <- 1  #added May 21, 2016 to handle the case of a single variable
     if(by.var & (nvar > n.color)) {colors <- rainbow(nvar)}
     if(!missing(density)) {col12 <- col2rgb(colors,TRUE)/255
@@ -126,15 +127,17 @@ n.pch =length(pch)
          
           axis(2,...)
           box()
-            if(legend >0  ){
-        
+            if(legend !=0  ){
+        if(legend >0 ){
        if(!is.null(v.labels)) {lab <- v.labels} else {lab <- paste("V",1:n.var,sep="")} 
        legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.var],
        text.col = "green4", lty = lty[1:n.var],
-       merge = TRUE, bg = 'gray90')}
+       merge = TRUE, bg = 'gray90')
+       } else {  legend(legend.location[abs(legend)], legend=lab, col = colors[(n.color:1)],pch=pch[nvar:1],
+       text.col = "green4", lty = lty[nvar:1],
+       merge = TRUE, bg = 'gray90')}}
                
-    } else {  
-
+    } else {    #no bars  
 
 ###############   
 #the normal case is to not use bars
@@ -146,7 +149,7 @@ n.pch =length(pch)
         group.stats <- list()
       for(g in (1:n.group)) {group.stats[[g]] <- stats[g,]}
    
-     }    #why not use matrix output for this
+     }    #why not use matrix output for this?
    
     n.var <- ncol(x)
      if(is.null(n.var)) n.var <- 1 
@@ -197,14 +200,20 @@ n.pch =length(pch)
    #  lty <- "dashed"
      }   #end of g loop 
      
-       if(legend >0  ){
-     
-       
-       if(!is.null(labels)) {lab <- labels} else {lab <- paste("G",1:n.group,sep="")} 
-       legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.group],
-       text.col = "green4", lty = lty[1:8],
+      
+      if(legend !=0 ){
+    
+       if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.var,sep="")}
+       if(legend > 0)  {
+       legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.var],
+       text.col = "green4", lty = lty[1:n.var],
        merge = TRUE, bg = 'gray90')
-   }
+       } else {  legend(legend.location[abs(legend)], legend=lab[nvar:1], col = colors[(n.color:1)],pch=pch[nvar:1],
+       text.col = "green4", lty = lty[nvar:1],
+       merge = TRUE, bg = 'gray90')}
+               
+    
+   
    #    #now, if v2.labels, get the var.means, etc 
 #        n.vars <- dim(x)[2]
 #     if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
@@ -216,6 +225,7 @@ n.pch =length(pch)
 #    	 	var.n [,g] <-as.numeric( group.stats[[g]]$n)
 #    	 	}
 
+   }
    } else  { # end of not by var loop
     
     #alternatively, do it by variables rather than by groups, or if we have two grouping variables, treat them as two variables
@@ -249,7 +259,7 @@ n.pch =length(pch)
 
 
     	if(!add) {
-    	
+    
     	#although index by i, this just plots the first variable using plot, the other one is plotted using points
     	 plot(x.values,var.means[i,1:n.grp1],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[i],pch=pch[i],col = colors[(i-1) %% n.color +1],...)
     		  #we need to index by what grp1 we are in, not by i
@@ -267,7 +277,7 @@ n.pch =length(pch)
     		 #we want to adjust the line type for the fact that we have two different grouping variables 
     		
     		  points(x.values,var.means[i,1:(n.grp1)],typ = typ,lty=lty[((i-1) %% 8 +1)],col = colors[(i-1) %% n.color + 1], pch=pch[i],...) 
-   if(n.grp2>1)  {		  
+   if(n.grp2 > 1 )  {		  
      for(grp2 in 1:(n.grp2-1)){
     		    points(x.values,var.means[i,(n.grp1 *grp2 +1):(n.grp1*(grp2+1))],typ=typ,lty=lty[(grp2-1) %% 8 +1],col = colors[(grp2-1) %% n.color + 1], pch=pch[((grp2-1) %% n.pch + 1)],...)
     		# if(n.grp1 < n.group) { points(x.values1,var.means[i,(n.grp1 +1):(n.group)],typ = typ,lty=lty[((1:(n.grp1)-1) %% 8 +1)],col = colors[(1:(n.grp1)) %% n.color + 1], pch=pch[i],...) }
@@ -308,28 +318,33 @@ n.pch =length(pch)
     	  #text(xcen,i,labels=lab[i],pos=pos[i],cex=1,offset=arrow.len+1)     #puts in labels for all points
    		}
           x.values <- as.numeric(x.values)
+       
    	if(n.grp1 < n.group) {
-   		  for (g in 1: n.grp1) {
-   		 
-   		    for(grp2 in 1:(n.grp2-1)){if(!is.na(xse[g + n.grp1]) && (xse[g + n.grp1] > 0) && (ci[g + n.grp1]>0 )) {
-   		    
-   		   
-   		    
-   		    
+   		
+   		
+   		    for(grp2 in 1:(n.grp2-1)){
+   		     for (g in 1: n.grp1) {
+   		                  if(!is.na(xse[g + n.grp1]) && (xse[g + n.grp1] > 0) && (ci[g + n.grp1]>0 )) {
+   		     
     	              if(x.cat)  {
-    	              arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
+    	              arrows(g,xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],g,xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len,
+    	                      angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
     	                   } else {#consider the none cat condition 
     			                  x.values <- as.numeric(x.values)
-    			                  arrows(x.values[g],xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],x.values[g],xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
+    			                  arrows(x.values[g],xcen[g+n.grp1*grp2]-ci[g+n.grp1*grp2]*xse[g+n.grp1*grp2],x.values[g],xcen[g+n.grp1*grp2]+ci[g+n.grp1*grp2]* xse[g+n.grp1*grp2],
+    			                      length=arrow.len, angle = 90, code=3, col = colors[(grp2) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"), xpd = NULL)
     	                    }  
     	         	 if (eyes) { 
-    	        catseyes(x.values[g],xcen[g+n.grp1*grp2],xse[g+n.grp1 * grp2],group.stats[[g+n.grp1*grp2]]$n[i],alpha=alpha,density=density[(i) %% n.color +1],col=colors[(i) %% n.color +1] )
+								 catseyes(x.values[g],xcen[g+n.grp1*grp2],xse[g+n.grp1 * grp2],group.stats[[g+n.grp1*grp2]]$n[i],alpha=alpha,density=density[(grp2) %% n.color +1],
+								    col=colors[(grp2) %% n.color +1] )
     	                   }  else {
     	     
     	          # if(xse[g + n.grp1]> 0) 
-    	          if(ci[g]>0) {arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen[g + n.grp1]+ci[g+n.grp1]* xse[g+n.grp1],length=arrow.len, angle = 90, code=3,col = colors[(grp2-1) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"),
+    	          if(ci[g]>0) {arrows(x.values[g],xcen[g+n.grp1]-ci[g+n.grp1]*xse[g+n.grp1],x.values[g+n.grp1],xcen[g + n.grp1]+ci[g+n.grp1]* xse[g+n.grp1],
+    	             length=arrow.len, angle = 90, code=3,col = colors[(grp2-1) %% n.color +1], lty=(lty[((grp2-1) %% 8 +1)]), lwd = par("lwd"),
     	        xpd = NULL)
-    	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density[(i-1) %% n.color +1],col=colors[(i-1) %% n.color +1] )}} 
+    	            if (eyes) {catseyes(x.values[g],xcen[g+n.grp1],xse[g+n.grp1],x.stats$n[g+n.grp1],alpha=alpha,density=density[(i-1) %% n.color +1],
+    	                col=colors[(i-1) %% n.color +1] )}} #should this be i or grp2?
     	}
     	}
     	}  #for grp2 loop
@@ -373,14 +388,15 @@ n.pch =length(pch)
                }
 
           }
-      if(legend > 0  ){
-  
+      if(legend != 0  ){
+ 
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.grp2,sep="")} 
-   if ((nvar > 1) & (n.grp2 ==1)) { legend(legend.location[legend], legend=lab, col = colors[(0: nvar)%% n.color + 1],pch=pch[1: n.grp2],
+   if ((nvar > 1) & (n.grp2 ==1)) { }#not sure of this
+      if(legend > 0) {legend(legend.location[legend], legend=lab, col = colors[(0: n.grp2)%% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:nvar],
        merge = TRUE, bg = 'gray90')} else {
-        legend(legend.location[legend],legend= lab, col = colors[(0: n.grp2) %% n.color + 1],pch=pch[1: n.grp2],
-       text.col = "green4", lty = lty[1:n.grp2],
+        legend(legend.location[abs(legend)],legend= lab[n.grp2:1], col = colors[(n.grp2:1) ],pch=pch[n.grp2:1],
+       text.col = "green4", lty = lty[n.grp2:1],
        merge = TRUE, bg = 'gray90') }   
                         }
      
@@ -398,3 +414,6 @@ n.pch =length(pch)
    #further modified November 2020 to properly label the lines and fix the pch to match the legend
    #And yet some more, December 31st to better handle non-=categorial variables
    #8/27/23  added the ability to plot v.labels for both by.var=TRUE and by.var=FALSE
+   #7/19/24 Fixed the colors of cats eyes for two grouping variables
+   #9/10/24 added the ability to flip legend lines to make the first last, etc.
+   

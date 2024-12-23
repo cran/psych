@@ -42,7 +42,9 @@ fa.multi ={fa.multi.diagram(fit,...)}
 # added the pmax to handle multiple calls 
 #modified April 19, 2012 to handle long names more gracefully
 "dia.rect" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),draw=TRUE,...) {
-    if(draw)  text(x=x, y = y, labels = labels,  cex = cex,  ...)
+ len <- pmax(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user",cex=cex,...)) /1.8   #was 1.8
+     vert <- pmax(strheight(labels,units="user",cex=cex,...),strheight("ABC",units="user",cex=cex,...))/1.
+    if(draw)  text(x=x-len, y = y, labels = labels,  cex = cex,  ...)   #$pos=2 removed
       xrange = (xlim[2] - xlim[1])
     yrange = (ylim[2] - ylim[1])
     xs <- .10 * xrange
@@ -51,13 +53,13 @@ fa.multi ={fa.multi.diagram(fit,...)}
      len <- pmax(strwidth(labels,units="user",cex=cex,...),strwidth("abc",units="user",cex=cex,...)) /1.8   #was 1.8
      vert <- pmax(strheight(labels,units="user",cex=cex,...),strheight("ABC",units="user",cex=cex,...))/1.
     # vert <- min(cex*.3 * ys,.3)
-    if(draw) rect(x-len,y-vert,x+len,y+vert)
-     left <- c(x-len,y)
-     right <- c(x+len,y)
+    if(draw) rect(x-2*len,y-vert,x,y+vert)
+     left <- c(x-2*len,y)
+     right <- c(x,y)
      top <- c(x,y+vert)
      bottom <- c(x,y-vert)
      radius <- sqrt(len^2+vert^2)
-    dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x,y),radius=radius)
+    dia.rect <- list(left=left,right=right,top=top,bottom=bottom,center=c(x-len,y),radius=radius)
      }
      
 "dia.rect1" <- function(x,y,xleft,ybot,xright,ytop, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),draw=TRUE,...) {
@@ -147,7 +149,7 @@ dia.multi.ellipse <-  function(x, y = NULL, labels = NULL, cex = 1,e.size=.4,xli
      ellipsex <- rep(x,each=(segments + 2)) + unit.circle[,1] * rep(xs,each=segments +2)
      ellipsey <- rep(y,each=(segments + 2))  + unit.circle[,2] *ys
      
-      lines(ellipsex,ellipsey)
+      lines(ellipsex,ellipsey,...)
 }
        
 "dia.triangle" <- function(x, y = NULL, labels =NULL,  cex = 1, xlim=c(0,1),ylim=c(0,1),...) {

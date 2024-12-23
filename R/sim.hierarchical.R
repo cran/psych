@@ -65,12 +65,21 @@ for(i in (nvar+1):NROW(f)) {
 #modified May 16 to be able to return "items" rather than continuous scales
 
 "sim.hierarchical" <-
-function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL,categorical=FALSE, low=-3,high=3,threshold=NULL) {
+function (gload=NULL,fload=NULL,n=0, raw=TRUE, mu = NULL,categorical=FALSE, 
+       low=-3,high=3,threshold=NULL, minor=FALSE, fsmall=c(-.2,.2)) {
 
 cl <- match.call()
+
 #first, prepare the jensen defaults
  if(is.null(gload)) gload=matrix(c(.9,.8,.7),nrow=3) 
  if(is.null(fload)) fload <-matrix(c(.8,.7,.6,rep(0,9),.7,.6,.5,rep(0,9),.6,.5,.4),   ncol=3)
+ if(minor) {nvar <- NROW(fload)
+    n.small <- nvar/4
+    fsmall <- c(fsmall,rep(0,n.small))
+    fs <- matrix(sample(fsmall,nvar*floor(n.small),replace=TRUE),ncol=floor((n.small)))  
+   fload <- cbind(fload,fs)
+   gload <- c(gload,rep(0,n.small))
+    }
   if(is.null(colnames(fload))) cn <- paste0("F",1:NCOL(fload))
   if(is.null(rownames(fload)))  rn <- paste0("V",1:NROW(fload))
   

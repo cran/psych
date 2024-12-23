@@ -140,7 +140,7 @@ summary(mod11.4)
 #to see this interaction graphically, run the examples in ?Garcia
 
 
-#data from Preacher and Hayes (2004)
+#Simulated data from Preacher and Hayes (2004)
 sobel <- structure(list(SATIS = c(-0.59, 1.3, 0.02, 0.01, 0.79, -0.35, 
 -0.03, 1.75, -0.8, -1.2, -1.27, 0.7, -1.59, 0.68, -0.39, 1.33, 
 -1.59, 1.34, 0.1, 0.05, 0.66, 0.56, 0.85, 0.88, 0.14, -0.72, 

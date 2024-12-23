@@ -58,9 +58,9 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
  	
  	 
   				
-   valuesx  <- eigen(rx)$values #these are the PC values
+   valuesx  <- eigen(rx,only.values=TRUE)$values #these are the PC values
    if(SMC) {diag(rx) <- smc(rx)
-   fa.valuesx <- eigen(rx)$values} else {
+   fa.valuesx <- eigen(rx,only.values=TRUE)$values} else {
    fa.valuesx  <- fa(rx,nfactors=nfactors,rotate="none", fm=fm,warnings=FALSE)$values}  #these are the FA values
    if(sqrt) {valuesx <- sqrt(valuesx)
    fa.valuesx[fa.valuesx>0] <- sqrt(fa.valuesx[fa.valuesx >0])}
@@ -91,12 +91,12 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
 
                     bad <- any(is.na(C))   #some (not frequently) correlations will be improper, particularly if sampling from sparse matrices                 
            }  #Try resampling until we get a correlation matrix that works                    
-   					values.samp <- eigen(C)$values
+   					values.samp <- eigen(C,only.values=TRUE)$values
    					temp[["samp"]] <- values.samp
    					if (fa!= "pc") {
    					 if(SMC) {sampler <- C 
    					          diag(sampler) <- smc(sampler)
-   					 temp[["samp.fa"]]<- eigen(sampler)$values} else {
+   					 temp[["samp.fa"]]<- eigen(sampler,only.values=TRUE)$values} else {
    					 temp[["samp.fa"]]  <- fa(C,fm=fm,nfactors=nfactors, SMC=FALSE,warnings=FALSE)$values
           					}
           					}
@@ -105,11 +105,11 @@ function(x,n.obs=NULL,fm="minres",fa="both",nfactors=1,main="Parallel Analysis S
   if(sim) { simdata=matrix(rnorm(nsub*nvariables),nrow=nsub,ncol=nvariables)    #create simulated data based upon normal theory
    sim.cor <- cor(simdata)   #we must use correlations based upon Pearson here, because we are simulating the data
   
-   temp[["sim"]] <- eigen(sim.cor)$values
+   temp[["sim"]] <- eigen(sim.cor,only.values=TRUE)$values
     
    if (fa!="pc") {
         if(SMC) { diag(sim.cor) <- smc(sim.cor)
-   					 temp[["sim.fa"]]<- eigen(sim.cor)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,nfactors=nfactors,rotate="none",SMC=FALSE,warnings=FALSE)$values
+   					 temp[["sim.fa"]]<- eigen(sim.cor,only.values=TRUE)$values} else {fa.values.sim <- fa(sim.cor,fm=fm,nfactors=nfactors,rotate="none",SMC=FALSE,warnings=FALSE)$values
    		 temp[["sim.fa"]]    <- fa.values.sim
 }}}
    replicates <- list(samp=temp[["samp"]],samp.fa=temp[["samp.fa"]],sim=temp[["sim"]],sim.fa=temp[["sim.fa"]])

@@ -19,7 +19,8 @@ iclust(r.mat, nclusters=0, alpha=3, beta=1,
 	digits=2,labels= NULL,cut=0, 
 	n.iterations =0, 
 	title="ICLUST",
-	cor="cor", plot=TRUE, 
+	cor="cor", use="pairwise",
+	plot=TRUE, 
 	weighted=TRUE, 
 	cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE,
 	n.obs = NA, reliability=FALSE)
@@ -31,7 +32,7 @@ ICLUST(r.mat, nclusters=0, alpha=3, beta=1,
 	digits=2,labels=NULL,cut=0,
 	n.iterations = 0,
 	title="ICLUST",
-	cor="cor", plot=TRUE,
+	cor="cor", use="pairwise", plot=TRUE,
 	weighted=TRUE,
 	cor.gen=TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE,
 	n.obs=NA,reliability=FALSE)
@@ -61,6 +62,7 @@ ICLUST(r.mat, nclusters=0, alpha=3, beta=1,
   \item{digits}{ Precision of digits of output (default = 2) }
   \item{title}{ Title for this run. }
   \item{cor}{What kind of correlation should be applied to raw data, defaults to "pearson" with pairwise complete, options include "tet", "poly", "mixed","spearman".}
+  \item{use}{See options for use in the cor function.  Defaults to "pairwise". }
   \item{plot}{Should ICLUST.diagram be called automatically for plotting (does not require Rgraphviz default=TRUE)}
   \item{weighted}{Weight the intercluster correlation by the size of the two clusters (TRUE) or do not weight them (FALSE). A third option ("min"), added 6/11/24 is to estimate the general saturation by the minimum of the within and between interitem cluster correlations.}
   \item{cor.gen}{When correlating clusters with subclusters, base the correlations on the general factor (default) or general + group (cor.gen=FALSE)}
@@ -77,7 +79,9 @@ ICLUST(r.mat, nclusters=0, alpha=3, beta=1,
  
 Revelle (1979) proposed that hierachical cluster analysis could be used to estimate a new coefficient (beta) that was an estimate of the  general factor saturation of a test.  More recently, Zinbarg, Revelle, Yovel and Li (2005) compared McDonald's Omega to Cronbach's alpha and Revelle's beta. They conclude that   \eqn{\omega_h}{omega} hierarchical is the best estimate.  An algorithm for estimating \code{\link{omega} } is available as part of the psych package. 
 
-Revelle and Zinbarg (2009) discuss alpha, beta, and omega, as well as other estimates of reliability. 
+Revelle and Zinbarg (2009) discuss alpha, beta, and omega, as well as other estimates of reliability.
+
+Reise and Haviland (2024) give a  nice discussion of alpha and beta for applied scale construction.
 
 
 The original ICLUST program was written in FORTRAN in the early 1970s to run on CDC and IBM mainframes and was then modified to run in PC-DOS.  The R version of iclust is a completely new version  written for the psych package.  
@@ -180,7 +184,10 @@ As of June, 2024, following a discussion with Steven Reise, I have added a call 
 
 
 
-\references{Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
+\references{
+Reise, S.P. and Haviland, M. G. (2024) Understanding Alpha and Beta and Sources of Common Variance: Theoretical Underpinnings and a Practical Example. Journal of Personality Assessment <doi.org:10.1080/00223891.2024.2420175>
+
+Revelle, W. Hierarchical Cluster Analysis and the Internal Structure of Tests. Multivariate Behavioral Research, 1979, 14, 57-74.
 
 Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the glb: comments on Sijtsma. Psychometrika, 2009. 
 

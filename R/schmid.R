@@ -196,7 +196,7 @@ switch(rotate,
     Phi.S <- t(Structure) %*% F %*% Pinv(t(F) %*% F)  #this is the pseudo inverse Phi which is not the identity
     complexity <- (apply(F,1,function(x) sum(x^2)))^2/apply(F,1,function(x)sum(x^4))   #added  05/25/24
     colnames(sm) <- paste0("F",1:nfactors,"*")
-    if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent), orthog = orth.load, oblique=fload,
+    if(!is.null(Phi)) { result <- list(sl = cbind(gprimaryload, sm,h2, u2,p =g.percent, com=complexity), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,S.Phi = Phi.S,Call=cl)} else{
     result <- list(sl = cbind(gprimaryload, sm,h2, u2,p=g.percent, com=complexity), orthog = orth.load, oblique=fload,
         phi =factr, gloading = gload,dof=fact$dof,objective=fact$criteria[1],STATISTIC=fact$STATISTIC,PVAL=fact$PVAL,RMSEA=fact$RMSEA,BIC=fact$BIC,rms = fact$rms,crms=fact$crms,n.obs=n.obs,scores=fact$scores,S.Phi = Phi.S,Call=cl )}

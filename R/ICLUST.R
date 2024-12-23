@@ -17,16 +17,19 @@
 "ICLUST" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE, 
  correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,labels=NULL,cut=0,
-  n.iterations=0,title="ICLUST",cor="cor",plot=TRUE,weighted=TRUE,cor.gen =TRUE,
-  SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs= NA, reliability=FALSE ) {
+    n.iterations=0,title="ICLUST",cor="cor",use="pairwise",
+     plot=TRUE,weighted=TRUE,cor.gen =TRUE,
+     SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs= NA, reliability=FALSE ) {
 iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,reverse,beta.min,output,
-        digits,labels,cut,n.iterations,title,cor, plot,weighted,cor.gen,SMC,purify,diagonal,n.obs,reliability)}
+        digits,labels,cut,n.iterations,title,cor, use=use, plot,weighted,
+         cor.gen,SMC,purify,diagonal,n.obs,reliability)}
 
 
 "iclust" <- 
  function (r.mat,nclusters=0,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,
       beta.min=.5,output=1,digits=2,labels=NULL,cut=0,n.iterations=0,title="ICLUST",
-      cor="cor", plot=TRUE,weighted=TRUE,cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs=NA, reliability=FALSE ) {#should allow for raw data, correlation or covariances
+      cor="cor", use="pairwise",plot=TRUE,weighted=TRUE,
+      cor.gen =TRUE,SMC=TRUE,purify=TRUE,diagonal=FALSE, n.obs=NA, reliability=FALSE ) {#should allow for raw data, correlation or covariances
 
  #ICLUST.options <- list(n.clus=1,alpha=3,beta=1,beta.size=4,alpha.size=3,correct=TRUE,correct.cluster=TRUE,reverse=TRUE,beta.min=.5,output=1,digits=2,cor.gen=TRUE) 
  cl <- match.call()
@@ -42,7 +45,7 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	if(dim(r.mat)[1]!=dim(r.mat)[2]) {     #added 6/12/24 to allow flexibility in correlations
 	  n.obs <- NROW(r.mat)
 	switch(cor,
-	 cor = {r.mat <- cor(r.mat, use="pairwise")},
+	 cor = {r.mat <- cor(r.mat, use=use)},
 	 
        spearman = {r.mat <- cor(r.mat,use=use,method="spearman")},
        kendall = {r.mat <- cor(r.mat,use=use,method="kendall")},
@@ -161,7 +164,7 @@ iclust(r.mat,nclusters,alpha,beta,beta.size,alpha.size,correct,correct.cluster,r
 	 purified=purified,purify=purify,
 	 stats = ic.stats, call=cl)
 	#if(plot && requireNamespace('Rgraphviz')) {ICLUST.rgraph(result,labels=labels,title=title,digits=digits)}
-	result$order <- iclust.diagram(result,labels=labels,main=title,digits=digits,plot=plot)
+	result$order <- iclust.diagram(result,labels=labels,main=title,digits=digits,plot=plot)  #don't call iclust.diagram if we don't want a plot
 	class(result) <- c("psych","iclust")
 
 	return(result)

@@ -276,8 +276,9 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
 #modified October 18, 2022 to allow specification of g and fbig for all variables
 #further modified December 4, 2023 to allow specificaton of Ph
 "sim.minor" <-
-function(nvar=12, nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL,Phi=NULL, bipolar=TRUE, threshold=NULL,
-  items = FALSE, low=-2,high=2,cat=5  ) {
+function(nvar=12, nfact=3,n=0,g=NULL,fbig=NULL,fsmall = c(-.2,.2),n.small=NULL,Phi=NULL,
+	 bipolar=TRUE, threshold=NULL,
+    items = FALSE, low=-2,high=2,cat=5  ) {
 if(is.null(fbig)) {loads <- c(.8,.6) 
   loads <- sample(loads,nvar/nfact,replace=TRUE)
 

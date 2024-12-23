@@ -324,7 +324,10 @@ Problems in factor polychoric matrices:  If getting error messages when factorin
 \code{\link{anova.psych}} allows for testing the difference between two (presumably nested) factor models .
 
 \code{\link{bassAckward}} will perform repeated factorings and organize them in a top-down structure suggested by Goldberg (2006) and Waller (2007).
-
+ 
+ \code{\link{fa.random}} to do a "random effects" factora analysis.  This is just removing the person effect for each subject by mean centering for each subject. Functionally, this removes a general factor.
+ 
+ \code{\link{factor.rotate}}  to do factor rotations "by hand".
 
 }
 \examples{

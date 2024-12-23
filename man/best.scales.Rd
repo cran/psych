@@ -15,7 +15,8 @@
 bestScales(x,criteria,min.item=NULL,max.item=NULL, delta = 0,
            cut=.1, n.item =10, wtd.cut=0, wtd.n=10, 
           n.iter =1, folds=1, p.keyed=.9,
-          overlap=FALSE, dictionary=NULL, check=TRUE, impute="none",log.p=FALSE,digits=2)
+          overlap=FALSE, dictionary=NULL, check=TRUE,labels=NULL,
+           impute="none",log.p=FALSE,digits=2)
 
 bestItems(x,criteria=1,cut=.1, n.item=10, abs=TRUE, 
    dictionary=NULL,check=FALSE,digits=2,use="pairwise",method="pearson") 
@@ -37,6 +38,7 @@ bestItems(x,criteria=1,cut=.1, n.item=10, abs=TRUE,
 matrix or colnames of the data matrix or correlation matrix, and entries (may be multiple
  columns) of item content.}
 \item{check}{if TRUE, delete items with no variance}
+\item{labels}{labels for criteria if desired}
 \item{n.item}{How many items make up an empirical scale, or (bestItems, show the best
  n.items) }
 \item{overlap}{Are the correlations with other criteria fair game for bestScales}

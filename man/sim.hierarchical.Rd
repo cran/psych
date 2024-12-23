@@ -7,7 +7,7 @@
 }
 \usage{
 sim.hierarchical(gload=NULL, fload=NULL, n = 0, raw = TRUE,mu = NULL,
-    categorical=FALSE, low=-3,high=3,threshold=NULL)
+    categorical=FALSE, low=-3,high=3,threshold=NULL,minor=FALSE, fsmall=c(-.2,.2) )
 sim.bonds(nvar=9,nf=NULL, loads=c(0,0,.5,.6),validity=.8)
 
 make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
@@ -23,6 +23,8 @@ make.hierarchical(gload=NULL, fload=NULL, n = 0, raw = FALSE)  #deprecated
   \item{low}{lower cutoff for categorical data}
   \item{categorical}{If True, then create categorical data}
   \item{threshold}{If categorical is TRUE, and binary output is desired, what is the threshold to convert continuous scores into 0/1.  May be a vector.}
+  \item{minor}{Add in minor noise factors to the basic model}
+  \item{fsmall}{If minor, what is the size of the small/noise factor loadings.}
   \item{high}{Upper cuttoff for categorical data}
   \item{nvar}{Number of variables to simulate}
   \item{loads}{A vector of loadings that will be sampled (rowwise) to define the factors}
@@ -40,7 +42,7 @@ The default values for gload and fload create a data matrix discussed by Jensen 
 
 In order to properly simulate polytomous items, the categorical option will round continuous scores into integers.  To simulate dichotomous items, the threshold vector may be used to specify the value at which the continuous values are cut into 0/1.  If the length of threshold is less than the number of variables, the vector will be sampled (with replacement) to fill it out.
 
-Although written to create hierarchical structures, if the gload matrix is all 0, then a non-hierarchical structure will be generated.
+Although written to create hierarchical structures, if the gload matrix is all 0, then a non-hierarchical structure will be generated.  Varying the size of the gloading, we can simulate the amount of g-saturation on a test.
 
 Yet another model is that of Godfrey H. Thomson (1916) who suggested that independent bonds could produce the same factor structure as a g factor model. This is simulated in \code{\link{sim.bonds}}.  Compare the \code{\link{omega}} solutions for a \code{\link{sim.hierarchical}} with a \code{\link{sim.bonds}} model. Both produce reasonable values of omega, although the one was generated without a general factor.
 }

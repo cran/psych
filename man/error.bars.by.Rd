@@ -41,7 +41,7 @@ error.bars.by(x,group,data=NULL, by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL, m
   \item{colors}{groups will be plotted in different colors (mod n.groups).  See the note for how to make them transparent.}
   \item{lty}{line type may be specified in the case of not plotting by variables}
   \item{lines}{By default, when plotting different groups, connect the groups with a line of type = lty.  If lines is FALSE, then do not connect the groups}
-  \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center}
+  \item{legend}{Where should the legend be drawn: 0 (do not draw it), 1= lower right corner, 2 = bottom, 3 ... 8 continue  clockwise, 9 is the center.  Negative values will reverse the groups in the legend.}
   \item{pch}{The first plot symbol to use.  Subsequent groups are pch + group}
   \item{density}{How many lines/inch should fill the cats eyes.  If missing, non-transparent colors are used.  If negative, transparent colors are used. May be a vector for different values.}
   \item{stats}{if specified, the means, sd, n and perhaps of se of a data set to be plotted} 

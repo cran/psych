@@ -11,7 +11,8 @@
           min.item=NULL,max.item=NULL,delta=0,  #parameters for multiple solutions 
           cut=.1,n.item =10,wtd.cut = 0,wtd.n=10, #just one solution / criteria
           n.iter =1,folds=1,p.keyed=.9, #how many bootstraps (n.iter) or folds
-          overlap=FALSE,dictionary=NULL,check=TRUE,impute="none", log.p=FALSE, digits=2) {
+          overlap=FALSE,dictionary=NULL,check=TRUE,labels=NULL,
+          impute="none", log.p=FALSE, digits=2) {
  cl <- match.call()
  
   first <- TRUE
@@ -83,7 +84,8 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac,lo
 	 key.list <- keys2list(scores$key) #this converts the -1 and 1s to a list with the variable names
 	  	
 	 if(n.iter > 1) {
-  		cross <- scoreFast(key.list,x[-ss,],impute=impute,min=1,max=6) #why are these fixed values?  
+  		cross <- scoreFast(key.list,x[-ss,],impute=impute) # ,min=1,max=6) #why are these fixed values? don't set max and min
+  	  
  	    validity <- diag(cor(cross,x[-ss,criteria],use="pairwise"))
  	 #now, add the two new functions FastValidity and FastCrossValidity  
  	 
@@ -124,13 +126,13 @@ if(!is.null(dim(criteria))| (length(criteria) == NROW(x)))  { x <- cbind(x,crite
  if(n.iter > 1) { 
 result <- list()
 #This does the work across n.iter and across all criteria
-result <- mapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
+#result <- mapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
 
-#result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
+result <- mcmapply(short,c(1:n.iter),MoreArgs=list(x,n.obs=n.obs,criteria=criteria,cut=cut,n.item=n.item,impute=impute,digits=digits,dictionary=dictionary,frac=frac,min.item=min.item,max.item=max.item))
 
 #we have done the heavy lifting, now we need to prepare various results for output.
 if(delta >  0) { delta <- delta /sqrt(n.obs)}
-result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dictionary,wtd.cut=wtd.cut,wtd.n = wtd.n,overlap=overlap,min.item=min.item,max.item=max.item,delta=delta)  #makes the function a bit cleaner by doing this in its own function
+result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dictionary,wtd.cut=wtd.cut,wtd.n = wtd.n,overlap=overlap,min.item=min.item,max.item=max.item,delta=delta,labels=labels)  #makes the function a bit cleaner by doing this in its own function
 #save the keys and the summary 
 
    
@@ -160,7 +162,7 @@ result <- organize.results(result,x,n.iter=n.iter,p.keyed=p.keyed,dictionary=dic
 #######################################
 #This function takes the results from short for many trials and then tries to make sense of them
 ######################################
-organize.results <- function(result,x=NA,n.iter=1,p.keyed=.9,dictionary=NULL,wtd.cut,wtd.n,overlap=overlap, min.item=min.item,max.item=max.item,delta=delta) {  
+organize.results <- function(result,x=NA,n.iter=1,p.keyed=.9,dictionary=NULL,wtd.cut,wtd.n,overlap=overlap, min.item=min.item,max.item=max.item,delta=delta,labels=labels) {  
 #The results are n.iter lists, each with validity,keys,R, and the results from multi.score
 
   validity <- list()
@@ -298,6 +300,7 @@ if(ny > 1 ) {ord <- apply(abs(mean.raw.r[,criteria]),2,order,decreasing=TRUE)
 N.wtd <- colSums(abs(mean.raw.r) >0)
     
    if(length(best.keys) == length(criteria)) names(best.keys) <- criteria 	
+  
 
    #Find the results for best keys	
    	final.scale <- scoreFast(best.keys,x)   #these are the unit weighted
@@ -367,7 +370,7 @@ result$summary <- data.frame(derivation.mean= results$means[1:ncriteria],derivat
     result$scores <- final.scale
     result$wtd.scores <- final.raw.scale
     result$final.stats <- data.frame(mean=final.means,sd=final.sd,r=final.valid,crit.mean = crit.mean,crit.sd=crit.sd,final.wtd=final.raw.valid,N.wtd=N.wtd)
-   
+   result$labels <- labels
    # result$sd.weights <- sd.raw.r
    # result$final.raw <- final.raw.valid
     return(result)
@@ -662,8 +665,6 @@ if(!is.null(x$items)) {
      } 
  }
 #end of print.psych.bestScales        
-      
-
     
 #These next two functions were added in October, 2019 to allow for  finding the maximum value of cross.validated as a function of n.item  
 #ValidityList <- mapply(FastValidity,c(1:ny),MoreArgs=list(nlow=nlow,nhigh=nhigh))  #probably not that helpful

@@ -97,7 +97,7 @@ item.to.choice <- function(x) {
     return(y) }
     
 
-
+###
 #do hare ranking    
 hare <- function(x, n=1) {
 #loop over candidates

@@ -12,7 +12,8 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL,
      e.size =1,
      colors=c("black","blue"), 
      main = "ICLUST diagram",
-     cluster.names=NULL,marg=c(.5,.5,1.5,.5),plot=TRUE, bottomup=TRUE,both=TRUE)
+     cluster.names=NULL,marg=c(.5,.5,1.5,.5),plot=TRUE, bottomup=TRUE,
+                both=TRUE,pos=NULL,...)
 } 
 \arguments{
   \item{ic}{Output from ICLUST}
@@ -29,6 +30,8 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL,
   \item{plot}{If plot is TRUE, then draw the diagram,  if FALSE, then just return the veriable order from the plot}
   \item{bottomup}{Which way to draw the arrows.  TRUE means from the items to the clusters.  See note. }
   \item{both}{if TRUE report alpha and beta.  if "alpha", just report the alpha, or if "beta" just report beta.}
+  \item{pos}{Not used}
+  \item{...}{To allow parameters to be passed to lower level graphics}
  
 }
 \details{iclust.diagram provides most of the power of \code{\link{ICLUST.rgraph}} without the difficulties involved in installing Rgraphviz.  It is called automatically from ICLUST. 

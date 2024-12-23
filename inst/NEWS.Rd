@@ -2,14 +2,14 @@
 \title{News for Package 'psych'}
 
 
-\section{Changes in psych version 2.4.7 (2024-06-09)}{ 
+\section{Changes in psych version 2.4.12 (2024-12-07)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.4.7  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.6 (Added June , 2024). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.4.10  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.6.24 (Added June 24, 2024 after multiple attempts at solving the new no-suggests requirements for CRAN). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
     
      Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
@@ -18,7 +18,7 @@
  }
  }
  
- \section{Still to do version 2.4.7 (e.g., a wish list)}{
+ \section{Still to do version 2.4.10 (e.g., a wish list)}{
     \itemize{
       \item Suggestions are welcome, but the current list includes the following (and has included some for a long time, so lets be patient):
    
@@ -81,6 +81,31 @@
  \item Add VM correlation to lmCor
 
       } 
+      }
+      
+\section{Changes in psych version 2.4.12 (2024-12-07)}{   
+
+ \subsection{Additions}{
+   \itemize{
+     \item Improvements to omega function to allow specification of rotation option.  Playing around with the cluster rotation as default.
+     \item Added rotation option to reliability (passed to omega).
+     \item Added the ability to have small (noise) factors in sim.hierarchical. 
+     \item Added ... to the call to iclust.diagram to allow more control for lwd in diagram (Requested indirectly by Steve Reise.)
+     \item Modified the legend call in error.bars.by to allow flipping the order of the legend keys (thus allowing legends to be in the order (top to bottom) of the lines drawn.)
+      \item Changed the call to eigen in fa.parallel to just get the values following a suggestion from Niels Waller.
+      \item Improved bestScales to actually run in parallel.  Also fixed the print function for bestScales to left justify content.
+    \item  Added the hare function to rank choice voting  }
+  }
+  \subsection{Bugs Fixed }{
+  \itemize{
+    \item  Fixed iclust so when called from reliability it will not choke on new.plot not called
+    \item Fixed error.bars.by to properly allow colors in cats eyes with multiple IVs
+    \item fixed reliability call to unidim to pass n.factors
+    \item Improved iclust.diagram to add control to figures.
+  }}
+  }       
+      
+\section{Changes in psych version 2.4.6 (2024-06-01)}{      
    \subsection{Additions}{
      \itemize{
       \item At long last. added the ability to get  cluster scores in ICLUST -- analogous to factor scores (requested years ago by Ben Shalet). See help page for an example.  ICLUST now returns the keys.list to be use for scoring.
@@ -99,7 +124,7 @@
         \item Added the ability to call reliability directly from ICLUST to get several alternative estimates of the general factor saturation. 
         \item Added the ability to process data without column names to reliability and splitHalf.  
         \item Improved the documentation to iclust discussing original versus purified scores.  
-        \item Modfified iclust.diagram to have the ability to draw just alpha or  just beta. '
+        \item Modfified iclust.diagram to have the ability to draw just alpha or  just beta. 
         \item A number of changes to ICLUST including various patches to make the summaries work. 
         \item Added the goodness of fit statistics from fa.stats to iclust output. 
         \item Added Iclust beta values to reliability function.
@@ -118,7 +143,10 @@
    \item Corrected formula for BIC in the fa help page (reported by Jannick Orzek)
    \item Fixed lmCor to properly calculate unweighted R between sets.  (Was not correct for negative correlations)
    \item Various patches to omega.sem related functions to allow them to work with improved omeaga
-   \item Fixed a bug in ICLUST where the final summary correlation matrix was wrong. Does not affect the cluster results. }} .
+   \item Fixed a bug in ICLUST where the final summary correlation matrix was wrong. Does not affect the cluster results. 
+   \item Added use to the parameters of iclust.  Had left this off in the 2.4.6.26 release. 
+   
+   }} .
       
  }     
 \section{Changes in psych version 2.4.4 (2024-04-01)}{        

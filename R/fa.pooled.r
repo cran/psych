@@ -33,6 +33,27 @@ fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=mis
   }
   col_means <- colMeans(replicates, na.rm = TRUE)
   col_sds <- apply(replicates, 2, sd, na.rm = TRUE)
+  
+  # Name the vector elements for easier indexing later
+  if (length(col_means) > (2 * nvar * nfactors) ) { # If TRUE, means there are Phi means in col_means
+    names(col_means) <- c(
+      paste0('l_', 1:(nvar * nfactors)),
+      paste0('phi_', 1:length(replicateslist[[iter]]$phis)),
+      paste0('s_', 1:(nvar * nfactors))
+    )
+    
+    names(col_sds) <- names(col_means)
+  } else {
+    names(col_means) <- c(
+      paste0('l_', 1:(nvar * nfactors))
+    )
+    
+    names(col_sds) <- names(col_means)
+  }
+  
+  index_loadings <- startsWith(names(col_sds), 'l_')
+  index_phi <- startsWith(names(col_sds), 'phi_')
+  index_structure <- startsWith(names(col_sds), 's_')
 }
 
 replicates <- matrix(unlist(replicateslist),nrow=n.iter,byrow=TRUE)

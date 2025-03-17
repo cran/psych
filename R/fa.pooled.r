@@ -54,6 +54,23 @@ fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=mis
   index_loadings <- startsWith(names(col_sds), 'l_')
   index_phi <- startsWith(names(col_sds), 'phi_')
   index_structure <- startsWith(names(col_sds), 's_')
+  means_str <- matrix(col_means[index_structure], ncol = nfactors)
+  sds_str <- matrix(col_sds[index_structure], ncol = nfactors)
+  tci_str <- abs(means_str) / sds_str
+  ptci_str <- 1 - pnorm(tci_str)
+  # Structure
+  ci.lower_str <-  means_str + qnorm(p/2) * sds_str
+  ci.upper_str <- means_str + qnorm(1-p/2) * sds_str
+  
+  ci_str <- data.frame(lower = ci.lower_str, upper = ci.upper_str)
+  class(means_str) <- "loadings"
+  
+  colnames(means_str) <- colnames(sds_str) <- colnames(fl)
+  rownames(means_str) <- rownames(sds_str) <- rownames(fl)
+    means_str = means_str,
+    sds_str = sds_str,
+    ci_str = ci_str,
+    p_str = 2 * ptci_str
 }
 
 replicates <- matrix(unlist(replicateslist),nrow=n.iter,byrow=TRUE)

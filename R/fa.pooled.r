@@ -28,6 +28,8 @@ fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=mis
                     #replicates <- list(loadings=t.rot$loadings,phis=phis[lower.tri(phis)])
                     }  else 
                    {replicateslist[[iter]] <- list(loadings=t.rot$loadings)}                
+      t.rotstr <- target.rot(fs$Structure,fstr)
+          Structure = t.rotstr$loadings
   }
 }
 

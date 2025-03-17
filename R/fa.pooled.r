@@ -31,6 +31,8 @@ fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=mis
       t.rotstr <- target.rot(fs$Structure,fstr)
           Structure = t.rotstr$loadings
   }
+  col_means <- colMeans(replicates, na.rm = TRUE)
+  col_sds <- apply(replicates, 2, sd, na.rm = TRUE)
 }
 
 replicates <- matrix(unlist(replicateslist),nrow=n.iter,byrow=TRUE)
@@ -50,8 +52,6 @@ if(length(means) > (nvar * nfactors) ) {
         z.rot <- NULL
         ci.rot <- NULL }
    
-   means <- matrix(means[1:(nvar*nfactors)],ncol=nfactors)
-   sds <- matrix(sds[1:(nvar*nfactors)],ncol=nfactors)
    tci <- abs(means)/sds
     ptci <- 1-pnorm(tci)
     if(!is.null(rep.rots)) {

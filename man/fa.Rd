@@ -228,7 +228,26 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
 \item{score.cor}{The correlation matrix of coarse coded (unit weighted) factor score estimates, if they were to be found, based upon the structure matrix rather than the weights or loadings matrix.  }
 
 \item{rot.mat}{The rotation matrix as returned from GPArotation.}
-
+\item{cis}{Output of `fa.pooled` with means and confidence intervals for the pattern matrix, and, if using oblique rotation, also for the structure matrix and factor correlations. It is a list with the individual elements described below.}
+\item{cis$means}{The means of the pooled pattern matrix.}
+\item{cis$sds}{The standard deviations of the pooled pattern matrix.}
+\item{cis$ci}{The lower and upper confidence intervals for the pooled pattern 
+matrix.}
+\item{cis$p}{This is \code{2 * (1 - pnorm(abs(cis$means) / cis$sds))}.}
+\item{cis$means.rot}{The means of the pooled factor correlation matrix.}
+\item{cis$sds.rot}{The standard deviation of the pooled factor correlation matrix.}
+\item{cis$ci.rot}{The lower and upper confidence intervals for the pooled factor correlation matrix.}
+\item{cis$p.rot}{This is \code{1 - pnorm(abs(cis$means.rot) / cis$sds.rot)}.}
+\item{cis$Call}{An object of class \code{"call"}.}
+\item{cis$replicates}{An array with as many rows as the permutations and 
+\code{nfactors * nrow(datasets[[1]]) + length(cis$means.rot) + nfactors * datasets[[1]]} columns. In other words, this table has the pattern matrix loadings on the first \code{nfactors * nrow(datasets[[1]])} columns, the factor correlations
+(when rotation is oblique) on the next \code{length(cis$means.rot)} columns, and the structure matrix loadings on the final \code{nfactors * nrow(datasets[[1]])} columns (when rotation is oblique). The order in which factor correlations are 
+reported in the columns is the same as \code{Phi[lower.tri(Phi)]}, where \code{Phi} here represents a symmetric factor correlation matrix.}
+\item{cis$rep.rots}{Currently an empty list.}
+\item{cis$means_str}{The means of the pooled structure matrix.}
+\item{cis$sds_str}{The standard deviations of the pooled structure matrix.}
+\item{cis$ci_str}{The lower and upper confidence intervals for the pooled structure matrix.}
+\item{cis$p_str}{This is \code{2 * (1 - pnorm(abs(cis$means_str) / cis$sds_str)).}
  }
 
 

@@ -8,12 +8,12 @@
 #modified March 15, 2015 to add the ability to control the size of the correlation separately from the cex variable in the points
 #also added the ability to set the number of breaks in the histograms
 #added the hist.border parameter as suggested by Jordan Adamson  (2/11/24)
-
+#added ci.col and line.col parameters following  suggestions by Jordan Adamson (1/10/24)
 "pairs.panels" <-
 function (x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,digits = 2, method="pearson",pch = 20,
     lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2,hist.col="cyan",show.points=TRUE,rug=TRUE, breaks="Sturges", 
     cex.cor = 1 ,wt=NULL,smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,
-    hist.border="black",...)   #combines a splom, histograms, and correlations
+    hist.border="black", line.col="blue",ci.col="light blue",...)   #combines a splom, histograms, and correlations
 {
 
 #First define all the "little functions" that are internal to pairs.panels.  This allows easier coding later
@@ -66,7 +66,7 @@ function(x, y, prefix="",...)  {
         
 "panel.smoother" <- 
 function (x, y,pch = par("pch"), 
-    col.smooth = "red", span = 2/3, iter = 3, ...) 
+    col.smooth = line.col, span = 2/3, iter = 3,ci.cor="light grey", ...) 
 {
   # usr <- par("usr"); on.exit(par(usr))
  #  par(usr = c(usr[1]-abs(.05*usr[1]) ,usr[2]+ abs(.05*usr[2])  , usr[3],usr[4]) )     #doensn't affect the axis correctly
@@ -87,7 +87,7 @@ function (x, y,pch = par("pch"),
 
  if(ci) {  upperci <- pred$fit + confid*pred$se.fit
        lowerci <- pred$fit - confid*pred$se.fit 
-      polygon(c(tempx$x,rev(tempx$x)),c(lowerci,rev(upperci)),col=adjustcolor("light grey", alpha.f=0.8), border=NA)
+      polygon(c(tempx$x,rev(tempx$x)),c(lowerci,rev(upperci)),col=adjustcolor(ci.col, alpha.f=0.8), border=NA)
         }
      lines(tempx$x,pred$fit,  col = col.smooth, ...)   #this is the loess fit
 }  else {if(smooth)  lines(stats::lowess(x[ok],y[ok],f=span,iter=iter),col=col.smooth) }}
@@ -96,7 +96,7 @@ function (x, y,pch = par("pch"),
 
  "panel.lm" <- 
 function (x, y,  pch = par("pch"), 
-    col.lm = "red",  ...) 
+    col.lm = "red", ci.col="blue", ...) 
 {   ymin <- min(y)
     ymax <- max(y)
     xmin <- min(x)
@@ -116,7 +116,7 @@ function (x, y,  pch = par("pch"),
    		 pred <-  predict.lm(lml,newdata=tempx,se.fit=TRUE)  #from Julian Martins 
    		 upperci <- pred$fit + confid*pred$se.fit
    		 lowerci <- pred$fit - confid*pred$se.fit
-     	 polygon(c(tempx$x,rev(tempx$x)),c(lowerci,rev(upperci)),col=adjustcolor("light grey", alpha.f=0.8), border=NA)
+     	 polygon(c(tempx$x,rev(tempx$x)),c(lowerci,rev(upperci)),col=adjustcolor(ci.col, alpha.f=0.8), border=NA)
            }
     if(ellipses) {
     	xm <- mean(x,na.rm=TRUE)

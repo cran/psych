@@ -497,3 +497,22 @@ colnames(mat)  <- colnames(d)
  class(result) <- c("psych","polydi")
   return(result) 
   }
+
+
+checkLevels <- function(x) {
+nvar <- NCOL(x)
+fix <- rep(NA,nvar)
+minx <- min(x,na.rm=TRUE)
+maxx <- max(x,na.rm=TRUE)
+
+for(i in 1:nvar) {
+un <- unique(x[,i])
+if(!(maxx %in% un)) un <-c(un,maxx)
+if(!(minx %in% un)) un <-c(un,minx)
+us <-sum((un!="NA"),na.rm=TRUE)
+if(us > (maxx-minx+1)) {fix[i]<- us-1} else {fix [i]<- us-1}
+}
+return(fix)
+}
+#multiplying by fix leads to fractional values if .33 and 67 are used.
+#need to round the results

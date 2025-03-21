@@ -20,10 +20,11 @@
    	   if (prod(dim(x)) > 10^7) {fast <- TRUE } else {fast <- FALSE}
    	   } 
 nvar <- NCOL(x)
+
 v.names <- colnames(x)
 if(nvar <  size) {result <- describe.1(x=x,na.rm=na.rm, interp=interp, skew=skew, ranges=ranges,
                              trim=trim, type=type,check=check,fast=fast,quant=quant,
-                             IQR = IQR, omit=omit, data=data)} else {
+                             IQR = IQR, omit=omit, data=data)} else {#parallel for bigger problems  
                              
     n.steps <- ceiling(nvar/size)
    
@@ -151,6 +152,8 @@ function (x, head = 4, tail = 4)
 #Improved July 9, 2020 to allow formula input for grouping variables
 #Further improved Sept 02, 2020 to allow formula input with data specified to match other formula features
 #include median with fast output (has a very small slowing effect)
+#modified December 24, 2024 to handle case of just 1 variable of class factor 
+
 "describe.1" <-
 function (x,na.rm=TRUE,interp=FALSE,skew=TRUE,ranges=TRUE,trim=.1,type=3,check=TRUE,fast=NULL,
         quant=NULL,IQR=FALSE,omit=FALSE,data=NULL)   #basic stats after dropping non-numeric data
@@ -175,9 +178,15 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
    	#         }
    	numstats <- 10 + length(quant)	+ IQR 
    	cn <- "X1"
-    if ( NCOL(x) < 2)  {if(is.data.frame(x)) {      #
+    if ( NCOL(x) < 2)  {
+       #check if x is a "tibble", if so, untibble it
+       #added 12/27/24
+if("tbl_df" %in% class(x))  x <- data.frame(x)
+    if(is.data.frame(x)) {if(!is.null(colnames(x))) {cn <- colnames(x)} else {cn  <- "X1"}
+                 #
                 if( !is.numeric(x[,1])) {warning ("You were trying to describe a non-numeric data.frame or vector which describe converted  to numeric.")
-                    x[,1] <- as.numeric(as.factor(x[,]))
+                    x[,1] <- as.numeric(as.factor(x[,1]))
+                     cn <- paste(cn,"*",sep="")
                     } 
               if(!is.null(colnames(x))) {cn <- colnames(x)} else {cn  <- "X1"}
              
@@ -185,6 +194,11 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
                 #do it for vectors or 
     	    len  <- 1
     	    nvar <- 1
+    	      if(!is.numeric(x ))  {#added 24/12/25  to treat weird edge case
+    	        if(is.factor(unlist(x)) | is.character(unlist(x))) {  x <- as.numeric(as.factor(x)) 
+                                  cn <- paste(cn,"*",sep="")
+                        }}
+                      
     	    stats = matrix(rep(NA,numstats),ncol=numstats)    #create a temporary array
 			stats[1, 1] <-  valid(x )			
 			stats[1, 2] <-  mean(x, na.rm=na.rm )

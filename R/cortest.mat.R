@@ -40,8 +40,16 @@ if (is.null(n2)) {n2 <- n1}
 n.obs <- min(n1,n2)
 chi21 <- E1 * (n1-1-(2*p - 5)/6)
 chi22 <- E2 * (n2-1-(2*p - 5)/6)
-chi2 <- chi21 + chi22} 
- results <- list(chi2 =chi2,prob =pchisq(chi2,df,lower.tail=FALSE), df= df,n.obs=n.obs,Call =cl)
+chi2 <- chi21 + chi22
+ RMSEA <- sqrt(max(chi2/(df* n1) - 1/(n1-1), 0)) 
+
+ z <- sum((R1 - R2)^2)/df 
+    
+ SRMR <- sqrt(z)
+ 
+} 
+ results <- list(chi2 =chi2,prob =pchisq(chi2,df,lower.tail=FALSE), df= df,n.obs=n.obs,z=z,
+  RMSEA=RMSEA,SRMR =SRMR, Call =cl)
  class(results) <- c("psych","cortest")
  return(results)
 }

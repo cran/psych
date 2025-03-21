@@ -2,10 +2,10 @@
 \alias{fparse}
 
 \title{
-Parse and exten  formula input from a model and return the DV, IV, and associated terms.
+Parse and extend  formula input from a model and return the DV(s), IV(s), and associated terms.
 }
 \description{
-Formula input from e.g., lm,  may be extended to include mediators,  quadratic and partial terms using a standard syntax. This is use by \code{\link{lmCor}} and \code{\link{mediate}}.
+Formula input from e.g., lm,  may be extended to include mediators,  quadratic and partial terms using a standard syntax. This is use by \code{\link{lmCor}} and \code{\link{mediate}}. 
  }
 \usage{
 fparse(expr)

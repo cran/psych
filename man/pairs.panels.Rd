@@ -16,7 +16,8 @@
 \method{pairs}{panels}(x, smooth = TRUE, scale = FALSE, density=TRUE,ellipses=TRUE,
      digits = 2,method="pearson", pch = 20, lm=FALSE,cor=TRUE,jiggle=FALSE,factor=2, 
      hist.col="cyan",show.points=TRUE,rug=TRUE, breaks = "Sturges",cex.cor=1,wt=NULL,
-     smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,hist.border="black" ,...)
+     smoother=FALSE,stars=FALSE,ci=FALSE,alpha=.05,hist.border="black" ,
+     line.col="blue",ci.col="light blue",...)  
 
 }
 \arguments{
@@ -43,6 +44,8 @@
   \item{ci}{Draw confidence intervals for the linear model or for the loess fit, defaults to ci=FALSE. If confidence intervals are not drawn, the fitting function is lowess.}
   \item{alpha}{The alpha level for the confidence regions, defaults to .05}
   \item{hist.border}{Set to "NA" to not have lines between the histogram values}
+  \item{line.col}{Color of the lowess or lm fit}
+  \item{ci.col}{Fill color of the confidence intervals for lowess and lm fits}
   \item{\dots}{other options for pairs }
 }
 \details{Shamelessly adapted from the pairs help page.  Uses panel.cor, panel.cor.scale, and panel.hist, all taken from the help pages for pairs. Also adapts the ellipse function from John Fox's car package. 
@@ -64,6 +67,8 @@ If lm=TRUE, then the scatter plots are drawn above and below the diagonal, each 
 
 \seealso{  \code{\link{pairs}} which is the base from which pairs.panels is derived, \code{\link{cor.plot}} to do a heat map of correlations, and \code{\link{scatter.hist}} to draw a single correlation plot with histograms and best fitted lines. 
 
+Also see \code{\link{outlier}}  for an example of coloring a subset of the points. 
+
 To find the probability "significance" of the correlations using normal theory, use \code{\link{corr.test}}.  To find confidence intervals using boot strapping procedures, use \code{\link{cor.ci}}.  To graphically show confidence intervals, see \code{\link{cor.plot.upperLowerCi}}.
 }
 
@@ -78,6 +83,11 @@ pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
         pch=21,main="Fisher Iris data by Species") #to show color grouping
 
 pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species],
+  pch=21+as.numeric(iris$Species),main="Fisher Iris data by Species",hist.col="red") 
+   #to show changing the diagonal
+   
+#now show confidence intervals
+pairs.panels(iris[1:4],bg=c("red","yellow","blue")[iris$Species], ci=TRUE,
   pch=21+as.numeric(iris$Species),main="Fisher Iris data by Species",hist.col="red") 
    #to show changing the diagonal
    
@@ -102,6 +112,8 @@ sb <- statsBy(sat.act,"education")
 pairs.panels(sb$mean,wt=sb$n)  #report the weighted correlations
 #compare with 
 pairs.panels(sb$mean) #unweighted correlations
+
+#to color just some of the data points, see the example from outlier
 }
 \keyword{multivariate} 
 \keyword{ hplot }

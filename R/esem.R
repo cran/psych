@@ -2,9 +2,9 @@
 #and then linking the two sets
 #slightly improved December 15, 2018 to label the factors better
 #added cancorDiagram which is functionally just a call to esemDiagram
-
+#added the smooth parameter 3/19/25 
 "esem" <- function(r,varsX,varsY,nfX=1,nfY=1,n.obs=NULL,fm="minres",rotate="oblimin",
-rotateY="oblimin",plot=TRUE, cor="cor", use="pairwise",weight=NULL,...) {
+rotateY="oblimin",plot=TRUE, cor="cor", use="pairwise",weight=NULL,smooth=TRUE,...) {
 
 
 if(is.null(colnames(r))) colnames(r) <- rownames(r) <- paste0("V",1:ncol(r))
@@ -41,7 +41,7 @@ R <- r[varnames,varnames]  #This reorganizes R so that it is the order of the se
  df1 <- nX *(nX-1)/2 - nfX * nX + nfX * (nfX-1)/2
  df2 <- nY *( nY-1)/2 - nfY * nY + nfY * (nfY-1)/2 
 
-  f1 <- fa.extend(R,nfX,ov=varsX,ev=varsY,fm=fm,rotate=rotate,...)
+  f1 <- fa.extend(R,nfX,ov=varsX,ev=varsY,fm=fm,rotate=rotate,smooth=smooth,...)
  
   loads1 <- f1$loadings[varnames,,drop=FALSE]
   

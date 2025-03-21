@@ -80,7 +80,7 @@ conf.level <- alpha
     result$complexity <- (apply(f,1,function(x) sum(x^2)))^2/apply(f,1,function(x)sum(x^4))
   
     diag(model) <- diag(r)  
-    model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
+   # model <- cor.smooth(model)  #this replaces the next few lines with a slightly cleaner approach
     if(smooth) {r <- cor.smooth(r) } #this makes sure that the correlation is positive semi-definite
     #although it would seem that the model should always be positive semidefinite so this is probably not necessary
     #cor.smooth approach  added August 25,2011

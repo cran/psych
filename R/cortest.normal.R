@@ -13,9 +13,12 @@ if(is.null(n1)) {n1 <- 100
 if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
                               R <- R*R} else {R <- R1*R1}
                  diag(R) <- 0
-                 E <- (sum(R*lower.tri(R)))
+                 E <- (sum(R*lower.tri(R)))   #note that R is now the squared values
+               
                  chisq <- E *(n1-3)
                  df <- p*(p-1)/2
+                   z <- E/df
+                   n <- n1
                  p.val <- pchisq(chisq,df,lower.tail=FALSE)
     } else {         #end of 1 matrix test
     if (dim(R2)[1] != dim(R2)[2]) {n2 <- dim(R2)[1] 
@@ -29,23 +32,27 @@ if(is.null(R2)) { if(fisher) {R <- 0.5*log((1+R1)/(1-R1))
                   R2 <-  0.5*log((1+R2)/(1-R2))
                   diag(R1) <- 0
                   diag(R2) <- 0 }
-        R <-  R1 -R2   #direct difference 
+        R <-  R1 - R2   #direct difference 
         R <- R*R
         if(is.null(n2)) n2 <- n1
-        n <- (n1*n2)/(n1+n2)    #why do I do this? should it be 2 * (n1*n2)/(n1+n2)   or 
+        n <- 2* (n1*n2)/(n1+n2)    #why do I do this? should it be 2 * (n1*n2)/(n1+n2)  yes   fix 1/11/25
        #n <- harmonic.mean(c(n1,n2))  #no, actually this gives the right results
          E <- (sum(R*lower.tri(R)))
                  chisq <- E *(n-3)
                  df <- p*(p-1)/2
+                 z <- E/df
                  p.val <- pchisq(chisq,df,lower.tail=FALSE)
       }
-   result <- list(chi2=chisq,prob=p.val,df=df,Call=cl)
+        SRMR <- sqrt(z)
+    RMSEA <- sqrt(max(chisq/(df* n) - 1/(n-1), 0))        #this is x2/(df*N ) -  1/(N-1)   #fixed 4/5/19
+   result <- list(chi2=chisq,prob=p.val,df=df,RMSEA=RMSEA,SRMR=SRMR,Call=cl)
+  # result <- list(chi2=chisq,prob=p.val,df=df,Call=cl)
    class(result) <- c("psych", "cortest")
    return(result)
     }
 #version of 2008
 #commented 2018
-
+#added RMSEA and SRMR  1/11/25
 
 #the following is done for non symmetric matrices with the same logic
 #version of August 28,2011

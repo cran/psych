@@ -2,7 +2,7 @@
 \alias{KMO}
 \title{Find the Kaiser, Meyer, Olkin Measure of Sampling Adequacy}
 
-\description{Henry Kaiser (1970) introduced an Measure of Sampling Adequacy (MSA) of factor analytic data matrices. Kaiser and Rice (1974) then modified it. This is just a function of the squared elements of the `image' matrix compared to the squares of the original correlations.  The overall MSA as well as estimates for each item are found. The index is known as the Kaiser-Meyer-Olkin (KMO) index.}
+\description{Henry Kaiser (1970) introduced an Measure of Sampling Adequacy (MSA) of factor analytic data matrices. Kaiser and Rice (1974) then modified it. This is just a function of the squared elements of the `anti-image' matrix compared to the squares of the original correlations.  The overall MSA as well as estimates for each item are found. The index is known as the Kaiser-Meyer-Olkin (KMO) index.}
 \usage{
 KMO(r)
 }
@@ -10,19 +10,22 @@ KMO(r)
   \item{r}{A correlation matrix or a data matrix (correlations will be found)}
 }
 
-\details{Let  \eqn{S^2 = diag(R^{-1})^{-1} } and \eqn{Q = SR^{-1}S}.  Then Q is said to  be the anti-image intercorrelation matrix.  Let \eqn{sumr2 = \sum{R^2}} and \eqn{sumq2 = \sum{Q^2}} for all off diagonal elements of R and Q, then  \eqn{SMA=sumr2/(sumr2 + sumq2)}.  Although originally MSA was 1 - sumq2/sumr2  (Kaiser, 1970), this was modified in Kaiser and Rice, (1974) to be   \eqn{SMA=sumr2/(sumr2 + sumq2)}.  This is the formula used by Dziuban and Shirkey (1974) and by SPSS.
-	
+\details{Let  \eqn{S^2 = diag(R^{-1})^{-1} } and \eqn{Q = SR^{-1}S}.  Then Q is said to  be the anti-image intercorrelation matrix.   Let \eqn{sumr^2 = \sum{R^2}} and \eqn{sumq^2 = \sum{Q^2}} for all off diagonal elements of R and Q, then  \eqn{SMA=sumr^2/(sumr^2 + sumq^2)}.  Although originally MSA was 1 - sumq^2/sumr^2  (Kaiser, 1970), this was modified in Kaiser and Rice, (1974) to be   \eqn{SMA=sumr^2/(sumr^2 + sumq^2)}.  This is the formula used by Dziuban and Shirkey (1974) and by SPSS.
+
 In his delightfully flamboyant style, Kaiser (1975)
 suggested that KMO > .9 were marvelous, in the .80s, mertitourious, in the .70s, middling, in the .60s, medicore, in the 50s, miserable, and  less than .5, unacceptable.
 	
 	An alternative measure of whether the matrix is factorable is the Bartlett test  \code{\link{cortest.bartlett}} which tests the degree that the matrix deviates from an identity matrix.
-	
+
+Note that except for the reversal of signs, the anti-image correlation matrix is the same as that returned by \code{\link{partial.r}}.
+
+
 	}
 \value{
 \itemize{
 \item MSA: The overall Measure of Sampling Adequacy
 \item MSAi:  The measure of sampling adequacy for each item
-\item Image: The Image correlation matrix (Q)
+\item Image: The anti-image correlation matrix (Q) 
 }
 }
 \references{
@@ -42,11 +45,14 @@ William Revelle
 }
 
 
-\seealso{ See Also as \code{\link{fa}},  \code{\link{cortest.bartlett}}, \code{\link{Harman.political}}.
+\seealso{ See Also as \code{\link{fa}},  \code{\link{cortest.bartlett}}, \code{\link{Harman.political}}, \code{\link{partial.r}}
 }
 \examples{
 KMO(Thurstone)
-KMO(Harman.political)   #compare to the results in Dziuban and Shirkey (1974)
+k.m <- KMO(Harman.political)   #compare to the results in Dziuban and Shirkey (1974)
+k.m
+lowerMat(k.m$Image)
+lowerMat(partial.r(Harman.political))   #identical to image, except for sign
 
 }
 

@@ -15,7 +15,7 @@ fa.organize(fa.results,o=NULL,i=NULL,cn=NULL,echelon=TRUE,flip=TRUE)
 
 
 \arguments{
-  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}.  Can also just be a matrix of loadings. }
+  \item{fa.results}{The output from a factor analysis or principal components analysis using \code{\link{fa}} or \code{\link{principal}}.  Can also just be a matrix of loadings.  Can also organize the output of cluster loadings from \code{\link{iclust}}.}
  \item{polar}{Sort by polar coordinates of first two factors (FALSE)}
 \item{o}{The order in which to order the factors}
 \item{i}{The order in which to order the items}
@@ -44,7 +44,7 @@ The values returned are the same as  \code{\link{fa}}, except in sorted order.  
 }
 
 \seealso{
- See Also as \code{\link{fa}},\code{\link{print.psych}}, \code{\link{fa.diagram}},
+ See Also as \code{\link{fa}}, \code{\link{pca}},   \code{\link{iclust}},  \code{\link{print.psych}}, \code{\link{fa.diagram}},
 }
 \examples{
 test.simple <- fa(sim.item(16),2)

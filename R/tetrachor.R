@@ -354,10 +354,19 @@ x <- x[cc]
 y <- y[cc]
 yf <- as.factor(y)
 lev <- levels(yf)
-if(length(lev)!=2) {#stop("y is not a dichotomous variable")
-                   warning("For x = ",i, " y = ", j, " y is not dichotomous")
-                    r <- NA} else {
-ty <- table(y)  
+if(length(lev) !=2) { # y is not dichotomous, what about x?
+                   xf <- as.factor(x)
+                   lev <- levels(xf)
+                   if(length(lev) !=2) {#stop("y is not a dichotomous variable")
+                   warning("For x = ",i, " y = ", j, " neither x nor y is dichotomous  biserial is not possible.")
+                    r <- NA }  else {    
+                     
+                    #case of x is dichotomous, y is not, swap them
+                    z <- y
+                    y <- x
+                    x <- z
+                    }} #else { #the normal case  x is continuous y is dichotomous
+ ty <- table(y)  
  tot <- sum(ty)
  tab <- ty/tot
  if(length(tab) < 2) {r <- NA
@@ -369,7 +378,8 @@ ty <- table(y)
  r <- (hi - lo)*(prod(tab))/(zp * sd(x,na.rm=TRUE))
  if(!is.na(r) && abs(r)  >1 ) {  if (r > 1)  {r <- 1 } else {r <- -1}   #in case we are correlating a dichotomous variable with itself 
           warning("For x = ",i, " y = ", j, " x seems to be dichotomous, not continuous")
-  }}}
+  }} 
+  
  return(r)
 }
  

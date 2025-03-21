@@ -49,8 +49,8 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
  stop("I am stopping because the variable names are incorrect.  See above.")}
  
  
-  if(!isCorrelation(data))  {  # We have a data matrix rather than a correlation matrix 
-
+  if(!isCovariance(data))  {  # We have a data matrix rather than a correlation matrix
+                             #changed from !isCorrelation 3/18/25
  
                  if(use=="complete") {cc <- complete.cases(data[,c(y,x,z,ex)]) 
                                       data <- data[cc,c(y,x,z,ex)] } else { data <- data[,c(y,x,z,ex)] }
@@ -439,7 +439,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	                     df.v <- df.m * s1 + 1 - numx * numy/2 #which is just v
      	                    # df.v <- (u+v)  #adjusted for bias to match the CCAW results
      	                    #Rset.F <- Rset.F * (u+v)/v 
-     	                   
+     	                 
      	                    Chisq <- -(n.obs - 1 -(numx + numy +1)/2)*log((1-cc2))
      	                   
      	                              }

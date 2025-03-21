@@ -31,9 +31,12 @@ if(!isCorrelation(r)) r <- cor(r,use="pairwise")
   Q <- try(solve(r))
   if(inherits(Q,  as.character("try-error")))  {message("matrix is not invertible, image not found")
         Q <- r}
+#from the original paper
  S2  <- diag(1/diag(Q))
- IC <- S2 %*% Q %*% S2
- Q <- Image <-  cov2cor(Q) 
+ S <- sqrt(S2)
+ IC <- S %*% Q %*% S   #from the kaiser paper
+ 
+ Q <- Image <-  cov2cor(Q) #ANOTHER WAY OF FINDING Q
  diag(Q) <- 0
  diag(r) <- 0
  sumQ2 <- sum(Q^2)

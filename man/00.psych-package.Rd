@@ -5,9 +5,9 @@
 \title{A package for personality, psychometric, and psychological research}
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}}, \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions.  Two vignettes are included as part of the package.  The intro vignette tells how to install psych and overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}} (in \code{\link[psychTools]{psychTools}}), \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions.  Two vignettes are included as part of the package.  The intro vignette tells how to install psych and the overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
 
-A companion package \code{\link[psychTools]{psychTools}} includes larger data set examples and four more vignette. 
+A companion package \code{\link[psychTools]{psychTools}} includes larger data set examples and four more vignettes. 
 
 Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}}) is also available.  Rotations  may be done using factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions (e.g., oblimin, quartimin, varimax, geomin, ...). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). 
 
@@ -360,8 +360,9 @@ In addition, see
 
 Revelle, W. (in preparation) An Introduction to Psychometric Theory with applications in R. Springer. at \url{https://personality-project.org/r/book/}   
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.   \url{https://osf.io/preprints/psyarxiv/2y3w9/} Preprint available from PsyArxiv  }
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. \doi{10.1037/pas0000754}      
 
+}
 \keyword{package}% __ONLY ONE__ keyword per line
 \keyword{multivariate}% at least one, from doc/KEYWORDS
 \keyword{models}% __ONLY ONE__ keyword per line

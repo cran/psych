@@ -1,3 +1,4 @@
+
 \name{scatterHist}
 \alias{scatter.hist}
 \alias{scatterHist}
@@ -12,8 +13,9 @@ scatterHist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,m
    xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,
    xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
    x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
-   col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21, show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...)
+   col=c("blue","red","black"),legend=NULL,transparency=.5,pch=21, show.d=TRUE,
+   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,
+      line.col="blue",alpha = .05,ci=TRUE, ci.col="light blue",...)
  
 scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
   means=TRUE, ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,
@@ -21,8 +23,9 @@ scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
   xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,
   xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
-  col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21, show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...)
+  col=c("blue","red","black"),legend=NULL,transparency=.5,pch=21, show.d=TRUE,
+   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,
+      line.col="blue",alpha = .05,ci=TRUE, ci.col="light blue",...)
 }
 \arguments{
   \item{x}{The X vector, or the first column of a  data.frame or matrix. Can be specified using formula input.  }
@@ -55,7 +58,7 @@ scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
   \item{y.axes}{Show the y axis for the y histogram}
   \item{size}{The sizes of the ellipses (in sd units).  Defaults to 1,2}
   \item{col}{Colors to use when showing groups}
-  \item{alpha}{Amount of transparency in the density plots}
+  \item{transparency}{Amount of transparency in the density plots}
   \item{legend}{Where to put a legend  c("topleft","topright","top","left","right")}
   \item{pch}{Base plot character (each group is one more)}
   \item{xlab.hist}{Not currently available}
@@ -66,6 +69,10 @@ scatter.hist(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL,density=TRUE,
   \item{x.arrow}{optional lable for the arrow connecting the two groups for the x axis}
   \item{y.arrow}{optional lable for the arrow connecting the two groups for the y axis}
   \item{cex.arrow}{cex control for the label size of the arrows.}
+  \item{line.col}{color of the lowess or lm fit line}
+  \item{alpha}{When drawing confidence intervals, what is the margin of error}
+  \item{ci}{Draw confidence intervals}
+  \item{ci.col}{color of confidence intervals}
   \item{\dots}{Other parameters for graphics}
 }
 \details{Just a straightforward application of layout and barplot, with some tricks taken from \code{\link{pairs.panels}}.  The various options allow for correlation ellipses (1 and 2 sigma from the mean), lowess smooths, linear fits, density curves on the histograms, and the value of the correlation.  ellipse = TRUE implies smooth = TRUE.  The grid option provides a background grid to the scatterplot.
@@ -93,6 +100,11 @@ scatterHist(SATV ~ SATQ,data=sat.act)  #formula input
 scatter.hist(sat.act[5:6],pch=(19+sat.act$gender),col=c("blue","red")[sat.act$gender],grid=TRUE)
 #better yet
 scatterHist(SATV ~ SATQ + gender,data=sat.act) #formula input with a grouping variable
+
+#If using a factor for grouping, we must first convert it to numeric
+iris.1 <- char2numeric(iris,flag=FALSE)
+scatterHist(Sepal.Width ~ Petal.Length + Species,data=iris.1, show.d=FALSE,
+   main="Fisher's Iris example") #see pairs.panels
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

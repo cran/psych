@@ -336,6 +336,8 @@ cortest= {cat("Tests of correlation matrices \n")
             print(x$Call)
             cat(" Chi Square value" ,round(x$chi,digits)," with df = ",x$df, "  with probability <", signif(x$p,digits),"\n" )
             if(!is.null(x$z)) cat("z of differences = ",round(x$z,digits),"\n")
+            if(!is.null(x$SRMR)) cat("Root Mean Square Residual = ",round(x$SRMR,digits),"\n")
+             if(!is.null(x$RMSEA)) cat("RMSEA = ",round(x$RMSEA,digits),"\n")
          },
 
 

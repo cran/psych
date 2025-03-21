@@ -99,7 +99,7 @@ Bootstrapped resamples are found if n.iter > 1.  These are returned as the boot 
   \item{r.drop}{Item whole correlation for this item against the scale without this item}
   \item{mean}{for data matrices, the mean of each item}
   \item{sd}{For data matrices, the standard deviation of each item}
-  \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)  May be suppressed by specifying discretet=FALSE.}
+  \item{response.freq}{For data matrices, the frequency of each item response (if less than 20)  May be suppressed by specifying discrete=FALSE.}
   \item{scores}{Scores are by default simply the average response for all items that a participant took. If cumulative=TRUE, then these are sum scores. Note, this is dangerous if there are lots of missing values.}  
   \item{boot.ci}{The lower, median, and upper ranges of the 95\% confidence interval based upon the bootstrap.}
   \item{boot}{a 6 column by n.iter matrix of boot strapped resampled values}

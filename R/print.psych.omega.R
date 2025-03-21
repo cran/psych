@@ -65,7 +65,7 @@ if(is.null(cut)) cut <- .2
     }
     if(!is.null(x$schmid$rms)) {cat("\nThe root mean square of the residuals is ", round(x$schmid$rms,digits),"\n") }
      if(!is.null(x$schmid$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$schmid$crms,digits)) }
-     if(!is.null(x$schmid$RMSEA)) {cat("\nRMSEA index = ",round(x$schmid$RMSEA[1],digits+1), " and the", (1- x$schmid$RMSEA[4])*100,"% confidence intervals are ",round(x$schmid$RMSEA[2:3],digits+1))  }
+     if(!is.null(x$schmid$RMSEA)) {cat("\nRMSEA index = ",round(x$schmid$RMSEA[1],digits+1), " and the", (x$schmid$RMSEA[4])*100,"% confidence intervals are ",round(x$schmid$RMSEA[2:3],digits+1))  }
    	if(!is.null(x$schmid$BIC)) {cat("\nBIC = ",round(x$schmid$BIC,digits))}
    	
    	cat("\n\nCompare this with the adequacy of just a general factor and no group factors")
@@ -74,7 +74,7 @@ if(is.null(cut)) cut <- .2
     }
     if(!is.null(x$gstats$rms)) {cat("\nThe root mean square of the residuals is ", round(x$gstats$rms,digits),"\n") }
      if(!is.null(x$gstats$crms)) {cat("The df corrected root mean square of the residuals is ", round(x$gstats$crms,digits),"\n") }
-     if(!is.null(x$gstats$RMSEA)) {cat("\nRMSEA index = ",round(x$gstats$RMSEA[1],digits+1), " and the", (1- x$gstats$RMSEA[4])*100,"% confidence intervals are ",round(x$gstats$RMSEA[2:3],digits+1))  }
+     if(!is.null(x$gstats$RMSEA)) {cat("\nRMSEA index = ",round(x$gstats$RMSEA[1],digits+1), " and the", (x$gstats$RMSEA[4])*100,"% confidence intervals are ",round(x$gstats$RMSEA[2:3],digits+1))  }
    	if(!is.null(x$gstats$BIC)) {cat("\nBIC = ",round(x$gstats$BIC,digits),"\n")}
    	
    

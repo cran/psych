@@ -28,8 +28,10 @@ cortest.mat(R1,R2=NULL,n1=NULL,n2 = NULL) #an alternative test
   \item{method}{Which type of correlation to find ("pearson", "spearman","kendall")}
   \item{use}{How to handle missing data (defaults to pairwise)}
 }
-\details{There are several ways to test if a matrix is the identity matrix. The most well known is the chi square test  of Bartlett (1951) and Box (1949). A very straightforward test, discussed by Steiger (1980) is to find the sum of the squared correlations or the sum of the squared Fisher transformed correlations.  Under the null hypothesis that all the correlations are equal, this sum is distributed as chi square.  This is implemented in 
-\code{\link{cortest}} and \code{\link{cortest.normal}}
+\details{There are several ways to test if a matrix is the identity matrix. The most well known is the chi square test  of Bartlett (1951) and Box (1949). \code{\link{cortest.bartlett}}.  A very straightforward test, discussed by Steiger (1980) is to find the sum of the squared correlations or the sum of the squared Fisher transformed correlations.  Under the null hypothesis that all the correlations are equal to 0, this sum is distributed as chi square.  This is implemented in 
+\code{\link{cortest}} and \code{\link{cortest.normal}} and will give different values than \code{\link{cortest.bartlett}}. 
+
+For comparing two matrices, the null hypothesis is that they are equal and thus the differences are 0.  The test, from Steiger, is based on the sum of squared (fisher z transformed or not) residuals.  The sum of these squared residuals * the sample size (-3) should be distributed as chi square.    
 
 Yet another test, is the Jennrich(1970) test of the equality of two matrices. This compares the differences between two matrices to the averages of two matrices using a chi square test. This is implemented in \code{\link{cortest.jennrich}}.
 
@@ -49,12 +51,18 @@ This in turn is converted to a chi square
   \item{chi2}{The chi square statistic}
   \item{df}{Degrees of freedom for the Chi Square}
   \item{prob}{The probability of observing the Chi Square under the null hypothesis.}
+  \item{SRMR}{The square root of the mean squared residual.}
+  \item{RMSEA}{The Root Mean Square Error of Approximation is derived from chi square and asymptotically tends towards the SRMR.  }
   
 }
 \references{ Steiger, James H. (1980) Testing pattern hypotheses on correlation matrices: alternative statistics and some empirical results. Multivariate Behavioral Research, 15, 335-352.
 
 Jennrich, Robert I. (1970) An Asymptotic \eqn{\chi^2} Test for the Equality of Two Correlation Matrices. Journal of the American Statistical Association, 65, 904-912.
+
+Maydeu-Olivares, Alberto (2017) Assessing the Size of Model Misfit in Structural Equation Models, Psychometrika, 82, 533--558. 
 }
+
+\note{For the case of two matrices versus the difference of the correlations the results will differ if the fisher r to z transform is used.  }
 
 
 \author{ William Revelle }
@@ -78,6 +86,17 @@ cortest.mat(x$r,y$r,n1=1000,n2=1000)   #twice the degrees of freedom as the Jenn
 #create a new matrix that is different
 z <- sim.congeneric(loads=c(.8,.8,.7,.7, .6), N= 1000, short=FALSE)
 cortest(x$r,z$r,n1=1000)  #these should be different
+
+#compare the results for forming one matrix of differences versus 
+# testing the two matrices.
+dif=x$r - z$r  
+cortest(dif,n1=1000)  #versus
+
+cortest(dif,n1=1000,fisher=FALSE)
+cortest(x$r,z$r,n1=1000 , fisher=FALSE)  #these should be the same
+
+
+
 
 }
 

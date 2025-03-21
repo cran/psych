@@ -119,7 +119,7 @@ uni <- f1$fit.off * (1-alpha.res)
   temp <- matrix(unlist(results),ncol=ncol1,byrow=TRUE)
  
 
-  colnames(temp) <- c("u","tau","con","alpha","av.r","median.r","CFI","ECV","F1/F2","Unidim.A","Unidim","model","model.A", "total", "total.A", "MAP")
+  colnames(temp) <- c("u","tau","rho_c","alpha","av.r","median.r","CFI","ECV","F1/F2","Unidim.A","Unidim","model","model.A", "total", "total.A", "MAP")
   rownames(temp) <- names(keys)
   
 

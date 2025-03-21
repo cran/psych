@@ -722,9 +722,10 @@ pretty}
 
 #this just shows if it is a matrix is symmetric and has diagonals of 1
 #Added the unclass to  handle a problem with class partial.r  4/10/21
+#Added the tolerance parameter 3/19/25 
 "isCorrelation" <-  function(x,na.rm=FALSE) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
-  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}
+  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))),tol=10000 * .Machine$double.eps)) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}
   value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )
   if(!value  && (na.rm) && any(is.na(diag(as.matrix(x))))) stop("Although the matrix is symmetric, one of the elements of the  diagonal is NA. Check your data.")
   value <- value && isTRUE((min(x,na.rm=TRUE)>= -1) & (max(x,na.rm=TRUE) <= 1))  
@@ -734,7 +735,7 @@ pretty}
   #this just shows if it is a symmetric matrix
 "isCovariance" <-  function(x) {value <- FALSE
   if(NROW(x) == NCOL(x)) {
-  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))))) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}}
+  if( is.data.frame(x)) {if(isSymmetric(unclass(unname(as.matrix(x))),tol=10000 * .Machine$double.eps)) { value <- TRUE}} else {if(isSymmetric(unclass(unname(x)))) {value <- TRUE}}}
  # value <- value && isTRUE(all.equal(prod(diag(as.matrix(x))),1) )  #don't check for diagonal of 1
   return(value)}
   

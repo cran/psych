@@ -271,7 +271,7 @@ fa =  {
    
    	if(!is.null(object$TLI)) {cat("\nTucker Lewis Index of factoring reliability = ",round(object$TLI,digits+1))}
   
-   	if(!is.null(object$RMSEA)) {cat("\nRMSEA index = ",round(object$RMSEA[1],digits+1), " and the", (1- object$RMSEA[4])*100,"% confidence intervals are ",round(object$RMSEA[2:3],digits+1))  }
+   	if(!is.null(object$RMSEA)) {cat("\nRMSEA index = ",round(object$RMSEA[1],digits+1), " and the", (object$RMSEA[4])*100,"% confidence intervals are ",round(object$RMSEA[2:3],digits+1))  }
    
    	if(!is.null(object$BIC)) {cat("\nBIC = ",round(object$BIC,digits))}
   if(!is.null(object$Phi)) {

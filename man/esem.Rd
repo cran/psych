@@ -12,7 +12,7 @@
 \usage{
 esem(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL, fm = "minres", 
       rotate = "oblimin", rotateY="oblimin", plot = TRUE, cor = "cor",
-       use = "pairwise",weight=NULL, ...)
+       use = "pairwise",weight=NULL,smooth=TRUE, ...)
 esemDiagram(esem=NULL,labels=NULL,cut=.3,errors=FALSE,simple=TRUE,
 	regression=FALSE,lr=TRUE, digits=1,e.size=.1,adj=2,
      main="Exploratory Structural Model", ...)
@@ -38,6 +38,7 @@ interbattery(r, varsX, varsY, nfX = 1, nfY = 1, n.obs = NULL,cor = "cor",
   \item{cor}{What options for to use for correlations (see fa for details)}
   \item{use}{"pairwise" for pairwise complete data, for other options see cor}
   \item{weight}{Weights to apply to cases when finding wt.cov}
+  \item{smooth}{Should correlation matrices be smoothed?}
  \item{\dots}{other parameters to pass to fa or to esemDiagram functions.}
  \item{esem}{The object returned from esem and passed to esemDiagram}
  \item{fit}{The object returned by lmCor with canonical variates}

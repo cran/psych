@@ -203,7 +203,7 @@ my.data <- read.file()  #locate the file to read using your normal system.
 
 
 \subsection{Reading from a remote file}
-To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function (in the psychTools package), you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we just
+To read from a file saved on a remote server, you just need to specify the file name and then read it. By using the \pfun{read.file} function (in the psychTools package), you can read a variety of file types (e.g., text, txt, csv, sav, rds) from the remote server.  e.g., to read the file  \pfun{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt} we specify the file name and then use  \pfun{read.file}:
 
 
 ~\
@@ -236,7 +236,7 @@ my.data <- read.clipboard()   #note the parentheses
 This will work if every data field has a value and even missing data are given some values (e.g., NA or -999).
 
 
-However, iff the data were entered in a spreadsheet and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
+However, iff the data were entered in a spreadsheet  (e.g. Excel or Numbers) and the missing values were just empty cells, then the data should be read in as a tab delimited or by using the \pfun{read.clipboard.tab} function.
 
 
 \begin{Rinput}
@@ -251,7 +251,7 @@ my.data <- read.clipboard.fwf(widths=c(5,2,rep(1,5),rep(3,4))
 
 
 \subsubsection{An example data set}
-Consider the data stored at \href{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt}{a remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and go.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
+Consider the data stored at \href{https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt}{a remote data location}. (This is the same file that we read directly above.)  Open the file in your browser and then select all.    Read them into the clipboard and enter the \pfun{read.clipboard} command.  (These data are selected variables from the first 200 cases from the \pfun{msqR} data set in the \Rpkg{psychTools} package).  Once you have read the data, it useful to see how many cases and how many variables you have \Rfunction{dim} and to find some basic descriptive statistics.
  \\
 
 \begin{Rinput}
@@ -413,7 +413,7 @@ my.scores <- my.scales$scores    #the actual scores are saved in the scores obje
 %\end{Routput}
 
 
-Two things to notice about this output is a) the message about how to get more information (item by scale correlations and frequency counts) and b) that the correlation matrix between the six scales has the raw correlations below the diagonal, alpha reliabilities on the diagonal, and correlations adjusted for reliability above the diagonal. Because EAp and EAn are both part of EA, they correlate with the total more than would be expected given their reliability. Hence the impossible values greater than $|1.0 |$. 
+Two things to notice about this output is a) the message about how to get more information (item by scale correlations and frequency counts) and b) that the correlation matrix between the six scales has the raw correlations below the diagonal, alpha reliabilities on the diagonal, and correlations adjusted for reliability above the diagonal. Because EAp and EAn are both part of EA, they correlate with the total more than would be expected given their reliability. Hence the impossible values greater than $|1.0 |$.   The \pfun{scoreOverlap} function will report the correlations corrected for item overlap.
 
 
 
@@ -699,8 +699,8 @@ Cureton, E. (1966).
 \newblock Corrected item-test correlations.
 \newblock {\em Psychometrika}, 31(1):93--96.
 
-\bibitem[\protect\astroncite{{R Core Team}}{2023}]{R}
-{R Core Team} (2023).
+\bibitem[\protect\astroncite{{R Core Team}}{2025}]{R}
+{R Core Team} (2025).
 \newblock {\em R: A Language and Environment for Statistical Computing}.
 \newblock R Foundation for Statistical Computing, Vienna, Austria.
 
@@ -710,12 +710,12 @@ Rafaeli, E. and Revelle, W. (2006).
   affects?
 \newblock {\em Motivation and Emotion}, 30(1):1--12.
 
-\bibitem[\protect\astroncite{Revelle}{2023}]{psych}
-Revelle, W. (2024).
+\bibitem[\protect\astroncite{Revelle}{2025}]{psych}
+Revelle, W. (2025).
 \newblock {\em psych: Procedures for Personality and Psychological Research}.
 \newblock Northwestern University, Evanston,
   https://CRAN.r-project.org/package=psych.
-\newblock R package version 2.4.6
+\newblock R package version 2.5.3
 
 \bibitem[\protect\astroncite{Revelle and Anderson}{1997}]{ari:97}
 Revelle, W. and Anderson, K.~J. (1997).

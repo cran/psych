@@ -55,7 +55,7 @@ The product of rho_c and Tau is the measure of unidimensionality, u That is, con
 }
 
 \references{
-Revelle, W. and Condon, D.M (2023) Using undim rather than omega in estimating undimensionality.  Working draft available at  \url{https://personality-project.org/revelle/publications/rc.23.pdf} 
+Revelle, W. and Condon, D.M (2023) Using undim rather than omega in estimating undimensionality. \doi{10.1037/met0000729}
 }
 
 \author{William Revelle}

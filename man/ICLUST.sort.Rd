@@ -30,7 +30,7 @@ With the keys=TRUE option, the resulting cluster keys may be used to score the o
 \references{ \url{https://personality-project.org/r/r.ICLUST.html} }
 \author{William Revelle }
 
-\note{ Although part of the ICLUST set of programs, this is also more useful for factor or principal components analysis.
+\note{ Although part of the ICLUST set of programs, this is also more useful for factor or principal components analysis.  See also \code{\link{fa.sort}} for similar functionality.
 
 }
 \seealso{ \code{\link{ICLUST.graph}},\code{\link{ICLUST.cluster}}, \code{\link{cluster.fit} }, \code{\link{VSS}}, \code{\link{factor2cluster} }}

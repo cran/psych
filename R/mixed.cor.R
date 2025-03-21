@@ -145,7 +145,7 @@ return(Rho)
 #revised July 15, 2011 to work for the various special cases
 #meant to combine continuous, polytomous and dichotomous correlations
 #revised October 12, 2011 to get around the sd of vectors problem
-#revised Sept 10, 2013 to allow for dichotomies with different minima
+#revised Sept 10, 2013 to allow for dichotomies with different minima	
 "mixed.cor1" <-
 function(data,c=NULL,p=NULL,d=NULL,smooth=TRUE,global=TRUE,correct=correct,use=use,method=method,weight=NULL) {
  cl <- match.call() 

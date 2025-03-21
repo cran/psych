@@ -1,9 +1,12 @@
 "scatter.hist" <- "scatterHist" <- 
-function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,means=TRUE, ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,title="Scatter plot + density",
-   xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
-   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),col=c("blue","red","black"),legend=NULL,alpha=.5,pch=21,
-   show.d=TRUE,
-   x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,...) {
+function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,means=TRUE,
+  ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,title="Scatter plot + density",
+   xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,
+   grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
+   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
+   col=c("blue","red","black"),legend=NULL,transparency=.5,pch=21,
+   show.d=TRUE, x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,
+   line.col="blue",alpha = .05,ci=TRUE, ci.col="light blue",...) {
 old.par <- par(no.readonly = TRUE) # save default 
  sb <- grp <- NULL
  main <- title
@@ -35,8 +38,10 @@ old.par <- par(no.readonly = TRUE) # save default
       
    }
 
-col <- adjustcolor(col,alpha.f =alpha)
+col <- adjustcolor(col,alpha.f =transparency)
 n.obs <- sum(!is.na(x))
+
+confid <- qt(1-alpha/2,n.obs-2)   #used in finding confidence intervals for regressions and loess
 if(missing(xlab)) {
 if(!is.null(colnames(x))) {xlab=colnames(x)[1]
                            ylab=colnames(x)[2]} else {xlab="V1"
@@ -110,11 +115,23 @@ if(smoother) {smoothScatter(x,y,nrpoints=nrpoints,xlim=xlim,ylim=ylim,xlab=xlab,
 
 if(grid) grid()
 if(ab) abline(lm(y~x))
-if(smooth) {
- ok <- is.finite(x) & is.finite(y)
-    if (any(ok)) 
-       # lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), col = col.smooth, ...)
-lines(stats::lowess(x[ok],y[ok]),col="red")}
+    ok <- is.finite(x) & is.finite(y)
+ if(smooth) {   lml <- loess(y~x ,degree=1,family="symmetric") 
+     tempx <- data.frame(x = seq(min(x,na.rm=TRUE),max(x,na.rm=TRUE),length.out=47))
+       pred <-  predict(lml,newdata=tempx,se=TRUE ) 
+
+ if(ci) {  upperci <- pred$fit + confid*pred$se.fit
+       lowerci <- pred$fit - confid*pred$se.fit 
+      polygon(c(tempx$x,rev(tempx$x)),c(lowerci,rev(upperci)),col=adjustcolor(ci.col, alpha.f=0.8), border=NA)
+        }
+     lines(tempx$x,pred$fit,  col = line.col, ...)   #this is the loess fit
+}  else {#if(smooth)  lines(stats::lowess(x[ok],y[ok],f=span,iter=iter),col=col.smooth) 
+}
+# if(smooth) {
+#  ok <- is.finite(x) & is.finite(y)
+#     if (any(ok)) 
+#        # lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), col = col.smooth, ...)
+# lines(stats::lowess(x[ok],y[ok]),col=line.col)}
 if(ellipse) {
   if(byGroup) { grp.values <- table(grp)    #fix to work with multiple (>20 groups)
   grp.names <- dimnames(grp.values)

@@ -17,7 +17,7 @@ iclust.diagram(ic, labels = NULL, short = FALSE, digits = 2, cex = NULL,
 } 
 \arguments{
   \item{ic}{Output from ICLUST}
-  \item{labels}{labels for variables (if not specified as rownames in the ICLUST output}
+  \item{labels}{labels for variables (if not specified as rownames in the ICLUST output.  See examples.}
   \item{short}{if short=TRUE, variable names are replaced with Vn}
   \item{digits}{Round the path coefficients to digits accuracy}
   \item{cex}{The standard graphic control parameter for font size modifications.  This can be used to make the labels bigger or smaller than the default values.}
@@ -71,7 +71,10 @@ cluster.names[c(16,19,18,15,20)] <- c("Neuroticism","Extra-Open","Agreeableness"
       "Conscientiousness","Open")
 #now show the new names
 iclust.diagram(ic.bfi,cluster.names=cluster.names,min.size=4,e.size=1.75)
-
+#just use the diagram function (which calls iclust.diagram).
+#Add item content using the labels parameter
+diagram(ic.bfi,labels=bfi.dictionary[,2],cluster.names=cluster.names, 
+       min.size=4,e.size=1.5, main="ICLUST of the BFI")
 }
 
 \keyword{ multivariate}

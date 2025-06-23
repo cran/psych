@@ -2,8 +2,9 @@
 \alias{corTest}
 \alias{corr.test}
 \alias{corr.p}
+\alias{corInfo}
 \title{Find the correlations, sample sizes, and probability values between elements of a matrix or data.frame.   }
-\description{Although the cor function finds the correlations for a matrix,  it does not report probability values.  cor.test does, but for only one pair of variables at a time.  corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests. Both corr.test and corr.p return raw and adjusted confidence intervals for each correlation. 
+\description{Although the cor function finds the correlations for a matrix,  it does not report probability values.  cor.test does, but for only one pair of variables at a time.  corr.test uses cor to find the correlations for either complete or pairwise data and reports the sample sizes and probability values as well. For symmetric matrices, raw probabilites are reported below the diagonal and correlations adjusted for multiple comparisons above the diagonal. In the case of different x and ys, the default is to adjust the probabilities for multiple tests. Both corr.test and corr.p return raw and adjusted confidence intervals for each correlation. corInfo returns the Fisher information of the correlation matrix. 
 }
 \usage{
 corTest(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
@@ -11,6 +12,7 @@ corTest(x, y = NULL, use = "pairwise",method="pearson",adjust="holm",
 corr.test(x, y = NULL, use = "pairwise",method="pearson",adjust="holm", 
     alpha=.05,ci=TRUE,minlength=5,normal=TRUE)
 corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
+corInfo(x,n=NULL,show=FALSE,fisher=FALSE)
 }
 
 \arguments{
@@ -25,7 +27,8 @@ corr.p(r,n,adjust="holm",alpha=.05,minlength=5,ci=TRUE)
   \item{ci}{By default, confidence intervals are found.  However, this leads to a noticable slowdown of speed, particularly for large problems.  So, for just the rs, ts and ps, set ci=FALSE}
   \item{minlength}{What is the minimum length for abbreviations.  Defaults to 5.}
   \item{normal}{By default, probabilities for method="spearman" and method="kendall" are found by normal theory.  If normal=="FALSE", then repetitive calls are made to cor.test.  This is much slower, but gives more accurate p values. exact is set to be FALSE which means that exact p values for small samples are not found given the problem of ties. }
-  
+  \item{show}{if TRUE, then show the lower correlation matrix for corInfo.}
+  \item{fisher}{Adjust correlations to fisher z}
   }
 \details{corr.test uses the \code{\link{cor}} function to find the correlations, and then applies a t-test to the individual correlations using the formula
 \deqn{t = \frac{r * \sqrt(n-2)}{\sqrt(1-r^2)}
@@ -41,7 +44,9 @@ The probability values may be adjusted using the Holm (or other) correction.  If
 
 For those who like the conventional use of "magic asterisks" to show (stars) to represent conventional levels of significance, the object stars is returned (but not shown)).  See the examples.
 
-\code{\link{corr.p}} may be applied to the results of \code{\link{partial.r}} if n is set to n - s (where s is the number of variables partialed out)  Fisher, 1924. 
+\code{\link{corr.p}} may be applied to the results of \code{\link{partial.r}} if n is set to n - s (where s is the number of variables partialed out)  Fisher, 1924.
+
+\code{\link{corInfo}} finds the Fisher information of each correlation and then sums across the correlations.  Fisher Information is just  \eqn{ n * (1+r^2) /(1 - r^2) ^2)}. 
 }
 \value{
   \item{r}{The matrix of correlations}
@@ -93,6 +98,8 @@ kendall.r <- corr.test(bfi[1:40,4:6], method="kendall", normal=FALSE)
 #compare with 
 cor.test(x=bfi[1:40,4],y=bfi[1:40,6],method="kendall", exact=FALSE)
 print(kendall.r,digits=6)
+
+corInfo(attitude)
 }
 
 \keyword{multivariate }

@@ -120,7 +120,7 @@ It is important to distinguish here between the two \eqn{\omega} coefficients of
 Another estimate reported is the omega for an infinite length test with a structure similar to the observed test (omega H asymptotic).  This is found by 
 \deqn{\omega_{limit} = \frac{\vec{1}\vec{cc'}\vec{1}}{\vec{1}\vec{cc'}\vec{1} + \vec{1}\vec{AA'}\vec{1}'}}{\omega_{limit} = (1 cc' 1')/(1 cc' 1' + 1 AA' 1')}. 
 
-Following suggestions by Steve Reise, the Explained Common Variance (ECV) is also reported.  This is the ratio of the general factor eigen value to the sum of all of the eigen values.  As such, it is a better indicator of unidimensionality than of the amount of test variance accounted for by a general factor.
+Following suggestions by Steve Reise, the Explained Common Variance (ECV) is also reported.  This is the ratio of the general factor eigen value to the sum of all of the eigen values.  As such, it is a better indicator of unidimensionality than of the amount of test variance accounted for by a general factor.  (But, the \emph{u} or unidim statistic is probably better.  See \code{\link{unidim}} and \code{\link{reliability}} functions.)
 
 
 The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.  

@@ -9,7 +9,7 @@
 #added the covar option 10/23/23
 #added fm option  2/29/24
 #fixed call to unidim to pass the nfactors argument   9/23/24
-reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,plot=FALSE,hist=FALSE,
+reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,plot=FALSE,plot.sum=TRUE,hist=FALSE,
    n.sample=10000,brute=FALSE,check.keys=TRUE,covar=FALSE,fm="minres", rotate="oblimin", weighted="min")  {
    cl <- match.call()
   result <- list()
@@ -112,9 +112,11 @@ reliability <- function(keys=NULL,items,nfactors=2,n.obs=NA,split=TRUE,raw=TRUE,
   result <- list(result.df = result.df,splits= splits,max=best,min=worst, Call = cl)
   if(hist) {multi.hist(splits)}
   class(result) <-  c("psych","reliability")
+  if(plot.sum) {plot(result)}
   return(result) } else {
 
    class(result.df) <- c("psych","reliability", "matrix")
+   if(plot.sum) {plot(result.df)}
   return(result.df)
   }
   }

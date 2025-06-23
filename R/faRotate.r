@@ -62,6 +62,11 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    			rotated <- GPArotation::targetT(loadings,Tmat=initial,...)
    			loadings <- rotated$loadings
    			 rot.mat <- t(solve(rotated$Th))} ,
+   			 
+   		parsimax= {if (!requireNamespace('GPArotation')) {stop("I am sorry, to do this rotation requires the GPArotation package to be installed")}
+   			rotated <- GPArotation::parsimax(loadings,Tmat=initial,...)
+   			loadings <- rotated$loadings
+   			 rot.mat <- t(solve(rotated$Th))} ,
    			
    	 bifactor = {rot <- bifactor(loadings,Tmat=initial)
    	             loadings <- rot$loadings

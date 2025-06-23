@@ -68,6 +68,7 @@ test.all(pl,package="psych",dependencies
   \item{na.rm}{Should we check for NA on the diagonal of a correlation matices}
   \item{method}{"pearson", "kendall", "spearman"} 
   \item{cor}{defaults to the normal cor function, but can also do tetrachoric, polychoric or covariances (cov)}
+ 
   \item{value}{the current value of some looping variable}
   \item{max}{The maximum value the loop will achieve}
   \item{label}{what function is looping}

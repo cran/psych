@@ -47,7 +47,7 @@ The values returned are the same as  \code{\link{fa}}, except in sorted order.  
  See Also as \code{\link{fa}}, \code{\link{pca}},   \code{\link{iclust}},  \code{\link{print.psych}}, \code{\link{fa.diagram}},
 }
 \examples{
-test.simple <- fa(sim.item(16),2)
+test.simple <- fa(sim.item(16)$item,2)
 fa.sort(test.simple)
 fa.organize(test.simple,c(2,1))  #the factors but not the items have been rearranged
 }

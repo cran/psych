@@ -1,3 +1,5 @@
+#added the true scores on 04/21/25
+
 "sim.item" <-
 function (nvar = 72 ,nsub = 500, 
     circum = FALSE, xloading =.6, yloading = .6, gloading=0, xbias=0,  ybias = 0,categorical=FALSE, low=-3,high=3,truncate=FALSE,threshold=NULL) 
@@ -21,7 +23,7 @@ function (nvar = 72 ,nsub = 500,
 	#true score matrix for each item reflects structure in radians
 	trueitem <- outer(truex, cos(rad)) + outer(truey,sin(rad)) 
 
-	item<- gloading * g +  trueitem  + errorweight*error   #observed item = true score + error score 
+	item <- gloading * g +  trueitem  + errorweight*error   #observed item = true score + error score 
     if (categorical) {
         if(is.null(threshold)){
     	item = round(item)       #round all items to nearest integer value
@@ -32,7 +34,8 @@ function (nvar = 72 ,nsub = 500,
 		}
 	#if (truncate) {item[item < cutpoint] <- 0  }  #replaced with threshold
 	colnames(item) <- paste("V",1:nvar,sep="")
-	return (item) 
+	result <- list(item=item, theta=cbind(truex,truey), g=g) #added 04/21/25
+	return (result) 
 	}  
 
 "sim.spherical" <-

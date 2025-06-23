@@ -2,6 +2,7 @@
 \alias{cohen.d}
 \alias{d.robust}
 \alias{cohen.d.ci}
+\alias{cohenPooled}
 \alias{d.ci}
 \alias{cohen.d.by}
 \alias{d2r}
@@ -24,6 +25,7 @@ Given a data.frame or matrix, find the standardized mean difference (Cohen's d) 
 }
 \usage{
 cohen.d(x, group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL)
+cohenPooled(cd=list(), cohen="TRUE")
 d.robust(x,group,trim=.2)
 cohen.d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
 d.ci(d,n=NULL,n2=NULL,n1=NULL,alpha=.05)
@@ -46,6 +48,8 @@ cd.validity(d, keys, abs=TRUE)
   \item{group}{Some dichotomous grouping variable (may be specified using formula input (see example))}
   \item{group2}{Apply cohen.d for each of the subgroups defined by group2 (may be specified by formula as well)}
   \item{data}{If using formula mode and specifying a particular variable (see example)}
+  \item{cd}{A list of objects returned from multiple runs of cohen.d to be pooled}
+  \item{cohen}{By default, pool cohen.d's. if FALSE pool hedges.g}
  \item{d}{An effect size}
  \item{keys}{A list of scoring keys (similar to scoreItems)}
  \item{abs}{When finding average cd validities, should we take absolute values (TRUE)}
@@ -148,7 +152,7 @@ William Revelle
 
 
 \seealso{
-\code{\link{describeBy}}, \code{\link{describe}} \code{\link{error.dots}} to display the results.  \code{\link{scatterHist}} to show d and MD for pairs of variables. (See in particular the use of \code{\link{scatterHist}} on psychTools::GERAS daa set.)
+\code{\link{describeBy}}, \code{\link{describe}} and \code{\link{plot}} or \code{\link{error.dots}} to display the results.  \code{\link{scatterHist}} to show d and MD for pairs of variables. (See in particular the use of \code{\link{scatterHist}} on psychTools::GERAS daa set.)
 }
 \examples{
 cohen.d(sat.act,"gender")
@@ -165,6 +169,18 @@ cd.df <- data.frame(d = cd$cohen.d[,"effect"], male = cd$descriptive$mean[1,cd$o
 cd <- cohen.d.by(sat.act,"gender","education")
 cohen.d(SATV + SATQ ~ gender, data=sat.act) #just choose two variables
 summary(cd)  #summarize the output
+
+#now do it for subsets and then pool them
+cd1 <- cohen.d(sat.act[1:300,],group= "gender")
+cd2 <- cohen.d(sat.act[301:600,],group="gender")
+cd.pooled <- cohenPooled(list(cd1,cd2))
+#graph them using error.dots
+error.dots(stats=cd.pooled)
+#or show them as two sets together using plot
+plot(cd1,sort=FALSE)
+plot(cd2,sort=FALSE,add=TRUE,col="red",lwd=2)
+
+
 
 #formula version combines these functions
 cd <- cohen.d(sat.act ~ gender + education)  #find d by gender for each level of education

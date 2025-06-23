@@ -82,3 +82,26 @@ result <- unlist(summary)
 return(result)
 }
 
+
+# A simple function to find Fisher Information from a correlation matrix
+# June 2, 2025
+corInfo  <- function(x,n=NULL,show=FALSE,fisher=FALSE) {
+   cl <- match.call()
+ if (!isCovariance(x)) {
+  R <- lowerCor(x,show=show)
+  n <- pairwiseCount(x) } else {R <- x}
+  if(fisher)  R <- 0.5 * log((1 + R)/(1 - R))
+
+ diag(R) <- NA
+ R2 <- R*R
+  
+  chisq  <- sum(R2 * (n-3) , na.rm=TRUE)/2
+  info <- sum((n-2)/(1-R^2)^2,na.rm=TRUE)/2  #not Fisher information 
+  Fisher.info <- sum((n * (1+R^2))/((1-R^2)^2),na.rm=TRUE)/2
+   df <- NCOL(x) * (NCOL(x)-1)/2
+     result= list(information = info, chisq=chisq, df=df, I = Fisher.info, n= n, Call=cl)
+     class(result)<- c("psych","corInfo")
+  return(result)
+  } 
+  
+

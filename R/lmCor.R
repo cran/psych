@@ -535,7 +535,7 @@ y.scale <- top/(ny+1)
 plot(NA,xlim=xlim,ylim=ylim,main=main,axes=FALSE,xlab="",ylab="")
 for(i in 1:nx) {x[[i]] <- dia.rect(3,top-i*x.scale,x.names[i],cex=cex,draw=TRUE,...) 
                var.list <- c(var.list,x.names[i],x[[i]])}
- 
+
 for (j in 1:ny) {y[[j]] <- dia.rect(7,top-j*y.scale,y.names[j],cex=cex,draw=TRUE,...)
                   var.list <- c(var.list,y.names[j],y[[j]]) }
 for(i in 1:nx) {
@@ -555,6 +555,7 @@ if(nx >1) {
   for (k in 1:(i-1)) {dca <- dia.curved.arrow(y[[i]]$right,y[[k]]$right,y.resid[i,k],scale=(abs(i-k)),dir="u",cex=l.cex,draw=FALSE, ...)
      curve.list <- c(curve.list,dca)} 
   }}
+
   for(i in 1:ny) {d.self <- dia.self(y[[i]],side=3,scale=.2,draw=FALSE,... )
           self.list <- c(self.list,d.self)}
  if(show) {text((10-nx/3)/2,0,paste("Unweighted matrix correlation  = ",round(sc$Ruw,digits)))}

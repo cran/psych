@@ -229,7 +229,8 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
       
        if(!is.null(threshold)) {
         i <- 1:nvar
-		  observed <- t(t(observed [,i]) > threshold[i]) + 0 } 
+		  observed <- t(t(observed [,i]) > threshold[i]) + 0 }
+		  colnames(observed) <- paste0("V",1:nvar)   #added 4/22/25
        r <- cor(observed)  #will approximate the model
      }  
   	reliability <- diag(f %*% t(f))   

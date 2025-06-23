@@ -298,7 +298,18 @@ cor.cip = {class(x) <- NULL
    cat("\n High and low confidence intervals \n")
    print(round(x,digits=digits))
               
-            },       
+            },  
+            
+corInfo = { cat("Call:")
+              print(x$Call)
+               cat("Fisher Information from a correlation matrix = ",round(x$I),"  \n")
+             
+              cat("Degrees of freedom = ", x$df)
+              cat("  Chi square = ", round(x$chisq))
+              if(!is.null(x$n)) {N = mean(x$n,na.rm=TRUE)
+              cat("   N = ",N)}
+            
+},
      
 corr.test = {cat("Call:")
               print(x$Call)

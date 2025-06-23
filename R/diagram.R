@@ -322,7 +322,7 @@ if(side == 2)    {x <- c(location$left[1],location$left[1]-scale,location$left[1
      	      result <- list(sp$x[n/2],sp$y[n/2]-scale,labels, c(sp$x,NA),c(sp$y,NA),sp$y[3],sp$x[3],sp$y[1],sp$x[1],sp$y[n-3],sp$x[n-3],sp$y[n],sp$x[n],2*abs(sp$x[2]-sp$x[1]))  
      	       }
      	       
-if(side == 3)   {x <- c(location$top[1]-scale/2,location$top[1],location$top[1]+scale/2)
+if(side == 3)   {x <- c(location$center[1]-scale/2,location$center[1],location$center[1]+scale/2)  #changed top to center 4/19/25  
                y <- c(location$top[2],location$top[2]+scale,location$top[2])
                sp <- spline(x,y,n=20)
                 if(draw) {lines(sp$x,sp$y)

@@ -818,6 +818,27 @@ SAPAfy <- function(x,y)
 
 
 
+  
+#not exported, local to psych for Creating block randomized data
+#june 01 2025
+BIBify <- function(x)
+{ nvar <- NCOL(x)
+ nobs <- NROW(x)
+ blksize <- 4# nvar/3 
+ nblocks <- nvar/blksize -1
+ k <- 1
+while(k< nobs){
+   for(one in (1:3)) {
+      for (two   in ((one +1):4)) {
+     	 x[k,one + blksize*(0:nblocks)] <- NA
+     	 x[k,two  + blksize*(0:nblocks)] <- NA    
+       k <- k +1    
+   }  
+   }   
+   }  #end while
+   return(x)
+}
+
 #not exported, just local to psych   -- the public version is in psychTools
  #Completely rewritten 1/20/18 to follow  the help pages for order more closely
 #sort a data frame according to one or multiple columns 

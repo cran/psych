@@ -600,14 +600,19 @@ for (mediate in 1:n.mediate) {
 	  
 	  
 		for(j in 1:numy) {
-			for(i in 1: numx) {d.arrow <- dia.arrow(x[[i]]$right,m[[mediate]]$left,labels=a[i,mediate],adj=adj,cex=l.cex,draw=FALSE,...)
+			for(i in 1: numx) {d.arrow <- dia.arrow(x[[i]]$right,m[[mediate]]$left,labels= paste("a=",a[i,mediate]),adj=adj,cex=l.cex,draw=FALSE,...)
 			           arrow.list <- c(arrow.list,d.arrow) #a term
      			if(show.c) {d.arrow <- dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c = ",c[i,j]),pos=3,cex=l.cex,draw=FALSE,...)
      			  arrow.list <- c(arrow.list,d.arrow)}
      			 d.arrow <- dia.arrow(x[[i]]$right,y[[j]]$left,labels=paste("c' = ",cprime[i+1,j]),pos=1,cex=l.cex,draw=FALSE,...)
      			  arrow.list <- c(arrow.list,d.arrow)}   #we have an intercept
-      			d.arrow <- dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=b[mediate,j],cex=l.cex,draw=FALSE,...)
-      			 arrow.list <- c(arrow.list,d.arrow)  #     
+      			d.arrow <- dia.arrow(m[[mediate]]$right,y[[j]]$left,labels=paste("b=", b[mediate,j]),cex=l.cex,draw=FALSE,...)
+      			 arrow.list <- c(arrow.list,d.arrow)  # 
+      			 
+      			 d.self <- dia.self(y[[j]],side=3,scale=.2,draw=TRUE,... )    
+      			# arrow.list <- c(arrow.list,d.self)
+      			 
+      			
 			}
 		} 
 		}
@@ -759,7 +764,7 @@ for(j in 1:ndv) {
 
 #need to think about the number of mediators as well as ndv and niv
  for (j in 1:ndv) {   #currently only works for ndv =1
- if(niv > 1){
+ if(niv == 1){
   dfab  <- round(data.frame(indirect = x$ab[,j],boot = x$boot$mean[,j],
 						  sd=x$boot$sd[,j],
                        #    lower=x$boot$ci[,((j-1)*(niv+ndv+nmed)+niv+1):((j)*(niv+ndv+nmed))],

@@ -36,7 +36,7 @@ By default, predicted scores are found by the matrix product of the standardized
 }
 \examples{
 set.seed(42)
-x <- sim.item(12,500)
+x <- sim.item(12,500)$item   
 f2 <- fa(x[1:250,],2,scores="regression")  # a two factor solution
 p2 <- principal(x[1:250,],2,scores=TRUE)  # a two component solution
 round(cor(f2$scores,p2$scores),2)  #correlate the components and factors from the A set

@@ -8,6 +8,7 @@
    # dv <- x$names[1]
     iv <- rownames(x$direct)
     if(iv[1] == "Intercept") iv <- iv[-1]
+    if(iv[1] == "Intercept*") iv <- iv[-1]   #the case of a partial
     niv <- length(iv)
     nmed <- length(mv)
     ndv <- length(dv)
@@ -19,7 +20,7 @@
    if(!is.null(x$var.names$z))  cat(" Variable(s)  partialled out were", x$var.names[["z"]])
   
   
-  
+ 
   if(!is.null(mv)) {
    for(j in 1:ndv) { 
    for(i in 1:niv) { cat("\n\nTotal effect(c) of ",iv[i], " on ", dv[j]," = ",round(x$direct[i+1,j],digits), "  S.E. = ", round(x$total.reg$se[i+1,j],digits), " t  = ",round(x$total.reg$t[i+1,j],digits)," df= ",x$total.reg$df, "  with p = ", signif(x$total.reg$prob[i+1,j],digits))

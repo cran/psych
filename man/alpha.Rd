@@ -156,7 +156,7 @@ alpha(r9)
 # examples of two independent factors that produce reasonable alphas
 #this is a case where alpha is a poor indicator of unidimensionality
 
-two.f <- sim.item(8)
+two.f <- sim.item(8)$item
 #specify which items to reverse key by name
  alpha(two.f,keys=c("V3","V4","V5","V6"))
  cov.two <- cov(two.f)

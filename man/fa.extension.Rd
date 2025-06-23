@@ -105,7 +105,7 @@ fe <- fa.extension(Roe,fo)
 
 #an example from simulated data
 set.seed(42) 
- d <- sim.item(12)    #two orthogonal factors 
+ d <- sim.item(12)$item    #two orthogonal factors 
  R <- cor(d)
  Ro <- R[c(1,2,4,5,7,8,10,11),c(1,2,4,5,7,8,10,11)]
  Roe <- R[c(1,2,4,5,7,8,10,11),c(3,6,9,12)]

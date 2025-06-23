@@ -6,11 +6,10 @@
 #thus, I am trying to combine these two approaches
 #some small revisions, March 2015 to allow cex to be passed to dia.ellipse and dia.rect
 #revised June, 2020 to use dia.ellipse and dia.rect and dia.arrow in vector mode
-
-
+#Added the ability to add item labels (dictionary) 5/14//25
 "fa.diagram" <-
   function(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,simple=TRUE,errors=FALSE,g=FALSE,
-    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,l.cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) {
+    digits=1,e.size=.05,rsize=.15,side=2,main,cex=NULL,l.cex=NULL,marg=c(.5,.5,1,.5),adj=1,ic=FALSE, dictionary=NULL, ...) {
     if(length(class(fa.results)) > 1) {if(inherits(fa.results, 'principal')) {pc <- TRUE} else {pc <- FALSE}} else { pc <- FALSE}
     if(ic) pc <- TRUE
     old.par<- par(mar=marg)  #give the window some narrower margins
@@ -20,6 +19,13 @@
    if(!is.matrix(fa.results) && !is.null(fa.results$fa) && is.list(fa.results$fa)) fa.results <- fa.results$fa
    if(is.null(cex)) cex <- 1
    if(is.null(l.cex)) l.cex <- 1
+   
+   if(!is.null(dictionary)) {#figure out which column in the dictionary to use for content
+      if("Content" %in% colnames(dictionary)) vName = "Content"
+      if("item" %in% colnames(dictionary))  vName ="item"
+      if("Item" %in% colnames(dictionary))  vName ="Item"
+      }
+   
   #Phi <- NULL  #the default case
  if(sort) { if(g) {temp  <- fa.sort(fa.results[,-1])
                 temp2 <- fa.results[,1]
@@ -30,7 +36,7 @@
                 if(!is.null(fa.results$Phi)) {Phi <- fa.results$Phi} else {
                        if(!is.null(fa.results$cor)) {Phi<- fa.results$cor} 
                        }} else {factors <- fa.results}
-   
+   if(!is.null(dictionary)) rownames(factors) <- dictionary[rownames(factors),vName]
        nvar <- dim(factors)[1]   #how many variables?
    if (is.null(nvar) ){nvar <- length(factors)
        num.factors <- 1} else {

@@ -15,15 +15,15 @@ To quote from Revelle and Condon (2019) ``Reliability is a fundamental problem f
 
 `` It is no longer  acceptable to report one  coefficient that is only correct if all items are exactly equally good measures of a construct.  Researchers are encouraged to report at least two coefficients (e.g., omega_h and omega_t) and then discuss why each is appropriate for the inference that is being made.  They are discouraged from reporting just alpha unless they can justify the assumptions implicit in using it (i.e., tau equivalence and unidimensionality)."  Here we make it easy to do so.
  
-Although the \code{\link{alpha}} and \code{\link{omega}} functions will find reliability estimates for a single scale, and \code{\link{scoreItems}} and \code{\link{scoreOverlap}} will find alpha for multiple scales, it sometimes is convenient to call \code{\link{omega}} and \code{\link{splitHalf}} for multiple scales.  \code{\link{reliability}} takes a keys list (suitable for \code{\link{scoreItems}} ) and then finds hierarchical and total omega as well as split half reliabilities for each separate scale. 
+Although the \code{\link{alpha}} and \code{\link{omega}} functions will find reliability estimates for a single scale, and \code{\link{scoreItems}} and \code{\link{scoreOverlap}} will find alpha for multiple scales, it sometimes is convenient to call \code{\link{omega}} and \code{\link{splitHalf}} for multiple scales.  \code{\link{reliability}} takes a keys list (suitable for \code{\link{scoreItems}} ) and then finds hierarchical and total omega as well as split half reliabilities for each separate scale.  It also reports the unidim statistic from the \code{\link{unidim}} function.
 
-\code{\link{plot.reliability}} takes the output of  \code{\link{reliability}} and displays it as a dot chart showing the values of both omegas as well as alpha and the distributions of split half reliabilities.
+\code{\link{plot.reliability}} takes the output of  \code{\link{reliability}} and displays it as a dot chart showing the values of both omegas (\eqn{\omega_h} and \eqn{\omega_t} as well as \eqn{\alpha}, u (the unidim statistic)  and the distributions of split half reliabilities.
 }
 \usage{
 reliability(keys=NULL, items, nfactors = 2,n.obs=NA, 
    split = TRUE, 
    raw=TRUE, 
-    plot=FALSE,
+    plot=FALSE,plot.sum=TRUE,
     hist=FALSE,
     n.sample=10000,
     brute=FALSE, 
@@ -48,6 +48,7 @@ xlim=NULL, main=NULL,...)
   \item{split}{By default, find splitHalf reliabilities as well as the omega statistics. When plotting, split implies that raw was called in reliability.}
   
   \item{plot}{By default, suppress the omega plots for each scale.}
+  \item{plot.sum}{Show the summary plot of the various estimates.}
   
   
   
@@ -107,14 +108,14 @@ Following a suggestion, the ability to not bother with keys and just do omega an
 
 Revelle, William. (in prep) An introduction to psychometric theory with applications in R. Springer.  Working draft available at \url{https://personality-project.org/r/book/} 
 
-Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. https://doi.org/10.1037/pas0000754.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
+Revelle, W. and Condon, D.M. (2019) Reliability from alpha to omega: A tutorial.  Psychological Assessment, 31, 12, 1395-1411. \doi{10.1037/pas0000754}.  \url{https://osf.io/preprints/psyarxiv/2y3w9} Preprint available from PsyArxiv 
 
-Revelle, W. and Condon, D.M (2024) Using undim rather than omega in estimating undimensionality.  Working draft available at  \url{https://personality-project.org/revelle/publications/unidim.pdf} 
+Revelle, W. and Condon, D.M (2025) Using undim rather than omega in estimating undimensionality. Psychological Methods (Advanced online publication) \doi{10.1037/met0000729}   (Open source)
 }
 \author{
 William Revelle
 }
-\note{For much more information on reliability, see the help pages for \code{\link{omega}}, \code{\link{unidim}},  as well as the Revelle and Condon (2019) tutorial or the Revelle (in prep) chapter on reliability. 
+\note{For much more information on reliability, see the help pages for \code{\link{omega}}, \code{\link{iclust}} and  \code{\link{unidim}},  as well as the Revelle and Condon (2019) tutorial or the Revelle (in prep) chapter on reliability. 
 
 For some rare cases in some simulations, check.keys=FALSE gets a better minimum split half.
 

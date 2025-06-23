@@ -132,7 +132,7 @@ Velicer, W. (1976) Determining the number of components from the matrix of parti
 
 #now, some simulated data with two factors
 #VSS(sim.circ(nvar=24),fm="minres" ,title="VSS of 24 circumplex variables")
-VSS(sim.item(nvar=24),fm="minres" ,title="VSS of 24 simple structure variables")
+VSS(sim.item(nvar=24)$item,fm="minres" ,title="VSS of 24 simple structure variables")
 
 #vssSelect(bfi.keys, bfi) 
 }

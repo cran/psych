@@ -10,7 +10,7 @@
 \usage{
 fa.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
      simple=TRUE, errors=FALSE,g=FALSE,digits=1,e.size=.05,rsize=.15,side=2,
-    main,cex=NULL,l.cex=NULL, marg=c(.5,.5,1,.5),adj=1,ic=FALSE, ...) 
+    main,cex=NULL,l.cex=NULL, marg=c(.5,.5,1,.5),adj=1,ic=FALSE,dictionary=NULL, ...) 
 het.diagram(r,levels,cut=.3,digits=2,both=TRUE, 
         main="Heterarchy diagram",l.cex,gap.size,...) 
 extension.diagram(fa.results,Phi=NULL,fe.results=NULL,sort=TRUE,labels=NULL,cut=.3,
@@ -42,7 +42,8 @@ fa.rgraph(fa.results,out.file=NULL,labels=NULL,cut=.3,simple=TRUE,
   \item{e.simple}{Only the biggest loading per extension item is shown }
   \item{g}{Does the factor matrix reflect a g (first) factor.  If so, then draw this to the left of the variables, with the remaining factors to the right of the variables.  It is useful to turn off the simple parameter in this case.}
   \item{ic}{If drawing a cluster analysis result, should we treat it as latent variable model (ic=FALSE) or as an observed variable model (ic=TRUE) }
-  \item{r}{A correlation matrix for the het.diagram function}
+  \item{dictionary }{Replace variable names with those found in the "Content" or "Item" or "item" column of a dictionary}
+  \item{r}{A correlation matrix for the het.diagram function} 
   \item{levels}{A list of the elements in each level}
   \item{both}{Should arrows have double heads (in het.diagram)}
   \item{size}{graph size }
@@ -103,6 +104,9 @@ fa.graph: the graph instructions are saved in the dot language. }
 
  
 \seealso{ \code{\link{diagram}}, \code{\link{omega.graph}}, \code{\link{ICLUST.graph}}, \code{\link{bassAckward.diagram}}.  \code{\link{structure.diagram}} will convert the factor diagram to sem modeling code.
+
+For information on constructing a dictionary for the items, see \code{\link{fa.lookup}}.
+
 }
 \examples{
 
@@ -118,6 +122,12 @@ fa.diagram(f3l,Phi=Phi,main="Input from a matrix")
 fa.diagram(ICLUST(Thurstone,2,title="Two cluster solution of Thurstone"),main="Input from ICLUST")
 het.diagram(Thurstone,levels=list(1:4,5:8,3:7))
 
+#add item content to the diagram
+f5 <- fa(bfi[1:25],5)
+fa.diagram(f5) #just show the variable names
+#add item content to the diagram using a dictionary
+fa.diagram(f5,dictionary=bfi.dictionary, rsize=.5, 
+    main="Factor analysis of the BFI: Item content") #set the rectangle size to be slightly bigger
 
 #this example shows how to use the ic parameter 
 #show how caffiene increases arousal and tension

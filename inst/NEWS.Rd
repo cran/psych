@@ -1,7 +1,45 @@
 \name{NEWS}
 \title{News for Package 'psych'}
 
-
+\section{Changes in psych version 2.5.6 (2025-06-20)}{ 
+  \subsection{Introduction}{
+    \itemize{
+     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
+      \item Additional functions are added sporadically.
+      \item This news file reports changes that have been made as the package has been developed.
+      \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
+      \item Version 2.5.6  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.5.6 (Added June 23, 2025). The second digit reflects the year (i.e., 2025), the third set the month (i.e., 2.5.6 was released in June of 2026 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
+    
+     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
+       
+  }   
+ }
+ }
+ 
+\section{Changes in psych version 2.5.5 (2025-05-28)}{
+ \subsection{Additions}{
+   \itemize{
+     \item Slight improvements to mediation.diagram Added error line to the dv
+     and Added a =   and b = to mediation.
+     \item Added true scores to the result list from sim.item
+     \item Added colnames to simulated data in sim and sim.item
+     \item Added cohenPooled to allow pooling of cohen.d/hedges.g across data sets
+     \item Added the ability to add longer variable names to fa.diagram using a dictionary.
+     \item Improved the documentation for fa.lookup to explain how to make a dictionary.
+     \item Added cohen.d to the objects that plot will plot (just calls error.bars)
+     \item Added plot.sum option to reliability to plot summary estimates by default
+     \item Improved the documentation for iclust.diagram to show how to label the variables.
+   }}
+   
+ \subsection{Bugs Fixed }{
+   \itemize{
+ 	
+    \item Changed dia.self to plot errors from center of a dv rather than top. This solves the problem in lmCor that the error curves are misplaced. 
+    \item 2 errors in print statement for mediate (reported by Julian Basanovic)
+    }
+ }
+}
 \section{Changes in psych version 2.5.3 (2025-03-21)}{ 
   \subsection{Introduction}{
     \itemize{
@@ -33,23 +71,8 @@
  }
 
 
-\section{Changes in psych version 2.4.12 (2024-12-07)}{ 
-  \subsection{Introduction}{
-    \itemize{
-     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
-      \item Additional functions are added sporadically.
-      \item This news file reports changes that have been made as the package has been developed.
-      \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.5.1  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.4.6.24 (Added June 24, 2024 after multiple attempts at solving the new no-suggests requirements for CRAN). The second digit reflects the year (i.e., 2024), the third set the month (i.e., 2.3.12 was released in December of 2023 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
-    
-     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
-       
-  }   
- }
- }
- 
- \section{Still to do version 2.5.3 (e.g., a wish list)}{
+
+ \section{Still to do as of version 2.5.6 (e.g., a wish list)}{
     \itemize{
       \item Suggestions are welcome, but the current list includes the following (and has included some for a long time, so lets be patient):
    

@@ -68,7 +68,7 @@ if(!is.null(x$cfit.1)) {
    }  #end print.psych.vss
    
 "first.max" <- function(x) {
-fuzz <- .0000001
+fuzz <- .00001
  nx <- length(x) -1
  first <- which.max(x)
  for(i in 1:nx) {if(x[i] + fuzz  > x[i+1]){first <- i

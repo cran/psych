@@ -262,4 +262,32 @@ cohen.d.expected <- function(x,group,n.rep=10 ) {
   }    
  
 
+#added 4/23/25
+"cohenPooled" <- function(cd=list(), cohen=TRUE) {
+ n.tests <- length (cd)
+ temp <- 0 
+ n <- 0 
+ se.av <- 0
+ weight=0
+
+ for (i in 1:n.tests ) {
+ if(cohen) { temp <- temp + cd[[i]]$cohen.d[,2]} else { temp <- temp + cd[[i]]$hedges.g[,2]}
+ 
+  n <- n + cd[[i]]$n
+  weight <- weight + 1/cd[[i]]$se^2
+ 
+ }
+ pooled.cd <- temp/n.tests
+ pooled.n <- n
+ weight <- sqrt(1/weight)
+result <- matrix(c(pooled.cd,weight,n), ncol=3)
+
+result <- data.frame(result)
+rownames(result) <- rownames(cd[[1]]$cohen.d)
+colnames(result) <- c("mean", "se", "n")
+
+ return(result)
+ }
+
+
   

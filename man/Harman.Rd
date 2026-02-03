@@ -4,14 +4,16 @@
 \alias{Harman.Holzinger}
 \alias{Harman.political}
 \alias{Harman.5}
+\alias{Harman_5}
 \alias{Harman.8}
 \docType{data}
-\title{Five data sets from Harman (1967). 9 cognitive variables from Holzinger and 8 emotional variables from Burt}
+\title{Six data sets from Harman (1967). 9 cognitive variables from Holzinger and 8 emotional variables from Burt}
 
-\description{Five classic data sets reported by Harman (1967) are 9 psychological (cognitive) variables taken from Holzinger  and 8 emotional variables taken from Burt. Two others are socioeconomic and political data sets. Additionally, 8 physical variables.  All five of these are used for tests and demonstrations of various factoring algortithms.
+\description{Classic data sets reported by Harman (1967) are 9 psychological (cognitive) variables taken from Holzinger  and 8 emotional variables taken from Burt. Two others are socioeconomic and political data sets. Additionally, 8 physical variables.  All five of these are used for tests and demonstrations of various factoring algortithms. One set of five variables (Haman_5) is included as a demonstration of a Heywood case.
 }
 \usage{data(Harman)  
 data(Harman.5)
+data(Harman_5)
 data(Harman.political)
 data(Harman.8)
 }
@@ -22,6 +24,7 @@ data(Harman.8)
 \item Harman.Holzinger: 9 x 9 correlation matrix of ability tests, N = 696.
 \item Harman.Burt: a 8 x 8 correlation matrix of ``emotional" items. N = 172
 \item Harman.5:  12 census tracts for 5 socioeconomic data (Harman p 14)
+\item Harman_5: 5 variables with a Heywood case (see Cooperman and Waller, 2022 )
 \item Harman.political:  p 166.
 \item Harman.8   8 physical measures
 }
@@ -57,6 +60,7 @@ There are several other Harman  examples in the psych package (i.e., \link{Harma
 
 Other Harman data sets are 5 socioeconomic variables for 12 census tracts \link{Harman.5} used by John Loehlin as an example for EFA.  Another one of the many Harman (1967) data sets is \link{Harman.political}.  This contains 8 political variables taken over 147 election areas.  The principal factor method with SMCs as communalities match those of table 8.18.  The data are used by Dziubian and Shirkey as an example of the Kaiser-Meyer-Olkin test of factor adequacy.
 
+The \link{Harman_5} correlation matrix is discussed by Cooperman and Waller and is nice example of a Heywood case. 
 }
 \source{Harman (1967 p 164 and p 244.)
 
@@ -64,12 +68,13 @@ H. Harman and W.Jones. (1966)
 Factor analysis by minimizing residuals (minres).  Psychometrika, 31(3):351-368.
 }
 \references{Harman, Harry Horace (1967), Modern factor analysis. Chicago, University of Chicago Press.
-
-P.Bentler. Covariance structure models for maximal reliability of unit-weighted
+Bentler, P. Covariance structure models for maximal reliability of unit-weighted
   composites. In Handbook of latent variable and related models, pages 1--17.  North Holland, 2007.
 
-Burt, C.General and Specific Factors underlying the Primary Emotions. Reports of the British Association for the Advancement of Science, 85th meeting, held in Manchester,  September 7-11, 1915. London, John Murray, 1916, p. 694-696 (retrieved from the web at https://www.biodiversitylibrary.org/item/95822#790
+Burt, C. General and Specific Factors underlying the Primary Emotions. Reports of the British Association for the Advancement of Science, 85th meeting, held in Manchester,  September 7-11, 1915. London, John Murray, 1916, p. 694-696 (retrieved from the web at https://www.biodiversitylibrary.org/item/95822#790
 
+Cooperman, A.W. and N. G. Waller (2022) Heywood You Go Away! Examining Causes, Effects, and Treatments for
+Heywood Cases in Exploratory Factor Analysis, Psychological Methods, (27) 156-176.
 }
 
 \seealso{ See also the original \code{\link[psychTools]{burt}} data set, the \link{Harman.5} and \link{Harman.political} data sets.}

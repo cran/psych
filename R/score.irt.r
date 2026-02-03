@@ -372,6 +372,7 @@ return(scores)
 ############################################################
 
 "score.irt" <- function(stats=NULL,items,keys=NULL,cut=.3,bounds=c(-4,4),mod="logistic")	{
+  .Deprecated(scoreIrt, msg="score.irt has been replaced with scoreIrt")
    message("score.irt is deprecated and has been replaced by scoreIrt, please change your call")
    scoreIrt(stats=stats,items=items,keys=keys,cut=cut,bounds=bounds,mod=mod) }
    
@@ -533,7 +534,7 @@ theta.max <- max(theta,na.rm=TRUE)
 binrange <- cut(theta, breaks = breaks)
 binnums <- as.numeric(binrange)
 items <- as.matrix(items)
-stats <- by(items,binnums,function(x) response.frequencies(x,uniqueitems=uniqueitems))
+stats <- by(items,binnums,function(x) responseFrequency(x,uniqueitems=uniqueitems))
 stats.m <- unlist(stats)
 stats.m <- matrix(stats.m,ncol=nvar*nalt,byrow=TRUE)
 theta <- seq(theta.min,theta.max,length.out=breaks)

@@ -29,7 +29,7 @@ cta.15(n = 3, t = 5000, cues = NULL,stim=NULL, act = NULL, inhibit = NULL, consu
   \item{tstrength}{a vector of starting value of tendencies}
   \item{compare}{Allows a two x two graph to compare two plots}
   \item{learn}{Allow the system to learn (self reinforce) over time}
-  \item{reward}{The strength of the reward for doing an action}
+  \item{reward}{The strength of the reward for doing an action. }
 }
 \details{A very thorough discussion of the CTA model is available from Revelle (2008). An application of the model is discussed in Revelle and Condon (2015). 
 
@@ -61,6 +61,8 @@ The dynamics of action (Atkinson and Birch, 1970)  was a model of how instigatin
   \item{frequency}{Frequency of each activity}
   \item{tendencies}{average tendency strengths}
   \item{actions}{average action strength}
+  \item{summary.tend}{all of the tendencies over time -- to show correlations}
+  \item{summary.act}{All of the actions over time}
   
 }
 \references{
@@ -71,6 +73,9 @@ Revelle, William (1986)  Motivation and efficiency of cognitive performance  in 
 Revelle, W. (2008)  Cues, Tendencies and Actions. The Dynamics of Action revisted. \url{https://personality-project.org/revelle/publications/cta.pdf} 
 
 Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Journal of Research in Personality, <doi:10.1016/j.jrp.2014.12.006>
+
+Ashley D. Brown and Revelle, W. (2021) Modeling the dynamics of action.  In Measuring and Modeling Persons and Situations.
+<doi:10.1016/B978-0-12-819200-9.00012-0 >
 }
 \author{ William Revelle }
 
@@ -96,6 +101,11 @@ Revelle, W. and Condon, D. (2015) A model for personality at three levels.  Jour
 #mixed
 #c3 <- c(1,2.5,4)
 #cta(3,10000,c3,type="none")
+#state.space <-cta(n=4,t=10000,cues=c(4.1,4.0,1.1,1.0))
+#show the state.space diagram
+#pairs.panels(state.space$tendency.time[4001:10000,])  #allows some burn in
+#scatterHist(state.space$tendency.time[4001:10000,1:2],pch=".",ellipse=FALSE,smooth=FALSE)
+
 } 
 \keyword{ models }
 

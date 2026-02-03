@@ -1,10 +1,22 @@
+#two deprecared earlier versions
+
 "set.cor" <-
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)  {
+.Deprecated("lmCor", msg="set.cor has been deprecated, please use lmCor")
+
 setCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show,zero=zero,part=part)}
 
-#lmCor become the common name for what was setCor
+"setCor" <-
+function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05,part=FALSE)  {
+.Deprecated("SetCor",msg="setCor has been deprecated, please use lmCor") 
 
-"lmCor" <- "setCor" <-
+lmCor(y=y,x=x,data=data,z=z,n.obs=n.obs,use=use,std=std,square=square,main=main,plot=plot,show=show,zero=zero,part=part) 
+}
+
+#The main function
+#lmCor has become the common name for what was setCor
+
+"lmCor" <-
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,alpha=.05,part=FALSE)  {
 
  #a function to extract subsets of variables (a and b) from a correlation matrix m or data set m
@@ -16,7 +28,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #added option to allow square data matrices
   #modified December, 2014  to allow for covariances as well as to fix a bug with single x variable
   #modified April, 2015 to handle data with non-numeric values in the data, which are not part of the analysis
-  #Modified November, 2017 to handle "lm" style input using my parse function.
+  #Modified November, 2017 to handle "lm" style input using my fparse function.
   #modified July 4, 2018 to add intercepts and confidence intervals (requested by Franz Strich)
   #Modified September 25, 2019 to add the confidence intervals of the intercepts 
   #This was a substantial rewrite of the code to include the moments matrix
@@ -458,15 +470,17 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 
        
         Vaxy <- as.matrix(Vaxy)
+        
+       
      	if(is.null(n.obs)) {set.cor <- list(coefficients=beta,R=sqrt(R2),R2=R2,Rset=Rset,T=T,cancor = cc, cancor2=cc2,
-     	         raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],
+     	         raw=raw,residual=resid,SE.resid=Residual.se,df=c(k,df),ruw=ruw,Ruw=Ruw, x.matrix=C[x,x],y.matrix=C[y,y],r0 =C[x,y,drop=FALSE],
      	          VIF=VIF,z=z,std=std,Vaxy=Vaxy,Xmat=Lmat, Ymat=Mmat, Call = cl)
      	           } else {
      	    set.cor <- list(coefficients=beta,se=se,t=tvalue,Probability = prob,ci=confid.beta,
      	               R=sqrt(R2),R2=R2,shrunkenR2 = shrunkenR2,seR2 = SE,F=F,probF=pF,df=c(k,df),
      	               SE.resid=Residual.se,Rset=Rset,Rset.shrunk=R2set.shrunk,Rset.F=Rset.F,Rsetu=u,
      	                Rsetv=df.v,T=T,cancor=cc,cancor2 = cc2,Chisq = Chisq,raw=raw,residual=resid,ruw=ruw,
-     	                Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Xmat=Lmat, Ymat=Mmat,Call = cl)
+     	                Ruw=Ruw,x.matrix=C[x,x],y.matrix=C[y,y],r0 =C[x,y,drop=FALSE],VIF=VIF,z=z,data=data,std = std,Vaxy=Vaxy,Xmat=Lmat, Ymat=Mmat,Call = cl)
      	                }
      	class(set.cor) <- c("psych","lmCor")
      	if(plot) lmDiagram(set.cor,main=main,show=show)

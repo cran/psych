@@ -172,7 +172,8 @@ switch(fa,
                                 sim.fa.ci <- values.ci[(3*nvariables+1):(4*nvariables)]
                                 sim.se.fa <- values.sim.se[(3*nvariables+1):(4*nvariables)] } else {
                  sim.fa <- values.sim.mean[(nvariables+1):(2*nvariables)]
-                 sim.fa.ci <- values.sim.mean[(nvariables+1):(2*nvariables)]
+              #   sim.fa.ci <- values.sim.mean[(nvariables+1):(2*nvariables)]  #replaced by 
+               sim.fa.ci <- values.ci[(nvariables+1):(2*nvariables)]   #fixed 19/06/5 following a report from Hyun Seok Do
                 sim.se.fa <- values.sim.se[(nvariables+1):(2*nvariables)]
                 sim.far <- NA  #added May 1, 2016
                 sim.far.ci <- NA

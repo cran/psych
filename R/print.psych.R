@@ -16,6 +16,8 @@ if(value =="set.cor") value <- "setCor"
 switch(value,
 
 ## the following functions have their own print function
+ CFA =  {print_psych.cfa(x,digits=digits,all=all,cut=cut,...)},
+ CFA.bifactor ={print_psych.cfa(x,digits=digits,all=all,cut=cut,...)},
 esem  = {print_psych.esem(x,digits=digits,short=short,cut=cut,...)},
  extension = { print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
  extend = {print_psych.fa(x,digits=digits,all=all,cut=cut,sort=sort,...)},
@@ -925,17 +927,18 @@ lmCor= { cat("Call: ")
             ny <- NCOL(x$coefficients)
           for(i in 1:ny) {cat("\n DV = ",colnames(x$coefficients)[i], "\n")
        #   if(!is.na(x$intercept[i])) {cat(' intercept = ',round(x$intercept[i],digits=digits),"\n")}
-          if(!is.null(x$se)) {result.df <- data.frame( round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits))
-              colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF","Vy.x")        
+     
+	if(!is.null(x$se)) {result.df <- data.frame(   round(x$coefficients[,i],digits),round(x$se[,i],digits),round(x$t[,i],digits),signif(x$Probability[,i],digits),round(x$ci[,i],digits), round(x$ci[,(i +ny)],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits),round(x$r0[,i], digits))
+              colnames(result.df) <- c("slope","se", "t", "p","lower.ci","upper.ci",  "VIF","Vy.x"," r ")        
               print(result.df) 
                cat("\nResidual Standard Error = ",round(x$SE.resid[i],digits), " with ",x$df[2], " degrees of freedom\n")     
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits), round(x$shrunkenR2[i],digits),round(x$seR2[i],digits), round(x$F[i],digits),x$df[1],x$df[2], signif(x$probF[i],digits+1))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw","Shrunken R2", "SE of R2", "overall F","df1","df2","p")
               cat("\n Multiple Regression\n")
              print(result.df)
-              } else {
-              result.df <- data.frame( round(x$coefficients[,i],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits))
-              colnames(result.df) <- c("slope", "VIF","Vy.x")        
+	} else {
+              result.df <- data.frame( round(x$coefficients[,i],digits),round(x$VIF,digits),round(x$Vaxy[,i],digits),round(x$r0[,i], digits))
+              colnames(result.df) <- c("slope", "VIF","Vy.x"," r ")        
               print(result.df)      
               result.df <- data.frame(R = round(x$R[i],digits), R2 = round(x$R2[i],digits), Ruw = round(x$ruw[i],digits),R2uw =  round( x$ruw[i]^2,digits))
               colnames(result.df) <- c("R","R2", "Ruw", "R2uw")

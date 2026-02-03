@@ -1,7 +1,7 @@
 \name{score.alpha}
 \alias{score.alpha}
 \title{ Score scales and find Cronbach's alpha as well as associated statistics}
-\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  (Superseded by  \code{\link{score.items}}). 
+\description{Given a matrix or data.frame of k keys for m items (-1, 0, 1), and a matrix or data.frame of items scores for m items and n people, find the sum scores or average scores for each person and each scale.  In addition, report Cronbach's alpha, the average r, the scale intercorrelations, and the item by scale correlations.  (Superseded by  \code{\link{scoreItems}}). 
 }
 \usage{
 score.alpha(keys, items, labels = NULL, totals=TRUE,digits = 2) #deprecated
@@ -34,7 +34,7 @@ Alpha is a poor estimate of the general factor saturation of a test (see Zinbarg
 \references{An introduction to psychometric theory with applications in R (in preparation).  \url{https://personality-project.org/r/book/}}
 \author{ William Revelle }
 
-\seealso{ \code{\link{score.items}}, \code{\link{alpha}}, \code{\link{correct.cor}},  \code{\link{cluster.loadings}}, \code{\link{omega}} }
+\seealso{ \code{\link{scoreItems}}, \code{\link{alpha}}, \code{\link{correct.cor}},  \code{\link{cluster.loadings}}, \code{\link{omega}} }
 \examples{
 
 y <- attitude     #from the datasets package

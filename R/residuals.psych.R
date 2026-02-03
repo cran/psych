@@ -2,7 +2,7 @@
 function(object,diag=TRUE,...) {
 result <- NULL
 if(length(class(object)) > 1)  {
-obnames <- cs( fa, principal, omega, irt.fa, esem, extension)
+obnames <- cs( fa, principal, omega, irt.fa, esem, extension, CFA)
 extension <-  esem  <- NA
  value <- inherits(object, obnames, which=TRUE)
  if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"} 
@@ -15,6 +15,7 @@ omega = {residual <- object$stats$residual},
 irt.fa ={residual <- object$fa$residual},
 esem = {residual <- object$residual},
 extension = {residual <- object$resid},
+CFA = {residual <- object$residual},     #added 12/27/25
 none = {stop("No appropriate residual found")}
     )
 if(!diag)  diag(residual) <- NA 

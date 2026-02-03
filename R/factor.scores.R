@@ -1,4 +1,5 @@
-"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,missing=FALSE,impute="none") {
+"factor.scores" <- function(x,f,Phi=NULL,method=c("Thurstone","tenBerge","Anderson","Bartlett","Harman","components"),rho=NULL,missing=FALSE,impute="none",
+Grice=FALSE) {
 #the normal case is f is the structure matrix and Phi is not specified
 #Note that the Grice formulas distinguish between Pattern and Structure matrices
 #I need to confirm that I am doing this
@@ -95,8 +96,15 @@
     #now find a few fit statistics
     if(is.null(w)) {results <- list(scores=NULL,weights=NULL)} else {
      R2 <- diag(t(w) %*% S)  #this had been   R2 <- diag(t(w) %*% f)   Corrected Sept 1, 2017
+     #need to adjust this for the sd of the scores  (see Grice )
+     
+      C <- t(w)%*% r %*% w  #see Grice 13
+      sd.in <- 1/sqrt(diag(C))
+      
+    #  R2 <- diag(t(w) %*% S) * sd.in #correction added 12/20/25 -- 
+      R2 <- fsi(f,phi=Phi,r=r,Grice=Grice) #added 1/22.2026 to use the Nicewander approach
      if(any(R2 > 1) || (prod(!is.nan(R2)) <1) || (prod(R2) < 0) ) {#message("The matrix is probably singular -- Factor score estimate results are likely incorrect")
-                      R2[abs(R2) > 1] <- NA
+                      R2[abs(R2) > 1] <- .999 #flagging a bad value
                       R2[R2 <= 0] <- NA
                      }
      #if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {message("The estimated weights for the factor scores are probably incorrect.  Try a different factor extraction method.")}
@@ -129,7 +137,8 @@
      results <- list(scores=scores,weights=w)
      results$r.scores <- r.scores
      results$missing <- missing 
-   	  results$R2 <- R2   #this is the multiple R2 of the scores with the factors
+   	 results$R2 <- R2   #this is the multiple R2 of the scores with the factors
+   	  
      }
      }
    

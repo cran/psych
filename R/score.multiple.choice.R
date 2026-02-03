@@ -5,7 +5,7 @@
   if(!is.matrix(data)) {if(!is.data.frame(data)) {stop("data must be either a data frame or matrix!")} else data <- as.matrix(data)}
   nvar <- dim(data)[2]
   
-  response.freq <- response.frequencies(data)
+  response.freq <- responseFrequency(data)
   alternatives <- dim(response.freq)[2]
   
   if(length(key)==nvar) {
@@ -74,7 +74,9 @@ keys <- rep(1,nvar)      #now, score the items as the sum of correct
   #introduce a function to get cell frequencies and compensate for possible different number of response alternatives
  
 
-"response.frequencies" <- function(items,max=10,uniqueitems=NULL) {responseFrequency(items=items,max=max,uniqueitems=uniqueitems)}
+"response.frequencies" <- function(items,max=10,uniqueitems=NULL) {
+    .Deprecated("responseFrequency", msg="response.frequency has been deprecated and replaced with responseFrequecy.  Please fix your call")
+     responseFrequency(items=items,max=max,uniqueitems=uniqueitems)}
 
 "responseFrequency" <- 
     function (items, max = 10,uniqueitems=NULL)

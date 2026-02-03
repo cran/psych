@@ -1,12 +1,18 @@
 "sim.structure" <- "sim.structural" <-
 function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE, low=-2,high=2,d=NULL,cat=5,mu=0) {
  cl <- match.call()
+  if(!is.matrix(fx) & !is.null(fx)) {fx <- lavParse(fx,phi=TRUE) 
+                     nfact <- ncol(fx)
+                     nvar <- nrow(fx) - nfact
+                    if(is.null(Phi)) Phi <- fx[(nvar+1):(nvar+nfact),]
+                    fx <- fx[1:nvar,]
+                    }
  if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
              colnames(fx) <- paste0("F",1:4)
              rownames(fx) <- paste0("V",1:12)
             }  #added default 10/21/23
-            
- if(is.null(f)) { if(is.null(fy)) {f <- fx} else {
+  if(!is.matrix(fx)) fx <- lavParse(fx)  #using lavaan syntax          
+ if(is.null(f)) { if(is.null(fy)) {f <- fx} else {if(!is.matrix(fy)) fy <- lavParse(fy)
     f <- superMatrix(fx,fy)} }
   f <- as.matrix(f)
   if(!is.null(Phi)) {if(length(Phi)==1) Phi <- matrix(c(1,Phi,Phi,1),2,2)}
@@ -16,7 +22,7 @@ function (fx=NULL,Phi=NULL,fy=NULL,f=NULL,n=0,uniq=NULL,raw=TRUE, items = FALSE,
 #if(is.null(d)) {d <- seq(low,high,(high-low)/(nvar/(nf-1)))
          #   d <- rep(d,nvar)} else {if(length(d)==1) d <- rep(d,nvar)}
 	#a <- rep(1,nvar)         
-  
+
   if(is.vector(f)) {f <- as.matrix(f)  #this is the case if doing a congeneric model
                     Phi <- 1}
   if(!is.null(Phi)) {
@@ -173,6 +179,7 @@ if(is.null(uniq)) {diag(model) <- 1 } else { diag(model) <- uniq  + diag(model)}
 #rewritten March, 2021
 #added threshold option April 2023
 #added the items and low, cat options to make a more general simulation function 10/20/23 
+#added the ability to use lavParse for fx and fy 01/11/26
  "sim" <-
 function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,threshold=NULL,items = FALSE, low=-2,high=2,cat=5) {
  cl <- match.call()
@@ -180,10 +187,16 @@ function (fx=NULL,Phi=NULL,fy=NULL,alpha=.8,lambda = 0,n=0,mu=NULL,raw=TRUE,thre
 ##set up some default values 
 # 4 correlated factors growing over time
 # The four factors have a simplex structure
-
-  
-    
-if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
+#is lavaan style model is given, use it 
+ if(!is.matrix(fx)) {fx <- lavParse(fx,phi=TRUE) 
+                     nfact <- ncol(fx)
+                     nvar <- nrow(fx) - nfact
+                    if(is.null(Phi)) Phi <- fx[(nvar+1):(nvar+nfact),]
+                        
+                    fx <- fx[1:nvar,]
+                    }
+   #the default is 4 factors with simplex 
+ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    	if(is.null(Phi)) {Phi <- diag(NCOL(fx))         #create a simplex of the factors
                      Phi <- alpha^abs(row(Phi) -col(Phi)) + lambda^2
                      diag(Phi) <- max((alpha + lambda),1)
@@ -191,6 +204,7 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
    if(is.null(mu)) {mu <- seq(0,NCOL(fx)-1)} else {if(length(mu)< NCOL(fx)) mu <- sample(mu,NCOL(fx),replace=TRUE)}                  
       }    #end of default
     if(is.null(fy)) {f <- fx} else {
+    if(!is.matrix(fy)) fy <- lavParse(fy)
     f <- superMatrix(fx,fy)} 
      nvar <- NROW(f)
      nfactors <- NCOL(f)
@@ -206,8 +220,8 @@ if(is.null(fx)) {fx <- matrix(c(rep(c(.8,.7,.6,rep(0,12)),3),.8,.7,.6),ncol=4)
         model <-  f %*% Phi %*%  t(f) #the model correlation matrix for oblique factors
           U <- diag(sqrt(1-diag(model)))   #the uniquensses 
           diag(model)<- 1                  # put ones along the diagonal
-   
-     colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")  
+ if(is.null(rownames(model))) {
+     colnames(model) <- rownames(model) <- paste("V",1:nvar,sep="")  }
      
  #Create factor scores and raw data       
  if((n>0) ) { 

@@ -1,4 +1,25 @@
-"scatter.hist" <- "scatterHist" <- 
+ 
+ "scatter.hist" <- function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,means=TRUE,
+  ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,title="Scatter plot + density",
+   xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,
+   grid=FALSE,xlim=NULL,ylim=NULL,x.breaks=11,y.breaks=11,
+   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
+   col=c("blue","red","black"),legend=NULL,transparency=.5,pch=21,
+   show.d=TRUE, x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,
+   line.col="blue",alpha = .05,ci=TRUE, ci.col="light blue",...) {
+   .Deprecated("scatter.hist", msg="Has been deprecated, please use ScatterHist")
+   
+   scatterHist(x=x, y=y,smooth=smooth,ab=ab, correl=correl,data=data, density=density,means=means,
+  ellipse=ellipse,digits=2,method="pearson",cex.cor=1,cex.point=1,title="Scatter plot + density",
+   xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,
+   grid=FALSE,x.breaks=11,y.breaks=11,
+   x.space=0,y.space=0,freq=TRUE,x.axes=TRUE,y.axes=TRUE,size=c(1,2),
+   col=c("blue","red","black"),transparency=.5,pch=pch,
+   show.d=TRUE, x.arrow=NULL,y.arrow=NULL,d.arrow=FALSE,cex.arrow=1,
+   line.col="blue",alpha = .05,ci=TRUE, ci.col="light blue",...)
+ }
+ 
+ "scatterHist" <- 
 function(x,y=NULL,smooth=TRUE,ab=FALSE, correl=TRUE,data=NULL, density=TRUE,means=TRUE,
   ellipse=TRUE,digits=2,method="pearson",cex.cor=1,cex.point=1,title="Scatter plot + density",
    xlab=NULL,ylab=NULL,smoother=FALSE,nrpoints=0,xlab.hist=NULL,ylab.hist=NULL,

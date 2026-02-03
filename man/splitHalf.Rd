@@ -65,10 +65,10 @@ p_h = \frac{n}{n-1}\sigma_{ij}^{2h}, h = r
 }{p_h = n/((n-1) \sigma^2h) }
 tenberge and Zegers (1978).  Clearly \eqn{\mu_0 = \lambda_3 = \alpha} and \eqn{ \mu_1 = \lambda_2}.  \eqn{\mu_r \geq \mu_{r-1} \geq \dots \mu_1 \geq \mu_0}{\mu_r \ge \mu_{r-1} \ge \dots \mu_1 \ge \mu_0}, although the series does not improve much after the first two steps.
 
-Guttman's fourth lower bound, \eqn{\lambda_4} was originally proposed as any spit half reliability  but has been interpreted as the greatest split half reliability. If \eqn{\vec{X}} is split into  two parts, \eqn{\vec{X}_a} and \eqn{\vec{X}_b}, with correlation \eqn{r_{ab}} then
+Guttman's fourth lower bound, \eqn{\lambda_4} was originally proposed as any spit half reliability  but has been interpreted as the greatest split half reliability. If \eqn{\vec{X}} is split into  two parts, \eqn{\vec{X}_a} and \eqn{\vec{X}_b}, with correlation \eqn{r_{ab}} and covariance  \eqn{C_{ab}}  then
 \deqn{
-\lambda_4 = 2\Bigl(1 - \frac{V_{X_a} + V_{X_b}}{V_X} \Bigr) =  \frac{4 r_{ab}}{V_x} = \frac{4 r_{ab}}{V_{X_a} + V_{X_b}+ 2r_{ab}V_{X_a}  V_{X_b}}
-}{\lambda 4 = 4rab/(Va + Vb + 2rabVaVb)}
+\lambda_4 = 2\Bigl(1 - \frac{V_{X_a} + V_{X_b}}{V_X} \Bigr) =  \frac{4 C_{ab}}{V_x} = \frac{4 C_{ab}}{V_{X_a} + V_{X_b}+ 2C_{ab}}
+}{\lambda 4 = 4cab/(Va + Vb + 2cab)}
 which is just the normal split half reliability, but in this case, of the most similar splits. For 16 or fewer items, this is found by trying all possible splits.  For 17 or more items, this is estimated by taking n.sample random splits. 
 
 
@@ -85,7 +85,7 @@ Although superior to \eqn{\lambda_1}, \eqn{\lambda_5} underestimates the correct
 \deqn{\lambda_6 = 1 - \frac{\sum e_j^2}{V_x} = 1 - \frac{\sum(1-r_{smc}^2)}{V_x}
 }{\lambda 6 = 1 - sum(e^2)/Vx = 1-sum(1-r^2(smc))/Vx}.
 
-The smc is found from all the items.  A modification to Guttman \eqn{\lambda_6}, \eqn{\lambda_6*} reported by the \code{\link{score.items}} function is to find the smc from the entire pool of items given, not just the items on the selected scale.  
+The smc is found from all the items.  A modification to Guttman \eqn{\lambda_6}, \eqn{\lambda_6*} reported by the \code{\link{scoreItems}} function is to find the smc from the entire pool of items given, not just the items on the selected scale.  
 
 
 
@@ -104,6 +104,8 @@ These three procedures will produce keys vectors for assigning items to the two 
 The brute force and the sampling procedures seem to provide more stable and larger estimates. 
 
 Yet another procedure, implemented in \code{\link{splitHalf}} is actually to form all possible (for n items <= 16) or sample 15,000 (or more) split halfs corrected for test length.  This function returns the best and worst splits as item keys that can be used for scoring purposes, if desired.  Can do up to 24 items in reasonable time, but gets much slower for more than about 24 items. To do all possible splits of 24 items considers 1,352,078 splits.  This will give an exact value, but this will not differ that much from random samples. For a 24 item problem with exactly 2 factors (by simulation), the worst split half is much lower than just random sampling would indicate.  
+
+The number of possible splits grows exponentially.  See  \code{\link{choose}} for various split sizes. 
 
 When consider split halfs, it is important to remember these are of roughly equal size.  So a correlation matrix of 3 unrelated factors (sharing no general factor) will have a "worst" split which is not 0.  See the examples.
 
@@ -175,11 +177,12 @@ sp <- splitHalf(bfi[1:10],key=c(1,9,10))
 
 
 #An example of how split half does not estimate the amount of general factor variance
-#When the 
+#When there are more than 2 factors in the data
 
 F <- matrix(c(rep(.8,3),rep(0,9),rep(.8,3),rep(0,9),rep(.8,3)),ncol=3)
-R <- F %*% t(F)
+R <- F \%*\% t(F)
 diag(R) <- 1
+corPlot(R)
 sp <- splitHalf(R)   #shows a worst split half of .25 
  #    which is clearly not the amount of general variance
 sp

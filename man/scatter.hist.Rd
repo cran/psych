@@ -97,7 +97,7 @@ with(sat.act,scatterHist(SATV,SATQ))
 scatterHist(SATV ~ SATQ,data=sat.act)  #formula input
 
 #or for something a bit more splashy
-scatter.hist(sat.act[5:6],pch=(19+sat.act$gender),col=c("blue","red")[sat.act$gender],grid=TRUE)
+scatterHist(sat.act[5:6],pch=(19+sat.act$gender),col=c("blue","red")[sat.act$gender],grid=TRUE)
 #better yet
 scatterHist(SATV ~ SATQ + gender,data=sat.act) #formula input with a grouping variable
 

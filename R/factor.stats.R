@@ -1,10 +1,13 @@
 #added the coarse option (defaulting to TRUE)  8/25/23
+#added the dof parameter (passed from cfa)   12/1/25
+#Fixed the statistics to just work on lower off diagonal values   1/15/26
 "factor.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE, coarse=TRUE) {
-   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm,smooth=smooth,coarse=coarse)}
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.1,fm=NULL,smooth=TRUE, coarse=TRUE, dof=NULL,Grice=FALSE) {
+   fa.stats(r=r,f=f,phi=phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,fm=fm,smooth=smooth,coarse=coarse, dof=dof,Grice=Grice)}
 
 "fa.stats" <- 
-function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE,coarse=TRUE) {
+function(r=NULL,f,phi=NULL,n.obs=NA,np.obs=NULL,alpha=.05,fm=NULL,smooth=TRUE,coarse=TRUE, dof=NULL,
+Grice=FALSE) {
 #revised June 21, 2010 to add RMSEA etc. 
 #revised August 25, 2011 to add cor.smooth for smoothing
 #revised November 10, 2012 to add stats for the minchi option of factoring
@@ -28,20 +31,21 @@ conf.level <- alpha
  nfactors <- dim(f)[2]  # number of factors
  if(is.null(phi)) {model <- f %*%  t(f)} else {model <- f %*% phi %*% t(f)}
 
-    residual<- r - model
-  
+    residual<- r - model  #but this is twice the lower off diagonal  
+    #all of these need to be adjusted for the symmetry/redundancy
     r2 <- sum(r*r)
     rstar2 <- sum(residual*residual)
     result <- list(residual = residual)
- 
-    result$dof <- dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+  if(is.null(dof)){
+    result$dof <- dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)} else { #for exploratory
+       result$dof <- dof } #for confirmatory 
     #r2.off <- r
     #diag(r2.off) <- 0
    # r2.off <- sum(r2.off^2)
     r2.off <- r2 - tr(r)
     diag(residual) <- 0
-    if(is.null(np.obs))  {rstar.off <- sum(residual^2)
-                          result$ENull <- r2.off * n.obs  #the empirical null model
+    if(is.null(np.obs))  {rstar.off <- sum(residual^2)/2   #fixed 1/15/26 to divide by 2
+                          result$ENull <- r2.off * n.obs /2 #the empirical null model
                           result$chi <- rstar.off * n.obs  #this is the empirical chi square
                           result$rms <- sqrt(rstar.off/(n*(n-1)))  #this is the empirical rmsea
                         
@@ -58,11 +62,14 @@ conf.level <- alpha
                            rstar.off <- sum(residual^2 * np.obs)  #weight the residuals by their sample size
                           r2.off <-(r*r * np.obs)   #weight the original by sample size
                           r2.off <- sum(r2.off) -tr(r2.off) 
-                          result$chi <- rstar.off  #this is the sample size weighted chi square
+                          #all of these need to be fixed
+                          # fixed 1/15/26 
+                          result$chi <- rstar.off /2 #this is the sample size weighted chi square 
+                           
                           result$nh <- harmonic.mean(as.vector(np.obs)) #this is the sample weighted cell size
                           result$rms <- sqrt(rstar.off/(result$nh*n*(n-1))) #this is the sample size weighted square root average squared residual
                         if (result$dof > 0) {result$EPVAL <- pchisq(result$chi, result$dof, lower.tail = FALSE)
-                                              result$crms <- sqrt(rstar.off/(2*result$nh*result$dof) )
+                                              result$crms <- sqrt(rstar.off/(2*result$nh*result$dof) )  #ok
                                               result$EBIC <- result$chi - result$dof * log(result$nh) 
                                               result$ESABIC <- result$chi - result$dof * log((result$nh+2)/24) } else {   #added 2/28/2014 
                                               result$EPVAL <- NA
@@ -93,7 +100,7 @@ conf.level <- alpha
             m.inv.r <- diag(1,n,n)}
     if(is.na(n.obs)) {result$n.obs=NA 
     			      result$PVAL=NA} else {result$n.obs=n.obs}
-    result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
+   # result$dof <-  n * (n-1)/2 - n * nfactors + (nfactors *(nfactors-1)/2)
     result$objective <- sum(diag((m.inv.r))) - log(det(m.inv.r)) -n   #this is what Tucker Lewis call F
     if(is.infinite(result$objective)) {result$objective <- rstar2
                                        message("The determinant of the smoothed correlation was zero.\nThis means the objective function is not defined.\nChi square is based upon observed residuals.")}
@@ -249,7 +256,7 @@ conf.level <- alpha
    	
    	#now, find the correlations of the factor scores, even if not estimated, with the factors
    	#this repeats what was done in factor.scores and does not take in\to account the options in factor.scores
-   	
+   	f.original <- f
    	if(!is.null(phi)) f <- f %*% phi   #convert the pattern to structure coefficients
    	if(smooth) {r <- cor.smooth(r)}
      # w <- try(solve(r,f) ,silent=TRUE)  #these are the regression factor weights
@@ -264,16 +271,23 @@ conf.level <- alpha
        r <- ev$vectors %*% diag(ev$values) %*% t(ev$vectors)
        diag(r)  <- 1
     # w <- try(solve(r,f) ,silent=TRUE) 
-      w <- Pinv(r)%*% r  #use the Pseudo inverse  #these are the factor weights
+      w <- Pinv(r)%*% f  #use the Pseudo inverse  #these are the factor weights
 
      if(inherits(w,"try-error")) {warning("In factor.stats, the correlation matrix is singular, and we could not calculate the beta weights for factor score estimates")
      w <- diag(1,dim(r)[1])
      }   #these are the beta weights 
     }}
-      R2 <- diag(t(w) %*% f)   #but, we actually already found this in factor scores -- these are the Thurstone values
-      if(is.null(fm)) {
+   
+     # R2 <- diag(t(w) %*% f)   # but, we actually already found this in factor scores -- these are the Thurstone values
+      C <- t(w)%*% r %*% w  #see Grice 13
+      sd.in <- 1/sqrt(diag(C))
+      
+      #R2 <- diag(t(w) %*% f) * sd.in #correction added 12/20/25
+      R2 <- fsi(f.original,phi,r=r,Grice=Grice) #added 1/21/26 to use the Nicewander formula
+                            R2[abs(R2) > 1] <- .999  # a fudge for CFA 
+       if(is.null(fm)) {
      if(prod(R2,na.rm=TRUE) < 0 ) {message("In factor.stats: The factor scoring weights matrix is probably singular -- Factor score estimate results are likely incorrect.\n Try a different factor score estimation method\n")
-                      R2[abs(R2) > 1] <- NA
+                      R2[abs(R2) > 1] <- 1.00
                       R2[R2 <= 0] <- NA
                      }
      if ((max(R2,na.rm=TRUE) > (1 + .Machine$double.eps)) ) {warning("The estimated weights for the factor scores are probably incorrect.  Try a different factor score estimation method.")}
@@ -283,7 +297,7 @@ conf.level <- alpha
     #  H <- t(f)  %*% solve(r) % f #just the same as R2 of factor scores with factors if f is the Structure coeffient
       r.scores <- cov2cor(t(w) %*% r %*% w) 
       result$r.scores <- r.scores 
-   	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors
+   	  result$R2 <- R2   #this is the multiple R2 of the scores with the factors  
    	 
    	 
    	  

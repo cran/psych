@@ -9,7 +9,7 @@ function(fa.results,polar=FALSE) {
 #  if(length(class(fa.results)) > 1)  { value <- class(fa.results)[2] } else {value="other"}
  #This next section was added December 7, 2019 to change from class(x)[2] to inherits(x, ...)
  if(length(class(fa.results)) > 1)  {
-    names <- cs(omega,omegaSem, fa.ci, iclust, fa, principal, extension, extend, cor2)
+    names <- cs(omega,omegaSem, fa.ci, iclust, fa, principal, extension, extend, cor2, CFA)
     value <- inherits(fa.results,names,which=TRUE)   # value <- class(x)[2]
     if(any(value > 1) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -56,6 +56,7 @@ cor2 ={ factors <- as.matrix(fa.results$r)
         pval <- as.matrix(fa.results$pval) 
         cor2 <- TRUE
         },
+CFA = {factors <- as.matrix(fa.results$loadings)}, #added 12/27/25
              
 other = {factors <- fa.results})
 

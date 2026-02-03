@@ -1,28 +1,31 @@
 \name{scoreIrt}
 \alias{scoreIrt}
-
 \alias{scoreIrt.1pl}
 \alias{scoreIrt.2pl}
-\alias{score.irt}
 \alias{score.irt.poly}
 \alias{score.irt.2}
 \alias{irt.stats.like}
 \alias{make.irt.stats}
 \alias{irt.tau}
 \alias{irt.se}
+\alias{score.irt}  
+
 \title{Find Item Response Theory (IRT) based scores for dichotomous or polytomous items}
 
 \description{\code{\link{irt.fa}} finds Item Response Theory (IRT) parameters through factor analysis of the tetrachoric or polychoric correlations of dichtomous or polytomous items. \code{\link{scoreIrt}} uses these parameter estimates of discrimination and location to find IRT based scores for the responses. As many factors as found for the correlation matrix will be scored. \code{\link{scoreIrt.2pl}} will score lists of scales.
 }
 \usage{
 scoreIrt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic") 
+#scoreIrt is a wrapper for 
+#     score.irt.2 and score.irt.poly
+score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic") 
 scoreIrt.1pl(keys.list,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),
      mod="logistic")  #Rasch like scaling
 scoreIrt.2pl(itemLists,items,correct=.5,messages=FALSE,cut=.3,bounds=c(-4,4),
    mod="logistic")  #2 pl scoring
-#the next is an alias for scoreIrt both of which are wrappers for 
-#     score.irt.2 and score.irt.poly
-score.irt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic") 
+
+
+
  #the higher order call just calls one of the next two
   #for dichotomous items 
 score.irt.2(stats, items,keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic") 
@@ -34,6 +37,10 @@ make.irt.stats(difficulty,discrimination)
    
 irt.tau(x)    #find the tau values for the x object
 irt.se(stats,scores=0,D=1.702)
+
+#the next is an alias for scoreIrt and has been deprecated.
+   score.irt(stats=NULL, items, keys=NULL,cut = 0.3,bounds=c(-4,4),mod="logistic") 
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -54,9 +61,9 @@ irt.se(stats,scores=0,D=1.702)
   \item{difficulty}{The difficulties for each item in a polytomous scoring}
   \item{discrimination}{The item discrimin}
 }
-\details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total scores.  With complete data, total scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
+\details{Although there are more elegant ways of finding subject scores given a set of item locations (difficulties) and discriminations, simply finding that value of theta \eqn{\theta} that best fits the equation \eqn{P(x|\theta) = 1/(1+exp(\beta(\delta - \theta) )} for a score vector X, and location \eqn{\delta} and discrimination \eqn{\beta} provides more information than just total or average scores.  With complete data, total  scores and irt estimates are almost perfectly correlated.  However, the irt estimates provide much more information in the case of missing data.
 
-The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item. Formerly (prior to 1.6.12) this was done by  estimating these taial scores  by finding the probability of missing every item taken, converting this to a quantile score based upon the normal distribution, and then assigning a z value equivalent to 1/2 of that quantile.  Similarly, if a person gets all the items they take correct, their score is defined as the quantile of the z equivalent to the probability of getting all of the items correct, and then moving up the distribution half way.  If these estimates exceed either the upper or lower bounds, they are adjusted to those boundaries. 
+The bounds parameter sets the lower and upper limits to the estimate.  This is relevant for the case of a subject who gives just the lowest score on every item, or just the top score on every item. Formerly (prior to 1.6.12) this was done by  estimating these  scores  by finding the probability of missing every item taken, converting this to a quantile score based upon the normal distribution, and then assigning a z value equivalent to 1/2 of that quantile.  Similarly, if a person gets all the items they take correct, their score is defined as the quantile of the z equivalent to the probability of getting all of the items correct, and then moving up the distribution half way.  If these estimates exceed either the upper or lower bounds, they are adjusted to those boundaries. 
 
 As of 1.6.9, the procedure is very different.  We now assume that all items are bounded with one passed item that is easier than all items given, and one failed item that is harder than any item given.  This produces much cleaner results.
 

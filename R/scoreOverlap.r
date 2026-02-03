@@ -4,6 +4,7 @@ function(keys,r,correct=TRUE,SMC=TRUE,av.r=TRUE,item.smc=NULL,impute=TRUE,select
  tol=sqrt(.Machine$double.eps)    #machine accuracy
  cl <- match.call()
  bad <- FALSE
+ if((!is.data.frame(r)) & !is.matrix(r) | (is.data.frame(keys)) ) stop("You seem to have reversed keys and items. \nPlease correct and try again.")
  key.list <- keys  #we need to keep this as a list for later  
  if(is.list(keys) & (!is.data.frame(keys))) { if (select) {
     select <- selectFromKeyslist(colnames(r),keys)
@@ -132,6 +133,7 @@ if(!bad) { item.cov <- t(keys) %*% r    #the normal case is to have all correlat
 
 
 if(scores) {
+
       abskeys <- abs(keys)
     num.item <- diag(t(abskeys) %*% abskeys) #how many items in each scale
     num.ob.item <- num.item   #will be adjusted in case of impute = FALSE
@@ -139,13 +141,17 @@ if(scores) {
      item.means <- colMeans(items,na.rm=TRUE)
     if (is.null(min)) {min <- min(items,na.rm=TRUE)}
     if (is.null(max)) {max <- max(items,na.rm=TRUE)}
+    browser()
 if(impute !="none") {
-        miss <- which(is.na(items),arr.ind=TRUE)
+        miss <- which(is.na(items),arr.ind=TRUE) 
+        if(length(miss>0)) {  #added this 11/14/25 incase there are no missing to impute
         if(impute=="mean") {
        		item.means <- colMeans(items,na.rm=TRUE)   #replace missing values with means
        		items[miss]<- item.means[miss[,2]]} else { 
        		item.med   <- apply(items,2,median,na.rm=TRUE) #replace missing with medians
         	items[miss]<- item.med[miss[,2]]}   #this only works if items is a matrix
+        	}  #we have no missing 
+        	items <- as.matrix(items)   #added 11/14/25
         	 scores <- items %*%  keys  #this actually does all the work but doesn't handle missing values
         	C <- cov(items,use="pairwise")
           cov.scales  <- cov(scores,use="pairwise")    #and total scale variance

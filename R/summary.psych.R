@@ -13,7 +13,8 @@ function(object,digits=2,items=FALSE,...) {
 if(length(class(object)) > 1)  { 
 mat.reg <- bassAck <- overlap <-  scores <- none <- extend <- extension <- crossV <- NA    #to let it compile in R4.0
  obnames <- cs(principal,score.items,cluster.loadings,mat.regress, set.cor, lmCor, mat.reg, bassAck, bestScales,crossV,iclust,omega,omegaSem,omegaDirect,overlap,
-     scores,testRetest, vss,cluster.cor, esem,fa,faBy,extend,extension,items,alpha,setCor,irt.fa,cohen.d,cohen.d.by,mediate,describeData,none)
+     scores,testRetest, vss,cluster.cor, esem,fa,faBy,extend,extension,items,alpha,setCor,irt.fa,cohen.d,cohen.d.by,mediate,describeData,
+     CFA, CFA.bifactor, none)
      value <- inherits(object, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
 
@@ -295,6 +296,60 @@ fa.reg = {cat("\nFactor analysis regression Call: ")
  print(object$Call)
  summary(object$regression)
  },  
+ 
+ CFA =  {
+  cat("\nConfirmatory factor analysis with Call: ")
+   print(object$Call)
+   
+ 	nfactors <- dim(object$loadings)[2]
+    objective <- object$stats$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
+    cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(object$stats$n.obs)) {cat("The number of observations was ",object$stats$n.obs, " with Chi Square = ",round(object$stats$STATISTIC,digits), " with prob < ", signif(object$stats$PVAL,digits),"\n")}
+   }
+
+
+    if(!is.null(object$stats$rms)) {cat("\nThe root mean square of the residuals (RMSA) is ", round(object$stats$rms,digits),"\n") }
+    if(!is.null(object$stats$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$stats$crms,digits),"\n") }
+    
+   
+   	if(!is.null(object$stats$TLI)) {cat("\nTucker Lewis Index of factoring reliability = ",round(object$stats$TLI,digits+1))}
+  
+   	if(!is.null(object$stats$RMSEA)) {cat("\nRMSEA index = ",round(object$stats$RMSEA[1],digits+1), " and the", (object$stats$RMSEA[4])*100,"% confidence intervals are ",round(object$stats$RMSEA[2:3],digits+1))  }
+   
+   	if(!is.null(object$stats$BIC)) {cat("\nBIC = ",round(object$stats$BIC,digits))}
+  if(!is.null(object$Phi)) {
+   cat ("\n With factor correlations of \n" )
+       colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
+       print(round(object$Phi,digits))}
+},
+
+CFA.bifactor =  {
+  cat("\nConfirmatory bifactor  analysis with Call: ")
+     print(object$Call)
+   
+ 	nfactors <- dim(object$loadings)[2]
+    objective <- object$stats$criteria[1]
+     if(!is.null(objective)) {    cat("\nTest of the hypothesis that", nfactors, if (nfactors == 1)  "factor is" else "factors are", "sufficient.")
+    cat("\nThe degrees of freedom for the model is",object$dof," and the objective function was ",round(objective,digits),"\n") 
+   	if(!is.na(object$stats$n.obs)) {cat("The number of observations was ",object$stats$n.obs, " with Chi Square = ",round(object$stats$STATISTIC,digits), " with prob < ", signif(object$stats$PVAL,digits),"\n")}
+   }
+
+
+    if(!is.null(object$stats$rms)) {cat("\nThe root mean square of the residuals (RMSA) is ", round(object$stats$rms,digits),"\n") }
+    if(!is.null(object$stats$crms)) {cat("The df corrected root mean square of the residuals is ", round(object$stats$crms,digits),"\n") }
+    
+   
+   	if(!is.null(object$stats$TLI)) {cat("\nTucker Lewis Index of factoring reliability = ",round(object$stats$TLI,digits+1))}
+  
+   	if(!is.null(object$stats$RMSEA)) {cat("\nRMSEA index = ",round(object$stats$RMSEA[1],digits+1), " and the", (object$stats$RMSEA[4])*100,"% confidence intervals are ",round(object$stats$RMSEA[2:3],digits+1))  }
+   
+   	if(!is.null(object$stats$BIC)) {cat("\nBIC = ",round(object$stats$BIC,digits))}
+  if(!is.null(object$Phi)) {  #there are no correlations to report
+   cat ("\n With factor correlations of \n" )
+      # colnames(object$Phi) <- rownames(object$Phi) <- colnames(object$loadings)
+       print(round(object$Phi,digits))}
+},
 
 items= { 
     if(object=="omega") {
@@ -342,12 +397,17 @@ lmCor = {
 
               print(object$Call)
             cat("\nMultiple Regression from matrix input \n")
-           cat("\nBeta weights \n")
-           print(object$coefficients,digits)
+           cat("\nBeta weights and raw correlations\n")
+           temp <- cbind(object$coefficients,object$r0)
+           #print(object$coefficients,digits)
+           print(temp,digits=digits)
            cat("\nMultiple R \n") 
            print(object$R,digits)
-            cat("\nMultiple R2 \n") 
+            cat("\nMultiple R2 \n")
+            
            print(object$R2,digits)
+          # cat("\nZero order correlations \n")
+          # print(object$r0,digits)
              cat("\nCohen's set correlation R2 \n") 
            print(object$Rset,digits)
            cat("\nSquared Canonical Correlations\n")

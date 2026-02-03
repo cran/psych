@@ -9,7 +9,7 @@ function(m,nfactors=3,fm="minres",key=NULL,flip=TRUE, digits=2,title="Omega",sl=
       nvar <- dim(m)[2]
       raw.data <- NULL
       if(is.null(Phi)) {   #the normal case is to do the factor analysis of the raw data or the correlation matrix
-      if(!isCorrelation(m)) {   #should also check for covariance matrix
+      if(!isCovariance(m)) {   #should also check for covariance matrix
                             n.obs <- dim(m)[1]
                             m <- as.matrix(m)
                             raw.data <- m #added 9/1/14
@@ -134,7 +134,7 @@ function(m,nfactors=3,fm="minres",n.iter=1,p=.05,poly=FALSE,key=NULL,flip=TRUE, 
 	sl=TRUE,labels=NULL, plot=TRUE,n.obs=NA,rotate="oblimin",Phi = NULL,option="equal",covar=FALSE,...) {
  cl <- match.call()
   if(is.data.frame(m) || is.matrix(m)) {if((isCorrelation(m)) | (isCovariance(m) && covar)) {if(is.na(n.obs) && (n.iter > 1)) stop("You must specify the number of subjects if giving a correlation matrix")
-                                # if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
+             # if(!require(MASS)) stop("You must have MASS installed to simulate data from a correlation matrix")
                                  }
                   }
  if(!is.data.frame(m) && !is.matrix(m)) {  n.obs=m$n.obs

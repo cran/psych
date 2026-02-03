@@ -69,6 +69,7 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
 
 ##########
 # bar plot (ugly but some people like them) 
+#need to make sure catseyes line up with bars
 ##########   
  if (bars) { #draw a bar plot and add error bars -- this is ugly but some people like it
    if(is.null(stats)){ group.stats <- describeBy(x,group,mat=TRUE,skew=FALSE)
@@ -152,7 +153,7 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
      }    #why not use matrix output for this?
    
     n.var <- ncol(x)
-     if(is.null(n.var)) n.var <- 1 
+     if(is.null(n.var) | n.var <1) n.var <- 1 
     #first set up some defaults to allow the specification of colors, lty, and pch dynamically and with defaults
     if(missing(pch)) pch <- seq(15,(15+n.group))
     if(missing(lty)) lty <- 1:8
@@ -202,7 +203,7 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
      
       
       if(legend !=0 ){
-    
+
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.var,sep="")}
        if(legend > 0)  {
        legend(legend.location[legend], legend=lab, col = colors[(1: n.color)],pch=pch[1: n.var],
@@ -232,13 +233,12 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
      if (is.null(xlab)) xlab <- "Grouping Variable"
 
     n.vars <- dim(x)[2]
-    if(is.null(n.vars)) n.vars <- 1  #if we just have one variable to plot
+    if(is.null(n.vars) | n.vars<1) n.vars <- 1  #if we just have one variable to plot
      var.means <- matrix(NA,nrow=n.vars,ncol=n.group)
      var.n <- var.se <- ci <- matrix(0,nrow=n.vars,ncol=n.group)
      
 
  #if there are two or more grouping variables,this strings them out and treats them as two separate variables. 
-
 
 
     for (g in 1:n.group) {
@@ -259,7 +259,7 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
 
 
     	if(!add) {
-    
+  
     	#although index by i, this just plots the first variable using plot, the other one is plotted using points
     	 plot(x.values,var.means[i,1:n.grp1],ylim=ylim,xlim = xlim, xlab=xlab,ylab=ylab,main=main,typ = typ,axes=FALSE,lty=lty[i],pch=pch[i],col = colors[(i-1) %% n.color +1],...)
     		  #we need to index by what grp1 we are in, not by i
@@ -389,10 +389,12 @@ function (x,group,data=NULL,by.var=FALSE,x.cat=TRUE,ylab =NULL,xlab=NULL,main=NU
 
           }
       if(legend != 0  ){
+
  
        if(!is.null(labels)) {lab <- labels} else {lab <- paste("V",1:n.grp2,sep="")} 
    if ((nvar > 1) & (n.grp2 ==1)) { }#not sure of this
-      if(legend > 0) {legend(legend.location[legend], legend=lab, col = colors[(0: n.grp2)%% n.color + 1],pch=pch[1: n.grp2],
+   #fixed colors to vary fr
+      if(legend > 0) {legend(legend.location[legend], legend=lab, col = colors[(0:nvar)%% n.color + 1],pch=pch[1: n.grp2],
        text.col = "green4", lty = lty[1:nvar],
        merge = TRUE, bg = 'gray90')} else {
         legend(legend.location[abs(legend)],legend= lab[n.grp2:1], col = colors[(n.grp2:1) ],pch=pch[n.grp2:1],

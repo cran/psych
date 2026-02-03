@@ -17,14 +17,55 @@
 #19/1/15 modified calls to rotation functions to meet CRAN specs using nameSpace
 
 "fa" <- 
-function(r,nfactors=1,n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="none", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,n.rotations=1,hyper=.15,smooth=TRUE, ...) {
+function(r,
+nfactors=1,
+n.obs = NA,
+n.iter=1,rotate="oblimin",
+scores="regression",
+residuals=FALSE,
+SMC=TRUE,
+covar=FALSE,
+missing=FALSE,
+impute="none", 
+min.err = .001,
+max.iter=50,
+symmetric=TRUE,
+warnings=TRUE,
+fm="minres",
+alpha=.1, 
+p =.05,
+oblique.scores=FALSE,
+np.obs=NULL,
+use="pairwise",cor="cor",correct=.5,weight=NULL,
+n.rotations=1,hyper=.15,smooth=TRUE,
+Grice=FALSE,...) {
  cl <- match.call()
   if(isCorrelation(r)) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
                         if(length(class(r)) > 1)  { if( inherits(r,"partial.r")) class(r) <- c("matrix","array") }
                         #in case we are using partial.r of class psych and partial.r   added 4/10/21  
                                  }
   
- f <- fac(r=r,nfactors=nfactors,n.obs=n.obs,rotate=rotate,scores=scores,residuals=residuals,SMC = SMC, covar=covar, missing=missing, impute=impute, min.err=min.err, max.iter=max.iter, symmetric=symmetric, warnings=warnings, fm=fm, alpha=alpha, oblique.scores=oblique.scores, np.obs=np.obs,use=use, cor=cor, correct=correct, weight=weight, n.rotations=n.rotations, hyper=hyper,smooth=smooth, ...=...) #call fa with the appropriate parameters
+ f <- fac(r=r,
+ nfactors=nfactors,
+ n.obs=n.obs,
+ rotate=rotate,
+ scores=scores,
+ residuals=residuals,
+ SMC = SMC, 
+ covar=covar, 
+ missing=missing, 
+ impute=impute, 
+ min.err=min.err,
+  max.iter=max.iter, 
+  symmetric=symmetric, 
+  warnings=warnings, 
+  fm=fm, 
+  alpha=alpha, 
+  oblique.scores=oblique.scores, 
+  np.obs=np.obs,
+  use=use, cor=cor, correct=correct, weight=weight, 
+  n.rotations=n.rotations, hyper=hyper,smooth=smooth,
+ Grice=Grice, ...=...) #call fa with the appropriate parameters
  
  fl <- f$loadings  #this is the original
  
@@ -115,7 +156,8 @@ use="pairwise",cor="cor",
 correct=.5,weight=NULL,
 n.rotations=1,
 hyper=.15,
-smooth=TRUE, ...) {
+smooth=TRUE, 
+Grice=FALSE,...) {
  cl <- match.call()
  control <- NULL   #if you want all the options of mle, then use factanal
  
@@ -405,8 +447,9 @@ FA.OLS <- function(Psi,S,nf) {
        cor = {if(!is.null(weight))  {r <- cor.wt(r,w=weight)$r} else  {
                                      r <- cor(r,use=use)}
                                      },
-       cov = {r <- cov(r,use=use) 
-              covar <- TRUE},
+       cov = {if(!is.null(weight))  {r <- cor.wt(r,w=weight,cor=FALSE)$r} else  {
+                                     r <- cov(r,use=use)}
+                                       covar <- TRUE},  #fixed 10/30/25
        wtd = { r <- cor.wt(r,w=weight)$r},
        spearman = {r <- cor(r,use=use,method="spearman")},
        kendall = {r <- cor(r,use=use,method="kendall")},
@@ -734,7 +777,10 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
     
     if(nfactors < 1) nfactors <- n
    # if(max(abs(loadings) > 1.0) && !covar) warning(' A loading greater than abs(1) was detected.  Examine the loadings carefully.') 
-    result <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,smooth=smooth)   #do stats as a subroutine common to several functions
+    stats <- factor.stats(r,loadings,Phi,n.obs=n.obs,np.obs=np.obs,alpha=alpha,smooth=smooth,Grice=Grice) 
+    result <- stats
+    result$stats <- stats 
+      #do stats as a subroutine common to several functions
     result$rotation <- rotate
     if(nfactors != 1) {result$hyperplane <- colSums(abs(loadings )< hyper)} else {result$hyperplane <- sum(abs(loadings) < hyper)}
     result$communality <- diag(model)
@@ -760,7 +806,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    #Some of the Grice equations use the pattern matrix, but some use the structure matrix
   #we are now dropping this oblique score option  (9/2/17)
    result$method=scores  #this is the chosen method for factor scores
-    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores, missing=missing,impute=impute) }  else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores, missing=missing, impute=impute)}  #added  missing and impute 9/5/22
+    if(oblique.scores) {result$scores <- factor.scores(x.matrix,f=loadings,Phi=NULL,method=scores, missing=missing,impute=impute,Grice=Grice) }  else {result$scores <- factor.scores(x.matrix,f=loadings,Phi=Phi,method=scores, missing=missing, impute=impute,Grice=Grice)}  #added  missing and impute 9/5/22
    if(is.null( result$scores$R2))  result$scores$R2 <- NA
    result$R2.scores <- result$scores$R2
   
@@ -809,4 +855,5 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    #modified spring, 2015 to use switch in the rotation options
    #modified August 25, 2015 to add rot.mat as output
    #modified February 22, 2016 to keep the diagonal of the model as it should be -- e.g., the communalities
+   #modidfied January 31 to return most of the stats in the stats object,  this makes anova easier to run
    #December 23, 2019  changed the call to mixed.cor to be mixedCor.

@@ -78,14 +78,15 @@ error.bars.by(x,data=data,x.cat=TRUE,ylab =ylab,xlab=xlab,main=main,ylim= ylim,
     }
     }	 
  	 
-   	 
+  
   if(eyes) { if(length(col) == 1) col <- rep(col,z) 
              if(length(col)< z) col <- rainbow(z)   #added 3/31/24 
     	     ln <- seq(-3,3,.1)
     	     rev <- (length(ln):1)	   
     for (s in 1:z){ if(!is.null(x.stats$values[s] )) {
             catseyes(x=x.stats$values[s],y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])} else {
-            catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])}}
+            if(bars ){catseyes(x=mp[s],y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])} 
+               else {catseyes(x=s,y=x.stats$mean[s],se=x.stats$se[s],n=x.stats$n[s],alpha=alpha,density=density,col=col[s])}}}
     	  }
     	    }
    }

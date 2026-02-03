@@ -17,7 +17,9 @@ function (loads,cut=.0,aslist=FALSE)
   rownames(factor2cluster) <- rownames(l)
   colnames(factor2cluster) <- colnames(l)
    nitems <- colSums(abs(factor2cluster))
-   for (i in ncols:1) {if (nitems[i]<1) {factor2cluster <- factor2cluster[,-i,drop=FALSE]} }#remove columns with no variables
+   if(ncols>1) {
+   for (i in ncols:1) {if (nitems[i]<1) {factor2cluster <- factor2cluster[,-i,drop=FALSE]} }
+   }#remove columns with no variables
    if(aslist) factor2cluster <- keys2list(factor2cluster)
     return(factor2cluster)
 }

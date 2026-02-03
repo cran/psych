@@ -143,6 +143,13 @@ rownames(arrest) <- c("Arrested","Not Arrested")
 error.bars.tab(arrest,ylab="Probability of Arrest",xlab="Control vs Treatment",
 main="Probability of Arrest varies by treatment")
 
+#EXAMPLE from Anderson and Revelle, 1983
+ an.rev.df <- data.frame(means = c(88.88,77.24,74.90,88.72), se=c(4.66,4.43,6.82,7.34),
+      n =c(16,18,14,21), Imp =c(1,1,2,2),Drug=c(1,2,1,2))
+# not run because of some weird error in R CMD check 
+#error.bars.by(means ~ Imp + Drug,stats=an.rev.df,density=30,v.labels=cs(Placebo,Drug),
+# ylab="Lines Read",xlab="Drug condition",main ="Anderson and Revelle,1983")
+
 
 #Show the raw  rates 
 error.bars.tab(arrest,raw=TRUE,ylab="Number Arrested",xlab="Control vs Treatment",

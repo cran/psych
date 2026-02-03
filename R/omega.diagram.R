@@ -24,7 +24,7 @@
 #which kind of input are we drawing?
     if(length(class(om.results)) > 1)  {
       omegaSem <- omegaDirect <- omega <- NULL  #strange fix to R 4,0,0 compiler
-    names <- cs(matrix, extend, omegaSem, omegaDirect, omega)
+    names <- cs(matrix, extend, omegaSem, omegaDirect, omega, CFA,CFA.bifactor)
     value <- inherits(om.results,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 1) ) { result <- names[which(value > 0)]} else {result <- "other"}
     
@@ -83,6 +83,24 @@ omega =   {
         nvar <- num.var <- dim(factors)[1]   #how many variables?
    if (sl ) { if("h2" %in% colnames(factors)) {num.factors <- which(colnames(factors)=="h2") -2} else {
                   num.factors <- NCOL(factors)-1}} else {num.factors <- NCOL(factors)}      
+ },
+ 
+ CFA.bifactor ={if(!is.null(om.results$gload)) {
+     sl=FALSE
+     gloading <- om.results$gload$loadings
+      factors <- om.results$loadings
+      nvar <- num.var <- nrow(factors)
+      num.factors <- ncol(factors)
+      if(is.null(main)) main="Confirmatory Hierarchical Factor Analysis"} else {
+        gloading <- om.results$loadings[,1]
+        factors <- om.results$loadings
+        nvar <- num.var <- nrow(om.results$loadings)
+        num.factors <- ncol(om.results$loadings) -1
+        sl<- TRUE
+        labels <- rownames(om.results$loadings)
+        flabels <- colnames(om.results$loadings)
+        if(is.null(main)) main="Confirmatory Bi-Factor Analysis"
+       }
  },
  other ={warning("I am sorry, I don't know how to diagram this input")}
       

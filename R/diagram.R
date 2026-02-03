@@ -6,14 +6,14 @@
 # figure out which psych function was called and then call the appropriate diagram
 value <- NULL
 omega <- bassAck <- extend <- extension <-  lavaan <- fa.reg <-  NULL    #weird requirement to avoid being global
- names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm)
+ names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm, CFA,CFA.bifactor)
 if(length(class(fit)) == 1) {
    value <- inherits(fit,names,which=TRUE) #if (inherits(fit,"lm")) value <- "lm" } 
    if(any(value > 0) ) { value <- names[which(value > 0)]} else {value <- "other"}
   }
 
 if(length(class(fit)) > 1)  {
-    names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm)
+    names <- cs(lm, lavaan,fa,principal,iclust,omega,bassAck, extension, extend, fa.reg, esem,mediate, lmCor, setCor, fa.multi,lm, CFA,CFA.bifactor)
     value <- inherits(fit,names,which=TRUE)  # value <- class(x)[2]
     if(any(value > 0) ) { value <- names[which(value > 0)]} else {value <- "other"}
     
@@ -34,7 +34,9 @@ setCor = {lmDiagram(fit,...)},
 lmCor = {lmDiagram(fit,...)},
 lm = {lmDiagram(fit, ...)},
 mediate ={mediate.diagram(fit,...)},
-fa.multi ={fa.multi.diagram(fit,...)}
+fa.multi ={fa.multi.diagram(fit,...)},
+CFA = {fa.diagram(fit,...)},
+CFA.bifactor ={omega.diagram(fit,...)}
 )
 }
 

@@ -1,22 +1,60 @@
 \name{NEWS}
 \title{News for Package 'psych'}
 
-\section{Changes in psych version 2.5.6 (2025-06-20)}{ 
+
+ \section{Changes in psych version 2.6.1(2026-01-24}{
+ \subsection{Additions}{
+   \itemize{
+   \item Some Major changes include:
+   \item Added CFA to do confirmatory factor analysis. (Following the Spearman/
+Guttman  algorithm discussed by Dhaene and Rosseel, 2024). Uses keys or Lavaan syntax.
+   \item Added CFA.bifactor to extract a general factor and then do a CFA on the residuals following grouping information specified in the call.
+   \item Added a function (omegaStats) to report omega statistics for CFA.factor output.  Generalized to the case of lavaan cfa output (where appropriate.)
+   \item Added a function (lavPars) to translate lavaan models into matrix form for various functions.
+   \item Added a new function (fsi) to estimate factor score indeterminancy following recent papers by Nicewander (2020)
+   \item Updated fa.congruence, anova.psych and diagram to handle CFA output.
+   \item Changed the default procedure for finding factor score indeterminancy from the Grice (2001) method to the Nicewander (2020) method.  Kept Grice as an option in fa.
+      \item Added two additional outputs to cta.15 to allow it to plot histograms of tendencies  to show that although the histograms appear normal, the bivariate plots do not reflect a stochastic process.
+   \item Added the zero order correlations in the output of lmCor and thus in the print and summary statements. 
+   \item Started to deprecate redundant  names for functions (e.g, set.cor, setCor)
+   \item Modified the factor determinancy index to more properly reflect Grice and then subsequently added the Nicewander procedure.
+   \item Added error messages to scoreItems and scoreOverlap to reflect improper input
+   \item Added a tolerance to isCorrelation so that the diagponnal can be very close to 1
+   \item Added CFA as option to diagram and omega.diagram
+   \item Added lavParse to sim and sim.structure to allow simulations of lavaan based models.  Can specify the phi matrix in the lavaan model
+   \item Modified fa.congruence to include lavaan solutions.
+     }
+}
+
+ \subsection{Bugs Fixed }{
+   \itemize{
+   \item Fixed the calculation of chi square in factor stats to recognize the symmetry of the residual matrix.  Prior values were off by a factor of 2.  Note, this does not change the other tests.
+     \item Fixed fa.parallel for the case of just fa output  to match the both option  (reported by Hyun Seok Do )
+     \item Fixed principal and fa to properly weight covariance matrix in the case of weights being desired (was just weighting correlation matrices).  The problem with principal was reported by "CHIS". 
+     \item Improved documentation for factor.scores to clarify that although fa uses regression weights for scores, factor.score defaults to tenBerge weights.  (Thanks to Colin Toth for pointing out the inconsistency in the documentation.)
+     \item Corrected formula for Guttman 4 in SplitHalf (reported by Wolf Vanpaemel)
+     \item Fixed a problem with scoreOverlap when finding scores
+     
+     
+    }
+} 
+}
+\section{Changes in psych version 2.5.7 (2025-06-02)}{ 
   \subsection{Introduction}{
     \itemize{
      \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
       \item Additional functions are added sporadically.
       \item This news file reports changes that have been made as the package has been developed.
       \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.5.6  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.5.6 (Added June 23, 2025). The second digit reflects the year (i.e., 2025), the third set the month (i.e., 2.5.6 was released in June of 2026 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+      \item Version 2.5.7  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.5.6 (Added June 23, 2025). The second digit reflects the year (i.e., 2025), the third set the month (i.e., 2.5.6 was released in June of 2026 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
     \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
     
-     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted. 
-       
+     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted.        
   }   
  }
  }
  
+
 \section{Changes in psych version 2.5.5 (2025-05-28)}{
  \subsection{Additions}{
    \itemize{

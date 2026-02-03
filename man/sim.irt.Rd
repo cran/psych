@@ -159,8 +159,12 @@ X <- sim.poly.mat(R=R,m=marginals,n=1000)
 lowerCor(X) #show the raw correlations
 #lowerMat(tetrachoric(X)$rho) # show the tetrachoric correlations (not run)
 #generate a structure 
-fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
-fy <- c(.6,.5,.4)
+fx <- 'f1 =~ .9*V1 + .8*V2 + .7*V3
+      f2 =~ .8*V4 + .7*V5 + .6*V6'
+#lavaan syntax to replace
+#fx <- matrix(c(.9,.8,.7,rep(0,6),c(.8,.7,.6)),ncol=2)
+fy <- 'f3 =~ .6*V7 + .5*V8 + .4*V9'
+#fy <- as.matrix(c(.6,.5,.4))
 Phi <- matrix(c(1,0,.5,0,1,.4,0,0,0),ncol=3)
 R <- sim.structure(fx,Phi,fy) 
 cor.plot(R$model) #show it graphically

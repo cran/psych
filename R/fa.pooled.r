@@ -1,4 +1,4 @@
-fa.pooled <- function(datasets,nfactors=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,...) {
+fa.pooled <- function(datasets,nfactors=1,rotate="oblimin",scores="regression", residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1, p =.05,oblique.scores=FALSE,np.obs=NULL,use="pairwise",cor="cor",correct=.5,weight=NULL,Grice=FALSE,...) {
 
  cl <- match.call()
  replicates <- list()
@@ -8,7 +8,7 @@ fa.pooled <- function(datasets,nfactors=1,rotate="oblimin",scores="regression", 
 
 #the first fa becomes the target for the remaining ones 
  X <- datasets[[1]]
- f <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,...=...) 
+ f <- fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,Grice=Grice,...=...) 
  
  fl <- f$loadings
 nvar <- ncol(X)
@@ -17,7 +17,7 @@ nvar <- ncol(X)
  #now do the replicated
  for (iter in (1:n.iter)) {
  X <- datasets[[iter]]
-fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,...=...) #call fa with the appropriate parameters
+fs <-  fac(X,nfactors=nfactors,rotate=rotate,scores="none",SMC = SMC,missing=missing,impute=impute,min.err=min.err,max.iter=max.iter,symmetric=symmetric,warnings=warnings,fm=fm,alpha=alpha,oblique.scores=oblique.scores,np.obs=np.obs,use=use,cor=cor,correct=correct,Grice=Grice,...=...) #call fa with the appropriate parameters
 
  if(nfactors == 1) {replicateslist[[iter]] <- list(loadings=fs$loadings)} else  {
                     t.rot <- target.rot(fs$loadings,fl)

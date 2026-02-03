@@ -98,14 +98,35 @@ Variables  \tab size     \tab 2 cores     \tab 4 cores  \tab 8 cores   \tab comp
 953 \tab 120  \tab 8.33 \tab 6.22  \tab 4.75 \tab 11.16  \cr
 }
 
+ Timings updated in 11/25 using a MacBook Pro with M4 max chip.  1,000 or 10,000 subjects, 6625 variables
  
 
+\tabular{llllllll}{
+
+\cr
+n var \tab n.obs \tab size \tab 2 cores \tab 4 cores	\tab 8 cores \tab 12 cores\cr
+6625 \tab  1000\tab default \tab 9.0   \tab 5.3 \tab 3.6  \tab 2.8 \cr
+6625 \tab 1000 \tab 20 \tab   11  \tab   6.4 \tab  4.1  \tab 3.2 \cr
+6625  \tab 1000 \tab 40 \tab 8.3  \tab 5.0 \tab 3.3  \tab 2.6  \cr
+6625 \tab 1000 \tab 80 \tab  7.6 \tab 4.5 \tab 3.2  \tab 2.5 \cr
+6625 \tab 1000 \tab 120  \tab 6.6 \tab 4.6 \tab 3.1 \tab 2.7  \cr
+6625 \tab 1000 \tab 160  \tab 7.2  \tab 4.5  \tab 3.4 \tab  2.8  \cr
+\cr
+6625 \tab  10000 \tab default \tab 63.9   \tab 34.4 \tab 24.8  \tab 20.7 \cr
+6625 \tab 10000 \tab 20 \tab   70.2  \tab   37.8  \tab  25.2  \tab 21.6  \cr
+6625  \tab 10000 \tab 40 \tab  62.5  \tab 33.5 \tab 25.5 \tab 19.2   \cr
+6625 \tab 10000 \tab 80 \tab  54.1 \tab 31.6 \tab 24.9  \tab 19.4  \cr
+6625 \tab 10000 \tab 120  \tab 57.3 \tab 31.3 \tab 24.2 \tab  22.5 \cr
+6625 \tab 10000 \tab 160  \tab 56.5  \tab 33.9  \tab 24.7 \tab 22.1  \cr
+
+
 }
 
-\note{
+Moral,  get a fast chip and use as many cores as you can.
+
 Does not seem to work with data.tables
-}
 
+}
 \value{
 The correlation matrix
 }

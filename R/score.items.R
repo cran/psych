@@ -1,5 +1,6 @@
 "score.items"  <-
  function (keys,items,totals=FALSE,ilabels=NULL, missing=TRUE, impute="median",delete=TRUE,  min=NULL,max=NULL,digits=2,select=TRUE) {
+ .Deprecated("scoreItems", msg ="score.items has been deprecated and replaced by scoreItems")
  message("score.items has been replaced by scoreItems, please change your call")
      scoreItems(keys=keys,items=items,totals=totals,ilabels=ilabels,missing=missing,impute=impute,delete=delete,min=min,max=max,digits=digits,select=select)
      }
@@ -76,7 +77,7 @@ if(any( !(select %in% colnames(items)) )) {
 
    items <- as.matrix(items)
     
-    response.freq <- response.frequencies(items)
+    response.freq <- responseFrequency(items)
     item.var <- apply(items,2,sd,na.rm=TRUE)
        bad <- which((item.var==0)|is.na(item.var))   #is this a good idea? 
        #bad <- which(is.na(item.var)) 

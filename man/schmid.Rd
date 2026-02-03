@@ -57,6 +57,9 @@ if(!require(GPArotation)) {
    p.jen <- schmid(jen,digits=2)   #use the oblimin rotation
 p.jen <- schmid(jen,rotate="promax") #use the promax rotation
 }
+
+
+
 }
 \keyword{ multivariate }% at least one, from doc/KEYWORDS
 \keyword{ models }% __ONLY ONE__ keyword per line

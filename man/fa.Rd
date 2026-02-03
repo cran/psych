@@ -14,19 +14,19 @@ fa(r, nfactors=1, n.obs = NA, n.iter=1, rotate="oblimin", scores="regression",
 	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE,	impute="none",
 	min.err = 0.001,  max.iter = 50, symmetric=TRUE, warnings=TRUE, fm="minres",
  	alpha=.1, p=.05, oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor",
- 	correct=.5, weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,...)
+ 	correct=.5, weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,Grice=FALSE,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  	SMC=TRUE, covar=FALSE, missing=FALSE, impute="median", min.err = 0.001, 
 	max.iter=50, symmetric=TRUE, warnings=TRUE, fm="minres", alpha=.1,
 	oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor", correct=.5, 
-	weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,...)
+	weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,Grice=FALSE,...)
 
 fa.pooled(datasets,nfactors=1,rotate="oblimin", scores="regression", 
 	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE,impute="median", min.err = 
 	.001, max.iter=50,symmetric=TRUE, warnings=TRUE, fm="minres", alpha=.1, 
 	p =.05, oblique.scores=FALSE,np.obs=NULL, use="pairwise", cor="cor",
-	correct=.5,	weight=NULL,...) 
+	correct=.5,	weight=NULL,Grice=FALSE,...) 
 
 fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression", 
 	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE, impute="median", 
@@ -46,7 +46,7 @@ fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression",
    \item{n.rotations}{Number of random starts for the rotations.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
-  \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlaton preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
+  \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlation preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
   \item{SMC}{Use squared multiple correlations (SMC=TRUE) or use 1  as initial communality estimate. Try using 1 if imaginary eigen values are reported. If SMC is a vector of length the number of variables, then these values are used as starting values in the case of fm='pa'. }
   \item{covar}{if covar is TRUE, factor the covariance matrix, otherwise factor the correlation matrix}
   \item{missing}{if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean. Specifying impute="none" will not impute data points and thus will have some missing data in the factor scores.}
@@ -56,23 +56,24 @@ fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression",
   \item{symmetric}{symmetric=TRUE forces symmetry by just looking at the lower off diagonal values}
   \item{hyper}{Count number of (absolute) loadings less than hyper. }
   \item{warnings}{warnings=TRUE => warn if number of factors is too many }
-  \item{fm}{Factoring method  fm="minres" will do a minimum residual as will fm="uls".  Both of these use a first derivative.  fm="ols" differs very slightly from "minres" in that it minimizes the entire residual matrix using an OLS procedure but uses the empirical first derivative.  This will be slower.  fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair. fm ="minrank" will do a minimum rank factor analysis. "old.min" will do minimal residual the way it was done prior to April, 2017 (see discussion below).  fm="alpha" will do alpha factor analysis as described in Kaiser and Coffey (1965)}
+  \item{fm}{Factoring method  fm="minres" will do a minimum residual as will fm="uls".  Both of these use a first derivative.  fm="ols" differs very slightly from "minres" in that it minimizes the entire residual matrix using an OLS procedure but uses the empirical first derivative.  This will be slower.  fm="wls" will do a weighted least squares (WLS) solution, fm="gls" does a generalized weighted least squares (GLS), fm="pa" will do the principal factor solution, fm="ml" will do a maximum likelihood factor analysis. fm="minchi" will minimize the sample size weighted chi square when treating pairwise correlations with different number of subjects per pair. fm ="minrank" will do a minimum rank factor analysis.  fm="alpha" will do alpha factor analysis as described in Kaiser and Coffey (1965).  "old.min" will do minimal residual the way it was done prior to April, 2017 (see discussion below). }
   \item{alpha}{alpha level for the confidence intervals for RMSEA}
   \item{p}{if doing iterations to find confidence intervals, what probability values should be found for the confidence intervals}
   \item{oblique.scores}{When factor scores are found, should they be based on the structure matrix (default) or the pattern matrix (oblique.scores=TRUE).  Now it is always false.  If you want oblique factor scores, use tenBerge.  } 
   \item{weight}{If not NULL, a vector of length n.obs that contains weights for each observation. The NULL case is equivalent to all cases being weighted 1.}
   \item{use}{How to treat missing data, use="pairwise" is the default".  See cor for other options.}
 \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
-  "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixed cor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
+  "tet" is tetrachoric, "poly" is polychoric, "mixed" uses \code{\link{mixedCor}} for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
 \item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
 \item{frac}{The fraction of data to sample n.iter times if showing stability across sample sizes}
 \item{datasets}{A list of replication data sets to analyse in fa.pooled. All need to have the same number of variables.}
 \item{smooth}{By default, improper correlations matrices are smoothed.  This is not necessary for factor extraction using fm="pa" or fm="minres", but is needed to give some of the goodness of fit tests. (see notes)}
+\item{Grice}{Grice=TRUE to find factor score indeterminancy using the Grice approach. FALSE (the default) to use procedures discussed by Nicewander (2020).  See notes as well as the discussion in \code{\link{fsi}}.}
 \item{...}{additional parameters, specifically, keys may be passed if using the target rotation, or delta if using geominQ, or whether to normalize if using Varimax}
   
  } 
  
-\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F_{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most commonly preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}). If variables are thought to represent a ``true" or latent part then factor analysis provides an estimate of the correlations with the latent factor(s) representing the data.  If variables are thought to be measured without error, then principal components provides the most parsimonious description of the data.  
+\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F _{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most commonly preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}). If variables are thought to represent a ``true" or latent part then factor analysis provides an estimate of the correlations with the latent factor(s) representing the data.  If variables are thought to be measured without error, then principal components provides the most parsimonious description of the data.  
 
 Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller) than that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.  
 
@@ -117,7 +118,7 @@ Test cases comparing the output to SPSS suggest that the PA algorithm matches wh
 
 Although for items, it is typical to find factor scores by scoring the salient items (using, e.g., \code{\link{scoreItems}}) factor scores can be estimated by regression as well as several other means. There are multiple approaches that are possible (see Grice, 2001) and  one taken here was developed by tenBerge et al.
 (see \code{\link{factor.scores}}). The alternative, which will match factanal is to find the scores using regression --  Thurstone's least squares regression where the weights are found by
-   \eqn{W = R^{-1}S}{W = inverse(R)S} where R is the correlation matrix of the variables ans S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
+   \eqn{W = R^{-1}S}{W = inverse(R)S} and R is the correlation matrix of the variables and S is the structure matrix.  Then, factor scores are just \eqn{Fs = X W}{Fs = X W}.
 
 In the oblique case, the factor loadings are referred to as Pattern coefficients and are related to the Structure coefficients by \eqn{S = P \Phi}{S = P Phi} and thus \eqn{P = S \Phi^{-1}}{P = S Phi^-1}.  When estimating factor scores, \code{\link{fa}} and  \code{\link{factanal}} differ in that \code{\link{fa}} finds the factors from the Structure matrix while \code{\link{factanal}} seems to do it from the Pattern matrix.  Thus, although in the orthogonal case, fa and factanal agree perfectly in their factor score estimates, they do not agree in the case of oblique factors.  Setting oblique.scores = TRUE  will produce factor score estimate that match those of \code{\link{factanal}}.
 
@@ -157,7 +158,9 @@ If using polytomous or dichotomous items, it is perhaps more useful  to find the
 
 For those who like SPSS type output, the measure of factoring adequacy known as the Kaiser-Meyer-Olkin \code{\link{KMO}} test may be found from the correlation matrix or data matrix using the \code{\link{KMO}} function.  Similarly, the Bartlett's test of Sphericity may be found using the  \code{\link{cortest.bartlett}} function.
 
-For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted ).  This is now returned by the fa function as well (e.g. p <- fa(ability)$Vaccounted ).  Just as communalities may be found by the diagonal of Pattern \%*\% t(Structure) so can the variance accounted for be found by diagonal ( t(Structure) \%*\% Pattern.  Note that referred to as SS loadings. 
+For those who want to have an object of the variances accounted for, this is returned invisibly by the print function.  (e.g., p <- print(fa(ability))$Vaccounted ).  This is now returned by the fa function as well (e.g. p <- fa(ability)$Vaccounted ).  Just as communalities may be found by the diagonal of Pattern \%*\% t(Structure) so can the variance accounted for be found by diagonal ( t(Structure) \%*\% Pattern.  Note that these are  referred to as SS loadings. 
+
+
 
 The output from the print.psych.fa function displays the factor loadings (from the pattern matrix, the h2 (communalities) the u2 (the uniquenesses), com (the complexity of the factor loadings for that variable (see below).  In the case of an orthogonal solution, h2 is merely the row sum of the squared factor loadings. But for an oblique solution, it is the row sum of the orthogonal factor loadings (remember, that rotations or transformations do not change the communality).  
 
@@ -198,9 +201,9 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
  
  \item{residual}{The matrix of residual correlations after the factor model is applied. To display it conveniently, use the \code{\link{residuals}} command. }
 
-\item{chi}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived \eqn{\chi^2}{chi^2} based upon the sum of the squared residuals * N.  This will differ slightly from the MLE estimate which is based upon the fitting function rather than the actual residuals.}
+\item{chi}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived \eqn{\chi^2}{chi^2} based upon the sum of the squared residuals * N.  This will differ slightly from the MLE estimate which is based upon the fitting function rather than the actual residuals.  Until January, 2026 these values were calculated from the sum of all of the residuals, but now they are found from the sum of the lower off diagonal elements.  This is more appropriate.  }
   
- \item{rms}{This is the sum of the squared (off diagonal residuals) divided by the degrees of freedom.  Comparable to an RMSEA which, because it is based upon  \eqn{\chi^2}{chi^2}, requires the number of observations to be specified.  The rms is an empirical value while the RMSEA is based upon normal theory and the non-central \eqn{\chi^2}{chi^2} distribution. That is to say, if the residuals are particularly non-normal, the rms value and the associated  \eqn{\chi^2}{chi^2} and RMSEA can differ substantially. } 
+ \item{rms}{This is the sum of the squared (lower off diagonal residuals) divided by the degrees of freedom.  Comparable to an RMSEA which, because it is based upon  \eqn{\chi^2}{chi^2}, requires the number of observations to be specified.  The rms is an empirical value while the RMSEA is based upon normal theory and the non-central \eqn{\chi^2}{chi^2} distribution. That is to say, if the residuals are particularly non-normal, the rms value and the associated  \eqn{\chi^2}{chi^2} and RMSEA can differ substantially. } 
  
  \item{crms}{rms adjusted for degrees of freedom}
  
@@ -215,7 +218,7 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
 
 \item{eBIC}{When normal theory fails (e.g., in the case of non-positive definite matrices), it useful to examine the empirically derived eBIC based upon the empirical \eqn{\chi^2}{chi^2} -  df *log(N). }
 
-\item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. }
+\item{R2}{The multiple R square between the factors and factor score estimates, if they were to be found. (From Nicewander, 2020 (default) or  Grice, 2001).  Derived from R2 is is the minimum correlation between any two factor estimates = 2R2-1. See \code{\link{fsi}} for more information about factor indeterminancy.}
 
 \item{r.scores}{The correlations of the factor score estimates using the specified model, if they were to be found.  Comparing these correlations with that of the scores themselves will show, if an alternative estimate of factor scores is used (e.g., the tenBerge method), the problem of factor indeterminacy.  For these correlations will not necessarily be the same.  }
 
@@ -237,13 +240,17 @@ In response to a request from Asghar Minaei who wanted to combine several imputa
 
 Grice, James W.  (2001), Computing and evaluating factor scores. Psychological Methods, 6, 430-450
 
+Grieder, Silvia and Steiner, Markus. D.  (2021) Algorithmic jingle jungle: A comparison of implementations of principal axis factoring and promax rotation in R and SPSS. Behavior Research Methods. Doi: 10.3758/s13428-021-01581
+
 Harman, Harry and Jones, Wayne (1966) Factor analysis by minimizing residuals (minres), Psychometrika, 31, 3, 351-368.
 
 Hofmann, R. J. ( 1978 ) . Complexity and simplicity as objective indices descriptive of factor solutions. Multivariate Behavioral Research, 13, 247-250.
 
-Grieder, Silvia and Steiner, Markus. D.  (2021) Algorithmic jingle jungle: A comparison of implementations of principal axis factoring and promax rotation in R and SPSS. Behavior Research Methods. Doi: 10.3758/s13428-021-01581
+
 
 Kaiser, Henry F. and Caffrey, John.  Alpha factor analysis, Psychometrika, (30) 1-14.
+
+Nicewander, W. Alan  (2020) A pespective on the mathematical and psychometric aspects of factor indeterminacy.  Multivariate Behavioral Research. 55  DOI 10.1080/00273171.2019.1684872) 
 
 Nguyen, H. V. & Waller, N. G. (in press). Local minima and factor rotations in exploratory factor analysis. Psychological Methods. 
 
@@ -263,8 +270,10 @@ The fac function is the original fa function which is now called by fa repeatedl
 
 SPSS will sometimes use a Kaiser normalization before rotating.  This will lead to different solutions than reported here.  To get the Kaiser normalized loadings, use \code{\link{kaiser}}.
 
-The communality for a variable is the amount of variance accounted for by all of the factors.  That is to say, for orthogonal factors, it is the sum of the squared factor loadings (rowwise).  The communality is insensitive to rotation.  However, if an oblique solution is found, then the communality is not the sum of squared pattern coefficients. In both cases (oblique or orthogonal) the communality is the diagonal of the reproduced correlation matrix where \eqn{_nR_n =  _{n}P_{k  k}\Phi_{k k}P_n'}{nRn = nPk k\Phi k kPn' }  where P is the pattern matrix and \eqn{\Phi} is the factor intercorrelation matrix.     This is the same, of course to multiplying the pattern by the structure: \eqn{R = P S'}{R = PS'} where the Structure matrix is \eqn{S = \Phi P}{S = Phi P}. Similarly, the eigen values are the diagonal of the product \eqn{ _k\Phi_{kk}P'_{nn}P_{k}
+The communality for a variable is the amount of variance accounted for by all of the factors.  That is to say, for orthogonal factors, it is the sum of the squared factor loadings (rowwise).  The communality is insensitive to rotation.  However, if an oblique solution is found, then the communality is not the sum of squared pattern coefficients. In both cases (oblique or orthogonal) the communality is the diagonal of the reproduced correlation matrix where \eqn{_nR_n =  _{n}P_{k  k}\Phi_{k k}P_n'}{nRn = nPk k\Phi k kPn' }  where P is the pattern matrix and \eqn{\Phi} is the factor intercorrelation matrix.     This is the same, of course to multiplying the pattern by the structure: \eqn{R = P S'}{R = PS'} where the Structure matrix is \eqn{S = \Phi P}{S = Phi P}. Similarly, the sum of squared loading values are the diagonal of the product \eqn{ _k\Phi_{kk}P'_{nn}P_{k}
 }{\Phi_{k k}P'_nnP_k}. 
+
+Note that these SS loadings will not match the SS loadings returned by the stats::loading function which assumes orthogonal factors.  Thus, just printing the loadings object returned by fa will not match the results of a normal print of the fa object nor those returned in the Vaccounted object.
  
 
 A frequently asked question is why are the factor names of the rotated solution not in ascending order?  That is, for example, if factoring the 25 items of the bfi, the factor names are MR2   MR3   MR5   MR1   MR4, rather than the seemingly more logical  "MR1" "MR2" "MR3" "MR4" "MR5".  This is for pedagogical reasons, in that factors as extracted are orthogonal and are in order of amount of variance accounted for.  But when rotated (orthogonally) or transformed (obliquely) the simple structure solution does not preserve that order. The factors are still ordered according to variance accounted for, but because rotation changes how much variance each factor explains, the order may not the be the same as the original order.  The factor names are, of course, arbitrary, and are kept with the original names to show the effect of rotation/transformation.  To give them names associated with their ordinal position, simply paste("F", 1:nf, sep="") where nf is the number of factors. See the last example.
@@ -283,7 +292,7 @@ The minres solution has been modified (April, 2107) following suggestions by Hao
 
 Alpha factoring was added in August, 2017 to add to the numerous alternative models of factoring.    
 
-A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output. 
+A few more lines of output were added in August 2017 to show the measures of factor adequacy for different rotations.  This had been available in the results from \code{\link{factor.scores}} but now is added to the fa output.  This was based upon the techniques of Grice (2001).  By default, these measures are now found using methods discussed by Nicewander (2020).  The Grice approach can be used by specifying Grice=TRUE.  See the discussion of factor indeterminacy in \code{\link{fsi}}.
 
 For a comparison of the \code{\link{fa}} to factor analysis using SPSS, see Grieder and Steiner (2021). 
 
@@ -299,6 +308,14 @@ Problems in factor polychoric matrices:  If getting error messages when factorin
 }
 
 \seealso{ \code{\link{principal}} for principal components analysis (PCA).  PCA will give very similar solutions to factor analysis when there are many variables.  The differences become more salient as the number variables decrease.  The PCA and FA models are actually very different and should not be confused.  One is a model of the observed variables, the other is a model of latent variables.    Although some commercial packages (e.g., SPSS and SAS) refer to both as factor models, they are not.  It is incorrect to report doing a factor analysis using principal components.  
+
+\code{\link{CFA}} Added in January, 2026. \code{\link{CFA}} will do a confirmatory factor analysis as specified by a model (using either lavaan syntax or an item keys list).    
+Also available as a confirmatory model is \code{\link{CFA.bifactor}} which will extract a general factor and then a set of group factors.  These algorithms are non-iterative and are limited to no-cross loadings (other than for a general factor).
+
+\code{\link{omega}} estimates \eqn{\omega_{hierarchical}}{omega_{hierarchical}} as well as \eqn{\omega_{total}}{omega_{total}}.  
+
+\code{\link{omegaStats}} will take output from functions that report a general factor and group factors and calculate various omega statistics.
+
 
 \code{\link{irt.fa}} for Item Response Theory analyses using factor analysis, using the two parameter IRT equivalent of loadings and difficulties.
 

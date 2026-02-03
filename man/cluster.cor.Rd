@@ -35,7 +35,7 @@ cluster.cor(keys, r.mat, correct = TRUE,SMC=TRUE,item.smc=NULL,impute=TRUE)
 
 In the case of overlapping keys, (items being scored on multiple scales), \code{\link{scoreOverlap}} will adjust for this overlap by replacing the overlapping covariances (which are variances when overlapping) with the corresponding best estimate of an item's ``true" variance using either the average correlation or the smc estimate for that item.  This parallels the operation done when finding alpha reliability.  This is similar to ideas suggested by Cureton (1966) and Bashaw and Anderson (1966) but uses the smc or the average interitem correlation (default).
 
- A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{fa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlatin procedures using \code{\link{mat.regress}}.
+ A typical use in the SAPA project is to form item composites by clustering or factoring (see \code{\link{fa}}, \code{\link{ICLUST}}, \code{\link{principal}}), extract the clusters from these results (\code{\link{factor2cluster}}), and then form the composite correlation matrix using \code{\link{cluster.cor}}.  The variables in this reduced matrix may then be used in multiple correlation procedures using \code{\link{lmCor}}.
  
  The original correlation is pre and post multiplied by the (transpose) of the keys matrix. 
  

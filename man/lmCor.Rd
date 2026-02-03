@@ -15,21 +15,12 @@
 \usage{
 lmCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
        main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
- #the prior name    
-setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
-       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
+
        
 lmDiagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)    
 
-lmCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
-#an alias to setCor or lmCor
 
-set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
- main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)   
-  
-mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) #the old form
-
-#does not handle formula input
+#does not handle formula input  just does regressions from matrix input
 matReg(x,y,C,m=NULL,z=NULL,n.obs=0,means=NULL,std=FALSE,raw=TRUE,part=FALSE) 
 
 #useful helper functions
@@ -38,6 +29,25 @@ crossValidationBoot(y,x,data,n.iter=100)
 
 matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
       lab=NULL,pch=16,col=1:6,lty=NULL,...)
+      
+      
+# Over the years, the names have changed
+
+ #the prior names for this function and will be deprecated     
+ 
+ lmCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
+
+setCor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
+       main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE, alpha = .05,part=FALSE)
+#a deprecated  alias to lmCor
+
+set.cor(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,
+ main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)    #an old alias 
+  
+mat.regress(y, x,data, z=NULL,n.obs=NULL,use="pairwise",square=FALSE) #the old form
+
+
+
 }
 
 \arguments{
@@ -51,8 +61,8 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
   \item{n.iter}{Number of bootstrap resamples to take in crossValidationBoot}
   \item{use}{Find the correlations using "pairwise" (default) or just use "complete" cases (to match the lm function)}
   \item{std}{Report standardized betas (based upon the correlations) or raw bs (based upon covariances)}
-  \item{part}{z is specified should part (TRUE) or partial (default) correlations be found.}
-  \item{raw}{Are data from a correlation matrix or data matrix?}
+  \item{part}{If z is specified should part (TRUE) or partial (default) correlations be found.}
+  \item{raw}{Are data from a correlation matrix or data matrix?  Used in matReg}
   \item{means}{A vector of means for the data in matReg if giving matrix input}
   \item{main}{The title for lmCor.diagram}
   \item{square}{if FALSE, then square matrices are treated as correlation matrices not as data matrices. In the rare case that one has as many cases as variables, then set square=TRUE.}
@@ -141,6 +151,7 @@ An additional output is the R2 found using Cohen's set correlation (Cohen, 1982)
   \item{t}{t value of beta weights (if n.obs is specified)}
   \item{Probability}{Probability of beta = 0 (if n.obs is specified)}
   \item{shrunkenR2}{Estimated shrunken R2 (if n.obs is specified)}
+  \item{r0}{The zero order correlation between the predictors and the criteria}
   \item{setR2}{The multiple R2 of the set correlation between the x and y sets}
   \item{residual}{The residual correlation matrix of Y with x and z removed}
   \item{ruw}{The unit weighted multiple correlation for each dependent variable}

@@ -27,5 +27,6 @@ function (nvar = 72 ,nsub = 500,
 		item[(item>high) ] <- high   
 		}
 	if (truncate) {item[item < cutpoint] <- 0  }
+	colnames(item) <- paste0("V",1:nvar)
 	return (item) 
 	}  

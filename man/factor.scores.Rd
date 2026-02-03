@@ -6,17 +6,19 @@
 }
 \usage{
 factor.scores(x, f, Phi = NULL, method = c("Thurstone", "tenBerge", "Anderson", 
-       "Bartlett", "Harman","components"),rho=NULL,missing=FALSE,impute="none")}
+       "Bartlett", "Harman","components"),rho=NULL,missing=FALSE,
+       impute="none", Grice=FALSE)}
 \arguments{
   \item{x}{Either a matrix of data if scores are to be found, or a correlation matrix if just the factor weights are to be found.}
   \item{f}{The output from the \code{\link{fa}}, \code{\link{irt.fa}},  \code{\link{factor.rotate}} functions, or a factor loading matrix.}
   \item{Phi}{If a pattern matrix is provided, then what were the factor intercorrelations.  Does not need to be specified if f is the output from the  \code{\link{fa}} or \code{\link{irt.fa}} functions.}
-  \item{method}{Which of four factor score estimation procedures should be used. Defaults to "Thurstone" or regression based weights.  See details below for the other four methods.}
+  \item{method}{Which of four factor score estimation procedures should be used. Defaults to "tenBerge" which is not the method  used by \code{\link{fa}} which uses Thurstone.  See details below for the other four methods.}
   \item{rho}{If x is a set of data and rho is specified, then find scores based upon the fa results and the correlations reported in rho.  Used when scoring fa.poly results.}
   \item{missing}{If missing is TRUE, missing items  are imputed using either the median or mean.  If missing is FALSE, the default, scores are found based upon the mean of the available items for each subject.}
-  \item{impute}{By default, only complete cases are scored.  But, missing data can be imputed using "median" or "mean".  The number of missing by subject is reported.  If impute = "none", missing data are not scored.
+  \item{impute}{By default, only complete cases are scored.  But, missing data can be imputed using "median" or "mean".  The number of missing by subject is reported.  If impute = "none", missing data are not scored.}
+  \item{Grice}{If true, use the Grice approach to factor indeterminancy -- see fsi}
 }
-}
+
 
 \details{Although the factor analysis model is defined at the structural level, it is undefined at the data level.  This is a well known but little discussed problem with factor analysis.  
 
@@ -27,9 +29,9 @@ Factor scores represent estimates of common part of the variables and should not
 For polytomous or dichotmous data, factor scores can be estimated using Item Response Theory techniques (e.g., using \code{link{irt.fa}} and then \code{link{scoreIrt}}.  Such scores are still just factor score estimates, for the IRT model is a latent variable model equivalent to factor analysis.  
 
 \itemize{
-\item method="Thurstone" finds the regression based weights: \eqn{W = R^{-1} F} where R is the correlation matrix and F is the factor loading matrix. 
+\item method="Thurstone" finds the regression based weights: \eqn{W = R^{-1} F} where R is the correlation matrix and F is the factor loading matrix.   This the default for factor scores in \code{\link{fa}} function.
 
-\item method="tenBerge" finds weights such that the correlation between factors for an oblique solution is preserved. Note that  formula 8 in Grice has a typo in the formula for C and should be:
+\item method="tenBerge" finds weights such that the correlation between factors for an oblique solution is preserved. This the default for  \code{\link{factor.scores}}. Note that  formula 8 in Grice has a typo in the formula for C and should be:
  \eqn{L = F \Phi^(1/2) }
  \eqn{C = R^(-1/2) L (L' R^(-1) L)^(-1/2) }
  \eqn{W = R ^(-1/2) C \Phi^(1/2) }
@@ -75,12 +77,15 @@ William Revelle
 f3 <- fa(Thurstone,3 )
 f3$weights  #just the scoring weights
 f5 <- fa(bfi,5) #this does the factor analyis
-my.scores <- factor.scores(bfi,f5, method="tenBerge")
+ten.scores <- factor.scores(bfi,f5, method="tenBerge")$scores
 #compare the tenBerge factor score correlation to the factor correlations
-cor(my.scores$scores,use="pairwise") - f5$Phi  #compare to the f5$Phi values
+sum(cor(ten.scores,use="pairwise") - f5$Phi)^2  #compare to the f5$Phi values
 #compare the default (regression) score correlations to the factor correlations
-cor(f5$scores,use="pairwise")  - f5$Phi
+sum(cor(f5$scores,use="pairwise")  - f5$Phi)^2
 #compare to the f5 solution
+cor2(f5$scores,ten.scores)
+
+
 
 }
 

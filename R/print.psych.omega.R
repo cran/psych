@@ -2,7 +2,8 @@
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,...) { 
 xx <- x
 if(!is.null(x$ci)) {
-x <- x$om} 
+x <- x$om
+ci<- NULL} 
 if(is.null(cut)) cut <- .2
 	 cat( x$title,"\n") 
 	 cat("Call: ")

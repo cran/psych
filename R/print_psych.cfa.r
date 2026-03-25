@@ -1,6 +1,11 @@
 #Developed 12/21/2025
 "print_psych.cfa" <-
 function(x,digits=2,all=FALSE,cut=NULL,sort=FALSE,suppress.warnings=TRUE,...)  {
+# if(!is.null(x$irt)) x<-x$irt
+if(!is.null(x$ci)) {ci <- x$ci
+ x <- x$cf
+ }
+ 
 if(!is.matrix(x) && !is.null(x$fa) && is.list(x$fa)) x <-x$fa   #handles the output from fa.poly
 if(!is.matrix(x))  {if (!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principal Components Analysis") } else {
  cat("Factor Analysis using method = ",x$fm )}  }} else {load <- x
@@ -10,7 +15,7 @@ if(!is.matrix(x))  {if (!is.null(x$fn) ) {if(x$fn == "principal") {cat("Principa
                                                          return()} 
    cat("\nCall: ")
    print(x$Call)
-     
+    
    	rload <- load <- x$loadings  
    	 if(is.null(cut)) cut <- 0   #caving into recommendations to print all loadings
  
@@ -76,15 +81,41 @@ if(nfactors > 1)  {vx <- colSums(load^2) } else {vx <- sum(load^2)}
 }
 #get information from factor stats
 
-if(!is.null(x$R2)) { stats.df <- t(data.frame(sqrt(x$R2),x$R2,2*x$R2 -1)) 
+if(!is.null(x$stats$R2)) { stats.df <- t(data.frame(sqrt(x$stats$R2),x$stats$R2,2*x$stats$R2 -1)) 
 
  rownames(stats.df) <- c("Correlation of (regression) scores with factors  ","Multiple R square of scores with factors ","Minimum correlation of possible factor scores ")
        #  rownames(stats.df) <- colnames(xx$loadings)
 } else  {stats.df <- NULL}
 
+if(!is.null(x$omegaStats)) {    #the normal case
+if(is.null(x$X)) {X <- ci$X} else {X<-x$X}
+nfactors <- ncol(X)
+fnames <- colnames(X)
+
  if(!is.null(stats.df)) { cat("\nMeasures of factor score adequacy          \n")
       print(round(stats.df,digits))}
-      
+   
+
+if(is.null(x$gr.ci)) {  #this is the case of CFA output
+cat("\n Loadings and their 95% confidence intervals\n")
+for(i in 1:nfactors){
+cat("\n Factor ",i, fnames[i], "\n")
+print(round(ci$ci[X[,i]>0,],digits))
+}
+} else { #the case of bifactor output
+cat("\n general factor loadings and their 95% confidence intervals\n")
+print(round(x$gf.ci,digits))
+cat("\n group factor loadings and their 95% confidence intervals\n")
+
+for(i in 1:nfactors){
+cat("\n Factor ",i, fnames[i], "\n")
+print(round(x$gr.ci[X[,i]>0,],digits))
+}
+
+
+}  
+}   
+
 #omega stats
  #two cases:  results from  CFA.bifactor or from omegaStats
      

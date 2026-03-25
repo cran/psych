@@ -5,30 +5,39 @@
 \title{A package for personality, psychometric, and psychological research}
 \description{Overview of the psych package.
 
-The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}} (in \code{\link[psychTools]{psychTools}}), \code{\link{describe}},  \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions.  Two vignettes are included as part of the package.  The intro vignette tells how to install psych and the overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
+The psych package has been developed at Northwestern University to include functions most useful for personality and psychological research but is useful for anyone interested in basic scale construction and evaluation.  Some of the functions (e.g., \code{\link[psychTools]{read.file}}, \code{\link[psychTools]{read.clipboard}} (in \code{\link[psychTools]{psychTools}}), \code{\link{describe}},  \code{\link{describeBy}}, \code{\link{pairs.panels}}, \code{\link{error.bars}} and \code{\link{error.dots}}) are useful for basic data entry and descriptive analyses. Use help(package="psych") or objects("package:psych") for a list of all functions.  Two vignettes are included as part of the package.  The intro vignette tells how to install psych and the overview vignette provides examples of using psych in many applications.  In addition, there are a growing set of tutorials available on the \url{https://personality-project.org/r/} webpages. 
 
-A companion package \code{\link[psychTools]{psychTools}} includes larger data set examples and four more vignettes. 
+A companion package, \code{\link[psychTools]{psychTools}}, includes larger data set examples and four more vignettes. \code{\link[psychTools]{psychTools}} also includes some  basic file manipulation functions and utilities to convert RD files into LaTeX or HTML
 
-Psychometric applications include routines (\code{\link{fa}} for  maximum likelihood (fm="mle"), minimum residual (fm="minres"), minimum rank (fm=minrank)  principal axes (fm="pa") and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. Principal Components Analysis (\code{\link{pca}}) is also available.  Rotations  may be done using factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions (e.g., oblimin, quartimin, varimax, geomin, ...). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). 
+Psychometric applications include routines \code{\link{fa}} for factor analysis using  several diferent algorithms: minimum residual (fm="minres") (the default) , maximum likelihood (fm="mle"), minimum rank (fm=minrank),  principal axes (fm="pa"),  and weighted least squares (fm="wls")  factor analysis  as well as functions to do Schmid Leiman transformations (\code{\link{schmid}}) to transform a hierarchical factor structure into a bifactor solution. 
 
-An alternative approach to factor analysis is Item Cluster Analysis (\code{\link{ICLUST}}). This function is particularly appropriate for exploratory scale construction.
+A recent addition  (in version 2.6.30 does Confirmatory Factor Analysis (\code{\link{CFA}}) using the non-iterative approach of Spearman/Guttman/Harmon as discussed by Dhaene and Rosseel (2025).  This has been extended to do Confirmatory Bifactor Analysis (\code{\link{CFA.bifactor}}) and to do confirmatory Item Response analysis using (\code{\link{irt.CFA}}).
 
-There are a number of functions for finding various reliability coefficients (see Revelle and Condon, 2019). These include the traditional  \code{\link{alpha}}  (found for multiple scales and with more useful output by \code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}}) and  both of McDonald's omega coefficients (\code{\link{omega}}, \code{\link{omegaSem}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.  
+Although frequently confused for with Factor Analysis, Principal Components Analysis (\code{\link{pca}}) is also available. Please note that Principal Components Analysis is not Factor Analysis, for the former is a summary of the observed variables, while the latter models the observed variables in terms of (unobserved) latent variables.  These are very different models and should not be confused.
 
-Multilevel analyses may be done by \code{\link{statsBy}} and  \code{\link{multilevel.reliability}}.
+ Rotations  may be done using factor or components transformations to a target matrix include the standard Promax transformation (\code{\link{Promax}}), a transformation to a cluster target, or to any simple target matrix (\code{\link{target.rot}}) as well as the ability to call many of the GPArotation functions (e.g., oblimin, quartimin, varimax, geomin, ...). Functions for determining the number of factors in a data matrix include Very Simple Structure (\code{\link{VSS}}) and Minimum Average Partial correlation (\code{\link{MAP}}). Parallel Analysis to compare the eigen values of modeled versus randpm data can be done using \code{\link{fa.parallel}}. 
+ 
+An alternative approach to dimension reduction and structural analysis is Item Cluster Analysis (\code{\link{ICLUST}}). This function is particularly appropriate for exploratory scale construction.  The results are sometimes more useful than normal factor analysis. One of the statistics reported is coefficient Beta, an estimate of the worst 
+split half reliability and thus of the size of a general factor. 
+
+There are a number of functions for finding various reliability coefficients (see Revelle and Condon, 2019). These include the traditional  \code{\link{alpha}}  which may be found for multiple scales and with more useful output by \code{\link{scoreItems}}, \code{\link{score.multiple.choice}}), beta (\code{\link{ICLUST}} and  both of McDonald's omega coefficients (\code{\link{omega}}, \code{\link{omegaSem}} and  \code{\link{omega.diagram}}) as well as Guttman's six estimates of internal consistency reliability (\code{\link{guttman}}) and the six measures of Intraclass correlation coefficients (\code{\link{ICC}}) discussed by Shrout and Fleiss are also available.
+
+Many of these reliability statistics assume unidimensionality, which can be indexed using \code{\link{unidim}}.  All of these statistics are reported for multiple scales using the  \code{\link{reliability}} function.
+
+Basic multilevel analyses may be done by \code{\link{statsBy}} and  \code{\link{multilevel.reliability}}.
 
 The \code{\link{scoreItems}}, and \code{\link{score.multiple.choice}} functions may be used to form single or multiple scales from sets of dichotomous, multilevel, or multiple choice items by specifying scoring keys.  \code{\link{scoreOverlap}} correct interscale correlations for overlapping items, so that it is possible to examine hierarchical or nested structures.
 
 Scales can be formed that best predict (after cross validation) particular criteria using \code{\link{bestScales}} using unit weighted or correlation weights. This procedure, also called  the \code{\link{BISCUIT}} algorithm (Best Items Scales that are Cross validated, Unit weighted, Informative, and Transparent) is a simple alternative to more complicated supervised machine learning algorithms.
 
 
-Additional functions make for more convenient descriptions of item characteristics  include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}} and \code{\link{irt.fa}} functions are used to find 2 parameter descriptions of item functioning. \code{\link{scoreIrt}}, \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} do basic IRT based scoring.
+Additional functions make for more convenient descriptions of item characteristics  include 1 and 2 parameter Item Response measures.  The \code{\link{tetrachoric}}, \code{\link{polychoric}}, and \code{\link{irt.fa}}, \code{\link{irt.CFA}} functions are used to find 2 parameter descriptions of item functioning. \code{\link{scoreIrt}}, \code{\link{scoreIrt.1pl}} and \code{\link{scoreIrt.2pl}} do basic IRT based scoring.
 
  A number of procedures have been developed as part of the Synthetic Aperture Personality Assessment (SAPA \url{https://www.sapa-project.org/}) project.  These routines facilitate forming and analyzing composite scales equivalent to using the raw data but doing so by adding within and between cluster/scale item correlations. These functions include extracting clusters from factor loading matrices (\code{\link{factor2cluster}}), synthetically forming clusters from correlation matrices (\code{\link{cluster.cor}}), and finding multiple  ((\code{\link{lmCor}}) and partial ((\code{\link{partial.r}}) correlations from correlation matrices.
  
  If forming empirical scales, or testing out multiple regressions, it is important to cross validate the results.  \code{\link{crossValidation}} will do this on a different data set.
  
-\code{\link{lmCor}} and \code{\link{mediate}} meet the desire to do regressions and mediation analysis from either raw data or from correlation matrices.  If raw data are provided, these functions can also do  moderation analyses.
+\code{\link{lmCor}} and \code{\link{mediate}} meet the desire to do regressions and mediation analysis from either raw data (perhaps with missing values) or from correlation matrices.  If raw data are provided, these functions can also do  moderation analyses.  \code{\link{lmCor}} matches the output of the lm function for complete data, but will work also on correlation or covariance matrices.  The \code{\link{lmCor}} output includes graphical displays of the regression path coefficients.
  
  Functions to generate simulated data with particular structures include \code{\link{sim.circ}} (for circumplex structures), \code{\link{sim.item}} (for general structures) and \code{\link{sim.congeneric}} (for a specific demonstration of congeneric measurement).  The functions \code{\link{sim.congeneric}}  and \code{\link{sim.hierarchical}} can be used to create data sets with particular structural properties. A more general form for all of these is \code{\link{sim.structural}} for generating general structural models.  These are discussed in more detail in the vignette (psych_for_sem).
 
@@ -70,7 +79,9 @@ When given a set of items from a personality inventory, one goal is to combine t
 
 Graphical organizations of cluster and factor analysis output can be done using  \code{\link{cluster.plot}} which plots items by cluster/factor loadings and assigns items to that dimension with the highest loading.  
 
-4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{alpha}}, \code{\link{scoreItems}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}} (both omega hierarchical and omega total). Additional reliability estimates may be found in the \code{\link{guttman}} function.
+4) How well does a particular item composite reflect a single construct?  This is a question of reliability and general factor saturation.  Multiple solutions for this problem result in (Cronbach's) alpha (\code{\link{alpha}}, \code{\link{scoreItems}}), (Revelle's) Beta (\code{\link{ICLUST}}), and (McDonald's) \code{\link{omega}} (both omega hierarchical and omega total). Additional reliability estimates may be found in the \code{\link{guttman}} and \code{\link{reliability}} functions.
+
+How well the item composites reflect a single dimension can be estimated using \code{\link{unidim}}. 
 
 This can also be examined by applying \code{\link{irt.fa}} Item Response Theory techniques using factor analysis of the \code{\link{tetrachoric}} or \code{\link{polychoric}} correlation matrices and converting the results into the standard two parameter parameterization of item difficulty and item discrimination.  Information functions for the items suggest where they are most effective.
 
@@ -93,7 +104,7 @@ When examining personality items, some people like to discuss them as representi
 
 Additional functions for testing the difference between two independent or dependent correlation \code{\link{r.test}}, to find the \code{\link{phi}} or \code{\link{Yule}} coefficients from a two by table, or to find the confidence interval of a correlation coefficient.    
 
-Many data sets are included: \code{\link[psychTools]{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link[psychTools]{ability}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link[psychTools]{galton} }  Galton's data set of the heights of parents and their children. \code{\link[psychTools]{peas}} recreates the original Galton data set of the genetics of sweet peas.  \code{\link[psychTools]{heights}} and
+Many data sets are included either in \code{\link{psych}} or in psychTools.  E.g., \code{\link[psychTools]{bfi}} represents 25 personality items thought to represent five factors of personality, \code{\link[psychTools]{ability}} has 14 multiple choice iq items. \code{\link{sat.act}} has data on self reported test scores by age and gender. \code{\link[psychTools]{galton} }  Galton's data set of the heights of parents and their children. \code{\link[psychTools]{peas}} recreates the original Galton data set of the genetics of sweet peas.  \code{\link[psychTools]{heights}} and
 \code{\link[psychTools]{cubits}} provide even more Galton data, \code{\link[psychTools]{vegetables}} provides the Guilford preference matrix of vegetables.  \code{\link[psychTools]{cities}} provides airline miles between 11 US cities (demo data for multidimensional scaling).
 
 
@@ -115,10 +126,10 @@ Useful data entry and descriptive statistics\cr
 \link{statsBy}       \tab            Find summary statistics by a grouping variable,  including within and between correlation matrices. \cr 
 \link{mlArrange}        \tab          Change multilevel data from wide to long format\cr 
 \link{headtail}        \tab           combines the head and tail functions for showing data sets\cr
-
+\link{bigCor} \tab    Find large correlation matrices rapidly by partitioning the data \cr
 \link{pairs.panels}    \tab          SPLOM and correlations for a data matrix\cr
-\link{corr.test}    \tab             Correlations, sample sizes, and p values  for a data matrix\cr
-\link{cor.plot}    \tab             graphically show the size of correlations in a correlation matrix\cr
+\link{corr.test}    \tab             Correlations, sample sizes, and p values  for a data matrix \cr
+\link{corPlot}    \tab             graphically show the size of correlations in a correlation matrix \cr
 \link{multi.hist}      \tab         Histograms and densities of multiple variables arranged in matrix form\cr
 \link{skew}           \tab          Calculate skew for a vector, each column of a matrix, or data.frame\cr
 \link{kurtosi}        \tab          Calculate kurtosis for a vector, each column of a matrix or dataframe\cr
@@ -136,6 +147,8 @@ Useful data entry and descriptive statistics\cr
 Data reduction through cluster and factor analysis\cr
 
 \tabular{ll}{
+\link{CFA}          \tab        Confirmatory factor analysis. \cr
+\link{CFA.bifactor}  \tab        Bifactor solutions with confirmatory factor model. \cr
 \link{fa}              \tab         Combined function for principal axis, minimum 
 residual,  weighted least squares, \cr
 \tab and maximum likelihood factor analysis\cr
@@ -151,7 +164,7 @@ residual,  weighted least squares, \cr
 \link{fa.parallel.poly}     \tab     Scree test and Parallel analysis for polychoric matrices \cr
 \link{factor.scores}     \tab           Estimate factor scores given a data matrix and factor loadings \cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
-\code{\link{irt.fa}}   \tab          Apply factor analysis to dichotomous items to get IRT parameters \cr
+\code{\link{irt.fa}}   \tab          Apply factor analysis to dichotomous/or polytomous items  items to get IRT parameters \cr
 \code{\link{iclust}}   \tab          Apply the ICLUST algorithm\cr
 \link{ICLUST.diagram}    \tab         The base R graphics output function called by  \code{\link{iclust}} \cr 
 \link{ICLUST.graph}    \tab          Graph the output from ICLUST using the dot language\cr
@@ -173,6 +186,7 @@ residual,  weighted least squares, \cr
 \link{tetrachoric}            \tab    Find tetrachoric correlations and item thresholds \cr
 \link{polyserial}            \tab    Find polyserial and biserial correlations for item validity studies \cr
 \link{mixed.cor}          \tab       Form a correlation matrix from continuous, polytomous, and dichotomous items \cr
+\link{unidim}     \tab How well does a unidimensional model fit the data? \cr
 \link{VSS}            \tab           Apply the Very Simple Structure criterion to determine the appropriate number of factors.\cr
 \link{VSS.parallel}    \tab          Do a parallel analysis to determine the number of factors for a random matrix\cr
 \link{VSS.plot}       \tab           Plot VSS output\cr
@@ -184,11 +198,13 @@ Functions for reliability analysis (some are listed above as well).
 \tabular{ll}{
 \link{alpha}      \tab         Find coefficient alpha and Guttman Lambda 6 for a scale (see also \link{score.items})\cr
 \link{guttman}         \tab          8 different measures of reliability (6 from Guttman (1945) \cr
+\link{splitHalf}      \tab Find all possible split halfs and the respective reliability values.  \cr
 \link{omega}           \tab          Calculate the omega estimates of reliability (requires the GPArotation package)\cr
 \link{omegaSem}           \tab       Calculate the omega estimates of reliability  using a Confirmatory model (requires the sem package)\cr
 \link{ICC}          \tab             Intraclass correlation coefficients  \cr
 \link{score.items}       \tab        Combine items into multiple scales and find alpha\cr
 \link{glb.algebraic} \tab  The greates lower bound found by an algebraic solution (requires Rcsdp).  Written by  Andreas Moeltner \cr
+\link{reliability}    \tab   Multiple estimates of reliability in one function \cr
 }
 
 Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
@@ -213,10 +229,12 @@ Procedures particularly useful for Synthetic Aperture Personality Assessment\cr
 \link{factor.residuals} \tab        Fit = data - model\cr
 \link{factor.rotate}   \tab         ``hand rotate" factors\cr
 \link{guttman}         \tab         8 different measures of reliability\cr
-\link{lmCor}           \tab        standardized multiple regression from raw or correlation matrix input Formerly called \link{lmCor}\cr
+\link{lmCor}           \tab        standardized multiple regression from raw or correlation matrix input Formerly called \link{setCor} \cr
 \link{mat.regress}     \tab         standardized multiple regression from raw or correlation matrix input\cr
 \link{polyserial}       \tab      polyserial and biserial correlations with massive missing data\cr
 \link{tetrachoric}      \tab    Find tetrachoric correlations and item thresholds \cr
+\link{polychoric}      \tab     Find polychoric correlations and item thresholds \cr
+\link{mixedCor}       \tab   Find correlations for continuous, polytomous, and dichotomous data at the same time. \cr
 }
 
 Functions for generating simulated data sets \cr
@@ -271,11 +289,12 @@ Circular statistics (for circadian data analysis) \cr
 
 
  
-Miscellaneous functions\cr
+Miscellaneous functions (Some are in psychTools)\cr
 \cr
 \tabular{ll}{
 \link{comorbidity}   \tab             Convert base rate and comorbity to phi, Yule and tetrachoric\cr
 \link[psychTools]{df2latex}   \tab               Convert a data.frame or matrix to a LaTeX table \cr
+\link[psychTools]{rd2html}    \tab Convert a Rd file to HTML (Useful when preparing documentation)\cr
 \link{dummy.code}     \tab          Convert categorical data to dummy codes \cr
 \link{fisherz}      \tab             Apply the Fisher r to z transform\cr
 \link{fisherz2r}    \tab             Apply the Fisher z to r transform\cr

@@ -4,11 +4,11 @@
 #modified June,16, 2024 to include iclust models
 #modified December 22, 2025 to handle CFA models
 anova.psych <- function(object,...) {
-#if(length(class(object)) > 1)  { value <- class(object)[2] } else {value <- NA}
+
 Call <- match.call()
 n.models <- length(Call)-1
 
-
+#figure out which kind of anova to do
  if(length(class(object)) > 1)  {
     names <- cs(omega,fa, lmCor,mediate, iclust,CFA, CFA.bifactor)
     value <- inherits(object,names,which=TRUE)   # value <- class(x)[2]

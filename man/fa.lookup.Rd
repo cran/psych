@@ -14,7 +14,7 @@
 \usage{
 lookup(x,y,criteria=NULL)
 lookupItems(content=NULL,dictionary=NULL,search=c("Item","Content","item"))
-fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE)
+fa.lookup(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE,maxlength=NULL)
 item.lookup(f,m, dictionary,cut=.3, digits = 2) 
 itemSort(m, dictionary, ascending=TRUE, digits = 2)
 keys.lookup(keys.list,dictionary)
@@ -40,6 +40,7 @@ lmCorLookup(x,dictionary=NULL,cut=0,digits=2,p=.05)
 \item{suppress.names}{In lookupFromKeys, should we suppress the column labels}
 \item{p}{Show lmCor regressions with probability < p}
 \item{ascending}{order to sort the means in itemSort -- see dfOrder}
+\item{maxlength}{If specified, just print the the first maxlength characters}
   
 }
 \details{

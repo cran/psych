@@ -1,6 +1,28 @@
 \name{NEWS}
 \title{News for Package 'psych'}
 
+ \section{Changes in psych version 2.6.3(2026-03-21}{
+ \subsection{Additions}{
+   \itemize{
+   \item Added scores as an option to irt.CFA to find irt based confirmatory scores.
+   \item Added irt.CFA to allow IRT based on the confirmatory factor model.
+   \item Added  bootstrap resampling to CFA and CFA.bifactor to provide confidence intervals.
+    \item Replaced biplot.psych with biPlot.  Deprecated biplot.psych
+    \item Added a trivial but useful function r2alpha
+    \item Added the ability to do fa.lookup on CFA output
+    \item Added a maxlength parameter to fa.lookup
+    \item Cleaned up documentation for psych
+    }
+    }
+ \subsection{Bugs Fixed}{
+  \itemize{
+   \item fixed a call to response.frequencies in alpha that should have been responseFrequency to avoid the deprecation warning. Reported by Jacob Junger
+   \item Fixed the call to print_psych.cfa to include the factor score correlation estimates.
+   \item Fixed a very subtle bug io describeBy when called by with -- the bug was in char2numeric which worked on arrays, not single vectors.  (Bug reported by Steven Zhou.)
+  
+   }
+   }
+}
 
  \section{Changes in psych version 2.6.1(2026-01-24}{
  \subsection{Additions}{

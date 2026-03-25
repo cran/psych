@@ -1,11 +1,13 @@
 #A number of useful helper functions
-#added January, 2012
+#originally added January, 2012
+#others have been added sporadically
 #most are public, some are local just for me
 
 #a dummy function to allow the help to find misc
 "psych.misc" <-
 function() {}
 
+#Show and return the lower off diagonal matrix with nice printing
 "lowerMat" <- 
 function(R,digits=2,minlength=5) {
    lowleft <- lower.tri(R,diag=TRUE)
@@ -30,7 +32,10 @@ function(R,digits=2,minlength=5) {
 	print(fx[(k+1):nvar,(k+1):min((k1+k),nvar)],quote=FALSE)}
 	}
 	invisible(R[lower.tri(R,diag=FALSE)])}
-	
+
+#Find correlations using various options
+#return invisibly the correlation matrix
+#show the lower offdiagonal matrix
 "lowerCor" <- 
 function(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE) {
 nvar <- NCOL(x)
@@ -49,7 +54,6 @@ switch(cor, cor = {
             R <- mixedCor(x)$rho
         })
 
-  # R <- cor(x,use=use,method=method)
    if(show) lowerMat(R,digits,minlength=minlength)
    invisible(R)
    }
@@ -95,13 +99,14 @@ return(f)
 
 
 
-
-#and futher patched May 10, 2017 to get the right denominator (I was dividing by n-1 - lag instead of n-lag
-#patched March 1, 2017 to get the df right for lags 
 #developed January 10, 2012 to find the mean square of successive differences
 #see Von Neuman et al. 1941
+#and futher patched May 10, 2017 to get the right denominator (I was dividing by n-1 - lag instead of n-lag
+#patched March 1, 2017 to get the df right for lags 
+
 #added the minus 1 to the case of a single vector.  Sept 21, 2017
 #the matrix version was correct, just not the single case version
+
 "mssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
 if(is.null(group)) {
 if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x)) -lag )} else {
@@ -254,10 +259,11 @@ return(y)}
  #modified July 4, 2017 to allow for omega output as well
  #modified June 23, 2018 to limit to top n items per factor and abs(loading) > cut
  #modified April 30, 2020 to include the ability to handle bassAckward output
+ #2/21/26 added CFA output  and added the maxlength parameter
 "fa.lookup"  <-
-   function(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE) {
+   function(f,dictionary=NULL,digits=2,cut=.0,n=NULL,sort=TRUE, maxlength=NULL) {
     omega <- bassAck <- none <- lavaan <- NA    #weird requirement to avoid being global
-   if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust,bassAck, none)
+   if(length(class(f)) > 1){ obnames <- cs(omega, fa, principal, iclust,bassAck, CFA,none)
      value <- inherits(f, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}}
    if(sort & (value !="bassAck")) {f <- fa.sort(f)}
@@ -283,6 +289,9 @@ return(y)}
                f <- fa.sort(f)
                colnames(f) <- paste0("F",1:ncol(f))           
     },
+    CFA = {h2 <- f$communality
+              f <- f$loading 
+              com <- NULL       },
     none = {f <- f
             h2 <- NULL})
     
@@ -294,8 +303,14 @@ return(y)}
    rownames(f) <- ord
    if(!is.null(dictionary))  { 
    contents <- lookup(rownames(f),dictionary)} else {message("fa.lookup requires a dictionary, otherwise just use fa.sort")}
-   contents <- format(contents, justify="left")
-   if(!is.null(h2)) {results <- data.frame(round(unclass(f),digits=digits),h2=round(h2,digits=digits),com=round(com,digits=digits))} else {
+
+  if(!is.null(maxlength) )  contents <- apply(contents,1,substr, 1, maxlength)
+  contents <- format(contents, justify="left")
+   if(!is.null(h2)) {
+   		if(!is.null(com)){ results <- data.frame(round(unclass(f),digits=digits),h2=round(h2,digits=digits),com=round(com,digits=digits))
+   	      } else {
+   	results <- data.frame(round(unclass(f),digits=digits),h2=round(h2,digits=digits))
+         } } else {
    results <- data.frame(round(unclass(f),digits=digits))}
    
    results <- merge(results,contents,by="row.names",all.x=TRUE,sort=FALSE)
@@ -612,7 +627,7 @@ text(x,y-2,"Unreliable but Valid")
 # print(round(R,digits))
 # invisible(R)}
 
-#finally added the char2numeric so it will not choke on character variables   1/3/21
+#finally fixed the char2numeric so it will not choke on character variables   1/3/21
 
 #added the cor option 11/18/23
 "cor2" <- function(x,y=NULL,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE,pval=FALSE) {
@@ -694,6 +709,8 @@ pretty}
 "char2numeric" <- function(x,flag=TRUE) {
 #convert non numeric (factors, characters, logical) to numeric
  nvar <- NCOL(x)
+ if(is.matrix(x)) x <- data.frame(x)
+ if((nvar ==1 ) && (!is.data.frame(x))) {x <- as.character(x) } else {
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
@@ -702,6 +719,7 @@ pretty}
                          if(flag) colnames(x)[i] <- paste0(colnames(x)[i],"*")
                           }                     
               } 
+              }
               invisible(x)} 
               
 # added the is.logical test  23/06/24

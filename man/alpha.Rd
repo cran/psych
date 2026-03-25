@@ -3,6 +3,7 @@
 \alias{alpha.scale}
 \alias{alpha.ci}
 \alias{alpha2r}
+\alias{r2alpha}
 
 \title{Find two estimates of reliability: Cronbach's alpha and Guttman's Lambda 6. }
 \description{
@@ -15,6 +16,7 @@ alpha(x, keys=NULL,cumulative=FALSE, title=NULL, max=10,na.rm = TRUE,
    )
 alpha.ci(alpha,n.obs,n.var=NULL,p.val=.05,digits=2) #returns an invisible object
 alpha2r(alpha, n.var)
+r2alpha(r, n.var)
 }
 
 \arguments{
@@ -36,6 +38,7 @@ alpha2r(alpha, n.var)
   \item{n.var}{Number of items in the scale (to find r.bar)}
   \item{p.val}{width of confidence interval (pval/2 to 1-p.val/2) }
   \item{digits}{How many digits to use for alpha.ci}
+  \item{r}{The average r to use in r2alpha}
 }
 \details{Alpha is one of several estimates of the internal consistency reliability of a test.
 
@@ -156,7 +159,7 @@ alpha(r9)
 # examples of two independent factors that produce reasonable alphas
 #this is a case where alpha is a poor indicator of unidimensionality
 
-two.f <- sim.item(8)$item
+two.f <- sim.item(8,categorical=TRUE)$item
 #specify which items to reverse key by name
  alpha(two.f,keys=c("V3","V4","V5","V6"))
  cov.two <- cov(two.f)

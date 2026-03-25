@@ -1,18 +1,21 @@
 #modified June 25, 2018 to handle omegaSem output as well
 #modified October 9, 2015 to add the NA option 
 #January 27, 2014  added fa.congruence to clean up calls
-
+#made x a list for easier input
 #modified March 12 to allow for a list of factor solutions
 #Modified December 11, 2019 to use inherits rather than class 
+#added CFA, CFA.bifactor, and irt.fa as options  March 3, 2026
 "factor.congruence" <-
-function (x,y=NULL,digits=2,use=NULL,structure=FALSE) {
+function (x,y=NULL, digits=2,use=NULL,structure=FALSE) {
    fa.congruence(x=x,y=y,digits=digits,use=use,structure=structure) }
 
 "fa.congruence" <-
  function (x,y=NULL,digits=2,use=NULL,structure=FALSE) {
  direct <- extend <-  esem <- factanal <- lavaan <-  other  <- NA
-  obnames <- cs(fa, omega, omegaSem, directSl, direct, omegaDirect, principal, iclust,extend,esem, CFA, CFA.bifactor, factanal, lavaan)
-
+  obnames <- cs(fa, omega, omegaSem, directSl, direct, omegaDirect, principal, iclust,extend,esem, CFA, CFA.bifactor, factanal, lavaan,irt.fa)
+#clx <- class(x)
+#x <- list(x)    #this allows for easier input of multiple comparisons
+#class(x) <- clx
 if(is.null(y) && is.list(x)) {
 	n <- length(x)
 		for (i in 1:n) {
@@ -36,6 +39,8 @@ if(is.null(y) && is.list(x)) {
    				  CFA = {xi <- xi$loadings},
    				  CFA.bifactor = {xi <- xi$loadings},
    				  lavaan = {xi <- xi@Model@GLISTS$lambda},
+   				  irt.fa = {xi <- xi$fa$loadings},
+   				  
    				 other = {if(inherits(xi, "factanal")) {xi <- xi$loadings} else {xi <- as.matrix(xi)}}
    				 )
    				 if(i==1) {xg <- xi} else {xg <- cbind(xg,xi)} 
@@ -62,6 +67,7 @@ if(length(class(x)) >1 ) {#cln <- class(x)[2]} else {cln <- "other"}
    				   CFA = {x <- x$loadings},
    				    CFA.bifactor = { x<- x$loadings},
    				     lavaan = {x <- x@Model@GLIST$lambda},
+   				     irt.fa = {x <- x$fa$loadings},
    				  other = {if(inherits(x,  "factanal")) {x <- x$loadings} else {
    				 
    				 if(inherits(x,"lavaan")) {x<- x@Model@GLIST$lambda}   else {x <- as.matrix(x)}}
@@ -88,11 +94,12 @@ if(length(class(y)) > 1) {   #{ cln <- class(y)[2] } else {cln <- "other"}
    				  CFA = {y <- y$loadings},
    				   CFA.bifactor = { y<- y$loadings},
    				  lavaan = {y <- y@Model@GLIST$lambda},
+   				  irt.fa ={y <- y$fa$loadings},
    				  other = {if(inherits(y, "factanal")) {y <- y$loadings} else 
    				  if(inherits(y,"lavaan")) {y<- y@Model@GLIST$lambda}  else {y <- as.matrix(y)}}
    				 )
 
-   
+
    if(any(is.na(x) | any(is.na(y) ))) {warning("Some loadings were missing.")
         if(!is.null(use)) {message("Analysis is  done on complete cases") 
      if(any(is.na(x))) {

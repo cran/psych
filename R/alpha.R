@@ -63,7 +63,7 @@
             x <- x[,-bad] 
             nvar <- nvar - n.bad
              }
-        if(discrete) {response.freq <- response.frequencies(x,max=max) } else {response.freq=NULL} #added 12/4/23
+        if(discrete) {response.freq <- responseFrequency(x,max=max) } else {response.freq=NULL} #added 12/4/23
         
          C <- cov(x,use=use)
          R <- cor(x,use=use)} else {C <- x
@@ -292,3 +292,7 @@ invisible(result)
 alpha2r <- function(alpha,n.var) {
    r.bar <- alpha/(n.var - alpha*(n.var-1))
   r.bar}
+  
+r2alpha <- function(r,n.var) {
+ alpha <- (n.var * r)/(1 + (n.var-1) * r)
+ alpha}

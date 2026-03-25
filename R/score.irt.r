@@ -387,14 +387,14 @@ if(!is.null(keys) && is.list(keys)){   select <- sub("-","",unlist(keys))
 if(!is.null(keys) && (is.vector(keys)))  keys <- matrix(keys)
 if (length(class(stats)) > 1) {
     if(!is.null(keys) && is.vector(keys)) keys <- as.matrix(keys)
-    none <- irt.poly <- NA  #just to get around a compiler warning
-     obnames <- cs(irt.poly, irt.fa, fa, tau, none)
+    none <- irt.poly <-irt.cfa <-  NA  #just to get around a compiler warning
+     obnames <- cs(irt.poly, irt.fa, irt.cfa, fa, tau, none)
      value <- inherits(stats, obnames, which=TRUE)
 			   if (any(value > 1)) {value <- obnames[which(value >0)]} else {value <- "none"}
   
  switch(value,
     irt.poly = {scores <- score.irt.poly(stats$irt,items,keys,cut,bounds=bounds,mod=mod) },
-    
+    irt.cfa = {scores <- score.irt.2(stats=stats,items=items,keys=keys,cut,bounds=bounds,mod=mod)},
     irt.fa =   {scores <- score.irt.2(stats$irt,items,keys,cut,bounds=bounds,mod=mod)},
     
     fa = {tau <- irt.tau(items)  #this is the case of a factor analysis to be applied to irt

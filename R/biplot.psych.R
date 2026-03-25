@@ -3,9 +3,21 @@
 #The code for the two dimensional case is adapted (heavily) from the stats:::biplot function
 #corrected April 9, 2015 to allow multiple biplots in the same window 
 #Seriously modified June 25, 2016 to allow better control for labels, as well as just generally cleaner code
+#Switched name to biPlot to be a cleaner call  2/10/26
 
 "biplot.psych" <-
-function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...) {
+function(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
+   maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...) {
+#biplot.psych has been deprecated as of 2/10/26
+warning("biplot.psych has been deprecated,  please use biPlot.")
+biPlot(x, labels=NULL,cex=c(.75,1),main=main,hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...)}
+
+
+biPlot <- function(x, labels=NULL,cex=c(.75,1),main="BiPlot from fa",
+     hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
+    maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,
+   cuts=1,cutl=.0,group=NULL,smoother = FALSE,vars=TRUE,...) {
+
 if(is.null(x$scores)) stop("I am sorry, but Biplot requires factor/component scores. \nYou need to  run fa/pca from the raw data")
 op <- par()
 old.par <- par(no.readonly = TRUE)

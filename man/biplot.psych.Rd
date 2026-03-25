@@ -1,13 +1,21 @@
-\name{biplot.psych}
+\name{biPlot}
+\alias{biPlot}
 \alias{biplot.psych}
+
 \title{Draw biplots of factor or component scores by factor or component loadings}
 \description{Extends the biplot function to the output of \code{\link{fa}}, \code{\link{fa.poly}}  or \code{\link{principal}}. Will plot factor scores and factor loadings in the same graph.  If the number of factors > 2, then all pairs of factors are plotted. Factor score histograms are plotted on the diagonal. The input is the resulting object from \code{\link{fa}}, \code{\link{principal}}, or \code{\link{fa.poly}} with the scores=TRUE option. Points may be colored according to other criteria.
 }
 \usage{
-\method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",
+biPlot(x, labels=NULL,cex=c(.75,1),main="BiPlot from fa",
 hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
 maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,
 cuts=1,cutl=.0,group=NULL,smoother=FALSE,vars=TRUE,...)
+
+#replaces the deprecated function
+\method{biplot}{psych}(x, labels=NULL,cex=c(.75,1),main="Biplot from fa",
+hist.col="cyan",xlim.s=c(-3,3),ylim.s=c(-3,3),xlim.f=c(-1,1),ylim.f=c(-1,1),
+maxpoints=100,adjust=1.2,col,pos, arrow.len = 0.1,pch=16,choose=NULL,
+cuts=1,cutl=.0,group=NULL,smoother=FALSE,vars=TRUE,...) #deprecated
 }
 
 \arguments{
@@ -69,32 +77,32 @@ In order to just plot the loadings, use \code{\link{fa.plot}}.  Or, if we want t
 #the standard example
 data(USArrests)
 fa2 <- fa(USArrests,2,scores=TRUE)
-biplot(fa2,labels=rownames(USArrests))
+biPlot(fa2,labels=rownames(USArrests))
 
 # plot the 3 factor solution
 #data(bfi)
 fa3 <- fa(bfi[1:200,1:15],3,scores=TRUE)
-biplot(fa3)
+biPlot(fa3)
 #just plot factors 1 and 3 from that solution
-biplot(fa3,choose=c(1,3))
+biPlot(fa3,choose=c(1,3))
 
 #
 fa2 <- fa(bfi[16:25],2)  #factor analysis
 fa2$scores <- fa2$scores[1:100,]  #just take the first 100
 #now plot with different colors and shapes for males and females
-biplot(fa2,pch=c(24,21)[bfi[1:100,"gender"]],
+biPlot(fa2,pch=c(24,21)[bfi[1:100,"gender"]],
 group =bfi[1:100,"gender"],
    main="Biplot of Openness and Neuroticism by gender")
 
 ## An example from the correlation matrix
 r <- cor(bfi[1:200,1:10], use="pairwise") #find the correlations
 f2 <- fa(r,2) 
-#biplot(f2)  #this throws an error    (not run)
+#biPlot(f2)  #this throws an error    (not run)
 
 #f2 does not have scores, but we can find them
 f2$scores <- factor.scores(bfi[1:200,1:10],f2)
 
-biplot(f2,main="biplot from correlation matrix and factor scores")
+biPlot(f2,main="biplot from correlation matrix and factor scores")
 
 
 #or create a new object with the scores
@@ -106,7 +114,7 @@ x <- list()
 x$scores <- factor.scores(bfi[1:200,1:10],f2)
 x$loadings <- f2$loadings
 class(x) <- c('psych','fa')
-biplot(x,main="biplot from correlation matrix combined with factor scores")
+biPlot(x,main="biPplot from correlation matrix combined with factor scores")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

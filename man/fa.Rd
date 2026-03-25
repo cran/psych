@@ -73,9 +73,10 @@ fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression",
   
  } 
  
-\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F _{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most commonly preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}). If variables are thought to represent a ``true" or latent part then factor analysis provides an estimate of the correlations with the latent factor(s) representing the data.  If variables are thought to be measured without error, then principal components provides the most parsimonious description of the data.  
+\details{Factor analysis is an attempt to approximate a correlation or covariance matrix with one of lesser rank.  The basic model is that \eqn{_nR_n \approx _{n}F _{kk}F_n'+ U^2}{nRn = nFk kFn' + U2} where k is much less than n. There are many ways to do factor analysis, and maximum likelihood procedures are probably the most commonly preferred (see \code{\link{factanal}} ).  The existence of uniquenesses is what distinguishes factor analysis from principal components analysis (e.g., \code{\link{principal}}). If variables are thought to represent a ``true" or latent part then factor analysis provides an estimate of the correlations with the latent factor(s) representing the data.  If variables are thought to be measured without error, then principal components provides the most parsimonious description of the data.    
 
-Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller) than that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.  
+Factor loadings will be smaller than component loadings for the later reflect unique error in each variable. The off diagonal residuals for a factor solution will be superior (smaller) than that of a component model.  Factor loadings can be thought of as the asymptotic component loadings as the number of variables loading on each factor increases.
+See Widaman, 1993, 2018, for  very thorough discussions of why the factor model and the component model should not be confused.  
 
 The fa function will do factor analyses using one of six different algorithms: minimum residual (minres, aka ols, uls), principal axes,  alpha factoring, weighted least squares, minimum rank, or maximum likelihood.
 
@@ -261,6 +262,12 @@ Revelle, William. (in prep) An introduction to psychometric theory with applicat
 Shapiro, A. and ten Berge, Jos M. F, (2002) Statistical inference of minimum rank factor analysis.  Psychometika, (67) 79-84.
 
 ten Berge, Jos M. F. and Kiers, Henk A. L. (1991). A numerical approach to the approximate and the exact minimum rank of a covariance matrix. Psychometrika, (56) 309-315. 
+
+Widaman, K.F. (1993) Common Factor Analysis Versus Principal Component
+Analysis: Differential Bias in Representing Model
+Parameters? Multivariate Behavioral Research, 28 (3), 263-311.
+
+Widaman, K.F. (2018) On common factor and principal component representations of data: Implications for theory and for confirmatory replications. Structural Equation Modeling: A Multidisciplinary Journal (25) 829-847. 
 }
 \author{ William Revelle }
 

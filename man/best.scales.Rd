@@ -155,7 +155,7 @@ This is a very computationally intensive function which can be speeded up consid
 
 Dawes, R.M. (1979) The robust beauty of improper linear models in decision making, American Psychologist, 34, 571-582.
 
-Elleman, L. G., McDougald, S. K., Condon, D. M., & Revelle, W. 2020 (in press). That takes the BISCUIT: A comparative study of predictive accuracy and parsimony of four statistical learning techniques in personality data, with data missingness conditions.  European Journal of Psychological Assessment. (Preprint available at https://psyarxiv.com/tuqap/)
+Elleman, L. G., McDougald, S. K., Condon, D. M., & Revelle, W. 2020 . That takes the BISCUIT: A comparative study of predictive accuracy and parsimony of four statistical learning techniques in personality data, with data missingness conditions.  European Journal of Psychological Assessment. 36. (6) 948-958/ (Open source copy available at https://personality-project.org/revelle/publications/elleman.20.pdf)
 
 Revelle, W.  (in preparation) An introduction to psychometric theory with applications in {R}. Springer.  (Available online at \url{https://personality-project.org/r/book/}). 
 

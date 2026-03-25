@@ -521,7 +521,7 @@ iclust.sort = {
      x$sort[4:nvar] <- round(x$sort[4:nvar],digits)
      print(x$sort)
        },
-
+irt.cfa = {print(x$irt)},
    
 irt.fa = {
    cat("Item Response Analysis using Factor Analysis \n")

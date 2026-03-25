@@ -35,7 +35,7 @@ lmCor = {lmDiagram(fit,...)},
 lm = {lmDiagram(fit, ...)},
 mediate ={mediate.diagram(fit,...)},
 fa.multi ={fa.multi.diagram(fit,...)},
-CFA = {fa.diagram(fit,...)},
+CFA = {fa.diagram(fit$cfa,...)},
 CFA.bifactor ={omega.diagram(fit,...)}
 )
 }

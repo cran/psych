@@ -31,7 +31,7 @@ directSl(m,nfactors=3,fm="minres",rotate="oblimin",cut=.3)
   \item{m}{A correlation matrix, or a data.frame/matrix of data, or (if Phi) is specified, an oblique factor pattern matrix }
   \item{nfactors}{Number of factors believed to be group factors}
  \item{n.iter}{How many replications to do in omega for bootstrapped estimates}
-  \item{fm}{factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, fm="pc" for principal components (see note), or  fm="ml" for maximum likelihood.}
+  \item{fm}{  factor method (the default is minres)  fm="pa" for principal axes, fm="minres" for a minimum residual (OLS) solution, or fm="ml" for maximum likelihood. Although fm="pc" for principal components is possible, it is not a latent variable model and should be avoided (see note). Using fm="pc" will inflate the correct values.}
   \item{poly}{should the correlation matrix be found using polychoric/tetrachoric or normal Pearson correlations}
   \item{key}{a vector of +/- 1s to specify the direction of scoring of items.  The default is to assume all items are positively keyed, but if some items are reversed scored, then key should be specified.}
   \item{flip}{If flip is TRUE, then items are automatically flipped to have positive correlations on the general factor. Items that have been reversed are shown with a - sign.}
@@ -67,7 +67,7 @@ McDonald has proposed coefficient omega_hierarchical (\eqn{\omega_h}) as an esti
 
 One way to find \eqn{\omega_h}{omega_h} is to do a factor analysis of the original data set, rotate the factors obliquely, factor that correlation matrix, do a   Schmid-Leiman (\link{schmid}) transformation to find general factor loadings, and then find \eqn{\omega_h}{omega_h}.  Here we present code to do that.  
 
-\eqn{\omega_h}{omega_h} differs as a function of how the factors are estimated.  Four options are available, three use the \code{\link{fa}} function but with different factoring methods: the default does a minres factor solution, fm="pa"  does a principle axes factor analysis  fm="mle" does a maximum likelihood solution; fm="pc" does a principal components analysis using (\code{\link{principal}}).  
+\eqn{\omega_h}{omega_h} differs as a function of how the factors are estimated.  Four options are available, three use the \code{\link{fa}} function but with different factoring methods: the default does a minres factor solution, fm="pa"  does a principle axes factor analysis  fm="mle" does a maximum likelihood solution; fm="pc" does a principal components analysis using (\code{\link{principal}}). (But see Widaman, 1993, 2018 for important discussions of PCA should not be confused with factor analytic techniques.)  
 
 For ability items, it is typically the case that all items will have positive loadings on the general factor.  However, for non-cognitive items it is frequently the case that some items are to be scored positively, and some negatively.  Although probably better to specify which directions the items are to be scored by specifying a key vector, if flip =TRUE (the default), items will be reversed so that they have positive loadings on the general factor.  The keys are reported so that scores can be found using the \code{\link{scoreItems}} function.  Arbitrarily reversing items this way can overestimate the general factor. (See the example with a simulated circumplex).
 
@@ -185,6 +185,12 @@ Revelle, W. and Zinbarg, R. E. (2009) Coefficients alpha, beta, omega and the gl
 
 Waller, N. G. (2017) Direct {Schmid-Leiman} Transformations and Rank-Deficient Loadings Matrices.  Psychometrika.  DOI: 10.1007/s11336-017-9599-0
 
+Widaman, K.F. (1993) Common Factor Analysis Versus Principal Component
+Analysis: Differential Bias in Representing Model
+Parameters? Multivariate Behavioral Research, 28 (3), 263-311.
+
+Widaman, K.F. (2018) On common factor and principal component representations of data: Implications for theory and for confirmatory replications. Structural Equation Modeling: A Multidisciplinary Journal (25) 829-847
+
  Zinbarg, R.E., Revelle, W., Yovel, I., & Li. W.  (2005). Cronbach's Alpha, Revelle's Beta, McDonald's Omega: Their relations with each and two alternative conceptualizations of reliability. Psychometrika. 70, 123-133.  \url{https://personality-project.org/revelle/publications/zinbarg.revelle.pmet.05.pdf}
 
 Zinbarg, R., Yovel, I. & Revelle, W.  (2007).  Estimating omega  for structures containing two group factors:  Perils and prospects.  Applied Psychological Measurement. 31 (2), 135-157.
@@ -212,10 +218,12 @@ Omega returns factor scores based upon the Schmid-Leiman transformation.  To get
 Consider the case of the raw data in an object data.  Then 
 
 f3 <- fa(data,3,scores="tenBerge", oblique.rotation=TRUE
+
 f1 <- fa(f3$scores)
+
 hier.scores <- data.frame(f1$scores,f3$scores)
 
-When doing fm="pc", principal components are done for the original correlation matrix, but minres is used when examining the intercomponent correlations.   A warning is issued that the method was changed to minres for the higher order solution.  omega is a factor model, and finding loadings using principal components will overestimate the resulting solution.  This is particularly problematic for the amount of group saturation, and thus the omega.group statistics are overestimates.  
+When doing fm="pc" option, principal components are done for the original correlation matrix, but minres is used when examining the intercomponent correlations.   A warning is issued that the method was changed to minres for the higher order solution.  omega is a factor model, and finding loadings using principal components will overestimate the resulting solution.  This is particularly problematic for the amount of group saturation, and thus the omega.group statistics are overestimates.  
 
 The last three lines of omega report "Total, General and Subset omega for each subset".  These are available as the omega.group object in the output.
 

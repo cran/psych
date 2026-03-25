@@ -3,6 +3,7 @@
 \alias{irt.select}
 \alias{fa2irt}
 
+
 \title{Item Response Analysis by Exploratory Factor Analysis of tetrachoric/polychoric correlations}
 \description{
 Although exploratory factor analysis and Item Response Theory seem to be very different models of binary data, they can provide equivalent parameter estimates of item difficulty and item discrimination.  Tetrachoric or polychoric correlations of a data set of dichotomous or polytomous items may be factor analysed using a minimum residual or maximum likelihood factor analysis and the result loadings transformed to item discrimination parameters.  The tau parameter from the tetrachoric/polychoric correlations combined with the item factor loading may be used to estimate item difficulties. 
@@ -12,6 +13,7 @@ irt.fa(x,nfactors=1,correct=TRUE,plot=TRUE,n.obs=NULL,rotate="oblimin",fm="minre
         sort=FALSE,...)
 irt.select(x,y)
 fa2irt(f,rho,plot=TRUE,n.obs=NULL)
+
 }
 \arguments{
   \item{x}{A data matrix of dichotomous or discrete items, or the result of \code{\link{tetrachoric}} or \code{\link{polychoric}}   }

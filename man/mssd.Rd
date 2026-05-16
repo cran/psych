@@ -22,7 +22,7 @@ autoR(x,group=NULL,lag=1,na.rm=TRUE,use="pairwise")
 }
 \details{When examining multiple measures within subjects, it is sometimes useful to consider the variability of trial by trial observations in addition to the over all between trial variation.  The Mean Square of Successive Differences (mssd) and root mean square of successive differences (rmssd) is just 
 
-\eqn{\sigma^2 = \Sigma(x_i - x_{i+1})^2 /(n-lag) } 
+\eqn{\sigma^2 = \Sigma(x_i - x_{i+lag})^2 /(n-lag) } 
 
 Where n-lag is used because there are only n-lag cases.
 

@@ -210,7 +210,7 @@ To read from a file saved on a remote server, you just need to specify the file 
 <<>>=
 file.name <-
   "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
-if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq}
+if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq.txt}
 @
 
 \subsubsection{Read from the clipboard}
@@ -280,8 +280,8 @@ describe(my.data)
 
 ~\
 <<>>=
-fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
-if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq}  #because the suffix is not a standard one, we need to specify the file type
+fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq.txt}  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before
  describe(my.data)
@@ -295,7 +295,7 @@ If you have used Qualtrics to collect your data, you can export the data as a cs
  
  ~\
   
-<<echo=TRUE>>=
+<<echo=TRUE>>= 
  
 my.keys <-  list(EA= c("active","alert","aroused", "-sleepy","-tired", "-drowsy"),
             TA = c("anxious","jittery","nervous","-calm", "-relaxed", "-at.ease"),

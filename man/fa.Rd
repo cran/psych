@@ -14,7 +14,7 @@ fa(r, nfactors=1, n.obs = NA, n.iter=1, rotate="oblimin", scores="regression",
 	residuals=FALSE, SMC=TRUE, covar=FALSE, missing=FALSE,	impute="none",
 	min.err = 0.001,  max.iter = 50, symmetric=TRUE, warnings=TRUE, fm="minres",
  	alpha=.1, p=.05, oblique.scores=FALSE, np.obs=NULL, use="pairwise", cor="cor",
- 	correct=.5, weight=NULL, n.rotations=1, hyper=.15, smooth=TRUE,Grice=FALSE,...)
+ 	correct=.5, weight=NULL, n.rotations=20, hyper=.15, smooth=TRUE,Grice=FALSE,...)
 
 fac(r,nfactors=1,n.obs = NA, rotate="oblimin", scores="tenBerge", residuals=FALSE,
  	SMC=TRUE, covar=FALSE, missing=FALSE, impute="median", min.err = 0.001, 
@@ -43,7 +43,7 @@ fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression",
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
   \item{np.obs}{The pairwise number of observations. Used if using a correlation matrix and asking for a minchi solution.}
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "Promax", "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax. SPSS seems to do a Kaiser normalization before doing Promax, this is done here by the call to "promax" which does the normalization before calling Promax in GPArotation.}
-   \item{n.rotations}{Number of random starts for the rotations.}
+   \item{n.rotations}{Number of random starts for the rotations. Defaults to 20.}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlation preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
@@ -134,7 +134,7 @@ Of the various rotation/transformation options, varimax, Varimax, quartimax, ben
 
 oblimin is implemented in GPArotation by a call to quartimin with delta=0.  This leads to confusion when people refer to quartimin solutions. 
 
-It is important to note a dirty little secret about factor rotation.  That is the problem of local minima.  Multiple restarts of the rotation algorithms are strongly encouraged (see Nguyen and Waller, N. G. 2021). 
+It is important to note a dirty little secret about factor rotation.  That is the problem of local minima.  Multiple restarts of the rotation algorithms are strongly encouraged (see Nguyen and Waller, N. G. 2021).   Until 2.6.4, I ignored this advice and just set n.rotations=1 as the default.  However, an example from Keith Widaman convinced me otherwise.  The default is now 20 at a small cost of increased run time. 
   
 
 Two additional target rotation options are available through calls to GPArotation.  These are the targetQ (oblique) and targetT (orthogonal) target rotations of Michael Browne.  See \code{\link{target.rot}} for more documentation. 

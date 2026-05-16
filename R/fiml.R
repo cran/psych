@@ -11,7 +11,7 @@
 # first.derivative.param.numerical
 #estimator.FIML
 #derivative.FIML
-#vech
+#vech  replaced with psych::vech which has different default values
 
 corFiml <- 
 function (x, covar = FALSE,show=FALSE) 
@@ -133,11 +133,11 @@ minimize.this.function <- function(x) {
 first.derivative.param <- function(x) {
         out <- x2param(x)
         dx.out <- derivative.FIML(Sigma.hat = out$sigma, Mu.hat = out$mu,  M = M)
-        dx <- c(dx.out$dx.mu, vech(dx.out$dx.Sigma))
+        dx <- c(dx.out$dx.mu, vech(dx.out$dx.Sigma,diagonal=TRUE))
         dx
     }
     
-start.x <- c(start.mean, vech(start.cov))
+start.x <- c(start.mean, vech(start.cov,diagonal=TRUE))
     iter.max <- 500
     optim.out <- nlminb(start = start.x, objective = minimize.this.function, 
         gradient = first.derivative.param, control = list(iter.max = iter.max, 
@@ -218,8 +218,7 @@ function (Sigma.hat, Mu.hat, M)
     out
 }
 
-
-vech <- 
+lavaan.vech <- 
 function (S, diagonal = TRUE) 
 {
     ROW <- row(S)

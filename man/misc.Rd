@@ -19,6 +19,7 @@
 \alias{cs}
 \alias{acs}
 \alias{SAPAfy}
+\alias{vech}
 
  
 \title{Miscellaneous helper functions for the psych package}
@@ -30,6 +31,7 @@ progressBar prints out ...  as a calling routine (e.g., \code{\link{tetrachoric}
 }
 \usage{
 psych.misc()
+vech(R,lower=TRUE,diagonal=FALSE)
 lowerCor(x,digits=2,use="pairwise",method="pearson",minlength=5,cor="cor",show=TRUE)
 cor2(x,y,digits=2,use="pairwise",method="pearson",cor="cor",show=TRUE,pval=FALSE)
 lowerMat(R, digits = 2,minlength=5)
@@ -58,7 +60,8 @@ test.all(pl,package="psych",dependencies
   \item{R}{A rectangular matrix or data frame (probably a correlation matrix)}
   \item{x}{A data matrix or data frame or a vector depending upon the function.}
   \item{y}{A data matrix or data frame or a vector}
-  
+  \item{lower}{if TRUE, show the lower off diagonal, else the upper off diagonal}
+  \item{diagonal}{if TRUE, include the diagonal, don't include diagonal}
   \item{f}{The object returned from either a factor analysis (fa) or a principal components analysis (principal) }
   \item{digits}{round to digits}
   \item{minlength}{Abbreviate to minlength in lowerCor}

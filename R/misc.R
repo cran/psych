@@ -7,6 +7,12 @@
 "psych.misc" <-
 function() {}
 
+
+"vech" <- function(R,lower=TRUE, diagonal=FALSE) {
+         if(NROW(R) == NCOL(R) ){
+            if(lower) { return(R[lower.tri(R,diag=diagonal)])} else {return(R[upper.tri(R,diag=diagonal)])}}}
+            
+            
 #Show and return the lower off diagonal matrix with nice printing
 "lowerMat" <- 
 function(R,digits=2,minlength=5) {
@@ -705,12 +711,16 @@ pretty}
      if(prod(bad)==0) {result <- TRUE} else {result<- bad}
      invisible(result)
      }
-
+     
+     
 "char2numeric" <- function(x,flag=TRUE) {
 #convert non numeric (factors, characters, logical) to numeric
  nvar <- NCOL(x)
+ 
  if(is.matrix(x)) x <- data.frame(x)
- if((nvar ==1 ) && (!is.data.frame(x))) {x <- as.character(x) } else {
+ if((nvar ==1 ) && (!is.data.frame(x))) {x <- as.numeric(unlist(x))
+  # x <- as.data.frame(x)
+    } else {
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  {
                                   if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {  x[[i]] <- as.numeric(as.factor(x[[i]])) 
@@ -721,12 +731,15 @@ pretty}
               } 
               }
               invisible(x)} 
+
               
 # added the is.logical test  23/06/24
 #added June 25, 2020 to handle the case of numeric data stored as characters  
 #added flag and colnames option  1/2/21             
 "nchar2numeric" <- function(x,flag=TRUE) {
  nvar <- NCOL(x)
+ if(nvar==1) {x <- as.numeric(unlist(x))
+             x <- as.data.frame(x)} else {
  for(i in 1:nvar) {   
         if(!is.numeric(x[[i]] ))  { 
                 if(is.factor(unlist(x[[i]])) | is.character(unlist(x[[i]]))) {
@@ -735,6 +748,7 @@ pretty}
                           if(flag) colnames(x)[i] <- paste0(colnames(x)[i],"*")
                             }
               } 
+              }
               invisible(x)} 
 
 

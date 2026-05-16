@@ -7,7 +7,8 @@
 \usage{
 principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FALSE,
  scores=TRUE,missing=FALSE,impute="median",oblique.scores=TRUE,method="regression",
- use ="pairwise",cor="cor",correct=.5,weight=NULL,...)
+ use ="pairwise",cor="cor",correct=.5,weight=NULL,n.rotations=1,
+hyper=.15,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +28,8 @@ principal(r, nfactors = 1, residuals = FALSE,rotate="varimax",n.obs=NA, covar=FA
 \item{cor}{How to find the correlations: "cor" is Pearson", "cov" is covariance, 
   "tet" is tetrachoric, "poly" is polychoric, "mixed" uses mixedCor for a mixture of tetrachorics, polychorics, Pearsons, biserials, and polyserials, Yuleb is Yulebonett, Yuleq and YuleY are the obvious Yule coefficients as appropriate}
 \item{correct}{When doing tetrachoric, polycoric, or mixed cor, how should we treat empty cells.  (See the discussion in the help for tetrachoric.)} 
+\item{n.rotations}{Number of random restarts for rotations}
+\item{hyper}{Count number of (absolute) loadings less than hyper.}
   \item{...}{other parameters to pass to functions such as factor.scores or the various rotation functions.  }
   }
 \details{Useful for those cases where the correlation matrix is improper (perhaps because of SAPA techniques).
@@ -86,6 +89,8 @@ The output from the print.psych function displays the component loadings (from t
 \note{By default, the accuracy of the varimax rotation function seems to be less than the Varimax function. This can be enhanced by specifying eps=1e-14 in the call to principal if using varimax rotation. Furthermore, note that Varimax by default does not apply the Kaiser normalization, but varimax does. Gottfried Helms compared these two rotations with those produced by SPSS and found identical values if using the appropriate options. (See the last two examples.)
 
 The ability to use different kinds of correlations was added in version 1.9.12.31 to be compatible with the options in fa.
+
+The ability to do random restarts for rotations or transformations was added in 2.6.4.  See the discussion in \code{\link{fa}} about why restarts are important.
 
 }
 \author{ William Revelle}

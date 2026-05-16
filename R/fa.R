@@ -37,7 +37,7 @@ p =.05,
 oblique.scores=FALSE,
 np.obs=NULL,
 use="pairwise",cor="cor",correct=.5,weight=NULL,
-n.rotations=1,hyper=.15,smooth=TRUE,
+n.rotations=20,hyper=.15,smooth=TRUE,
 Grice=FALSE,...) {
  cl <- match.call()
   if(isCorrelation(r)) {if(is.na(n.obs) && (n.iter >1)) stop("You must specify the number of subjects if giving a correlation matrix and doing confidence intervals")
@@ -151,7 +151,9 @@ return(results)
 #the main function 
 
 "fac" <- 
-function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,
+function(r,nfactors=1,n.obs = NA,rotate="oblimin",scores="tenBerge",residuals=FALSE,SMC=TRUE,
+     covar=FALSE,missing=FALSE,impute="median", min.err = .001,max.iter=50,symmetric=TRUE,
+     warnings=TRUE,fm="minres",alpha=.1,oblique.scores=FALSE,np.obs=NULL,
 use="pairwise",cor="cor",
 correct=.5,weight=NULL,
 n.rotations=1,
@@ -633,7 +635,7 @@ FA.OLS <- function(Psi,S,nf) {
     rotated <- NULL
     if(rotate != "none") {if (nfactors > 1) {
 
-    if(n.rotations > 1) {rotated <- faRotations(loadings,r=r,n.rotations=n.rotations,rotate=rotate,hyper=hyper)
+    if(n.rotations > 1) {rotated <- faRotations(loadings,r=r,n.rotations=n.rotations,rotate=rotate,hyper=hyper,...)
              loadings=rotated$loadings
              Phi<- rotated$Phi
              rot.mat=rotated$rot.mat

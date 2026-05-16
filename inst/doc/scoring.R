@@ -4,11 +4,11 @@ library(psych)
 ## -----------------------------------------------------------------------------
 file.name <-
   "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
-if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq}
+if(require(psychTools)) {my.data <- read.file(file.name)} else { my.data <- small.msq.txt}
 
 ## -----------------------------------------------------------------------------
-fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq"
-if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq}  #because the suffix is not a standard one, we need to specify the file type
+fn <- "https://personality-project.org/r/psych/HowTo/scoring.tutorial/small.msq.txt"
+if(require(psychTools)) {my.data <- read.file(fn, filetype="txt")} else {my.data <- small.msq.txt}  #because the suffix is not a standard one, we need to specify the file type
  dim(my.data)  #same as before
  headTail(my.data) #same as before
  describe(my.data)

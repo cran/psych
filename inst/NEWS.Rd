@@ -1,6 +1,23 @@
 \name{NEWS}
 \title{News for Package 'psych'}
 
+\section{Changes in psych version 2.6.5(2026-05-15}{
+ \subsection{Additions}{
+   \itemize{
+   \item Changed the default value for n.rotations in fa from 1 to 20 to solve an interesting example data set from Keith Widaman.  Added a discussion of multiple rotations in the help file.
+   \item Modified faRotation to distinguish between varimax (from stats) and Varimax (for GPArotations).  
+   \item added vech function  to misc functions
+    }
+    }
+ \subsection{Bugs Fixed}{
+  \itemize{
+   \item Modified the Rd file for rmssd to properly reflect the code.  (reported by Maximillian Hagspiel)
+   \item Fixed a simple but nasty bug in describeBy when analyzing a single variable (reported by Brenden Schuetze -- and many others)
+   }
+   }
+}
+
+
  \section{Changes in psych version 2.6.3(2026-03-21}{
  \subsection{Additions}{
    \itemize{

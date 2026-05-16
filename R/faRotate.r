@@ -17,8 +17,8 @@ faRotations <- function(loadings,r=NULL, rotate="oblimin" , hyper= .15, n.rotati
   
  starts <- lapply(starts, function(x) randStart(dimension = ncol(loadings)))
  starts[[1]] <- diag(ncol(loadings))
-original <- loadings
-if(!is.null(r)) {r.inv <- solve(r)} else {r.inv <- NULL}
+original <- loadings   #keep these 
+if(!is.null(r)) {r.inv <- Pinv(r)} else {r.inv <- NULL}  #added Pinv 5/11/26
  for(i in 1:n.rotations) {
  initial <- starts[[i]]
  loadings <- original
@@ -84,7 +84,7 @@ switch(rotate,  #The orthogonal cases  for GPArotation + ones developed for psyc
    	specialT =  {rot <- specialT(loadings,Tmat=initial,...)
    	              loadings <- rot$loadings
    	              rot.mat <- t(solve(rot$Th))}, 
-   	Promax =   {pro <- Promax(loadings)  #Promax without Kaiser normalization
+   	Promax =   {pro <- Promax(loadings,Tmat=initial,...)  #Promax without Kaiser normalization
      			loadings <- pro$loadings
      			 Phi <- pro$Phi 
      			 rot.mat <- pro$rotmat},
@@ -151,7 +151,8 @@ complexity[[i]] <- mean((apply(loadings,1,function(x) sum(x^2)))^2/apply(loading
  fit[[i]]<- tr( var(loadings^2))
 }
 
-
+#ok, we have now done n.rotations
+#summarize them 
 hyperplane<- unlist(hyperplane)
 fit <- unlist(fit)
 complexity<- unlist(complexity)
@@ -166,24 +167,29 @@ if(length(best) > 1) best <- which(stats[best,"complexity"]==min(stats[best,"com
   if(length(best)> 1) which(stats[best,"fit"]==min(stats[best,"fit"]))
 if(length(best)> 1) best <- best[1]
 
-if(rotate =="varimax") {rotate <- "Varimax"
-    warning("Varimax from GPA rotation is used instead of varimax from stats")}
+#if(rotate =="varimax") {rotate <- "Varimax"
+ #   warning("Varimax from GPA rotation is used instead of varimax from stats")}
 
 Tmat <- starts[[best]]
+loadings <- original   #start with the original loadings   Fixed 05/11/26
 # now rerotate to the  best fitted solution
 # need to consider those rotations that do not use GPArotation
- gpa <- c("Varimax","quartimax","bentlerQ","bentlerT","geominT","geominQ","targetT","targetQ","TargetT","quartimin","oblimin","simplimax")
+ gpa <- c( "Varimax","quartimax","bentlerQ","bentlerT","geominT","geominQ","targetT","targetQ","TargetT","quartimin","oblimin","simplimax")
  if(rotate %in% gpa) {
 
 ob <- try(do.call(getFromNamespace(rotate,'GPArotation'),list(original,Tmat=Tmat)))
   if(inherits(ob,as.character("try-error")))  {warning("The requested transformaton failed, Promax was used instead as an oblique transformation") 
     rot.mat<- NULL} else {
-loadings <- ob$loadings
-Phi <- ob$Phi
- rot.mat <- t(solve(ob$Th))}
+		loadings <- ob$loadings
+		Phi <- ob$Phi
+ 		rot.mat <- t(solve(ob$Th))}
  } else {
  #do the other rotations
+ loadings <- original 
  switch(rotate, 
+    varimax = {rotated <- stats::varimax(loadings)  #varimax is from stats, the others are from GPArotation 
+   			         loadings <- rotated$loadings
+   			         rot.mat <- rotated$rotmat},
    	 bifactor = {rot <- bifactor(loadings,Tmat=Tmat)
    	             loadings <- rot$loadings
    	            rot.mat <- t(solve(rot$Th))},
@@ -196,7 +202,7 @@ Phi <- ob$Phi
    	specialT =  {rot <- specialT(loadings,Tmat=Tmat)
    	              loadings <- rot$loadings
    	              rot.mat <- t(solve(rot$Th))}, 
-   	Promax =   {pro <- Promax(loadings)  #Promax without Kaiser normalization
+   	Promax =   {pro <- Promax(loadings, Tmat=Tmat)  #Promax without Kaiser normalization
      			loadings <- pro$loadings
      			 Phi <- pro$Phi 
      			 rot.mat <- pro$rotmat},

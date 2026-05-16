@@ -22,7 +22,7 @@ bifactor(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 biquartimin(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000)
 TargetQ(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
 TargetT(L, Tmat=diag(ncol(L)), normalize=FALSE, eps=1e-5, maxit=1000,Target=NULL)
-Promax(x,m=4, normalize=FALSE, pro.m = 4) 
+Promax(x,m=4, normalize=FALSE, pro.m = 4,Tmat=NULL,...) 
 Procrustes(L,Target) #adapted from Niels Waler
 target.rot(x,keys=NULL)
 varimin(L, Tmat = diag(ncol(L)), normalize = FALSE, eps = 1e-05, maxit = 1000)
@@ -46,13 +46,14 @@ equamax(L, Tmat=diag(ncol(L)), eps=1e-5, maxit=1000)
   \item{normalize}{parameter passed to optimization routine (GPForth in the GPArotation package and Promax)}
   \item{eps}{parameter passed to optimization routine (GPForth in the GPArotation package) }
   \item{maxit}{parameter passed to optimization routine (GPForth in the GPArotation package)}
+ 
   \item{...}{Other parameters to pass (e.g. to faRotate) include a Target list or matrix}
 }
 \details{The two most useful of these  functions is probably biquartimin which implements the oblique bifactor rotation introduced by Jennrich and Bentler (2011). The second is TargetQ which allows for missing NA values in the target. Next best is the orthogonal case, bifactor.  None of these seem to be implemented in GPArotation (yet). 
 
 TargetT is an orthogonal target rotation function which allows for missing NA values in the target. 
 
-faRotate is merely a convenient way to call the various GPArotation functions as well as the additional ones added here.
+faRotate is merely a convenient way to call the various GPArotation functions as well as the additional ones added here.  For multiple iterations of rotations see \code{\link{faRotations}}.
 
 The difference between biquartimin and bifactor is just that the latter is the orthogonal case which is documented in Jennrich and Bentler (2011).  It seems as if these two functions are sensitive to the starting values and random  restarts (modifying T) might be called for.
 
@@ -94,7 +95,7 @@ Jennrich, Robert and Bentler, Peter (2011) Exploratory Bi-Factor Analysis. Psych
 varimin is a direct application of the GPArotation GPForth function modified to do varimin. 
 }
 
-\note{The Target for TargetT can be a matrix, but for TartetQ must be a list.  This seems to be a feature of GPArotation.
+\note{The Target for TargetT can be a matrix, but for TargetQ must be a list.  This seems to be a feature of GPArotation.
 
 }
 \seealso{ \code{\link{promax}}, \code{\link{fa}}, or \code{\link{principal}} for examples of data analysis and   \code{\link{Holzinger}} or \code{\link{Bechtoldt}} for  examples of bifactor data. \code{\link{factor.rotate}} for 'hand rotation'.  }

@@ -86,7 +86,9 @@ The relationships implied by these data can be summarized as a \code{\link{phi}}
 
 Although only one point is found, we can form a graphical display of VP versus FP as a smooth curve as a function of the decision criterion. The smooth curve assumes normality whereas the other merely are the two line segments between the points (0,0), (FP,VP), (1,1). The resulting correlation between the inferred continuous state of the world and the dichotomous decision process is a biserial correlation.
 
-When using table input, the values can be counts and thus greater than 1 or merely probabilities which should add up to 1. Base Rates and Selection Ratios are proportions and thus less than 1. }
+When using table input, the values can be counts and thus greater than 1 or merely probabilities which should add up to 1. Base Rates and Selection Ratios are proportions and thus less than 1. 
+
+Alternative ways of describing AUC of prediction are discussed in \code{\link{cohen.d}} and include Common Language Effect Size \code{\link{d2CL}} and related ways of discussing effect sizes. }
 
 \author{William Revelle }
 

@@ -1,6 +1,8 @@
 "Promax" <- 
-function (x,m=4, normalize=FALSE, pro.m = 4) 
+function (x,m=4, normalize=FALSE, pro.m = 4,Tmat =NULL,...) 
 {
+GPA <- TRUE   #by default, we use the GPArotation function
+
 if(missing(m)) m  <- pro.m
  if(!is.matrix(x) & !is.data.frame(x) )  {
         if(!is.null(x$loadings)) x <- as.matrix(x$loadings)
@@ -8,7 +10,11 @@ if(missing(m)) m  <- pro.m
     if (ncol(x) < 2) 
         return(x)
     dn <- dimnames(x)
-   xx <- stats::varimax(x)
+    if(is.null(Tmat) ) {Tmat = diag(ncol(x))} #by defi
+  if(!GPA) {xx <- stats::varimax(x)} else {
+  
+     if(requireNamespace('GPArotation')) xx <- GPArotation::Varimax(x, Tmat=Tmat,...)}
+     
     x <- xx$loadings
     Q <- x * abs(x)^(m - 1)
     U <- lm.fit(x, Q)$coefficients
@@ -22,12 +28,14 @@ if(missing(m)) m  <- pro.m
     U <- U %*% diag(sqrt(d))
     dimnames(U) <- NULL
     z <- x %*% U
-    U <- xx$rotmat %*% U
-    ui <- solve(U)
+   if(!GPA){Th=xx$rotmat} else {Th <- xx$Th} 
+   U <- Th %*% U    #replaced with GPArotation Varimax  5/9/26
+
+       ui <- solve(U)
     Phi <- ui %*% t(ui)
     dimnames(z) <- dn
     class(z) <- "loadings"
-    result <- list(loadings = z, rotmat = U,Phi = Phi)
+    result <- list(loadings = z, rotmat = U,Th=Th,Phi = Phi)
     class(result) <- c("psych","fa")
     return(result)
 }

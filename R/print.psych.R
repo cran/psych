@@ -233,16 +233,20 @@ cluster.loadings =  {
 	# print(x$pattern,digits) 	
   },
 
-cohen.d = {cat("Call: ")
+"cohen.d" = {cat("Call: ")
            print(x$Call)
             cat("Cohen d statistic of difference between two means\n")
-            if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),x$cohen.d[4:NCOL(x$cohen.d)]))}
+            temp.df <- x$cohen.d
+            temp.df <-cbind(temp.df[,1:3],t(x$wt.d))
+            colnames(temp.df)[4] <- "partialed.d"
+        
+            if(NCOL(temp.df) ==  4)  {print(round(temp.df,digits=digits))} else {print( data.frame(round(temp.df[1:4]),digits=digits),format(temp.df[5:NCOL(temp.df)], justify="left"))}
           
             cat("\nMultivariate (Mahalanobis) distance between groups\n")
             print(x$M.dist,digits=digits) 
             cat("r equivalent of difference between two means\n")
             print(round(x$r,digits=digits))
-            },
+            }, 
 
 cohen.d.by = {cat("Call: ")
             print(x$Call)

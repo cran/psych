@@ -1,12 +1,61 @@
 \name{NEWS}
 \title{News for Package 'psych'}
 
+\section{Changes in psych version 2.6.9 (2026-09-21)}{ 
+  \subsection{Introduction}{
+    \itemize{
+     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
+      \item Additional functions are added sporadically.
+      \item This news file reports changes that have been made as the package has been developed.
+      \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
+      \item Version 2.6.10  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.6.9 (Added September, 2026). The second digit reflects the year (i.e., 2026), the third set the month (i.e., 2.6.6 was released in June of 2026 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
+    \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
+    
+     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted.        
+  }   
+ }
+ }
+
+
+\section{Changes in psych version 2.6.9(2026-09-21}{
+ \subsection{Additions}{
+   \itemize{
+  \item Finally have had time to do some maintenance work.
+
+    }
+    }
+ \subsection{Bugs Fixed}{
+  \itemize{
+   \item mixedCor did not apply weights (reported by Thomas Daubler).  This has been a problem for quite some time.  Required fixing a number of functions (biserial, polyserial, etc).
+   \item This was also a problem for fa and principal as well.  Both now use weights when doing mixedCor.
+   \item Problem with PC labels after oblimin rotation.  It was not reporting oblique Transformation (TC) or orthogonal Rotations (RC).  This was introduced in 2.6.6 when n.rotations was set to 10 instead of defaulting to 1.   (reported by David Hoelzel)
+  \item Fixed problem  with horizontal rain  and density clouds
+   }
+   }
+}
+
+\section{Changes in psych version 2.6.6(2026-06-16}{
+ \subsection{Additions}{
+   \itemize{
+  \item Added the wt.d output to the print function in cohen.d
+  \item Made matSqrt and invMatSqrt public as a beginning to understand matrix whitening
+
+    }
+    }
+ \subsection{Bugs Fixed}{
+  \itemize{
+   \item Added drop=FALSE to various parts of lmCor following problem reported by Thorben Huelmann (error if n.Y - n.X =1) 
+   \item Added nrow=length(rs1) in bassAckward call to diag() to fix problem reported by Jeffrey Girard for length 1 vectors
+   }
+   }
+}
+
 \section{Changes in psych version 2.6.5(2026-05-15}{
  \subsection{Additions}{
    \itemize{
    \item Changed the default value for n.rotations in fa from 1 to 20 to solve an interesting example data set from Keith Widaman.  Added a discussion of multiple rotations in the help file.
    \item Modified faRotation to distinguish between varimax (from stats) and Varimax (for GPArotations).  
-   \item added vech function  to misc functions
+   \item added vech function  to misc functions 
     }
     }
  \subsection{Bugs Fixed}{
@@ -78,20 +127,7 @@ Guttman  algorithm discussed by Dhaene and Rosseel, 2024). Uses keys or Lavaan s
     }
 } 
 }
-\section{Changes in psych version 2.5.7 (2025-06-02)}{ 
-  \subsection{Introduction}{
-    \itemize{
-     \item The psych package includes functions and data sets to do classic and modern psychometrics and to analyze personality  and experimental psychological data sets.  The functions are  written to further research in the Personality-Motivation-Cognition Laboratory at Northwestern University. The psych package has been developed as a supplement to courses in research methods in psychology, personality research, and graduate level psychometric theory courses. The functions are a supplement to the text (in progress): An introduction to psychometric theory with applications in R.
-      \item Additional functions are added sporadically.
-      \item This news file reports changes that have been made as the package has been developed.
-      \item To report bugs, send email to \url{mailto:revelle@northwestern.edu} using bug.report.
-      \item Version 2.5.7  is the development release of the psych package. It is available as a source file for Macs or PCs in the repository at \url{https://personality-project.org/r/}. The released version on CRAN is 2.5.6 (Added June 23, 2025). The second digit reflects the year (i.e., 2025), the third set the month (i.e., 2.5.6 was released in June of 2026 the last two digits of development versions reflect  either an minor change or the day of any modifications, e.g. 1.8.3.3 was the third attempt to get 1.8.3 released.  1.7.8 was  released in August, 2017.
-    \item To install the development version, use the command:  install.packages("psych", repos="https://personality-project.org/r", type="source").
-    
-     Remember to restart R and library(psych) to make the new version active.  It is also useful to check the date of the development package, as I will use the same version number but change the dates  (e.g., packageDate("psych")).   The date of the CRAN version reflects when it was submitted.        
-  }   
- }
- }
+
  
 
 \section{Changes in psych version 2.5.5 (2025-05-28)}{

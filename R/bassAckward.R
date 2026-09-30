@@ -72,7 +72,7 @@ colnames(f$weights) <- paste0("F",1:ncol(f$weights))
 rf  <-  t(fn.weights) %*% r %*% f$weights  #need to adjust by  variances if not using tenBerge
 rs1 <- diag(t(f$weights) %*% r %*% f$weights )
 rs2 <- diag(t(fn$weights) %*% r %*% fn$weights )
-if(adjust) rf <- (diag(1/sqrt(rs2)) %*% rf %*% diag(1/sqrt(rs1)))
+if(adjust) rf <- (diag(1/sqrt(rs2),nrow=length(rs2)) %*% rf %*% diag(1/sqrt(rs1),nrow=length(rs1)))
 colnames(rf) <- paste0("F",1:ncol(rf))
 rownames(rf) <- paste0("F",1:nrow(rf))
 r.n[[nf]] <- rf
@@ -95,7 +95,7 @@ Phi <- NULL
 rf  <-  t(fn$weights) %*% r %*% f$weights  #need to adjust by  variances if not using tenBerge
 rs1 <- diag(t(f$weights) %*% r %*% f$weights )
 rs2 <- diag(t(fn$weights) %*% r %*% fn$weights )
-if(adjust) rf <- (diag(1/sqrt(rs2)) %*% rf %*% diag(1/sqrt(rs1)))
+if(adjust) rf <- (diag(1/sqrt(rs2),nrow=length(rs2)) %*% rf %*% diag(1/sqrt(rs1),nrow=length(rs1)))
 colnames(rf) <- c("g",paste0("F*",1:(ncol(rf)-1)))
 rownames(rf) <- c("g", paste0("F*",1:(nrow(rf)-1)))
 r.n[[nf]] <- rf

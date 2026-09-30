@@ -1,6 +1,7 @@
 "cohen.d" <- function(x,group,alpha=.05,std=TRUE,sort=NULL,dictionary=NULL,MD=TRUE,data=NULL) {
 #added the hedges option 2/22/22
-#corrected the nmax calculation following a request/commment by 
+#corrected the nmax calculation following a request/commment by ?
+#5/18/26  added the wt.d to the print function
 cl <- match.call()
 group2 <- NULL
 if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describeBy
@@ -49,8 +50,9 @@ hedges.g <- hedges.g[-group]
 r <- cohen.d/sqrt(cohen.d^2 + 1/(  p1*p2)) #} else {r <- cohen.d/sqrt(cohen.d^2 + 1/( p1*p2) )} #for unequal n otherwise this is just 4
 t <- d2t(hedges.g,n1=n1,n2=n2)   #added the n1 and n2 following a report from Emil Kiergagard  7/14/21  also used pooled sd formula (i.e. hedges.g) to find t  This matches t.test with var.equal=TRUE
 p <- ( 1-pt(abs(t),n-2)) * 2
-if(MD) {D <- sqrt(t(d) %*% S.inv %*% d)   #convert to D units from D2 units
-     wt.d <- t(d) %*% S.inv *d    #what is this?
+if(MD) {D <- sqrt(t(d) %*% S.inv %*% d)   #convert to D units from D2 units and add them up
+     wt.d2 <- t(d) %*% S.inv *d    #what is this   partialled d2 -- don't add them
+     wt.d <- sqrt(abs(wt.d2)) * sign(d)  #functionally this is the partialled d
 D <- as.vector(D)} else {D <- NA 
    wt.d <- NA}
   hedges.d.conf <- cohen.d.ci(hedges.g,n1=n1,n2=n2,alpha=alpha)
@@ -181,13 +183,29 @@ if(inherits(x,"formula")) {ps <- fparse(x)   #group was specified, call describe
     "print_cohen.d" <- function(x,digits=2) {cat("Call: ")
            print(x$Call)
             cat("Cohen d statistic of difference between two means\n")
-            if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),format(x$cohen.d[4:NCOL(x$cohen.d)], justify="left")))}
+            temp.df <- x$cohen.d
+            temp.df <-cbind(temp.df[,1:3],t(x$wt.d))
+            colnames(temp.df)[4] <- "partialed.d"
+        
+            if(NCOL(temp.df) ==  4)  {print(round(temp.df,digits=digits))} else {print( data.frame(round(temp.df[1:4]),digits=digits),format(temp.df[5:NCOL(temp.df)], justify="left"))}
           
             cat("\nMultivariate (Mahalanobis) distance between groups\n")
             print(x$M.dist,digits=digits) 
             cat("r equivalent of difference between two means\n")
             print(round(x$r,digits=digits))
             }
+            
+           #  cohen.d = {cat("Call: ")
+#            print(x$Call)
+#             cat("Cohen d statistic of difference between two means\n")
+#             if(NCOL(x$cohen.d) ==  3)  {print(round(x$cohen.d,digits=digits))} else {print( data.frame(round(x$cohen.d[1:3],digits=digits),x$cohen.d[4:NCOL(x$cohen.d)]))}
+#           
+#             cat("\nMultivariate (Mahalanobis) distance between groups\n")
+#             print(x$M.dist,digits=digits) 
+#             cat("r equivalent of difference between two means\n")
+#             print(round(x$r,digits=digits))
+#             },
+
  
     "print_cohen.d.by" <- function(x,digits=2) {cat("Call: ")
             print(x$Call)

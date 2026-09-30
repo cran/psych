@@ -17,8 +17,8 @@ tetrachoric(x,y=NULL,correct=.5,smooth=TRUE,global=TRUE,weight=NULL,na.rm=TRUE,
      delete=TRUE)
 polychoric(x,y=NULL,smooth=TRUE,global=TRUE,polycor=FALSE,ML=FALSE, std.err=FALSE, 
      weight=NULL,correct=.5,progress=TRUE,na.rm=TRUE,  delete=TRUE,max.cat=8)
-biserial(x,y)  
-polyserial(x,y) 
+biserial(x,y, weight=NULL)  
+polyserial(x,y, weight=NULL) 
 polydi(p,d,taup,taud,global=TRUE,ML = FALSE, std.err = FALSE,
      weight=NULL,progress=TRUE,na.rm=TRUE,delete=TRUE,correct=.5) 
 #deprecated  use polychoric instead

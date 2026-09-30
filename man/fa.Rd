@@ -43,7 +43,7 @@ fa.sapa(r,nfactors=1, n.obs = NA,n.iter=1,rotate="oblimin",scores="regression",
   \item{n.obs}{Number of observations used to find the correlation matrix if using a correlation matrix.  Used for finding the goodness of fit statistics. Must be specified if using a correlaton matrix and finding confidence intervals.}
   \item{np.obs}{The pairwise number of observations. Used if using a correlation matrix and asking for a minchi solution.}
    \item{rotate}{"none", "varimax", "quartimax",  "bentlerT", "equamax", "varimin", "geominT" and "bifactor" are orthogonal rotations.  "Promax", "promax", "oblimin", "simplimax", "bentlerQ,  "geominQ" and "biquartimin" and "cluster" are possible oblique transformations of the solution.  The default is to do a oblimin transformation, although  versions prior to 2009 defaulted to varimax. SPSS seems to do a Kaiser normalization before doing Promax, this is done here by the call to "promax" which does the normalization before calling Promax in GPArotation.}
-   \item{n.rotations}{Number of random starts for the rotations. Defaults to 20.}
+   \item{n.rotations}{Number of random starts for the rotations. Defaults to 20.  (see Note)}
  \item{n.iter}{Number of bootstrap interations to do in fa or fa.poly}
   \item{residuals}{Should the residual matrix be shown }
   \item{scores}{the default="regression" finds factor scores using regression.  Alternatives for  estimating factor scores include simple regression ("Thurstone"), correlation preserving ("tenBerge") as well as "Anderson" and "Bartlett" using the appropriate algorithms ( \code{\link{factor.scores}}). Although scores="tenBerge" is probably preferred for most solutions, it will lead to problems with some improper correlation matrices.  }
@@ -303,7 +303,7 @@ A few more lines of output were added in August 2017 to show the measures of fac
 
 For a comparison of the \code{\link{fa}} to factor analysis using SPSS, see Grieder and Steiner (2021). 
 
-Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link[psychTools]{burt}} data set.
+Some correlation matrices that arise from using pairwise deletion or from tetrachoric or polychoric matrices will not be proper.  That is, they will not be positive semi-definite (all eigen values >= 0).  The \code{\link{cor.smooth}} function will adjust correlation matrices (smooth them) by making all negative eigen values slightly greater than 0, rescaling the other eigen values to sum to the number of variables, and then recreating the correlation matrix.  See \code{\link{cor.smooth}} for an example of this problem using the \code{\link[psychTools]{burt}} data set.  This set probably represents a typo when entering the published correlation matrix.
 
 One reason for this problem when using tetrachorics or polychorics seems to be the adjustment for continuity.  Setting correct=0 turns this off and seems to produce more proper matrices.
 
@@ -311,7 +311,7 @@ Although both  fm ="pa" or fm="minres" will work with these ``improper" matrices
 
 Problems in factor polychoric matrices:  If getting error messages when factoring polychoric matrices, try turning off the correction for continuity (correct=0).
 
-
+The use of n.rotations=20 was introduced in version 2.6.6.  By forcing multiple restarts, this  improves the rotation solution for some particular problems.  This change has had the effect that previous solutions using the prior default of 1 will be different.  See the test case the Widaman data set in faRotations.  
 }
 
 \seealso{ \code{\link{principal}} for principal components analysis (PCA).  PCA will give very similar solutions to factor analysis when there are many variables.  The differences become more salient as the number variables decrease.  The PCA and FA models are actually very different and should not be confused.  One is a model of the observed variables, the other is a model of latent variables.    Although some commercial packages (e.g., SPSS and SAS) refer to both as factor models, they are not.  It is incorrect to report doing a factor analysis using principal components.  

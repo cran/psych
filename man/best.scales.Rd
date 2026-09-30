@@ -16,8 +16,7 @@ bestScales(x,criteria,min.item=NULL,max.item=NULL, delta = 0,
            cut=.1, n.item =10, wtd.cut=0, wtd.n=10, 
           n.iter =1, folds=1, p.keyed=.9,
           overlap=FALSE, dictionary=NULL, check=TRUE,labels=NULL,
-           impute="none",log.p=FALSE,digits=2)
-
+           impute="none",log.p=FALSE,digits=2,seed=NULL)
 bestItems(x,criteria=1,cut=.1, n.item=10, abs=TRUE, 
    dictionary=NULL,check=FALSE,digits=2,use="pairwise",method="pearson") 
 }
@@ -51,6 +50,7 @@ matrix or colnames of the data matrix or correlation matrix, and entries (may be
 \item{digits}{round to digits when showing output.}
 \item{use}{How to handle missing data.  Defaults to "pairwise"}
 \item{method}{Which correlation to find.  Defaults to "pearson"}
+\item{seed}{Set a random seed (if NULL then create one)}
   
 }
 \details{
@@ -150,6 +150,7 @@ To create a dictionary, create an object with row names as the item numbers, and
 
 This is a very computationally intensive function which can be speeded up considerably by using multiple cores and using the parallel package. The number of cores to use when doing bestScales may be specified using the options command. The greatest step in speed is going from 1 core to 2. This is about a 50% savings. Going to 4 cores seems to have about at 66% savings, and 8 a 75% savings. The number of parallel processes defaults to 2 but can be modified by using the options command: options("mc.cores"=4) will set the number of cores to 4.
 
+In July 2026 the option of presetting a "random seed" when doing multiple folds was added to allow complete replicability of solutions.  
 }
 \references{
 

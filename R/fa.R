@@ -459,7 +459,7 @@ FA.OLS <- function(Psi,S,nf) {
        poly = {r <- polychoric(r,correct=correct,weight=weight)$rho},
        tetrachoric = {r <- tetrachoric(r,correct=correct,weight=weight)$rho},
        polychoric = {r <- polychoric(r,correct=correct,weight=weight)$rho},
-       mixed = {r <- mixedCor(r,use=use,correct=correct)$rho},
+       mixed = {r <- mixedCor(r,use=use,correct=correct,weight=weight)$rho},
        Yuleb = {r <- YuleCor(r,,bonett=TRUE)$rho},
        YuleQ = {r <- YuleCor(r,1)$rho},
        YuleY = {r <- YuleCor(r,.5)$rho } 

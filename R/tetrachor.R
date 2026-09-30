@@ -348,7 +348,7 @@ progressBar(i^2/2,nvar^2/2,"Tetrachoric")
  
   #does the work
 "biserialc" <-
-function(x,y,i,j) {
+function(x,y,i,j,weight) {
 cc <- complete.cases(x,y)
 x <- x[cc]
 y <- y[cc]
@@ -384,7 +384,7 @@ if(length(lev) !=2) { # y is not dichotomous, what about x?
 }
  
 "biserial" <- 
-function(x,y) { 
+function(x,y, weight=NULL) { 
 x <- as.matrix(x,drop=FALSE)
 y <- as.matrix(y,drop=FALSE)
 nx <- dim(x)[2]
@@ -398,7 +398,7 @@ rownames(mat) <- colnames(y)
 for(i in 1:ny) {
 progressBar(i*(i-1)/2,ny^2/2,"Biserial")
    for (j in 1:nx) {
-    mat[i,j] <- biserialc(x[,j],y[,i],j,i)
+    mat[i,j] <- biserialc(x[,j],y[,i],j,i,weight=weight)
     }}
   flush(stdout())
   cat("\n" )  #put in to clear the progress bar
@@ -407,7 +407,7 @@ progressBar(i*(i-1)/2,ny^2/2,"Biserial")
 
 
 "polyserial" <-
-function(x,y) {
+function(x,y,weight=NULL) {
 # y <- matrix(y)
    min.item <- min(y, na.rm = TRUE)
    max.item <- max(y, na.rm = TRUE)

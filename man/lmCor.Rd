@@ -33,7 +33,7 @@ matPlot(x, type = "b", minlength=6, xlas=0,legend=NULL,
       
 # Over the years, the names have changed
 
- #the prior names for this function and will be deprecated     
+ #the prior names for this function which will be deprecated     
  
  lmCor.diagram(sc,main="Regression model",digits=2,show=FALSE,cex=1,l.cex=1,...)
 
@@ -224,8 +224,8 @@ lmCor(rating ~ complaints + privileges + learning + critical, data =R, n.obs=30)
 
 #The first Kelley data set from Hotelling
 kelley1 <- structure(c(1, 0.6328, 0.2412, 0.0586, 0.6328, 1, -0.0553, 0.0655, 
-0.2412, -0.0553, 1, 0.4248, 0.0586, 0.0655, 0.4248, 1), .Dim = c(4L, 
-4L), .Dimnames = list(c("reading.speed", "reading.power", "math.speed", 
+0.2412, -0.0553, 1, 0.4248, 0.0586, 0.0655, 0.4248, 1), dim = c(4L, 
+4L), dimnames = list(c("reading.speed", "reading.power", "math.speed", 
 "math.power"), c("reading.speed", "reading.power", "math.speed", 
 "math.power")))
 lowerMat(kelley1)
@@ -238,9 +238,9 @@ mod1$cancor
 kelley <- structure(list(speed = c(1, 0.4248, 0.042, 0.0215, 0.0573), power = c(0.4248, 
 1, 0.1487, 0.2489, 0.2843), words = c(0.042, 0.1487, 1, 0.6693, 
 0.4662), symbols = c(0.0215, 0.2489, 0.6693, 1, 0.6915), meaningless = c(0.0573, 
-0.2843, 0.4662, 0.6915, 1)), .Names = c("speed", "power", "words", 
-"symbols", "meaningless"), class = "data.frame", row.names = c("speed", 
+0.2843, 0.4662, 0.6915, 1)), class = "data.frame", row.names = c("speed", 
 "power", "words", "symbols", "meaningless"))
+
 
 lowerMat(kelley)
 

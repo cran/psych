@@ -130,6 +130,8 @@ lmCor ={
  	 table.df<- list()
  	 nvar <- length(SSR[[1]])
  	 ssrm <- matrix(unlist(SSR),ncol=nvar,byrow=TRUE)
+ 	 if(NCOL(ssrm) < 1) {#warning("n.obs was not specified in the model, I can not continue")
+ 	     stop("n.obs was not specified in the model, I can not continue")}   #added 6/3/26
  	 for (i in (1:nvar)) {
  	 table.df[[names(SSR[[1]][i])]] <-  small.function(models=models,dfs=dfs,SSR=ssrm[,i],nvar=i)
  	 } 

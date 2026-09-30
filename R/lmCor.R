@@ -1,4 +1,4 @@
-#two deprecared earlier versions
+#two deprecated earlier versions
 
 "set.cor" <-
 function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="Regression Models",plot=TRUE,show=FALSE,zero=TRUE,part=FALSE)  {
@@ -33,6 +33,7 @@ function(y,x,data,z=NULL,n.obs=NULL,use="pairwise",std=TRUE,square=FALSE,main="R
   #Modified September 25, 2019 to add the confidence intervals of the intercepts 
   #This was a substantial rewrite of the code to include the moments matrix
   #modified June 5, 2023 to allow the complete cases option to work.
+  # June 21 added drop=FALSE to mst occasions of matrices not being treated as vectors
   
    cl <- match.call()
     #convert names to locations 
@@ -159,7 +160,7 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	                zm <- m[z,z,drop=FALSE]
      	                za <- m[x,z,drop=FALSE]
      	                zb <- m[y,z,drop=FALSE]
-     	                zmi <- solve(zm)
+     	                zmi <- solve(zm,drop=FALSE)
      	                 x.matrix <- x.matrix - za %*% zmi %*% t(za)
      	               if(!part)  y.matrix <- y.matrix - zb %*% zmi %*% t(zb)   #part correlations do not partial y
      	                xy.matrix <- xy.matrix - za  %*% zmi %*% t(zb)
@@ -220,9 +221,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
      	          
      	          C[1,1] <- 1
      	          Rxy <- cov2cor(C)
-     	          beta.std <- solve(Rxy[x,x],Rxy[x,y])
-     	          Vaxy <- beta.std * Rxy[x,y]
-                  VIF <- 1/(1-smc(Rxy[x,x]))
+     	          beta.std <- solve(Rxy[x,x,drop=FALSE],Rxy[x,y,drop=FALSE])
+     	          Vaxy <- beta.std * Rxy[x,y,drop=FALSE]
+                  VIF <- 1/(1-smc(Rxy[x,x,drop=FALSE]))
      	   
      	       
      	        for (i in 1:length(y)) {
@@ -310,9 +311,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
 
          Ruw <-  sum(uCxy)/sqrt(sum(Vx)*sum(Vy))  #The unweighted correlation
          
-         x.matrix <- Cu [x,x]
-         y.matrix <- Cu[y,y]
-         xy.matrix <- Cu[x,y]
+         x.matrix <- Cu [x,x, drop=FALSE]
+         y.matrix <- Cu[y,y, drop=FALSE]
+         xy.matrix <- Cu[x,y, drop=FALSE]    #added the drop 6/3/26
          m.matrix <- Cu
          
  #Now do the Set correlation from Cohen 
@@ -326,7 +327,9 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
                                                       XY.matrix <- xy.matrix
                                             }	
        if("(Intercept)" %in% colnames(m.matrix)) m.matrix <- m.matrix[-1,-1,drop=FALSE]
-     	if(numy < 2) {Rset <- 1 - det(m.matrix)/(det(X.matrix) )
+     	if(numy < 2) {
+     	
+     	Rset <- 1 - det(m.matrix)/(det(X.matrix) )
      	             Myx <- solve(X.matrix) %*% XY.matrix  %*% t(XY.matrix)
      	             cc2 <- cc <- T <- NULL} else {if (numx < 2) {Rset <- 1 - det(m.matrix)/(det(y.matrix) )
      	            Myx <-  XY.matrix %*% solve(y.matrix) %*% t(XY.matrix)
@@ -463,10 +466,10 @@ if(any( !(c(y,x,z,ex) %in% colnames(data)) )) {
         
        # coeff <- data.frame(beta=beta,se = se,t=tvalue, Probabilty=prob)
        # colnames(coeff) <- c("Estimate", "Std. Error" ,"t value", "Pr(>|t|)")
-      x.inv <- solve(C[x,x])
+      x.inv <- solve(C[x,x,drop=FALSE])
 
-       	yhat <- t(C[x,y,drop=FALSE]) %*% x.inv %*% (C[x,y])
-       	resid <- C[y,y] - yhat   #this is now in covariance units
+       	yhat <- t(C[x,y,drop=FALSE]) %*% x.inv %*% (C[x,y,drop=FALSE])
+       	resid <- C[y,y,drop=FALSE] - yhat   #this is now in covariance units
 
        
         Vaxy <- as.matrix(Vaxy)
@@ -523,7 +526,7 @@ y.matrix <- round(sc$y.matrix,digits)
 y.resid <- round(sc$resid,digits)
 x.names <- rownames(beta)
 
-if(intercept){ x.matrix <- x.matrix[-intercept,-intercept]
+if(intercept){ x.matrix <- x.matrix[-intercept,-intercept,drop=FALSE]
  x.names <- x.names[-intercept] 
  
 beta <- beta[-intercept,,drop=FALSE]

@@ -135,8 +135,9 @@ The \code{\link{faBy}} function takes the output of statsBy (with the cors=TRUE 
 \examples{
 #Taken from Pedhazur, 1997
 pedhazur <- structure(list(Group = c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 
-2L), X = c(5L, 2L, 4L, 6L, 3L, 8L, 5L, 7L, 9L, 6L), Y = 1:10), .Names = c("Group", 
-"X", "Y"), class = "data.frame", row.names = c(NA, -10L))
+2L), X = c(5L, 2L, 4L, 6L, 3L, 8L, 5L, 7L, 9L, 6L), Y = 1:10), 
+class = "data.frame", row.names = c(NA, -10L))
+
 pedhazur
 ped.stats <- statsBy(pedhazur,"Group")
 ped.stats

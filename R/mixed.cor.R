@@ -141,6 +141,12 @@ return(Rho)
 # return(Rho)
 # }
 
+
+
+
+
+
+#now, the guts of the function
 #December 22,2010
 #revised July 15, 2011 to work for the various special cases
 #meant to combine continuous, polytomous and dichotomous correlations
@@ -177,8 +183,11 @@ rpd <- NULL #in case we don't have any
 
 if(nx > 1) {
 progressBar(nx,nx,"Finding Pearson correlations")
-rx <- cor(data[,x],use=use,method=method)} else {if(nx  < 1) {rx <- NULL
-   rho <- NULL} else {rx <- 1
+if(is.null(weight)) {rx <- cor(data[,x,drop=FALSE],use=use,method=method)} else {  
+       rx <- cor.wt(data[,x,drop=FALSE],w=weight)} 
+       }
+    if(nx  < 1) {rx <- NULL
+   rho <- NULL} else {if(nx == 1) {rx <- 1
      rho <- 1}}
      
 if(np > 1) {
@@ -193,15 +202,15 @@ if(nd > 1) {
 progressBar(nd,nd,"Finding tetrachorics")
   rd <- tetrachoric(data[,d],smooth=smooth,correct=correct,weight=weight)}   else {if (nd == 1) {rd <- list(rho=1,tau=NULL)}  else {rd <- list(rho=NULL,tau=NULL)}}
 
-if(nx > 0) {if(np > 0) {rxp <- polyserial(data[,x,drop=FALSE],data[,p,drop=FALSE])   #the normal case is for all three to exist
+if(nx > 0) {if(np > 0) {rxp <- polyserial(data[,x,drop=FALSE],data[,p,drop=FALSE], weight=weight)   #the normal case is for all three to exist
 		tmixed <- cbind(rx,t(rxp))
 		lmixed <- cbind(rxp,rp$rho)
 		rho <- rbind(tmixed,lmixed)} else {rho <- rx}  #we now have x and p
 
-		if(nd > 0) { rxd <- biserial(data[,x,drop=FALSE],data[,d,drop=FALSE])
+		if(nd > 0) { rxd <- biserial(data[,x,drop=FALSE],data[,d,drop=FALSE], weight=weight)
 		
 		    if(np > 0) {
-		    rpd <- polydi(data[,p,drop=FALSE],data[,d,drop=FALSE],global=global,correct=correct)$rho   #passing the global value (July 10, 2017)
+		    rpd <- polydi(data[,p,drop=FALSE],data[,d,drop=FALSE],global=global,correct=correct, weight=weight)$rho   #passing the global value (July 10, 2017)
 			            topright <- t(cbind(rxd,t(rpd))) 
 			            } else {
 			        topright <- t(rxd)}
@@ -213,7 +222,7 @@ if(nx > 0) {if(np > 0) {rxp <- polyserial(data[,x,drop=FALSE],data[,p,drop=FALSE
 		   if( np > 0) { 
 		      if (nd > 0 ) {
 		     progressBar(nd,nd,"Starting polydi")
-		      rpd <- polydi(data[,p,drop=FALSE],data[,d,drop=FALSE],global=global,correct=correct)$rho  #added global  (July 10, 2017)   But this causes problems
+		      rpd <- polydi(data[,p,drop=FALSE],data[,d,drop=FALSE],global=global,correct=correct, weight=weight)$rho  #added global  (July 10, 2017)   But this causes problems
 		     
 		       tmixed <- cbind(rp$rho,rpd)
 		       lmixed <- cbind(t(rpd),rd$rho)

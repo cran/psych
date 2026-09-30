@@ -10,6 +10,7 @@ c#developed July 4, 2012
 #Dec 2023  Added the within group slope object as output
 #Dec 2023  Added the ability to specify the min.n (minimum group size)
 #Jan 2024 Added the check for being a tibble 	
+#June 2026  Added the ability to use formula input (to match describeBy)
 "statsBy" <-
    function (data,
             group,
@@ -25,7 +26,11 @@ c#developed July 4, 2012
              mean.weights=NULL,
              min.n= 1) { #  min size added 12/29/23
  cl <- match.call()
-    
+   
+   if(inherits(data,"formula")) {ps <- fparse(data) 
+   data <- get(ps$y)
+   group <- data[,ps$x]} 
+  
 valid <- function(x) { #count the number of valid cases 
         sum(!is.na(x))
     }

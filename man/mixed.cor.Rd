@@ -72,6 +72,8 @@ W. Revelle, E.M. Dworak and D.M. Condon (2020) Exploring the persome: The power 
 
 \seealso{ \code{\link{polychoric}}, \code{\link{tetrachoric}}, \code{\link{scoreItems}},  \code{\link{scoreOverlap}} \code{\link{scoreIrt}}
 }
+
+\note{Updated 9/21/26 so that the weight option actually works! Weights are applied when finding the Pearson correlations as well as the biserial, polyserial, and polychoric correlations.  This has been a recurring problem since mixedCor was first released.}
 \examples{
 data(bfi) 
 r <- mixedCor(data=bfi[,c(1:5,26,28)])

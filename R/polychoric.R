@@ -418,7 +418,7 @@ return(mat)
 
 #if(!require(mnormt) ) {stop("I am sorry, you must have mnormt installed to use polychoric")}
 
- if(!is.null(weight)) {if(length(weight) !=nrow(x)) {stop("length of the weight vector must match the number of cases")}}
+ if(!is.null(weight)) {if(length(weight) !=nrow(p)) {stop("length of the weight vector must match the number of cases")}}
  cl <- match.call() 
 np <- dim(p)[2]
 nd <- dim(d)[2]

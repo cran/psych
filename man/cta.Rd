@@ -2,15 +2,19 @@
 \alias{cta}
 \alias{cta.15}
 \title{Simulate the C(ues) T(endency) A(ction) model of motivation}
-\description{Dynamic motivational models such as the Dynamics of Action (Atkinson and Birch, 1970, Revelle, 1986) may be reparameterized as a simple pair of differential (matrix) equations (Revelle, 1986, 2008). This function simulates the dynamic aspects of the CTA.  The CTA model is discussed in detail in Revelle and Condon (2015).
+\description{Dynamic motivational models such as the Dynamics of Action (Atkinson and Birch, 1970, Revelle, 1986) may be reparameterized as a simple pair of differential (matrix) equations (Revelle, 1986, 2008). This function simulates the dynamic aspects of the CTA.  The CTA model is discussed in detail in Revelle and Condon (2015).  The basic duynamic model is that tendencies and the resulting actions show inertia.
 }
 \usage{
-cta (n=3,t=5000, cues = NULL, act=NULL, inhibit=NULL,expect = NULL, consume = NULL, 
-tendency = NULL,tstrength=NULL, type="both", fast=2,compare=FALSE,learn=TRUE,reward=NULL) 
+cta(n=3,t=5000,
+     cues = NULL,
+      act=NULL, 
+      inhibit=NULL,expect = NULL, 
+      consume = NULL,tendency = NULL,tstrength=NULL, 
+      type="both",fast=2 ,compare=FALSE,
+      learn=FALSE,reward=NULL,
+      period =NULL) 
 cta.15(n = 3, t = 5000, cues = NULL,stim=NULL, act = NULL, inhibit = NULL, consume = NULL, 
    ten = NULL,  type = "both", fast = 2)
-
-
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,10 +34,13 @@ cta.15(n = 3, t = 5000, cues = NULL,stim=NULL, act = NULL, inhibit = NULL, consu
   \item{compare}{Allows a two x two graph to compare two plots}
   \item{learn}{Allow the system to learn (self reinforce) over time}
   \item{reward}{The strength of the reward for doing an action. }
+  \item{period}{Introduce periodicity to the cues}
 }
 \details{A very thorough discussion of the CTA model is available from Revelle (2008). An application of the model is discussed in Revelle and Condon (2015). 
 
 \code{\link{cta.15}} is the version used to produce the figures and analysis in Revelle and Condon (2015).  \code{\link{cta}} is the most recent version and includes a learning function developed in collaboration with Luke Smillie at the University of Melbourne.
+
+As of June, 2026 the period option was introduced to simulate periodic input (e.g. seasonal effects if simulating weather).  Weather/climate is a nice analogy of personality states and traits.  Traits (climate) is what you expect, states (weather) is what you get.  Weather (and states) are dynamic functions showing inertia.
 
 The dynamics of action (Atkinson and Birch, 1970)  was a model of how instigating forces elicited action tendencies which in turn elicited actions.  The basic concept was that action tendencies had inertia.  That is, a wish (action tendency) would persist until satisfied and would not change without an instigating force.  The consummatory strength of doing an action was thought  in turn to reduce the action tendency.  Forces could either be instigating or inhibitory (leading to "negaction").
 
@@ -47,7 +54,7 @@ The dynamics of action (Atkinson and Birch, 1970)  was a model of how instigatin
  
  \code{\link{cta}} simulates this model, with the addition of a learning parameter such that  activities strengthen the connection between cues and tendencies.  The learning part of the cta model is still under development.  \code{\link{cta.15}} represents the state of the cta model as described in the Revelle and Condon (2015) article.
   
-  
+  If the environmental cues are not constant but rather vary systematically over time (think seasons for the weather) some interesting things occur.  
 
 
 

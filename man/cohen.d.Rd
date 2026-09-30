@@ -102,6 +102,8 @@ It is probably useful to comment that the various confidence intervals reported 
 The Mahalanobis Distance combines the individual ds and weight them by their unique contribution:  \eqn{D = \sqrt{d' R^{-1}d}}{D = \sqrt{d' R^{-1}d}}.
  By default, \code{\link{cohen.d}} will find the Mahalanobis distance between the two groups (if there is more than one DV.)  This requires finding the correlation of all of the DVs and can fail if that matrix is not invertible because some pairs do not exist.  Thus, setting MD=FALSE will prevent the Mahalanobis calculation.
  
+ In May, 2026, I added the partial d (wt.d) which is d controlling for the other variables.  This is a generalization of the logic for finding betas in multiple regression.  See the examples.  
+ 
  Marco del Giudice (2019) has a very helpful paper discussing how to interpret d and Md in terms of various overlap coefficients. These may be found by the use of the \code{\link{d2OVL}} (percent overlap for 1 distribution), \code{\link{d2OVL2}} percent overlap of joint distributions, \code{\link{d2CL}} (the common language effect size), and \code{\link{d2U3}} (proportion in higher group exceeding median of the lower group).
  
  \deqn{OVL  = 2\phi(-d/2)}{OVL = 2 \phi(-d/2)}  is the proportion of overlap (and gets smaller the larger the d).
@@ -185,6 +187,25 @@ plot(cd2,sort=FALSE,add=TRUE,col="red",lwd=2)
 #formula version combines these functions
 cd <- cohen.d(sat.act ~ gender + education)  #find d by gender for each level of education
 summary(cd)
+
+if(require(psychTools)) {
+mf.pers <- cohen.d(M.pers + F.pers ~ gender,data=GERAS.scales)
+mf.pers.cog <- cohen.d(M.pers + F.pers + M.cog + F.cog ~ gender,data=GERAS.scales)
+mf.pers.cog.act  <- cohen.d(M.pers + F.pers + M.cog + F.cog  + M.act  + F.act ~ gender,
+     data=GERAS.scales)
+mf.pers.cog.act.MF  <- cohen.d(M.pers + F.pers + M.cog + F.cog  + M.act  + F.act  + M + F ~ gender,
+      data=GERAS.scales)
+mf.pers.cog.act.MF.all  <- cohen.d(M.pers + F.pers + M.cog + F.cog  + M.act  + F.act  + M + F 
+     + MF.all~ gender,data=GERAS.scales)
+
+MF.all =cohen.d(MF.all~gender,data=GERAS.scales)
+#summarize
+summary.df <- data.frame(Scale_name=cs(person, person.cognitive, person.cognitive.activity,
+       All_MF_scales,MF.all),
+       N_subscales =c(2,4,6,8,1) , N_items =c(20,34,50,50,50),D = round(c(mf.pers$M.dist,
+     mf.pers.cog$M.dist, mf.pers.cog.act$M.dist, mf.pers.cog.act.MF$M.dist, 
+      MF.all$M.dist) ,2))
+}
 
 #now show several examples of confidence intervals
 #one group (d vs 0)

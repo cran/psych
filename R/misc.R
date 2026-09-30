@@ -114,6 +114,9 @@ return(f)
 #the matrix version was correct, just not the single case version
 
 "mssd" <- function(x,group=NULL,lag=1,na.rm=TRUE) {
+if(inherits(x,"formula")) {ps <- fparse(x) 
+   x <- get(ps$y)
+   group <- x[ps$x]} 
 if(is.null(group)) {
 if(is.vector(x)) { result <- sum(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(sum(!is.na(x)) -lag )} else {
 x <- as.matrix(x)
@@ -146,7 +149,9 @@ return(sqrt(mssd(x,group=group,lag=lag,na.rm=na.rm))) }
 
 ##### Added March 1, 2017
 "autoR" <- function(x,group=NULL,lag=1,na.rm=TRUE,use="pairwise") {
-
+if(inherits(x,"formula")) {ps <- fparse(x) 
+   x <- get(ps$y)
+   group <- x[ps$x]} 
 if(is.null(group)) {
 n.obs <- NROW(x)
 if(is.vector(x)) {
@@ -158,7 +163,7 @@ x <- as.vector(scale(x,scale=FALSE))
 r <- cor(x[1:(n.obs-lag)],x[(lag+1):n.obs],use=use)
  result <- list(autoR = r,rssd=sqrt(mssd))  #fixed May 10 ,2017 to correct autorR-
  } else {
-x <- as.matrix(x)
+x <- as.matrix(x)  #this makes everything a dharacter if any column is character
 n <- colSums(!is.na(x))
 mssd <- colSums(diff(x,lag=lag,na.rm=na.rm)^2,na.rm=na.rm)/(n-lag)
 v1 <- apply(x[1:(n.obs-lag),,drop=FALSE],2,sd, na.rm=na.rm)^2
@@ -169,7 +174,9 @@ r <- diag(cor(x[1:(n.obs-lag),],x[(lag+1):n.obs,],use=use))
 }
 } else {
  cl <- match.call()
-x <- as.matrix(x) #added 26/5/14
+ 
+ x <- as.matrix(x) #added 26/5/14
+
 if(NROW(group) != NROW(x)) group <- x[,group]  #added 26/5/14
 nvar <- ncol(x)
 cname <- colnames(x)
@@ -938,4 +945,5 @@ if(absolute) { t.m <- apply(abs(object[,select,drop=FALSE]) ,1,max)} else {
        }
        }
        
+
 

@@ -5,6 +5,8 @@
 #modified March 12 to allow for a list of factor solutions
 #Modified December 11, 2019 to use inherits rather than class 
 #added CFA, CFA.bifactor, and irt.fa as options  March 3, 2026
+#fixed CFA to work Sept 16, 2026
+
 "factor.congruence" <-
 function (x,y=NULL, digits=2,use=NULL,structure=FALSE) {
    fa.congruence(x=x,y=y,digits=digits,use=use,structure=structure) }
@@ -64,7 +66,7 @@ if(length(class(x)) >1 ) {#cln <- class(x)[2]} else {cln <- "other"}
    				 iclust = {x <- x$loadings},
    				  extend = {x <- x$loadings},
    				  esem = {x <- x$loadings},
-   				   CFA = {x <- x$loadings},
+   				   CFA = {x <- x$cfa$loadings},
    				    CFA.bifactor = { x<- x$loadings},
    				     lavaan = {x <- x@Model@GLIST$lambda},
    				     irt.fa = {x <- x$fa$loadings},
@@ -91,7 +93,7 @@ if(length(class(y)) > 1) {   #{ cln <- class(y)[2] } else {cln <- "other"}
    				  esem = {y <- y$loadings},
    				    extend = {y <- y$loadings},
    				 iclust = {y <- y$loadings},
-   				  CFA = {y <- y$loadings},
+   				  CFA = {y <- y$cfa$loadings},
    				   CFA.bifactor = { y<- y$loadings},
    				  lavaan = {y <- y@Model@GLIST$lambda},
    				  irt.fa ={y <- y$fa$loadings},

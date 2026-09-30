@@ -3,6 +3,7 @@
 #Modified Sept 8, 2019 to include weighted scoring  
 #Modified April 15, 2019 to make structure somewhat cleaner
 #Minor fix December 22, 2021 to allow correctly for correlation input
+#added the seed parameter Jul 10, 2026
 
 
 "bestScales" <- 
@@ -12,7 +13,7 @@
           cut=.1,n.item =10,wtd.cut = 0,wtd.n=10, #just one solution / criteria
           n.iter =1,folds=1,p.keyed=.9, #how many bootstraps (n.iter) or folds
           overlap=FALSE,dictionary=NULL,check=TRUE,labels=NULL,
-          impute="none", log.p=FALSE, digits=2) {
+          impute="none", log.p=FALSE, digits=2,seed=NULL) {
  cl <- match.call()
  
   first <- TRUE
@@ -42,7 +43,7 @@ if(n.iter !=folds) {n.iter <- folds
     folds <- 1
     cat("Number of iterations and number of folds set to 1 because the you are using a correlation matrix\n")
  }
- set.seed(NULL)
+ set.seed(seed)   #allows us to choose a seed  (if not null)
  old.seed <- .Random.seed[42]   #we save this if we want to do k-fold cross validation
  
 ####
@@ -55,7 +56,8 @@ short <- function(i,x,n.obs,criteria,cut,n.item,impute,digits,dictionary,frac,lo
 
 	if(n.iter > 1) {
 	   if(!isCorrelation(x)) { ss <- (1:n.obs) 
-	  if(frac==1) {ss <- sample(ss,n.obs,replace=TRUE)  #bootstrap resampling  ss is 'in the bag'
+	  if(frac==1) {#set.seed(old.seed)
+	              ss <- sample(ss,n.obs,replace=TRUE)  #bootstrap resampling  ss is 'in the bag'
 	  }  else {
 	  	set.seed(old.seed) #this will take the same random sequence for this run so that we can do k fold
 		ss <- sample(ss,n.obs,FALSE)  # this is the 1:n.obs in the same random order for each of the k fold

@@ -45,7 +45,7 @@ multilevel.reliability(x, grp = "id", Time = "time", items = c(3:5),alpha=TRUE,i
   \item{...}{Other parameters to pass to xyplot}
 }
 \details{
-Classical reliabiiity theory estimates the amount of variance in a set of observations due to a true score that varies over subjects.  Generalizability theory extends this model to include other sources of variance, specifically, time.  The classic studies using this approach are people measured over multiple time points with multiple items.  Then the question is, how stable are various individual differences. Intraclass correlations (ICC) are found for each subject over items, and for each subject over time. Alpha reliabilities  are found for each subject for the items across time.   
+Classical reliabiity theory estimates the amount of variance in a set of observations due to a true score that varies over subjects.  Generalizability theory extends this model to include other sources of variance, specifically, time.  The classic studies using this approach are people measured over multiple time points with multiple items.  Then the question is, how stable are various individual differences. Intraclass correlations (ICC) are found for each subject over items, and for each subject over time. Alpha reliabilities  are found for each subject for the items across time.   
 
 More importantly, components of variance for people, items, time, and their interactions are found either by classical analysis of variance (aov) or by multilevel mixed effect modeling (lme).  These are then used to form several different estimates of generalizability.   Very thoughtful discussions of these procedure may be found in chapters by Shrout and Lane.  
 
@@ -89,7 +89,7 @@ The input can either be in 'wide' or 'long' form.  If in wide form, then specify
 
 Thus, if we have N subjects over t time points for k items, in wide format for N * t rows where each row has k items and e extra pieces of information, we get a N x t * k row by 4 + e column dataframe.  The first four columns in the long output are id, time, values, and item names, the remaining columns are the extra values.  These  could be something such as a trait measure for each subject, or the situation in which the items are given.
 
-\code{\link{mlArrange}} plots k items over the  t time dimensions for each subject. 
+\code{\link{mlPlot}} plots k items over the  t time dimensions for each subject. 
 }
 
 \value{
@@ -144,8 +144,7 @@ shrout <- structure(list(Person = c(1L, 2L, 3L, 4L, 5L, 1L, 2L, 3L, 4L,
 4L, 7L, 5L, 6L, 1L, 5L, 8L, 8L, 6L), Item2 = c(3L, 4L, 6L, 4L, 
 8L, 3L, 7L, 7L, 5L, 8L, 2L, 6L, 8L, 6L, 7L, 3L, 9L, 9L, 7L, 8L
 ), Item3 = c(6L, 4L, 5L, 3L, 7L, 4L, 7L, 8L, 9L, 9L, 5L, 7L, 
-9L, 7L, 8L, 4L, 7L, 9L, 9L, 6L)), .Names = c("Person", "Time", 
-"Item1", "Item2", "Item3"), class = "data.frame", row.names = c(NA, 
+9L, 7L, 8L, 4L, 7L, 9L, 9L, 6L)), class = "data.frame", row.names = c(NA, 
 -20L))
 
 #make shrout super wide

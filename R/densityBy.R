@@ -1,18 +1,21 @@
+#added the ability to pass ylim   7/7/26
 "violin"  <- function(x,data=NULL,var=NULL,grp=NULL,grp.name=NULL, xlab=NULL, ylab=NULL,main="Density plot",vertical=TRUE,
    dots=FALSE, rain=FALSE,jitter=.05,
 	alpha=1,errors=FALSE,eyes=TRUE,adjust=1,
-	restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {#calls violinBy which is now defaulg
-
-violinBy(x=x,data=data,var=var,grp=grp,grp.name=grp.name,xlab=xlab,ylab=ylab,main=main,vertical=vertical,
-      dots=dots, rain=rain, jitter=jitter,
-      alpha=alpha, errors=errors,eyes=eyes,adjust=adjust,restrict=restrict,xlim=xlim,
-      add=add,col=col,pch=pch,scale=scale,...)
-}
+	restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+	#call Violinby 
+	violinBy(x=x,var=var,grp=grp,data=data,grp.name=grp.name,xlab=xlab, ylab=ylab, main=main,vertical=vertical,
+    dots=dots,rain=rain, jitter=jitter,
+    alpha=alpha,errors=errors,eyes=eyes,adjust=adjust,
+    restrict=restrict,xlim=xlim,add=add,col=col,pch=pch,scale=scale, 
+    ylim=NULL,xlas=0, ylas=2,order=NULL,...)
+	}
 
 #switched from density = 50 to alpha =.5  to speed up the plotting 
 "violinBy"  <- function(x,var=NULL,grp=NULL,data=NULL,grp.name=NULL,xlab=NULL, ylab=NULL, main="Density plot",vertical=TRUE,
     dots=FALSE,rain=FALSE, jitter=.05,alpha= 1,errors=FALSE,eyes=TRUE,adjust=1,
-    restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, ...) {
+    restrict=TRUE,xlim=NULL,add=FALSE,col=NULL,pch=20,scale=NULL, 
+    ylim=NULL,xlas=0, ylas=2,order=NULL,...) {
    if(is.null(scale)) SCALE=.3  #how wide are the plots?
 
 count.valid <- function(x) {sum(!is.na(x)) }
@@ -45,7 +48,8 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}  #def
      if(is.null(ylab)) ylab = "Observed "
      if(is.null(xlab))  xlab = "" 
     }  
-       if(!is.null(grp)) { 
+       if(!is.null(grp)) {
+      
     if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp,drop=FALSE]}
 
  if(!is.null(var)) {if(missing(ylab) & (length(var) ==1)) {ylab <- var}
@@ -58,13 +62,15 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}  #def
 # if(!is.data.frame(grp) && !is.list(grp) && (length(grp) < NROW(x))) grp <- x[,grp]
 
  if(!is.null(grp)) {stats <- describeBy(data[,ps$y],group = data[,ps$x],quant=c(0,1,.5,.25,.75),mat=TRUE,skew=FALSE) } else { stats <- describe(data[,ps$y,drop=FALSE],quant=c(0,1,.5,.25,.75),skew=FALSE)}
-  meanX <- stats[,"mean"]
-  minx <- stats[,"min"]
-  maxx <- stats[,"max"]
-  medx <- stats[,"Q0.5"]
-   Q25 <- stats[,"Q0.25"]
-  Q75  <- stats[,"Q0.75"]
-  nvarg <- NROW(stats)
+ nvarg <- NROW(stats)
+ if(is.null(order) ) order <- 1:NROW(stats)
+  meanX <- stats[order,"mean"]
+  minx <- stats[order,"min"]
+  maxx <- stats[order,"max"]
+  medx <- stats[order,"Q0.5"]
+   Q25 <- stats[order,"Q0.25"]
+  Q75  <- stats[order,"Q0.75"]
+  
   n.col <- length(col)
   nX <- stats[,"n"]
   col <- rep(col,nvarg) #too many, but this will do
@@ -89,10 +95,10 @@ if(is.null(col)) {col <- c("blue","red","grey","purple","green","yellow")}  #def
 
 tot.n.obs <- nrow(x)
 
-                                                        
+ grp.name <- names(table(grp)) 
+  grp.name <- grp.name[order]                                                     
 names <- grp.name  
-if(is.null(grp.name) & !is.null(grp)) { grp.name <- paste(ps$x[1],stats[,"group1"])
-names <- grp.name  } else {if(length(grp.name) != NROW(stats)) names <- rownames(stats)}
+if(is.null(grp.name) & !is.null(grp)) { grp.name <- paste(ps$x[1],stats[,"group1"])} else {if(length(grp.name) != NROW(stats)) names <- rownames(stats)}
 
 # names <- rep(grp.name, length(ps$x)) 
 # #if(length(ps$x) > 1) ) ) {names <- paste(rep(names,each=ngrp),grp.name[1:ngrp],sep=" ")} else {names <- grp.name}
@@ -101,7 +107,10 @@ names <- grp.name  } else {if(length(grp.name) != NROW(stats)) names <- rownames
 d <- list(nvar)
 if(is.null(xlim)) xlim <- c(.5,nvarg+.5)
 
+
+
 for (i in 1:nvar) {
+ 
 #if(!is.null(grp)) { if(restrict) {d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE,from=rangex[1,i],to=rangex[2,i]))}
 if(!is.null(grp)) { if(restrict) {d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE,adjust=adjust,from=min(xx,na.rm=TRUE),to=max(xx,na.rm=TRUE)))} else {
 d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE)) }} else {
@@ -109,13 +118,21 @@ if(restrict) {d[[i]] <- density(x[,i],na.rm=TRUE,adjust=adjust,from=minx[i],to=m
 d[[i]] <- density(x[,i],na.rm=TRUE)} }
 }
 
-if(!add) {if(vertical){plot(1:nvarg,meanX,ylim=c(min(minx),max(maxx)),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
+if(is.null(ylim)) ylim <- c(min(minx),max(maxx)) 
+if(is.null(xlim))   xlim <- c(min(minx),max(maxx)) 
+if(!vertical) {temp <- xlim
+               xlim <- ylim
+               ylim <- temp}
+             
+if(vertical){plot(1:nvarg,meanX,ylim=ylim,xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
   axis(1,1:nvarg,names,...)
-  axis(2,...)} else {plot(meanX,1:nvarg,xlim=c(min(minx),max(maxx)),ylim=c(.5,nvarg+.5),axes=FALSE,xlab=ylab,ylab=xlab,main=main,pch=pch,...)
+  axis(2,...)} else {plot(meanX,1:nvarg,xlim=xlim ,ylim=c(.5,nvarg+.5),axes=FALSE,xlab=ylab,ylab=xlab,main=main,pch=pch,...)
       axis(1,...)
      axis(2, 1:nvarg,names,...)}
-  box()}
+  box()
+ 
 if(!is.null(grp)) d <- unlist(d,recursive=FALSE)
+d <- d[order]
 rev <- (length(d[[1]]$y):1) #this prevents a line down the middle
 
 
@@ -176,10 +193,12 @@ if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1] ] +grp[,
  
                    }
                    
-if(rain)  {
+if(rain)  {  #does not work yet for reordered data
+
 for(i in 1:nvar) {if(!is.null(grp)) {
   
- tempat <- 1:length(table(grp)) -.1 + (i-1)*nvar
+ #tempat <- 1:length(table(grp)) -.1 + (i-1)*nvar
+ tempat <- order[1:length(table(grp))] -.1 + (i-1)*nvar
 if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y[i]]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch, at=tempat,...)} else {
       
         stripchart(x[,ps$y[i]]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,at=tempat, ...) }} else {
@@ -195,50 +214,14 @@ if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y[i]]~ grp[,ps$x[1] ] +gr
        
        }
        }
-        
-#created March 10, 2014 following a discussion of the advantage of showing distributional values
-#modified March 22, 2014 to add the grouping variable
-#basically just a violin plot.
-#modified December, 2016 to allow for scaling of the widths of the plots by sample size. 
-#modified  December 2020 to provide stripcharts and errorbar options
+       
+    
+    #Improved 09/02/20
 
-# 
-# "histBy" <- function(x,grp=NULL,data=NULL,restrict=TRUE,xlim=NULL,ylab="Observed",xlab="",main="Density plot",density=20,scale=TRUE,col= c("blue","red"),...) {
-# count.valid <- function(x) {sum(!is.na(x)) }
-# formula <- FALSE
-#    if(inherits(x, "formula")) {  ps <- fparse(x)
-#    formula <- TRUE
-#    if(is.null(data)) stop("You must specify the data if you are using formula input") 
-#      x <- data[ps$y]
-#    grp <- data[ps$x]
-#    }
-# if(
-#(col)) {col <- c("blue","red")}
-# if(restrict) {minx <- min(x,na.rm=TRUE)
-#    maxx <- max(x,na.rm=TRUE)}
-# x <- as.matrix(x,drop=FALSE)
-# meanX <- apply(x,2,mean,na.rm=TRUE)
-# nX <- apply(x,2,function(xx) by(xx,grp,count.valid))
-# 
-# if(!is.null(grp)) { if(restrict) {d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE,from=min(xx,na.rm=TRUE),to=max(xx,na.rm=TRUE)))} else {
-# d <- by(x[,1], grp ,function(xx) density(xx,na.rm=TRUE)) }} else {
-# if(restrict) {d <- density(x[,1],na.rm=TRUE,from=minx,to=maxx)} else {
-# d <- density(x[,1],na.rm=TRUE)} }
-# d <- unlist(d,recursive=FALSE)
-# maxy <- max(d[[1]]$y,d[[2]]$y,na.rm=TRUE)
-# plot(NA,ylim=c(0,maxy),xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
-#   axis(1,1:nvarg,names,...)
-#   axis(2,...)
-#   box()
-# if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
-# polygon(width*c(-d[[i]]$x,d[[i]]$x[rev])+i,c(d[[i]]$y,d[[i]]$y[rev]),density=density,col=col[i],...)
-# }
-
-
-#11/28/17
-#Improved 09/02/20
-
- "densityBy" <- function(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,col=c("blue","red","black"),alpha=.5,adjust=1,ylim=NULL,xlim=NULL,xlab="Variable", ylab="Density",main="Density Plot",legend=NULL) {
+ "densityBy" <- function(x,var=NULL,grp=NULL,data=NULL,freq=FALSE,
+   col=c("blue","red","black"),alpha=.5,adjust=1,
+   ylim=NULL,xlim=NULL,xlab="Variable", 
+    ylab="Density",main="Density Plot",legend=NULL) {
  formula <- FALSE
    if(inherits(x, "formula")) {  ps <- fparse(x)
    formula <- TRUE
@@ -297,3 +280,116 @@ if(!is.null(var)) x <- x[,c(var,grp),drop=FALSE]
  }
  invisible(d)
   }
+# #names <- grp.name  } else {if(length(grp.name) != NROW(stats)) names <- rownames(stats)}
+# 
+# # names <- rep(grp.name, length(ps$x)) 
+# # #if(length(ps$x) > 1) ) ) {names <- paste(rep(names,each=ngrp),grp.name[1:ngrp],sep=" ")} else {names <- grp.name}
+# # if(length(ps$y) > 1) names <- rep(names,length(ps$x))
+# #      col <- rep(col,nvar* ngrp)
+# d <- list(nvar)
+# if(is.null(xlim)) xlim <- c(.5,nvarg+.5)
+# 
+# 
+# 
+# for (i in 1:nvar) {
+#  
+# #if(!is.null(grp)) { if(restrict) {d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE,from=rangex[1,i],to=rangex[2,i]))}
+# if(!is.null(grp)) { if(restrict) {d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE,adjust=adjust,from=min(xx,na.rm=TRUE),to=max(xx,na.rm=TRUE)))} else {
+# d[[i]] <- by(x[,i], grp ,function(xx) density(xx,na.rm=TRUE)) }} else {
+# if(restrict) {d[[i]] <- density(x[,i],na.rm=TRUE,adjust=adjust,from=minx[i],to=maxx[i])} else {
+# d[[i]] <- density(x[,i],na.rm=TRUE)} }
+# }
+# 
+# if(!is.null(order)) {meanX <- meanX[order]
+#                 }
+# if(is.null(ylim)) ylim=c(min(minx),max(maxx)) 
+# if(vertical){plot(1:nvarg,meanX,ylim=ylim,xlim=xlim,axes=FALSE,xlab=xlab,ylab=ylab,main=main,pch=pch,...)
+#   axis(1,1:nvarg,names,...)
+#   axis(2,...)} else {plot(meanX,1:nvarg,xlim=c(min(minx),max(maxx)),ylim=c(.5,nvarg+.5),axes=FALSE,xlab=ylab,ylab=xlab,main=main,pch=pch,...)
+#       axis(1,...)
+#      axis(2, 1:nvarg,names,...)}
+#   box()
+# if(!is.null(grp)) d <- unlist(d,recursive=FALSE)
+# if(!is.null(order)) {d[] <- d[order]
+#                 }
+# rev <- (length(d[[1]]$y):1) #this prevents a line down the middle
+# 
+# 
+# for(i in 1:nvarg) {
+# if(!is.null(scale)) {width <- scale*sqrt(nX[[i]]/tot.n.obs)/max(d[[i]]$y)} else {width <- SCALE/max(d[[i]]$y)}
+# #polygon(width*c(-d[[i]]$y,d[[i]]$y[rev])+i,c(d[[i]]$x,d[[i]]$x[rev]),density=density,col=col[i],...)
+# #if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]),col=col[i ],...)} else {
+#  #        polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}
+# zero <- rep(0,length(d[[i]]$x))
+# 
+# 
+# if(rain) {if(vertical) {polygon(width*c(d[[i]]$y,  zero)+i,c( d[[i]]$x,d[[i]]$x[rev]  ),col=col[i ],...)} else {
+#          polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(d[[i]]$y,  zero)+i,col=col[i],...)}} else {
+#          #not rain
+#      if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]),col=col[i ],...)} else {
+#                    polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}}
+#          
+#   # if(vertical) {polygon(width*c(-d[[i]]$y,  d[[i]]$y[rev])+i,  c(d[[i]]$x,  d[[i]]$x[rev]+i),col=col[i ],...)} else {
+#    #      polygon(c(d[[i]]$x,  d[[i]]$x[rev]), width* c(-d[[i]]$y,  d[[i]]$y[rev])+i,col=col[i],...)}}
+#          
+# #draw the quartiles and  medians        
+# dmd <- max(which(d[[i]]$x <= medx[i]))
+# d25 <- max(which(d[[i]]$x <= Q25[i]))
+# d75 <- max(which(d[[i]]$x <= Q75[i]))
+# 
+# if(vertical) {
+# segments(x0=width*d[[i]]$y[dmd] +i ,y0=d[[i]]$x[dmd],x1=-(1-rain)*width*d[[i]]$y[dmd]+i,y1=d[[i]]$x[dmd],lwd=2)
+# segments(x0=width*d[[i]]$y[d25] +i ,y0=d[[i]]$x[d25],x1=-(1-rain)*width*d[[i]]$y[d25]+i,y1=d[[i]]$x[d25])
+# segments(x0=width*d[[i]]$y[d75] +i ,y0=d[[i]]$x[d75],x1=-(1-rain)*width*d[[i]]$y[d75]+i,y1=d[[i]]$x[d75])
+#   } else {
+#  
+#   segments(y0=width*d[[i]]$y[dmd] +i ,x0=d[[i]]$x[dmd],y1=(rain-1)*width*d[[i]]$y[dmd]+i,x1=d[[i]]$x[dmd],lwd=2)
+# segments(y0=width*d[[i]]$y[d25] +i ,x0=d[[i]]$x[d25],y1=(rain-1)*width*d[[i]]$y[d25]+i,x1=d[[i]]$x[d25])
+# segments(y0=width*d[[i]]$y[d75] +i ,x0=d[[i]]$x[d75],y1=(rain-1)*width*d[[i]]$y[d75]+i,x1=d[[i]]$x[d75])
+#   }
+#  } 
+# 
+#  
+#  if(errors) {   #currently only works for one DV and one IV
+# 
+#  if(vertical) {
+#     error.bars.by(x[,1],group=grp[,1],add=TRUE,lines=FALSE,eyes=eyes,v.labels=names,...) 
+# 
+#  } else {
+#            message("error bars are not implemented for horizontal plots")}
+#  }
+#  
+# 
+# if(dots) { if(!is.null(grp)) {
+# if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
+#         stripchart(x[,ps$y]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} else {
+#   if(length(ps$x) > 1 ) {stripchart(x[,ps$y]~ grp[,ps$x[1]]+ grp[,ps$x[,2]],vertical=vertical,add=TRUE,pch=pch,...)} else {
+#        {stripchart(x[,ps$y]~ grp[,ps$x[1]],vertical=vertical,add=TRUE,pch=pch,...)} 
+#        }}
+#        } else {
+#        if(jitter >0) {stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...)} else {
+#         stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,...) }} 
+#  
+#                    }
+#                    
+# if(rain)  {
+# for(i in 1:nvar) {if(!is.null(grp)) {
+#   
+#  tempat <- 1:length(table(grp)) -.1 + (i-1)*nvar
+# if(jitter >0) {if(length(ps$x) > 1 ) {stripchart(x[,ps$y[i]]~ grp[,ps$x[1] ] +grp[,ps$x[2]] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch, at=tempat,...)} else {
+#       
+#         stripchart(x[,ps$y[i]]~ grp[,ps$x[1] ] ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,at=tempat, ...) }} else {
+#   if(length(ps$x) > 1 ) {stripchart(x[,ps$y[i]]~ grp[,ps$x[1]]+ grp[,ps$x[,2]],vertical=vertical,add=TRUE,pch=pch,...)} else {
+#        {stripchart(x[,ps$y[i]]~ grp[,ps$x[1]],vertical=vertical,add=TRUE,pch=pch,...)} 
+#        }}
+#        }  else {
+#         tempat <- 1:nvar -.1 + (i-1)*nvar
+#        if(jitter >0) {stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,at=tempat,...)} else {
+#         stripchart(x ,vertical=vertical,method="jitter",jitter=jitter,add=TRUE,pch=pch,at=tempat,...) }} 
+#  
+#                    }
+#        
+#        }
+#        }   
+       
+        

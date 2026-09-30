@@ -19,7 +19,8 @@ violin(x,data=NULL, var=NULL, grp=NULL, grp.name=NULL, xlab=NULL, ylab=NULL,
 violinBy(x, var=NULL, grp=NULL, data=NULL, grp.name=NULL, xlab=NULL, ylab=NULL,
 	main="Density plot", vertical=TRUE, dots=FALSE, rain=FALSE, jitter=.05, alpha= 1,
 	errors=FALSE, eyes=TRUE, adjust=1, restrict=TRUE, xlim=NULL, add=FALSE, 
-	col=NULL, pch=20, scale=NULL,...) 
+	col=NULL, pch=20, scale=NULL,
+	ylim=NULL, xlas=0,ylas=2,order=NULL,...) 
  
 densityBy(x, var=NULL, grp=NULL,data=NULL, freq=FALSE, col=c("blue","red","black"), 
 	alpha=.5, adjust=1, ylim=NULL, xlim=NULL, xlab="Variable", ylab="Density",
@@ -56,7 +57,11 @@ densityBy(x, var=NULL, grp=NULL,data=NULL, freq=FALSE, col=c("blue","red","black
  \item{pch}{The plot character for the mean is by default a small filled circle.  To not show the mean, use pch=NA }
  \item{scale}{If NULL, scale the widths by the square root of sample size, otherwise scale by the value supplied.}
  \item{legend}{If not NULL, draw a legend at c(topleft,topright,top,left,right) }
+ \item{xlas}{Which direction should labels appear on the x-axis}
+ \item{ylas}{Which direction should labels appear on the y-axis?}
+  \item{order}{If TRUE, sort the plots by the descending order of the mean values}
   \item{\dots}{Other graphic parameters}
+ 
 }
 \details{
 Describe the data using a violin plot. Change alpha to modify the shading.  
